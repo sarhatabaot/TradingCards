@@ -39,25 +39,25 @@ public class MythicMobsListener
                 int level = (int) mob.getLevel();
                 String oldRarity = rare;
                 rare = calculateMMRarity(level, false);
-                plugin.debugMsg("[Cards] (MM) Mob is a mythic mob of level "+level+", rarity changed from " + oldRarity + " to " + rare);
+                plugin.debugMsg("[TradingCards] (MM) Mob is a mythic mob of level "+level+", rarity changed from " + oldRarity + " to " + rare);
             } else {
-                plugin.debugMsg("[Cards] (MM) Per-Level-Chances disabled, continuing as normal.");
+                plugin.debugMsg("[TradingCards] (MM) Per-Level-Chances disabled, continuing as normal.");
             }
             if (plugin.getConfig().getBoolean("Chances.Boss-Drop") && plugin.isMobBoss(e.getEntity().getType())) rare = plugin.getConfig().getString("Chances.Boss-Drop-Rarity");
             boolean cancelled = false;
 
             if (rare != "None") {
                 if (plugin.getConfig().getBoolean("General.Spawner-Block") && e.getEntity().getCustomName() != null && e.getEntity().getCustomName().equals(plugin.getConfig().getString("General.Spawner-Mob-Name"))) {
-                    plugin.debugMsg("[Cards] (MM) Mob came from spawner, not dropping card.");
+                    plugin.debugMsg("[TradingCards] (MM) Mob came from spawner, not dropping card.");
                     cancelled = true;
                 }
                 if (!cancelled) {
-                    plugin.debugMsg("[Cards] (MM) Successfully generated card.");
+                    plugin.debugMsg("[TradingCards] (MM) Successfully generated card.");
                     boolean isShiny = false;
                     int shinyRandom = this.r.nextInt(100) + 1;
-                    plugin.debugMsg("[Cards] (MM) Shiny chance for level " + (int)e.getMobLevel()+" is "+plugin.getConfig().getInt("PluginSupport.MythicMobs.Levels."+(int)e.getMobLevel()+".Shiny-Version-Chance"));
+                    plugin.debugMsg("[TradingCards] (MM) Shiny chance for level " + (int)e.getMobLevel()+" is "+plugin.getConfig().getInt("PluginSupport.MythicMobs.Levels."+(int)e.getMobLevel()+".Shiny-Version-Chance"));
                     if (shinyRandom <= plugin.getConfig().getInt("PluginSupport.MythicMobs.Levels."+(int)e.getMobLevel()+".Shiny-Version-Chance")) {
-                        plugin.debugMsg("[Cards] (MM) Card is shiny! Yay!");
+                        plugin.debugMsg("[TradingCards] (MM) Card is shiny! Yay!");
                         isShiny = true;
                     }
                     if (plugin.generateCard(rare, isShiny) != null) e.getDrops().add(plugin.generateCard(rare, isShiny));
@@ -67,7 +67,7 @@ public class MythicMobsListener
     }
 
     public String calculateMMRarity(int mobLvl, boolean alwaysDrop) {
-        plugin.debugMsg("[Cards] (MM) Mythic mobs: Starting rarity calculation for level "+mobLvl+", alwaysDrop is "+alwaysDrop);
+        plugin.debugMsg("[TradingCards] (MM) Mythic mobs: Starting rarity calculation for level "+mobLvl+", alwaysDrop is "+alwaysDrop);
         // Get the max level from the config.
         ConfigurationSection levels = plugin.getConfig().getConfigurationSection("PluginSupport.MythicMobs.Levels");
         Set<String> levelKeys = levels.getKeys(false);
@@ -78,18 +78,18 @@ public class MythicMobsListener
                 if(level >= finalLvl) {
                     finalLvl = level;
                 }
-                plugin.debugMsg("[Cards] (MM) Mythic mobs: Correct level is: " + level);
+                plugin.debugMsg("[TradingCards] (MM) Mythic mobs: Correct level is: " + level);
             } else {
                 if(level >= finalLvl && level <= mobLvl) {
                     finalLvl = level; 
                 }
-                plugin.debugMsg("[Cards] (MM) Mythic mobs: Not the correct level.. iteration is: " + level);
+                plugin.debugMsg("[TradingCards] (MM) Mythic mobs: Not the correct level.. iteration is: " + level);
             }
         }
         
         int shouldItDrop = this.r.nextInt(100) + 1;
         String type = "";
-        plugin.debugMsg("[Cards] (MM) shouldItDrop Num: " + shouldItDrop);
+        plugin.debugMsg("[TradingCards] (MM) shouldItDrop Num: " + shouldItDrop);
         if (!alwaysDrop) {
             if (shouldItDrop > plugin.getConfig().getInt("PluginSupport.MythicMobs.Levels."+finalLvl+".Drop-Chance")) return "None";
             type = "MythicMob";
@@ -107,36 +107,36 @@ public class MythicMobsListener
         int i = 0;
         int mini = 0;
         int random = this.r.nextInt(100000) + 1;
-        plugin.debugMsg("[Cards] (MM) Random Card Num: " + random);
-        plugin.debugMsg("[Cards] (MM) Type: " + type);
+        plugin.debugMsg("[TradingCards] (MM) Random Card Num: " + random);
+        plugin.debugMsg("[TradingCards] (MM) Type: " + type);
         // Loop through the name of each rarity..
         for (String key: rarityKeys) {
             // Put an ID (starting with 0) and the name of the rarity into rarityIndexes.
             rarityIndexes.put(Integer.valueOf(i), key);
             i++;
-            plugin.debugMsg("[Cards] (MM) " + i + ", " + key);
+            plugin.debugMsg("[TradingCards] (MM) " + i + ", " + key);
             if (plugin.getConfig().contains("PluginSupport.MythicMobs.Levels." + finalLvl + ".Rarities." + key) && mini == 0) {
-                plugin.debugMsg("[Cards] (MM) Path exists: "+"PluginSupport.MythicMobs.Levels." + finalLvl + ".Rarities." + key);
-                plugin.debugMsg("[Cards] (MM) Mini: " + i);
+                plugin.debugMsg("[TradingCards] (MM) Path exists: "+"PluginSupport.MythicMobs.Levels." + finalLvl + ".Rarities." + key);
+                plugin.debugMsg("[TradingCards] (MM) Mini: " + i);
                 mini = i;
             }
             /*int chance = plugin.getConfig().getInt("Chances." + key + "." + type, -1);
-            plugin.debugMsg("[Cards] (MM) Keys: " + key + ", " + chance + ", i=" + i);
+            plugin.debugMsg("[TradingCards] (MM) Keys: " + key + ", " + chance + ", i=" + i);
             rarityChances.put(key, Integer.valueOf(chance));*/
         }
         if (mini != 0) {
-            plugin.debugMsg("[Cards] (MM) Mini: " + mini);
-            plugin.debugMsg("[Cards] (MM) i: " + i);
+            plugin.debugMsg("[TradingCards] (MM) Mini: " + mini);
+            plugin.debugMsg("[TradingCards] (MM) i: " + i);
             while (i >= mini) {
                 i--;
-                plugin.debugMsg("[Cards] (MM) i: " + i);
+                plugin.debugMsg("[TradingCards] (MM) i: " + i);
                 int chance = plugin.getConfig().getInt("PluginSupport.MythicMobs.Levels." + finalLvl + ".Rarities." + rarityIndexes.get(Integer.valueOf(i)), -1);
-                plugin.debugMsg("[Cards] (MM) Chance: " + chance);
-                plugin.debugMsg("[Cards] (MM) Rarity: " + rarityIndexes.get(Integer.valueOf(i)));
+                plugin.debugMsg("[TradingCards] (MM) Chance: " + chance);
+                plugin.debugMsg("[TradingCards] (MM) Rarity: " + rarityIndexes.get(Integer.valueOf(i)));
                 if (chance > 0) {
-                    plugin.debugMsg("[Cards] (MM) Chance > 0");
+                    plugin.debugMsg("[TradingCards] (MM) Chance > 0");
                     if (random <= chance) {
-                        plugin.debugMsg("[Cards] (MM) Random <= Chance, returning "+rarityIndexes.get(Integer.valueOf(i)));
+                        plugin.debugMsg("[TradingCards] (MM) Random <= Chance, returning "+rarityIndexes.get(Integer.valueOf(i)));
                         return rarityIndexes.get(Integer.valueOf(i));
                     }
                 }
@@ -144,14 +144,14 @@ public class MythicMobsListener
         } else {
             while (i > 0) {
                 i--;
-                plugin.debugMsg("[Cards] (MM) Final loop iteration " + i);
-                plugin.debugMsg("[Cards] (MM) Iteration " + i + " in HashMap is: " + rarityIndexes.get(Integer.valueOf(i)) + ", " + plugin.getConfig().getString("Rarities." + rarityIndexes.get(Integer.valueOf(i)) + ".Name"));
+                plugin.debugMsg("[TradingCards] (MM) Final loop iteration " + i);
+                plugin.debugMsg("[TradingCards] (MM) Iteration " + i + " in HashMap is: " + rarityIndexes.get(Integer.valueOf(i)) + ", " + plugin.getConfig().getString("Rarities." + rarityIndexes.get(Integer.valueOf(i)) + ".Name"));
                 int chance = plugin.getConfig().getInt("PluginSupport.MythicMobs.Levels." + finalLvl + ".Rarities." + rarityIndexes.get(Integer.valueOf(i)), -1);
-                plugin.debugMsg("[Cards] (MM) " + plugin.getConfig().getString("Rarities." + rarityIndexes.get(Integer.valueOf(i)) + ".Name") + "'s chance of dropping: " + chance + " out of 100,000");
-                plugin.debugMsg("[Cards] (MM) The random number we're comparing that against is: " + random);
+                plugin.debugMsg("[TradingCards] (MM) " + plugin.getConfig().getString("Rarities." + rarityIndexes.get(Integer.valueOf(i)) + ".Name") + "'s chance of dropping: " + chance + " out of 100,000");
+                plugin.debugMsg("[TradingCards] (MM) The random number we're comparing that against is: " + random);
                 if (chance > 0 && random <= chance) {
-                    plugin.debugMsg("[Cards] (MM) Yup, looks like " + random + " is definitely lower than " + chance + "!");
-                    plugin.debugMsg("[Cards] (MM) Giving a " + plugin.getConfig().getString("Rarities." + rarityIndexes.get(Integer.valueOf(i)) + ".Name") + " card.");
+                    plugin.debugMsg("[TradingCards] (MM) Yup, looks like " + random + " is definitely lower than " + chance + "!");
+                    plugin.debugMsg("[TradingCards] (MM) Giving a " + plugin.getConfig().getString("Rarities." + rarityIndexes.get(Integer.valueOf(i)) + ".Name") + " card.");
                     return rarityIndexes.get(Integer.valueOf(i));
                 }
             }

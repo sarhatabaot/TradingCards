@@ -26,7 +26,7 @@ public class TownyListener
             if (plugin.getServer().getPluginManager().getPlugin("Towny") != null)
             {
                 if (plugin.getConfig().getBoolean("General.Debug-Mode")) {
-                    System.out.println("[Cards] Towny detected, starting card creation..");
+                    System.out.println("[TradingCards] Towny detected, starting card creation..");
                 }
                 GregorianCalendar gc = new GregorianCalendar();
 
@@ -37,24 +37,24 @@ public class TownyListener
                 String townRarity = plugin.getConfig().getString("PluginSupport.Towny.Town-Rarity");
                 String townName = e.getTown().getName();
                 if (plugin.getConfig().getBoolean("General.Debug-Mode")) {
-                    System.out.println("[Cards] " + townName);
+                    System.out.println("[TradingCards] " + townName);
                 }
                 String townSeries = plugin.getConfig().getString("PluginSupport.Towny.Town-Series");
                 if (plugin.getConfig().getBoolean("General.Debug-Mode")) {
-                    System.out.println("[Cards] " + townSeries);
+                    System.out.println("[TradingCards] " + townSeries);
                 }
                 String townType = plugin.getConfig().getString("PluginSupport.Towny.Town-Type");
                 if (plugin.getConfig().getBoolean("General.Debug-Mode")) {
-                    System.out.println("[Cards] " + townType);
+                    System.out.println("[TradingCards] " + townType);
                 }
                 boolean hasShiny = plugin.getConfig().getBoolean("PluginSupport.Towny.Has-Shiny");
                 String prefix = plugin.getConfig().getString("General.Card-Prefix");
                 if (plugin.getConfig().getBoolean("General.Debug-Mode")) {
-                    System.out.println("[Cards] " + prefix);
+                    System.out.println("[TradingCards] " + prefix);
                 }
                 if (plugin.getConfig().contains("Cards." + townRarity + "." + townName))
                 {
-                    System.out.println("[Cards] Town already exists!");
+                    System.out.println("[TradingCards] Town already exists!");
                     if (plugin.getConfig().getBoolean("PluginSupport.Towny.Allow-Duplicates"))
                     {
                         int num = 1;
@@ -67,16 +67,16 @@ public class TownyListener
                             dSuffix = plugin.getConfig().getString("PluginSupport.Towny.Town-Duplicate-Suffix").replaceAll("%num%", String.valueOf(num));
                             if (num > 100)
                             {
-                                System.out.println("[Cards] Something went wrong!");
+                                System.out.println("[TradingCards] Something went wrong!");
                                 break;
                             }
                         }
                         if (plugin.getConfig().getBoolean("General.Debug-Mode")) {
-                            System.out.println("[Cards] Let's do this!");
+                            System.out.println("[TradingCards] Let's do this!");
                         }
                         Player p = Bukkit.getPlayer(e.getTown().getMayor().getName());
                         if (plugin.getConfig().getBoolean("General.Debug-Mode")) {
-                            System.out.println("[Cards] Mayor name: " + e.getTown().getMayor().getName());
+                            System.out.println("[TradingCards] Mayor name: " + e.getTown().getMayor().getName());
                         }
                         String townInfo = "";
                         if (plugin.getConfig().getBoolean("General.American-Mode")) {
@@ -90,11 +90,11 @@ public class TownyListener
                 else
                 {
                     if (plugin.getConfig().getBoolean("General.Debug-Mode")) {
-                        System.out.println("[Cards] Let's do this!");
+                        System.out.println("[TradingCards] Let's do this!");
                     }
                     Player p = Bukkit.getPlayer(e.getTown().getMayor().getName());
                     if (plugin.getConfig().getBoolean("General.Debug-Mode")) {
-                        System.out.println("[Cards] Mayor name: " + e.getTown().getMayor().getName());
+                        System.out.println("[TradingCards] Mayor name: " + e.getTown().getMayor().getName());
                     }
                     String townInfo = "";
                     if (plugin.getConfig().getBoolean("General.American-Mode")) {
@@ -107,7 +107,7 @@ public class TownyListener
             }
             else
             {
-                System.out.println("[Cards] Cannot detect Towny!");
+                System.out.println("[TradingCards] Cannot detect Towny!");
             }
         }
     }
@@ -119,7 +119,7 @@ public class TownyListener
             if (plugin.getServer().getPluginManager().getPlugin("Towny") != null)
             {
                 if (plugin.getConfig().getBoolean("General.Debug-Mode")) {
-                    System.out.println("[Cards] Towny detected, starting card creation..");
+                    System.out.println("[TradingCards] Towny detected, starting card creation..");
                 }
                 GregorianCalendar gc = new GregorianCalendar();
 
@@ -130,24 +130,24 @@ public class TownyListener
                 String townRarity = plugin.getConfig().getString("PluginSupport.Towny.Nation-Rarity");
                 String townName = e.getNation().getName();
                 if (plugin.getConfig().getBoolean("General.Debug-Mode")) {
-                    System.out.println("[Cards] " + townName);
+                    System.out.println("[TradingCards] " + townName);
                 }
                 String townSeries = plugin.getConfig().getString("PluginSupport.Towny.Nation-Series");
                 if (plugin.getConfig().getBoolean("General.Debug-Mode")) {
-                    System.out.println("[Cards] " + townSeries);
+                    System.out.println("[TradingCards] " + townSeries);
                 }
                 String townType = plugin.getConfig().getString("PluginSupport.Towny.Nation-Type");
                 if (plugin.getConfig().getBoolean("General.Debug-Mode")) {
-                    System.out.println("[Cards] " + townType);
+                    System.out.println("[TradingCards] " + townType);
                 }
                 boolean hasShiny = plugin.getConfig().getBoolean("PluginSupport.Towny.Has-Shiny");
                 String prefix = plugin.getConfig().getString("General.Card-Prefix");
                 if (plugin.getConfig().getBoolean("General.Debug-Mode")) {
-                    System.out.println("[Cards] " + prefix);
+                    System.out.println("[TradingCards] " + prefix);
                 }
                 if (plugin.getConfig().contains("Cards." + townRarity + "." + townName))
                 {
-                    System.out.println("[Cards] Nation already exists!");
+                    System.out.println("[TradingCards] Nation already exists!");
                     if (plugin.getConfig().getBoolean("PluginSupport.Towny.Allow-Duplicates"))
                     {
                         int num = 1;
@@ -160,16 +160,16 @@ public class TownyListener
                             dSuffix = plugin.getConfig().getString("PluginSupport.Towny.Nation-Duplicate-Suffix").replaceAll("%num%", String.valueOf(num));
                             if (num > 100)
                             {
-                                System.out.println("[Cards] Something went wrong!");
+                                System.out.println("[TradingCards] Something went wrong!");
                                 break;
                             }
                         }
                         if (plugin.getConfig().getBoolean("General.Debug-Mode")) {
-                            System.out.println("[Cards] Let's do this!");
+                            System.out.println("[TradingCards] Let's do this!");
                         }
                         Player p = Bukkit.getPlayer(e.getNation().getCapital().getMayor().getName());
                         if (plugin.getConfig().getBoolean("General.Debug-Mode")) {
-                            System.out.println("[Cards] Emperor name: " + e.getNation().getCapital().getMayor().getName());
+                            System.out.println("[TradingCards] Emperor name: " + e.getNation().getCapital().getMayor().getName());
                         }
                         String townInfo = "";
                         if (plugin.getConfig().getBoolean("General.American-Mode")) {
@@ -183,11 +183,11 @@ public class TownyListener
                 else
                 {
                     if (plugin.getConfig().getBoolean("General.Debug-Mode")) {
-                        System.out.println("[Cards] Let's do this!");
+                        System.out.println("[TradingCards] Let's do this!");
                     }
                     Player p = Bukkit.getPlayer(e.getNation().getCapital().getMayor().getName());
                     if (plugin.getConfig().getBoolean("General.Debug-Mode")) {
-                        System.out.println("[Cards] Emperor name: " + e.getNation().getCapital().getMayor().getName());
+                        System.out.println("[TradingCards] Emperor name: " + e.getNation().getCapital().getMayor().getName());
                     }
                     String townInfo = "";
                     if (plugin.getConfig().getBoolean("General.American-Mode")) {
@@ -200,7 +200,7 @@ public class TownyListener
             }
             else
             {
-                System.out.println("[Cards] Cannot detect Towny!");
+                System.out.println("[TradingCards] Cannot detect Towny!");
             }
         }
     }

@@ -75,20 +75,47 @@ public class TradingCards
     boolean usingSqlite;
 
     public void onEnable() {
+        String serverVersion = Bukkit.getServer().getVersion();
         getDataFolder().mkdirs();
         INSTANCE = this;
         List < EntityType > safeHostileMobs = Arrays.asList(
-                EntityType.SPIDER, EntityType.CAVE_SPIDER, EntityType.ZOMBIE, EntityType.SKELETON, EntityType.CREEPER, EntityType.BLAZE, EntityType.SILVERFISH, EntityType.GHAST, EntityType.SLIME, EntityType.EVOKER, EntityType.VINDICATOR, EntityType.VEX, EntityType.SHULKER, EntityType.GUARDIAN, EntityType.MAGMA_CUBE, EntityType.ELDER_GUARDIAN, EntityType.STRAY, EntityType.HUSK, EntityType.DROWNED, EntityType.WITCH, EntityType.ZOGLIN, EntityType.HOGLIN, EntityType.ZOMBIE_VILLAGER, EntityType.PILLAGER, EntityType.RAVAGER, EntityType.ENDERMITE);
+                EntityType.SPIDER, EntityType.CAVE_SPIDER, EntityType.ZOMBIE, EntityType.SKELETON, EntityType.CREEPER, EntityType.BLAZE, EntityType.SILVERFISH, EntityType.GHAST, EntityType.SLIME, EntityType.EVOKER, EntityType.VINDICATOR, EntityType.VEX, EntityType.SHULKER, EntityType.GUARDIAN, EntityType.MAGMA_CUBE, EntityType.ELDER_GUARDIAN, EntityType.STRAY, EntityType.HUSK, EntityType.DROWNED, EntityType.WITCH, EntityType.ZOMBIE_VILLAGER, EntityType.ENDERMITE);
         List < EntityType > safeNeutralMobs = Arrays.asList(
-                EntityType.ENDERMAN, EntityType.POLAR_BEAR, EntityType.LLAMA, EntityType.WOLF, EntityType.BEE, EntityType.DOLPHIN, EntityType.PANDA, EntityType.PIGLIN, EntityType.ZOMBIFIED_PIGLIN, EntityType.DOLPHIN, EntityType.SNOWMAN, EntityType.IRON_GOLEM);
+                EntityType.ENDERMAN, EntityType.POLAR_BEAR, EntityType.LLAMA, EntityType.WOLF, EntityType.DOLPHIN, EntityType.DOLPHIN, EntityType.SNOWMAN, EntityType.IRON_GOLEM);
         List < EntityType > safePassiveMobs = Arrays.asList(
-                EntityType.DONKEY, EntityType.MULE, EntityType.SKELETON_HORSE, EntityType.CHICKEN, EntityType.COW, EntityType.SQUID, EntityType.WANDERING_TRADER, EntityType.TURTLE, EntityType.STRIDER, EntityType.TROPICAL_FISH, EntityType.PUFFERFISH, EntityType.SHEEP, EntityType.PIG, EntityType.PHANTOM, EntityType.SALMON, EntityType.COD, EntityType.RABBIT, EntityType.VILLAGER, EntityType.BAT, EntityType.PARROT, EntityType.HORSE);
+                EntityType.DONKEY, EntityType.MULE, EntityType.SKELETON_HORSE, EntityType.CHICKEN, EntityType.COW, EntityType.SQUID, EntityType.TURTLE, EntityType.TROPICAL_FISH, EntityType.PUFFERFISH, EntityType.SHEEP, EntityType.PIG, EntityType.PHANTOM, EntityType.SALMON, EntityType.COD, EntityType.RABBIT, EntityType.VILLAGER, EntityType.BAT, EntityType.PARROT, EntityType.HORSE);
         List < EntityType > safeBossMobs = Arrays.asList(
                 EntityType.ENDER_DRAGON, EntityType.WITHER);
         this.hostileMobs.addAll(safeHostileMobs);
         this.neutralMobs.addAll(safeNeutralMobs);
         this.passiveMobs.addAll(safePassiveMobs);
         this.bossMobs.addAll(safeBossMobs);
+        // Previous version compatibility
+        if (serverVersion.contains("1.14") || serverVersion.contains("1.15") || serverVersion.contains("1.16")) {
+            this.neutralMobs.add(EntityType.PANDA);
+            this.hostileMobs.add(EntityType.PILLAGER);
+            this.hostileMobs.add(EntityType.RAVAGER);
+            this.passiveMobs.add(EntityType.WANDERING_TRADER);
+            this.neutralMobs.add(EntityType.FOX);
+            this.passiveMobs.add(EntityType.CAT);
+            this.passiveMobs.add(EntityType.MUSHROOM_COW);
+            this.passiveMobs.add(EntityType.TRADER_LLAMA);
+            if (serverVersion.contains("1.15") || serverVersion.contains("1.16")) {
+                this.neutralMobs.add(EntityType.BEE);
+                if (serverVersion.contains("1.16")) {
+                    this.hostileMobs.add(EntityType.HOGLIN);
+                    this.hostileMobs.add(EntityType.PIGLIN);
+                    this.hostileMobs.add(EntityType.STRIDER);
+                    this.hostileMobs.add(EntityType.ZOGLIN);
+                    this.hostileMobs.add(EntityType.ZOMBIFIED_PIGLIN);
+                    System.out.println("[TradingCards] 1.16 mode enabled! Enjoy the plugin!");
+                } else {
+                    System.out.println("[TradingCards] Legacy 1.15 mode enabled! Consider upgrading though <3");
+                }
+            } else {
+                System.out.println("[TradingCards] Legacy 1.14 mode enabled! Consider upgrading though <3");
+            }
+        }
         getConfig().options().copyDefaults(true);
         getServer().getPluginManager().addPermission(permRarities);
         saveDefaultConfig();
@@ -365,12 +392,12 @@ public class TradingCards
             ConfigurationSection deckList = getDeckData().getConfigurationSection("Decks.Inventories." + uuidString);
             if (deckList != null) for (String s: deckList.getKeys(false)) {
                 deckNumber += Integer.valueOf(s).intValue();
-                debugMsg("[Cards] Deck running total: " + deckNumber);
+                debugMsg("[TradingCards] Deck running total: " + deckNumber);
             }
             if (deckNumber == 0) {
-                debugMsg("[Cards] No decks?!");
+                debugMsg("[TradingCards] No decks?!");
             } else {
-                debugMsg("[Cards] Decks:" + deckNumber);
+                debugMsg("[TradingCards] Decks:" + deckNumber);
                 for (int i = 0; i < deckNumber; i++) {
                     if (getDeckData().contains("Decks.Inventories." + uuidString + "." + (i + 1))) {
                         List < String > contents = getDeckData().getStringList("Decks.Inventories." + uuidString + "." + (i + 1));
@@ -378,7 +405,7 @@ public class TradingCards
                         for (String s2: contents) {
                             String[] splitContents = s2.split(",");
                             if (getConfig().getBoolean("General.Eat-Shiny-Cards") && splitContents[3].equalsIgnoreCase("yes")) {
-                                debugMsg("[Cards] Eat-Shiny-Cards is true and card is shiny!");
+                                debugMsg("[TradingCards] Eat-Shiny-Cards is true and card is shiny!");
                                 if (splitContents[0].equalsIgnoreCase(rarity)) {
                                     if (splitContents[1].equalsIgnoreCase(card)) {
                                         if (Integer.valueOf(splitContents[2]).intValue() <= 1) continue;
@@ -401,7 +428,7 @@ public class TradingCards
                                 continue;
                             }
                             if (getConfig().getBoolean("General.Eat-Shiny-Cards") && splitContents[3].equalsIgnoreCase("no")) {
-                                debugMsg("[Cards] Eat-Shiny-Cards is true and card is not shiny!");
+                                debugMsg("[TradingCards] Eat-Shiny-Cards is true and card is not shiny!");
                                 if (splitContents[0].equalsIgnoreCase(rarity)) {
                                     if (splitContents[1].equalsIgnoreCase(card)) {
                                         if (Integer.valueOf(splitContents[2]).intValue() <= 1) continue;
@@ -424,14 +451,14 @@ public class TradingCards
                                 continue;
                             }
                             if (!getConfig().getBoolean("General.Eat-Shiny-Cards") && splitContents[3].equalsIgnoreCase("yes")) {
-                                debugMsg("[Cards] Eat-Shiny-Cards is false and card is shiny!");
+                                debugMsg("[TradingCards] Eat-Shiny-Cards is false and card is shiny!");
                                 if (!splitContents[0].equalsIgnoreCase(rarity)) continue;
-                                debugMsg("[Cards] Adding card..");
+                                debugMsg("[TradingCards] Adding card..");
                                 contentsNew.add(s2);
                                 continue;
                             }
                             if (getConfig().getBoolean("General.Eat-Shiny-Cards") || !splitContents[3].equalsIgnoreCase("no")) continue;
-                            debugMsg("[Cards] Eat-Shiny-Cards is false and card is not shiny!");
+                            debugMsg("[TradingCards] Eat-Shiny-Cards is false and card is not shiny!");
                             if (splitContents[0].equalsIgnoreCase(rarity)) {
                                 if (splitContents[1].equalsIgnoreCase(card)) {
                                     if (Integer.valueOf(splitContents[2]).intValue() <= 1) continue;
@@ -480,7 +507,7 @@ public class TradingCards
 
     public int hasCard(Player p, String card, String rarity) {
         int deckNumber = 0;
-        debugMsg("[Cards] Started check for card: " + card + ", " + rarity);
+        debugMsg("[TradingCards] Started check for card: " + card + ", " + rarity);
         String uuidString = p.getUniqueId().toString();
         if(usingSqlite) {
             int cardID = getCardID(card,rarity);
@@ -492,44 +519,44 @@ public class TradingCards
             }
         } else {
             ConfigurationSection deckList = getDeckData().getConfigurationSection("Decks.Inventories." + uuidString);
-            debugMsg("[Cards] Deck UUID: " + uuidString);
+            debugMsg("[TradingCards] Deck UUID: " + uuidString);
             if (getConfig().getBoolean("General.Debug-Mode") && getDeckData().contains("Decks.Inventories." + uuidString))
-                System.out.println("[Cards] Deck.yml contains player!");
+                System.out.println("[TradingCards] Deck.yml contains player!");
             if (getConfig().getBoolean("General.Debug-Mode")) {
                 for (String s : deckList.getKeys(false))
-                    System.out.println("[Cards] Deck rarity content: " + s);
-                debugMsg("[Cards] Done!");
+                    System.out.println("[TradingCards] Deck rarity content: " + s);
+                debugMsg("[TradingCards] Done!");
             }
             if (deckList == null) return 0;
             for (String s : deckList.getKeys(false)) {
                 deckNumber += Integer.valueOf(s).intValue();
                 if (getConfig().getBoolean("General.Debug-Mode"))
-                    System.out.println("[Cards] Deck running total: " + deckNumber);
+                    System.out.println("[TradingCards] Deck running total: " + deckNumber);
 
             }
             if (deckNumber == 0) {
-                debugMsg("[Cards] No decks?!");
+                debugMsg("[TradingCards] No decks?!");
                 return 0;
             }
-            debugMsg("[Cards] Decks:" + deckNumber);
+            debugMsg("[TradingCards] Decks:" + deckNumber);
             for (int i = 0; i < deckNumber; i++) {
-                debugMsg("[Cards] Starting iteration " + i);
+                debugMsg("[TradingCards] Starting iteration " + i);
                 if (getDeckData().contains("Decks.Inventories." + uuidString + "." + (i + 1))) {
                     List<String> contents = getDeckData().getStringList("Decks.Inventories." + uuidString + "." + (i + 1));
                     for (String s2 : contents) {
                         if (getConfig().getBoolean("General.Debug-Mode"))
-                            System.out.println("[Cards] Deck file content: " + s2);
+                            System.out.println("[TradingCards] Deck file content: " + s2);
                         String[] splitContents = s2.split(",");
                         if (getConfig().getBoolean("General.Debug-Mode"))
-                            System.out.println("[Cards] " + card + " - " + splitContents[1]);
+                            System.out.println("[TradingCards] " + card + " - " + splitContents[1]);
                         if (getConfig().getBoolean("General.Debug-Mode"))
-                            System.out.println("[Cards] " + rarity + " - " + splitContents[0]);
+                            System.out.println("[TradingCards] " + rarity + " - " + splitContents[0]);
                         if (splitContents[0].equalsIgnoreCase(rarity)) {
                             if (getConfig().getBoolean("General.Debug-Mode"))
-                                System.out.println("[Cards] Rarity match: " + splitContents[0]);
+                                System.out.println("[TradingCards] Rarity match: " + splitContents[0]);
                             if (splitContents[1].equalsIgnoreCase(card) && splitContents[3].equalsIgnoreCase("no")) {
                                 if (getConfig().getBoolean("General.Debug-Mode"))
-                                    System.out.println("[Cards] Card match: " + splitContents[1]);
+                                    System.out.println("[TradingCards] Card match: " + splitContents[1]);
                                 return Integer.valueOf(splitContents[2]).intValue();
                             }
                         }
@@ -542,7 +569,7 @@ public class TradingCards
 
     public boolean hasShiny(Player p, String card, String rarity) {
         int deckNumber = 0;
-        debugMsg("[Cards] Started check for card: " + card + ", " + rarity);
+        debugMsg("[TradingCards] Started check for card: " + card + ", " + rarity);
         String uuidString = p.getUniqueId().toString();
         if(usingSqlite) {
             int cardID = getCardID(card,rarity);
@@ -555,44 +582,44 @@ public class TradingCards
             }
         } else {
             ConfigurationSection deckList = getDeckData().getConfigurationSection("Decks.Inventories." + uuidString);
-            debugMsg("[Cards] Deck UUID: " + uuidString);
+            debugMsg("[TradingCards] Deck UUID: " + uuidString);
             if ((getConfig().getBoolean("General.Debug-Mode") & getDeckData().contains("Decks.Inventories." + uuidString)))
-                System.out.println("[Cards] Deck.yml contains player!");
+                System.out.println("[TradingCards] Deck.yml contains player!");
             if (getConfig().getBoolean("General.Debug-Mode")) {
                 for (String s : deckList.getKeys(false))
-                    System.out.println("[Cards] Deck rarity content: " + s);
-                debugMsg("[Cards] Done!");
+                    System.out.println("[TradingCards] Deck rarity content: " + s);
+                debugMsg("[TradingCards] Done!");
             }
             if (deckList == null) return false;
             for (String s : deckList.getKeys(false)) {
                 deckNumber += Integer.valueOf(s).intValue();
                 if (getConfig().getBoolean("General.Debug-Mode"))
-                    System.out.println("[Cards] Deck running total: " + deckNumber);
+                    System.out.println("[TradingCards] Deck running total: " + deckNumber);
 
             }
             if (deckNumber == 0) {
-                debugMsg("[Cards] No decks?!");
+                debugMsg("[TradingCards] No decks?!");
                 return false;
             }
-            debugMsg("[Cards] Decks:" + deckNumber);
+            debugMsg("[TradingCards] Decks:" + deckNumber);
             for (int i = 0; i < deckNumber; i++) {
-                debugMsg("[Cards] Starting iteration " + i);
+                debugMsg("[TradingCards] Starting iteration " + i);
                 if (getDeckData().contains("Decks.Inventories." + uuidString + "." + (i + 1))) {
                     List<String> contents = getDeckData().getStringList("Decks.Inventories." + uuidString + "." + (i + 1));
                     for (String s2 : contents) {
                         if (getConfig().getBoolean("General.Debug-Mode"))
-                            System.out.println("[Cards] Deck file content: " + s2);
+                            System.out.println("[TradingCards] Deck file content: " + s2);
                         String[] splitContents = s2.split(",");
                         if (getConfig().getBoolean("General.Debug-Mode"))
-                            System.out.println("[Cards] " + card + " - " + splitContents[1]);
+                            System.out.println("[TradingCards] " + card + " - " + splitContents[1]);
                         if (getConfig().getBoolean("General.Debug-Mode"))
-                            System.out.println("[Cards] " + rarity + " - " + splitContents[0]);
+                            System.out.println("[TradingCards] " + rarity + " - " + splitContents[0]);
                         if (splitContents[0].equalsIgnoreCase(rarity)) {
                             if (getConfig().getBoolean("General.Debug-Mode"))
-                                System.out.println("[Cards] Rarity match: " + splitContents[0]);
+                                System.out.println("[TradingCards] Rarity match: " + splitContents[0]);
                             if (!splitContents[1].equalsIgnoreCase(card)) continue;
                             if (getConfig().getBoolean("General.Debug-Mode"))
-                                System.out.println("[Cards] Card match: " + splitContents[1]);
+                                System.out.println("[TradingCards] Card match: " + splitContents[1]);
                             if (splitContents[3].equalsIgnoreCase("yes")) return true;
                         }
                     }
@@ -603,9 +630,9 @@ public class TradingCards
     }
 
     public void openDeck(Player p, int deckNum) {
-        debugMsg("[Cards] Deck opened.");
+        debugMsg("[TradingCards] Deck opened.");
         String uuidString = p.getUniqueId().toString();
-        debugMsg("[Cards] Deck UUID: " + uuidString);
+        debugMsg("[TradingCards] Deck UUID: " + uuidString);
         /*if(usingSqlite) {
             Map rows = getDatabase("trading_cards").queryMultipleRows("SELECT * FROM decks WHERE uuid = '"+uuidString+"' AND deckID = "+deckNum, "card");
             int cardID = (Integer)rows.get("trading_cards").get(0);
@@ -616,7 +643,7 @@ public class TradingCards
         ItemStack card = null;
         boolean isNull = false;
         for (String s: contents) {
-            debugMsg("[Cards] Deck file content: " + s);
+            debugMsg("[TradingCards] Deck file content: " + s);
             String[] splitContents = s.split(",");
             if (splitContents.length > 1) {
                 if (splitContents[1] == null) splitContents[1] = "None";
@@ -624,13 +651,13 @@ public class TradingCards
                     if (!splitContents[0].equalsIgnoreCase("BLANK") && !splitContents[1].equalsIgnoreCase("None") && splitContents[1] != null && !splitContents[1].isEmpty()) {
                         card = createPlayerCard(splitContents[1], splitContents[0], Integer.valueOf(splitContents[2]), true);
                     } else {
-                        System.out.println("[Cards] Warning! A null card has been found in a deck. It was truncated for safety.");
+                        System.out.println("[TradingCards] Warning! A null card has been found in a deck. It was truncated for safety.");
                         isNull = true;
                     }
                 } else if (!splitContents[1].equalsIgnoreCase("None") && !splitContents[0].equalsIgnoreCase("BLANK") && splitContents[1] != null && !splitContents[1].isEmpty()) {
                     card = getNormalCard(splitContents[1], splitContents[0], Integer.valueOf(splitContents[2]));
                 } else {
-                    System.out.println("[Cards] Warning! A null card has been found in a deck. It was truncated for safety.");
+                    System.out.println("[TradingCards] Warning! A null card has been found in a deck. It was truncated for safety.");
                     isNull = true;
                 }
             }
@@ -642,19 +669,19 @@ public class TradingCards
             }
             isNull = false;
             if (splitContents.length > 1 && getConfig().getBoolean("General.Debug-Mode") && !isNull) {
-                System.out.println("[Cards] Put " + card + "," + splitContents[2] + " into respective lists.");
+                System.out.println("[TradingCards] Put " + card + "," + splitContents[2] + " into respective lists.");
                 continue;
             }
             if (!getConfig().getBoolean("General.Debug-Mode") || isNull) continue;
-            System.out.println("[Cards] Put spacer into list.");
+            System.out.println("[TradingCards] Put spacer into list.");
         }
         int invSlots = 27;
         if (getConfig().getBoolean("General.Use-Large-Decks")) invSlots = 54;
         Inventory inv = Bukkit.createInventory(null, invSlots, cMsg("&c" + p.getName() + "'s Deck #" + deckNum));
-        debugMsg("[Cards] Created inventory.");
+        debugMsg("[TradingCards] Created inventory.");
         int iter = 0;
         for (ItemStack i: cards) {
-            debugMsg("[Cards] Item " + i.getType().toString() + " added to inventory!");
+            debugMsg("[TradingCards] Item " + i.getType().toString() + " added to inventory!");
             i.setAmount(quantity.get(iter).intValue());
             inv.addItem(i);
             iter++;
@@ -700,18 +727,18 @@ public class TradingCards
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent e) {
         String viewTitle = e.getView().getTitle();
-        debugMsg("[Cards] Title: " + viewTitle);
+        debugMsg("[TradingCards] Title: " + viewTitle);
         if (viewTitle.contains("s Deck #")) {
-            debugMsg("[Cards] Deck closed.");
+            debugMsg("[TradingCards] Deck closed.");
             ItemStack[] contents = e.getInventory().getContents();
             String[] title = viewTitle.split("'");
             String[] titleNum = viewTitle.split("#");
             int deckNum = Integer.valueOf(titleNum[1]).intValue();
-            debugMsg("[Cards] Deck num: " + deckNum);
-            debugMsg("[Cards] Title: " + title[0]);
-            debugMsg("[Cards] Title: " + title[1]);
+            debugMsg("[TradingCards] Deck num: " + deckNum);
+            debugMsg("[TradingCards] Title: " + title[0]);
+            debugMsg("[TradingCards] Title: " + title[1]);
             UUID id = Bukkit.getOfflinePlayer(ChatColor.stripColor(title[0])).getUniqueId();
-            debugMsg("[Cards] New ID: " + id.toString());
+            debugMsg("[TradingCards] New ID: " + id.toString());
             List < String > serialized = new ArrayList < >();
             ItemStack[] arrayOfItemStack1;
             for (int j = (arrayOfItemStack1 = contents).length, i = 0; i < j; i++) {
@@ -727,7 +754,7 @@ public class TradingCards
                     if (it.containsEnchantment(Enchantment.ARROW_INFINITE)) shiny = "yes";
                     String serializedString = rarity + "," + card + "," + amount + "," + shiny;
                     serialized.add(serializedString);
-                    debugMsg("[Cards] Added " + serializedString + " to deck file.");
+                    debugMsg("[TradingCards] Added " + serializedString + " to deck file.");
                 } else if (it != null && getConfig().getBoolean("General.Drop-Deck-Items")) {
                     Player p = Bukkit.getPlayer(ChatColor.stripColor(title[0]));
                     World w = p.getWorld();
@@ -758,10 +785,10 @@ public class TradingCards
         ConfigurationSection cs = getCardsData().getConfigurationSection("Cards." + rarity);
         Set < String > keys = cs.getKeys(false);
         for (String s: keys) {
-            debugMsg("[Cards] getCardName s: " + s);
-            debugMsg("[Cards] getCardName display: " + display);
+            debugMsg("[TradingCards] getCardName s: " + s);
+            debugMsg("[TradingCards] getCardName display: " + display);
             if (cleanedArray.length > 1) {
-                debugMsg("[Cards] cleanedArray > 1");
+                debugMsg("[TradingCards] cleanedArray > 1");
                 if ((cleanedArray[0] + "_" + cleanedArray[1]).matches(s)) return s;
                 if ((cleanedArray[0] + " " + cleanedArray[1]).matches(s)) return s;
                 if (cleanedArray.length > 2 && (cleanedArray[1] + "_" + cleanedArray[2]).matches(s)) return s;
@@ -851,23 +878,23 @@ public class TradingCards
                         if(packMeta.hasDisplayName()) {
                             packName = ChatColor.stripColor(packMeta.getDisplayName());
                             if (getConfig().getBoolean("General.Debug-Mode")) {
-                                System.out.println("[Cards] Pack name first pass: " + packName);
-                                System.out.println("[Cards] Prefix is: " + prefix);
+                                System.out.println("[TradingCards] Pack name first pass: " + packName);
+                                System.out.println("[TradingCards] Prefix is: " + prefix);
                             }
                             packName = packName.replace(prefix, "");
                             if (getConfig().getBoolean("General.Debug-Mode"))
-                                System.out.println("[Cards] Pack name second pass: " + packName);
+                                System.out.println("[TradingCards] Pack name second pass: " + packName);
                             packName = packName.replaceAll(" ", "_");
                             if (getConfig().getBoolean("General.Debug-Mode"))
-                                System.out.println("[Cards] Pack name third pass: "+packName);
+                                System.out.println("[TradingCards] Pack name third pass: "+packName);
                         }
                         if(packName.equals("None")) {
-                            System.out.println("[Cards] Error: Pack name not found...");
+                            System.out.println("[TradingCards] Error: Pack name not found...");
                             return;
                         }
                         for (i = 0; i < normalCardAmount; i++) {
                             String normRarity = WordUtils.capitalizeFully(line1[1]);
-                            debugMsg("[Cards] Pack name is: "+packName);
+                            debugMsg("[TradingCards] Pack name is: "+packName);
                             normRarity = upgradeRarity(packName, normRarity);
                             if (p.getInventory().firstEmpty() != -1) {
                                 p.getInventory().addItem(generateCard(normRarity, false));
@@ -880,7 +907,7 @@ public class TradingCards
                         }
                         for (i = 0; i < specialCardAmount; i++) {
                             String specRarity = WordUtils.capitalizeFully(line2[1]);
-                            debugMsg("[Cards] Pack name is: "+packName);
+                            debugMsg("[TradingCards] Pack name is: "+packName);
                             specRarity = upgradeRarity(packName, specRarity);
                             if (p.getInventory().firstEmpty() != -1) {
                                 p.getInventory().addItem(generateCard(specRarity, false));
@@ -893,7 +920,7 @@ public class TradingCards
                         }
                         if (hasExtra) for (i = 0; i < extraCardAmount; i++) {
                             String extrRarity = WordUtils.capitalizeFully(line3[1]);
-                            debugMsg("[Cards] Pack name is: "+packName);
+                            debugMsg("[TradingCards] Pack name is: "+packName);
                             extrRarity = upgradeRarity(packName, extrRarity);
                             if (p.getInventory().firstEmpty() != -1) {
                                 p.getInventory().addItem(generateCard(extrRarity, false));
@@ -908,12 +935,12 @@ public class TradingCards
                         event.getPlayer().sendMessage(cMsg(getMessagesData().getString("Messages.Prefix") + " " + getMessagesData().getString("Messages.NoCreative")));
                     }
                 if (p.getInventory().getItemInMainHand().getType() == Material.valueOf(getConfig().getString("General.Deck-Material"))) {
-                    debugMsg("[Cards] Deck material...");
-                    debugMsg("[Cards] Not creative...");
+                    debugMsg("[TradingCards] Deck material...");
+                    debugMsg("[TradingCards] Not creative...");
                     if (p.getInventory().getItemInMainHand().containsEnchantment(Enchantment.DURABILITY)) {
-                        debugMsg("[Cards] Has enchant...");
+                        debugMsg("[TradingCards] Has enchant...");
                         if (p.getInventory().getItemInMainHand().getEnchantmentLevel(Enchantment.DURABILITY) == 10) {
-                            debugMsg("[Cards] Enchant is level 10...");
+                            debugMsg("[TradingCards] Enchant is level 10...");
                             if (p.getGameMode() != GameMode.CREATIVE) {
                                 String name = p.getInventory().getItemInMainHand().getItemMeta().getDisplayName();
                                 String[] nameSplit = name.split("#");
@@ -930,7 +957,7 @@ public class TradingCards
     }
 
     public String upgradeRarity(String packName, String rarity) {
-        debugMsg("[Cards] Starting booster pack upgrade check - Current rarity is "+rarity+"!");
+        debugMsg("[TradingCards] Starting booster pack upgrade check - Current rarity is "+rarity+"!");
         ConfigurationSection rarities = getConfig().getConfigurationSection("Rarities");
         Set < String > rarityKeys = rarities.getKeys(false);
         Map < Integer,String > rarityMap = new HashMap < >();
@@ -939,21 +966,21 @@ public class TradingCards
         for (String key: rarityKeys) {
             rarityMap.put(Integer.valueOf(i), key);
             if(key.equalsIgnoreCase(rarity)) curRarity = i;
-            debugMsg("[Cards] Rarity " + i + " is " + key);
+            debugMsg("[TradingCards] Rarity " + i + " is " + key);
             i++;
         }
         int chance = getConfig().getInt("BoosterPacks." + packName + ".UpgradeChance", 0);
         if(chance <= 0) {
-            debugMsg("[Cards] Pack has upgrade chance set to 0! Exiting..");
+            debugMsg("[TradingCards] Pack has upgrade chance set to 0! Exiting..");
             return rarityMap.get(curRarity);
         }
         int random = this.r.nextInt(100000) + 1;
         if(random <= chance) {
             if(curRarity < i) curRarity++;
-            debugMsg("[Cards] Card upgraded! new rarity is "+rarityMap.get(curRarity)+"!");
+            debugMsg("[TradingCards] Card upgraded! new rarity is "+rarityMap.get(curRarity)+"!");
             return rarityMap.get(curRarity);
         }
-        debugMsg("[Cards] Card not upgraded! Rarity remains at "+rarityMap.get(curRarity)+"!");
+        debugMsg("[TradingCards] Card not upgraded! Rarity remains at "+rarityMap.get(curRarity)+"!");
         return rarityMap.get(curRarity);
     }
 
@@ -961,7 +988,7 @@ public class TradingCards
         int shouldItDrop = this.r.nextInt(100) + 1;
         int bossRarity = 0;
         String type = "";
-        debugMsg("[Cards] shouldItDrop Num: " + shouldItDrop);
+        debugMsg("[TradingCards] shouldItDrop Num: " + shouldItDrop);
         if (isMobHostile(e)) {
             if (!alwaysDrop) {
                 if (shouldItDrop > getConfig().getInt("Chances.Hostile-Chance")) return "None";
@@ -1003,33 +1030,33 @@ public class TradingCards
         int i = 0;
         int mini = 0;
         int random = this.r.nextInt(100000) + 1;
-        debugMsg("[Cards] Random Card Num: " + random);
-        debugMsg("[Cards] Type: " + type);
+        debugMsg("[TradingCards] Random Card Num: " + random);
+        debugMsg("[TradingCards] Type: " + type);
         for (String key: rarityKeys) {
             rarityIndexes.put(Integer.valueOf(i), key);
             i++;
-            debugMsg("[Cards] " + i + ", " + key);
+            debugMsg("[TradingCards] " + i + ", " + key);
             if (getConfig().contains("Chances." + key + "." + StringUtils.capitalize(e.getKey().getKey())) && mini == 0) {
-                debugMsg("[Cards] Mini: " + i);
+                debugMsg("[TradingCards] Mini: " + i);
                 mini = i;
             }
             int chance = getConfig().getInt("Chances." + key + "." + type, -1);
-            debugMsg("[Cards] Keys: " + key + ", " + chance + ", i=" + i);
+            debugMsg("[TradingCards] Keys: " + key + ", " + chance + ", i=" + i);
             rarityChances.put(key, Integer.valueOf(chance));
         }
         if (mini != 0) {
-            debugMsg("[Cards] Mini: " + mini);
-            debugMsg("[Cards] i: " + i);
+            debugMsg("[TradingCards] Mini: " + mini);
+            debugMsg("[TradingCards] i: " + i);
             while (i >= mini) {
                 i--;
-                debugMsg("[Cards] i: " + i);
+                debugMsg("[TradingCards] i: " + i);
                 int chance = getConfig().getInt("Chances." + rarityIndexes.get(Integer.valueOf(i)) + "." + StringUtils.capitalize(e.getKey().getKey()), -1);
-                debugMsg("[Cards] Chance: " + chance);
-                debugMsg("[Cards] Rarity: " + rarityIndexes.get(Integer.valueOf(i)));
+                debugMsg("[TradingCards] Chance: " + chance);
+                debugMsg("[TradingCards] Rarity: " + rarityIndexes.get(Integer.valueOf(i)));
                 if (chance > 0) {
-                    debugMsg("[Cards] Chance > 0");
+                    debugMsg("[TradingCards] Chance > 0");
                     if (random <= chance) {
-                        debugMsg("[Cards] Random <= Chance");
+                        debugMsg("[TradingCards] Random <= Chance");
                         return rarityIndexes.get(Integer.valueOf(i));
                     }
                 }
@@ -1037,14 +1064,14 @@ public class TradingCards
         } else {
             while (i > 0) {
                 i--;
-                debugMsg("[Cards] Final loop iteration " + i);
-                debugMsg("[Cards] Iteration " + i + " in HashMap is: " + rarityIndexes.get(Integer.valueOf(i)) + ", " + getConfig().getString("Rarities." + rarityIndexes.get(Integer.valueOf(i)) + ".Name"));
+                debugMsg("[TradingCards] Final loop iteration " + i);
+                debugMsg("[TradingCards] Iteration " + i + " in HashMap is: " + rarityIndexes.get(Integer.valueOf(i)) + ", " + getConfig().getString("Rarities." + rarityIndexes.get(Integer.valueOf(i)) + ".Name"));
                 int chance = getConfig().getInt("Chances." + rarityIndexes.get(Integer.valueOf(i)) + "." + type, -1);
-                debugMsg("[Cards] " + getConfig().getString("Rarities." + rarityIndexes.get(Integer.valueOf(i)) + ".Name") + "'s chance of dropping: " + chance + " out of 100,000");
-                debugMsg("[Cards] The random number we're comparing that against is: " + random);
+                debugMsg("[TradingCards] " + getConfig().getString("Rarities." + rarityIndexes.get(Integer.valueOf(i)) + ".Name") + "'s chance of dropping: " + chance + " out of 100,000");
+                debugMsg("[TradingCards] The random number we're comparing that against is: " + random);
                 if (chance > 0 && random <= chance) {
-                    debugMsg("[Cards] Yup, looks like " + random + " is definitely lower than " + chance + "!");
-                    debugMsg("[Cards] Giving a " + getConfig().getString("Rarities." + rarityIndexes.get(Integer.valueOf(i)) + ".Name") + " card.");
+                    debugMsg("[TradingCards] Yup, looks like " + random + " is definitely lower than " + chance + "!");
+                    debugMsg("[TradingCards] Giving a " + getConfig().getString("Rarities." + rarityIndexes.get(Integer.valueOf(i)) + ".Name") + " card.");
                     return rarityIndexes.get(Integer.valueOf(i));
                 }
             }
@@ -1092,22 +1119,22 @@ public class TradingCards
             worlds = getConfig().getStringList("World-Blacklist");
             if (this.hasMobArena) {
                 int i = 0;
-                debugMsg("[Cards] Mob Arena checks starting.");
+                debugMsg("[TradingCards] Mob Arena checks starting.");
                 if (this.am.getArenas() != null && !this.am.getArenas().isEmpty()) {
-                    debugMsg("[Cards] There is at least 1 arena!");
+                    debugMsg("[TradingCards] There is at least 1 arena!");
                     for (Arena arena: this.am.getArenas()) {
                         i++;
-                        debugMsg("[Cards] For arena #" + i + "...");
-                        debugMsg("[Cards] In arena?: " + arena.inArena(p));
+                        debugMsg("[TradingCards] For arena #" + i + "...");
+                        debugMsg("[TradingCards] In arena?: " + arena.inArena(p));
                         if (arena.inArena(p) || arena.inLobby(p)) {
-                            debugMsg("[Cards] Killer is in an arena/lobby, so let's mess with the drops.");
+                            debugMsg("[TradingCards] Killer is in an arena/lobby, so let's mess with the drops.");
                             if (getConfig().getBoolean("PluginSupport.MobArena.Disable-In-Arena")) drop = false;
                             if (!getConfig().getBoolean("General.Debug-Mode")) continue;
-                            System.out.println("[Cards] Drops are now: " + drop);
+                            System.out.println("[TradingCards] Drops are now: " + drop);
                             continue;
                         }
                         if (!getConfig().getBoolean("General.Debug-Mode")) continue;
-                        System.out.println("[Cards] Killer is not in this arena!");
+                        System.out.println("[TradingCards] Killer is not in this arena!");
                     }
                 }
             }
@@ -1121,11 +1148,11 @@ public class TradingCards
             if (rare != "None") {
                 if (getConfig().getBoolean("General.Spawner-Block") && e.getEntity().getCustomName() != null && e.getEntity().getCustomName().equals(getConfig().getString("General.Spawner-Mob-Name"))) {
 
-                    debugMsg("[Cards] Mob came from spawner, not dropping card.");
+                    debugMsg("[TradingCards] Mob came from spawner, not dropping card.");
                     cancelled = true;
                 }
                 if (!cancelled) {
-                    debugMsg("[Cards] Successfully generated card.");
+                    debugMsg("[TradingCards] Successfully generated card.");
 
                     if (generateCard(rare, false) != null) e.getDrops().add(generateCard(rare, false));
                 }
@@ -1143,7 +1170,7 @@ public class TradingCards
                 String k = null;
                 for (String key: rarityKeys) {
                     if (getCardsData().contains("Cards." + key + "." + e.getEntity().getName())) {
-                        debugMsg("[Cards] " + key);
+                        debugMsg("[TradingCards] " + key);
                         k = key;
                     }
                 }
@@ -1151,7 +1178,7 @@ public class TradingCards
                     int rndm = this.r.nextInt(100) + 1;
                     if (rndm <= getConfig().getInt("General.Player-Drops-Card-Rarity")) {
                         e.getDrops().add(createPlayerCard(e.getEntity().getName(), k, Integer.valueOf(1), false));
-                        debugMsg("[Cards] " + e.getDrops().toString());
+                        debugMsg("[TradingCards] " + e.getDrops().toString());
                     }
                 } else {
                     System.out.println("k is null");
@@ -1163,12 +1190,12 @@ public class TradingCards
     public ItemStack generateCard(String rare, boolean forcedShiny) {
         if (!rare.equals("None")) {
             String cost;
-            debugMsg("[Cards] generateCard.rare: " + rare);
+            debugMsg("[TradingCards] generateCard.rare: " + rare);
             ItemStack card = getBlankCard(1);
             reloadCustomConfig();
             ConfigurationSection cardSection = getCardsData().getConfigurationSection("Cards." + rare);
-            debugMsg("[Cards] generateCard.cardSection: " + getCardsData().contains("Cards." + rare));
-            debugMsg("[Cards] generateCard.rarity: " + rare);
+            debugMsg("[TradingCards] generateCard.cardSection: " + getCardsData().contains("Cards." + rare));
+            debugMsg("[TradingCards] generateCard.rarity: " + rare);
             Set < String > cards = cardSection.getKeys(false);
             List < String > cardNames = new ArrayList < >();
             cardNames.addAll(cards);
@@ -1302,10 +1329,10 @@ public class TradingCards
         ItemMeta cmeta = card.getItemMeta();
         boolean isPlayerCard = false;
         if (isPlayerCard(cardName.replaceAll(" ", "_"))) {
-            debugMsg("[Cards] is player card = true");
+            debugMsg("[TradingCards] is player card = true");
             isPlayerCard = true;
         } else if (getConfig().getBoolean("General.Debug-Mode")) {
-            System.out.println("[Cards] is player card = false");
+            System.out.println("[TradingCards] is player card = false");
         }
         if (isShiny) {
             if (isPlayerCard) {
@@ -1366,10 +1393,10 @@ public class TradingCards
         ItemMeta cmeta = card.getItemMeta();
         boolean isPlayerCard = false;
         if (isPlayerCard(cardName.replaceAll(" ", "_"))) {
-            debugMsg("[Cards] is player card = true");
+            debugMsg("[TradingCards] is player card = true");
             isPlayerCard = true;
         } else if (getConfig().getBoolean("General.Debug-Mode")) {
-            System.out.println("[Cards] is player card = false");
+            System.out.println("[TradingCards] is player card = false");
         }
         if (!isPlayerCard) {
             cmeta.setDisplayName(cMsg(getConfig().getString("DisplayNames.Cards.Title").replaceAll("%PREFIX%", prefix).replaceAll("%COLOUR%", rarityColour).replaceAll("%NAME%", cardName).replaceAll("%COST%", cost).replaceAll("_", " ")));
@@ -1398,7 +1425,7 @@ public class TradingCards
         if (! (e.getEntity() instanceof Player) && e.getSpawnReason() == CreatureSpawnEvent.SpawnReason.SPAWNER && getConfig().getBoolean("General.Spawner-Block")) {
 
             e.getEntity().setCustomName(getConfig().getString("General.Spawner-Mob-Name"));
-            debugMsg("[Cards] Spawner mob renamed.");
+            debugMsg("[TradingCards] Spawner mob renamed.");
             e.getEntity().setRemoveWhenFarAway(true);
         }
     }
@@ -1488,7 +1515,7 @@ public class TradingCards
         }
         for (Player p: Bukkit.getOnlinePlayers()) {
             String rare = calculateRarity(mob, true);
-            debugMsg("[Cards] onCommand.rare: " + rare);
+            debugMsg("[TradingCards] onCommand.rare: " + rare);
             if (p.getInventory().firstEmpty() != -1) {
                 if (generateCard(rare, false) == null) continue;
                 p.getInventory().addItem(generateCard(rare, false));
@@ -1587,10 +1614,10 @@ public class TradingCards
                 if(!exists("SELECT * FROM cards WHERE rarity = '" + key + "' AND name = '" + key2 + "' AND about = '" + about + "' AND series = '" + series + "' AND type = '" + type + "' AND info = '" + info + "' AND price = '" + cost + "'")) {
                     if (getDatabase("trading_cards").executeStatement("INSERT INTO cards (rarity, name, about, series, type, info, price) VALUES ('" + key + "', '" + key2 + "', '" + about + "', '" + series + "', '" + type + "', '" + info + "', '" + cost + "')")) {
                         if (getConfig().getBoolean("General.Debug-Mode"))
-                            System.out.println("[Cards] " + key + ", " + key2 + " - Added to SQLite!");
+                            System.out.println("[TradingCards] " + key + ", " + key2 + " - Added to SQLite!");
                     } else {
                         if (getConfig().getBoolean("General.Debug-Mode"))
-                            System.out.println("[Cards] " + key + ", " + key2 + " - Unable to be added!");
+                            System.out.println("[TradingCards] " + key + ", " + key2 + " - Unable to be added!");
                     }
                 }
             }
@@ -1601,22 +1628,22 @@ public class TradingCards
         int deckNum = 0;
         // Key is UUID, probably
         for (String key : deckKeys) {
-            debugMsg("[Cards] Deck key is: " + key);
+            debugMsg("[TradingCards] Deck key is: " + key);
             ConfigurationSection deckList = getDeckData().getConfigurationSection("Decks.Inventories." + key);
             if (deckList != null) for (String s : deckList.getKeys(false)) {
                 deckNum += Integer.valueOf(s).intValue();
                 if (getConfig().getBoolean("General.Debug-Mode"))
-                    System.out.println("[Cards] Deck running total: " + deckNum);
+                    System.out.println("[TradingCards] Deck running total: " + deckNum);
             }
             if (deckNum == 0) {
-                debugMsg("[Cards] No decks?!");
+                debugMsg("[TradingCards] No decks?!");
             } else {
-                debugMsg("[Cards] Decks:" + deckNum);
+                debugMsg("[TradingCards] Decks:" + deckNum);
                 for (int i = 0; i < deckNum; i++) {
                     List<String> contents = getDeckData().getStringList("Decks.Inventories." + key + "." + deckNum);
                     for (String s : contents) {
                         if (getConfig().getBoolean("General.Debug-Mode"))
-                            System.out.println("[Cards] Deck content: " + s);
+                            System.out.println("[TradingCards] Deck content: " + s);
                         String[] splitContents = s.split(",");
                         if (splitContents.length > 1) {
                             if (splitContents[1] == null) splitContents[1] = "None";
@@ -1628,7 +1655,7 @@ public class TradingCards
                                         if (getDatabase("trading_cards").executeStatement("INSERT INTO decks (uuid, deckID, card, isShiny, count) VALUES ('" + key + "', '" + deckNum + "', '" + cardID + "', 1, "+Integer.valueOf(splitContents[2])+")")) {
                                         } else {
                                             if (getConfig().getBoolean("General.Debug-Mode"))
-                                                System.out.println("[Cards] Error adding shiny card to deck SQLite, check stack!");
+                                                System.out.println("[TradingCards] Error adding shiny card to deck SQLite, check stack!");
                                         }
                                     }
                                 }
@@ -1637,11 +1664,11 @@ public class TradingCards
                                     if (getDatabase("trading_cards").executeStatement("INSERT INTO decks (uuid, deckID, card, isShiny, count) VALUES ('" + key + "', '" + deckNum + "', '" + cardID + "', 0, "+Integer.valueOf(splitContents[2])+")")) {
                                     } else {
                                         if (getConfig().getBoolean("General.Debug-Mode"))
-                                            System.out.println("[Cards] Error adding card to deck SQLite, check stack!");
+                                            System.out.println("[TradingCards] Error adding card to deck SQLite, check stack!");
                                     }
                                 }
                             } else {
-                                System.out.println("[Cards] Warning! A null card has been found in a deck. It was truncated for safety.");
+                                System.out.println("[TradingCards] Warning! A null card has been found in a deck. It was truncated for safety.");
                             }
                         }
                     }
@@ -1886,7 +1913,7 @@ public class TradingCards
                             try {
                                 if (EntityType.valueOf(args[1].toUpperCase()) != null) {
                                     String rare = calculateRarity(EntityType.valueOf(args[1].toUpperCase()), true);
-                                    debugMsg("[Cards] onCommand.rare: " + rare);
+                                    debugMsg("[TradingCards] onCommand.rare: " + rare);
                                     sender.sendMessage(cMsg(getMessagesData().getString("Messages.Prefix") + " " + getMessagesData().getString("Messages.GiveRandomCardMsg").replaceAll("%player%", p2.getName())));
                                     if (p2.getInventory().firstEmpty() != -1) {
                                         p2.sendMessage(cMsg(getMessagesData().getString("Messages.Prefix") + " " + getMessagesData().getString("Messages.GiveRandomCard")));
@@ -1942,7 +1969,7 @@ public class TradingCards
                                                 i++;
                                                 continue;
                                             }
-                                            debugMsg("[Cards] " + key + ", " + key2);
+                                            debugMsg("[TradingCards] " + key + ", " + key2);
                                             String colour = getConfig().getString("Colours.ListHaveCard");
                                             if (hasShiny(p3, key2, key)) {
                                                 numCardsCounter++;
@@ -1994,7 +2021,7 @@ public class TradingCards
                                     continue;
 
                                 }
-                                debugMsg("[Cards] " + thisKey + ", " + isRarity(args[1]));
+                                debugMsg("[TradingCards] " + thisKey + ", " + isRarity(args[1]));
                                 String colour2 = getConfig().getString("Colours.ListHaveCard");
                                 if (hasShiny((Player) sender, thisKey, isRarity(args[1]))) {
                                     numCardsCounter2++;
@@ -2042,7 +2069,7 @@ public class TradingCards
                                     j++;
                                     continue;
                                 }
-                                debugMsg("[Cards] " + key + ", " + key2);
+                                debugMsg("[TradingCards] " + key + ", " + key2);
                                 String colour3 = getConfig().getString("Colours.ListHaveCard");
                                 if (hasShiny((Player) sender, key2, key)) {
                                     numCardsCounter2++;
@@ -2337,9 +2364,9 @@ public class TradingCards
 
             int numCardsCounter = 0;
             for (String key: cardKeys) {
-                debugMsg("[Cards] Iteration:: " + i);
-                debugMsg("[Cards] Key: " + key);
-                debugMsg("[Cards] Counter: " + numCardsCounter);
+                debugMsg("[TradingCards] Iteration:: " + i);
+                debugMsg("[TradingCards] Key: " + key);
+                debugMsg("[TradingCards] Counter: " + numCardsCounter);
                 boolean shinyver = false;
                 boolean regularver = false;
                 if (hasShiny(p, key, isRarity(rarity))) shinyver = true;
@@ -2352,11 +2379,11 @@ public class TradingCards
                 i++;
             }
             if (numCardsCounter >= i) {
-                debugMsg("[Cards] True!");
+                debugMsg("[TradingCards] True!");
                 return true;
             }
             if (!getConfig().getBoolean("General.Debug-Mode")) return false;
-            System.out.println("[Cards] False!");
+            System.out.println("[TradingCards] False!");
 
         }
         return false;
@@ -2394,7 +2421,7 @@ public class TradingCards
         BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
         if (scheduler.isQueued(this.taskid) || scheduler.isCurrentlyRunning(this.taskid)) {
             scheduler.cancelTask(this.taskid);
-            debugMsg("[Cards] Successfully cancelled task " + this.taskid);
+            debugMsg("[TradingCards] Successfully cancelled task " + this.taskid);
         }
         if (getConfig().getInt("General.Schedule-Card-Time-In-Hours") < 1) {
             hours = 1;
@@ -2405,24 +2432,24 @@ public class TradingCards
         Bukkit.broadcastMessage(cMsg(String.valueOf(getMessagesData().getString("Messages.Prefix")) + " " + tmessage));
         this.taskid = Bukkit.getScheduler().scheduleSyncRepeatingTask((Plugin) this, new Runnable() {
                     public void run() {
-                        debugMsg("[Cards] Task running..");
+                        debugMsg("[TradingCards] Task running..");
                         if (getConfig().getBoolean("General.Schedule-Cards")) if (getConfig().getBoolean("General.Schedule-Cards-Natural")) {
                             String mob = getConfig().getString("General.Schedule-Card-Mob");
                             if (isMob(mob.toUpperCase())) {
                                 giveawayNatural(EntityType.valueOf(mob.toUpperCase()), (Player) null);
                             } else {
-                                System.out.println("[Cards] Error! schedule-card-mob is an invalid mob?");
+                                System.out.println("[TradingCards] Error! schedule-card-mob is an invalid mob?");
                             }
                         } else {
-                            debugMsg("[Cards] Schedule cards is true.");
+                            debugMsg("[TradingCards] Schedule cards is true.");
                             ConfigurationSection rarities = getCardsData().getConfigurationSection("Cards");
                             Set < String > rarityKeys = rarities.getKeys(false);
                             String keyToUse = "";
                             for (String key: rarityKeys) {
-                                debugMsg("[Cards] Rarity key: " + key);
+                                debugMsg("[TradingCards] Rarity key: " + key);
                                 if (key.equalsIgnoreCase(getConfig().getString("General.Schedule-Card-Rarity"))) keyToUse = key;
                             }
-                            debugMsg("[Cards] keyToUse: " + keyToUse);
+                            debugMsg("[TradingCards] keyToUse: " + keyToUse);
                             if (!keyToUse.equals("")) {
                                 Bukkit.broadcastMessage(cMsg(String.valueOf(getMessagesData().getString("Messages.Prefix")) + " " + getMessagesData().getString("Messages.ScheduledGiveaway")));
                                 for (Player p: Bukkit.getOnlinePlayers()) {
