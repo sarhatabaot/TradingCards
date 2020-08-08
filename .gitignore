@@ -6,6 +6,10 @@ ${dir}/classes/messages.yml
 ${dir}/classes/plugin.yml
 ${dir}/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst
 ${dir}/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst
+.settings/*
+.gitignore
+.gitattributes
+.project
 .idea/compiler.xml
 .idea/encodings.xml
 .idea/jarRepositories.xml
@@ -17,6 +21,7 @@ ${dir}/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst
 .idea/misc.xml
 .idea/modules.xml
 .idea/TradingCards.iml
+.idea/*
 .idea/uiDesigner.xml
 dependency-reduced-pom.xml
 eula.txt
@@ -51,5 +56,6 @@ target/TradingCards-5.0.3.jar
 target/TradingCards-5.1 - Copy.jar
 target/TradingCards-5.1-shaded.jar
 target/TradingCards-5.1.jar
+target/*
 TradingCards.iml
 XenTradingCards.iml
