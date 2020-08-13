@@ -200,14 +200,14 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 					s = value;
 					deckNum += Integer.parseInt(s);
 
-					debug("Deck running total: "+deckNum);
+					debug("Deck running total: " + deckNum);
 				}
 			}
 
 			if (deckNum == 0) {
 				debug("No deck?!");
 			} else {
-				debug("Decks:"+deckNum);
+				debug("Decks:" + deckNum);
 				label127:
 				for (int i = 0; i < deckNum; ++i) {
 					List<String> contents = getDeckConfig().getConfig().getStringList("Decks.Inventories." + key + "." + deckNum);
@@ -431,7 +431,7 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 	}
 
 	public int getCardCount(String uuid, Integer deckNum, Integer cardID) {
-		Integer cardCount = (Integer) getDatabase("trading_cards").queryValue("SELECT count FROM decks WHERE uuid = '" + uuid + "' AND deckID = "+ deckNum +" AND card = " + cardID + "", "ID");
+		Integer cardCount = (Integer) getDatabase("trading_cards").queryValue("SELECT count FROM decks WHERE uuid = '" + uuid + "' AND deckID = " + deckNum + " AND card = " + cardID + "", "ID");
 		return cardCount;
 	}
 
@@ -441,26 +441,25 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 	}
 
 	public boolean deleteCardSqlite(Player p, String card, String rarity) {
-		int cardID = getCardID(card,rarity);
+		int cardID = getCardID(card, rarity);
 		String playerID = p.getUniqueId().toString();
-		if(hasCard(p,card,rarity) == 1) {
-			getDatabase("trading_cards").executeStatement("DELETE FROM decks WHERE uuid = '"+playerID+"' AND card="+cardID+" LIMIT 1");
+		if (hasCard(p, card, rarity) == 1) {
+			getDatabase("trading_cards").executeStatement("DELETE FROM decks WHERE uuid = '" + playerID + "' AND card=" + cardID + " LIMIT 1");
 			return true;
-		} else if(hasCard(p,card,rarity) > 1) {
-			int cardCount = hasCard(p,card,rarity) - 1;
-			getDatabase("trading_cards").executeStatement("UPDATE decks SET count = "+cardCount+" WHERE uuid = '"+playerID+"' AND card="+cardID+" LIMIT 1");
+		} else if (hasCard(p, card, rarity) > 1) {
+			int cardCount = hasCard(p, card, rarity) - 1;
+			getDatabase("trading_cards").executeStatement("UPDATE decks SET count = " + cardCount + " WHERE uuid = '" + playerID + "' AND card=" + cardID + " LIMIT 1");
 			return true;
-		}
-		else return false;
+		} else return false;
 	}
 
 	public boolean deleteCard(Player p, String card, String rarity) {
-		if(usingSqlite) return deleteCardSqlite(p,card,rarity);
+		if (usingSqlite) return deleteCardSqlite(p, card, rarity);
 		if (hasCard(p, card, rarity) > 0) {
 			String uuidString = p.getUniqueId().toString();
 			int deckNumber = 0;
 			ConfigurationSection deckList = getDeckConfig().getConfig().getConfigurationSection("Decks.Inventories." + uuidString);
-			if (deckList != null) for (String s: deckList.getKeys(false)) {
+			if (deckList != null) for (String s : deckList.getKeys(false)) {
 				deckNumber += Integer.valueOf(s);
 				debug("Deck running total: " + deckNumber);
 			}
@@ -470,9 +469,9 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 				debug("[TradingCards] Decks:" + deckNumber);
 				for (int i = 0; i < deckNumber; i++) {
 					if (getDeckConfig().getConfig().contains("Decks.Inventories." + uuidString + "." + (i + 1))) {
-						List < String > contents = getDeckConfig().getConfig().getStringList("Decks.Inventories." + uuidString + "." + (i + 1));
-						List < String > contentsNew = new ArrayList < >();
-						for (String s2: contents) {
+						List<String> contents = getDeckConfig().getConfig().getStringList("Decks.Inventories." + uuidString + "." + (i + 1));
+						List<String> contentsNew = new ArrayList<>();
+						for (String s2 : contents) {
 							String[] splitContents = s2.split(",");
 							if (getConfig().getBoolean("General.Eat-Shiny-Cards") && splitContents[3].equalsIgnoreCase("yes")) {
 								debug("Eat-Shiny-Cards is true and card is shiny!");
@@ -525,7 +524,8 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 								contentsNew.add(s2);
 								continue;
 							}
-							if (getConfig().getBoolean("General.Eat-Shiny-Cards") || !splitContents[3].equalsIgnoreCase("no")) continue;
+							if (getConfig().getBoolean("General.Eat-Shiny-Cards") || !splitContents[3].equalsIgnoreCase("no"))
+								continue;
 							debug("Eat-Shiny-Cards is false and card is not shiny!");
 							if (splitContents[0].equalsIgnoreCase(rarity)) {
 								if (splitContents[1].equalsIgnoreCase(card)) {
@@ -570,84 +570,69 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 			debug("Deck.yml contains player!");
 		}
 
-		Iterator var7;
+		Iterator<String> var7;
 		String s;
 		if (this.getConfig().getBoolean("General.Debug-Mode")) {
 			var7 = deckList.getKeys(false).iterator();
 
 			while (var7.hasNext()) {
-				s = (String) var7.next();
-				System.out.println("[Cards] Deck rarity content: " + s);
+				s = var7.next();
+				getLogger().info("Deck rarity content: " + s);
 			}
 			debug("Done!");
 		}
 
 		if (deckList == null) {
 			return 0;
-		} else {
-			var7 = deckList.getKeys(false).iterator();
+		}
 
-			while (var7.hasNext()) {
-				s = (String) var7.next();
-				deckNumber += Integer.parseInt(s);
-				if (this.getConfig().getBoolean("General.Debug-Mode")) {
-					System.out.println("[Cards] Deck running total: " + deckNumber);
-				}
-			}
+		var7 = deckList.getKeys(false).iterator();
 
-			if (deckNumber == 0) {
-				if (this.getConfig().getBoolean("General.Debug-Mode")) {
-					System.out.println("[Cards] No decks?!");
-				}
+		while (var7.hasNext()) {
+			s = var7.next();
+			deckNumber += Integer.parseInt(s);
+			debug("[Deck running total: " + deckNumber);
+		}
 
-				return 0;
-			} else {
-				if (this.getConfig().getBoolean("General.Debug-Mode")) {
-					System.out.println("[Cards] Decks:" + deckNumber);
-				}
+		if (deckNumber == 0) {
+			debug("No decks?!");
+			return 0;
+		}
 
-				for (int i = 0; i < deckNumber; ++i) {
-					if (this.getConfig().getBoolean("General.Debug-Mode")) {
-						System.out.println("[Cards] Starting iteration " + i);
-					}
+		debug("Decks:"+deckNumber);
 
-					if (getDeckConfig().getConfig().contains("Decks.Inventories." + uuidString + "." + (i + 1))) {
-						List<String> contents = getDeckConfig().getConfig().getStringList("Decks.Inventories." + uuidString + "." + (i + 1));
+		for (int i = 0; i < deckNumber; ++i) {
+			debug("Starting iteration "+i);
 
-						for (final String s2 : contents) {
+			if (getDeckConfig().getConfig().contains("Decks.Inventories." + uuidString + "." + (i + 1))) {
+				List<String> contents = getDeckConfig().getConfig().getStringList("Decks.Inventories." + uuidString + "." + (i + 1));
+
+				for (final String s2 : contents) {
+					String[] splitContents = s2.split(",");
+					debug("Deck file content: "+s2);
+					debug(card + " - "+ splitContents[1]);
+					debug(rarity + " - " + splitContents[0]);
+
+					if (splitContents[0].equalsIgnoreCase(rarity)) {
+						if (this.getConfig().getBoolean("General.Debug-Mode")) {
+							System.out.println("[Cards] Rarity match: " + splitContents[0]);
+						}
+
+						if (splitContents[1].equalsIgnoreCase(card) && splitContents[3].equalsIgnoreCase("no")) {
 							if (this.getConfig().getBoolean("General.Debug-Mode")) {
-								System.out.println("[Cards] Deck file content: " + s2);
+								System.out.println("[Cards] Card match: " + splitContents[1]);
 							}
 
-							String[] splitContents = s2.split(",");
-							if (this.getConfig().getBoolean("General.Debug-Mode")) {
-								System.out.println("[Cards] " + card + " - " + splitContents[1]);
-							}
-
-							if (this.getConfig().getBoolean("General.Debug-Mode")) {
-								System.out.println("[Cards] " + rarity + " - " + splitContents[0]);
-							}
-
-							if (splitContents[0].equalsIgnoreCase(rarity)) {
-								if (this.getConfig().getBoolean("General.Debug-Mode")) {
-									System.out.println("[Cards] Rarity match: " + splitContents[0]);
-								}
-
-								if (splitContents[1].equalsIgnoreCase(card) && splitContents[3].equalsIgnoreCase("no")) {
-									if (this.getConfig().getBoolean("General.Debug-Mode")) {
-										System.out.println("[Cards] Card match: " + splitContents[1]);
-									}
-
-									return Integer.parseInt(splitContents[2]);
-								}
-							}
+							return Integer.parseInt(splitContents[2]);
 						}
 					}
 				}
-
-				return 0;
 			}
 		}
+
+		return 0;
+
+
 	}
 
 	public boolean hasShiny(Player p, String card, String rarity) {
@@ -799,7 +784,7 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 			}
 
 			isNull = false;
-			if (splitContents.length > 1 ) {
+			if (splitContents.length > 1) {
 				debug("Put " + card + "," + splitContents[2] + " into respective lists.");
 			} else {
 				debug("Put spacer into list.");
@@ -954,8 +939,8 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 		cleaned = cleaned.replaceAll(shinyPrefix + " ", "");
 		String[] cleanedArray = cleaned.split(" ");
 		ConfigurationSection cs = getCardsConfig().getConfig().getConfigurationSection("Cards." + rarity);
-		Set <String> keys = cs.getKeys(false);
-		for (String s: keys) {
+		Set<String> keys = cs.getKeys(false);
+		for (String s : keys) {
 			debug("getCardName s: " + s);
 			debug("getCardName display: " + display);
 			if (cleanedArray.length > 1) {
@@ -964,14 +949,22 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 				if ((cleanedArray[0] + " " + cleanedArray[1]).matches(s)) return s;
 				if (cleanedArray.length > 2 && (cleanedArray[1] + "_" + cleanedArray[2]).matches(s)) return s;
 				if (cleanedArray.length > 2 && (cleanedArray[1] + " " + cleanedArray[2]).matches(s)) return s;
-				if (cleanedArray.length > 3 && (cleanedArray[1] + "_" + cleanedArray[2] + "_" + cleanedArray[3]).matches(s)) return s;
-				if (cleanedArray.length > 3 && (cleanedArray[1] + " " + cleanedArray[2] + " " + cleanedArray[3]).matches(s)) return s;
-				if (cleanedArray.length > 4 && (cleanedArray[1] + "_" + cleanedArray[2] + "_" + cleanedArray[3] + "_" + cleanedArray[4]).matches(s)) return s;
-				if (cleanedArray.length > 4 && (cleanedArray[1] + " " + cleanedArray[2] + " " + cleanedArray[3] + " " + cleanedArray[4]).matches(s)) return s;
-				if (cleanedArray.length > 5 && (cleanedArray[1] + "_" + cleanedArray[2] + "_" + cleanedArray[3] + "_" + cleanedArray[4] + "_" + cleanedArray[5]).matches(s)) return s;
-				if (cleanedArray.length > 5 && (cleanedArray[1] + " " + cleanedArray[2] + " " + cleanedArray[3] + " " + cleanedArray[4] + " " + cleanedArray[5]).matches(s)) return s;
-				if (cleanedArray.length > 6 && (cleanedArray[1] + "_" + cleanedArray[2] + "_" + cleanedArray[3] + "_" + cleanedArray[4] + "_" + cleanedArray[5] + "_" + cleanedArray[6]).matches(s)) return s;
-				if (cleanedArray.length > 6 && (cleanedArray[1] + " " + cleanedArray[2] + " " + cleanedArray[3] + " " + cleanedArray[4] + " " + cleanedArray[5] + " " + cleanedArray[6]).matches(s)) return s;
+				if (cleanedArray.length > 3 && (cleanedArray[1] + "_" + cleanedArray[2] + "_" + cleanedArray[3]).matches(s))
+					return s;
+				if (cleanedArray.length > 3 && (cleanedArray[1] + " " + cleanedArray[2] + " " + cleanedArray[3]).matches(s))
+					return s;
+				if (cleanedArray.length > 4 && (cleanedArray[1] + "_" + cleanedArray[2] + "_" + cleanedArray[3] + "_" + cleanedArray[4]).matches(s))
+					return s;
+				if (cleanedArray.length > 4 && (cleanedArray[1] + " " + cleanedArray[2] + " " + cleanedArray[3] + " " + cleanedArray[4]).matches(s))
+					return s;
+				if (cleanedArray.length > 5 && (cleanedArray[1] + "_" + cleanedArray[2] + "_" + cleanedArray[3] + "_" + cleanedArray[4] + "_" + cleanedArray[5]).matches(s))
+					return s;
+				if (cleanedArray.length > 5 && (cleanedArray[1] + " " + cleanedArray[2] + " " + cleanedArray[3] + " " + cleanedArray[4] + " " + cleanedArray[5]).matches(s))
+					return s;
+				if (cleanedArray.length > 6 && (cleanedArray[1] + "_" + cleanedArray[2] + "_" + cleanedArray[3] + "_" + cleanedArray[4] + "_" + cleanedArray[5] + "_" + cleanedArray[6]).matches(s))
+					return s;
+				if (cleanedArray.length > 6 && (cleanedArray[1] + " " + cleanedArray[2] + " " + cleanedArray[3] + " " + cleanedArray[4] + " " + cleanedArray[5] + " " + cleanedArray[6]).matches(s))
+					return s;
 				if (cleanedArray.length == 1 && cleanedArray[0].matches(s)) return s;
 				if (cleanedArray.length == 2 && cleanedArray[1].matches(s)) return s;
 			}
@@ -1020,30 +1013,30 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 	}
 
 	public String upgradeRarity(String packName, String rarity) {
-		debug("Starting booster pack upgrade check - Current rarity is "+rarity+"!");
+		debug("Starting booster pack upgrade check - Current rarity is " + rarity + "!");
 		ConfigurationSection rarities = getConfig().getConfigurationSection("Rarities");
-		Set < String > rarityKeys = rarities.getKeys(false);
-		Map < Integer,String > rarityMap = new HashMap < >();
+		Set<String> rarityKeys = rarities.getKeys(false);
+		Map<Integer, String> rarityMap = new HashMap<>();
 		int i = 0;
 		int curRarity = 0;
-		for (String key: rarityKeys) {
+		for (String key : rarityKeys) {
 			rarityMap.put(i, key);
-			if(key.equalsIgnoreCase(rarity)) curRarity = i;
+			if (key.equalsIgnoreCase(rarity)) curRarity = i;
 			debug("Rarity " + i + " is " + key);
 			i++;
 		}
 		int chance = getConfig().getInt("BoosterPacks." + packName + ".UpgradeChance", 0);
-		if(chance <= 0) {
+		if (chance <= 0) {
 			debug("Pack has upgrade chance set to 0! Exiting..");
 			return rarityMap.get(curRarity);
 		}
 		int random = this.r.nextInt(100000) + 1;
-		if(random <= chance) {
-			if(curRarity < i) curRarity++;
-			debug("Card upgraded! new rarity is "+rarityMap.get(curRarity)+"!");
+		if (random <= chance) {
+			if (curRarity < i) curRarity++;
+			debug("Card upgraded! new rarity is " + rarityMap.get(curRarity) + "!");
 			return rarityMap.get(curRarity);
 		}
-		debug("Card not upgraded! Rarity remains at "+rarityMap.get(curRarity)+"!");
+		debug("Card not upgraded! Rarity remains at " + rarityMap.get(curRarity) + "!");
 		return rarityMap.get(curRarity);
 	}
 
@@ -1148,13 +1141,13 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 					System.out.println("[Cards] i: " + i);
 				}
 
-				chance = this.getConfig().getInt("Chances." +  rarityIndexes.get(i) + "." + StringUtils.capitalize(e.getKey().getKey()), -1);
+				chance = this.getConfig().getInt("Chances." + rarityIndexes.get(i) + "." + StringUtils.capitalize(e.getKey().getKey()), -1);
 				if (this.getConfig().getBoolean("General.Debug-Mode")) {
 					System.out.println("[Cards] Chance: " + chance);
 				}
 
 				if (this.getConfig().getBoolean("General.Debug-Mode")) {
-					System.out.println("[Cards] Rarity: " +  rarityIndexes.get(i));
+					System.out.println("[Cards] Rarity: " + rarityIndexes.get(i));
 				}
 
 				if (chance > 0) {
@@ -1167,7 +1160,7 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 							System.out.println("[Cards] Random <= Chance");
 						}
 
-						return  rarityIndexes.get(i);
+						return rarityIndexes.get(i);
 					}
 				}
 			}
@@ -1748,7 +1741,7 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 			int numCardsCounter = 0;
 
 			for (Iterator<String> var7 = cardKeys.iterator(); var7.hasNext(); ++i) {
-				String key =  var7.next();
+				String key = var7.next();
 				if (this.getConfig().getBoolean("General.Debug-Mode")) {
 					System.out.println("[Cards] Iteration:: " + i);
 				}
