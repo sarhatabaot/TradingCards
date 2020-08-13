@@ -171,9 +171,6 @@ BoosterPacks:
     NormalCardRarity: Common
     NumSpecialCards: 1
     SpecialCardRarity: Rare
-    # 10% chance to upgrade a card to the next highest rarity, set this to 0 to disable
-    # 100,000 = 100% chance, 10,000 = 10% chance, 1000 = 1% chance, 100 = 0.1% chance, 10 = 0.01% chance, 1 = 0.001% chance
-    UpgradeChance: 10000
     Price: 100.00
   Advanced_Pack:
     NumNormalCards: 12
@@ -182,7 +179,6 @@ BoosterPacks:
     ExtraCardRarity: Uncommon
     NumSpecialCards: 2
     SpecialCardRarity: Rare
-    UpgradeChance: 0
     Price: 150.00
   Expert_Pack:
     NumNormalCards: 6
@@ -191,14 +187,12 @@ BoosterPacks:
     ExtraCardRarity: Rare
     NumSpecialCards: 2
     SpecialCardRarity: Very Rare
-    UpgradeChance: 0
     Price: 250.00
   Ultimate_Pack:
     NumNormalCards: 5
     NormalCardRarity: Rare
     NumSpecialCards: 1
     SpecialCardRarity: Legendary
-    UpgradeChance: 0
     Price: 500.00
 
 Rarities:

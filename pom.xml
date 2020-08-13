@@ -6,10 +6,12 @@
 
     <groupId>media.xen</groupId>
     <artifactId>TradingCards</artifactId>
-    <version>5.0.4</version>
+    <version>5.0.4-ti</version>
+    <name>TradingCards (Modified-TI)</name>
     <build>
         <plugins>
             <plugin>
+                <version>3.8.1</version>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
@@ -20,8 +22,19 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>2.4.3</version>
+                <version>3.2.4</version>
                 <configuration>
+                    <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation>
+                    <relocations>
+                        <relocation>
+                            <pattern>co.aikar.commands</pattern>
+                            <shadedPattern>media.xen.tradingcards.acf</shadedPattern> <!-- Replace this -->
+                        </relocation>
+                        <relocation>
+                            <pattern>co.aikar.locales</pattern>
+                            <shadedPattern>media.xen.tradingcards.locales</shadedPattern> <!-- Replace this -->
+                        </relocation>
+                    </relocations>
                 </configuration>
                 <executions>
                     <execution>
@@ -33,6 +46,12 @@
                 </executions>
             </plugin>
         </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
     </build>
 
     <repositories>
@@ -45,9 +64,21 @@
             <url>http://nexus.hc.to/content/repositories/pub_releases</url>
         </repository>
         <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+        <repository>
             <id>in-project</id>
             <name>In Project Repo</name>
             <url>file://${project.basedir}/libs</url>
+        </repository>
+        <repository>
+            <id>aikar</id>
+            <url>https://repo.aikar.co/content/groups/aikar/</url>
+        </repository>
+        <repository>
+            <id>lumine-repo</id>
+            <url>http://mvn.lumine.io/repository/maven-snapshots/</url>
         </repository>
     </repositories>
 
@@ -65,25 +96,28 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.palmergames.bukkit.towny</groupId>
+            <groupId>com.github.TownyAdvanced</groupId>
             <artifactId>Towny</artifactId>
-            <scope>system</scope>
-            <version>1.0</version>
-            <systemPath>${basedir}\libs\Towny.jar</systemPath>
+            <version>0.96.2.8</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.garbagemule.MobArena</groupId>
+            <groupId>com.github.garbagemule</groupId>
             <artifactId>MobArena</artifactId>
-            <scope>system</scope>
-            <version>1.0</version>
-            <systemPath>${basedir}\libs\MobArena.jar</systemPath>
+            <version>0.104.2</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>io.lumine.xikage.mythicmobs</groupId>
+            <groupId>co.aikar</groupId>
+            <artifactId>acf-bukkit</artifactId>
+            <version>0.5.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.lumine.xikage</groupId>
             <artifactId>MythicMobs</artifactId>
-            <scope>system</scope>
-            <version>1.0</version>
-            <systemPath>${basedir}\libs\MythicMobs.jar</systemPath>
+            <version>4.6.0-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

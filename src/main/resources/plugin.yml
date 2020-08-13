@@ -1,9 +1,9 @@
 name: TradingCards
 main: media.xen.tradingcards.TradingCards
-version: 5.0.4
-softdepend: [Towny, MobArena, Vault, MythicMobs]
+version: ${project.version}
+softdepend: [Towny, MobArena, Vault]
 author: Xenoyia
-api-version: 1.13
+api-version: "1.13"
 
 commands:
   cards:
