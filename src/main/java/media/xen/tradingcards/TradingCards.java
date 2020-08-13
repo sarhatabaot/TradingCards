@@ -599,18 +599,18 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 			return 0;
 		}
 
-		debug("Decks:"+deckNumber);
+		debug("Decks:" + deckNumber);
 
 		for (int i = 0; i < deckNumber; ++i) {
-			debug("Starting iteration "+i);
+			debug("Starting iteration " + i);
 
 			if (getDeckConfig().getConfig().contains("Decks.Inventories." + uuidString + "." + (i + 1))) {
 				List<String> contents = getDeckConfig().getConfig().getStringList("Decks.Inventories." + uuidString + "." + (i + 1));
 
 				for (final String s2 : contents) {
 					String[] splitContents = s2.split(",");
-					debug("Deck file content: "+s2);
-					debug(card + " - "+ splitContents[1]);
+					debug("Deck file content: " + s2);
+					debug(card + " - " + splitContents[1]);
 					debug(rarity + " - " + splitContents[0]);
 
 					if (splitContents[0].equalsIgnoreCase(rarity)) {
@@ -828,9 +828,9 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 			return input.replaceAll("_", " ").toLowerCase();
 		} else if (this.getConfig().contains("Rarities." + output.replaceAll("_", " "))) {
 			return output.replaceAll("_", " ");
-		} else {
-			return this.getConfig().contains("Rarities." + this.capitaliseUnderscores(input)) ? output.replaceAll("_", " ") : "None";
 		}
+
+		return this.getConfig().contains("Rarities." + this.capitaliseUnderscores(input)) ? output.replaceAll("_", " ") : "None";
 	}
 
 	public String capitaliseUnderscores(String input) {
@@ -1010,34 +1010,6 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 		boosterPack.setItemMeta(pMeta);
 		boosterPack.addUnsafeEnchantment(Enchantment.ARROW_INFINITE, 10);
 		return boosterPack;
-	}
-
-	public String upgradeRarity(String packName, String rarity) {
-		debug("Starting booster pack upgrade check - Current rarity is " + rarity + "!");
-		ConfigurationSection rarities = getConfig().getConfigurationSection("Rarities");
-		Set<String> rarityKeys = rarities.getKeys(false);
-		Map<Integer, String> rarityMap = new HashMap<>();
-		int i = 0;
-		int curRarity = 0;
-		for (String key : rarityKeys) {
-			rarityMap.put(i, key);
-			if (key.equalsIgnoreCase(rarity)) curRarity = i;
-			debug("Rarity " + i + " is " + key);
-			i++;
-		}
-		int chance = getConfig().getInt("BoosterPacks." + packName + ".UpgradeChance", 0);
-		if (chance <= 0) {
-			debug("Pack has upgrade chance set to 0! Exiting..");
-			return rarityMap.get(curRarity);
-		}
-		int random = this.r.nextInt(100000) + 1;
-		if (random <= chance) {
-			if (curRarity < i) curRarity++;
-			debug("Card upgraded! new rarity is " + rarityMap.get(curRarity) + "!");
-			return rarityMap.get(curRarity);
-		}
-		debug("Card not upgraded! Rarity remains at " + rarityMap.get(curRarity) + "!");
-		return rarityMap.get(curRarity);
 	}
 
 	public String calculateRarity(EntityType e, boolean alwaysDrop) {
