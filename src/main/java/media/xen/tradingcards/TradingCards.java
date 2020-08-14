@@ -1165,7 +1165,7 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 						System.out.println("[Cards] Giving a " + this.getConfig().getString("Rarities." + (String) rarityIndexes.get(i) + ".Name") + " card.");
 					}
 
-					return (String) rarityIndexes.get(i);
+					return  rarityIndexes.get(i);
 				}
 			}
 		}
