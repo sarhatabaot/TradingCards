@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import javax.smartcardio.Card;
 import java.util.List;
@@ -13,8 +14,8 @@ import java.util.Map;
 
 public class CardManager {
 	private final TradingCards plugin;
-	private ItemStack blankCard;
-	private Map<String,ItemStack> cards;
+	private static ItemStack blankCard;
+	private static Map<String,ItemStack> cards;
 
 	public CardManager(final TradingCards plugin) {
 		this.plugin = plugin;
@@ -29,10 +30,10 @@ public class CardManager {
 		return cards.get(cardName.toLowerCase());
 	}
 
-	public class CardBuilder {
+	public static class CardBuilder {
 		private final String cardName;
-		private boolean isShiny;
-		private boolean isPlayerCard;
+		private boolean isShiny = false;
+		private boolean isPlayerCard = false;
 		private String rarityColour;
 		private String prefix;
 		private CardInfo series;
@@ -98,15 +99,31 @@ public class CardManager {
 
 		public ItemStack build(){
 			ItemStack card = blankCard.clone();
+			ItemMeta cardMeta = card.getItemMeta();
+
+			if(isShiny){
+				if(isPlayerCard) {
+
+				} else {
+
+				}
+			} else if(isPlayerCard){
+
+			} else {
+
+			}
+
 			
 			return null;
 		}
+
+		private String getDisplayName(boolean isShiny, boolean isPlayerCard,)
 
 
 	}
 
 	@Data
-	public class CardInfo {
+	public static class CardInfo {
 		private final String name;
 		private final String colour;
 		private final String display;

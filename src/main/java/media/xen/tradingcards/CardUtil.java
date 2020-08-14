@@ -155,6 +155,16 @@ public class CardUtil {
 			card.addUnsafeEnchantment(Enchantment.ARROW_INFINITE, 10);
 		}
 
+		CardManager.CardBuilder builder = new CardManager.CardBuilder(cardName);
+		return builder.rarityColour(rarityColour)
+				.prefix(prefix)
+				.series(series,seriesColour,seriesDisplay)
+				.about(about,aboutColour,aboutDisplay)
+				.type(type,typeColour,typeDisplay)
+				.info(info, infoColour, infoDisplay)
+				.shinyPrefix(shinyPrefix)
+				.cost(cost).build();
+
 		return card;
 
 	}
