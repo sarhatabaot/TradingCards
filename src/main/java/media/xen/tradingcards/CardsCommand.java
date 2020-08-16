@@ -11,7 +11,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -127,12 +126,11 @@ public class CardsCommand extends BaseCommand {
 	@CommandAlias("givecard")
 	@CommandPermission("cards.givecard")
 	public void onGiveCard(final Player player, final String name, final String rarity) {
-		if (plugin.getCardsConfig().getConfig().contains("Cards." + name.replaceAll("_", " ") + "." + rarity)) {
+		if (plugin.getCardsConfig().getConfig().contains("Cards." + name + "." + rarity.replaceAll("_", " "))) {
 			player.getInventory().addItem(plugin.getNormalCard(name, rarity.replaceAll("_", " "), 1));
 			return;
 		}
 		sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().getConfig().getString("Messages.NoCard")));
-
 	}
 
 
@@ -218,15 +216,15 @@ public class CardsCommand extends BaseCommand {
 
 			if (player.getInventory().firstEmpty() != -1) {
 				sendPrefixedMessage(player, plugin.getMessagesConfig().getConfig().getString("Messages.GiveRandomCard"));
-				if (plugin.generateCard(rare, false) != null) {
-					player.getInventory().addItem(plugin.generateCard(rare, false));
+				if (plugin.generateRandomCard(rare, false) != null) {
+					player.getInventory().addItem(plugin.generateRandomCard(rare, false));
 				}
 			} else {
 				World curWorld2 = player.getWorld();
 				if (player.getGameMode() == GameMode.SURVIVAL) {
 					sendPrefixedMessage(player, plugin.getMessagesConfig().getConfig().getString("Messages.GiveRandomCard"));
-					if (plugin.generateCard(rare, false) != null) {
-						curWorld2.dropItem(player.getLocation(), plugin.generateCard(rare, false));
+					if (plugin.generateRandomCard(rare, false) != null) {
+						curWorld2.dropItem(player.getLocation(), plugin.generateRandomCard(rare, false));
 					}
 				}
 			}

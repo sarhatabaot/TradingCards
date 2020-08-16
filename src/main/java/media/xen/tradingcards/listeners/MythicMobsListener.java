@@ -6,7 +6,6 @@ import media.xen.tradingcards.TradingCards;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -68,8 +67,8 @@ public class MythicMobsListener extends SimpleListener {
 						isShiny = true;
 					}
 
-					if (this.plugin.generateCard(rare, isShiny) != null) {
-						e.getDrops().add(this.plugin.generateCard(rare, isShiny));
+					if (this.plugin.generateRandomCard(rare, isShiny) != null) {
+						e.getDrops().add(this.plugin.generateRandomCard(rare, isShiny));
 					}
 				}
 			}

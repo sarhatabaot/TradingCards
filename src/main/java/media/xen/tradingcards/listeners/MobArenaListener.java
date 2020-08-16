@@ -1,12 +1,9 @@
 package media.xen.tradingcards.listeners;
 
-import com.garbagemule.MobArena.MobArenaHandler;
-import com.garbagemule.MobArena.events.ArenaKillEvent;
 import com.garbagemule.MobArena.framework.Arena;
 import media.xen.tradingcards.TradingCards;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 
 import java.util.ArrayList;
@@ -73,8 +70,8 @@ public class MobArenaListener extends SimpleListener {
 
 				if (!cancelled) {
 					plugin.debug("Successfully generated card.");
-					if (plugin.generateCard(rare, false) != null) {
-						e.getDrops().add(plugin.generateCard(rare, false));
+					if (plugin.generateRandomCard(rare, false) != null) {
+						e.getDrops().add(plugin.generateRandomCard(rare, false));
 					}
 				}
 			}

@@ -73,22 +73,22 @@ public class PackListener extends SimpleListener {
 				World curWorld;
 				for (i = 0; i < normalCardAmount; ++i) {
 					if (p.getInventory().firstEmpty() != -1) {
-						p.getInventory().addItem(plugin.generateCard(WordUtils.capitalizeFully(line1[1]), false));
+						p.getInventory().addItem(plugin.generateRandomCard(WordUtils.capitalizeFully(line1[1]), false));
 					} else {
 						curWorld = p.getWorld();
 						if (p.getGameMode() == GameMode.SURVIVAL) {
-							curWorld.dropItem(p.getLocation(), plugin.generateCard(WordUtils.capitalizeFully(line1[1]), false));
+							curWorld.dropItem(p.getLocation(), plugin.generateRandomCard(WordUtils.capitalizeFully(line1[1]), false));
 						}
 					}
 				}
 
 				for (i = 0; i < specialCardAmount; ++i) {
 					if (p.getInventory().firstEmpty() != -1) {
-						p.getInventory().addItem(plugin.generateCard(WordUtils.capitalizeFully(line2[1]), false));
+						p.getInventory().addItem(plugin.generateRandomCard(WordUtils.capitalizeFully(line2[1]), false));
 					} else {
 						curWorld = p.getWorld();
 						if (p.getGameMode() == GameMode.SURVIVAL) {
-							curWorld.dropItem(p.getLocation(), plugin.generateCard(WordUtils.capitalizeFully(line2[1]), false));
+							curWorld.dropItem(p.getLocation(), plugin.generateRandomCard(WordUtils.capitalizeFully(line2[1]), false));
 						}
 					}
 				}
@@ -96,11 +96,11 @@ public class PackListener extends SimpleListener {
 				if (hasExtra) {
 					for (i = 0; i < extraCardAmount; ++i) {
 						if (p.getInventory().firstEmpty() != -1) {
-							p.getInventory().addItem(plugin.generateCard(WordUtils.capitalizeFully(line3[1]), false));
+							p.getInventory().addItem(plugin.generateRandomCard(WordUtils.capitalizeFully(line3[1]), false));
 						} else {
 							curWorld = p.getWorld();
 							if (p.getGameMode() == GameMode.SURVIVAL) {
-								curWorld.dropItem(p.getLocation(), plugin.generateCard(WordUtils.capitalizeFully(line3[1]), false));
+								curWorld.dropItem(p.getLocation(), plugin.generateRandomCard(WordUtils.capitalizeFully(line3[1]), false));
 							}
 						}
 					}

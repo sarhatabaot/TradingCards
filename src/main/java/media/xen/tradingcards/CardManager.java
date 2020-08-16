@@ -4,21 +4,27 @@ package media.xen.tradingcards;
 
 import lombok.Builder;
 import lombok.Data;
+import org.apache.commons.lang.StringUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 
-import javax.smartcardio.Card;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class CardManager {
-	private final TradingCards plugin;
+	private static TradingCards plugin;
 	private static ItemStack blankCard;
 	private static Map<String,ItemStack> cards;
 
 	public CardManager(final TradingCards plugin) {
-		this.plugin = plugin;
+		CardManager.plugin = plugin;
+		initialize();
 	}
 
 	private void initialize() {
@@ -32,6 +38,7 @@ public class CardManager {
 
 	public static class CardBuilder {
 		private final String cardName;
+		private String rarity;
 		private boolean isShiny = false;
 		private boolean isPlayerCard = false;
 		private String rarityColour;
@@ -40,7 +47,7 @@ public class CardManager {
 		private CardInfo about;
 		private CardInfo type;
 		private CardInfo info;
-		private String shinyPrefix;
+		private String shinyPrefix = null;
 		private String cost;
 
 		public CardBuilder(final String cardName) {
@@ -92,6 +99,11 @@ public class CardManager {
 			return this;
 		}
 
+		public CardBuilder rarity(String rarity){
+			this.rarity = rarity;
+			return this;
+		}
+
 		public CardBuilder isPlayerCard(boolean isPlayerCard){
 			this.isPlayerCard = isPlayerCard;
 			return this;
@@ -99,26 +111,62 @@ public class CardManager {
 
 		public ItemStack build(){
 			ItemStack card = blankCard.clone();
-			ItemMeta cardMeta = card.getItemMeta();
-
-			if(isShiny){
-				if(isPlayerCard) {
-
-				} else {
-
-				}
-			} else if(isPlayerCard){
-
-			} else {
-
+			ItemMeta cardMeta = blankCard.getItemMeta();
+			cardMeta.setDisplayName(formatDisplayName(isPlayerCard,isShiny,prefix,rarityColour,cardName,cost,shinyPrefix));
+			cardMeta.setLore(formatLore());
+			if (plugin.getConfig().getBoolean("General.Hide-Enchants", true)) {
+				cardMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 			}
 
-			
-			return null;
+			card.setItemMeta(cardMeta);
+			return card;
 		}
 
-		private String getDisplayName(boolean isShiny, boolean isPlayerCard,)
+		private List<String> formatLore(){
+			List<String> lore = new ArrayList<>();
+			lore.add(plugin.cMsg(type.getColour() + type.getDisplay() + ": &f" + type.getName()));
+			if (!"None".equals(info) && !"".equals(info)) {
+				lore.add(plugin.cMsg(info.getColour() + info.getDisplay() + ":"));
+				lore.addAll(plugin.wrapString(info.getName()));
+			} else {
+				lore.add(plugin.cMsg(info.getColour() + info.getDisplay() + ": &f" + info.getName()));
+			}
 
+			lore.add(plugin.cMsg(series.getColour() + series.getDisplay() + ": &f" + series.getName()));
+			if (plugin.getCardsConfig().getConfig().contains("Cards." + rarity + "." + cardName + ".About")) {
+				lore.add(plugin.cMsg(about.getColour() + about.getDisplay() + ": &f" + about.getName()));
+			}
+
+			if (isShiny) {
+				lore.add(plugin.cMsg(rarityColour + ChatColor.BOLD + plugin.getConfig().getString("General.Shiny-Name") + " " +rarity ));
+			} else {
+				lore.add(plugin.cMsg(rarityColour + ChatColor.BOLD + rarity));
+			}
+
+			return lore;
+		}
+		@NotNull
+		private String formatDisplayName(boolean isPlayerCard, boolean isShiny, String prefix, String rarityColour, String cardName, String cost, String shinyPrefix) {
+			final String[] shinyPlayerCardFormat = new String[]{"%PREFIX%", "%COLOUR%", "%NAME%", "%COST%", "%SHINYPREFIX%"};
+			final String[] shinyCardFormat = new String[]{"%PREFIX%", "%COLOUR%", "%NAME%", "%COST%", "%SHINYPREFIX%", "_"};
+
+			final String[] cardFormat = new String[]{"%PREFIX%","%COLOUR%","%NAME%","%COST%","_"};
+			final String[] playerCardFormat = new String[]{"%PREFIX%","%COLOUR%","%NAME%","%COST%"};
+
+
+			final String shinyTitle = plugin.getConfig().getString("DisplayNames.Cards.ShinyTitle");
+			final String title = plugin.getConfig().getString("DisplayNames.Cards.Title");
+			if (isShiny && shinyPrefix!= null) {
+				if (isPlayerCard) {
+					return plugin.cMsg(StringUtils.replaceEach(shinyTitle, shinyPlayerCardFormat, new String[]{prefix,rarityColour, cardName, cost, shinyPrefix}));
+				}
+				return plugin.cMsg(StringUtils.replaceEach(shinyTitle, shinyCardFormat, new String[]{prefix, rarityColour,cardName, cost, shinyPrefix, " "}));
+			}
+			if (isPlayerCard) {
+				return plugin.cMsg(StringUtils.replaceEach(title, playerCardFormat, new String[]{prefix,rarityColour,cardName,cost}));
+			}
+			return plugin.cMsg(StringUtils.replaceEach(title, cardFormat, new String[]{prefix,rarityColour,cardName,cost, " "}));
+		}
 
 	}
 

@@ -55,24 +55,17 @@ public class CardUtil {
 		return null;
 	}
 
-	public ItemStack generateCard(String rare, boolean forcedShiny) {
-		if (rare.equals("None")) {
+
+	public static ItemStack generateCard(String cardName, String rarityName, boolean forcedShiny){
+		if (rarityName.equals("None")) {
 			return null;
 		}
-
-		plugin.debug("generateCard.rare: " + rare);
-
-		ItemStack card = plugin.getBlankCard(1);
 		plugin.reloadAllConfig();
-		ConfigurationSection cardSection = plugin.getCardsConfig().getConfig().getConfigurationSection("Cards." + rare);
-		plugin.debug("generateCard.cardSection: " + plugin.getCardsConfig().getConfig().contains("Cards." + rare));
-		plugin.debug("generateCard.rarity: " + rare);
+		plugin.debug("generateCard.cardSection: " + plugin.getCardsConfig().getConfig().contains("Cards." + rarityName));
+		plugin.debug("generateCard.rarity: " + rarityName);
 
-		Set<String> cards = cardSection.getKeys(false);
-		List<String> cardNames = new ArrayList<>(cards);
-		int cIndex = plugin.r.nextInt(cardNames.size());
-		String cardName = cardNames.get(cIndex);
-		boolean hasShinyVersion = plugin.getCardsConfig().getConfig().getBoolean("Cards." + rare + "." + cardName + ".Has-Shiny-Version");
+		CardManager.CardBuilder builder = new CardManager.CardBuilder(cardName);
+		boolean hasShinyVersion = plugin.getCardsConfig().getConfig().getBoolean("Cards." + rarityName + "." + cardName + ".Has-Shiny-Version");
 		boolean isShiny = false;
 		if (hasShinyVersion) {
 			int shinyRandom = plugin.r.nextInt(100) + 1;
@@ -84,78 +77,98 @@ public class CardUtil {
 		if (forcedShiny) {
 			isShiny = true;
 		}
-
-		String rarityColour = plugin.getConfig().getString("Rarities." + rare + ".Colour");
+		String rarityColour = plugin.getConfig().getString("Rarities." + rarityName + ".Colour");
 		String prefix = plugin.getConfig().getString("General.Card-Prefix");
-		String series = plugin.getCardsConfig().getConfig().getString("Cards." + rare + "." + cardName + ".Series");
+		String series = plugin.getCardsConfig().getConfig().getString("Cards." + rarityName + "." + cardName + ".Series");
 		String seriesColour = plugin.getConfig().getString("Colours.Series");
 		String seriesDisplay = plugin.getConfig().getString("DisplayNames.Cards.Series", "Series");
-		String about = plugin.getCardsConfig().getConfig().getString("Cards." + rare + "." + cardName + ".About", "None");
+		String about = plugin.getCardsConfig().getConfig().getString("Cards." + rarityName + "." + cardName + ".About", "None");
 		String aboutColour = plugin.getConfig().getString("Colours.About");
 		String aboutDisplay = plugin.getConfig().getString("DisplayNames.Cards.About", "About");
-		String type = plugin.getCardsConfig().getConfig().getString("Cards." + rare + "." + cardName + ".Type");
+		String type = plugin.getCardsConfig().getConfig().getString("Cards." + rarityName + "." + cardName + ".Type");
 		String typeColour = plugin.getConfig().getString("Colours.Type");
 		String typeDisplay = plugin.getConfig().getString("DisplayNames.Cards.Type", "Type");
-		String info = plugin.getCardsConfig().getConfig().getString("Cards." + rare + "." + cardName + ".Info");
+		String info = plugin.getCardsConfig().getConfig().getString("Cards." + rarityName + "." + cardName + ".Info");
 		String infoColour = plugin.getConfig().getString("Colours.Info");
 		String infoDisplay = plugin.getConfig().getString("DisplayNames.Cards.Info", "Info");
 		String shinyPrefix = plugin.getConfig().getString("General.Shiny-Name");
 		String cost;
-		if (plugin.getCardsConfig().getConfig().contains("Cards." + rare + "." + cardName + ".Buy-Price")) {
-			cost = String.valueOf(plugin.getCardsConfig().getConfig().getDouble("Cards." + rare + "." + cardName + ".Buy-Price"));
+		if (plugin.getCardsConfig().getConfig().contains("Cards." + rarityName + "." + cardName + ".Buy-Price")) {
+			cost = String.valueOf(plugin.getCardsConfig().getConfig().getDouble("Cards." + rarityName + "." + cardName + ".Buy-Price"));
 		} else {
 			cost = "None";
 		}
 
-		ItemMeta cmeta = card.getItemMeta();
 		boolean isPlayerCard = false;
 		if (plugin.isPlayerCard(cardName)) {
 			isPlayerCard = true;
 		}
 
-		if (isShiny) {
-			if (!isPlayerCard) {
-				cmeta.setDisplayName(plugin.cMsg(plugin.getConfig().getString("DisplayNames.Cards.ShinyTitle").replaceAll("%PREFIX%", prefix).replaceAll("%COLOUR%", rarityColour).replaceAll("%NAME%", cardName).replaceAll("%COST%", cost).replaceAll("%SHINYPREFIX%", shinyPrefix).replaceAll("_", " ")));
-			} else {
-				cmeta.setDisplayName(plugin.cMsg(plugin.getConfig().getString("DisplayNames.Cards.ShinyTitle").replaceAll("%PREFIX%", prefix).replaceAll("%COLOUR%", rarityColour).replaceAll("%NAME%", cardName).replaceAll("%COST%", cost).replaceAll("%SHINYPREFIX%", shinyPrefix)));
-			}
-		} else if (!isPlayerCard) {
-			cmeta.setDisplayName(plugin.cMsg(plugin.getConfig().getString("DisplayNames.Cards.Title").replaceAll("%PREFIX%", prefix).replaceAll("%COLOUR%", rarityColour).replaceAll("%NAME%", cardName).replaceAll("%COST%", cost).replaceAll("_", " ")));
-		} else {
-			cmeta.setDisplayName(plugin.cMsg(plugin.getConfig().getString("DisplayNames.Cards.Title").replaceAll("%PREFIX%", prefix).replaceAll("%COLOUR%", rarityColour).replaceAll("%NAME%", cardName).replaceAll("%COST%", cost)));
-		}
+		return builder.isShiny(isShiny)
+				.rarityColour(rarityColour)
+				.prefix(prefix)
+				.series(series, seriesColour, seriesDisplay)
+				.about(about,aboutColour,aboutDisplay)
+				.type(type,typeColour,typeDisplay)
+				.info(info, infoColour, infoDisplay)
+				.shinyPrefix(shinyPrefix)
+				.isPlayerCard(isPlayerCard)
+				.cost(cost)
+				.rarity(rarityName).build();
+	}
 
-		List<String> lore = new ArrayList<>();
-		lore.add(plugin.cMsg(typeColour + typeDisplay + ": &f" + type));
-		if (!info.equals("None") && !info.equals("")) {
-			lore.add(plugin.cMsg(infoColour + infoDisplay + ":"));
-			lore.addAll(plugin.wrapString(info));
-		} else {
-			lore.add(plugin.cMsg(infoColour + infoDisplay + ": &f" + info));
+	public static ItemStack generateRandomCard(String cardName, String rarityName, boolean forcedShiny) {
+		if (rarityName.equals("None")) {
+			return null;
 		}
+		plugin.debug("generateCard.rare: " + rarityName);
+		plugin.reloadAllConfig();
+		plugin.debug("generateCard.cardSection: " + plugin.getCardsConfig().getConfig().contains("Cards." + rarityName));
+		plugin.debug("generateCard.rarity: " + rarityName);
 
-		lore.add(plugin.cMsg(seriesColour + seriesDisplay + ": &f" + series));
-		if (plugin.getCardsConfig().getConfig().contains("Cards." + rare + "." + cardName + ".About")) {
-			lore.add(plugin.cMsg(aboutColour + aboutDisplay + ": &f" + about));
-		}
-
-		if (isShiny) {
-			lore.add(plugin.cMsg(rarityColour + ChatColor.BOLD + plugin.getConfig().getString("General.Shiny-Name") + " " + rare));
-		} else {
-			lore.add(plugin.cMsg(rarityColour + ChatColor.BOLD + rare));
-		}
-
-		cmeta.setLore(lore);
-		if (plugin.getConfig().getBoolean("General.Hide-Enchants", true)) {
-			cmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-		}
-
-		card.setItemMeta(cmeta);
-		if (isShiny) {
-			card.addUnsafeEnchantment(Enchantment.ARROW_INFINITE, 10);
-		}
 
 		CardManager.CardBuilder builder = new CardManager.CardBuilder(cardName);
+		boolean hasShinyVersion = plugin.getCardsConfig().getConfig().getBoolean("Cards." + rarityName + "." + cardName + ".Has-Shiny-Version");
+		boolean isShiny = false;
+		if (hasShinyVersion) {
+			int shinyRandom = plugin.r.nextInt(100) + 1;
+			if (shinyRandom <= plugin.getConfig().getInt("Chances.Shiny-Version-Chance")) {
+				isShiny = true;
+			}
+		}
+
+		if (forcedShiny) {
+			isShiny = true;
+		}
+		builder.isShiny(isShiny);
+
+		String rarityColour = plugin.getConfig().getString("Rarities." + rarityName + ".Colour");
+		String prefix = plugin.getConfig().getString("General.Card-Prefix");
+		String series = plugin.getCardsConfig().getConfig().getString("Cards." + rarityName + "." + cardName + ".Series");
+		String seriesColour = plugin.getConfig().getString("Colours.Series");
+		String seriesDisplay = plugin.getConfig().getString("DisplayNames.Cards.Series", "Series");
+		String about = plugin.getCardsConfig().getConfig().getString("Cards." + rarityName + "." + cardName + ".About", "None");
+		String aboutColour = plugin.getConfig().getString("Colours.About");
+		String aboutDisplay = plugin.getConfig().getString("DisplayNames.Cards.About", "About");
+		String type = plugin.getCardsConfig().getConfig().getString("Cards." + rarityName + "." + cardName + ".Type");
+		String typeColour = plugin.getConfig().getString("Colours.Type");
+		String typeDisplay = plugin.getConfig().getString("DisplayNames.Cards.Type", "Type");
+		String info = plugin.getCardsConfig().getConfig().getString("Cards." + rarityName + "." + cardName + ".Info");
+		String infoColour = plugin.getConfig().getString("Colours.Info");
+		String infoDisplay = plugin.getConfig().getString("DisplayNames.Cards.Info", "Info");
+		String shinyPrefix = plugin.getConfig().getString("General.Shiny-Name");
+		String cost;
+		if (plugin.getCardsConfig().getConfig().contains("Cards." + rarityName + "." + cardName + ".Buy-Price")) {
+			cost = String.valueOf(plugin.getCardsConfig().getConfig().getDouble("Cards." + rarityName + "." + cardName + ".Buy-Price"));
+		} else {
+			cost = "None";
+		}
+
+		boolean isPlayerCard = false;
+		if (plugin.isPlayerCard(cardName)) {
+			isPlayerCard = true;
+		}
+
 		return builder.rarityColour(rarityColour)
 				.prefix(prefix)
 				.series(series,seriesColour,seriesDisplay)
@@ -163,9 +176,8 @@ public class CardUtil {
 				.type(type,typeColour,typeDisplay)
 				.info(info, infoColour, infoDisplay)
 				.shinyPrefix(shinyPrefix)
-				.cost(cost).build();
-
-		return card;
-
+				.isPlayerCard(isPlayerCard)
+				.cost(cost)
+				.rarity(rarityName).build();
 	}
 }
