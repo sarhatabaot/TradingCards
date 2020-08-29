@@ -8,6 +8,7 @@ import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -27,13 +28,34 @@ public class CardManager {
 		initialize();
 	}
 
+	/**
+	 * Pre-loads all existing cards.
+	 */
 	private void initialize() {
 		blankCard = new ItemStack(Material.getMaterial(plugin.getConfig().getString("General.Card-Material")));
+		for(String rarity: plugin.getCardsConfig().getConfig().getConfigurationSection("Cards").getKeys(false)){
+			for(String name: plugin.getCardsConfig().getConfig().getConfigurationSection("Cards."+rarity).getKeys(false)) {
+				cards.put(rarity+"."+name, CardUtil.generateCard(name,rarity,false));
+			}
+		}
 	}
 
 
-	public ItemStack getCard(final String cardName){
-		return cards.get(cardName.toLowerCase());
+	/**
+	 *
+	 * @param cardName
+	 * @param rarity
+	 * @return false if cards already exists. True if successfully added.
+	 */
+	public boolean addCard(final String cardName, final String rarity){
+		if(cards.containsKey(rarity+"."+cardName))
+			return false;
+		cards.put(rarity+"."+cardName, CardUtil.generateCard(cardName,rarity,false));
+		return true;
+	}
+
+	public ItemStack getCard(final String cardName,final String rarity){
+		return cards.get(rarity+"."+cardName);
 	}
 
 	public static class CardBuilder {

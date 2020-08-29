@@ -1205,6 +1205,9 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 	}
 
 	@Deprecated
+	/**
+	 * @deprecated Use {@link CardUtil#generateRandomCard(String, String, boolean)}
+	 */
 	public ItemStack generateRandomCard(String rare, boolean forcedShiny) {
 		ConfigurationSection cardSection = getCardsConfig().getConfig().getConfigurationSection("Cards." + rare);
 		debug("generateCard.cardSection: " + getCardsConfig().getConfig().contains("Cards." + rare));
@@ -1257,7 +1260,10 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 	}
 
 	public ItemStack createPlayerCard(String cardName, String rarity, Integer num, boolean forcedShiny) {
-		ItemStack card = this.getBlankCard(num);
+		ItemStack card = CardUtil.generateCard(cardName,rarity,forcedShiny);
+		card.setAmount(num);
+		return card;
+		/*ItemStack card = this.getBlankCard(num);
 		boolean hasShinyVersion = getCardsConfig().getConfig().getBoolean("Cards." + rarity + "." + cardName + ".Has-Shiny-Version");
 		boolean isShiny = false;
 		if (hasShinyVersion) {
@@ -1347,7 +1353,7 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 			card.addUnsafeEnchantment(Enchantment.ARROW_INFINITE, 10);
 		}
 
-		return card;
+		return card;*/
 	}
 
 	public ItemStack getNormalCard(String cardName, String rarity, int num) {
@@ -1543,7 +1549,7 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 		}
 
 	}
-
+	
 	public void createCard(Player creator, String rarity, String name, String series, String type, boolean hasShiny, String info, String about) {
 		if (!getCardsConfig().getConfig().contains("Cards." + rarity + "." + name)) {
 			if (name.matches("^[a-zA-Z0-9-_]+$")) {
