@@ -32,7 +32,7 @@ public class CardManager {
 	 * Pre-loads all existing cards.
 	 */
 	private void initialize() {
-		blankCard = new ItemStack(Material.getMaterial(plugin.getConfig().getString("General.Card-Material")));
+		CardManager.blankCard = new ItemStack(Material.getMaterial(plugin.getConfig().getString("General.Card-Material")));
 		for(String rarity: plugin.getCardsConfig().getConfig().getConfigurationSection("Cards").getKeys(false)){
 			for(String name: plugin.getCardsConfig().getConfig().getConfigurationSection("Cards."+rarity).getKeys(false)) {
 				cards.put(rarity+"."+name, CardUtil.generateCard(name,rarity,false));
