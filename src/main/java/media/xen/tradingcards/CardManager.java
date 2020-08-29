@@ -38,6 +38,8 @@ public class CardManager {
 				cards.put(rarity+"."+name, CardUtil.generateCard(name,rarity,false));
 			}
 		}
+
+		plugin.getLogger().info(String.format("Loaded %d cards.",cards.size()));
 	}
 
 
