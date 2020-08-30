@@ -1,18 +1,13 @@
 package media.xen.tradingcards.listeners;
 
 
-import com.garbagemule.MobArena.framework.Arena;
+import media.xen.tradingcards.CardManager;
 import media.xen.tradingcards.TradingCards;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 public class DropListener extends SimpleListener {
@@ -39,7 +34,7 @@ public class DropListener extends SimpleListener {
 				if (k != null) {
 					int rndm = plugin.r.nextInt(100) + 1;
 					if (rndm <= plugin.getConfig().getInt("General.Player-Drops-Card-Rarity")) {
-						e.getDrops().add(plugin.createPlayerCard(e.getEntity().getName(), k, 1, false));
+						e.getDrops().add(CardManager.getCard(e.getEntity().getName(),k));
 						plugin.debug(e.getDrops().toString());
 					}
 				} else {

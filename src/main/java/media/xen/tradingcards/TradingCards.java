@@ -77,6 +77,7 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 	private boolean usingSqlite;
 	private boolean hasMythicMobs;
 
+
 	public SimpleConfig getDeckConfig() {
 		return deckConfig;
 	}
@@ -1187,7 +1188,7 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 	public void addToList(Player p) {
 		List<String> playersOnList = this.getConfig().getStringList("Blacklist.Players");
 		playersOnList.add(p.getName());
-		this.getConfig().set("Blacklist.Players", (Object) null);
+		this.getConfig().set("Blacklist.Players", null);
 		this.getConfig().set("Blacklist.Players", playersOnList);
 		this.saveConfig();
 	}
@@ -1195,7 +1196,7 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 	public void removeFromList(Player p) {
 		List<String> playersOnList = this.getConfig().getStringList("Blacklist.Players");
 		playersOnList.remove(p.getName());
-		this.getConfig().set("Blacklist.Players", (Object) null);
+		this.getConfig().set("Blacklist.Players", null);
 		this.getConfig().set("Blacklist.Players", playersOnList);
 		this.saveConfig();
 	}
@@ -1209,15 +1210,7 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 	 * @deprecated Use {@link CardUtil#generateRandomCard(String, String, boolean)}
 	 */
 	public ItemStack generateRandomCard(String rare, boolean forcedShiny) {
-		ConfigurationSection cardSection = getCardsConfig().getConfig().getConfigurationSection("Cards." + rare);
-		debug("generateCard.cardSection: " + getCardsConfig().getConfig().contains("Cards." + rare));
-		debug("generateCard.rarity: " + rare);
-
-		Set<String> cards = cardSection.getKeys(false);
-		List<String> cardNames = new ArrayList<>(cards);
-		int cIndex = r.nextInt(cardNames.size());
-		String cardName = cardNames.get(cIndex);
-		return CardUtil.generateRandomCard(cardName, rare, forcedShiny);
+		return CardUtil.generateRandomCard(rare, forcedShiny);
 	}
 
 	public List<String> wrapString(@NotNull String s) {
@@ -1259,169 +1252,18 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 		}
 	}
 
+	@Deprecated
 	public ItemStack createPlayerCard(String cardName, String rarity, Integer num, boolean forcedShiny) {
 		ItemStack card = CardUtil.generateCard(cardName,rarity,forcedShiny);
 		card.setAmount(num);
 		return card;
-		/*ItemStack card = this.getBlankCard(num);
-		boolean hasShinyVersion = getCardsConfig().getConfig().getBoolean("Cards." + rarity + "." + cardName + ".Has-Shiny-Version");
-		boolean isShiny = false;
-		if (hasShinyVersion) {
-			int shinyRandom = this.r.nextInt(100) + 1;
-			if (shinyRandom <= this.getConfig().getInt("Chances.Shiny-Version-Chance")) {
-				isShiny = true;
-			}
-		}
-
-		if (forcedShiny) {
-			isShiny = true;
-		}
-
-		String rarityColour = this.getConfig().getString("Rarities." + rarity + ".Colour");
-		String prefix = this.getConfig().getString("General.Card-Prefix");
-		String series = getCardsConfig().getConfig().getString("Cards." + rarity + "." + cardName + ".Series");
-		String seriesColour = this.getConfig().getString("Colours.Series");
-		String seriesDisplay = this.getConfig().getString("DisplayNames.Cards.Series", "Series");
-		String about = getCardsConfig().getConfig().getString("Cards." + rarity + "." + cardName + ".About", "None");
-		String aboutColour = this.getConfig().getString("Colours.About");
-		String aboutDisplay = this.getConfig().getString("DisplayNames.Cards.About", "About");
-		String type = getCardsConfig().getConfig().getString("Cards." + rarity + "." + cardName + ".Type");
-		String typeColour = this.getConfig().getString("Colours.Type");
-		String typeDisplay = this.getConfig().getString("DisplayNames.Cards.Type", "Type");
-		String info = getCardsConfig().getConfig().getString("Cards." + rarity + "." + cardName + ".Info");
-		String infoColour = this.getConfig().getString("Colours.Info");
-		String infoDisplay = this.getConfig().getString("DisplayNames.Cards.Info", "Info");
-		String shinyPrefix = this.getConfig().getString("General.Shiny-Name");
-		String cost;
-		if (getCardsConfig().getConfig().contains("Cards." + rarity + "." + cardName + ".Buy-Price")) {
-			cost = String.valueOf(getCardsConfig().getConfig().getDouble("Cards." + rarity + "." + cardName + ".Buy-Price"));
-		} else {
-			cost = "None";
-		}
-
-		ItemMeta cmeta = card.getItemMeta();
-		boolean isPlayerCard = false;
-		if (this.isPlayerCard(cardName.replaceAll(" ", "_"))) {
-			if (this.getConfig().getBoolean("General.Debug-Mode")) {
-				System.out.println("[Cards] is player card = true");
-			}
-
-			isPlayerCard = true;
-		} else if (this.getConfig().getBoolean("General.Debug-Mode")) {
-			System.out.println("[Cards] is player card = false");
-		}
-
-		if (isShiny) {
-			if (isPlayerCard) {
-				cmeta.setDisplayName(this.cMsg(this.getConfig().getString("DisplayNames.Cards.ShinyTitle").replaceAll("%PREFIX%", prefix).replaceAll("%COLOUR%", rarityColour).replaceAll("%NAME%", cardName).replaceAll("%COST%", cost).replaceAll("%SHINYPREFIX%", shinyPrefix)));
-			} else {
-				cmeta.setDisplayName(this.cMsg(this.getConfig().getString("DisplayNames.Cards.ShinyTitle").replaceAll("%PREFIX%", prefix).replaceAll("%COLOUR%", rarityColour).replaceAll("%NAME%", cardName).replaceAll("%COST%", cost).replaceAll("%SHINYPREFIX%", shinyPrefix).replaceAll("_", " ")));
-			}
-		} else if (isPlayerCard) {
-			cmeta.setDisplayName(this.cMsg(this.getConfig().getString("DisplayNames.Cards.Title").replaceAll("%PREFIX%", prefix).replaceAll("%COLOUR%", rarityColour).replaceAll("%NAME%", cardName).replaceAll("%COST%", cost)));
-		} else {
-			cmeta.setDisplayName(this.cMsg(this.getConfig().getString("DisplayNames.Cards.Title").replaceAll("%PREFIX%", prefix).replaceAll("%COLOUR%", rarityColour).replaceAll("%NAME%", cardName).replaceAll("%COST%", cost).replaceAll("_", " ")));
-		}
-
-		List<String> lore = new ArrayList<>();
-		lore.add(this.cMsg(typeColour + typeDisplay + ": &f" + type));
-		if (!info.equals("None") && !info.equals("")) {
-			lore.add(this.cMsg(infoColour + infoDisplay + ":"));
-			lore.addAll(this.wrapString(info));
-		} else {
-			lore.add(this.cMsg(infoColour + infoDisplay + ": &f" + info));
-		}
-
-		lore.add(this.cMsg(seriesColour + seriesDisplay + ": &f" + series));
-		if (getCardsConfig().getConfig().contains("Cards." + rarity + "." + cardName + ".About")) {
-			lore.add(this.cMsg(aboutColour + aboutDisplay + ": &f" + about));
-		}
-
-		if (isShiny) {
-			lore.add(this.cMsg(rarityColour + ChatColor.BOLD + this.getConfig().getString("General.Shiny-Name") + " " + rarity));
-		} else {
-			lore.add(this.cMsg(rarityColour + ChatColor.BOLD + rarity));
-		}
-
-		cmeta.setLore(lore);
-		if (this.getConfig().getBoolean("General.Hide-Enchants", true)) {
-			cmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-		}
-
-		card.setItemMeta(cmeta);
-		if (isShiny) {
-			card.addUnsafeEnchantment(Enchantment.ARROW_INFINITE, 10);
-		}
-
-		return card;*/
 	}
 
+	@Deprecated
 	public ItemStack getNormalCard(String cardName, String rarity, int num) {
 		ItemStack card = CardUtil.generateCard(cardName,rarity,false);
 		card.setAmount(num);
 		return card;
-		/*ItemStack card = this.getBlankCard(num);
-		String rarityColour = this.getConfig().getString("Rarities." + rarity + ".Colour");
-		String prefix = this.getConfig().getString("General.Card-Prefix");
-		String series = getCardsConfig().getConfig().getString("Cards." + rarity + "." + cardName + ".Series");
-		String seriesColour = this.getConfig().getString("Colours.Series");
-		String seriesDisplay = this.getConfig().getString("DisplayNames.Cards.Series", "Series");
-		String about = getCardsConfig().getConfig().getString("Cards." + rarity + "." + cardName + ".About", "None");
-		String aboutColour = this.getConfig().getString("Colours.About");
-		String aboutDisplay = this.getConfig().getString("DisplayNames.Cards.About", "About");
-		String type = getCardsConfig().getConfig().getString("Cards." + rarity + "." + cardName + ".Type");
-		String typeColour = this.getConfig().getString("Colours.Type");
-		String typeDisplay = this.getConfig().getString("DisplayNames.Cards.Type", "Type");
-		String info = getCardsConfig().getConfig().getString("Cards." + rarity + "." + cardName + ".Info");
-		String infoColour = this.getConfig().getString("Colours.Info");
-		String infoDisplay = this.getConfig().getString("DisplayNames.Cards.Info", "Info");
-		String cost;
-		if (getCardsConfig().getConfig().contains("Cards." + rarity + "." + cardName + ".Buy-Price")) {
-			cost = String.valueOf(getCardsConfig().getConfig().getDouble("Cards." + rarity + "." + cardName + ".Buy-Price"));
-		} else {
-			cost = "None";
-		}
-
-		ItemMeta cmeta = card.getItemMeta();
-		boolean isPlayerCard = false;
-		if (this.isPlayerCard(cardName.replaceAll(" ", "_"))) {
-			if (this.getConfig().getBoolean("General.Debug-Mode")) {
-				System.out.println("[Cards] is player card = true");
-			}
-
-			isPlayerCard = true;
-		} else if (this.getConfig().getBoolean("General.Debug-Mode")) {
-			System.out.println("[Cards] is player card = false");
-		}
-
-		if (!isPlayerCard) {
-			cmeta.setDisplayName(this.cMsg(this.getConfig().getString("DisplayNames.Cards.Title").replaceAll("%PREFIX%", prefix).replaceAll("%COLOUR%", rarityColour).replaceAll("%NAME%", cardName).replaceAll("%COST%", cost).replaceAll("_", " ")));
-		} else {
-			cmeta.setDisplayName(this.cMsg(this.getConfig().getString("DisplayNames.Cards.Title").replaceAll("%PREFIX%", prefix).replaceAll("%COLOUR%", rarityColour).replaceAll("%NAME%", cardName).replaceAll("%COST%", cost)));
-		}
-
-		List<String> lore = new ArrayList<>();
-		lore.add(this.cMsg(typeColour + typeDisplay + ": &f" + type));
-		if (!info.equals("None") && !info.equals("")) {
-			lore.add(this.cMsg(infoColour + infoDisplay + ":"));
-			lore.addAll(this.wrapString(info));
-		} else {
-			lore.add(this.cMsg(infoColour + infoDisplay + ": &f" + info));
-		}
-
-		lore.add(this.cMsg(seriesColour + seriesDisplay + ": &f" + series));
-		if (getCardsConfig().getConfig().contains("Cards." + rarity + "." + cardName + ".About")) {
-			lore.add(this.cMsg(aboutColour + aboutDisplay + ": &f" + about));
-		}
-
-		lore.add(this.cMsg(rarityColour + ChatColor.BOLD + rarity));
-		cmeta.setLore(lore);
-		if (this.getConfig().getBoolean("General.Hide-Enchants", true)) {
-			cmeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-		}
-
-		card.setItemMeta(cmeta);
-		return card;*/
 	}
 
 	@EventHandler
@@ -1537,13 +1379,13 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 			}
 
 			if (p.getInventory().firstEmpty() != -1) {
-				if (this.generateRandomCard(rare, false) != null) {
-					p.getInventory().addItem(this.generateRandomCard(rare, false));
+				if (CardUtil.getRandomCard(rare, false) != null) {
+					p.getInventory().addItem(CardUtil.getRandomCard(rare, false));
 				}
 			} else {
 				World curWorld = p.getWorld();
-				if (p.getGameMode() == GameMode.SURVIVAL && this.generateRandomCard(rare, false) != null) {
-					curWorld.dropItem(p.getLocation(), this.generateRandomCard(rare, false));
+				if (p.getGameMode() == GameMode.SURVIVAL && CardUtil.getRandomCard(rare, false) != null) {
+					curWorld.dropItem(p.getLocation(), CardUtil.getRandomCard(rare, false));
 				}
 			}
 		}

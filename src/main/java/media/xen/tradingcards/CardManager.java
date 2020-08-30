@@ -1,27 +1,23 @@
-
 package media.xen.tradingcards;
 
-
-import lombok.Builder;
 import lombok.Data;
 import org.apache.commons.lang.StringUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class CardManager {
 	private static TradingCards plugin;
 	private static ItemStack blankCard;
-	private static Map<String,ItemStack> cards;
+	private static final Map<String,ItemStack> cards = new HashMap<>();
 
 	public CardManager(final TradingCards plugin) {
 		CardManager.plugin = plugin;
@@ -49,15 +45,23 @@ public class CardManager {
 	 * @param rarity
 	 * @return false if cards already exists. True if successfully added.
 	 */
-	public boolean addCard(final String cardName, final String rarity){
+	public static boolean addCard(final String cardName, final String rarity){
 		if(cards.containsKey(rarity+"."+cardName))
 			return false;
 		cards.put(rarity+"."+cardName, CardUtil.generateCard(cardName,rarity,false));
 		return true;
 	}
 
-	public ItemStack getCard(final String cardName,final String rarity){
-		return cards.get(rarity+"."+cardName);
+	public static ItemStack getCard(final String cardName,final String rarity){
+		if(cards.containsKey(rarity+"."+cardName))
+			return cards.get(rarity+"."+cardName);
+		return CardUtil.generateCard(cardName,rarity,false);
+	}
+
+	public static ItemStack getCard(final String cardName,final String rarity, int num){
+		ItemStack card = cards.get(rarity+"."+cardName);
+		card.setAmount(num);
+		return card;
 	}
 
 	public static class CardBuilder {

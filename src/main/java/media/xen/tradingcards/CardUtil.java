@@ -117,67 +117,34 @@ public class CardUtil {
 				.rarity(rarityName).build();
 	}
 
-	public static ItemStack generateRandomCard(String cardName, String rarityName, boolean forcedShiny) {
-		if (rarityName.equals("None")) {
-			return null;
-		}
-		plugin.debug("generateCard.rare: " + rarityName);
-		plugin.reloadAllConfig();
+	/**
+	 * Generates a random card.
+	 * @deprecated Should not actually be used. Use {@link CardUtil#getRandomCard(String, boolean)}
+	 * @param rarityName
+	 * @param forcedShiny
+	 * @return
+	 */
+	public static ItemStack generateRandomCard(String rarityName, boolean forcedShiny) {
+		ConfigurationSection cardSection = plugin.getCardsConfig().getConfig().getConfigurationSection("Cards." + rarityName);
 		plugin.debug("generateCard.cardSection: " + plugin.getCardsConfig().getConfig().contains("Cards." + rarityName));
 		plugin.debug("generateCard.rarity: " + rarityName);
 
+		Set<String> cards = cardSection.getKeys(false);
+		List<String> cardNames = new ArrayList<>(cards);
+		int cIndex = plugin.r.nextInt(cardNames.size());
+		String cardName = cardNames.get(cIndex);
+		return generateCard(cardName, rarityName, forcedShiny);
+	}
 
-		CardManager.CardBuilder builder = new CardManager.CardBuilder(cardName);
-		boolean hasShinyVersion = plugin.getCardsConfig().getConfig().getBoolean("Cards." + rarityName + "." + cardName + ".Has-Shiny-Version");
-		boolean isShiny = false;
-		if (hasShinyVersion) {
-			int shinyRandom = plugin.r.nextInt(100) + 1;
-			if (shinyRandom <= plugin.getConfig().getInt("Chances.Shiny-Version-Chance")) {
-				isShiny = true;
-			}
-		}
+	public static ItemStack getRandomCard(final String rarityName, final boolean forcedShiny){
+		ConfigurationSection cardSection = plugin.getCardsConfig().getConfig().getConfigurationSection("Cards." + rarityName);
+		plugin.debug("generateCard.cardSection: " + plugin.getCardsConfig().getConfig().contains("Cards." + rarityName));
+		plugin.debug("generateCard.rarity: " + rarityName);
 
-		if (forcedShiny) {
-			isShiny = true;
-		}
-		builder.isShiny(isShiny);
-
-		String rarityColour = plugin.getConfig().getString("Rarities." + rarityName + ".Colour");
-		String prefix = plugin.getConfig().getString("General.Card-Prefix");
-		String series = plugin.getCardsConfig().getConfig().getString("Cards." + rarityName + "." + cardName + ".Series");
-		String seriesColour = plugin.getConfig().getString("Colours.Series");
-		String seriesDisplay = plugin.getConfig().getString("DisplayNames.Cards.Series", "Series");
-		String about = plugin.getCardsConfig().getConfig().getString("Cards." + rarityName + "." + cardName + ".About", "None");
-		String aboutColour = plugin.getConfig().getString("Colours.About");
-		String aboutDisplay = plugin.getConfig().getString("DisplayNames.Cards.About", "About");
-		String type = plugin.getCardsConfig().getConfig().getString("Cards." + rarityName + "." + cardName + ".Type");
-		String typeColour = plugin.getConfig().getString("Colours.Type");
-		String typeDisplay = plugin.getConfig().getString("DisplayNames.Cards.Type", "Type");
-		String info = plugin.getCardsConfig().getConfig().getString("Cards." + rarityName + "." + cardName + ".Info");
-		String infoColour = plugin.getConfig().getString("Colours.Info");
-		String infoDisplay = plugin.getConfig().getString("DisplayNames.Cards.Info", "Info");
-		String shinyPrefix = plugin.getConfig().getString("General.Shiny-Name");
-		String cost;
-		if (plugin.getCardsConfig().getConfig().contains("Cards." + rarityName + "." + cardName + ".Buy-Price")) {
-			cost = String.valueOf(plugin.getCardsConfig().getConfig().getDouble("Cards." + rarityName + "." + cardName + ".Buy-Price"));
-		} else {
-			cost = "None";
-		}
-
-		boolean isPlayerCard = false;
-		if (plugin.isPlayerCard(cardName)) {
-			isPlayerCard = true;
-		}
-
-		return builder.rarityColour(rarityColour)
-				.prefix(prefix)
-				.series(series,seriesColour,seriesDisplay)
-				.about(about,aboutColour,aboutDisplay)
-				.type(type,typeColour,typeDisplay)
-				.info(info, infoColour, infoDisplay)
-				.shinyPrefix(shinyPrefix)
-				.isPlayerCard(isPlayerCard)
-				.cost(cost)
-				.rarity(rarityName).build();
+		Set<String> cards = cardSection.getKeys(false);
+		List<String> cardNames = new ArrayList<>(cards);
+		int cIndex = plugin.r.nextInt(cardNames.size());
+		String cardName = cardNames.get(cIndex);
+		return CardManager.getCard(cardName,rarityName);
 	}
 }
