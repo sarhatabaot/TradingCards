@@ -532,9 +532,8 @@ public class CardsCommand extends BaseCommand {
 		} else {
 
 			for (final String rarityKey : rarityKeys) {
-				String cardName2 = rarityKey;
-				if (cardName2.equalsIgnoreCase(rarity.replaceAll("_", " "))) {
-					keyToUse = cardName2;
+				if (rarityKey.equalsIgnoreCase(rarity.replaceAll("_", " "))) {
+					keyToUse = rarityKey;
 				}
 			}
 
