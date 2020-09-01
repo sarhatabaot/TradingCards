@@ -216,16 +216,12 @@ public class CardsCommand extends BaseCommand {
 
 			if (player.getInventory().firstEmpty() != -1) {
 				sendPrefixedMessage(player, plugin.getMessagesConfig().getConfig().getString("Messages.GiveRandomCard"));
-				if (plugin.generateRandomCard(rare, false) != null) {
-					player.getInventory().addItem(plugin.generateRandomCard(rare, false));
-				}
+				player.getInventory().addItem(CardUtil.getRandomCard(rare,false));
 			} else {
 				World curWorld2 = player.getWorld();
 				if (player.getGameMode() == GameMode.SURVIVAL) {
 					sendPrefixedMessage(player, plugin.getMessagesConfig().getConfig().getString("Messages.GiveRandomCard"));
-					if (plugin.generateRandomCard(rare, false) != null) {
-						curWorld2.dropItem(player.getLocation(), plugin.generateRandomCard(rare, false));
-					}
+					curWorld2.dropItem(player.getLocation(), CardUtil.getRandomCard(rare,false));
 				}
 			}
 		} catch (IllegalArgumentException exception) {
