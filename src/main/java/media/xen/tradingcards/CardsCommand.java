@@ -560,14 +560,7 @@ public class CardsCommand extends BaseCommand {
 						}
 					}
 
-					if (p5.getInventory().firstEmpty() != -1) {
-						p5.getInventory().addItem(plugin.createPlayerCard(cardName, keyToUse, 1, false));
-					} else {
-						World curWorld3 = p5.getWorld();
-						if (p5.getGameMode() == GameMode.SURVIVAL) {
-							curWorld3.dropItem(p5.getLocation(), plugin.createPlayerCard(cardName, keyToUse, 1, false));
-						}
-					}
+					dropCard(p5,cardName,keyToUse);
 				}
 			} else {
 				sendPrefixedMessage(sender, plugin.getMessagesConfig().getConfig().getString("Messages.NoRarity"));
@@ -575,6 +568,16 @@ public class CardsCommand extends BaseCommand {
 		}
 
 
+	}
+	private void dropCard(final Player player, final String card, final String rarity){
+		if (player.getInventory().firstEmpty() != -1) {
+			player.getInventory().addItem(CardManager.getCard(card,rarity));
+		} else {
+			World curWorld4 = player.getWorld();
+			if (player.getGameMode() == GameMode.SURVIVAL) {
+				curWorld4.dropItem(player.getLocation(), CardManager.getCard(card,rarity));
+			}
+		}
 	}
 
 	@CommandAlias("worth")
@@ -686,6 +689,8 @@ public class CardsCommand extends BaseCommand {
 
 		}
 
+
+
 		@CommandAlias("card")
 		@CommandPermission("cards.buy.card")
 		public void onBuyCard(final Player player, @NotNull final String rarity, @NotNull final String card) {
@@ -716,14 +721,7 @@ public class CardsCommand extends BaseCommand {
 						econ.withdrawPlayer(player, buyPrice2);
 					}
 
-					if (player.getInventory().firstEmpty() != -1) {
-						player.getInventory().addItem(plugin.createPlayerCard(card, rarity, 1, false));
-					} else {
-						World curWorld4 = player.getWorld();
-						if (player.getGameMode() == GameMode.SURVIVAL) {
-							curWorld4.dropItem(player.getLocation(), plugin.createPlayerCard(card, rarity, 1, false));
-						}
-					}
+					dropCard(player,card,rarity);
 
 					sendPrefixedMessage(player, plugin.getMessagesConfig().getConfig().getString("Messages.BoughtCard").replaceAll("%amount%", String.valueOf(buyPrice2)));
 				} else {
