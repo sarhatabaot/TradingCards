@@ -280,7 +280,16 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 			getLogger().info("Legacy YML mode is enabled!");
 		}
 	}
-
+	private void registerListeners(){
+		PluginManager pm = Bukkit.getPluginManager();
+		pm.addPermission(permRarities);
+		pm.registerEvents(this, this);
+		pm.registerEvents(new DropListener(this), this);
+		pm.registerEvents(new PackListener(this), this);
+		pm.registerEvents(new TownyListener(this),this);
+		pm.registerEvents(new MythicMobsListener(this),this);
+		pm.registerEvents(new MobArenaListener(this),this);
+	}
 	@Override
 	public void onEnable() {
 		String serverVersion = Bukkit.getServer().getVersion();
@@ -318,11 +327,8 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 				getLogger().info("Legacy 1.14 mode enabled! Consider upgrading though <3");
 			}
 		}
-		this.getServer().getPluginManager().addPermission(permRarities);
+		registerListeners();
 		this.saveDefaultConfig();
-		getServer().getPluginManager().registerEvents(this, this);
-		getServer().getPluginManager().registerEvents(new DropListener(this), this);
-		getServer().getPluginManager().registerEvents(new PackListener(this), this);
 		deckConfig = new SimpleConfig(this, "decks.yml");
 		messagesConfig = new SimpleConfig(this, "messages.yml");
 		cardsConfig = new SimpleConfig(this, "cards.yml");
