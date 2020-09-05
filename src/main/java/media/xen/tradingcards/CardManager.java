@@ -4,6 +4,7 @@ import lombok.Data;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.command.CommandSender;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -136,6 +137,27 @@ public class CardManager {
 			this.isPlayerCard = isPlayerCard;
 			return this;
 		}
+
+		/**
+		 * Saves the card to disk.
+		 * @return Returns false if the card already exists, or if the rarity doesn't exist
+		 */
+		public boolean save(){
+			//Checks should happen in the commands... this should be a stupid method, towny hooks should handle this as well.
+			//This method should only return false if there was an io exception or something like that.
+			if(plugin.getCardsConfig().getConfig().contains("Cards."+rarity+"."+cardName)) {
+				plugin.debug("Card already exists. Try a different name?");
+				return false;
+			}
+			if(!plugin.getCardsConfig().getConfig().contains("Cards."+rarity)){
+				plugin.debug("No such rarity, try /cards rarities");
+				return false;
+			}
+
+			//checks for formatting should be done through the command.
+
+		}
+
 
 		public ItemStack build(){
 			ItemStack card = blankCard.clone();

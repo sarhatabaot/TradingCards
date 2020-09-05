@@ -19,6 +19,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -92,6 +93,13 @@ public class CardsCommand extends BaseCommand {
 		}
 	}
 
+	@CommandAlias("rarities")
+	@CommandPermission("cards.list.rarities")
+	public void onRarities(final CommandSender sender){
+		final List<String> rarities = new ArrayList<>(plugin.getCardsConfig().getConfig().getConfigurationSection("Cards").getKeys(false));
+		sender.sendMessage(StringUtils.join(rarities,", "));
+	}
+
 
 	@CommandAlias("resolve")
 	@CommandPermission("cards.resolve")
@@ -127,7 +135,7 @@ public class CardsCommand extends BaseCommand {
 	@CommandPermission("cards.givecard")
 	public void onGiveCard(final Player player, final String name, final String rarity) {
 		if (plugin.getCardsConfig().getConfig().contains("Cards." + name + "." + rarity.replaceAll("_", " "))) {
-			player.getInventory().addItem(plugin.getNormalCard(name, rarity.replaceAll("_", " "), 1));
+			player.getInventory().addItem(CardManager.getCard(name, rarity.replaceAll("_", " ")));
 			return;
 		}
 		sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().getConfig().getString("Messages.NoCard")));
@@ -491,9 +499,11 @@ public class CardsCommand extends BaseCommand {
 	public void onReward(final CommandSender sender, final String rarity) {
 		if (!plugin.getConfig().getBoolean("General.Allow-Rewards")) {
 			sendMessage(sender, plugin.getPrefixedMessage(plugin.getMessagesConfig().getConfig().getString("Messages.RewardDisabled")));
+			return;
 		}
 		if (plugin.isRarity(rarity).equalsIgnoreCase("None")) {
 			sendPrefixedMessage(sender, plugin.getMessagesConfig().getConfig().getString("Messages.RewardError"));
+			return;
 		}
 
 		if (plugin.completedRarity((Player) sender, plugin.isRarity(rarity))) {
@@ -564,6 +574,15 @@ public class CardsCommand extends BaseCommand {
 
 
 	}
+
+	/**
+	 *
+	 * Drops a card at player's location. If the player has space in his inventory, the item gets placed directly into
+	 * the inventory.
+	 * @param player	Player
+	 * @param card		Card name
+	 * @param rarity	Card Rarity
+	 */
 	private void dropCard(final Player player, final String card, final String rarity){
 		if (player.getInventory().firstEmpty() != -1) {
 			player.getInventory().addItem(CardManager.getCard(card,rarity));
@@ -680,8 +699,6 @@ public class CardsCommand extends BaseCommand {
 			} else {
 				sendPrefixedMessage(player, plugin.getMessagesConfig().getConfig().getString("Messages.CannotBeBought"));
 			}
-
-
 		}
 
 

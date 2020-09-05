@@ -1391,10 +1391,11 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 		}
 
 	}
-	
+
+	private final String nameTemplate = "^[a-zA-Z0-9-_]+$";
 	public void createCard(Player creator, String rarity, String name, String series, String type, boolean hasShiny, String info, String about) {
 		if (!getCardsConfig().getConfig().contains("Cards." + rarity + "." + name)) {
-			if (name.matches("^[a-zA-Z0-9-_]+$")) {
+			if (name.matches(nameTemplate)) {
 				if (this.isPlayerCard(name)) {
 					name = name.replaceAll(" ", "_");
 				}
@@ -1416,19 +1417,19 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 					String series2 = "";
 					type2 = "";
 					String info2 = "";
-					if (series.matches("^[a-zA-Z0-9-_]+$")) {
+					if (series.matches(nameTemplate)) {
 						series2 = series;
 					} else {
 						series2 = "None";
 					}
 
-					if (type.matches("^[a-zA-Z0-9-_]+$")) {
+					if (type.matches(nameTemplate)) {
 						type2 = type;
 					} else {
 						type2 = "None";
 					}
 
-					if (info.matches("^[a-zA-Z0-9-_/ ]+$")) {
+					if (info.matches(nameTemplate)) {
 						info2 = info;
 					} else {
 						info2 = "None";
