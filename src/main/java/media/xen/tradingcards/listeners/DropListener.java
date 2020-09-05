@@ -55,6 +55,9 @@ public class DropListener extends SimpleListener {
 	@EventHandler
 	public void onEntityDeath(EntityDeathEvent e) {
 		final Player p = e.getEntity().getKiller();
+		if(p == null)
+			return;
+
 		boolean drop = ((!plugin.isOnList(p) || plugin.blacklistMode() != 'b') && ((!plugin.isOnList(p) && plugin.blacklistMode() == 'b') || (plugin.isOnList(p) && plugin.blacklistMode() == 'w')));
 		String worldName = e.getEntity().getLocation().getWorld().getName();
 		if (drop && !worlds.contains(worldName)) {
