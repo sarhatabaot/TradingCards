@@ -59,6 +59,12 @@ public class CardManager {
 		return CardUtil.generateCard(cardName,rarity,false);
 	}
 
+	public static ItemStack getCard(final String cardName,final String rarity,final boolean forcedShiny){
+		if(cards.containsKey(rarity+"."+cardName))
+			return cards.get(rarity+"."+cardName);
+		return CardUtil.generateCard(cardName,rarity,false);
+	}
+
 	public static ItemStack getCard(final String cardName,final String rarity, int num){
 		ItemStack card = cards.get(rarity+"."+cardName);
 		card.setAmount(num);
@@ -155,7 +161,7 @@ public class CardManager {
 			}
 
 			//checks for formatting should be done through the command.
-
+			return true;
 		}
 
 

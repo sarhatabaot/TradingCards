@@ -1,18 +1,25 @@
 package media.xen.tradingcards.listeners;
 
 
+import com.garbagemule.MobArena.framework.Arena;
 import media.xen.tradingcards.CardManager;
+import media.xen.tradingcards.CardUtil;
 import media.xen.tradingcards.TradingCards;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public class DropListener extends SimpleListener {
+	private List<String> worlds;
 	public DropListener(final TradingCards plugin) {
 		super(plugin);
+		worlds = plugin.getConfig().getStringList("World-Blacklist");
 	}
 
 	@EventHandler
@@ -43,5 +50,30 @@ public class DropListener extends SimpleListener {
 			}
 		}
 
+	}
+
+	@EventHandler
+	public void onEntityDeath(EntityDeathEvent e) {
+		final Player p = e.getEntity().getKiller();
+		boolean drop = ((!plugin.isOnList(p) || plugin.blacklistMode() != 'b') && ((!plugin.isOnList(p) && plugin.blacklistMode() == 'b') || (plugin.isOnList(p) && plugin.blacklistMode() == 'w')));
+		String worldName = e.getEntity().getLocation().getWorld().getName();
+		if (drop && !worlds.contains(worldName)) {
+
+			String rare = plugin.calculateRarity(e.getEntityType(), false);
+			if (plugin.getConfig().getBoolean("Chances.Boss-Drop") && plugin.isMobBoss(e.getEntityType())) rare = plugin.getConfig().getString("Chances.Boss-Drop-Rarity");
+			boolean cancelled = false;
+
+			if (!rare.equals("None")) {
+				if (plugin.getConfig().getBoolean("General.Spawner-Block") && e.getEntity().getCustomName() != null && e.getEntity().getCustomName().equals(plugin.getConfig().getString("General.Spawner-Mob-Name"))) {
+
+					plugin.debug("Mob came from spawner, not dropping card.");
+					cancelled = true;
+				}
+				if (!cancelled) {
+					plugin.debug("Successfully generated card.");
+					e.getDrops().add(CardUtil.getRandomCard(rare, false));
+				}
+			}
+		}
 	}
 }
