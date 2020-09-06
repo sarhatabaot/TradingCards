@@ -56,7 +56,9 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
+import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 
 import javax.smartcardio.Card;
@@ -280,16 +282,18 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 			getLogger().info("Legacy YML mode is enabled!");
 		}
 	}
-	private void registerListeners(){
+
+	private void registerListeners() {
 		PluginManager pm = Bukkit.getPluginManager();
 		pm.addPermission(permRarities);
 		pm.registerEvents(this, this);
 		pm.registerEvents(new DropListener(this), this);
 		pm.registerEvents(new PackListener(this), this);
-		pm.registerEvents(new TownyListener(this),this);
-		pm.registerEvents(new MythicMobsListener(this),this);
-		pm.registerEvents(new MobArenaListener(this),this);
+		pm.registerEvents(new TownyListener(this), this);
+		pm.registerEvents(new MythicMobsListener(this), this);
+		pm.registerEvents(new MobArenaListener(this), this);
 	}
+
 	@Override
 	public void onEnable() {
 		String serverVersion = Bukkit.getServer().getVersion();
@@ -1178,7 +1182,7 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 						System.out.println("[Cards] Giving a " + this.getConfig().getString("Rarities." + (String) rarityIndexes.get(i) + ".Name") + " card.");
 					}
 
-					return  rarityIndexes.get(i);
+					return rarityIndexes.get(i);
 				}
 			}
 		}
@@ -1260,14 +1264,14 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 
 	@Deprecated
 	public ItemStack createPlayerCard(String cardName, String rarity, Integer num, boolean forcedShiny) {
-		ItemStack card = CardUtil.generateCard(cardName,rarity,forcedShiny);
+		ItemStack card = CardUtil.generateCard(cardName, rarity, forcedShiny);
 		card.setAmount(num);
 		return card;
 	}
 
 	@Deprecated
 	public ItemStack getNormalCard(String cardName, String rarity, int num) {
-		ItemStack card = CardUtil.generateCard(cardName,rarity,false);
+		ItemStack card = CardUtil.generateCard(cardName, rarity, false);
 		card.setAmount(num);
 		return card;
 	}
@@ -1399,6 +1403,7 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 	}
 
 	private final String nameTemplate = "^[a-zA-Z0-9-_]+$";
+
 	public void createCard(Player creator, String rarity, String name, String series, String type, boolean hasShiny, String info, String about) {
 		if (!getCardsConfig().getConfig().contains("Cards." + rarity + "." + name)) {
 			if (name.matches(nameTemplate)) {
@@ -1572,6 +1577,78 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 		return ChatColor.translateAlternateColorCodes('&', message);
 	}
 
+	public class CardSchedulerRunnable extends BukkitRunnable {
+		private TradingCards plugin;
+
+		public CardSchedulerRunnable(final TradingCards plugin) {
+			this.plugin = plugin;
+		}
+
+		@Override
+		public void run() {
+			plugin.debug(getClass().getSimpleName() + " task running");
+			//check this before the task is registered.
+			if (!plugin.getConfig().getBoolean("General.Schedule-Cards"))
+				return;
+
+			if (plugin.getConfig().getBoolean("General.Schedule-Cards-Natural")) {
+				String mob = plugin.getConfig().getString("General.Schedule-Card-Mob");
+				if (plugin.isMob(mob.toUpperCase())) {
+					plugin.giveawayNatural(EntityType.valueOf(mob.toUpperCase()), null);
+					return;
+				}
+				plugin.getLogger().info("Error! schedule-card-mob is an invalid mob?");
+
+			}
+			else {
+				debug("Schedule cards is true.");
+
+				ConfigurationSection rarities = getCardsConfig().getConfig().getConfigurationSection("Cards");
+				Set<String> rarityKeys = rarities.getKeys(false);
+				String keyToUse = "";
+
+				for (final String key : rarityKeys) {
+					debug("Rarity key: " + key);
+					if (key.equalsIgnoreCase(plugin.getConfig().getString("General.Schedule-Card-Rarity"))) {
+						keyToUse = key;
+					}
+				}
+				debug("keyToUse: " + keyToUse);
+
+				if (!keyToUse.equals("")) {
+					Bukkit.broadcastMessage(plugin.cMsg(getMessagesConfig().getConfig().getString("Messages.Prefix") + " " + getMessagesConfig().getConfig().getString("Messages.ScheduledGiveaway")));
+
+					for (final Player p : Bukkit.getOnlinePlayers()) {
+						ConfigurationSection cards = getCardsConfig().getConfig().getConfigurationSection("Cards." + keyToUse);
+						Set<String> cardKeys = cards.getKeys(false);
+						int rIndex = plugin.r.nextInt(cardKeys.size());
+						int i = 0;
+						String cardName = "";
+
+						for (Iterator<String> var11 = cardKeys.iterator(); var11.hasNext(); ++i) {
+							String theCardName = var11.next();
+							if (i == rIndex) {
+								cardName = theCardName;
+								break;
+							}
+						}
+
+
+						if (p.getInventory().firstEmpty() != -1) {
+							p.getInventory().addItem(CardManager.getCard(cardName, keyToUse,  false));
+						} else {
+							World curWorld = p.getWorld();
+							if (p.getGameMode() == GameMode.SURVIVAL) {
+								curWorld.dropItem(p.getLocation(), CardManager.getCard(cardName, keyToUse,  false));
+							}
+						}
+					}
+				}
+			}
+
+		}
+	}
+
 	public void startTimer() {
 		BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
 		if (scheduler.isQueued(this.taskid) || scheduler.isCurrentlyRunning(this.taskid)) {
@@ -1583,63 +1660,7 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 
 		String tmessage = getMessagesConfig().getConfig().getString("Messages.TimerMessage").replaceAll("%hour%", String.valueOf(hours));
 		Bukkit.broadcastMessage(getPrefixedMessage(tmessage));
-		this.taskid = Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
-			debug("Task running..");
-			if (TradingCards.this.getConfig().getBoolean("General.Schedule-Cards")) {
-				if (TradingCards.this.getConfig().getBoolean("General.Schedule-Cards-Natural")) {
-					String mob = TradingCards.this.getConfig().getString("General.Schedule-Card-Mob");
-					if (TradingCards.this.isMob(mob.toUpperCase())) {
-						TradingCards.this.giveawayNatural(EntityType.valueOf(mob.toUpperCase()), null);
-					} else {
-						getLogger().info("Error! schedule-card-mob is an invalid mob?");
-					}
-				} else {
-					debug("Schedule cards is true.");
-
-					ConfigurationSection rarities = getCardsConfig().getConfig().getConfigurationSection("Cards");
-					Set<String> rarityKeys = rarities.getKeys(false);
-					String keyToUse = "";
-
-					for (final String key : rarityKeys) {
-						debug("Rarity key: " + key);
-						if (key.equalsIgnoreCase(TradingCards.this.getConfig().getString("General.Schedule-Card-Rarity"))) {
-							keyToUse = key;
-						}
-					}
-					debug("keyToUse: " + keyToUse);
-
-					if (!keyToUse.equals("")) {
-						Bukkit.broadcastMessage(TradingCards.this.cMsg(getMessagesConfig().getConfig().getString("Messages.Prefix") + " " + getMessagesConfig().getConfig().getString("Messages.ScheduledGiveaway")));
-
-						for (final Player p : Bukkit.getOnlinePlayers()) {
-							ConfigurationSection cards = getCardsConfig().getConfig().getConfigurationSection("Cards." + keyToUse);
-							Set<String> cardKeys = cards.getKeys(false);
-							int rIndex = TradingCards.this.r.nextInt(cardKeys.size());
-							int i = 0;
-							String cardName = "";
-
-							for (Iterator var11 = cardKeys.iterator(); var11.hasNext(); ++i) {
-								String theCardName = (String) var11.next();
-								if (i == rIndex) {
-									cardName = theCardName;
-									break;
-								}
-							}
-
-							if (p.getInventory().firstEmpty() != -1) {
-								p.getInventory().addItem(TradingCards.this.createPlayerCard(cardName, keyToUse, 1, false));
-							} else {
-								World curWorld = p.getWorld();
-								if (p.getGameMode() == GameMode.SURVIVAL) {
-									curWorld.dropItem(p.getLocation(), TradingCards.this.createPlayerCard(cardName, keyToUse, 1, false));
-								}
-							}
-						}
-					}
-				}
-			}
-
-		}, (hours * 20 * 60 * 60), (hours * 20 * 60 * 60));
+		this.taskid = new CardSchedulerRunnable(this).runTaskTimer(this,(hours * 20 * 60 * 60), (hours * 20 * 60 * 60)).getTaskId();
 	}
 
 	public boolean isPlayerCard(String name) {
