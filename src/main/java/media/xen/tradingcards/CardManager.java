@@ -37,6 +37,7 @@ public class CardManager {
 		}
 
 		plugin.getLogger().info(String.format("Loaded %d cards.",cards.size()));
+		plugin.debug(StringUtils.join(cards.keySet(), ","));
 	}
 
 
