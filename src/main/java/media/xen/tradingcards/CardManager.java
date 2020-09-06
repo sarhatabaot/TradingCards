@@ -169,7 +169,7 @@ public class CardManager {
 		public ItemStack build(){
 			ItemStack card = blankCard.clone();
 			ItemMeta cardMeta = blankCard.getItemMeta();
-			cardMeta.setDisplayName(formatDisplayName(isPlayerCard,isShiny,prefix,rarityColour,cardName,cost,shinyPrefix));
+			cardMeta.setDisplayName(formatDisplayName(isPlayerCard,isShiny,prefix,rarityColour,cardName.replace('_',' '),cost,shinyPrefix));
 			cardMeta.setLore(formatLore());
 			if (plugin.getConfig().getBoolean("General.Hide-Enchants", true)) {
 				cardMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
@@ -195,9 +195,9 @@ public class CardManager {
 			}
 
 			if (isShiny) {
-				lore.add(plugin.cMsg(rarityColour + ChatColor.BOLD + plugin.getConfig().getString("General.Shiny-Name") + " " +rarity ));
+				lore.add(plugin.cMsg(rarityColour + ChatColor.BOLD + plugin.getConfig().getString("General.Shiny-Name") + " " +rarity.replace('_',' ') ));
 			} else {
-				lore.add(plugin.cMsg(rarityColour + ChatColor.BOLD + rarity));
+				lore.add(plugin.cMsg(rarityColour + ChatColor.BOLD + rarity.replace('_',' ')));
 			}
 
 			return lore;
