@@ -134,8 +134,8 @@ public class CardsCommand extends BaseCommand {
 	@CommandAlias("givecard")
 	@CommandPermission("cards.givecard")
 	public void onGiveCard(final Player player, final String name, final String rarity) {
-		if (plugin.getCardsConfig().getConfig().contains("Cards." + name + "." + rarity.replaceAll("_", " "))) {
-			player.getInventory().addItem(CardManager.getCard(name, rarity.replaceAll("_", " ")));
+		if (plugin.getCardsConfig().getConfig().contains("Cards." + rarity + "." + name.replaceAll("_", " "))) {
+			player.getInventory().addItem(CardManager.getCard(name, rarity));
 			return;
 		}
 		sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().getConfig().getString("Messages.NoCard")));
@@ -146,7 +146,7 @@ public class CardsCommand extends BaseCommand {
 	@CommandPermission("cards.giveshinycard")
 	public void onGiveShinyCard(final Player player, final String name, final String rarity) {
 		if (plugin.getCardsConfig().getConfig().contains("Cards." + name.replaceAll("_", " ") + "." + rarity)) {
-			player.getInventory().addItem(plugin.createPlayerCard(name, rarity.replaceAll("_", " "), 1, true));
+			player.getInventory().addItem(CardManager.getCard(name, rarity.replaceAll("_", " "), true));
 			return;
 		}
 		sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().getConfig().getString("Messages.NoCard")));
