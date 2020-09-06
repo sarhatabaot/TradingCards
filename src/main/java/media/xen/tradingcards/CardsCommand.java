@@ -145,7 +145,7 @@ public class CardsCommand extends BaseCommand {
 	@CommandAlias("giveshinycard")
 	@CommandPermission("cards.giveshinycard")
 	public void onGiveShinyCard(final Player player, final String name, final String rarity) {
-		if (plugin.getCardsConfig().getConfig().contains("Cards." + name.replaceAll("_", " ") + "." + rarity)) {
+		if (plugin.getCardsConfig().getConfig().contains("Cards." + rarity.replaceAll("_", " ") + "." + name)) {
 			player.getInventory().addItem(CardManager.getCard(name, rarity.replaceAll("_", " "), true));
 			return;
 		}
