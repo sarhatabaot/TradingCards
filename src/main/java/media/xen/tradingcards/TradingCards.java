@@ -1484,61 +1484,41 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 	}
 
 	public boolean completedRarity(Player p, String rarity) {
-		if (!this.isRarity(rarity).equals("None")) {
-			ConfigurationSection cards = getCardsConfig().getConfig().getConfigurationSection("Cards." + this.isRarity(rarity));
-			Set<String> cardKeys = cards.getKeys(false);
-			int i = 0;
-			int numCardsCounter = 0;
-
-			for (Iterator<String> var7 = cardKeys.iterator(); var7.hasNext(); ++i) {
-				String key = var7.next();
-				if (this.getConfig().getBoolean("General.Debug-Mode")) {
-					System.out.println("[Cards] Iteration:: " + i);
-				}
-
-				if (this.getConfig().getBoolean("General.Debug-Mode")) {
-					System.out.println("[Cards] Key: " + key);
-				}
-
-				if (this.getConfig().getBoolean("General.Debug-Mode")) {
-					System.out.println("[Cards] Counter: " + numCardsCounter);
-				}
-
-				boolean shinyver = false;
-				boolean regularver = false;
-				if (this.hasShiny(p, key, this.isRarity(rarity))) {
-					shinyver = true;
-				}
-
-				if (this.hasCard(p, key, this.isRarity(rarity)) > 0) {
-					regularver = true;
-				}
-
-				if (shinyver && regularver) {
-					++numCardsCounter;
-				} else if (!shinyver && regularver) {
-					++numCardsCounter;
-				}
-			}
-
-			if (numCardsCounter >= i) {
-				if (this.getConfig().getBoolean("General.Debug-Mode")) {
-					System.out.println("[Cards] True!");
-				}
-
-				return true;
-			}
-
-			if (!this.getConfig().getBoolean("General.Debug-Mode")) {
-				return false;
-			}
-
-			System.out.println("[Cards] False!");
+		if ("None".equals(isRarity(rarity))) {
+			return false;
 		}
 
-		return false;
+		ConfigurationSection cards = getCardsConfig().getConfig().getConfigurationSection("Cards." + this.isRarity(rarity));
+		Set<String> cardKeys = cards.getKeys(false);
+		int i = 0;
+		int numCardsCounter = 0;
+
+		for (Iterator<String> var7 = cardKeys.iterator(); var7.hasNext(); ++i) {
+			String key = var7.next();
+			debug("Iteration:: " + i);
+			debug("Key: " + key);
+			debug("Counter: " + numCardsCounter);
+
+			boolean shinyVersion = false;
+			boolean regularVersion = false;
+			if (this.hasShiny(p, key, this.isRarity(rarity))) {
+				shinyVersion = true;
+			}
+
+			if (this.hasCard(p, key, this.isRarity(rarity)) > 0) {
+				regularVersion = true;
+			}
+
+			if (regularVersion || shinyVersion) {
+				++numCardsCounter;
+			}
+		}
+
+		return numCardsCounter >= i;
+
 	}
 
+	
 	public boolean deleteRarity(Player p, String rarity) {
 		if (!this.isRarity(rarity).equals("None")) {
 			ConfigurationSection cards = getCardsConfig().getConfig().getConfigurationSection("Cards." + this.isRarity(rarity));
@@ -1546,31 +1526,26 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 			int numCardsCounter = 0;
 
 			for (final String key : cardKeys) {
-				if (this.getConfig().getBoolean("General.Debug-Mode")) {
-					System.out.println("deleteRarity iteration: " + numCardsCounter);
-				}
+				debug("deleteRarity iteration: " + numCardsCounter);
 
 				if (this.hasShiny(p, key, rarity) && this.hasCard(p, key, rarity) == 0) {
-					if (this.getConfig().getBoolean("General.Debug-Mode")) {
-						System.out.println("Deleted: Cards." + key + ".key2");
-					}
+					debug("Deleted: Cards." + key + ".key2");
 
 					this.deleteCard(p, key, rarity);
 					++numCardsCounter;
 				}
 
 				if (this.hasCard(p, key, rarity) > 0) {
-					if (this.getConfig().getBoolean("General.Debug-Mode")) {
-						System.out.println("Deleted: Cards." + key + ".key2");
-					}
+					debug("Deleted: Cards." + key + ".key2");
 
 					this.deleteCard(p, key, rarity);
 					++numCardsCounter;
 				}
 			}
+			return true;
 		}
 
-		return true;
+		return false;
 	}
 
 	public String cMsg(String message) {
@@ -1599,8 +1574,7 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 				}
 				plugin.getLogger().info("Error! schedule-card-mob is an invalid mob?");
 
-			}
-			else {
+			} else {
 				debug("Schedule cards is true.");
 
 				ConfigurationSection rarities = getCardsConfig().getConfig().getConfigurationSection("Cards");
@@ -1635,11 +1609,11 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 
 
 						if (p.getInventory().firstEmpty() != -1) {
-							p.getInventory().addItem(CardManager.getCard(cardName, keyToUse,  false));
+							p.getInventory().addItem(CardManager.getCard(cardName, keyToUse, false));
 						} else {
 							World curWorld = p.getWorld();
 							if (p.getGameMode() == GameMode.SURVIVAL) {
-								curWorld.dropItem(p.getLocation(), CardManager.getCard(cardName, keyToUse,  false));
+								curWorld.dropItem(p.getLocation(), CardManager.getCard(cardName, keyToUse, false));
 							}
 						}
 					}
@@ -1660,7 +1634,7 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 
 		String tmessage = getMessagesConfig().getConfig().getString("Messages.TimerMessage").replaceAll("%hour%", String.valueOf(hours));
 		Bukkit.broadcastMessage(getPrefixedMessage(tmessage));
-		this.taskid = new CardSchedulerRunnable(this).runTaskTimer(this,(hours * 20 * 60 * 60), (hours * 20 * 60 * 60)).getTaskId();
+		this.taskid = new CardSchedulerRunnable(this).runTaskTimer(this, (hours * 20 * 60 * 60), (hours * 20 * 60 * 60)).getTaskId();
 	}
 
 	public boolean isPlayerCard(String name) {
