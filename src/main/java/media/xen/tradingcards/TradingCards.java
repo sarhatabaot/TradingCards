@@ -1296,15 +1296,12 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 			int year;
 			if (p.hasPlayedBefore()) {
 				gc.setTimeInMillis(p.getFirstPlayed());
-				date = gc.get(Calendar.DATE);
-				month = gc.get(Calendar.MONTH) + 1;
-				year = gc.get(Calendar.YEAR);
 			} else {
 				gc.setTimeInMillis(System.currentTimeMillis());
-				date = gc.get(Calendar.DATE);
-				month = gc.get(Calendar.MONTH) + 1;
-				year = gc.get(Calendar.YEAR);
 			}
+			date = gc.get(Calendar.DATE);
+			month = gc.get(Calendar.MONTH) + 1;
+			year = gc.get(Calendar.YEAR);
 
 			ConfigurationSection rarities = this.getConfig().getConfigurationSection("Rarities");
 			Set<String> rarityKeys = rarities.getKeys(false);
@@ -1518,7 +1515,7 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 
 	}
 
-	
+
 	public boolean deleteRarity(Player p, String rarity) {
 		if (!this.isRarity(rarity).equals("None")) {
 			ConfigurationSection cards = getCardsConfig().getConfig().getConfigurationSection("Cards." + this.isRarity(rarity));
@@ -1573,54 +1570,54 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 					return;
 				}
 				plugin.getLogger().info("Error! schedule-card-mob is an invalid mob?");
+				return;
+			}
+			debug("Schedule cards is true.");
 
-			} else {
-				debug("Schedule cards is true.");
+			ConfigurationSection rarities = getCardsConfig().getConfig().getConfigurationSection("Cards");
+			Set<String> rarityKeys = rarities.getKeys(false);
+			String keyToUse = "";
 
-				ConfigurationSection rarities = getCardsConfig().getConfig().getConfigurationSection("Cards");
-				Set<String> rarityKeys = rarities.getKeys(false);
-				String keyToUse = "";
-
-				for (final String key : rarityKeys) {
-					debug("Rarity key: " + key);
-					if (key.equalsIgnoreCase(plugin.getConfig().getString("General.Schedule-Card-Rarity"))) {
-						keyToUse = key;
-					}
+			for (final String key : rarityKeys) {
+				debug("Rarity key: " + key);
+				if (key.equalsIgnoreCase(plugin.getConfig().getString("General.Schedule-Card-Rarity"))) {
+					keyToUse = key;
 				}
-				debug("keyToUse: " + keyToUse);
+			}
+			debug("keyToUse: " + keyToUse);
 
-				if (!keyToUse.equals("")) {
-					Bukkit.broadcastMessage(plugin.cMsg(getMessagesConfig().getConfig().getString("Messages.Prefix") + " " + getMessagesConfig().getConfig().getString("Messages.ScheduledGiveaway")));
+			if (!keyToUse.equals("")) {
+				Bukkit.broadcastMessage(plugin.cMsg(getMessagesConfig().getConfig().getString("Messages.Prefix") + " " + getMessagesConfig().getConfig().getString("Messages.ScheduledGiveaway")));
 
-					for (final Player p : Bukkit.getOnlinePlayers()) {
-						ConfigurationSection cards = getCardsConfig().getConfig().getConfigurationSection("Cards." + keyToUse);
-						Set<String> cardKeys = cards.getKeys(false);
-						int rIndex = plugin.r.nextInt(cardKeys.size());
-						int i = 0;
-						String cardName = "";
+				for (final Player p : Bukkit.getOnlinePlayers()) {
+					ConfigurationSection cards = getCardsConfig().getConfig().getConfigurationSection("Cards." + keyToUse);
+					Set<String> cardKeys = cards.getKeys(false);
+					int rIndex = plugin.r.nextInt(cardKeys.size());
+					int i = 0;
+					String cardName = "";
 
-						for (Iterator<String> var11 = cardKeys.iterator(); var11.hasNext(); ++i) {
-							String theCardName = var11.next();
-							if (i == rIndex) {
-								cardName = theCardName;
-								break;
-							}
+					for (Iterator<String> var11 = cardKeys.iterator(); var11.hasNext(); ++i) {
+						String theCardName = var11.next();
+						if (i == rIndex) {
+							cardName = theCardName;
+							break;
 						}
+					}
 
 
-						if (p.getInventory().firstEmpty() != -1) {
-							p.getInventory().addItem(CardManager.getCard(cardName, keyToUse, false));
-						} else {
-							World curWorld = p.getWorld();
-							if (p.getGameMode() == GameMode.SURVIVAL) {
-								curWorld.dropItem(p.getLocation(), CardManager.getCard(cardName, keyToUse, false));
-							}
+					if (p.getInventory().firstEmpty() != -1) {
+						p.getInventory().addItem(CardManager.getCard(cardName, keyToUse, false));
+					} else {
+						World curWorld = p.getWorld();
+						if (p.getGameMode() == GameMode.SURVIVAL) {
+							curWorld.dropItem(p.getLocation(), CardManager.getCard(cardName, keyToUse, false));
 						}
 					}
 				}
 			}
-
 		}
+
+
 	}
 
 	public void startTimer() {
