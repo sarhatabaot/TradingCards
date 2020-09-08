@@ -583,6 +583,7 @@ public class CardsCommand extends BaseCommand {
 	 * @param card		Card name
 	 * @param rarity	Card Rarity
 	 */
+	@Deprecated
 	private void dropCard(final Player player, final String card, final String rarity){
 		if (player.getInventory().firstEmpty() != -1) {
 			player.getInventory().addItem(CardManager.getCard(card,rarity));
@@ -590,6 +591,22 @@ public class CardsCommand extends BaseCommand {
 			World curWorld4 = player.getWorld();
 			if (player.getGameMode() == GameMode.SURVIVAL) {
 				curWorld4.dropItem(player.getLocation(), CardManager.getCard(card,rarity));
+			}
+		}
+	}
+
+	/**
+	 * Drops an item at the player's location.
+	 * @param player	Player
+	 * @param item		Item
+	 */
+	private void dropItem(final Player player, final ItemStack item){
+		if (player.getInventory().firstEmpty() != -1) {
+			player.getInventory().addItem(item);
+		} else {
+			World curWorld4 = player.getWorld();
+			if (player.getGameMode() == GameMode.SURVIVAL) {
+				curWorld4.dropItem(player.getLocation(), item);
 			}
 		}
 	}
@@ -678,19 +695,11 @@ public class CardsCommand extends BaseCommand {
 				if (econ.getBalance(player) >= buyPrice2) {
 					if (plugin.getConfig().getBoolean("PluginSupport.Vault.Closed-Economy")) {
 						econ.withdrawPlayer(player, buyPrice2);
-						econ.depositPlayer(player, plugin.getConfig().getString("PluginSupport.Vault.Server-Account"), buyPrice2);
+						econ.depositPlayer(player, plugin.getConfig().getString("PluginSupport.Vault.Server-Account"), buyPrice2);//TODO ????
 					} else {
 						econ.withdrawPlayer(player, buyPrice2);
 					}
-
-					if (player.getInventory().firstEmpty() != -1) {
-						player.getInventory().addItem(plugin.createBoosterPack(name));
-					} else {
-						World curWorld4 = player.getWorld();
-						if (player.getGameMode() == GameMode.SURVIVAL) {
-							curWorld4.dropItem(player.getLocation(), plugin.createBoosterPack(name));
-						}
-					}
+					dropItem(player,plugin.createBoosterPack(name));
 					sendPrefixedMessage(player, plugin.getMessagesConfig().getConfig().getString("Messages.BoughtCard").replaceAll("%amount%", String.valueOf(buyPrice2)));
 				} else {
 					sendPrefixedMessage(player, plugin.getMessagesConfig().getConfig().getString("Messages.NotEnoughMoney"));
@@ -733,8 +742,7 @@ public class CardsCommand extends BaseCommand {
 						econ.withdrawPlayer(player, buyPrice2);
 					}
 
-					dropCard(player,card,rarity);
-
+					dropItem(player,CardManager.getCard(card,rarity));
 					sendPrefixedMessage(player, plugin.getMessagesConfig().getConfig().getString("Messages.BoughtCard").replaceAll("%amount%", String.valueOf(buyPrice2)));
 				} else {
 					sendPrefixedMessage(player, plugin.getMessagesConfig().getConfig().getString("Messages.NotEnoughMoney"));
