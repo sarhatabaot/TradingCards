@@ -1,10 +1,14 @@
 package media.xen.tradingcards;
 
 import co.aikar.commands.BaseCommand;
+import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.CatchUnknown;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.HelpCommand;
 import co.aikar.commands.annotation.Optional;
+import co.aikar.commands.annotation.Subcommand;
+import net.milkbowl.vault.economy.EconomyResponse;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -77,9 +81,10 @@ public class CardsCommand extends BaseCommand {
 	}
 
 	@CatchUnknown
-	@CommandAlias("help")
-	public void onHelp(final CommandSender sender) {
-		helpCommand(sender);
+	@HelpCommand
+	public void onHelp(final CommandSender sender, CommandHelp help) {
+		help.showHelp();
+		//helpCommand(sender);
 	}
 
 	@CommandAlias("reload")
@@ -95,9 +100,9 @@ public class CardsCommand extends BaseCommand {
 
 	@CommandAlias("rarities")
 	@CommandPermission("cards.list.rarities")
-	public void onRarities(final CommandSender sender){
+	public void onRarities(final CommandSender sender) {
 		final List<String> rarities = new ArrayList<>(plugin.getCardsConfig().getConfig().getConfigurationSection("Cards").getKeys(false));
-		sender.sendMessage(StringUtils.join(rarities,", "));
+		sender.sendMessage(StringUtils.join(rarities, ", "));
 	}
 
 
@@ -145,7 +150,7 @@ public class CardsCommand extends BaseCommand {
 	@CommandAlias("giveshinycard")
 	@CommandPermission("cards.giveshinycard")
 	public void onGiveShinyCard(final Player player, final String name, final String rarity) {
-		if (plugin.getCardsConfig().getConfig().contains("Cards." + rarity+ "." + name)) {
+		if (plugin.getCardsConfig().getConfig().contains("Cards." + rarity + "." + name)) {
 			player.getInventory().addItem(CardManager.getCard(name, rarity, true));
 			return;
 		}
@@ -224,12 +229,12 @@ public class CardsCommand extends BaseCommand {
 
 			if (player.getInventory().firstEmpty() != -1) {
 				sendPrefixedMessage(player, plugin.getMessagesConfig().getConfig().getString("Messages.GiveRandomCard"));
-				player.getInventory().addItem(CardUtil.getRandomCard(rare,false));
+				player.getInventory().addItem(CardUtil.getRandomCard(rare, false));
 			} else {
 				World curWorld2 = player.getWorld();
 				if (player.getGameMode() == GameMode.SURVIVAL) {
 					sendPrefixedMessage(player, plugin.getMessagesConfig().getConfig().getString("Messages.GiveRandomCard"));
-					curWorld2.dropItem(player.getLocation(), CardUtil.getRandomCard(rare,false));
+					curWorld2.dropItem(player.getLocation(), CardUtil.getRandomCard(rare, false));
 				}
 			}
 		} catch (IllegalArgumentException exception) {
@@ -239,7 +244,7 @@ public class CardsCommand extends BaseCommand {
 
 	@CommandAlias("list")
 	@CommandPermission("cards.list")
-	public void onList(final CommandSender sender,@Optional final String name) {
+	public void onList(final CommandSender sender, @Optional final String name) {
 		StringBuilder cardName2;
 		String cardName;
 		Set<String> rarityKeys;
@@ -269,7 +274,7 @@ public class CardsCommand extends BaseCommand {
 						int i = 0;
 						int numCardsCounter = 0;
 						String finalMsg = "";
-						sendMessage(sender,"&e&l------- &7(&6&l" + p3.getName() + "'s Collection&7)&e&l -------");
+						sendMessage(sender, "&e&l------- &7(&6&l" + p3.getName() + "'s Collection&7)&e&l -------");
 
 						for (Iterator var13 = cardKeys.iterator(); var13.hasNext(); numCardsCounter = 0) {
 							cardName = (String) var13.next();
@@ -279,7 +284,7 @@ public class CardsCommand extends BaseCommand {
 
 
 							while (var17.hasNext()) {
-								key2 =  var17.next();
+								key2 = var17.next();
 								if (i > 32) {
 									if (plugin.hasCard(p3, key2, cardName) > 0) {
 										++numCardsCounter;
@@ -305,14 +310,14 @@ public class CardsCommand extends BaseCommand {
 							}
 
 							if (numCardsCounter >= i) {
-								sendMessage(sender,"&6--- " + cardName + " &7(" + plugin.getConfig().getString("Colours.ListRarityComplete") + "Complete&7)&6 ---");
+								sendMessage(sender, "&6--- " + cardName + " &7(" + plugin.getConfig().getString("Colours.ListRarityComplete") + "Complete&7)&6 ---");
 							} else {
-								sendMessage(sender,"&6--- " + cardName + " &7(&c" + numCardsCounter + "&f/&a" + i + "&7)&6 ---");
+								sendMessage(sender, "&6--- " + cardName + " &7(&c" + numCardsCounter + "&f/&a" + i + "&7)&6 ---");
 							}
 
 							cardName2 = new StringBuilder(StringUtils.removeEnd(cardName2.toString(), ", "));
 							if (finalMsg.equals("")) {
-								sendMessage(sender,cardName2.toString());
+								sendMessage(sender, cardName2.toString());
 							} else {
 								sendMessage(sender, finalMsg);
 							}
@@ -324,10 +329,10 @@ public class CardsCommand extends BaseCommand {
 
 						}
 					} else {
-						sendPrefixedMessage(sender,plugin.getMessagesConfig().getConfig().getString("Messages.ListError").replaceAll("%name%", name));
+						sendPrefixedMessage(sender, plugin.getMessagesConfig().getConfig().getString("Messages.ListError").replaceAll("%name%", name));
 					}
 				} else {
-					sendPrefixedMessage(sender,plugin.getMessagesConfig().getConfig().getString("Messages.NoPerms"));
+					sendPrefixedMessage(sender, plugin.getMessagesConfig().getConfig().getString("Messages.NoPerms"));
 				}
 			} else {
 				rarities = plugin.getCardsConfig().getConfig().getConfigurationSection("Cards." + plugin.isRarity(name));
@@ -366,16 +371,16 @@ public class CardsCommand extends BaseCommand {
 				}
 
 				if (numCardsCounter2 >= j) {
-					sendMessage(sender,"&6--- " + plugin.isRarity(name) + " &7(" + plugin.getConfig().getString("Colours.ListRarityComplete") + "Complete&7)&6 ---");
+					sendMessage(sender, "&6--- " + plugin.isRarity(name) + " &7(" + plugin.getConfig().getString("Colours.ListRarityComplete") + "Complete&7)&6 ---");
 				} else {
-					sendMessage(sender,"&6--- " + plugin.isRarity(name) + " &7(&c" + numCardsCounter2 + "&f/&a" + j + "&7)&6 ---");
+					sendMessage(sender, "&6--- " + plugin.isRarity(name) + " &7(&c" + numCardsCounter2 + "&f/&a" + j + "&7)&6 ---");
 				}
 
 				keyToUse = new StringBuilder(StringUtils.removeEnd(keyToUse.toString(), ", "));
 				if (rarity.equals("")) {
-					sendMessage(sender,keyToUse.toString());
+					sendMessage(sender, keyToUse.toString());
 				} else {
-					sendMessage(sender,rarity);
+					sendMessage(sender, rarity);
 				}
 
 				keyToUse = new StringBuilder();
@@ -393,14 +398,14 @@ public class CardsCommand extends BaseCommand {
 			rarity = "";
 
 			for (var43 = rarityKeys.iterator(); var43.hasNext(); numCardsCounter2 = 0) {
-				thisKey =  var43.next();
+				thisKey = var43.next();
 				cardsWithKey = plugin.getCardsConfig().getConfig().getConfigurationSection("Cards." + thisKey);
 				keyKeys = cardsWithKey.getKeys(false);
 				var17 = keyKeys.iterator();
 
 
 				while (var17.hasNext()) {
-					key2 =  var17.next();
+					key2 = var17.next();
 					if (j > 32) {
 						if (plugin.hasCard(p4, key2, thisKey) > 0) {
 							++numCardsCounter2;
@@ -428,7 +433,7 @@ public class CardsCommand extends BaseCommand {
 				}
 
 				if (numCardsCounter2 >= j) {
-					sendMessage(sender,"&6--- " + thisKey + " &7(" + plugin.getConfig().getString("Colours.ListRarityComplete") + "Complete&7)&6 ---");
+					sendMessage(sender, "&6--- " + thisKey + " &7(" + plugin.getConfig().getString("Colours.ListRarityComplete") + "Complete&7)&6 ---");
 				} else {
 					sendMessage(sender, "&6--- " + thisKey + " &7(&c" + numCardsCounter2 + "&f/&a" + j + "&7)&6 ---");
 
@@ -478,9 +483,9 @@ public class CardsCommand extends BaseCommand {
 			}
 
 			if (hasExtra) {
-				sendMessage(sender,"  &7- &f&o" + plugin.getConfig().getInt("BoosterPacks." + rarity + ".NumNormalCards") + " " + plugin.getConfig().getString("BoosterPacks." + rarity + ".NormalCardRarity") + ", " + plugin.getConfig().getInt("BoosterPacks." + rarity + ".NumExtraCards") + " " + plugin.getConfig().getString("BoosterPacks." + rarity + ".ExtraCardRarity") + ", " + plugin.getConfig().getInt("BoosterPacks." + rarity + ".NumSpecialCards") + " " + plugin.getConfig().getString("BoosterPacks." + rarity + ".SpecialCardRarity"));
+				sendMessage(sender, "  &7- &f&o" + plugin.getConfig().getInt("BoosterPacks." + rarity + ".NumNormalCards") + " " + plugin.getConfig().getString("BoosterPacks." + rarity + ".NormalCardRarity") + ", " + plugin.getConfig().getInt("BoosterPacks." + rarity + ".NumExtraCards") + " " + plugin.getConfig().getString("BoosterPacks." + rarity + ".ExtraCardRarity") + ", " + plugin.getConfig().getInt("BoosterPacks." + rarity + ".NumSpecialCards") + " " + plugin.getConfig().getString("BoosterPacks." + rarity + ".SpecialCardRarity"));
 			} else {
-				sendMessage(sender,"  &7- &f&o" + plugin.getConfig().getInt("BoosterPacks." + rarity + ".NumNormalCards") + " " + plugin.getConfig().getString("BoosterPacks." + rarity + ".NormalCardRarity") + ", " + plugin.getConfig().getInt("BoosterPacks." + rarity + ".NumSpecialCards") + " " + plugin.getConfig().getString("BoosterPacks." + rarity + ".SpecialCardRarity"));
+				sendMessage(sender, "  &7- &f&o" + plugin.getConfig().getInt("BoosterPacks." + rarity + ".NumNormalCards") + " " + plugin.getConfig().getString("BoosterPacks." + rarity + ".NormalCardRarity") + ", " + plugin.getConfig().getInt("BoosterPacks." + rarity + ".NumSpecialCards") + " " + plugin.getConfig().getString("BoosterPacks." + rarity + ".SpecialCardRarity"));
 			}
 
 			canBuy2 = false;
@@ -516,7 +521,7 @@ public class CardsCommand extends BaseCommand {
 			}
 
 			if (!plugin.deleteRarity((Player) sender, plugin.isRarity(rarity)) && plugin.getConfig().getBoolean("General.Debug-Mode")) {
-				System.out.println("Cannot delete rarity: " + plugin.isRarity(rarity));
+				plugin.getLogger().warning("Cannot delete rarity: " + plugin.isRarity(rarity));
 			}
 		} else if (plugin.getConfig().getBoolean("General.Eat-Shiny-Cards")) {
 			sendPrefixedMessage(sender, plugin.getMessagesConfig().getConfig().getString("Messages.RewardError2"));
@@ -565,7 +570,7 @@ public class CardsCommand extends BaseCommand {
 						}
 					}
 
-					dropCard(p5,cardName,keyToUse);
+					dropCard(p5, cardName, keyToUse);
 				}
 			} else {
 				sendPrefixedMessage(sender, plugin.getMessagesConfig().getConfig().getString("Messages.NoRarity"));
@@ -576,40 +581,26 @@ public class CardsCommand extends BaseCommand {
 	}
 
 	/**
-	 *
 	 * Drops a card at player's location. If the player has space in his inventory, the item gets placed directly into
 	 * the inventory.
-	 * @param player	Player
-	 * @param card		Card name
-	 * @param rarity	Card Rarity
+	 *
+	 * @param player Player
+	 * @param card   Card name
+	 * @param rarity Card Rarity
 	 */
 	@Deprecated
-	private void dropCard(final Player player, final String card, final String rarity){
+	private void dropCard(final Player player, final String card, final String rarity) {
 		if (player.getInventory().firstEmpty() != -1) {
-			player.getInventory().addItem(CardManager.getCard(card,rarity));
+			player.getInventory().addItem(CardManager.getCard(card, rarity));
 		} else {
 			World curWorld4 = player.getWorld();
 			if (player.getGameMode() == GameMode.SURVIVAL) {
-				curWorld4.dropItem(player.getLocation(), CardManager.getCard(card,rarity));
+				curWorld4.dropItem(player.getLocation(), CardManager.getCard(card, rarity));
 			}
 		}
 	}
 
-	/**
-	 * Drops an item at the player's location.
-	 * @param player	Player
-	 * @param item		Item
-	 */
-	private void dropItem(final Player player, final ItemStack item){
-		if (player.getInventory().firstEmpty() != -1) {
-			player.getInventory().addItem(item);
-		} else {
-			World curWorld4 = player.getWorld();
-			if (player.getGameMode() == GameMode.SURVIVAL) {
-				curWorld4.dropItem(player.getLocation(), item);
-			}
-		}
-	}
+
 
 	@CommandAlias("worth")
 	@CommandPermission("cards.worth")
@@ -667,11 +658,11 @@ public class CardsCommand extends BaseCommand {
 	}
 
 
-	@CommandAlias("buy")
+	@Subcommand("buy")
 	@CommandPermission("cards.buy")
 	public class BuySubCommand extends BaseCommand {
 
-		@CommandAlias("pack|boosterpack")
+		@Subcommand("pack|boosterpack")
 		@CommandPermission("cards.buy.pack")
 		public void onBuyPack(final Player player, final String name) {
 			if (!hasVault(player))
@@ -682,37 +673,28 @@ public class CardsCommand extends BaseCommand {
 			}
 
 
-			double buyPrice2 = 0.0D;
-			boolean canBuy2 = false;
-			if (plugin.getConfig().contains("BoosterPacks." + name + ".Price")) {
-				buyPrice2 = plugin.getConfig().getDouble("BoosterPacks." + name + ".Price");
-				if (buyPrice2 > 0.0D) {
-					canBuy2 = true;
-				}
-			}
+			double buyPrice2 = plugin.getConfig().getDouble("BoosterPacks." + name + ".Price", 0.0D);
 
-			if (canBuy2) {
-				if (econ.getBalance(player) >= buyPrice2) {
-					if (plugin.getConfig().getBoolean("PluginSupport.Vault.Closed-Economy")) {
-						econ.withdrawPlayer(player, buyPrice2);
-						econ.depositPlayer(player, plugin.getConfig().getString("PluginSupport.Vault.Server-Account"), buyPrice2);//TODO ????
-					} else {
-						econ.withdrawPlayer(player, buyPrice2);
-					}
-					dropItem(player,plugin.createBoosterPack(name));
-					sendPrefixedMessage(player, plugin.getMessagesConfig().getConfig().getString("Messages.BoughtCard").replaceAll("%amount%", String.valueOf(buyPrice2)));
-				} else {
-					sendPrefixedMessage(player, plugin.getMessagesConfig().getConfig().getString("Messages.NotEnoughMoney"));
-
-				}
-			} else {
+			if (buyPrice2 <= 0.0D) {
 				sendPrefixedMessage(player, plugin.getMessagesConfig().getConfig().getString("Messages.CannotBeBought"));
+				return;
 			}
+
+			EconomyResponse economyResponse = econ.withdrawPlayer(player, buyPrice2);
+			if (economyResponse.transactionSuccess()) {
+				if (plugin.getConfig().getBoolean("PluginSupport.Vault.Closed-Economy")) {//TODO
+					econ.bankDeposit(plugin.getConfig().getString("PluginSupport.Vault.Server-Account"), buyPrice2);
+				}
+				sendPrefixedMessage(player, plugin.getMessagesConfig().getConfig().getString("Messages.BoughtCard").replaceAll("%amount%", String.valueOf(buyPrice2)));
+				CardUtil.dropItem(player, plugin.createBoosterPack(name));
+				return;
+			}
+
+			sendPrefixedMessage(player, plugin.getMessagesConfig().getConfig().getString("Messages.NotEnoughMoney"));
 		}
 
 
-
-		@CommandAlias("card")
+		@Subcommand("card")
 		@CommandPermission("cards.buy.card")
 		public void onBuyCard(final Player player, @NotNull final String rarity, @NotNull final String card) {
 			if (!hasVault(player))
@@ -724,34 +706,18 @@ public class CardsCommand extends BaseCommand {
 			}
 
 
-			double buyPrice2 = 0.0D;
-			boolean canBuy2 = false;
-			if (plugin.getCardsConfig().getConfig().contains("Cards." + rarity + "." + card + ".Buy-Price")) {
-				buyPrice2 = plugin.getCardsConfig().getConfig().getDouble("Cards." + rarity + "." + card + ".Buy-Price");
-				if (buyPrice2 > 0.0D) {
-					canBuy2 = true;
+			double buyPrice2 = plugin.getCardsConfig().getConfig().getDouble("Cards." + rarity + "." + card + ".Buy-Price", 0.0D);
+
+			EconomyResponse economyResponse = econ.withdrawPlayer(player, buyPrice2);
+			if (economyResponse.transactionSuccess()) {
+				if (plugin.getConfig().getBoolean("PluginSupport.Vault.Closed-Economy")) {//TODO
+					econ.bankDeposit(plugin.getConfig().getString("PluginSupport.Vault.Server-Account"), buyPrice2);
 				}
+				CardUtil.dropItem(player, CardManager.getCard(card, rarity));
+				sendPrefixedMessage(player, plugin.getMessagesConfig().getConfig().getString("Messages.BoughtCard").replaceAll("%amount%", String.valueOf(buyPrice2)));
+				return;
 			}
-
-			if (canBuy2) {
-				if (econ.getBalance(player) >= buyPrice2) {
-					if (plugin.getConfig().getBoolean("PluginSupport.Vault.Closed-Economy")) {
-						econ.withdrawPlayer(player, buyPrice2);
-						econ.depositPlayer(player, plugin.getConfig().getString("PluginSupport.Vault.Server-Account"), buyPrice2);
-					} else {
-						econ.withdrawPlayer(player, buyPrice2);
-					}
-
-					dropItem(player,CardManager.getCard(card,rarity));
-					sendPrefixedMessage(player, plugin.getMessagesConfig().getConfig().getString("Messages.BoughtCard").replaceAll("%amount%", String.valueOf(buyPrice2)));
-				} else {
-					sendPrefixedMessage(player, plugin.getMessagesConfig().getConfig().getString("Messages.NotEnoughMoney"));
-				}
-			} else {
-				sendPrefixedMessage(player, plugin.getMessagesConfig().getConfig().getString("Messages.CannotBeBought"));
-			}
-
-
+			sendPrefixedMessage(player, plugin.getMessagesConfig().getConfig().getString("Messages.NotEnoughMoney"));
 		}
 	}
 }

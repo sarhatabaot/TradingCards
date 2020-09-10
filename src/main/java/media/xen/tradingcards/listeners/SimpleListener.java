@@ -12,6 +12,8 @@ public abstract class SimpleListener implements Listener {
 	public SimpleListener(final TradingCards plugin) {
 		this.plugin = plugin;
 		this.logger = plugin.getLogger();
+
+		debug("registered.");
 	}
 
 	protected void debug(final String message) {

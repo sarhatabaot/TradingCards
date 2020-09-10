@@ -91,9 +91,9 @@ PluginSupport:
     Nation-Type: 'Nation'
     Has-Shiny: true
   Vault:
-    Vault-Enabled: false
+    Vault-Enabled: true
     # Is the server running a closed economy? if so, whose account should money go into?
-    Closed-Economy: true
+    Closed-Economy: false
     Server-Account: TradingCards-Bank
   MobArena:
     MobArena-Enabled: false

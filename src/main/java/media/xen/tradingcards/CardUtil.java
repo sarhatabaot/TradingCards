@@ -1,8 +1,11 @@
 package media.xen.tradingcards;
 
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -56,12 +59,29 @@ public class CardUtil {
 		return null;
 	}
 
+	/**
+	 * Drops an item at the player's location.
+	 *
+	 * @param player Player
+	 * @param item   Item
+	 */
+	public static void dropItem(final Player player, final ItemStack item) {
+		if (player.getInventory().firstEmpty() != -1) {
+			player.getInventory().addItem(item);
+		} else {
+			World curWorld4 = player.getWorld();
+			if (player.getGameMode() == GameMode.SURVIVAL) {
+				curWorld4.dropItem(player.getLocation(), item);
+			}
+		}
+	}
+
 
 	public static ItemStack generateCard(String cardName, String rarityName, boolean forcedShiny){
 		if (rarityName.equals("None")) {
 			return null;
 		}
-		plugin.reloadAllConfig();
+		//plugin.reloadAllConfig();
 		plugin.debug("generateCard.cardSection: " + plugin.getCardsConfig().getConfig().contains("Cards." + rarityName));
 		plugin.debug("generateCard.rarity: " + rarityName);
 

@@ -289,9 +289,9 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 		pm.registerEvents(this, this);
 		pm.registerEvents(new DropListener(this), this);
 		pm.registerEvents(new PackListener(this), this);
-		pm.registerEvents(new TownyListener(this), this);
-		pm.registerEvents(new MythicMobsListener(this), this);
-		pm.registerEvents(new MobArenaListener(this), this);
+		hookMythicMobs();
+		hookMobArena();
+		hookTowny();
 	}
 
 	@Override
@@ -345,11 +345,9 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 		new CardManager(this);
 		BukkitCommandManager commandManager = new BukkitCommandManager(this);
 		commandManager.registerCommand(new CardsCommand(this));
+		commandManager.enableUnstableAPI("help");
 		hookFileSystem();
-		hookTowny();
 		hookVault();
-		hookMobArena();
-		hookMythicMobs();
 
 		if (this.getConfig().getBoolean("General.Schedule-Cards")) {
 			this.startTimer();
@@ -1233,7 +1231,7 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 
 		for (int i = 0; i < j; ++i) {
 			String ss = arrayOfString1[i];
-			System.out.println(ChatColor.getLastColors(ss));
+			debug(ChatColor.getLastColors(ss));
 			finalArray.add(this.cMsg("&f &7- &f" + ss));
 		}
 
@@ -1258,7 +1256,7 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 
 	public void debug(final String message) {
 		if (getConfig().getBoolean("General.Debug-Mode")) {
-			getLogger().info(message);
+			getLogger().info("DEBUG "+message);
 		}
 	}
 
@@ -1381,20 +1379,8 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 
 		for (final Player p : Bukkit.getOnlinePlayers()) {
 			String rare = this.calculateRarity(mob, true);
-			if (this.getConfig().getBoolean("General.Debug-Mode")) {
-				System.out.println("[Cards] onCommand.rare: " + rare);
-			}
-
-			if (p.getInventory().firstEmpty() != -1) {
-				if (CardUtil.getRandomCard(rare, false) != null) {
-					p.getInventory().addItem(CardUtil.getRandomCard(rare, false));
-				}
-			} else {
-				World curWorld = p.getWorld();
-				if (p.getGameMode() == GameMode.SURVIVAL && CardUtil.getRandomCard(rare, false) != null) {
-					curWorld.dropItem(p.getLocation(), CardUtil.getRandomCard(rare, false));
-				}
-			}
+			debug("onCommand.rare: " + rare);
+			CardUtil.dropItem(p,CardUtil.getRandomCard(rare,false));
 		}
 
 	}
