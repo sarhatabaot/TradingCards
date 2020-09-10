@@ -21,6 +21,9 @@ import java.util.UUID;
 
 import media.xen.tradingcards.db.Database;
 import media.xen.tradingcards.db.SQLite;
+import media.xen.tradingcards.listeners.AddOnJoinListener;
+import media.xen.tradingcards.listeners.DeckListener;
+import media.xen.tradingcards.listeners.MobSpawnListener;
 import media.xen.tradingcards.listeners.PackListener;
 import media.xen.tradingcards.listeners.DropListener;
 import media.xen.tradingcards.listeners.MobArenaListener;
@@ -289,6 +292,9 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 		pm.registerEvents(this, this);
 		pm.registerEvents(new DropListener(this), this);
 		pm.registerEvents(new PackListener(this), this);
+		pm.registerEvents(new MobSpawnListener(this), this);
+		pm.registerEvents(new AddOnJoinListener(this), this);
+		pm.registerEvents(new DeckListener(this), this);
 		hookMythicMobs();
 		hookMobArena();
 		hookTowny();
@@ -426,7 +432,6 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 	}
 
 	public boolean hasDeck(Player p, int num) {
-
 		for (final ItemStack i : p.getInventory()) {
 			if (i != null && i.getType() == Material.valueOf(this.getConfig().getString("General.Deck-Material")) && i.containsEnchantment(Enchantment.DURABILITY) && i.getEnchantmentLevel(Enchantment.DURABILITY) == 10) {
 				String name = i.getItemMeta().getDisplayName();
@@ -652,103 +657,68 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 
 	public boolean hasShiny(Player p, String card, String rarity) {
 		int deckNumber = 0;
-		if (this.getConfig().getBoolean("General.Debug-Mode")) {
-			System.out.println("[Cards] Started check for card: " + card + ", " + rarity);
-		}
+		debug("Started check for card: " + card + ", " + rarity);
 
 		String uuidString = p.getUniqueId().toString();
 		ConfigurationSection deckList = getDeckConfig().getConfig().getConfigurationSection("Decks.Inventories." + uuidString);
-		if (this.getConfig().getBoolean("General.Debug-Mode")) {
-			System.out.println("[Cards] Deck UUID: " + uuidString);
-		}
-
-		if (this.getConfig().getBoolean("General.Debug-Mode") && getDeckConfig().getConfig().contains("Decks.Inventories." + uuidString)) {
-			System.out.println("[Cards] Deck.yml contains player!");
-		}
+		debug("[Cards] Deck UUID: " + uuidString);
 
 		Iterator var7;
 		String s;
-		if (this.getConfig().getBoolean("General.Debug-Mode")) {
-			var7 = deckList.getKeys(false).iterator();
+		debug(StringUtils.join(deckList.getKeys(false), "Deck rarity content:"));
 
-			while (var7.hasNext()) {
-				s = (String) var7.next();
-				System.out.println("[Cards] Deck rarity content: " + s);
-			}
 
-			if (this.getConfig().getBoolean("General.Debug-Mode")) {
-				System.out.println("[Cards] Done!");
-			}
+		if (deckList == null)
+			return false;
+
+		var7 = deckList.getKeys(false).iterator();
+
+		while (var7.hasNext()) {
+			s = (String) var7.next();
+			deckNumber += Integer.parseInt(s);
+			debug("Deck running total: " + deckNumber);
 		}
 
-		if (deckList == null) {
+		if (deckNumber == 0) {
 			return false;
-		} else {
-			var7 = deckList.getKeys(false).iterator();
+		}
+		debug("Decks:" + deckNumber);
 
-			while (var7.hasNext()) {
-				s = (String) var7.next();
-				deckNumber += Integer.valueOf(s);
-				if (this.getConfig().getBoolean("General.Debug-Mode")) {
-					System.out.println("[Cards] Deck running total: " + deckNumber);
-				}
-			}
+		for (int i = 0; i < deckNumber; ++i) {
+			if (getDeckConfig().getConfig().contains("Decks.Inventories." + uuidString + "." + (i + 1))) {
+				List<String> contents = getDeckConfig().getConfig().getStringList("Decks.Inventories." + uuidString + "." + (i + 1));
 
-			if (deckNumber == 0) {
-				if (this.getConfig().getBoolean("General.Debug-Mode")) {
-					System.out.println("[Cards] No decks?!");
-				}
-
-				return false;
-			} else {
-				if (this.getConfig().getBoolean("General.Debug-Mode")) {
-					System.out.println("[Cards] Decks:" + deckNumber);
-				}
-
-				for (int i = 0; i < deckNumber; ++i) {
+				for (final String s2 : contents) {
 					if (this.getConfig().getBoolean("General.Debug-Mode")) {
-						System.out.println("[Cards] Starting iteration " + i);
+						System.out.println("[Cards] Deck file content: " + s2);
 					}
 
-					if (getDeckConfig().getConfig().contains("Decks.Inventories." + uuidString + "." + (i + 1))) {
-						List<String> contents = getDeckConfig().getConfig().getStringList("Decks.Inventories." + uuidString + "." + (i + 1));
+					String[] splitContents = s2.split(",");
+					if (this.getConfig().getBoolean("General.Debug-Mode")) {
+						System.out.println("[Cards] " + card + " - " + splitContents[1]);
+					}
 
-						for (final String s2 : contents) {
-							if (this.getConfig().getBoolean("General.Debug-Mode")) {
-								System.out.println("[Cards] Deck file content: " + s2);
-							}
+					if (this.getConfig().getBoolean("General.Debug-Mode")) {
+						System.out.println("[Cards] " + rarity + " - " + splitContents[0]);
+					}
 
-							String[] splitContents = s2.split(",");
-							if (this.getConfig().getBoolean("General.Debug-Mode")) {
-								System.out.println("[Cards] " + card + " - " + splitContents[1]);
-							}
+					if (splitContents[0].equalsIgnoreCase(rarity)) {
+						debug("[Cards] Rarity match: " + splitContents[0]);
 
-							if (this.getConfig().getBoolean("General.Debug-Mode")) {
-								System.out.println("[Cards] " + rarity + " - " + splitContents[0]);
-							}
-
-							if (splitContents[0].equalsIgnoreCase(rarity)) {
-								if (this.getConfig().getBoolean("General.Debug-Mode")) {
-									System.out.println("[Cards] Rarity match: " + splitContents[0]);
-								}
-
-								if (splitContents[1].equalsIgnoreCase(card)) {
-									if (this.getConfig().getBoolean("General.Debug-Mode")) {
-										System.out.println("[Cards] Card match: " + splitContents[1]);
-									}
-
-									if (splitContents[3].equalsIgnoreCase("yes")) {
-										return true;
-									}
-								}
+						if (splitContents[1].equalsIgnoreCase(card)) {
+							debug("Card match: " + splitContents[1]);
+							if (splitContents[3].equalsIgnoreCase("yes")) {
+								return true;
 							}
 						}
 					}
 				}
-
-				return false;
 			}
 		}
+
+		return false;
+
+
 	}
 
 	public void openDeck(Player p, int deckNum) {
@@ -811,7 +781,7 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 			invSlots = 54;
 		}
 
-		Inventory inv = Bukkit.createInventory((InventoryHolder) null, invSlots, this.cMsg("&c" + p.getName() + "'s Deck #" + deckNum));
+		Inventory inv = Bukkit.createInventory(null, invSlots, this.cMsg("&c" + p.getName() + "'s Deck #" + deckNum));
 		if (this.getConfig().getBoolean("General.Debug-Mode")) {
 			System.out.println("[Cards] Created inventory.");
 		}
@@ -824,13 +794,11 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 				System.out.println("[Cards] Item " + i.getType().toString() + " added to inventory!");
 			}
 
-			i.setAmount((Integer) quantity.get(iter));
+			i.setAmount(quantity.get(iter));
 			inv.addItem(i);
 		}
 
 		p.openInventory(inv);
-		return;
-
 	}
 
 	public String isRarity(String input) {
@@ -863,129 +831,15 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 	}
 
 	public boolean isMob(String input) {
-		EntityType type = null;
-
 		try {
-			type = EntityType.valueOf(input.toUpperCase());
+			EntityType type = EntityType.valueOf(input.toUpperCase());
 			return this.hostileMobs.contains(type) || this.neutralMobs.contains(type) || this.passiveMobs.contains(type) || this.bossMobs.contains(type);
 		} catch (IllegalArgumentException var4) {
 			return false;
 		}
 	}
 
-	@EventHandler
-	public void onInventoryClose(InventoryCloseEvent e) {
-		String viewTitle = e.getView().getTitle();
-		if (this.getConfig().getBoolean("General.Debug-Mode")) {
-			System.out.println("[Cards] Title: " + viewTitle);
-		}
 
-		if (viewTitle.contains("s Deck #")) {
-			if (this.getConfig().getBoolean("General.Debug-Mode")) {
-				System.out.println("[Cards] Deck closed.");
-			}
-
-			ItemStack[] contents = e.getInventory().getContents();
-			String[] title = viewTitle.split("'");
-			String[] titleNum = viewTitle.split("#");
-			int deckNum = Integer.parseInt(titleNum[1]);
-			if (this.getConfig().getBoolean("General.Debug-Mode")) {
-				System.out.println("[Cards] Deck num: " + deckNum);
-			}
-
-			if (this.getConfig().getBoolean("General.Debug-Mode")) {
-				System.out.println("[Cards] Title: " + title[0]);
-			}
-
-			if (this.getConfig().getBoolean("General.Debug-Mode")) {
-				System.out.println("[Cards] Title: " + title[1]);
-			}
-
-			UUID id = Bukkit.getOfflinePlayer(ChatColor.stripColor(title[0])).getUniqueId();
-			if (this.getConfig().getBoolean("General.Debug-Mode")) {
-				System.out.println("[Cards] New ID: " + id.toString());
-			}
-
-			List<String> serialized = new ArrayList<>();
-			ItemStack[] arrayOfItemStack1 = contents;
-			int j = contents.length;
-
-			for (int i = 0; i < j; ++i) {
-				ItemStack it = arrayOfItemStack1[i];
-				if (it != null && it.getType() == Material.valueOf(this.getConfig().getString("General.Card-Material")) && it.getItemMeta().hasDisplayName()) {
-					List<String> lore = it.getItemMeta().getLore();
-					String shinyPrefix = this.getConfig().getString("General.Shiny-Name");
-					String rarity = ChatColor.stripColor(lore.get(lore.size() - 1)).replaceAll(shinyPrefix + " ", "");
-					String card = this.getCardName(rarity, it.getItemMeta().getDisplayName());
-					String amount = String.valueOf(it.getAmount());
-					String shiny = "no";
-					if (it.containsEnchantment(Enchantment.ARROW_INFINITE)) {
-						shiny = "yes";
-					}
-
-					String serializedString = rarity + "," + card + "," + amount + "," + shiny;
-					serialized.add(serializedString);
-					if (this.getConfig().getBoolean("General.Debug-Mode")) {
-						System.out.println("[Cards] Added " + serializedString + " to deck file.");
-					}
-				} else if (it != null && this.getConfig().getBoolean("General.Drop-Deck-Items")) {
-					Player p = Bukkit.getPlayer(ChatColor.stripColor(title[0]));
-					World w = p.getWorld();
-					w.dropItemNaturally(p.getLocation(), it);
-				}
-
-				getDeckConfig().getConfig().set("Decks.Inventories." + id.toString() + "." + deckNum, serialized);
-				this.deckConfig.saveConfig();
-			}
-		}
-
-	}
-
-	public String getCardName(String rarity, String display) {
-		boolean hasPrefix = false;
-		String prefix = "";
-		if (getConfig().contains("General.Card-Prefix") && !getConfig().getString("General.Card-Prefix").equals("")) {
-			hasPrefix = true;
-			prefix = ChatColor.stripColor(getConfig().getString("General.Card-Prefix"));
-		}
-		String shinyPrefix = getConfig().getString("General.Shiny-Name");
-		String cleaned = ChatColor.stripColor(display);
-		if (hasPrefix) cleaned = cleaned.replaceAll(prefix, "");
-		cleaned = cleaned.replaceAll(shinyPrefix + " ", "");
-		String[] cleanedArray = cleaned.split(" ");
-		ConfigurationSection cs = getCardsConfig().getConfig().getConfigurationSection("Cards." + rarity);
-		Set<String> keys = cs.getKeys(false);
-		for (String s : keys) {
-			debug("getCardName s: " + s);
-			debug("getCardName display: " + display);
-			if (cleanedArray.length > 1) {
-				debug("cleanedArray > 1");
-				if ((cleanedArray[0] + "_" + cleanedArray[1]).matches(s)) return s;
-				if ((cleanedArray[0] + " " + cleanedArray[1]).matches(s)) return s;
-				if (cleanedArray.length > 2 && (cleanedArray[1] + "_" + cleanedArray[2]).matches(s)) return s;
-				if (cleanedArray.length > 2 && (cleanedArray[1] + " " + cleanedArray[2]).matches(s)) return s;
-				if (cleanedArray.length > 3 && (cleanedArray[1] + "_" + cleanedArray[2] + "_" + cleanedArray[3]).matches(s))
-					return s;
-				if (cleanedArray.length > 3 && (cleanedArray[1] + " " + cleanedArray[2] + " " + cleanedArray[3]).matches(s))
-					return s;
-				if (cleanedArray.length > 4 && (cleanedArray[1] + "_" + cleanedArray[2] + "_" + cleanedArray[3] + "_" + cleanedArray[4]).matches(s))
-					return s;
-				if (cleanedArray.length > 4 && (cleanedArray[1] + " " + cleanedArray[2] + " " + cleanedArray[3] + " " + cleanedArray[4]).matches(s))
-					return s;
-				if (cleanedArray.length > 5 && (cleanedArray[1] + "_" + cleanedArray[2] + "_" + cleanedArray[3] + "_" + cleanedArray[4] + "_" + cleanedArray[5]).matches(s))
-					return s;
-				if (cleanedArray.length > 5 && (cleanedArray[1] + " " + cleanedArray[2] + " " + cleanedArray[3] + " " + cleanedArray[4] + " " + cleanedArray[5]).matches(s))
-					return s;
-				if (cleanedArray.length > 6 && (cleanedArray[1] + "_" + cleanedArray[2] + "_" + cleanedArray[3] + "_" + cleanedArray[4] + "_" + cleanedArray[5] + "_" + cleanedArray[6]).matches(s))
-					return s;
-				if (cleanedArray.length > 6 && (cleanedArray[1] + " " + cleanedArray[2] + " " + cleanedArray[3] + " " + cleanedArray[4] + " " + cleanedArray[5] + " " + cleanedArray[6]).matches(s))
-					return s;
-				if (cleanedArray.length == 1 && cleanedArray[0].matches(s)) return s;
-				if (cleanedArray.length == 2 && cleanedArray[1].matches(s)) return s;
-			}
-		}
-		return "None";
-	}
 
 	public ItemStack createBoosterPack(String name) {
 		ItemStack boosterPack = this.getBlankBoosterPack();
@@ -1256,7 +1110,7 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 
 	public void debug(final String message) {
 		if (getConfig().getBoolean("General.Debug-Mode")) {
-			getLogger().info("DEBUG "+message);
+			getLogger().info("DEBUG " + message);
 		}
 	}
 
@@ -1274,73 +1128,6 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 		return card;
 	}
 
-	@EventHandler
-	public void onMobSpawn(CreatureSpawnEvent e) {
-		if (!(e.getEntity() instanceof Player) && e.getSpawnReason() == SpawnReason.SPAWNER && this.getConfig().getBoolean("General.Spawner-Block")) {
-			e.getEntity().setCustomName(this.getConfig().getString("General.Spawner-Mob-Name"));
-			debug("Spawner mob renamed.");
-			e.getEntity().setRemoveWhenFarAway(true);
-		}
-
-	}
-
-	@EventHandler
-	public void onPlayerJoin(PlayerJoinEvent e) {
-		if (this.getConfig().getBoolean("General.Auto-Add-Players")) {
-			Player p = e.getPlayer();
-			GregorianCalendar gc = new GregorianCalendar();
-			int date;
-			int month;
-			int year;
-			if (p.hasPlayedBefore()) {
-				gc.setTimeInMillis(p.getFirstPlayed());
-			} else {
-				gc.setTimeInMillis(System.currentTimeMillis());
-			}
-			date = gc.get(Calendar.DATE);
-			month = gc.get(Calendar.MONTH) + 1;
-			year = gc.get(Calendar.YEAR);
-
-			ConfigurationSection rarities = this.getConfig().getConfigurationSection("Rarities");
-			Set<String> rarityKeys = rarities.getKeys(false);
-			Map<String, Boolean> children = permRarities.getChildren();
-			String rarity = this.getConfig().getString("General.Auto-Add-Player-Rarity");
-			Iterator var11 = rarityKeys.iterator();
-
-			String type;
-			while (var11.hasNext()) {
-				type = (String) var11.next();
-				children.put("cards.rarity." + type, false);
-				permRarities.recalculatePermissibles();
-				if (p.hasPermission("cards.rarity." + type)) {
-					rarity = type;
-					break;
-				}
-			}
-
-			if (p.isOp()) {
-				rarity = this.getConfig().getString("General.Player-Op-Rarity");
-			}
-
-			if (!getCardsConfig().getConfig().contains("Cards." + rarity + "." + p.getName())) {
-				String series = this.getConfig().getString("General.Player-Series");
-				type = this.getConfig().getString("General.Player-Type");
-				boolean hasShiny = this.getConfig().getBoolean("General.Player-Has-Shiny-Version");
-				getCardsConfig().getConfig().set("Cards." + rarity + "." + p.getName() + ".Series", series);
-				getCardsConfig().getConfig().set("Cards." + rarity + "." + p.getName() + ".Type", type);
-				getCardsConfig().getConfig().set("Cards." + rarity + "." + p.getName() + ".Has-Shiny-Version", hasShiny);
-				if (this.getConfig().getBoolean("General.American-Mode")) {
-					getCardsConfig().getConfig().set("Cards." + rarity + "." + p.getName() + ".Info", "Joined " + month + "/" + date + "/" + year);
-				} else {
-					getCardsConfig().getConfig().set("Cards." + rarity + "." + p.getName() + ".Info", "Joined " + date + "/" + month + "/" + year);
-				}
-
-				getCardsConfig().saveConfig();
-				getCardsConfig().reloadConfig();
-			}
-		}
-
-	}
 
 	public String getPrefixedMessage(final String message) {
 		return cMsg(getMessagesConfig().getConfig().getString("Messages.Prefix") + "&r " + message);
@@ -1380,7 +1167,7 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 		for (final Player p : Bukkit.getOnlinePlayers()) {
 			String rare = this.calculateRarity(mob, true);
 			debug("onCommand.rare: " + rare);
-			CardUtil.dropItem(p,CardUtil.getRandomCard(rare,false));
+			CardUtil.dropItem(p, CardUtil.getRandomCard(rare, false));
 		}
 
 	}
@@ -1536,7 +1323,7 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 	}
 
 	public class CardSchedulerRunnable extends BukkitRunnable {
-		private TradingCards plugin;
+		private final TradingCards plugin;
 
 		public CardSchedulerRunnable(final TradingCards plugin) {
 			this.plugin = plugin;

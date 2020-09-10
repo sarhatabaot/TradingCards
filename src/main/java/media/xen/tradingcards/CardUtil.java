@@ -169,4 +169,49 @@ public class CardUtil {
 		String cardName = cardNames.get(cIndex);
 		return CardManager.getCard(cardName,rarityName);
 	}
+	public static String getCardName(String rarity, String display) {
+		boolean hasPrefix = false;
+		String prefix = "";
+		if (plugin.getConfig().contains("General.Card-Prefix") && !plugin.getConfig().getString("General.Card-Prefix").equals("")) {
+			hasPrefix = true;
+			prefix = ChatColor.stripColor(plugin.getConfig().getString("General.Card-Prefix"));
+		}
+		String shinyPrefix = plugin.getConfig().getString("General.Shiny-Name");
+		String cleaned = ChatColor.stripColor(display);
+		if (hasPrefix) cleaned = cleaned.replaceAll(prefix, "");
+		cleaned = cleaned.replaceAll(shinyPrefix + " ", "");
+		String[] cleanedArray = cleaned.split(" ");
+		ConfigurationSection cs = plugin.getCardsConfig().getConfig().getConfigurationSection("Cards." + rarity);
+		Set<String> keys = cs.getKeys(false);
+		for (String s : keys) {
+			plugin.debug("getCardName s: " + s);
+			plugin.debug("getCardName display: " + display);
+			if (cleanedArray.length > 1) {
+				plugin.debug("cleanedArray > 1");
+				if ((cleanedArray[0] + "_" + cleanedArray[1]).matches(s)) return s;
+				if ((cleanedArray[0] + " " + cleanedArray[1]).matches(s)) return s;
+				if (cleanedArray.length > 2 && (cleanedArray[1] + "_" + cleanedArray[2]).matches(s)) return s;
+				if (cleanedArray.length > 2 && (cleanedArray[1] + " " + cleanedArray[2]).matches(s)) return s;
+				if (cleanedArray.length > 3 && (cleanedArray[1] + "_" + cleanedArray[2] + "_" + cleanedArray[3]).matches(s))
+					return s;
+				if (cleanedArray.length > 3 && (cleanedArray[1] + " " + cleanedArray[2] + " " + cleanedArray[3]).matches(s))
+					return s;
+				if (cleanedArray.length > 4 && (cleanedArray[1] + "_" + cleanedArray[2] + "_" + cleanedArray[3] + "_" + cleanedArray[4]).matches(s))
+					return s;
+				if (cleanedArray.length > 4 && (cleanedArray[1] + " " + cleanedArray[2] + " " + cleanedArray[3] + " " + cleanedArray[4]).matches(s))
+					return s;
+				if (cleanedArray.length > 5 && (cleanedArray[1] + "_" + cleanedArray[2] + "_" + cleanedArray[3] + "_" + cleanedArray[4] + "_" + cleanedArray[5]).matches(s))
+					return s;
+				if (cleanedArray.length > 5 && (cleanedArray[1] + " " + cleanedArray[2] + " " + cleanedArray[3] + " " + cleanedArray[4] + " " + cleanedArray[5]).matches(s))
+					return s;
+				if (cleanedArray.length > 6 && (cleanedArray[1] + "_" + cleanedArray[2] + "_" + cleanedArray[3] + "_" + cleanedArray[4] + "_" + cleanedArray[5] + "_" + cleanedArray[6]).matches(s))
+					return s;
+				if (cleanedArray.length > 6 && (cleanedArray[1] + " " + cleanedArray[2] + " " + cleanedArray[3] + " " + cleanedArray[4] + " " + cleanedArray[5] + " " + cleanedArray[6]).matches(s))
+					return s;
+				if (cleanedArray.length == 1 && cleanedArray[0].matches(s)) return s;
+				if (cleanedArray.length == 2 && cleanedArray[1].matches(s)) return s;
+			}
+		}
+		return "None";
+	}
 }
