@@ -1,6 +1,7 @@
 package media.xen.tradingcards.listeners;
 
 
+import media.xen.tradingcards.CardUtil;
 import media.xen.tradingcards.TradingCards;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -51,7 +52,7 @@ public class DeckListener extends SimpleListener{
 					List<String> lore = it.getItemMeta().getLore();
 					String shinyPrefix = plugin.getConfig().getString("General.Shiny-Name");
 					String rarity = ChatColor.stripColor(lore.get(lore.size() - 1)).replaceAll(shinyPrefix + " ", "");
-					String card = plugin.getCardName(rarity, it.getItemMeta().getDisplayName());
+					String card = CardUtil.getCardName(rarity, it.getItemMeta().getDisplayName());
 					String amount = String.valueOf(it.getAmount());
 					String shiny = "no";
 					if (it.containsEnchantment(Enchantment.ARROW_INFINITE)) {

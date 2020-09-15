@@ -180,6 +180,23 @@ public class CardsCommand extends BaseCommand {
 		sendMessage(toWhom, plugin.getPrefixedMessage(message));
 	}
 
+
+	@CommandAlias("modules")
+	@CommandPermission("cards.admin.modules")
+	public void onModules(final CommandSender sender){
+		final StringBuilder builder = new StringBuilder("Enabled Modules:");
+		builder.append("\n");
+		for(String depend: plugin.getDescription().getSoftDepend()){
+			if(Bukkit.getPluginManager().getPlugin(depend) == null)
+				builder.append(ChatColor.GRAY);
+			else {
+				builder.append(ChatColor.GREEN);
+			}
+			builder.append(depend).append(" ");
+		}
+		sender.sendMessage(builder.toString());
+	}
+
 	@CommandAlias("getdeck")
 	public void onGetDeck(final Player player, final int deckNumber) {
 		World curWorld;
