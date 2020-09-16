@@ -40,7 +40,7 @@ public class MythicMobsListener extends SimpleListener {
 			String rare = this.plugin.calculateRarity(e.getEntity().getType(), false);
 			if (this.plugin.getConfig().getBoolean("PluginSupport.MythicMobs.Per-Level-Chances")) {
 				ActiveMob mob = e.getMob();
-				int level = mob.getLevel();
+				double level = mob.getLevel();
 				String oldRarity = rare;
 				rare = this.calculateMMRarity(level, false);
 				debug("Mob is a mythic mob of level " + level + ", rarity changed from " + oldRarity + " to " + rare);
@@ -77,7 +77,7 @@ public class MythicMobsListener extends SimpleListener {
 
 	}
 
-	public String calculateMMRarity(int mobLvl, boolean alwaysDrop) {
+	public String calculateMMRarity(double mobLvl, boolean alwaysDrop) {
 		debug("Mythic mobs: Starting rarity calculation for level " + mobLvl + ", alwaysDrop is " + alwaysDrop);
 		ConfigurationSection levels = this.plugin.getConfig().getConfigurationSection("PluginSupport.MythicMobs.Levels");
 		Set<String> levelKeys = levels.getKeys(false);
