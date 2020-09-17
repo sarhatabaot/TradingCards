@@ -86,6 +86,12 @@ public class CardsCommand extends BaseCommand {
 		help.showHelp();
 		//helpCommand(sender);
 	}
+	@CommandAlias("version|ver")
+	@CommandPermission("cards.version")
+	public void onVersion(final CommandSender sender){
+		final String format = "%s %s API-%s";
+		sendMessage(sender,String.format(format,plugin.getName(), plugin.getDescription().getVersion(),plugin.getDescription().getAPIVersion()));
+	}
 
 	@CommandAlias("reload")
 	@CommandPermission("cards.reload")
