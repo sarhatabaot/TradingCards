@@ -64,6 +64,7 @@ public class TradingCards extends JavaPlugin implements Listener {
 	private SimpleConfig messagesConfig;
 	private SimpleConfig cardsConfig;
 	private boolean usingSqlite;
+	private boolean hasMythicMobs;
 
 
 	public SimpleConfig getDeckConfig() {
