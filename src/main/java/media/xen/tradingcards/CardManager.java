@@ -36,6 +36,10 @@ public class CardManager {
 		plugin.debug(StringUtils.join(cards.keySet(), ","));
 	}
 
+	public static Map<String,ItemStack> getCards(){
+		return cards;
+	}
+
 
 	/**
 	 *

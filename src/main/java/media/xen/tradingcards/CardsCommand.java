@@ -65,14 +65,7 @@ public class CardsCommand extends BaseCommand {
 		}
 	}
 
-	@CommandAlias("rarities")
-	@CommandPermission("cards.list.rarities")
-	public void onRarities(final CommandSender sender) {
-		final List<String> rarities = new ArrayList<>(plugin.getCardsConfig().getConfig().getConfigurationSection("Cards").getKeys(false));
-		sender.sendMessage(StringUtils.join(rarities, ", "));
-	}
-
-
+	
 	@CommandAlias("resolve")
 	@CommandPermission("cards.resolve")
 	public void onResolve(final CommandSender sender, final Player player) {
@@ -147,22 +140,51 @@ public class CardsCommand extends BaseCommand {
 		sendMessage(toWhom, plugin.getPrefixedMessage(message));
 	}
 
-
-	@CommandAlias("modules")
-	@CommandPermission("cards.admin.modules")
-	public void onModules(final CommandSender sender){
-		final StringBuilder builder = new StringBuilder("Enabled Modules:");
-		builder.append("\n");
-		for(String depend: plugin.getDescription().getSoftDepend()){
-			if(Bukkit.getPluginManager().getPlugin(depend) == null)
-				builder.append(ChatColor.GRAY);
-			else {
-				builder.append(ChatColor.GREEN);
-			}
-			builder.append(depend).append(" ");
+	@Subcommand("debug")
+	@CommandPermission("cards.admin.debug")
+	public class DebugCommands extends BaseCommand{
+		@Subcommand("showcache")
+		@CommandPermission("cards.admin.debug.showcache")
+		public void showCache(final CommandSender sender){
+			sender.sendMessage(StringUtils.join(CardManager.getCards().keySet(), ","));
 		}
-		sender.sendMessage(builder.toString());
+
+		@Subcommand("modules")
+		@CommandPermission("cards.admin.debug.modules")
+		public void onModules(final CommandSender sender){
+			final StringBuilder builder = new StringBuilder("Enabled Modules:");
+			builder.append("\n");
+			for(String depend: plugin.getDescription().getSoftDepend()){
+				if(Bukkit.getPluginManager().getPlugin(depend) == null)
+					builder.append(ChatColor.GRAY);
+				else {
+					builder.append(ChatColor.GREEN);
+				}
+				builder.append(depend).append(" ");
+			}
+			sender.sendMessage(builder.toString());
+		}
+
+
+		@Subcommand("rarities")
+		@CommandPermission("cards.admin.debug.rarities")
+		public void onRarities(final CommandSender sender) {
+			final List<String> rarities = new ArrayList<>(plugin.getCardsConfig().getConfig().getConfigurationSection("Cards").getKeys(false));
+			sender.sendMessage(StringUtils.join(rarities, ", "));
+		}
+
+		@Subcommand("exists")
+		@CommandPermission("cards.admin.debug.exists")
+		public void onExists(final CommandSender sender, final String card, final String rarity){
+			if(plugin.getCardsConfig().getConfig().contains("Cards."+rarity+"."+card)) {
+				sender.sendMessage(String.format("Card %s.%s exists",rarity,card));
+				return;
+			}
+			sender.sendMessage(String.format("Card %s.%s does not exist",rarity,card));
+		}
 	}
+
+
 
 	@CommandAlias("getdeck")
 	public void onGetDeck(final Player player, final int deckNumber) {
