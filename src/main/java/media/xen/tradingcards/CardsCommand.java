@@ -59,32 +59,10 @@ public class CardsCommand extends BaseCommand {
 		return out;
 	}
 
-	private void helpCommand(final CommandSender sender) {
-		sendMessage(sender, formatTitle(plugin.getConfig().getString("General.Server-Name") + " Trading Cards"));
-		sendHelpMessage(sender, "cards.reload", "Messages.ReloadUsage", "Messages.ReloadHelp");
-		sendHelpMessage(sender, "cards.givecard", "Messages.GiveCardUsage", "Messages.GiveCardHelp");
-		sendHelpMessage(sender, "cards.giveshinycard", "Messages.GiveShinyCardUsage", "Messages.GiveShinyCardHelp");
-		sendHelpMessage(sender, "cards.giverandomcard", "Messages.GiveRandomCardUsage", "Messages.GiveRandomCardHelp");
-		sendHelpMessage(sender, "cards.giveboosterpack", "Messages.GiveBoosterPackUsage", "Messages.GiveBoosterPackHelp");
-		sendHelpMessage(sender, "cards.giveaway", "Messages.GiveawayUsage", "Messages.GiveawayHelp");
-		sendHelpMessage(sender, "cards.getdeck", "Messages.GetDeckUsage", "Messages.GetDeckHelp");
-		sendHelpMessage(sender, "cards.list", "Messages.ListUsage", "Messages.ListHelp");
-		sendHelpMessage(sender, "cards.listpacks", "Messages.ListPacksUsage", "Messages.ListPacksHelp");
-		sendHelpMessage(sender, "cards.toggle", "Messages.ToggleUsage", "Messages.ToggleHelp");
-		sendHelpMessage(sender, "cards.create", "Messages.CreateUsage", "Messages.CreateHelp");
-		if (plugin.hasVault) {
-			sendHelpMessage(sender, "cards.buy", "Messages.BuyUsage", "Messages.BuyHelp");
-			sendHelpMessage(sender, "cards.worth", "Messages.WorthUsage", "Messages.WorthHelp");
-		}
-		sendHelpMessage(sender, "cards.resolve", "Messages.ResolveUsage", "Messages.ResolveHelp");
-		sendHelpMessage(sender, "cards.reward", "Messages.RewardUsage", "Messages.RewardHelp");
-	}
-
 	@CatchUnknown
 	@HelpCommand
 	public void onHelp(final CommandSender sender, CommandHelp help) {
 		help.showHelp();
-		//helpCommand(sender);
 	}
 	@CommandAlias("version|ver")
 	@CommandPermission("cards.version")
