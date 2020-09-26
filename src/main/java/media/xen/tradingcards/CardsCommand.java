@@ -41,29 +41,12 @@ public class CardsCommand extends BaseCommand {
 		this.showUsage = plugin.getConfig().getBoolean("General.Show-Command-Usage", true);
 	}
 
-	private void sendHelpMessage(final CommandSender sender, final String permission, final String usagePath, final String helpPath) {
-		if (sender.hasPermission(permission)) {
-			sendMessage(sender, "&7> &3" + plugin.getMessagesConfig().getConfig().getString(usagePath));
-			if (showUsage) {
-				sendMessage(sender, "&7- &f&o" + plugin.getMessagesConfig().getConfig().getString(helpPath));
-			}
-		}
-	}
-
-	public String formatTitle(String title) {
-		String line = "&7[&foOo&7]&f____________________________________________________&7[&foOo&7]&f";
-		int pivot = line.length() / 2;
-		String center = "&7.< &3" + title + "&7 >.&f";
-		String out = line.substring(0, Math.max(0, pivot - center.length() / 2));
-		out = out + center + line.substring(pivot + center.length() / 2);
-		return out;
-	}
-
 	@CatchUnknown
 	@HelpCommand
 	public void onHelp(final CommandSender sender, CommandHelp help) {
 		help.showHelp();
 	}
+	
 	@CommandAlias("version|ver")
 	@CommandPermission("cards.version")
 	public void onVersion(final CommandSender sender){
