@@ -54,11 +54,21 @@ public class SimpleConfig {
 		}
 
 		config = YamlConfiguration.loadConfiguration(file);
-		Reader defConfigStream;
-		defConfigStream = new InputStreamReader(plugin.getResource(fileName), StandardCharsets.UTF_8);
-		if (defConfigStream != null) {
-			YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-			config.setDefaults(defConfig);
+	}
+
+	public void reloadDefaultConfig(){
+		if (file == null) {
+			file = new File(plugin.getDataFolder(), fileName);
+		}
+
+		if(!file.exists()) {
+			config = YamlConfiguration.loadConfiguration(file);
+			Reader defConfigStream;
+			defConfigStream = new InputStreamReader(plugin.getResource(fileName), StandardCharsets.UTF_8);
+			if (defConfigStream != null) {
+				YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
+				config.setDefaults(defConfig);
+			}
 		}
 	}
 
