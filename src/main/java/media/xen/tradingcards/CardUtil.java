@@ -23,7 +23,7 @@ import java.util.Set;
 public class CardUtil {
 	private static TradingCards plugin;
 
-	public CardUtil(final TradingCards plugin) {
+	public static void init(final TradingCards plugin){
 		CardUtil.plugin = plugin;
 	}
 

@@ -347,8 +347,8 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 		messagesConfig.saveDefaultConfig();
 		cardsConfig.saveDefaultConfig();
 
-		new CardUtil(this);
-		new CardManager(this);
+		CardUtil.init(this);
+		CardManager.init(this);
 		BukkitCommandManager commandManager = new BukkitCommandManager(this);
 		commandManager.registerCommand(new CardsCommand(this));
 		commandManager.enableUnstableAPI("help");

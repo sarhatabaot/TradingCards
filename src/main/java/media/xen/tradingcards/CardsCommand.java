@@ -46,7 +46,7 @@ public class CardsCommand extends BaseCommand {
 	public void onHelp(final CommandSender sender, CommandHelp help) {
 		help.showHelp();
 	}
-	
+
 	@CommandAlias("version|ver")
 	@CommandPermission("cards.version")
 	public void onVersion(final CommandSender sender){

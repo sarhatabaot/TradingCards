@@ -20,15 +20,11 @@ public class CardManager {
 	private static ItemStack blankCard;
 	private static final Map<String,ItemStack> cards = new HashMap<>();
 
-	public CardManager(final TradingCards plugin) {
-		CardManager.plugin = plugin;
-		initialize();
-	}
-
 	/**
 	 * Pre-loads all existing cards.
 	 */
-	private void initialize() {
+	public static void init(final TradingCards plugin) {
+		CardManager.plugin = plugin;
 		CardManager.blankCard = new ItemStack(Material.getMaterial(plugin.getConfig().getString("General.Card-Material")));
 		for(String rarity: plugin.getCardsConfig().getConfig().getConfigurationSection("Cards").getKeys(false)){
 			for(String name: plugin.getCardsConfig().getConfig().getConfigurationSection("Cards."+rarity).getKeys(false)) {
