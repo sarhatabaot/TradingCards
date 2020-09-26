@@ -65,7 +65,7 @@ public class CardsCommand extends BaseCommand {
 		}
 	}
 
-	
+
 	@CommandAlias("resolve")
 	@CommandPermission("cards.resolve")
 	public void onResolve(final CommandSender sender, final Player player) {
