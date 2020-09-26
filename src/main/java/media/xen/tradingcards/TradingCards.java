@@ -383,12 +383,6 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 		}
 	}
 
-	public String formatDouble(double value) {
-		NumberFormat nf = NumberFormat.getInstance(Locale.ENGLISH);
-		nf.setMaximumFractionDigits(2);
-		nf.setMinimumFractionDigits(2);
-		return nf.format(value);
-	}
 
 	public boolean isMobHostile(EntityType e) {
 		return this.hostileMobs.contains(e);
@@ -446,18 +440,15 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 	}
 
 	public int getCardID(String name, String rarity) {
-		Integer cardID = (Integer) getDatabase("trading_cards").queryValue("SELECT id FROM cards WHERE name = '" + name + "' AND rarity = '" + rarity + "'", "ID");
-		return cardID;
+		return (Integer) getDatabase("trading_cards").queryValue("SELECT id FROM cards WHERE name = '" + name + "' AND rarity = '" + rarity + "'", "ID");
 	}
 
 	public int getCardCount(String uuid, Integer deckNum, Integer cardID) {
-		Integer cardCount = (Integer) getDatabase("trading_cards").queryValue("SELECT count FROM decks WHERE uuid = '" + uuid + "' AND deckID = " + deckNum + " AND card = " + cardID + "", "ID");
-		return cardCount;
+		return (Integer) getDatabase("trading_cards").queryValue("SELECT count FROM decks WHERE uuid = '" + uuid + "' AND deckID = " + deckNum + " AND card = " + cardID + "", "ID");
 	}
 
 	public int getPlayerDeckFromCard(String uuid, Integer cardID) {
-		Integer deckID = (Integer) getDatabase("trading_cards").queryValue("SELECT deckID FROM decks WHERE uuid = '" + uuid + "' AND card = " + cardID + "", "ID");
-		return deckID;
+		return (Integer) getDatabase("trading_cards").queryValue("SELECT deckID FROM decks WHERE uuid = '" + uuid + "' AND card = " + cardID + "", "ID");
 	}
 
 	public boolean deleteCardSqlite(Player p, String card, String rarity) {
@@ -480,73 +471,45 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 			int deckNumber = 0;
 			ConfigurationSection deckList = getDeckConfig().getConfig().getConfigurationSection("Decks.Inventories." + uuidString);
 			if (deckList != null) for (String s : deckList.getKeys(false)) {
-				deckNumber += Integer.valueOf(s);
+				deckNumber += Integer.parseInt(s);
 				debug("Deck running total: " + deckNumber);
 			}
 			if (deckNumber == 0) {
 				debug("No decks?!");
-			} else {
-				debug("[TradingCards] Decks:" + deckNumber);
-				for (int i = 0; i < deckNumber; i++) {
-					if (getDeckConfig().getConfig().contains("Decks.Inventories." + uuidString + "." + (i + 1))) {
-						List<String> contents = getDeckConfig().getConfig().getStringList("Decks.Inventories." + uuidString + "." + (i + 1));
-						List<String> contentsNew = new ArrayList<>();
-						for (String s2 : contents) {
-							String[] splitContents = s2.split(",");
-							if (getConfig().getBoolean("General.Eat-Shiny-Cards") && splitContents[3].equalsIgnoreCase("yes")) {
-								debug("Eat-Shiny-Cards is true and card is shiny!");
-								if (splitContents[0].equalsIgnoreCase(rarity)) {
-									if (splitContents[1].equalsIgnoreCase(card)) {
-										if (Integer.parseInt(splitContents[2]) <= 1) continue;
-										int number = Integer.parseInt(splitContents[2]);
-										splitContents[2] = String.valueOf(number - 1);
-										StringBuilder strBuilder = new StringBuilder();
-										for (final String splitContent : splitContents) {
-											strBuilder.append(splitContent);
-											strBuilder.append(",");
-										}
-										String newString = strBuilder.substring(0, strBuilder.length() - 1);
-										contentsNew.add(newString);
-										continue;
+				return true;
+			}
+
+			debug("[TradingCards] Decks:" + deckNumber);
+			for (int i = 0; i < deckNumber; i++) {
+				if (getDeckConfig().getConfig().contains("Decks.Inventories." + uuidString + "." + (i + 1))) {
+					List<String> contents = getDeckConfig().getConfig().getStringList("Decks.Inventories." + uuidString + "." + (i + 1));
+					List<String> contentsNew = new ArrayList<>();
+					for (String s2 : contents) {
+						String[] splitContents = s2.split(",");
+						if (getConfig().getBoolean("General.Eat-Shiny-Cards") && splitContents[3].equalsIgnoreCase("yes")) {
+							debug("Eat-Shiny-Cards is true and card is shiny!");
+							if (splitContents[0].equalsIgnoreCase(rarity)) {
+								if (splitContents[1].equalsIgnoreCase(card)) {
+									if (Integer.parseInt(splitContents[2]) <= 1) continue;
+									int number = Integer.parseInt(splitContents[2]);
+									splitContents[2] = String.valueOf(number - 1);
+									StringBuilder strBuilder = new StringBuilder();
+									for (final String splitContent : splitContents) {
+										strBuilder.append(splitContent);
+										strBuilder.append(",");
 									}
-									contentsNew.add(s2);
+									String newString = strBuilder.substring(0, strBuilder.length() - 1);
+									contentsNew.add(newString);
 									continue;
 								}
 								contentsNew.add(s2);
 								continue;
 							}
-							if (getConfig().getBoolean("General.Eat-Shiny-Cards") && splitContents[3].equalsIgnoreCase("no")) {
-								debug("Eat-Shiny-Cards is true and card is not shiny!");
-								if (splitContents[0].equalsIgnoreCase(rarity)) {
-									if (splitContents[1].equalsIgnoreCase(card)) {
-										if (Integer.valueOf(splitContents[2]).intValue() <= 1) continue;
-										int number = Integer.valueOf(splitContents[2]).intValue();
-										splitContents[2] = String.valueOf(number - 1);
-										StringBuilder strBuilder = new StringBuilder();
-										for (final String splitContent : splitContents) {
-											strBuilder.append(splitContent);
-											strBuilder.append(",");
-										}
-										String newString = strBuilder.substring(0, strBuilder.length() - 1);
-										contentsNew.add(newString);
-										continue;
-									}
-									contentsNew.add(s2);
-									continue;
-								}
-								contentsNew.add(s2);
-								continue;
-							}
-							if (!getConfig().getBoolean("General.Eat-Shiny-Cards") && splitContents[3].equalsIgnoreCase("yes")) {
-								debug("Eat-Shiny-Cards is false and card is shiny!");
-								if (!splitContents[0].equalsIgnoreCase(rarity)) continue;
-								debug("Adding card..");
-								contentsNew.add(s2);
-								continue;
-							}
-							if (getConfig().getBoolean("General.Eat-Shiny-Cards") || !splitContents[3].equalsIgnoreCase("no"))
-								continue;
-							debug("Eat-Shiny-Cards is false and card is not shiny!");
+							contentsNew.add(s2);
+							continue;
+						}
+						if (getConfig().getBoolean("General.Eat-Shiny-Cards") && splitContents[3].equalsIgnoreCase("no")) {
+							debug("Eat-Shiny-Cards is true and card is not shiny!");
 							if (splitContents[0].equalsIgnoreCase(rarity)) {
 								if (splitContents[1].equalsIgnoreCase(card)) {
 									if (Integer.valueOf(splitContents[2]).intValue() <= 1) continue;
@@ -565,14 +528,44 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 								continue;
 							}
 							contentsNew.add(s2);
+							continue;
 						}
-						getDeckConfig().getConfig().set("Decks.Inventories." + uuidString + "." + (i + 1), contentsNew);
-						getDeckConfig().saveConfig();
-						reloadAllConfig();
-						contentsNew.clear();
+						if (!getConfig().getBoolean("General.Eat-Shiny-Cards") && splitContents[3].equalsIgnoreCase("yes")) {
+							debug("Eat-Shiny-Cards is false and card is shiny!");
+							if (!splitContents[0].equalsIgnoreCase(rarity)) continue;
+							debug("Adding card..");
+							contentsNew.add(s2);
+							continue;
+						}
+						if (getConfig().getBoolean("General.Eat-Shiny-Cards") || !splitContents[3].equalsIgnoreCase("no"))
+							continue;
+						debug("Eat-Shiny-Cards is false and card is not shiny!");
+						if (splitContents[0].equalsIgnoreCase(rarity)) {
+							if (splitContents[1].equalsIgnoreCase(card)) {
+								if (Integer.valueOf(splitContents[2]).intValue() <= 1) continue;
+								int number = Integer.valueOf(splitContents[2]).intValue();
+								splitContents[2] = String.valueOf(number - 1);
+								StringBuilder strBuilder = new StringBuilder();
+								for (final String splitContent : splitContents) {
+									strBuilder.append(splitContent);
+									strBuilder.append(",");
+								}
+								String newString = strBuilder.substring(0, strBuilder.length() - 1);
+								contentsNew.add(newString);
+								continue;
+							}
+							contentsNew.add(s2);
+							continue;
+						}
+						contentsNew.add(s2);
 					}
+					getDeckConfig().getConfig().set("Decks.Inventories." + uuidString + "." + (i + 1), contentsNew);
+					getDeckConfig().saveConfig();
+					reloadAllConfig();
+					contentsNew.clear();
 				}
 			}
+
 		}
 		return true;
 	}
@@ -838,7 +831,6 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 			return false;
 		}
 	}
-
 
 
 	public ItemStack createBoosterPack(String name) {
