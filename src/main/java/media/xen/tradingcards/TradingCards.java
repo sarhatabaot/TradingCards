@@ -66,7 +66,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.smartcardio.Card;
 
-public class TradingCards extends JavaPlugin implements Listener, CommandExecutor {
+public class TradingCards extends JavaPlugin implements Listener {
 	List<EntityType> hostileMobs = new ArrayList<>();
 	List<EntityType> passiveMobs = new ArrayList<>();
 	List<EntityType> neutralMobs = new ArrayList<>();
@@ -154,7 +154,6 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 	public Database getDatabase(String databaseName) {
 		return this.getDatabases().get(databaseName);
 	}
-
 
 	public Boolean exists(String statement) {
 		return this.getDatabase("trading_cards").queryValue(statement, "ID") != null;
@@ -1369,15 +1368,7 @@ public class TradingCards extends JavaPlugin implements Listener, CommandExecuto
 						}
 					}
 
-
-					if (p.getInventory().firstEmpty() != -1) {
-						p.getInventory().addItem(CardManager.getCard(cardName, keyToUse, false));
-					} else {
-						World curWorld = p.getWorld();
-						if (p.getGameMode() == GameMode.SURVIVAL) {
-							curWorld.dropItem(p.getLocation(), CardManager.getCard(cardName, keyToUse, false));
-						}
-					}
+					CardUtil.dropItem(p,CardManager.getCard(cardName, keyToUse, false));
 				}
 			}
 		}
