@@ -641,7 +641,7 @@ public class TradingCards extends JavaPlugin implements Listener {
 
 		Iterator var7;
 		String s;
-		debug(StringUtils.join(deckList.getKeys(false), "Deck rarity content:"));
+		//debug(StringUtils.join(deckList.getKeys(false), "Deck rarity content:"));
 
 
 		if (deckList == null)

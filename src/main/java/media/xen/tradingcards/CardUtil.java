@@ -208,7 +208,6 @@ public class CardUtil {
 					return s;
 				if (cleanedArray.length > 6 && (cleanedArray[1] + " " + cleanedArray[2] + " " + cleanedArray[3] + " " + cleanedArray[4] + " " + cleanedArray[5] + " " + cleanedArray[6]).matches(s))
 					return s;
-				if (cleanedArray.length == 1 && cleanedArray[0].matches(s)) return s;
 				if (cleanedArray.length == 2 && cleanedArray[1].matches(s)) return s;
 			}
 		}

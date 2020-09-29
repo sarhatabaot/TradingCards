@@ -6,10 +6,9 @@
 
     <groupId>media.xen</groupId>
     <artifactId>TradingCards</artifactId>
-    <version>5.0.9-ti</version>
+    <version>5.0.10-ti</version>
     <name>TradingCards (Modified-TI)</name>
     <properties>
-
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
