@@ -2,7 +2,7 @@ package media.xen.tradingcards.addons;
 
 import media.xen.tradingcards.TradingCards;
 
-public abstract class AddonLogger {
+public class AddonLogger {
 	private final String addonName;
 	private final TradingCards tradingCards;
 
