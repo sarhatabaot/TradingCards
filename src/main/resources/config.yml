@@ -95,9 +95,6 @@ PluginSupport:
     # Is the server running a closed economy? if so, whose account should money go into?
     Closed-Economy: false
     Server-Account: TradingCards-Bank
-  MobArena:
-    MobArena-Enabled: false
-    Disable-In-Arena: true
   MythicMobs:
     MythicMobs-Enabled: false
     # Chance chance/rarity based on the level of the mob?
