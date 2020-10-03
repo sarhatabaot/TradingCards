@@ -76,7 +76,7 @@ public class CardUtil {
 		}
 	}
 
-
+	@NotNull
 	public static ItemStack generateCard(String cardName, String rarityName, boolean forcedShiny) {
 		if (rarityName.equals("None")) {
 			return null;
