@@ -943,68 +943,12 @@ public class TradingCards extends JavaPlugin implements Listener {
 
 	}
 
-	private final String nameTemplate = "^[a-zA-Z0-9-_]+$";
-
+	@Deprecated
+	/**
+	 * @deprecated use {@link CardUtil#createCard(Player, String, String, String, String, boolean, String, String)}
+	 */
 	public void createCard(Player creator, String rarity, String name, String series, String type, boolean hasShiny, String info, String about) {
-		if (!getCardsConfig().getConfig().contains("Cards." + rarity + "." + name)) {
-			if (name.matches(nameTemplate)) {
-				if (this.isPlayerCard(name)) {
-					name = name.replaceAll(" ", "_");
-				}
-
-				ConfigurationSection rarities = getCardsConfig().getConfig().getConfigurationSection("Cards");
-				Set<String> rarityKeys = rarities.getKeys(false);
-				String keyToUse = "";
-				Iterator var12 = rarityKeys.iterator();
-
-				String type2;
-				while (var12.hasNext()) {
-					type2 = (String) var12.next();
-					if (type2.equalsIgnoreCase(rarity)) {
-						keyToUse = type2;
-					}
-				}
-
-				if (!keyToUse.equals("")) {
-					String series2 = "";
-					type2 = "";
-					String info2 = "";
-					if (series.matches(nameTemplate)) {
-						series2 = series;
-					} else {
-						series2 = "None";
-					}
-
-					if (type.matches(nameTemplate)) {
-						type2 = type;
-					} else {
-						type2 = "None";
-					}
-
-					if (info.matches(nameTemplate)) {
-						info2 = info;
-					} else {
-						info2 = "None";
-					}
-
-					boolean hasShiny2 = hasShiny;
-					getCardsConfig().getConfig().set("Cards." + rarity + "." + name + ".Series", series2);
-					getCardsConfig().getConfig().set("Cards." + rarity + "." + name + ".Type", type2);
-					getCardsConfig().getConfig().set("Cards." + rarity + "." + name + ".Has-Shiny-Version", hasShiny2);
-					getCardsConfig().getConfig().set("Cards." + rarity + "." + name + ".Info", info2);
-					getCardsConfig().saveConfig();
-					getCardsConfig().reloadConfig();
-					sendMessage(creator, getPrefixedMessage(getMessagesConfig().getConfig().getString("Messages.CreateSuccess").replaceAll("%name%", name).replaceAll("%rarity%", rarity)));
-				} else {
-					creator.sendMessage(this.cMsg(getMessagesConfig().getConfig().getString("Messages.Prefix") + " " + getMessagesConfig().getConfig().getString("Messages.NoRarity")));
-				}
-			} else {
-				creator.sendMessage(this.cMsg(getMessagesConfig().getConfig().getString("Messages.Prefix") + " " + getMessagesConfig().getConfig().getString("Messages.CreateNoName")));
-			}
-		} else {
-			creator.sendMessage(this.cMsg(getMessagesConfig().getConfig().getString("Messages.Prefix") + " " + getMessagesConfig().getConfig().getString("Messages.CreateExists")));
-		}
-
+		CardUtil.createCard(creator, rarity, name, series, type, hasShiny, info, about);
 	}
 
 	public void reloadAllConfig() {

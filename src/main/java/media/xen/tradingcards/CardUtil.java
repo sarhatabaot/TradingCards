@@ -76,6 +76,68 @@ public class CardUtil {
 		}
 	}
 
+	public static void createCard(Player creator, String rarity, String name, String series, String type, boolean hasShiny, String info, String about) {
+		final String nameTemplate = "^[a-zA-Z0-9-_]+$";
+		if (!plugin.getCardsConfig().getConfig().contains("Cards." + rarity + "." + name)) {
+			if (name.matches(nameTemplate)) {
+				if (plugin.isPlayerCard(name)) {
+					name = name.replaceAll(" ", "_");
+				}
+
+				ConfigurationSection rarities = plugin.getCardsConfig().getConfig().getConfigurationSection("Cards");
+				Set<String> rarityKeys = rarities.getKeys(false);
+				String keyToUse = "";
+				Iterator var12 = rarityKeys.iterator();
+
+				String type2;
+				while (var12.hasNext()) {
+					type2 = (String) var12.next();
+					if (type2.equalsIgnoreCase(rarity)) {
+						keyToUse = type2;
+					}
+				}
+
+				if (!keyToUse.equals("")) {
+					String series2 = "";
+					type2 = "";
+					String info2 = "";
+					if (series.matches(nameTemplate)) {
+						series2 = series;
+					} else {
+						series2 = "None";
+					}
+
+					if (type.matches(nameTemplate)) {
+						type2 = type;
+					} else {
+						type2 = "None";
+					}
+
+					if (info.matches(nameTemplate)) {
+						info2 = info;
+					} else {
+						info2 = "None";
+					}
+
+					plugin.getCardsConfig().getConfig().set("Cards." + rarity + "." + name + ".Series", series2);
+					plugin.getCardsConfig().getConfig().set("Cards." + rarity + "." + name + ".Type", type2);
+					plugin.getCardsConfig().getConfig().set("Cards." + rarity + "." + name + ".Has-Shiny-Version", hasShiny);
+					plugin.getCardsConfig().getConfig().set("Cards." + rarity + "." + name + ".Info", info2);
+					plugin.getCardsConfig().saveConfig();
+					plugin.getCardsConfig().reloadConfig();
+					plugin.sendMessage(creator, plugin.getPrefixedMessage(plugin.getMessagesConfig().getConfig().getString("Messages.CreateSuccess").replaceAll("%name%", name).replaceAll("%rarity%", rarity)));
+				} else {
+					creator.sendMessage(plugin.cMsg(plugin.getMessagesConfig().getConfig().getString("Messages.Prefix") + " " + plugin.getMessagesConfig().getConfig().getString("Messages.NoRarity")));
+				}
+			} else {
+				creator.sendMessage(plugin.cMsg(plugin.getMessagesConfig().getConfig().getString("Messages.Prefix") + " " + plugin.getMessagesConfig().getConfig().getString("Messages.CreateNoName")));
+			}
+		} else {
+			creator.sendMessage(plugin.cMsg(plugin.getMessagesConfig().getConfig().getString("Messages.Prefix") + " " + plugin.getMessagesConfig().getConfig().getString("Messages.CreateExists")));
+		}
+
+	}
+
 	@NotNull
 	public static ItemStack generateCard(String cardName, String rarityName, boolean forcedShiny) {
 		if (rarityName.equals("None")) {
