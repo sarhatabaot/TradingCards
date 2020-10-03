@@ -14,6 +14,7 @@ import java.util.Random;
 import java.util.Set;
 
 import media.xen.tradingcards.db.Database;
+import media.xen.tradingcards.db.DbUtil;
 import media.xen.tradingcards.db.SQLite;
 import media.xen.tradingcards.listeners.AddOnJoinListener;
 import media.xen.tradingcards.listeners.DeckListener;
@@ -108,112 +109,13 @@ public class TradingCards extends JavaPlugin implements Listener {
 		return this.getDatabase("trading_cards").queryValue(statement, "ID") != null;
 	}
 
-	public void convertToDb() {
-		ConfigurationSection cards = getCardsConfig().getConfig().getConfigurationSection("Cards");
-		Set<String> cardKeys = cards.getKeys(false);
-		Iterator<String> var3 = cardKeys.iterator();
-
-		String series;
-		String type;
-		while (var3.hasNext()) {
-			String key = var3.next();
-			ConfigurationSection cardsWithKey = getCardsConfig().getConfig().getConfigurationSection("Cards." + key);
-			Set<String> keyKeys = cardsWithKey.getKeys(false);
-
-			for (final String key2 : keyKeys) {
-				String cost = "None";
-				series = getCardsConfig().getConfig().getString("Cards." + key + "." + key2 + ".Series");
-				String about = getCardsConfig().getConfig().getString("Cards." + key + "." + key2 + ".About", "None");
-				type = getCardsConfig().getConfig().getString("Cards." + key + "." + key2 + ".Type");
-				String info = getCardsConfig().getConfig().getString("Cards." + key + "." + key2 + ".Info");
-				if (getCardsConfig().getConfig().contains("Cards." + key + "." + key2 + ".Buy-Price")) {
-					cost = String.valueOf(getCardsConfig().getConfig().getDouble("Cards." + key + "." + key2 + ".Buy-Price"));
-				}
-
-				if (!this.exists("SELECT * FROM cards WHERE rarity = '" + key + "' AND name = '" + key2 + "' AND about = '" + about + "' AND series = '" + series + "' AND type = '" + type + "' AND info = '" + info + "' AND price = '" + cost + "'")) {
-					if (this.getDatabase("trading_cards").executeStatement("INSERT INTO cards (rarity, name, about, series, type, info, price) VALUES ('" + key + "', '" + key2 + "', '" + about + "', '" + series + "', '" + type + "', '" + info + "', '" + cost + "')")) {
-						debug(key + ", " + key2 + " - Added to SQLite!");
-					} else {
-						debug(key + ", " + key2 + " - Unable to be added!");
-					}
-				}
-			}
-		}
-
-		ConfigurationSection decks = getDeckConfig().getConfig().getConfigurationSection("Decks.Inventories");
-		Set<String> deckKeys = decks.getKeys(false);
-		int deckNum = 0;
-		Iterator<String> var18 = deckKeys.iterator();
-		String s;
-
-		while (var18.hasNext()) {
-			String key = var18.next();
-			debug("Deck key is: " + key);
-
-			ConfigurationSection deckList = getDeckConfig().getConfig().getConfigurationSection("Decks.Inventories." + key);
-			if (deckList != null) {
-
-				for (final String value : deckList.getKeys(false)) {
-					s = value;
-					deckNum += Integer.parseInt(s);
-
-					debug("Deck running total: " + deckNum);
-				}
-			}
-
-			if (deckNum == 0) {
-				debug("No deck?!");
-			} else {
-				debug("Decks:" + deckNum);
-				label127:
-				for (int i = 0; i < deckNum; ++i) {
-					List<String> contents = getDeckConfig().getConfig().getStringList("Decks.Inventories." + key + "." + deckNum);
-					Iterator var24 = contents.iterator();
-
-					while (true) {
-						while (true) {
-							String[] splitContents;
-							do {
-								if (!var24.hasNext()) {
-									continue label127;
-								}
-
-								s = (String) var24.next();
-								debug("Deck content: " + s);
-								splitContents = s.split(",");
-							} while (splitContents.length <= 1);
-
-							if (splitContents[1] == null) {
-								splitContents[1] = "None";
-							}
-
-							Integer cardID = (Integer) this.getDatabase("trading_cards").queryValue("SELECT id FROM cards WHERE name = '" + splitContents[1] + "' AND rarity = '" + splitContents[0] + "'", "ID");
-							if (splitContents[3].equalsIgnoreCase("yes")) {
-								if (!splitContents[0].equalsIgnoreCase("BLANK") && !splitContents[1].equalsIgnoreCase("None") && splitContents[1] != null && !splitContents[1].isEmpty() && this.getDatabase("trading_cards").queryValue("SELECT * FROM decks WHERE uuid = '" + key + "' AND deckID = '" + deckNum + "' AND card = '" + cardID + "' AND isShiny = 1", "ID") == null && !this.getDatabase("trading_cards").executeStatement("INSERT INTO decks (uuid, deckID, card, isShiny, count) VALUES ('" + key + "', '" + deckNum + "', '" + cardID + "', 1, " + Integer.valueOf(splitContents[2]) + ")") && this.getConfig().getBoolean("General.Debug-Mode")) {
-									System.out.println("[Cards] Error adding shiny card to deck SQLite, check stack!");
-								}
-							} else if (!splitContents[1].equalsIgnoreCase("None") && !splitContents[0].equalsIgnoreCase("BLANK") && splitContents[1] != null && !splitContents[1].isEmpty()) {
-								if (this.getDatabase("trading_cards").queryValue("SELECT * FROM decks WHERE uuid = '" + key + "' AND deckID = '" + deckNum + "' AND card = '" + cardID + "' AND isShiny = 0", "ID") == null && !this.getDatabase("trading_cards").executeStatement("INSERT INTO decks (uuid, deckID, card, isShiny, count) VALUES ('" + key + "', '" + deckNum + "', '" + cardID + "', 0, " + Integer.valueOf(splitContents[2]) + ")") && this.getConfig().getBoolean("General.Debug-Mode")) {
-									System.out.println("[Cards] Error adding card to deck SQLite, check stack!");
-								}
-							} else {
-								System.out.println("[Cards] Warning! A null card has been found in a deck. It was truncated for safety.");
-							}
-						}
-					}
-				}
-			}
-		}
-
-	}
-
-
 	private void hookFileSystem() {
 		if (this.getConfig().getBoolean("General.SQLite")) {
 			this.usingSqlite = true;
 			this.initializeDatabase("trading_cards", "CREATE TABLE IF NOT EXISTS cards(`id` INTEGER NOT NULL PRIMARY KEY, `rarity` varchar(255), `about` varchar(255), `series` varchar(255), `name` varchar(255), `type` varchar(255), `info` varchar(255), `price` int); CREATE TABLE IF NOT EXISTS decks(`id` INTEGER NOT NULL PRIMARY KEY, `uuid` varchar(512), `deckID` int, `card` int, `isShiny` int, `count` int)");
 			getLogger().info("SQLite is enabled");
-			this.convertToDb();
+			DbUtil.init(this);
+			DbUtil.convertToDb();
 		} else {
 			this.usingSqlite = false;
 			getLogger().info("Legacy YML mode is enabled!");
@@ -395,6 +297,7 @@ public class TradingCards extends JavaPlugin implements Listener {
 		} else return false;
 	}
 
+	@Deprecated
 	public boolean deleteCard(Player p, String card, String rarity) {
 		if (usingSqlite) return deleteCardSqlite(p, card, rarity);
 		if (hasCard(p, card, rarity) > 0) {
@@ -500,7 +403,7 @@ public class TradingCards extends JavaPlugin implements Listener {
 		}
 		return true;
 	}
-
+	@Deprecated
 	public int hasCard(Player p, String card, String rarity) {
 		int deckNumber = 0;
 		debug("Started check for card: " + card + ", " + rarity);
@@ -578,7 +481,7 @@ public class TradingCards extends JavaPlugin implements Listener {
 
 
 	}
-
+	@Deprecated
 	public boolean hasShiny(Player p, String card, String rarity) {
 		int deckNumber = 0;
 		debug("Started check for card: " + card + ", " + rarity);
@@ -725,6 +628,7 @@ public class TradingCards extends JavaPlugin implements Listener {
 		p.openInventory(inv);
 	}
 
+	@Deprecated
 	public String isRarity(String input) {
 		String output = input.substring(0, 1).toUpperCase() + input.substring(1);
 		if (this.getConfig().contains("Rarities." + input.replaceAll("_", " "))) {
