@@ -1,7 +1,6 @@
 package media.xen.tradingcards.listeners;
 
 
-import com.garbagemule.MobArena.framework.Arena;
 import media.xen.tradingcards.CardManager;
 import media.xen.tradingcards.CardUtil;
 import media.xen.tradingcards.TradingCards;

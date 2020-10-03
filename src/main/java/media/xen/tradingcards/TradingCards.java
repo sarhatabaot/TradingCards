@@ -1,8 +1,7 @@
 package media.xen.tradingcards;
 
 import co.aikar.commands.BukkitCommandManager;
-import com.garbagemule.MobArena.MobArena;
-import com.garbagemule.MobArena.framework.ArenaMaster;
+
 
 import java.io.File;
 import java.util.ArrayList;
@@ -53,14 +52,11 @@ public class TradingCards extends JavaPlugin implements Listener {
 	List<EntityType> bossMobs = new ArrayList<>();
 	private final Map<String, Database> databases = new HashMap<>();
 	public static Permission permRarities = new Permission("cards.rarity");
-	public ArenaMaster am;
 	boolean hasVault;
-	public boolean hasMobArena;
 	private SimpleConfig deckConfig;
 	private SimpleConfig messagesConfig;
 	private SimpleConfig cardsConfig;
 	private boolean usingSqlite;
-	private boolean hasMythicMobs;
 
 
 	public SimpleConfig getDeckConfig() {
