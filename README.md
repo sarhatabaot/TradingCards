@@ -3,11 +3,20 @@
 [![Build Status](https://travis-ci.com/TreasureIslandMC/XenTradingCards.svg?branch=ti)](https://travis-ci.com/TreasureIslandMC/XenTradingCards)
 
 Spigot plugin for Trading Cards.
-Modified version of Trading Cards for the TreasureIsland minecraft network.
-Currently has only some improvements over the original plugin:
+A modified version of Trading Cards for the TreasureIsland minecraft network.
+Currently, has only some improvements over the original plugin:
 * Cached Cards (On load).
 * Debug commands - Version, Modules, Rarities.
 
-Patches:
+#### Patches:
 * Proper use of VaultAPI.
 * Tab Completions for commands.
+
+### Addons:
+This version of Trading Cards doesn't support MythicMobs, MobArena & Towny out of the box. 
+For support, you need to install additional addons:
+* [TCTowny](https://github.com/TreasureIslandMC/TCTowny)
+* [TCMythicMobs](https://github.com/TreasureIslandMC/TCMythicMobs)
+* [TCMobArena](https://github.com/TreasureIslandMC/TCMobArena)
+
+These are normal plugins, to install just place in your plugins folder.
