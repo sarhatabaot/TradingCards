@@ -229,7 +229,7 @@ public class CardsCommand extends BaseCommand {
 	public void onGiveRandomCard(final CommandSender sender, final Player player, final String entityType) {
 		try {
 			EntityType.valueOf(entityType.toUpperCase());
-			String rare = plugin.calculateRarity(EntityType.valueOf(entityType.toUpperCase()), true);
+			String rare = CardUtil.calculateRarity(EntityType.valueOf(entityType.toUpperCase()), true);
 			plugin.debug("onCommand.rare: " + rare);
 			sendPrefixedMessage(sender, plugin.getMessagesConfig().getConfig().getString("Messages.GiveRandomCardMsg").replaceAll("%player%", player.getName()));
 
@@ -593,6 +593,7 @@ public class CardsCommand extends BaseCommand {
 	 * @param player Player
 	 * @param card   Card name
 	 * @param rarity Card Rarity
+	 * @deprecated use {@link CardUtil#dropItem(Player, ItemStack)}
 	 */
 	@Deprecated
 	private void dropCard(final Player player, final String card, final String rarity) {
