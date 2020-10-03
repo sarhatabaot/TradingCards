@@ -1,8 +1,7 @@
 package media.xen.tradingcards;
 
 import co.aikar.commands.BukkitCommandManager;
-import com.garbagemule.MobArena.MobArena;
-import com.garbagemule.MobArena.framework.ArenaMaster;
+
 
 import java.io.File;
 import java.util.ArrayList;
@@ -21,12 +20,8 @@ import media.xen.tradingcards.listeners.DeckListener;
 import media.xen.tradingcards.listeners.MobSpawnListener;
 import media.xen.tradingcards.listeners.PackListener;
 import media.xen.tradingcards.listeners.DropListener;
-import media.xen.tradingcards.listeners.MobArenaListener;
-import media.xen.tradingcards.listeners.MythicMobsListener;
-import media.xen.tradingcards.listeners.TownyListener;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -57,14 +52,11 @@ public class TradingCards extends JavaPlugin implements Listener {
 	List<EntityType> bossMobs = new ArrayList<>();
 	private final Map<String, Database> databases = new HashMap<>();
 	public static Permission permRarities = new Permission("cards.rarity");
-	public ArenaMaster am;
 	boolean hasVault;
-	public boolean hasMobArena;
 	private SimpleConfig deckConfig;
 	private SimpleConfig messagesConfig;
 	private SimpleConfig cardsConfig;
 	private boolean usingSqlite;
-	private boolean hasMythicMobs;
 
 
 	public SimpleConfig getDeckConfig() {
@@ -85,33 +77,6 @@ public class TradingCards extends JavaPlugin implements Listener {
 	public static Chat chat = null;
 	public Random r = new Random();
 	int taskid;
-
-	private void hookTowny() {
-		if (this.getConfig().getBoolean("PluginSupport.Towny.Towny-Enabled")) {
-			if (this.getServer().getPluginManager().getPlugin("Towny") != null) {
-				this.getServer().getPluginManager().registerEvents(new TownyListener(this), this);
-				getLogger().info("Towny successfully hooked!");
-			} else {
-				getLogger().warning("Towny not found, hook unsuccessful!");
-			}
-		}
-	}
-
-
-	private void hookMythicMobs() {
-		PluginManager pm;
-		if (this.getConfig().getBoolean("PluginSupport.MythicMobs.MythicMobs-Enabled")) {
-			if (this.getServer().getPluginManager().getPlugin("MythicMobs") != null) {
-				pm = this.getServer().getPluginManager();
-				pm.registerEvents(new MythicMobsListener(this), this);
-				getLogger().info("MythicMobs hook successful!");
-				this.hasMythicMobs = true;
-			} else {
-				getLogger().info("MythicMobs not found, hook unsuccessful!");
-
-			}
-		}
-	}
 
 	private void hookVault() {
 		if (this.getConfig().getBoolean("PluginSupport.Vault.Vault-Enabled")) {
@@ -242,20 +207,6 @@ public class TradingCards extends JavaPlugin implements Listener {
 
 	}
 
-	private void hookMobArena() {
-		if (this.getConfig().getBoolean("PluginSupport.MobArena.MobArena-Enabled")) {
-			if (this.getServer().getPluginManager().getPlugin("MobArena") != null) {
-				PluginManager pm = this.getServer().getPluginManager();
-				MobArena maPlugin = (MobArena) pm.getPlugin("MobArena");
-				this.am = maPlugin.getArenaMaster();
-				pm.registerEvents(new MobArenaListener(this), this);
-				getLogger().info("Mob Arena hook successful!");
-				this.hasMobArena = true;
-			} else {
-				getLogger().info("Mob Arena not found, hook unsuccessful!");
-			}
-		}
-	}
 
 	private void hookFileSystem() {
 		if (this.getConfig().getBoolean("General.SQLite")) {
@@ -278,9 +229,6 @@ public class TradingCards extends JavaPlugin implements Listener {
 		pm.registerEvents(new MobSpawnListener(this), this);
 		pm.registerEvents(new AddOnJoinListener(this), this);
 		pm.registerEvents(new DeckListener(this), this);
-		hookMythicMobs();
-		hookMobArena();
-		hookTowny();
 	}
 
 	@Override
@@ -856,165 +804,9 @@ public class TradingCards extends JavaPlugin implements Listener {
 		return boosterPack;
 	}
 
+	@Deprecated
 	public String calculateRarity(EntityType e, boolean alwaysDrop) {
-		int shouldItDrop = this.r.nextInt(100) + 1;
-		boolean bossRarity = false;
-		String type = "";
-		debug("shouldItDrop Num: " + shouldItDrop);
-
-		if (this.isMobHostile(e)) {
-			if (!alwaysDrop) {
-				if (shouldItDrop > this.getConfig().getInt("Chances.Hostile-Chance")) {
-					return "None";
-				}
-			}
-			type = "Hostile";
-		} else if (this.isMobNeutral(e)) {
-			if (!alwaysDrop) {
-				if (shouldItDrop > this.getConfig().getInt("Chances.Neutral-Chance")) {
-					return "None";
-				}
-
-			}
-			type = "Neutral";
-		} else if (this.isMobPassive(e)) {
-			if (!alwaysDrop) {
-				if (shouldItDrop > this.getConfig().getInt("Chances.Passive-Chance")) {
-					return "None";
-				}
-
-			}
-			type = "Passive";
-		} else {
-			if (!this.isMobBoss(e)) {
-				return "None";
-			}
-
-			if (!alwaysDrop) {
-				if (shouldItDrop > this.getConfig().getInt("Chances.Boss-Chance")) {
-					return "None";
-				}
-
-				if (this.getConfig().getBoolean("Chances.Boss-Drop")) {
-					int var16 = this.getConfig().getInt("Chances.Boss-Drop-Rarity");
-				}
-
-			}
-			type = "Boss";
-		}
-
-		ConfigurationSection rarities = this.getConfig().getConfigurationSection("Rarities");
-		Set<String> rarityKeys = rarities.getKeys(false);
-		Map<String, Integer> rarityChances = new HashMap<>();
-		Map<Integer, String> rarityIndexes = new HashMap<>();
-		int i = 0;
-		int mini = 0;
-		int random = this.r.nextInt(100000) + 1;
-		if (this.getConfig().getBoolean("General.Debug-Mode")) {
-			System.out.println("[Cards] Random Card Num: " + random);
-		}
-
-		if (this.getConfig().getBoolean("General.Debug-Mode")) {
-			System.out.println("[Cards] Type: " + type);
-		}
-
-		String key;
-		int chance;
-		for (Iterator var13 = rarityKeys.iterator(); var13.hasNext(); rarityChances.put(key, chance)) {
-			key = (String) var13.next();
-			rarityIndexes.put(i, key);
-			++i;
-			if (this.getConfig().getBoolean("General.Debug-Mode")) {
-				System.out.println("[Cards] " + i + ", " + key);
-			}
-
-			if (this.getConfig().contains("Chances." + key + "." + StringUtils.capitalize(e.getKey().getKey())) && mini == 0) {
-				if (this.getConfig().getBoolean("General.Debug-Mode")) {
-					System.out.println("[Cards] Mini: " + i);
-				}
-
-				mini = i;
-			}
-
-			chance = this.getConfig().getInt("Chances." + key + "." + type, -1);
-			if (this.getConfig().getBoolean("General.Debug-Mode")) {
-				System.out.println("[Cards] Keys: " + key + ", " + chance + ", i=" + i);
-			}
-		}
-
-		if (mini != 0) {
-			if (this.getConfig().getBoolean("General.Debug-Mode")) {
-				System.out.println("[Cards] Mini: " + mini);
-			}
-
-			if (this.getConfig().getBoolean("General.Debug-Mode")) {
-				System.out.println("[Cards] i: " + i);
-			}
-
-			while (i >= mini) {
-				--i;
-				if (this.getConfig().getBoolean("General.Debug-Mode")) {
-					System.out.println("[Cards] i: " + i);
-				}
-
-				chance = this.getConfig().getInt("Chances." + rarityIndexes.get(i) + "." + StringUtils.capitalize(e.getKey().getKey()), -1);
-				if (this.getConfig().getBoolean("General.Debug-Mode")) {
-					System.out.println("[Cards] Chance: " + chance);
-				}
-
-				if (this.getConfig().getBoolean("General.Debug-Mode")) {
-					System.out.println("[Cards] Rarity: " + rarityIndexes.get(i));
-				}
-
-				if (chance > 0) {
-					if (this.getConfig().getBoolean("General.Debug-Mode")) {
-						System.out.println("[Cards] Chance > 0");
-					}
-
-					if (random <= chance) {
-						if (this.getConfig().getBoolean("General.Debug-Mode")) {
-							System.out.println("[Cards] Random <= Chance");
-						}
-
-						return rarityIndexes.get(i);
-					}
-				}
-			}
-		} else {
-			while (i > 0) {
-				--i;
-				if (this.getConfig().getBoolean("General.Debug-Mode")) {
-					System.out.println("[Cards] Final loop iteration " + i);
-				}
-
-				if (this.getConfig().getBoolean("General.Debug-Mode")) {
-					System.out.println("[Cards] Iteration " + i + " in HashMap is: " + rarityIndexes.get(i) + ", " + this.getConfig().getString("Rarities." + (String) rarityIndexes.get(i) + ".Name"));
-				}
-
-				chance = this.getConfig().getInt("Chances." + rarityIndexes.get(i) + "." + type, -1);
-				if (this.getConfig().getBoolean("General.Debug-Mode")) {
-					System.out.println("[Cards] " + this.getConfig().getString("Rarities." + rarityIndexes.get(i) + ".Name") + "'s chance of dropping: " + chance + " out of 100,000");
-				}
-
-				if (this.getConfig().getBoolean("General.Debug-Mode")) {
-					System.out.println("[Cards] The random number we're comparing that against is: " + random);
-				}
-
-				if (chance > 0 && random <= chance) {
-					if (this.getConfig().getBoolean("General.Debug-Mode")) {
-						System.out.println("[Cards] Yup, looks like " + random + " is definitely lower than " + chance + "!");
-					}
-
-					if (this.getConfig().getBoolean("General.Debug-Mode")) {
-						System.out.println("[Cards] Giving a " + this.getConfig().getString("Rarities." + (String) rarityIndexes.get(i) + ".Name") + " card.");
-					}
-
-					return rarityIndexes.get(i);
-				}
-			}
-		}
-
-		return "None";
+		return CardUtil.calculateRarity(e,alwaysDrop);
 	}
 
 	public boolean isOnList(Player p) {
@@ -1147,68 +939,12 @@ public class TradingCards extends JavaPlugin implements Listener {
 
 	}
 
-	private final String nameTemplate = "^[a-zA-Z0-9-_]+$";
-
+	@Deprecated
+	/**
+	 * @deprecated use {@link CardUtil#createCard(Player, String, String, String, String, boolean, String, String)}
+	 */
 	public void createCard(Player creator, String rarity, String name, String series, String type, boolean hasShiny, String info, String about) {
-		if (!getCardsConfig().getConfig().contains("Cards." + rarity + "." + name)) {
-			if (name.matches(nameTemplate)) {
-				if (this.isPlayerCard(name)) {
-					name = name.replaceAll(" ", "_");
-				}
-
-				ConfigurationSection rarities = getCardsConfig().getConfig().getConfigurationSection("Cards");
-				Set<String> rarityKeys = rarities.getKeys(false);
-				String keyToUse = "";
-				Iterator var12 = rarityKeys.iterator();
-
-				String type2;
-				while (var12.hasNext()) {
-					type2 = (String) var12.next();
-					if (type2.equalsIgnoreCase(rarity)) {
-						keyToUse = type2;
-					}
-				}
-
-				if (!keyToUse.equals("")) {
-					String series2 = "";
-					type2 = "";
-					String info2 = "";
-					if (series.matches(nameTemplate)) {
-						series2 = series;
-					} else {
-						series2 = "None";
-					}
-
-					if (type.matches(nameTemplate)) {
-						type2 = type;
-					} else {
-						type2 = "None";
-					}
-
-					if (info.matches(nameTemplate)) {
-						info2 = info;
-					} else {
-						info2 = "None";
-					}
-
-					boolean hasShiny2 = hasShiny;
-					getCardsConfig().getConfig().set("Cards." + rarity + "." + name + ".Series", series2);
-					getCardsConfig().getConfig().set("Cards." + rarity + "." + name + ".Type", type2);
-					getCardsConfig().getConfig().set("Cards." + rarity + "." + name + ".Has-Shiny-Version", hasShiny2);
-					getCardsConfig().getConfig().set("Cards." + rarity + "." + name + ".Info", info2);
-					getCardsConfig().saveConfig();
-					getCardsConfig().reloadConfig();
-					sendMessage(creator, getPrefixedMessage(getMessagesConfig().getConfig().getString("Messages.CreateSuccess").replaceAll("%name%", name).replaceAll("%rarity%", rarity)));
-				} else {
-					creator.sendMessage(this.cMsg(getMessagesConfig().getConfig().getString("Messages.Prefix") + " " + getMessagesConfig().getConfig().getString("Messages.NoRarity")));
-				}
-			} else {
-				creator.sendMessage(this.cMsg(getMessagesConfig().getConfig().getString("Messages.Prefix") + " " + getMessagesConfig().getConfig().getString("Messages.CreateNoName")));
-			}
-		} else {
-			creator.sendMessage(this.cMsg(getMessagesConfig().getConfig().getString("Messages.Prefix") + " " + getMessagesConfig().getConfig().getString("Messages.CreateExists")));
-		}
-
+		CardUtil.createCard(creator, rarity, name, series, type, hasShiny, info, about);
 	}
 
 	public void reloadAllConfig() {

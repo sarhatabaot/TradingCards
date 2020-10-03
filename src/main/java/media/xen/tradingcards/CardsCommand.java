@@ -5,6 +5,7 @@ import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.CatchUnknown;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.HelpCommand;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
@@ -229,7 +230,7 @@ public class CardsCommand extends BaseCommand {
 	public void onGiveRandomCard(final CommandSender sender, final Player player, final String entityType) {
 		try {
 			EntityType.valueOf(entityType.toUpperCase());
-			String rare = plugin.calculateRarity(EntityType.valueOf(entityType.toUpperCase()), true);
+			String rare = CardUtil.calculateRarity(EntityType.valueOf(entityType.toUpperCase()), true);
 			plugin.debug("onCommand.rare: " + rare);
 			sendPrefixedMessage(sender, plugin.getMessagesConfig().getConfig().getString("Messages.GiveRandomCardMsg").replaceAll("%player%", player.getName()));
 
@@ -247,256 +248,105 @@ public class CardsCommand extends BaseCommand {
 			sendPrefixedMessage(player, plugin.getMessagesConfig().getConfig().getString("Messages.NoEntity"));
 		}
 	}
-
 	@Subcommand("list")
 	@CommandPermission("cards.list")
-	public void onList(final CommandSender sender, @Optional final String name) {
-		StringBuilder cardName2;
-		String cardName;
-		Set<String> rarityKeys;
-		ConfigurationSection rarities;
-		boolean canBuy2;
-		boolean hasExtra;
-		String rarity;
+	public class ListSubCommand extends BaseCommand{
+		@Default
+		public void onList(final CommandSender sender,@Optional final String rarity){
+			onListPlayer(sender, (Player) sender,rarity);
+		}
 
-		ConfigurationSection cardsWithKey;
-		Set<String> keyKeys;
-		Iterator<String> var17;
-		String key2;
-		String colour;
-		int j;
-		int numCardsCounter2;
-		Player p4;
-		Iterator<String> var43;
-		String thisKey;
-		if (name != null) {
-			if (plugin.isRarity(name).equalsIgnoreCase("None")) {
-				if (sender.hasPermission("cards.list.others")) {
-					if (showUsage) {
-						Player p3 = Bukkit.getPlayer(name);
-						ConfigurationSection cards = plugin.getCardsConfig().getConfig().getConfigurationSection("Cards");
-						Set<String> cardKeys = cards.getKeys(false);
-						cardName2 = new StringBuilder();
-						int i = 0;
-						int numCardsCounter = 0;
-						String finalMsg = "";
-						sendMessage(sender, "&e&l------- &7(&6&l" + p3.getName() + "'s Collection&7)&e&l -------");
+		@Subcommand("player")
+		@CommandPermission("cards.list.player|cards.list.others")
+		public void onListPlayer(final CommandSender sender, final Player target, @Optional final String rarity) {
+			if(rarity == null || plugin.isRarity(rarity).equals("None")){
+				final String sectionFormat = String.format("&e&l------- &7(&6&l%s's Collection&7)&e&l -------", target.getName());
+				sendMessage(sender, String.format(sectionFormat,target.getName()));
+				for(String raritySection: plugin.getCardsConfig().getConfig().getConfigurationSection("Cards").getKeys(false)){
+					listRarity(sender,target,raritySection);
+				}
+				return;
+			}
+			listRarity(sender, target, rarity);
+		}
 
-						for (Iterator var13 = cardKeys.iterator(); var13.hasNext(); numCardsCounter = 0) {
-							cardName = (String) var13.next();
-							cardsWithKey = plugin.getCardsConfig().getConfig().getConfigurationSection("Cards." + cardName);
-							keyKeys = cardsWithKey.getKeys(false);
-							var17 = keyKeys.iterator();
+		@Subcommand("pack")
+		@CommandPermission("cards.listpacks|cards.list.pack")
+		public void onListPack(final CommandSender sender){
+			ConfigurationSection rarities = plugin.getConfig().getConfigurationSection("BoosterPacks");
+			Set<String> rarityKeys = rarities.getKeys(false);
+			int k = 0;
+			sendMessage(sender, "&6--- Booster Packs --- ");
+			boolean canBuy2 = false;
+			boolean hasExtra = false;
 
+			for (Iterator<String> iterator = rarityKeys.iterator(); iterator.hasNext(); hasExtra = false) {
+				String rarity = iterator.next();
+				if (plugin.getConfig().getBoolean("PluginSupport.Vault.Vault-Enabled") && plugin.getConfig().contains("BoosterPacks." + rarity + ".Price") && plugin.getConfig().getDouble("BoosterPacks." + rarity + ".Price") > 0.0D) {
+					canBuy2 = true;
+				}
 
-							while (var17.hasNext()) {
-								key2 = var17.next();
-								if (i > 32) {
-									if (plugin.hasCard(p3, key2, cardName) > 0) {
-										++numCardsCounter;
-									}
-									finalMsg = cardName2 + "&7and more!";
-								} else {
-									plugin.debug(cardName + ", " + key2);
+				if (plugin.getConfig().contains("BoosterPacks." + rarity + ".ExtraCardRarity") && plugin.getConfig().contains("BoosterPacks." + rarity + ".NumExtraCards")) {
+					hasExtra = true;
+				}
 
-									colour = plugin.getConfig().getString("Colours.ListHaveCard");
-									if (plugin.hasShiny(p3, key2, cardName)) {
-										++numCardsCounter;
-										colour = plugin.getConfig().getString("Colours.ListHaveShinyCard");
-										cardName2.append(colour).append(key2.replaceAll("_", " ")).append("&f, ");
-									} else if (plugin.hasCard(p3, key2, cardName) > 0 && !plugin.hasShiny(p3, key2, cardName)) {
-										++numCardsCounter;
-										cardName2.append(colour).append(key2.replaceAll("_", " ")).append("&f, ");
-									} else {
-										cardName2.append("&7").append(key2.replaceAll("_", " ")).append("&f, ");
-									}
-
-								}
-								++i;
-							}
-
-							if (numCardsCounter >= i) {
-								sendMessage(sender, "&6--- " + cardName + " &7(" + plugin.getConfig().getString("Colours.ListRarityComplete") + "Complete&7)&6 ---");
-							} else {
-								sendMessage(sender, "&6--- " + cardName + " &7(&c" + numCardsCounter + "&f/&a" + i + "&7)&6 ---");
-							}
-
-							cardName2 = new StringBuilder(StringUtils.removeEnd(cardName2.toString(), ", "));
-							if (finalMsg.equals("")) {
-								sendMessage(sender, cardName2.toString());
-							} else {
-								sendMessage(sender, finalMsg);
-							}
-
-							cardName2 = new StringBuilder();
-							finalMsg = "";
-							i = 0;
-							break;
-
-						}
-					} else {
-						sendPrefixedMessage(sender, plugin.getMessagesConfig().getConfig().getString("Messages.ListError").replaceAll("%name%", name));
-					}
+				++k;
+				if (canBuy2) {
+					sendPrefixedMessage(sender, "&6" + k + ") &e" + rarity + " &7(&aPrice: " + plugin.getConfig().getDouble("BoosterPacks." + rarity + ".Price") + "&7)");
 				} else {
-					sendPrefixedMessage(sender, plugin.getMessagesConfig().getConfig().getString("Messages.NoPerms"));
-				}
-			} else {
-				rarities = plugin.getCardsConfig().getConfig().getConfigurationSection("Cards." + plugin.isRarity(name));
-				rarityKeys = rarities.getKeys(false);
-				StringBuilder keyToUse = new StringBuilder();
-				j = 0;
-				numCardsCounter2 = 0;
-				p4 = (Player) sender;
-				rarity = "";
-				var43 = rarityKeys.iterator();
-
-				while (var43.hasNext()) {
-					thisKey = var43.next();
-					if (j > 100) {
-						if (plugin.hasCard(p4, thisKey, plugin.isRarity(name)) > 0) {
-							++numCardsCounter2;
-						}
-
-						rarity = keyToUse + "&7and more!";
-						++j;
-					} else {
-						plugin.debug(thisKey + ", " + plugin.isRarity(name));
-
-						cardName = plugin.getConfig().getString("Colours.ListHaveCard");
-						if (plugin.hasShiny((Player) sender, thisKey, plugin.isRarity(name))) {
-							++numCardsCounter2;
-							cardName = plugin.getConfig().getString("Colours.ListHaveShinyCard");
-							keyToUse.append(cardName).append(thisKey.replaceAll("_", " ")).append("&f, ");
-						} else if (plugin.hasCard((Player) sender, thisKey, plugin.isRarity(name)) > 0 && !plugin.hasShiny((Player) sender, thisKey, plugin.isRarity(name))) {
-							++numCardsCounter2;
-							keyToUse.append(cardName).append(thisKey.replaceAll("_", " ")).append("&f, ");
-						}
-
-						++j;
-					}
+					sendPrefixedMessage(sender, "&6" + k + ") &e" + rarity);
 				}
 
-				if (numCardsCounter2 >= j) {
-					sendMessage(sender, "&6--- " + plugin.isRarity(name) + " &7(" + plugin.getConfig().getString("Colours.ListRarityComplete") + "Complete&7)&6 ---");
+				if (hasExtra) {
+					sendMessage(sender, "  &7- &f&o" + plugin.getConfig().getInt("BoosterPacks." + rarity + ".NumNormalCards") + " " + plugin.getConfig().getString("BoosterPacks." + rarity + ".NormalCardRarity") + ", " + plugin.getConfig().getInt("BoosterPacks." + rarity + ".NumExtraCards") + " " + plugin.getConfig().getString("BoosterPacks." + rarity + ".ExtraCardRarity") + ", " + plugin.getConfig().getInt("BoosterPacks." + rarity + ".NumSpecialCards") + " " + plugin.getConfig().getString("BoosterPacks." + rarity + ".SpecialCardRarity"));
 				} else {
-					sendMessage(sender, "&6--- " + plugin.isRarity(name) + " &7(&c" + numCardsCounter2 + "&f/&a" + j + "&7)&6 ---");
+					sendMessage(sender, "  &7- &f&o" + plugin.getConfig().getInt("BoosterPacks." + rarity + ".NumNormalCards") + " " + plugin.getConfig().getString("BoosterPacks." + rarity + ".NormalCardRarity") + ", " + plugin.getConfig().getInt("BoosterPacks." + rarity + ".NumSpecialCards") + " " + plugin.getConfig().getString("BoosterPacks." + rarity + ".SpecialCardRarity"));
 				}
 
-				keyToUse = new StringBuilder(StringUtils.removeEnd(keyToUse.toString(), ", "));
-				if (rarity.equals("")) {
-					sendMessage(sender, keyToUse.toString());
-				} else {
-					sendMessage(sender, rarity);
-				}
-
-				keyToUse = new StringBuilder();
-				rarity = "";
 				canBuy2 = false;
-				hasExtra = false;
 			}
-		} else {
-			rarities = plugin.getCardsConfig().getConfig().getConfigurationSection("Cards");
-			rarityKeys = rarities.getKeys(false);
-			StringBuilder keyToUse = new StringBuilder();
-			j = 0;
-			numCardsCounter2 = 0;
-			p4 = (Player) sender;
-			rarity = "";
-
-			for (var43 = rarityKeys.iterator(); var43.hasNext(); numCardsCounter2 = 0) {
-				thisKey = var43.next();
-				cardsWithKey = plugin.getCardsConfig().getConfig().getConfigurationSection("Cards." + thisKey);
-				keyKeys = cardsWithKey.getKeys(false);
-				var17 = keyKeys.iterator();
+		}
 
 
-				while (var17.hasNext()) {
-					key2 = var17.next();
-					if (j > 32) {
-						if (plugin.hasCard(p4, key2, thisKey) > 0) {
-							++numCardsCounter2;
-						}
+		private void listRarity(final CommandSender sender, final Player target, final String rarity){
+			final StringBuilder stringBuilder = new StringBuilder();
+			final String sectionFormat = "&6--- %s &7(&c%d&f/&a%d&7)&6 ---";
+			final String sectionFormatComplete = "&6--- %s &7(%sComplete&7)&6 ---";
+			final ConfigurationSection rarityCardSection = plugin.getCardsConfig().getConfig().getConfigurationSection("Cards."+rarity);
+			final int cardTotal = rarityCardSection.getKeys(false).size();
+			int cardCounter = 0;
 
-						rarity = keyToUse + "&7and more!";
-						++j;
+			for(String cardName: rarityCardSection.getKeys(false)){
+				if(cardCounter > 32){
+					if (plugin.hasCard(target, cardName, rarity) > 0) {
+						++cardCounter;
+					}
+					stringBuilder.append(cardName).append("&7and more!");
+				} else {
+					plugin.debug(rarity + ", " + cardName);
+
+					String colour = plugin.getConfig().getString("Colours.ListHaveCard");
+					if (plugin.hasShiny(target, cardName, rarity)) {
+						++cardCounter;
+						colour = plugin.getConfig().getString("Colours.ListHaveShinyCard");
+						stringBuilder.append(colour).append(cardName.replaceAll("_", " ")).append("&f, ");
+					} else if (plugin.hasCard(target, cardName, rarity) > 0 && !plugin.hasShiny(target, cardName, rarity)) {
+						++cardCounter;
+						stringBuilder.append(colour).append(cardName.replaceAll("_", " ")).append("&f, ");
 					} else {
-						plugin.debug(thisKey + ", " + key2);
-
-						colour = plugin.getConfig().getString("Colours.ListHaveCard");
-						if (plugin.hasShiny((Player) sender, key2, thisKey)) {
-							++numCardsCounter2;
-							colour = plugin.getConfig().getString("Colours.ListHaveShinyCard");
-							keyToUse.append(colour).append(key2.replaceAll("_", " ")).append("&f, ");
-						} else if (plugin.hasCard((Player) sender, key2, thisKey) > 0 && !plugin.hasShiny((Player) sender, key2, thisKey)) {
-							++numCardsCounter2;
-							keyToUse.append(colour).append(key2.replaceAll("_", " ")).append("&f, ");
-						} else {
-							keyToUse.append("&7").append(key2.replaceAll("_", " ")).append("&f, ");
-						}
-
-						++j;
+						stringBuilder.append("&7").append(cardName.replaceAll("_", " ")).append("&f, ");
 					}
 				}
-
-				if (numCardsCounter2 >= j) {
-					sendMessage(sender, "&6--- " + thisKey + " &7(" + plugin.getConfig().getString("Colours.ListRarityComplete") + "Complete&7)&6 ---");
-				} else {
-					sendMessage(sender, "&6--- " + thisKey + " &7(&c" + numCardsCounter2 + "&f/&a" + j + "&7)&6 ---");
-
-				}
-
-				keyToUse = new StringBuilder(StringUtils.removeEnd(keyToUse.toString(), ", "));
-				if (rarity.equals("")) {
-					sendMessage(sender, keyToUse.toString());
-				} else {
-					sendMessage(sender, rarity);
-				}
-
-				keyToUse = new StringBuilder();
-				rarity = "";
-				j = 0;
-				break;
 			}
-
-		}
-	}
-
-	@Subcommand("listpack")
-	@CommandPermission("cards.listpacks")
-	public void onListPack(final CommandSender sender) {
-		ConfigurationSection rarities = plugin.getConfig().getConfigurationSection("BoosterPacks");
-		Set<String> rarityKeys = rarities.getKeys(false);
-		int k = 0;
-		sendMessage(sender, "&6--- Booster Packs --- ");
-		boolean canBuy2 = false;
-		boolean hasExtra = false;
-
-		for (Iterator<String> iterator = rarityKeys.iterator(); iterator.hasNext(); hasExtra = false) {
-			String rarity = iterator.next();
-			if (plugin.getConfig().getBoolean("PluginSupport.Vault.Vault-Enabled") && plugin.getConfig().contains("BoosterPacks." + rarity + ".Price") && plugin.getConfig().getDouble("BoosterPacks." + rarity + ".Price") > 0.0D) {
-				canBuy2 = true;
-			}
-
-			if (plugin.getConfig().contains("BoosterPacks." + rarity + ".ExtraCardRarity") && plugin.getConfig().contains("BoosterPacks." + rarity + ".NumExtraCards")) {
-				hasExtra = true;
-			}
-
-			++k;
-			if (canBuy2) {
-				sendPrefixedMessage(sender, "&6" + k + ") &e" + rarity + " &7(&aPrice: " + plugin.getConfig().getDouble("BoosterPacks." + rarity + ".Price") + "&7)");
+			//send title
+			if(cardCounter == cardTotal){
+				sendMessage(sender,String.format(sectionFormatComplete, plugin.isRarity(rarity),plugin.getConfig().getString("Colours.ListRarityComplete")));
 			} else {
-				sendPrefixedMessage(sender, "&6" + k + ") &e" + rarity);
+				sendMessage(sender,String.format(sectionFormat,plugin.isRarity(rarity),cardCounter,cardTotal));
 			}
 
-			if (hasExtra) {
-				sendMessage(sender, "  &7- &f&o" + plugin.getConfig().getInt("BoosterPacks." + rarity + ".NumNormalCards") + " " + plugin.getConfig().getString("BoosterPacks." + rarity + ".NormalCardRarity") + ", " + plugin.getConfig().getInt("BoosterPacks." + rarity + ".NumExtraCards") + " " + plugin.getConfig().getString("BoosterPacks." + rarity + ".ExtraCardRarity") + ", " + plugin.getConfig().getInt("BoosterPacks." + rarity + ".NumSpecialCards") + " " + plugin.getConfig().getString("BoosterPacks." + rarity + ".SpecialCardRarity"));
-			} else {
-				sendMessage(sender, "  &7- &f&o" + plugin.getConfig().getInt("BoosterPacks." + rarity + ".NumNormalCards") + " " + plugin.getConfig().getString("BoosterPacks." + rarity + ".NormalCardRarity") + ", " + plugin.getConfig().getInt("BoosterPacks." + rarity + ".NumSpecialCards") + " " + plugin.getConfig().getString("BoosterPacks." + rarity + ".SpecialCardRarity"));
-			}
-
-			canBuy2 = false;
+			sendMessage(sender,stringBuilder.toString());
 		}
-
 	}
 
 	private void execCommand(final CommandSender sender, final String rarity, final String path) {
@@ -593,6 +443,7 @@ public class CardsCommand extends BaseCommand {
 	 * @param player Player
 	 * @param card   Card name
 	 * @param rarity Card Rarity
+	 * @deprecated use {@link CardUtil#dropItem(Player, ItemStack)}
 	 */
 	@Deprecated
 	private void dropCard(final Player player, final String card, final String rarity) {

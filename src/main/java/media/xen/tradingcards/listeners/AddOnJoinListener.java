@@ -39,11 +39,11 @@ public class AddOnJoinListener extends SimpleListener{
 			Set<String> rarityKeys = rarities.getKeys(false);
 			Map<String, Boolean> children = plugin.permRarities.getChildren();
 			String rarity = plugin.getConfig().getString("General.Auto-Add-Player-Rarity");
-			Iterator var11 = rarityKeys.iterator();
+			Iterator<String> var11 = rarityKeys.iterator();
 
 			String type;
 			while (var11.hasNext()) {
-				type = (String) var11.next();
+				type = var11.next();
 				children.put("cards.rarity." + type, false);
 				plugin.permRarities.recalculatePermissibles();
 				if (p.hasPermission("cards.rarity." + type)) {

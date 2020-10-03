@@ -1,10 +1,12 @@
 package media.xen.tradingcards;
 
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -13,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -23,7 +26,7 @@ import java.util.Set;
 public class CardUtil {
 	private static TradingCards plugin;
 
-	public static void init(final TradingCards plugin){
+	public static void init(final TradingCards plugin) {
 		CardUtil.plugin = plugin;
 	}
 
@@ -55,9 +58,6 @@ public class CardUtil {
 		return rarityMap.get(curRarity);
 	}
 
-	public static String calculateRarity(){
-		return null;
-	}
 
 	/**
 	 * Drops an item at the player's location.
@@ -76,8 +76,70 @@ public class CardUtil {
 		}
 	}
 
+	public static void createCard(Player creator, String rarity, String name, String series, String type, boolean hasShiny, String info, String about) {
+		final String nameTemplate = "^[a-zA-Z0-9-_]+$";
+		if (!plugin.getCardsConfig().getConfig().contains("Cards." + rarity + "." + name)) {
+			if (name.matches(nameTemplate)) {
+				if (plugin.isPlayerCard(name)) {
+					name = name.replaceAll(" ", "_");
+				}
 
-	public static ItemStack generateCard(String cardName, String rarityName, boolean forcedShiny){
+				ConfigurationSection rarities = plugin.getCardsConfig().getConfig().getConfigurationSection("Cards");
+				Set<String> rarityKeys = rarities.getKeys(false);
+				String keyToUse = "";
+				Iterator var12 = rarityKeys.iterator();
+
+				String type2;
+				while (var12.hasNext()) {
+					type2 = (String) var12.next();
+					if (type2.equalsIgnoreCase(rarity)) {
+						keyToUse = type2;
+					}
+				}
+
+				if (!keyToUse.equals("")) {
+					String series2 = "";
+					type2 = "";
+					String info2 = "";
+					if (series.matches(nameTemplate)) {
+						series2 = series;
+					} else {
+						series2 = "None";
+					}
+
+					if (type.matches(nameTemplate)) {
+						type2 = type;
+					} else {
+						type2 = "None";
+					}
+
+					if (info.matches(nameTemplate)) {
+						info2 = info;
+					} else {
+						info2 = "None";
+					}
+
+					plugin.getCardsConfig().getConfig().set("Cards." + rarity + "." + name + ".Series", series2);
+					plugin.getCardsConfig().getConfig().set("Cards." + rarity + "." + name + ".Type", type2);
+					plugin.getCardsConfig().getConfig().set("Cards." + rarity + "." + name + ".Has-Shiny-Version", hasShiny);
+					plugin.getCardsConfig().getConfig().set("Cards." + rarity + "." + name + ".Info", info2);
+					plugin.getCardsConfig().saveConfig();
+					plugin.getCardsConfig().reloadConfig();
+					plugin.sendMessage(creator, plugin.getPrefixedMessage(plugin.getMessagesConfig().getConfig().getString("Messages.CreateSuccess").replaceAll("%name%", name).replaceAll("%rarity%", rarity)));
+				} else {
+					creator.sendMessage(plugin.cMsg(plugin.getMessagesConfig().getConfig().getString("Messages.Prefix") + " " + plugin.getMessagesConfig().getConfig().getString("Messages.NoRarity")));
+				}
+			} else {
+				creator.sendMessage(plugin.cMsg(plugin.getMessagesConfig().getConfig().getString("Messages.Prefix") + " " + plugin.getMessagesConfig().getConfig().getString("Messages.CreateNoName")));
+			}
+		} else {
+			creator.sendMessage(plugin.cMsg(plugin.getMessagesConfig().getConfig().getString("Messages.Prefix") + " " + plugin.getMessagesConfig().getConfig().getString("Messages.CreateExists")));
+		}
+
+	}
+
+	@NotNull
+	public static ItemStack generateCard(String cardName, String rarityName, boolean forcedShiny) {
 		if (rarityName.equals("None")) {
 			return null;
 		}
@@ -129,8 +191,8 @@ public class CardUtil {
 				.rarityColour(rarityColour)
 				.prefix(prefix)
 				.series(series, seriesColour, seriesDisplay)
-				.about(about,aboutColour,aboutDisplay)
-				.type(type,typeColour,typeDisplay)
+				.about(about, aboutColour, aboutDisplay)
+				.type(type, typeColour, typeDisplay)
 				.info(info, infoColour, infoDisplay)
 				.shinyPrefix(shinyPrefix)
 				.isPlayerCard(isPlayerCard)
@@ -140,10 +202,11 @@ public class CardUtil {
 
 	/**
 	 * Generates a random card.
-	 * @deprecated Should not actually be used. Use {@link CardUtil#getRandomCard(String, boolean)}
+	 *
 	 * @param rarityName
 	 * @param forcedShiny
 	 * @return
+	 * @deprecated Should not actually be used. Use {@link CardUtil#getRandomCard(String, boolean)}
 	 */
 	public static ItemStack generateRandomCard(String rarityName, boolean forcedShiny) {
 		ConfigurationSection cardSection = plugin.getCardsConfig().getConfig().getConfigurationSection("Cards." + rarityName);
@@ -158,7 +221,7 @@ public class CardUtil {
 	}
 
 	@NotNull
-	public static ItemStack getRandomCard(final String rarityName, final boolean forcedShiny){
+	public static ItemStack getRandomCard(final String rarityName, final boolean forcedShiny) {
 		ConfigurationSection cardSection = plugin.getCardsConfig().getConfig().getConfigurationSection("Cards." + rarityName);
 		plugin.debug("generateCard.cardSection: " + plugin.getCardsConfig().getConfig().contains("Cards." + rarityName));
 		plugin.debug("generateCard.rarity: " + rarityName);
@@ -167,8 +230,9 @@ public class CardUtil {
 		List<String> cardNames = new ArrayList<>(cards);
 		int cIndex = plugin.r.nextInt(cardNames.size());
 		String cardName = cardNames.get(cIndex);
-		return CardManager.getCard(cardName,rarityName);
+		return CardManager.getCard(cardName, rarityName);
 	}
+
 	public static String getCardName(String rarity, String display) {
 		boolean hasPrefix = false;
 		String prefix = "";
@@ -211,6 +275,122 @@ public class CardUtil {
 				if (cleanedArray.length == 2 && cleanedArray[1].matches(s)) return s;
 			}
 		}
+		return "None";
+	}
+
+	private static String getMobType(EntityType e, int shouldItDrop, boolean alwaysDrop) {
+		if (plugin.isMobHostile(e)) {
+			if (!alwaysDrop) {
+				if (shouldItDrop > plugin.getConfig().getInt("Chances.Hostile-Chance")) {
+					return "None";
+				}
+			}
+			return "Hostile";
+		}
+		if (plugin.isMobNeutral(e)) {
+			if (!alwaysDrop) {
+				if (shouldItDrop > plugin.getConfig().getInt("Chances.Neutral-Chance")) {
+					return "None";
+				}
+
+			}
+			return "Neutral";
+		}
+		if (plugin.isMobPassive(e)) {
+			if (!alwaysDrop) {
+				if (shouldItDrop > plugin.getConfig().getInt("Chances.Passive-Chance")) {
+					return "None";
+				}
+
+			}
+			return "Passive";
+		}
+
+		if (!plugin.isMobBoss(e)) {
+			return "None";
+		}
+
+		if (!alwaysDrop) {
+			if (shouldItDrop > plugin.getConfig().getInt("Chances.Boss-Chance")) {
+				return "None";
+			}
+
+			//TODO: Implement this
+			if (plugin.getConfig().getBoolean("Chances.Boss-Drop")) {
+				int var16 = plugin.getConfig().getInt("Chances.Boss-Drop-Rarity");
+			}
+
+		}
+		return "Boss";
+
+	}
+
+	public static String calculateRarity(EntityType e, boolean alwaysDrop) {
+		int shouldItDrop = plugin.r.nextInt(100) + 1;
+		String type = getMobType(e, shouldItDrop, alwaysDrop);
+		plugin.debug("shouldItDrop Num: " + shouldItDrop);
+
+		ConfigurationSection rarities = plugin.getConfig().getConfigurationSection("Rarities");
+		Set<String> rarityKeys = rarities.getKeys(false);
+		Map<String, Integer> rarityChances = new HashMap<>();
+		Map<Integer, String> rarityIndexes = new HashMap<>();
+		int i = 0;
+		int mini = 0;
+		int random = plugin.r.nextInt(100000) + 1;
+		plugin.debug("Random Card Num: " + random);
+		plugin.debug("Type: " + type);
+
+		String key;
+		int chance;
+		for (Iterator<String> var13 = rarityKeys.iterator(); var13.hasNext(); rarityChances.put(key, chance)) {
+			key = var13.next();
+			rarityIndexes.put(i, key);
+			++i;
+
+			plugin.debug(i + ", " + key);
+
+
+			if (plugin.getConfig().contains("Chances." + key + "." + StringUtils.capitalize(e.getKey().getKey())) && mini == 0) {
+				plugin.debug("Mini: " + i);
+				mini = i;
+			}
+
+			chance = plugin.getConfig().getInt("Chances." + key + "." + type, -1);
+			plugin.debug("Keys: " + key + ", " + chance + ", i=" + i);
+		}
+
+		if (mini != 0) {
+			plugin.debug("Mini: " + mini);
+			plugin.debug("i: " + i);
+
+			while (i >= mini) {
+				--i;
+				plugin.debug("i: " + i);
+
+
+				chance = plugin.getConfig().getInt("Chances." + rarityIndexes.get(i) + "." + StringUtils.capitalize(e.getKey().getKey()), -1);
+				plugin.debug("Chance: " + chance);
+				plugin.debug("Rarity: " + rarityIndexes.get(i));
+
+				if (chance > 0 && random <= chance) {
+					return rarityIndexes.get(i);
+				}
+			}
+		} else {
+			while (i > 0) {
+				--i;
+				plugin.debug("Iteration " + i + " in HashMap is: " + rarityIndexes.get(i) + ", " + plugin.getConfig().getString("Rarities." + rarityIndexes.get(i) + ".Name"));
+
+				chance = plugin.getConfig().getInt("Chances." + rarityIndexes.get(i) + "." + type, -1);
+				plugin.debug(plugin.getConfig().getString("Rarities." + rarityIndexes.get(i) + ".Name") + "'s chance of dropping: " + chance + " out of 100,000");
+
+				if (chance > 0 && random <= chance) {
+					plugin.debug("Giving a " + plugin.getConfig().getString("Rarities." + rarityIndexes.get(i) + ".Name") + " card.");
+					return rarityIndexes.get(i);
+				}
+			}
+		}
+
 		return "None";
 	}
 }
