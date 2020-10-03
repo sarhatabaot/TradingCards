@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+@Deprecated
 public class MythicMobsListener extends SimpleListener {
 	private final Random r = plugin.r;
 

@@ -9,6 +9,8 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+
+@Deprecated
 public class MobArenaListener extends SimpleListener {
 	public MobArenaListener(final TradingCards plugin) {
 		super(plugin);

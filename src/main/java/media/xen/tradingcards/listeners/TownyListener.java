@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+@Deprecated
 public class TownyListener extends SimpleListener {
 	public TownyListener(final TradingCards plugin) {
 		super(plugin);
