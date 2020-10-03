@@ -1,6 +1,8 @@
 package media.xen.tradingcards.addons;
 
+
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author sarhatabaot
@@ -8,8 +10,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 public interface TradingCardsAddon {
 	/**
 	 * Return an instance of your plugin.
-	 * @return an instance of your plugin.
+	 * @return The instance of your {@link JavaPlugin}
 	 */
+	@NotNull
 	JavaPlugin getJavaPlugin();
 
 	/**
