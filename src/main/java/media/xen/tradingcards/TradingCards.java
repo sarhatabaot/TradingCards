@@ -21,12 +21,8 @@ import media.xen.tradingcards.listeners.DeckListener;
 import media.xen.tradingcards.listeners.MobSpawnListener;
 import media.xen.tradingcards.listeners.PackListener;
 import media.xen.tradingcards.listeners.DropListener;
-import media.xen.tradingcards.listeners.MobArenaListener;
-import media.xen.tradingcards.listeners.MythicMobsListener;
-import media.xen.tradingcards.listeners.TownyListener;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -85,33 +81,6 @@ public class TradingCards extends JavaPlugin implements Listener {
 	public static Chat chat = null;
 	public Random r = new Random();
 	int taskid;
-
-	private void hookTowny() {
-		if (this.getConfig().getBoolean("PluginSupport.Towny.Towny-Enabled")) {
-			if (this.getServer().getPluginManager().getPlugin("Towny") != null) {
-				this.getServer().getPluginManager().registerEvents(new TownyListener(this), this);
-				getLogger().info("Towny successfully hooked!");
-			} else {
-				getLogger().warning("Towny not found, hook unsuccessful!");
-			}
-		}
-	}
-
-
-	private void hookMythicMobs() {
-		PluginManager pm;
-		if (this.getConfig().getBoolean("PluginSupport.MythicMobs.MythicMobs-Enabled")) {
-			if (this.getServer().getPluginManager().getPlugin("MythicMobs") != null) {
-				pm = this.getServer().getPluginManager();
-				pm.registerEvents(new MythicMobsListener(this), this);
-				getLogger().info("MythicMobs hook successful!");
-				this.hasMythicMobs = true;
-			} else {
-				getLogger().info("MythicMobs not found, hook unsuccessful!");
-
-			}
-		}
-	}
 
 	private void hookVault() {
 		if (this.getConfig().getBoolean("PluginSupport.Vault.Vault-Enabled")) {
@@ -242,20 +211,6 @@ public class TradingCards extends JavaPlugin implements Listener {
 
 	}
 
-	private void hookMobArena() {
-		if (this.getConfig().getBoolean("PluginSupport.MobArena.MobArena-Enabled")) {
-			if (this.getServer().getPluginManager().getPlugin("MobArena") != null) {
-				PluginManager pm = this.getServer().getPluginManager();
-				MobArena maPlugin = (MobArena) pm.getPlugin("MobArena");
-				this.am = maPlugin.getArenaMaster();
-				pm.registerEvents(new MobArenaListener(this), this);
-				getLogger().info("Mob Arena hook successful!");
-				this.hasMobArena = true;
-			} else {
-				getLogger().info("Mob Arena not found, hook unsuccessful!");
-			}
-		}
-	}
 
 	private void hookFileSystem() {
 		if (this.getConfig().getBoolean("General.SQLite")) {
@@ -278,9 +233,6 @@ public class TradingCards extends JavaPlugin implements Listener {
 		pm.registerEvents(new MobSpawnListener(this), this);
 		pm.registerEvents(new AddOnJoinListener(this), this);
 		pm.registerEvents(new DeckListener(this), this);
-		hookMythicMobs();
-		hookMobArena();
-		hookTowny();
 	}
 
 	@Override
