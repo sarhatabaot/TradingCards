@@ -58,6 +58,11 @@ public class TradingCards extends JavaPlugin implements Listener {
 	private SimpleConfig messagesConfig;
 	private SimpleConfig cardsConfig;
 	private boolean usingSqlite;
+	public static Economy econ = null;
+	public static Permission perms = null;
+	public static Chat chat = null;
+	public Random r = new Random();
+	int taskid;
 
 
 	public SimpleConfig getDeckConfig() {
@@ -72,12 +77,6 @@ public class TradingCards extends JavaPlugin implements Listener {
 		return cardsConfig;
 	}
 
-
-	public static Economy econ = null;
-	public static Permission perms = null;
-	public static Chat chat = null;
-	public Random r = new Random();
-	int taskid;
 
 	private void hookVault() {
 		if (this.getConfig().getBoolean("PluginSupport.Vault.Vault-Enabled")) {
@@ -309,11 +308,10 @@ public class TradingCards extends JavaPlugin implements Listener {
 				debug("Deck running total: " + deckNumber);
 			}
 			if (deckNumber == 0) {
-				debug("No decks?!");
 				return true;
 			}
 
-			debug("[TradingCards] Decks:" + deckNumber);
+			debug("Decks:" + deckNumber);
 			for (int i = 0; i < deckNumber; i++) {
 				if (getDeckConfig().getConfig().contains("Decks.Inventories." + uuidString + "." + (i + 1))) {
 					List<String> contents = getDeckConfig().getConfig().getStringList("Decks.Inventories." + uuidString + "." + (i + 1));
@@ -547,7 +545,11 @@ public class TradingCards extends JavaPlugin implements Listener {
 
 
 	}
-
+	/*
+	 Deck
+	 uuid:
+	 	- Rarity, CardName, amount, isShiny
+	 */
 	public void openDeck(Player p, int deckNum) {
 		debug("Deck opened");
 		String uuidString = p.getUniqueId().toString();
@@ -560,9 +562,7 @@ public class TradingCards extends JavaPlugin implements Listener {
 		boolean isNull = false;
 
 		for (final String s : contents) {
-			if (this.getConfig().getBoolean("General.Debug-Mode")) {
-				System.out.println("[Cards] Deck file content: " + s);
-			}
+			debug("Deck file content: "+s);
 
 			String[] splitContents = s.split(",");
 			if (splitContents.length > 1) {
@@ -571,13 +571,13 @@ public class TradingCards extends JavaPlugin implements Listener {
 				}
 
 				if (splitContents[3].equalsIgnoreCase("yes")) {
-					if (!splitContents[0].equalsIgnoreCase("BLANK") && !splitContents[1].equalsIgnoreCase("None") && splitContents[1] != null && !splitContents[1].isEmpty()) {
+					if (!splitContents[0].equalsIgnoreCase("BLANK") && !splitContents[1].equalsIgnoreCase("None") && !splitContents[1].isEmpty()) {
 						card = this.createPlayerCard(splitContents[1], splitContents[0], Integer.valueOf(splitContents[2]), true);
 					} else {
 						getLogger().warning("A null card has been found in a deck. It was truncated for safety.");
 						isNull = true;
 					}
-				} else if (!splitContents[1].equalsIgnoreCase("None") && !splitContents[0].equalsIgnoreCase("BLANK") && splitContents[1] != null && !splitContents[1].isEmpty()) {
+				} else if (!splitContents[1].equalsIgnoreCase("None") && !splitContents[0].equalsIgnoreCase("BLANK") && !splitContents[1].isEmpty()) {
 					card = this.getNormalCard(splitContents[1], splitContents[0], Integer.parseInt(splitContents[2]));
 				} else {
 					getLogger().warning("A null card has been found in a deck. It was truncated for safety.");
@@ -609,18 +609,12 @@ public class TradingCards extends JavaPlugin implements Listener {
 		}
 
 		Inventory inv = Bukkit.createInventory(null, invSlots, this.cMsg("&c" + p.getName() + "'s Deck #" + deckNum));
-		if (this.getConfig().getBoolean("General.Debug-Mode")) {
-			System.out.println("[Cards] Created inventory.");
-		}
-
+		debug("Created inventory.");
 		int iter = 0;
 
-		for (Iterator var12 = cards.iterator(); var12.hasNext(); ++iter) {
-			ItemStack i = (ItemStack) var12.next();
-			if (this.getConfig().getBoolean("General.Debug-Mode")) {
-				System.out.println("[Cards] Item " + i.getType().toString() + " added to inventory!");
-			}
-
+		for (Iterator<ItemStack> var12 = cards.iterator(); var12.hasNext(); ++iter) {
+			ItemStack i = var12.next();
+			debug("Item " + i.getType().toString() + " added to inventory!");
 			i.setAmount(quantity.get(iter));
 			inv.addItem(i);
 		}
@@ -738,14 +732,6 @@ public class TradingCards extends JavaPlugin implements Listener {
 		return (this.getConfig().getBoolean("Blacklist.Whitelist-Mode") ? 'w' : 'b');
 	}
 
-	@Deprecated
-	/**
-	 * @deprecated Use {@link CardUtil#generateRandomCard(String, String, boolean)}
-	 */
-	public ItemStack generateRandomCard(String rare, boolean forcedShiny) {
-		return CardUtil.generateRandomCard(rare, forcedShiny);
-	}
-
 	public List<String> wrapString(@NotNull String s) {
 		String parsedString = ChatColor.stripColor(s);
 		String addedString = WordUtils.wrap(parsedString, this.getConfig().getInt("General.Info-Line-Length", 25), "\n", true);
@@ -762,22 +748,6 @@ public class TradingCards extends JavaPlugin implements Listener {
 
 		return finalArray;
 	}
-
-	public String[] splitStringEvery(String s, int interval) {
-		int arrayLength = s.length() / interval;
-		String[] result = new String[arrayLength];
-		int j = 0;
-		int lastIndex = result.length - 1;
-
-		for (int i = 0; i < lastIndex; ++i) {
-			result[i] = s.substring(j, j + interval);
-			j += interval;
-		}
-
-		result[lastIndex] = s.substring(j);
-		return result;
-	}
-
 
 	public void debug(final String message) {
 		if (getConfig().getBoolean("General.Debug-Mode")) {
@@ -836,19 +806,11 @@ public class TradingCards extends JavaPlugin implements Listener {
 		}
 
 		for (final Player p : Bukkit.getOnlinePlayers()) {
-			String rare = this.calculateRarity(mob, true);
+			String rare = CardUtil.calculateRarity(mob, true);
 			debug("onCommand.rare: " + rare);
 			CardUtil.dropItem(p, CardUtil.getRandomCard(rare, false));
 		}
 
-	}
-
-	@Deprecated
-	/**
-	 * @deprecated use {@link CardUtil#createCard(Player, String, String, String, String, boolean, String, String)}
-	 */
-	public void createCard(Player creator, String rarity, String name, String series, String type, boolean hasShiny, String info, String about) {
-		CardUtil.createCard(creator, rarity, name, series, type, hasShiny, info, about);
 	}
 
 	public void reloadAllConfig() {
@@ -937,69 +899,6 @@ public class TradingCards extends JavaPlugin implements Listener {
 		return ChatColor.translateAlternateColorCodes('&', message);
 	}
 
-	public class CardSchedulerRunnable extends BukkitRunnable {
-		private final TradingCards plugin;
-
-		public CardSchedulerRunnable(final TradingCards plugin) {
-			this.plugin = plugin;
-		}
-
-		@Override
-		public void run() {
-			plugin.debug(getClass().getSimpleName() + " task running");
-			//check this before the task is registered.
-			if (!plugin.getConfig().getBoolean("General.Schedule-Cards"))
-				return;
-
-			if (plugin.getConfig().getBoolean("General.Schedule-Cards-Natural")) {
-				String mob = plugin.getConfig().getString("General.Schedule-Card-Mob");
-				if (plugin.isMob(mob.toUpperCase())) {
-					plugin.giveawayNatural(EntityType.valueOf(mob.toUpperCase()), null);
-					return;
-				}
-				plugin.getLogger().info("Error! schedule-card-mob is an invalid mob?");
-				return;
-			}
-			debug("Schedule cards is true.");
-
-			ConfigurationSection rarities = getCardsConfig().getConfig().getConfigurationSection("Cards");
-			Set<String> rarityKeys = rarities.getKeys(false);
-			String keyToUse = "";
-
-			for (final String key : rarityKeys) {
-				debug("Rarity key: " + key);
-				if (key.equalsIgnoreCase(plugin.getConfig().getString("General.Schedule-Card-Rarity"))) {
-					keyToUse = key;
-				}
-			}
-			debug("keyToUse: " + keyToUse);
-
-			if (!keyToUse.equals("")) {
-				Bukkit.broadcastMessage(plugin.cMsg(getMessagesConfig().getConfig().getString("Messages.Prefix") + " " + getMessagesConfig().getConfig().getString("Messages.ScheduledGiveaway")));
-
-				for (final Player p : Bukkit.getOnlinePlayers()) {
-					ConfigurationSection cards = getCardsConfig().getConfig().getConfigurationSection("Cards." + keyToUse);
-					Set<String> cardKeys = cards.getKeys(false);
-					int rIndex = plugin.r.nextInt(cardKeys.size());
-					int i = 0;
-					String cardName = "";
-
-					for (Iterator<String> var11 = cardKeys.iterator(); var11.hasNext(); ++i) {
-						String theCardName = var11.next();
-						if (i == rIndex) {
-							cardName = theCardName;
-							break;
-						}
-					}
-
-					CardUtil.dropItem(p,CardManager.getCard(cardName, keyToUse, false));
-				}
-			}
-		}
-
-
-	}
-
 	public void startTimer() {
 		BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
 		if (scheduler.isQueued(this.taskid) || scheduler.isCurrentlyRunning(this.taskid)) {
@@ -1014,9 +913,4 @@ public class TradingCards extends JavaPlugin implements Listener {
 		this.taskid = new CardSchedulerRunnable(this).runTaskTimer(this, (hours * 20 * 60 * 60), (hours * 20 * 60 * 60)).getTaskId();
 	}
 
-	public boolean isPlayerCard(String name) {
-		String rarity = this.getConfig().getString("General.Auto-Add-Player-Rarity");
-		String type = this.getConfig().getString("General.Player-Type");
-		return getCardsConfig().getConfig().contains("Cards." + rarity + "." + name) && getCardsConfig().getConfig().getString("Cards." + rarity + "." + name + ".Type").equalsIgnoreCase(type);
-	}
 }
