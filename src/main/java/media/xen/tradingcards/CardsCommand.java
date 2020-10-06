@@ -95,7 +95,7 @@ public class CardsCommand extends BaseCommand {
 	@Subcommand("create")
 	@CommandPermission("cards.create")
 	public void onCreate(final Player player, final String rarity, final String name, final String series, final String type, final boolean shiny, final String info, final String about) {
-		plugin.createCard(player, rarity.replaceAll("_", " "), name, series.replaceAll("_", " "), type.replaceAll("_", " "), shiny, info.replaceAll("_", " "), about.replaceAll("_", " "));
+		CardUtil.createCard(player, rarity.replaceAll("_", " "), name, series.replaceAll("_", " "), type.replaceAll("_", " "), shiny, info.replaceAll("_", " "), about.replaceAll("_", " "));
 	}
 
 	@Subcommand("givecard")

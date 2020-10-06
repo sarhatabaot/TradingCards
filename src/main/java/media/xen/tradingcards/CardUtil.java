@@ -80,7 +80,7 @@ public class CardUtil {
 		final String nameTemplate = "^[a-zA-Z0-9-_]+$";
 		if (!plugin.getCardsConfig().getConfig().contains("Cards." + rarity + "." + name)) {
 			if (name.matches(nameTemplate)) {
-				if (plugin.isPlayerCard(name)) {
+				if (isPlayerCard(name)) {
 					name = name.replaceAll(" ", "_");
 				}
 
@@ -183,7 +183,7 @@ public class CardUtil {
 		}
 
 		boolean isPlayerCard = false;
-		if (plugin.isPlayerCard(cardName)) {
+		if (isPlayerCard(cardName)) {
 			isPlayerCard = true;
 		}
 
@@ -392,5 +392,12 @@ public class CardUtil {
 		}
 
 		return "None";
+	}
+
+
+	public static boolean isPlayerCard(String name) {
+		String rarity = plugin.getConfig().getString("General.Auto-Add-Player-Rarity");
+		String type = plugin.getConfig().getString("General.Player-Type");
+		return plugin.getCardsConfig().getConfig().contains("Cards." + rarity + "." + name) && plugin.getCardsConfig().getConfig().getString("Cards." + rarity + "." + name + ".Type").equalsIgnoreCase(type);
 	}
 }
