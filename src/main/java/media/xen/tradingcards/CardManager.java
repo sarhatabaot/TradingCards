@@ -24,7 +24,7 @@ public class CardManager {
 	 */
 	public static void init(final TradingCards plugin) {
 		CardManager.plugin = plugin;
-		CardManager.blankCard = new ItemStack(Material.getMaterial(plugin.getConfig().getString("General.Card-Material")));
+		CardManager.blankCard = new ItemStack(Material.getMaterial(plugin.getConfig().getString("General.Card-Material", "PAPER")));
 		for(String rarity: plugin.getCardsConfig().getConfig().getConfigurationSection("Cards").getKeys(false)){
 			for(String name: plugin.getCardsConfig().getConfig().getConfigurationSection("Cards."+rarity).getKeys(false)) {
 				cards.put(rarity+"."+name, CardUtil.generateCard(name,rarity,false));
