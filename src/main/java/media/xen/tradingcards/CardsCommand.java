@@ -24,6 +24,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import javax.smartcardio.Card;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -188,6 +189,7 @@ public class CardsCommand extends BaseCommand {
 
 
 	@Subcommand("getdeck")
+	@CommandPermission("cards.decks.get")
 	public void onGetDeck(final Player player, final int deckNumber) {
 		World curWorld;
 		if (player.hasPermission("cards.decks." + deckNumber)) {
@@ -425,8 +427,7 @@ public class CardsCommand extends BaseCommand {
 							break;
 						}
 					}
-
-					dropCard(p5, cardName, keyToUse);
+					CardUtil.dropItem(p5, CardManager.getCard(cardName,keyToUse));
 				}
 			} else {
 				sendPrefixedMessage(sender, plugin.getMessagesConfig().getConfig().getString("Messages.NoRarity"));
@@ -435,29 +436,6 @@ public class CardsCommand extends BaseCommand {
 
 
 	}
-
-	/**
-	 * Drops a card at player's location. If the player has space in his inventory, the item gets placed directly into
-	 * the inventory.
-	 *
-	 * @param player Player
-	 * @param card   Card name
-	 * @param rarity Card Rarity
-	 * @deprecated use {@link CardUtil#dropItem(Player, ItemStack)}
-	 */
-	@Deprecated
-	private void dropCard(final Player player, final String card, final String rarity) {
-		if (player.getInventory().firstEmpty() != -1) {
-			player.getInventory().addItem(CardManager.getCard(card, rarity));
-		} else {
-			World curWorld4 = player.getWorld();
-			if (player.getGameMode() == GameMode.SURVIVAL) {
-				curWorld4.dropItem(player.getLocation(), CardManager.getCard(card, rarity));
-			}
-		}
-	}
-
-
 
 	@Subcommand("worth")
 	@CommandPermission("cards.worth")
