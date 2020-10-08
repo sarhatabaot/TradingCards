@@ -3,8 +3,6 @@ General:
   Server-Name: 'Server'
   # Show debug messages?
   Debug-Mode: false
-  # Should we show the command usage in /cards? (what the command does)
-  Show-Command-Usage: true
   # If your server is not running the latest MC version, set this to FALSE
   Hide-Enchants: true
   # Whether we should use American date format (07/12/15) or English date format (12/07/15)
@@ -46,7 +44,7 @@ General:
   Auto-Add-Players: false
   Auto-Add-Player-Rarity: Common
   Player-Op-Rarity: Legendary
-  Player-Series: '2015'
+  Player-Series: '2020'
   Player-Type: 'Player'
   Player-Has-Shiny-Version: true
   # Should the player drop their own card if they're killed in PvP?
