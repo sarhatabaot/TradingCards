@@ -6,9 +6,11 @@ import co.aikar.commands.annotation.CatchUnknown;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Default;
+import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.HelpCommand;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
+import media.xen.tradingcards.addons.TradingCardsAddon;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
@@ -22,9 +24,9 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
-import javax.smartcardio.Card;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -36,11 +38,9 @@ import static media.xen.tradingcards.TradingCards.sendMessage;
 @CommandAlias("cards")
 public class CardsCommand extends BaseCommand {
 	private final TradingCards plugin;
-	private final boolean showUsage;
 
 	public CardsCommand(final TradingCards plugin) {
 		this.plugin = plugin;
-		this.showUsage = plugin.getConfig().getBoolean("General.Show-Command-Usage", true);
 	}
 
 	@CatchUnknown
@@ -94,48 +94,62 @@ public class CardsCommand extends BaseCommand {
 
 	@Subcommand("create")
 	@CommandPermission("cards.create")
-	public void onCreate(final Player player, final String rarity, final String name, final String series, final String type, final boolean shiny, final String info, final String about) {
-		CardUtil.createCard(player, rarity.replaceAll("_", " "), name, series.replaceAll("_", " "), type.replaceAll("_", " "), shiny, info.replaceAll("_", " "), about.replaceAll("_", " "));
-	}
-
-	@Subcommand("givecard")
-	@CommandPermission("cards.givecard")
-	public void onGiveCard(final Player player, final String name, final String rarity) {
-		if (plugin.getCardsConfig().getConfig().contains("Cards." + rarity + "." + name)) {
-			player.getInventory().addItem(CardManager.getCard(name, rarity));
-			return;
+	public class CreateCommands extends BaseCommand {
+		@Subcommand("card")
+		@CommandPermission("cards.create.card")
+		public void onCreateCard(final Player player, final String rarity, final String name, final String series, final String type, final boolean shiny, final String info, final String about){
+			CardUtil.createCard(player, rarity.replaceAll("_", " "), name, series.replaceAll("_", " "), type.replaceAll("_", " "), shiny, info.replaceAll("_", " "), about.replaceAll("_", " "));
 		}
-		sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().getConfig().getString("Messages.NoCard")));
+
+		//more commands here, pack, rarity, series etc.
 	}
 
-
-	@Subcommand("giveshinycard")
-	@CommandPermission("cards.giveshinycard")
-	public void onGiveShinyCard(final Player player, final String name, final String rarity) {
-		if (plugin.getCardsConfig().getConfig().contains("Cards." + rarity + "." + name)) {
-			player.getInventory().addItem(CardManager.getCard(name, rarity, true));
-			return;
+	@Subcommand("give")
+	@CommandPermission("cards.give")
+	public class GiveCommands extends BaseCommand {
+		@Subcommand("card")
+		@CommandPermission("cards.give.card")
+		public void onGiveCard(final Player player, final String name, final String rarity){
+			if (plugin.getCardsConfig().getConfig().contains("Cards." + rarity + "." + name)) {
+				player.getInventory().addItem(CardManager.getCard(name, rarity));
+				return;
+			}
+			sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().getConfig().getString("Messages.NoCard")));
 		}
-		sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().getConfig().getString("Messages.NoCard")));
 
-	}
+		@Subcommand("card shiny")
+		@CommandPermission("cards.give.card.shiny")
+		public void onGiveShinyCard(final Player player, final String name, final String rarity){
+			if (plugin.getCardsConfig().getConfig().contains("Cards." + rarity + "." + name)) {
+				player.getInventory().addItem(CardManager.getCard(name, rarity, true));
+				return;
+			}
+			sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().getConfig().getString("Messages.NoCard")));
+		}
 
-	@Subcommand("giveboosterpack")
-	@CommandPermission("cards.giveboosterpack")
-	public void onGiveBoosterpack(final CommandSender sender, final Player player, final String boosterpack) {
-		World curWorld;
-		if (player.getInventory().firstEmpty() != -1) {
+
+		@Subcommand("boosterpack|pack")
+		@Description("Gives a pack to a player.")
+		@CommandPermission("cards.give.pack")
+		public void onGiveBoosterPack(final CommandSender sender, final Player player, final String boosterpack){
 			sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().getConfig().getString("Messages.BoosterPackMsg")));
-			player.getInventory().addItem(plugin.createBoosterPack(boosterpack));
-			return;
+			CardUtil.dropItem(player,plugin.createBoosterPack(boosterpack));
 		}
 
-		curWorld = player.getWorld();
-		if (player.getGameMode() == GameMode.SURVIVAL) {
-			sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().getConfig().getString("Messages.BoosterPackMsg")));
-			curWorld.dropItem(player.getLocation(), plugin.createBoosterPack(boosterpack));
+		@Subcommand("random")
+		@Description("Gives a random card to a player.")
+		@CommandPermission("cards.give.random")
+		public void onGiveRandomCard(final CommandSender sender, final Player player, final String entityType) {
+			try {
+				EntityType.valueOf(entityType.toUpperCase());
+				String rare = CardUtil.calculateRarity(EntityType.valueOf(entityType.toUpperCase()), true);
+				plugin.debug("onCommand.rare: " + rare);
+				sendPrefixedMessage(sender, plugin.getMessagesConfig().getConfig().getString("Messages.GiveRandomCardMsg").replaceAll("%player%", player.getName()));
+				CardUtil.dropItem(player,CardUtil.getRandomCard(rare, false));
+			} catch (IllegalArgumentException exception) {
+				sendPrefixedMessage(player, plugin.getMessagesConfig().getConfig().getString("Messages.NoEntity"));
+			}
 		}
-
 	}
 
 	private void sendPrefixedMessage(final CommandSender toWhom, final String message) {
@@ -156,6 +170,10 @@ public class CardsCommand extends BaseCommand {
 		public void onModules(final CommandSender sender){
 			final StringBuilder builder = new StringBuilder("Enabled Modules:");
 			builder.append("\n");
+			for (Plugin bukkitPlugin: Bukkit.getPluginManager().getPlugins()) {
+				if(plugin instanceof TradingCardsAddon)
+					builder.append(ChatColor.GREEN).append(bukkitPlugin.getName()).append(" ");
+			}
 			for(String depend: plugin.getDescription().getSoftDepend()){
 				if(Bukkit.getPluginManager().getPlugin(depend) == null)
 					builder.append(ChatColor.GRAY);
@@ -227,29 +245,7 @@ public class CardsCommand extends BaseCommand {
 		sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().getConfig().getString("Messages.MaxDecks")));
 	}
 
-	@Subcommand("giverandomcard")
-	@CommandPermission("cards.randomcard")
-	public void onGiveRandomCard(final CommandSender sender, final Player player, final String entityType) {
-		try {
-			EntityType.valueOf(entityType.toUpperCase());
-			String rare = CardUtil.calculateRarity(EntityType.valueOf(entityType.toUpperCase()), true);
-			plugin.debug("onCommand.rare: " + rare);
-			sendPrefixedMessage(sender, plugin.getMessagesConfig().getConfig().getString("Messages.GiveRandomCardMsg").replaceAll("%player%", player.getName()));
 
-			if (player.getInventory().firstEmpty() != -1) {
-				sendPrefixedMessage(player, plugin.getMessagesConfig().getConfig().getString("Messages.GiveRandomCard"));
-				player.getInventory().addItem(CardUtil.getRandomCard(rare, false));
-			} else {
-				World curWorld2 = player.getWorld();
-				if (player.getGameMode() == GameMode.SURVIVAL) {
-					sendPrefixedMessage(player, plugin.getMessagesConfig().getConfig().getString("Messages.GiveRandomCard"));
-					curWorld2.dropItem(player.getLocation(), CardUtil.getRandomCard(rare, false));
-				}
-			}
-		} catch (IllegalArgumentException exception) {
-			sendPrefixedMessage(player, plugin.getMessagesConfig().getConfig().getString("Messages.NoEntity"));
-		}
-	}
 	@Subcommand("list")
 	@CommandPermission("cards.list")
 	public class ListSubCommand extends BaseCommand{
@@ -259,7 +255,7 @@ public class CardsCommand extends BaseCommand {
 		}
 
 		@Subcommand("player")
-		@CommandPermission("cards.list.player|cards.list.others")
+		@CommandPermission("cards.list.player")
 		public void onListPlayer(final CommandSender sender, final Player target, @Optional final String rarity) {
 			if(rarity == null || plugin.isRarity(rarity).equals("None")){
 				final String sectionFormat = String.format("&e&l------- &7(&6&l%s's Collection&7)&e&l -------", target.getName());
@@ -273,7 +269,7 @@ public class CardsCommand extends BaseCommand {
 		}
 
 		@Subcommand("pack")
-		@CommandPermission("cards.listpacks|cards.list.pack")
+		@CommandPermission("cards.list.pack")
 		public void onListPack(final CommandSender sender){
 			ConfigurationSection rarities = plugin.getConfig().getConfigurationSection("BoosterPacks");
 			Set<String> rarityKeys = rarities.getKeys(false);
