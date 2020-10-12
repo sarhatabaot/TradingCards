@@ -13,6 +13,9 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+import media.xen.tradingcards.config.CardsConfig;
+import media.xen.tradingcards.config.Config;
+import media.xen.tradingcards.config.SimpleConfig;
 import media.xen.tradingcards.db.Database;
 import media.xen.tradingcards.db.DbUtil;
 import media.xen.tradingcards.db.SQLite;
@@ -55,7 +58,7 @@ public class TradingCards extends JavaPlugin implements Listener {
 	boolean hasVault;
 	private SimpleConfig deckConfig;
 	private SimpleConfig messagesConfig;
-	private SimpleConfig cardsConfig;
+	private CardsConfig cardsConfig;
 	private boolean usingSqlite;
 	public static Economy econ = null;
 	public static Permission perms = null;
@@ -72,7 +75,7 @@ public class TradingCards extends JavaPlugin implements Listener {
 		return messagesConfig;
 	}
 
-	public SimpleConfig getCardsConfig() {
+	public CardsConfig getCardsConfig() {
 		return cardsConfig;
 	}
 
@@ -170,9 +173,10 @@ public class TradingCards extends JavaPlugin implements Listener {
 		}
 		registerListeners();
 		this.saveDefaultConfig();
+		Config.init(getConfig());
 		deckConfig = new SimpleConfig(this, "decks.yml");
 		messagesConfig = new SimpleConfig(this, "messages.yml");
-		cardsConfig = new SimpleConfig(this, "cards.yml");
+		cardsConfig = new CardsConfig(this);
 
 		deckConfig.saveDefaultConfig();
 		messagesConfig.saveDefaultConfig();
@@ -231,20 +235,8 @@ public class TradingCards extends JavaPlugin implements Listener {
 		return this.bossMobs.contains(e);
 	}
 
-	public ItemStack getBlankCard(int quantity) {
-		return new ItemStack(Material.getMaterial(this.getConfig().getString("General.Card-Material")), quantity);
-	}
-
-	public ItemStack getBlankBoosterPack() {
-		return new ItemStack(Material.getMaterial(this.getConfig().getString("General.BoosterPack-Material")));
-	}
-
-	public ItemStack getBlankDeck() {
-		return new ItemStack(Material.getMaterial(this.getConfig().getString("General.Deck-Material")));
-	}
-
 	public ItemStack createDeck(Player p, int num) {
-		ItemStack deck = this.getBlankDeck();
+		ItemStack deck = Config.getBlankDeck();
 		ItemMeta deckMeta = deck.getItemMeta();
 		deckMeta.setDisplayName(this.cMsg(this.getConfig().getString("General.Deck-Prefix") + p.getName() + "'s Deck #" + num));
 		if (this.getConfig().getBoolean("General.Hide-Enchants", true)) {
@@ -343,8 +335,8 @@ public class TradingCards extends JavaPlugin implements Listener {
 							debug("Eat-Shiny-Cards is true and card is not shiny!");
 							if (splitContents[0].equalsIgnoreCase(rarity)) {
 								if (splitContents[1].equalsIgnoreCase(card)) {
-									if (Integer.valueOf(splitContents[2]).intValue() <= 1) continue;
-									int number = Integer.valueOf(splitContents[2]).intValue();
+									if (Integer.parseInt(splitContents[2]) <= 1) continue;
+									int number = Integer.parseInt(splitContents[2]);
 									splitContents[2] = String.valueOf(number - 1);
 									StringBuilder strBuilder = new StringBuilder();
 									for (final String splitContent : splitContents) {
@@ -373,8 +365,8 @@ public class TradingCards extends JavaPlugin implements Listener {
 						debug("Eat-Shiny-Cards is false and card is not shiny!");
 						if (splitContents[0].equalsIgnoreCase(rarity)) {
 							if (splitContents[1].equalsIgnoreCase(card)) {
-								if (Integer.valueOf(splitContents[2]).intValue() <= 1) continue;
-								int number = Integer.valueOf(splitContents[2]).intValue();
+								if (Integer.parseInt(splitContents[2]) <= 1) continue;
+								int number = Integer.parseInt(splitContents[2]);
 								splitContents[2] = String.valueOf(number - 1);
 								StringBuilder strBuilder = new StringBuilder();
 								for (final String splitContent : splitContents) {
@@ -400,6 +392,7 @@ public class TradingCards extends JavaPlugin implements Listener {
 		}
 		return true;
 	}
+
 	@Deprecated
 	public int hasCard(Player p, String card, String rarity) {
 		int deckNumber = 0;
@@ -435,7 +428,7 @@ public class TradingCards extends JavaPlugin implements Listener {
 		while (var7.hasNext()) {
 			s = var7.next();
 			deckNumber += Integer.parseInt(s);
-			debug("[Deck running total: " + deckNumber);
+			debug("Deck running total: " + deckNumber);
 		}
 
 		if (deckNumber == 0) {
@@ -478,6 +471,7 @@ public class TradingCards extends JavaPlugin implements Listener {
 
 
 	}
+
 	@Deprecated
 	public boolean hasShiny(Player p, String card, String rarity) {
 		int deckNumber = 0;
@@ -485,12 +479,10 @@ public class TradingCards extends JavaPlugin implements Listener {
 
 		String uuidString = p.getUniqueId().toString();
 		ConfigurationSection deckList = getDeckConfig().getConfig().getConfigurationSection("Decks.Inventories." + uuidString);
-		debug("[Cards] Deck UUID: " + uuidString);
+		debug("Deck UUID: " + uuidString);
 
-		Iterator var7;
+		Iterator<String> var7;
 		String s;
-		//debug(StringUtils.join(deckList.getKeys(false), "Deck rarity content:"));
-
 
 		if (deckList == null)
 			return false;
@@ -498,7 +490,7 @@ public class TradingCards extends JavaPlugin implements Listener {
 		var7 = deckList.getKeys(false).iterator();
 
 		while (var7.hasNext()) {
-			s = (String) var7.next();
+			s = var7.next();
 			deckNumber += Integer.parseInt(s);
 			debug("Deck running total: " + deckNumber);
 		}
@@ -513,21 +505,13 @@ public class TradingCards extends JavaPlugin implements Listener {
 				List<String> contents = getDeckConfig().getConfig().getStringList("Decks.Inventories." + uuidString + "." + (i + 1));
 
 				for (final String s2 : contents) {
-					if (this.getConfig().getBoolean("General.Debug-Mode")) {
-						System.out.println("[Cards] Deck file content: " + s2);
-					}
-
+					debug("Deck file content: " + s2);
 					String[] splitContents = s2.split(",");
-					if (this.getConfig().getBoolean("General.Debug-Mode")) {
-						System.out.println("[Cards] " + card + " - " + splitContents[1]);
-					}
-
-					if (this.getConfig().getBoolean("General.Debug-Mode")) {
-						System.out.println("[Cards] " + rarity + " - " + splitContents[0]);
-					}
+					debug(card + " - " + splitContents[1]);
+					debug(rarity + " - " + splitContents[0]);
 
 					if (splitContents[0].equalsIgnoreCase(rarity)) {
-						debug("[Cards] Rarity match: " + splitContents[0]);
+						debug("Rarity match: " + splitContents[0]);
 
 						if (splitContents[1].equalsIgnoreCase(card)) {
 							debug("Card match: " + splitContents[1]);
@@ -544,6 +528,7 @@ public class TradingCards extends JavaPlugin implements Listener {
 
 
 	}
+
 	/*
 	 Deck
 	 uuid:
@@ -561,7 +546,7 @@ public class TradingCards extends JavaPlugin implements Listener {
 		boolean isNull = false;
 
 		for (final String s : contents) {
-			debug("Deck file content: "+s);
+			debug("Deck file content: " + s);
 
 			String[] splitContents = s.split(",");
 			if (splitContents.length > 1) {
@@ -660,50 +645,14 @@ public class TradingCards extends JavaPlugin implements Listener {
 		}
 	}
 
-
+	@Deprecated
 	public ItemStack createBoosterPack(String name) {
-		ItemStack boosterPack = this.getBlankBoosterPack();
-		int numNormalCards = this.getConfig().getInt("BoosterPacks." + name + ".NumNormalCards");
-		int numSpecialCards = this.getConfig().getInt("BoosterPacks." + name + ".NumSpecialCards");
-		String prefix = this.getConfig().getString("General.BoosterPack-Prefix");
-		String normalCardColour = this.getConfig().getString("Colours.BoosterPackNormalCards");
-		String extraCardColour = this.getConfig().getString("Colours.BoosterPackExtraCards");
-		String loreColour = this.getConfig().getString("Colours.BoosterPackLore");
-		String nameColour = this.getConfig().getString("Colours.BoosterPackName");
-		String normalRarity = this.getConfig().getString("BoosterPacks." + name + ".NormalCardRarity");
-		String specialRarity = this.getConfig().getString("BoosterPacks." + name + ".SpecialCardRarity");
-		String extraRarity = "";
-		int numExtraCards = 0;
-		boolean hasExtraRarity = false;
-		if (this.getConfig().contains("BoosterPacks." + name + ".ExtraCardRarity") && this.getConfig().contains("BoosterPacks." + name + ".NumExtraCards")) {
-			hasExtraRarity = true;
-			extraRarity = this.getConfig().getString("BoosterPacks." + name + ".ExtraCardRarity");
-			numExtraCards = this.getConfig().getInt("BoosterPacks." + name + ".NumExtraCards");
-		}
-
-		String specialCardColour = this.getConfig().getString("Colours.BoosterPackSpecialCards");
-		ItemMeta pMeta = boosterPack.getItemMeta();
-		pMeta.setDisplayName(this.cMsg(prefix + nameColour + name.replaceAll("_", " ")));
-		List<String> lore = new ArrayList<>();
-		lore.add(this.cMsg(normalCardColour + numNormalCards + loreColour + " " + normalRarity.toUpperCase()));
-		if (hasExtraRarity) {
-			lore.add(this.cMsg(extraCardColour + numExtraCards + loreColour + " " + extraRarity.toUpperCase()));
-		}
-
-		lore.add(this.cMsg(specialCardColour + numSpecialCards + loreColour + " " + specialRarity.toUpperCase()));
-		pMeta.setLore(lore);
-		if (this.getConfig().getBoolean("General.Hide-Enchants", true)) {
-			pMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-		}
-
-		boosterPack.setItemMeta(pMeta);
-		boosterPack.addUnsafeEnchantment(Enchantment.ARROW_INFINITE, 10);
-		return boosterPack;
+		return CardManager.generatePack(name);
 	}
 
 	@Deprecated
 	public String calculateRarity(EntityType e, boolean alwaysDrop) {
-		return CardUtil.calculateRarity(e,alwaysDrop);
+		return CardUtil.calculateRarity(e, alwaysDrop);
 	}
 
 	public boolean isOnList(Player p) {
@@ -736,11 +685,8 @@ public class TradingCards extends JavaPlugin implements Listener {
 		String addedString = WordUtils.wrap(parsedString, this.getConfig().getInt("General.Info-Line-Length", 25), "\n", true);
 		String[] splitString = addedString.split("\n");
 		List<String> finalArray = new ArrayList<>();
-		String[] arrayOfString1 = splitString;
-		int j = splitString.length;
 
-		for (int i = 0; i < j; ++i) {
-			String ss = arrayOfString1[i];
+		for (String ss : splitString) {
 			debug(ChatColor.getLastColors(ss));
 			finalArray.add(this.cMsg("&f &7- &f" + ss));
 		}
@@ -864,34 +810,9 @@ public class TradingCards extends JavaPlugin implements Listener {
 
 	}
 
-
+	@Deprecated
 	public boolean deleteRarity(Player p, String rarity) {
-		if (!this.isRarity(rarity).equals("None")) {
-			ConfigurationSection cards = getCardsConfig().getConfig().getConfigurationSection("Cards." + this.isRarity(rarity));
-			Set<String> cardKeys = cards.getKeys(false);
-			int numCardsCounter = 0;
-
-			for (final String key : cardKeys) {
-				debug("deleteRarity iteration: " + numCardsCounter);
-
-				if (this.hasShiny(p, key, rarity) && this.hasCard(p, key, rarity) == 0) {
-					debug("Deleted: Cards." + key + ".key2");
-
-					this.deleteCard(p, key, rarity);
-					++numCardsCounter;
-				}
-
-				if (this.hasCard(p, key, rarity) > 0) {
-					debug("Deleted: Cards." + key + ".key2");
-
-					this.deleteCard(p, key, rarity);
-					++numCardsCounter;
-				}
-			}
-			return true;
-		}
-
-		return false;
+		return getCardsConfig().deleteRarity(p, rarity);
 	}
 
 	public String cMsg(String message) {

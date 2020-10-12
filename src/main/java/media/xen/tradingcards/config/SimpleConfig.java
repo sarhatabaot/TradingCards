@@ -1,5 +1,6 @@
-package media.xen.tradingcards;
+package media.xen.tradingcards.config;
 
+import media.xen.tradingcards.TradingCards;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -13,7 +14,7 @@ import java.nio.charset.StandardCharsets;
  * Simple class to initialize, reload & save config files
  */
 public class SimpleConfig {
-	private final TradingCards plugin;
+	protected final TradingCards plugin;
 	private final String fileName;
 
 	private File file;
