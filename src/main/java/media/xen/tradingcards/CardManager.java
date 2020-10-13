@@ -211,6 +211,9 @@ public class CardManager {
 			ItemMeta cardMeta = blankCard.getItemMeta();
 			cardMeta.setDisplayName(formatDisplayName(isPlayerCard,isShiny,prefix,rarityColour,cardName.replace('_',' '),cost,shinyPrefix));
 			cardMeta.setLore(formatLore());
+			if(isShiny) {
+				cardMeta.addEnchant(Enchantment.DURABILITY,1,false);
+			}
 			if (plugin.getConfig().getBoolean("General.Hide-Enchants", true)) {
 				cardMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 			}
