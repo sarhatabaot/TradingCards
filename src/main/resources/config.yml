@@ -1,6 +1,6 @@
 General:
   # Server name?
-  Server-Name: 'Server'
+  Server-Name: "Server"
   # Show debug messages?
   Debug-Mode: false
   # If your server is not running the latest MC version, set this to FALSE
@@ -10,11 +10,11 @@ General:
   # The material the card will be. Make this something useless for maximum effect.
   Card-Material: PAPER
   # The prefix of the card. This is optional. Will show like: [Trading Card] Zombie
-  Card-Prefix: '&7[&fCard&7]&f '
+  Card-Prefix: "&7[&fCard&7]&f "
   # What material booster packs should be. Make it something that can't be placed.
   BoosterPack-Material: BOOK
   # The prefix of the booster pack.
-  BoosterPack-Prefix: '&7[&fPack&7]&f '
+  BoosterPack-Prefix: "&7[&fPack&7]&f "
   # Should we be allowed to use decks in creative?
   Decks-In-Creative: false
   # Should we get a deck item or simply open the deck straight away with /cards getdeck #?
@@ -24,9 +24,9 @@ General:
   # What material decks should be. Make it something that can't be placed.
   Deck-Material: BOOK
   # The prefix of the booster pack.
-  Deck-Prefix: '&7[&fDeck&7]&f '
+  Deck-Prefix: "&7[&fDeck&7]&f "
   # What shiny cards should be prefixed with.
-  Shiny-Name: 'Shiny'
+  Shiny-Name: "Shiny"
   # Should a random card be given out every so often to all players online?
   Schedule-Cards: false
   # Should the cards scheduled be 'natural', as in, the same chance as if a mob dropped the card, or a single rarity?
@@ -44,8 +44,8 @@ General:
   Auto-Add-Players: false
   Auto-Add-Player-Rarity: Common
   Player-Op-Rarity: Legendary
-  Player-Series: '2020'
-  Player-Type: 'Player'
+  Player-Series: "2020"
+  Player-Type: "Player"
   Player-Has-Shiny-Version: true
   # Should the player drop their own card if they're killed in PvP?
   Player-Drops-Card: true
@@ -112,50 +112,50 @@ BoosterPacks:
 
 Rarities:
   Common:
-    Colour: '&7'
-    RewardCmd1: 'eco give %player% 100'
-    RewardCmd2: 'give %player% diamond 8'
-    RewardCmd3: 'None'
+    Colour: "&7"
+    RewardCmd1: "eco give %player% 100"
+    RewardCmd2: "give %player% diamond 8"
+    RewardCmd3: "None"
   Uncommon:
-    Colour: '&9'
-    RewardCmd1: 'eco give %player% 200'
-    RewardCmd2: 'give %player% diamond 16'
-    RewardCmd3: 'None'
+    Colour: "&9"
+    RewardCmd1: "eco give %player% 200"
+    RewardCmd2: "give %player% diamond 16"
+    RewardCmd3: "None"
   Rare:
-    Colour: '&e'
-    RewardCmd1: 'eco give %player% 500'
-    RewardCmd2: 'give %player% diamond 32'
-    RewardCmd3: 'None'
+    Colour: "&e"
+    RewardCmd1: "eco give %player% 500"
+    RewardCmd2: "give %player% diamond 32"
+    RewardCmd3: "None"
   Very Rare:
-    Colour: '&6'
-    RewardCmd1: 'eco give %player% 1000'
-    RewardCmd2: 'give %player% diamond 64'
-    RewardCmd3: 'None'
+    Colour: "&6"
+    RewardCmd1: "eco give %player% 1000"
+    RewardCmd2: "give %player% diamond 64"
+    RewardCmd3: "None"
   Legendary:
-    Colour: '&a'
-    RewardCmd1: 'eco give %player% 1500'
-    RewardCmd2: 'give %player% diamond 64'
-    RewardCmd3: 'manuadd %player% Collector'
+    Colour: "&a"
+    RewardCmd1: "eco give %player% 1500"
+    RewardCmd2: "give %player% diamond 64"
+    RewardCmd3: "manuadd %player% Collector"
 
 Colours:
   # Colours for various settings of the card.
-  Series: '&a'
-  Type: '&b'
-  Info: '&e'
-  About: '&c'
-  Rarity: '&6'
+  Series: "&a"
+  Type: "&b"
+  Info: "&e"
+  About: "&c"
+  Rarity: "&6"
   # Booster pack colourings.
-  BoosterPackName: '&a'
-  BoosterPackLore: '&7'
-  BoosterPackNormalCards: '&e'
-  BoosterPackSpecialCards: '&6'
-  BoosterPackExtraCards: '&9'
+  BoosterPackName: "&a"
+  BoosterPackLore: "&7"
+  BoosterPackNormalCards: "&e"
+  BoosterPackSpecialCards: "&6"
+  BoosterPackExtraCards: "&9"
   # What colour should /cards list give to cards owned in decks?
-  ListHaveCard: '&a'
+  ListHaveCard: "&a"
   # What colour should /cards list give to shiny cards owned in decks?
-  ListHaveShinyCard: '&e&l'
+  ListHaveShinyCard: "&e&l"
   # What colour should /cards list give to rarities that have been fully collected?
-  ListRarityComplete: '&e'
+  ListRarityComplete: "&e"
 
 Chances:
   # Drop chances for various types of mobs.
@@ -197,9 +197,9 @@ DisplayNames:
     # %COLOUR% (rarity colour)
     # %NAME% (card name)
     # %COST% (card buy-price)
-    Title: '%PREFIX%%COLOUR%%NAME%'
-    ShinyTitle: '%PREFIX%%COLOUR%%SHINYPREFIX% %NAME%'
-    Series: 'Series'
-    Type: 'Type'
-    Info: 'Info'
-    About: 'About'
+    Title: "%PREFIX%%COLOUR%%NAME%"
+    ShinyTitle: "%PREFIX%%COLOUR%%SHINYPREFIX% %NAME%"
+    Series: "Series"
+    Type: "Type"
+    Info: "Info"
+    About: "About"

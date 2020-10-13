@@ -1,7 +1,7 @@
 package media.xen.tradingcards;
 
 import lombok.Data;
-import media.xen.tradingcards.config.Config;
+import media.xen.tradingcards.config.TradingCardsConfig;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -62,8 +62,6 @@ public class CardManager {
 	}
 
 	public static ItemStack getCard(final String cardName,final String rarity,final boolean forcedShiny){
-		if(cards.containsKey(rarity+"."+cardName))
-			return cards.get(rarity+"."+cardName);
 		return CardUtil.generateCard(cardName,rarity,forcedShiny);
 	}
 
@@ -74,7 +72,7 @@ public class CardManager {
 	}
 
 	public static ItemStack generatePack(final String name) {
-		ItemStack boosterPack = Config.getBlankBoosterPack();
+		ItemStack boosterPack = TradingCardsConfig.getBlankBoosterPack();
 		int numNormalCards = plugin.getConfig().getInt("BoosterPacks." + name + ".NumNormalCards");
 		int numSpecialCards = plugin.getConfig().getInt("BoosterPacks." + name + ".NumSpecialCards");
 		String prefix = plugin.getConfig().getString("General.BoosterPack-Prefix");

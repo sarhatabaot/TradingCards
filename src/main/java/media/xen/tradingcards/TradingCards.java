@@ -14,7 +14,7 @@ import java.util.Random;
 import java.util.Set;
 
 import media.xen.tradingcards.config.CardsConfig;
-import media.xen.tradingcards.config.Config;
+import media.xen.tradingcards.config.TradingCardsConfig;
 import media.xen.tradingcards.config.SimpleConfig;
 import media.xen.tradingcards.db.Database;
 import media.xen.tradingcards.db.DbUtil;
@@ -173,7 +173,7 @@ public class TradingCards extends JavaPlugin implements Listener {
 		}
 		registerListeners();
 		this.saveDefaultConfig();
-		Config.init(getConfig());
+		TradingCardsConfig.init(getConfig());
 		deckConfig = new SimpleConfig(this, "decks.yml");
 		messagesConfig = new SimpleConfig(this, "messages.yml");
 		cardsConfig = new CardsConfig(this);
@@ -236,7 +236,7 @@ public class TradingCards extends JavaPlugin implements Listener {
 	}
 
 	public ItemStack createDeck(Player p, int num) {
-		ItemStack deck = Config.getBlankDeck();
+		ItemStack deck = TradingCardsConfig.getBlankDeck();
 		ItemMeta deckMeta = deck.getItemMeta();
 		deckMeta.setDisplayName(this.cMsg(this.getConfig().getString("General.Deck-Prefix") + p.getName() + "'s Deck #" + num));
 		if (this.getConfig().getBoolean("General.Hide-Enchants", true)) {
