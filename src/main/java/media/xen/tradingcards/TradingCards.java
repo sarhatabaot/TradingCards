@@ -14,6 +14,7 @@ import java.util.Random;
 import java.util.Set;
 
 import media.xen.tradingcards.config.CardsConfig;
+import media.xen.tradingcards.config.MessagesConfig;
 import media.xen.tradingcards.config.TradingCardsConfig;
 import media.xen.tradingcards.config.SimpleConfig;
 import media.xen.tradingcards.db.Database;
@@ -26,6 +27,7 @@ import media.xen.tradingcards.listeners.PackListener;
 import media.xen.tradingcards.listeners.DropListener;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
+import net.sarhatabaot.configloader.ConfigLoader;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -56,8 +58,10 @@ public class TradingCards extends JavaPlugin implements Listener {
 	private final Map<String, Database> databases = new HashMap<>();
 	public static Permission permRarities = new Permission("cards.rarity");
 	boolean hasVault;
+	private TradingCardsConfig mainConfig;
+
 	private SimpleConfig deckConfig;
-	private SimpleConfig messagesConfig;
+	private MessagesConfig messagesConfig;
 	private CardsConfig cardsConfig;
 	private boolean usingSqlite;
 	public static Economy econ = null;
@@ -70,15 +74,18 @@ public class TradingCards extends JavaPlugin implements Listener {
 	public SimpleConfig getDeckConfig() {
 		return deckConfig;
 	}
-
+	/*
 	public SimpleConfig getMessagesConfig() {
 		return messagesConfig;
-	}
+	}*/
 
 	public CardsConfig getCardsConfig() {
 		return cardsConfig;
 	}
 
+	public TradingCardsConfig getMainConfig() {
+		return mainConfig;
+	}
 
 	private void hookVault() {
 		if (this.getConfig().getBoolean("PluginSupport.Vault.Vault-Enabled")) {
@@ -173,13 +180,16 @@ public class TradingCards extends JavaPlugin implements Listener {
 		}
 		registerListeners();
 		this.saveDefaultConfig();
-		TradingCardsConfig.init(getConfig());
+		mainConfig = new TradingCardsConfig(this);
+		messagesConfig = new MessagesConfig(this);
+		ConfigLoader.load(mainConfig);
+		ConfigLoader.loadAndSave(messagesConfig);
+
 		deckConfig = new SimpleConfig(this, "decks.yml");
-		messagesConfig = new SimpleConfig(this, "messages.yml");
 		cardsConfig = new CardsConfig(this);
 
 		deckConfig.saveDefaultConfig();
-		messagesConfig.saveDefaultConfig();
+		//messagesConfig.saveDefaultConfig();
 		cardsConfig.saveDefaultConfig();
 
 		CardUtil.init(this);
@@ -218,6 +228,9 @@ public class TradingCards extends JavaPlugin implements Listener {
 		}
 	}
 
+	public MessagesConfig getMessagesConfig() {
+		return messagesConfig;
+	}
 
 	public boolean isMobHostile(EntityType e) {
 		return this.hostileMobs.contains(e);
@@ -656,8 +669,7 @@ public class TradingCards extends JavaPlugin implements Listener {
 	}
 
 	public boolean isOnList(Player p) {
-		List<String> playersOnList = this.getConfig().getStringList("Blacklist.Players");
-		return playersOnList.contains(p.getName());
+		return getMainConfig().blacklistPlayers.contains(p.getName());
 	}
 
 	public void addToList(Player p) {
@@ -716,38 +728,38 @@ public class TradingCards extends JavaPlugin implements Listener {
 
 
 	public String getPrefixedMessage(final String message) {
-		return cMsg(getMessagesConfig().getConfig().getString("Messages.Prefix") + "&r " + message);
+		return cMsg(messagesConfig.prefix+ "&r " + message);
 	}
 
 	public void giveawayNatural(EntityType mob, Player sender) {
 		if (this.isMobBoss(mob)) {
 			if (sender == null) {
-				Bukkit.broadcastMessage(getPrefixedMessage(getMessagesConfig().getConfig().getString("Messages.GiveawayNaturalBossNoPlayer")));
+				Bukkit.broadcastMessage(getPrefixedMessage(messagesConfig.giveawayNaturalBossNoPlayer));
 			} else {
-				Bukkit.broadcastMessage(getPrefixedMessage(getMessagesConfig().getConfig().getString("Messages.GiveawayNaturalBoss").replaceAll("%player%", sender.getName())));
+				Bukkit.broadcastMessage(getPrefixedMessage(messagesConfig.giveawayNaturalBoss.replaceAll("%player%", sender.getName())));
 			}
 		} else if (this.isMobHostile(mob)) {
 			if (sender == null) {
-				Bukkit.broadcastMessage(getPrefixedMessage(getMessagesConfig().getConfig().getString("Messages.GiveawayNaturalHostileNoPlayer")));
+				Bukkit.broadcastMessage(getPrefixedMessage(messagesConfig.giveawayNaturalHostileNoPlayer));
 			} else {
-				Bukkit.broadcastMessage(getPrefixedMessage(getMessagesConfig().getConfig().getString("Messages.GiveawayNaturalHostile").replaceAll("%player%", sender.getName())));
+				Bukkit.broadcastMessage(getPrefixedMessage(messagesConfig.giveawayNaturalHostile.replaceAll("%player%", sender.getName())));
 			}
 		} else if (this.isMobNeutral(mob)) {
 			if (sender == null) {
-				Bukkit.broadcastMessage(getPrefixedMessage(getMessagesConfig().getConfig().getString("Messages.GiveawayNaturalNeutralNoPlayer")));
+				Bukkit.broadcastMessage(getPrefixedMessage(messagesConfig.giveawayNaturalNeutralNoPlayer));
 			} else {
-				Bukkit.broadcastMessage(getPrefixedMessage(getMessagesConfig().getConfig().getString("Messages.GiveawayNaturalNeutral").replaceAll("%player%", sender.getName())));
+				Bukkit.broadcastMessage(getPrefixedMessage(messagesConfig.giveawayNaturalNeutral.replaceAll("%player%", sender.getName())));
 			}
 		} else if (this.isMobPassive(mob)) {
 			if (sender == null) {
-				Bukkit.broadcastMessage(getPrefixedMessage(getMessagesConfig().getConfig().getString("Messages.GiveawayNaturalPassiveNoPlayer")));
+				Bukkit.broadcastMessage(getPrefixedMessage(messagesConfig.giveawayNaturalPassiveNoPlayer));
 			} else {
-				Bukkit.broadcastMessage(getPrefixedMessage(getMessagesConfig().getConfig().getString("Messages.GiveawayNaturalPassive").replaceAll("%player%", sender.getName())));
+				Bukkit.broadcastMessage(getPrefixedMessage(messagesConfig.giveawayNaturalPassive.replaceAll("%player%", sender.getName())));
 			}
 		} else if (sender == null) {
-			Bukkit.broadcastMessage(getPrefixedMessage(getMessagesConfig().getConfig().getString("Messages.GiveawayNaturalNoPlayer")));
+			Bukkit.broadcastMessage(getPrefixedMessage(messagesConfig.giveawayNaturalNoPlayer));
 		} else {
-			Bukkit.broadcastMessage(getPrefixedMessage(getMessagesConfig().getConfig().getString("Messages.GiveawayNatural").replaceAll("%player%", sender.getName())));
+			Bukkit.broadcastMessage(getPrefixedMessage(messagesConfig.giveawayNatural.replaceAll("%player%", sender.getName())));
 		}
 
 		for (final Player p : Bukkit.getOnlinePlayers()) {
@@ -759,15 +771,17 @@ public class TradingCards extends JavaPlugin implements Listener {
 	}
 
 	public void reloadAllConfig() {
-		File file = new File(this.getDataFolder() + File.separator + "config.yml");
+		/*File file = new File(this.getDataFolder() + File.separator + "config.yml");
 		if (!file.exists()) {
 			this.getConfig().options().copyDefaults(true);
 			this.saveDefaultConfig();
-		}
+		}*/
 
-		this.reloadConfig();
+		ConfigLoader.load(mainConfig);
+		//this.reloadConfig();
 		this.deckConfig.reloadConfig();
-		this.messagesConfig.reloadConfig();
+		ConfigLoader.load(messagesConfig);
+		//this.messagesConfig.reloadConfig();
 		this.cardsConfig.reloadConfig();
 	}
 
@@ -828,7 +842,7 @@ public class TradingCards extends JavaPlugin implements Listener {
 
 		int hours = Math.max(this.getConfig().getInt("General.Schedule-Card-Time-In-Hours"), 1);
 
-		String tmessage = getMessagesConfig().getConfig().getString("Messages.TimerMessage").replaceAll("%hour%", String.valueOf(hours));
+		String tmessage = messagesConfig.timerMessage.replaceAll("%hour%", String.valueOf(hours));
 		Bukkit.broadcastMessage(getPrefixedMessage(tmessage));
 		this.taskid = new CardSchedulerRunnable(this).runTaskTimer(this, (hours * 20 * 60 * 60), (hours * 20 * 60 * 60)).getTaskId();
 	}

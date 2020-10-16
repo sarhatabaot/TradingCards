@@ -125,15 +125,15 @@ public class CardUtil {
 					plugin.getCardsConfig().getConfig().set("Cards." + rarity + "." + name + ".Info", info2);
 					plugin.getCardsConfig().saveConfig();
 					plugin.getCardsConfig().reloadConfig();
-					plugin.sendMessage(creator, plugin.getPrefixedMessage(plugin.getMessagesConfig().getConfig().getString("Messages.CreateSuccess").replaceAll("%name%", name).replaceAll("%rarity%", rarity)));
+					plugin.sendMessage(creator, plugin.getPrefixedMessage(plugin.getMessagesConfig().createSuccess.replaceAll("%name%", name).replaceAll("%rarity%", rarity)));
 				} else {
-					creator.sendMessage(plugin.cMsg(plugin.getMessagesConfig().getConfig().getString("Messages.Prefix") + " " + plugin.getMessagesConfig().getConfig().getString("Messages.NoRarity")));
+					creator.sendMessage(plugin.cMsg(plugin.getMessagesConfig().prefix+ " " + plugin.getMessagesConfig().noRarity));
 				}
 			} else {
-				creator.sendMessage(plugin.cMsg(plugin.getMessagesConfig().getConfig().getString("Messages.Prefix") + " " + plugin.getMessagesConfig().getConfig().getString("Messages.CreateNoName")));
+				creator.sendMessage(plugin.cMsg(plugin.getMessagesConfig().prefix + " " + plugin.getMessagesConfig().createNoName));
 			}
 		} else {
-			creator.sendMessage(plugin.cMsg(plugin.getMessagesConfig().getConfig().getString("Messages.Prefix") + " " + plugin.getMessagesConfig().getConfig().getString("Messages.CreateExists")));
+			creator.sendMessage(plugin.cMsg(plugin.getMessagesConfig().prefix + " " + plugin.getMessagesConfig().createExists));
 		}
 
 	}

@@ -26,7 +26,7 @@ public class CardManager {
 	 */
 	public static void init(final TradingCards plugin) {
 		CardManager.plugin = plugin;
-		CardManager.blankCard = new ItemStack(Material.getMaterial(plugin.getConfig().getString("General.Card-Material", "PAPER")));
+		CardManager.blankCard = new ItemStack(TradingCardsConfig.getBlankCard(1));
 		for(String rarity: plugin.getCardsConfig().getConfig().getConfigurationSection("Cards").getKeys(false)){
 			for(String name: plugin.getCardsConfig().getConfig().getConfigurationSection("Cards."+rarity).getKeys(false)) {
 				cards.put(rarity+"."+name, CardUtil.generateCard(name,rarity,false));
@@ -75,11 +75,11 @@ public class CardManager {
 		ItemStack boosterPack = TradingCardsConfig.getBlankBoosterPack();
 		int numNormalCards = plugin.getConfig().getInt("BoosterPacks." + name + ".NumNormalCards");
 		int numSpecialCards = plugin.getConfig().getInt("BoosterPacks." + name + ".NumSpecialCards");
-		String prefix = plugin.getConfig().getString("General.BoosterPack-Prefix");
+		String prefix = plugin.getMainConfig().boosterPackPrefix;
 		String normalCardColour = plugin.getConfig().getString("Colours.BoosterPackNormalCards");
 		String extraCardColour = plugin.getConfig().getString("Colours.BoosterPackExtraCards");
-		String loreColour = plugin.getConfig().getString("Colours.BoosterPackLore");
-		String nameColour = plugin.getConfig().getString("Colours.BoosterPackName");
+		String loreColour = plugin.getMainConfig().boosterPackLoreColour;
+		String nameColour = plugin.getMainConfig().boosterPackNameColour;
 		String normalRarity = plugin.getConfig().getString("BoosterPacks." + name + ".NormalCardRarity");
 		String specialRarity = plugin.getConfig().getString("BoosterPacks." + name + ".SpecialCardRarity");
 		String extraRarity = "";
@@ -102,7 +102,7 @@ public class CardManager {
 
 		lore.add(plugin.cMsg(specialCardColour + numSpecialCards + loreColour + " " + specialRarity.toUpperCase()));
 		pMeta.setLore(lore);
-		if (plugin.getConfig().getBoolean("General.Hide-Enchants", true)) {
+		if (plugin.getMainConfig().hideEnchants) {
 			pMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 		}
 
@@ -214,7 +214,7 @@ public class CardManager {
 			if(isShiny) {
 				cardMeta.addEnchant(Enchantment.DURABILITY,1,false);
 			}
-			if (plugin.getConfig().getBoolean("General.Hide-Enchants", true)) {
+			if (plugin.getMainConfig().hideEnchants) {
 				cardMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 			}
 

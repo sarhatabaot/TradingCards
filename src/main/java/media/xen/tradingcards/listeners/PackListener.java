@@ -53,7 +53,7 @@ public class PackListener extends SimpleListener {
 				return;
 			}
 			if (player.getGameMode() == GameMode.CREATIVE) {
-				player.sendMessage(plugin.cMsg(plugin.getMessagesConfig().getConfig().getString("Messages.Prefix") + " " + plugin.getMessagesConfig().getConfig().getString("Messages.NoCreative")));
+				player.sendMessage(plugin.cMsg(plugin.getMessagesConfig().prefix + " " + plugin.getMessagesConfig().noCreative));
 				return;
 			}
 
@@ -80,7 +80,7 @@ public class PackListener extends SimpleListener {
 				extraCardAmount = Integer.parseInt(ChatColor.stripColor(line3[0]));
 			}
 
-			player.sendMessage(plugin.cMsg(plugin.getMessagesConfig().getConfig().getString("Messages.Prefix") + " " + plugin.getMessagesConfig().getConfig().getString("Messages.OpenBoosterPack")));
+			player.sendMessage(plugin.cMsg(plugin.getMessagesConfig().prefix + " " + plugin.getMessagesConfig().openBoosterPack));
 
 			for (int i = 0; i < normalCardAmount; ++i) {
 				CardUtil.dropItem(player, CardUtil.getRandomCard(WordUtils.capitalizeFully(line1[1]), false));
@@ -100,7 +100,7 @@ public class PackListener extends SimpleListener {
 
 		if (itemInMainHand.getType() == Material.valueOf(plugin.getConfig().getString("General.Deck-Material"))) {
 			if (player.getGameMode() == GameMode.CREATIVE) {
-				sendMessage(event.getPlayer(), plugin.getPrefixedMessage(plugin.getMessagesConfig().getConfig().getString("Messages.DeckCreativeError")));
+				sendMessage(event.getPlayer(), plugin.getPrefixedMessage(plugin.getMessagesConfig().deckCreativeError));
 				return;
 			}
 

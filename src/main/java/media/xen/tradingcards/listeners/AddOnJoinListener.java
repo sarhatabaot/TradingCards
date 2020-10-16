@@ -20,7 +20,7 @@ public class AddOnJoinListener extends SimpleListener{
 
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent e) {
-		if (plugin.getConfig().getBoolean("General.Auto-Add-Players")) {
+		if (plugin.getMainConfig().autoAddPlayers) {
 			Player p = e.getPlayer();
 			GregorianCalendar gc = new GregorianCalendar();
 			int date;
@@ -38,7 +38,7 @@ public class AddOnJoinListener extends SimpleListener{
 			ConfigurationSection rarities = plugin.getConfig().getConfigurationSection("Rarities");
 			Set<String> rarityKeys = rarities.getKeys(false);
 			Map<String, Boolean> children = plugin.permRarities.getChildren();
-			String rarity = plugin.getConfig().getString("General.Auto-Add-Player-Rarity");
+			String rarity = plugin.getMainConfig().autoAddPlayersRarity;
 			Iterator<String> var11 = rarityKeys.iterator();
 
 			String type;
@@ -53,17 +53,17 @@ public class AddOnJoinListener extends SimpleListener{
 			}
 
 			if (p.isOp()) {
-				rarity = plugin.getConfig().getString("General.Player-Op-Rarity");
+				rarity = plugin.getMainConfig().playerOpRarity;
 			}
 
 			if (!plugin.getCardsConfig().getConfig().contains("Cards." + rarity + "." + p.getName())) {
-				String series = plugin.getConfig().getString("General.Player-Series");
-				type = plugin.getConfig().getString("General.Player-Type");
-				boolean hasShiny = plugin.getConfig().getBoolean("General.Player-Has-Shiny-Version");
+				String series = plugin.getMainConfig().playerSeries;
+				type = plugin.getMainConfig().playerType;
+				boolean hasShiny = plugin.getMainConfig().playerHasShinyVersion;
 				plugin.getCardsConfig().getConfig().set("Cards." + rarity + "." + p.getName() + ".Series", series);
 				plugin.getCardsConfig().getConfig().set("Cards." + rarity + "." + p.getName() + ".Type", type);
 				plugin.getCardsConfig().getConfig().set("Cards." + rarity + "." + p.getName() + ".Has-Shiny-Version", hasShiny);
-				if (plugin.getConfig().getBoolean("General.American-Mode")) {
+				if (plugin.getMainConfig().americanMode) {
 					plugin.getCardsConfig().getConfig().set("Cards." + rarity + "." + p.getName() + ".Info", "Joined " + month + "/" + date + "/" + year);
 				} else {
 					plugin.getCardsConfig().getConfig().set("Cards." + rarity + "." + p.getName() + ".Info", "Joined " + date + "/" + month + "/" + year);

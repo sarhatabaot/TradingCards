@@ -48,7 +48,7 @@ public class CardSchedulerRunnable extends BukkitRunnable {
 		plugin.debug("keyToUse: " + keyToUse);
 
 		if (!keyToUse.equals("")) {
-			Bukkit.broadcastMessage(plugin.cMsg(plugin.getMessagesConfig().getConfig().getString("Messages.Prefix") + " " + plugin.getMessagesConfig().getConfig().getString("Messages.ScheduledGiveaway")));
+			Bukkit.broadcastMessage(plugin.cMsg(plugin.getMessagesConfig().prefix + " " + plugin.getMessagesConfig().scheduledGiveaway));
 
 			for (final Player p : Bukkit.getOnlinePlayers()) {
 				ConfigurationSection cards = plugin.getCardsConfig().getConfig().getConfigurationSection("Cards." + keyToUse);
