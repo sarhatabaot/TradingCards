@@ -47,7 +47,7 @@ public class PackListener extends SimpleListener {
 
 		Player player = event.getPlayer();
 		final ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
-		if (itemInMainHand.getType() == Material.valueOf(plugin.getConfig().getString("General.BoosterPack-Material", "BOOK"))  && player.getInventory().getItemInMainHand().containsEnchantment(Enchantment.ARROW_INFINITE)) {
+		if (itemInMainHand.getType() == Material.valueOf(plugin.getMainConfig().boosterPackMaterial)  && player.getInventory().getItemInMainHand().containsEnchantment(Enchantment.ARROW_INFINITE)) {
 			if(!player.hasPermission("cards.openboosterpack")) {
 				sendMessage(player,plugin.getPrefixedMessage("No permission: "+"cards.openboosterpack"));
 				return;
@@ -95,28 +95,8 @@ public class PackListener extends SimpleListener {
 					CardUtil.dropItem(player, CardUtil.getRandomCard(WordUtils.capitalizeFully(line3[1]), false));
 				}
 			}
-			return;
 		}
 
-		if (itemInMainHand.getType() == Material.valueOf(plugin.getConfig().getString("General.Deck-Material"))) {
-			if (player.getGameMode() == GameMode.CREATIVE) {
-				sendMessage(event.getPlayer(), plugin.getPrefixedMessage(plugin.getMessagesConfig().deckCreativeError));
-				return;
-			}
-
-			debug("Deck material...");
-
-			if (itemInMainHand.getEnchantmentLevel(Enchantment.DURABILITY) == 10) {
-				debug("Enchant is level 10...");
-
-				if (player.getGameMode() != GameMode.CREATIVE) {
-					String name = player.getInventory().getItemInMainHand().getItemMeta().getDisplayName();
-					String[] nameSplit = name.split("#");
-					int num = Integer.parseInt(nameSplit[1]);
-					plugin.openDeck(player, num);
-				}
-			}
-		}
 	}
 
 
