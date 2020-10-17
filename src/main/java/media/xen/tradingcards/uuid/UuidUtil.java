@@ -17,7 +17,7 @@ import java.util.UUID;
 public class UuidUtil {
 	public static @NotNull UUID getPlayerUuid(final String name) {
 		Gson gson = new Gson();
-		URL playerdbApi = null;
+		URL playerdbApi;
 		URLConnection urlConnection = null;
 		try {
 			playerdbApi = new URL("https://playerdb.co/api/player/minecraft/"+name);
