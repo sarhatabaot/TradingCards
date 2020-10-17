@@ -212,7 +212,7 @@ public class CardManager {
 			cardMeta.setDisplayName(formatDisplayName(isPlayerCard,isShiny,prefix,rarityColour,cardName.replace('_',' '),cost,shinyPrefix));
 			cardMeta.setLore(formatLore());
 			if(isShiny) {
-				cardMeta.addEnchant(Enchantment.DURABILITY,1,false);
+				cardMeta.addEnchant(Enchantment.ARROW_INFINITE,1,false);
 			}
 			if (plugin.getMainConfig().hideEnchants) {
 				cardMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
