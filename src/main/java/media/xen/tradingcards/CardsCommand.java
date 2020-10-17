@@ -51,6 +51,7 @@ public class CardsCommand extends BaseCommand {
 
 	@Subcommand("version|ver")
 	@CommandPermission("cards.version")
+	@Description("Show the plugin version.")
 	public void onVersion(final CommandSender sender){
 		final String format = "%s %s API-%s";
 		sendMessage(sender,String.format(format,plugin.getName(), plugin.getDescription().getVersion(),plugin.getDescription().getAPIVersion()));
@@ -58,11 +59,12 @@ public class CardsCommand extends BaseCommand {
 
 	@Subcommand("reload")
 	@CommandPermission("cards.reload")
+	@Description("Reloads all the configs & restart the timer.")
 	public void onReload(final CommandSender sender) {
 		final String format = "%s %s";
 		sendMessage(sender, String.format(format, plugin.getMessagesConfig().prefix, plugin.getMessagesConfig().reload));
 		plugin.reloadAllConfig();
-		if (plugin.getConfig().getBoolean("General.Schedule-Cards")) {
+		if (plugin.getMainConfig().scheduleCards) {
 			plugin.startTimer();
 		}
 	}
@@ -70,12 +72,14 @@ public class CardsCommand extends BaseCommand {
 
 	@Subcommand("resolve")
 	@CommandPermission("cards.resolve")
+	@Description("Shows a player's uuid")
 	public void onResolve(final CommandSender sender, final Player player) {
 		sendMessage(sender, plugin.getMessagesConfig().resolveMsg.replaceAll("%name%", player.getName()).replaceAll("%uuid%", player.getUniqueId().toString()));
 	}
 
 	@Subcommand("toggle")
 	@CommandPermission("cards.toggle")
+	@Description("Toggles card drops from mobs.")
 	public void onToggle(final Player player) {
 		if (plugin.isOnList(player) && plugin.blacklistMode() == 'b') {
 			plugin.removeFromList(player);
@@ -97,6 +101,7 @@ public class CardsCommand extends BaseCommand {
 	public class CreateCommands extends BaseCommand {
 		@Subcommand("card")
 		@CommandPermission("cards.create.card")
+		@Description("Creates a card.")
 		public void onCreateCard(final Player player, final String rarity, final String name, final String series, final String type, final boolean shiny, final String info, final String about){
 			CardUtil.createCard(player, rarity.replaceAll("_", " "), name, series.replaceAll("_", " "), type.replaceAll("_", " "), shiny, info.replaceAll("_", " "), about.replaceAll("_", " "));
 		}
@@ -109,6 +114,7 @@ public class CardsCommand extends BaseCommand {
 	public class GiveCommands extends BaseCommand {
 		@Subcommand("card")
 		@CommandPermission("cards.give.card")
+		@Description("Gives a card.")
 		public void onGiveCard(final Player player, final String name, final String rarity){
 			if (plugin.getCardsConfig().getConfig().contains("Cards." + rarity + "." + name)) {
 				player.getInventory().addItem(CardManager.getCard(name, rarity));
@@ -119,6 +125,7 @@ public class CardsCommand extends BaseCommand {
 
 		@Subcommand("card shiny")
 		@CommandPermission("cards.give.card.shiny")
+		@Description("Gives a shiny card.")
 		public void onGiveShinyCard(final Player player, final String name, final String rarity){
 			if (plugin.getCardsConfig().getConfig().contains("Cards." + rarity + "." + name)) {
 				player.getInventory().addItem(CardManager.getCard(name, rarity, true));
@@ -161,12 +168,14 @@ public class CardsCommand extends BaseCommand {
 	public class DebugCommands extends BaseCommand{
 		@Subcommand("showcache")
 		@CommandPermission("cards.admin.debug.showcache")
+		@Description("Shows the card cache")
 		public void showCache(final CommandSender sender){
 			sender.sendMessage(StringUtils.join(CardManager.getCards().keySet(), ","));
 		}
 
 		@Subcommand("modules")
 		@CommandPermission("cards.admin.debug.modules")
+		@Description("Shows all enabled hooks and addons.")
 		public void onModules(final CommandSender sender){
 			final StringBuilder builder = new StringBuilder("Enabled Modules:");
 			builder.append("\n");
@@ -188,6 +197,7 @@ public class CardsCommand extends BaseCommand {
 
 		@Subcommand("rarities")
 		@CommandPermission("cards.admin.debug.rarities")
+		@Description("Shows available rarities.")
 		public void onRarities(final CommandSender sender) {
 			final List<String> rarities = new ArrayList<>(plugin.getCardsConfig().getConfig().getConfigurationSection("Cards").getKeys(false));
 			sender.sendMessage(StringUtils.join(rarities, ", "));
@@ -195,6 +205,7 @@ public class CardsCommand extends BaseCommand {
 
 		@Subcommand("exists")
 		@CommandPermission("cards.admin.debug.exists")
+		@Description("Shows if a card exists or not.")
 		public void onExists(final CommandSender sender, final String card, final String rarity){
 			if(plugin.getCardsConfig().getConfig().contains("Cards."+rarity+"."+card)) {
 				sender.sendMessage(String.format("Card %s.%s exists",rarity,card));
@@ -208,6 +219,7 @@ public class CardsCommand extends BaseCommand {
 
 	@Subcommand("getdeck")
 	@CommandPermission("cards.decks.get")
+	@Description("Get a deck item.")
 	public void onGetDeck(final Player player, final int deckNumber) {
 		World curWorld;
 		if (player.hasPermission("cards.decks." + deckNumber)) {
@@ -248,6 +260,7 @@ public class CardsCommand extends BaseCommand {
 
 	@Subcommand("list")
 	@CommandPermission("cards.list")
+	@Description("Lists all cards by rarities")
 	public class ListSubCommand extends BaseCommand{
 		@Default
 		public void onList(final CommandSender sender,@Optional final String rarity){
@@ -256,6 +269,7 @@ public class CardsCommand extends BaseCommand {
 
 		@Subcommand("player")
 		@CommandPermission("cards.list.player")
+		@Description("Lists all cards by a player.")
 		public void onListPlayer(final CommandSender sender, final Player target, @Optional final String rarity) {
 			if(rarity == null || plugin.isRarity(rarity).equals("None")){
 				final String sectionFormat = String.format("&e&l------- &7(&6&l%s's Collection&7)&e&l -------", target.getName());
@@ -270,6 +284,7 @@ public class CardsCommand extends BaseCommand {
 
 		@Subcommand("pack")
 		@CommandPermission("cards.list.pack")
+		@Description("Lists all packs.")
 		public void onListPack(final CommandSender sender){
 			ConfigurationSection rarities = plugin.getConfig().getConfigurationSection("BoosterPacks");
 			Set<String> rarityKeys = rarities.getKeys(false);
@@ -355,6 +370,7 @@ public class CardsCommand extends BaseCommand {
 
 	@Subcommand("reward")
 	@CommandPermission("cards.reward")
+	@Description("Rewards a player with the rarity.")
 	public void onReward(final CommandSender sender, final String rarity) {
 		if (!plugin.getMainConfig().allowRewards) {
 			sendMessage(sender, plugin.getPrefixedMessage(plugin.getMessagesConfig().rewardDisabled));
@@ -388,6 +404,7 @@ public class CardsCommand extends BaseCommand {
 
 	@Subcommand("giveaway")
 	@CommandPermission("cards.giveaway")
+	@Description("Give away a random card by rarity to the server.")
 	public void onGiveaway(final CommandSender sender, final String rarity) {
 		ConfigurationSection rarities = plugin.getCardsConfig().getConfig().getConfigurationSection("Cards");
 		Set<String> rarityKeys = rarities.getKeys(false);
@@ -435,6 +452,7 @@ public class CardsCommand extends BaseCommand {
 
 	@Subcommand("worth")
 	@CommandPermission("cards.worth")
+	@Description("Shows a card's worth.")
 	public void onWorth(final Player player) {
 		if (!hasVault(player)) {
 			return;
@@ -495,6 +513,7 @@ public class CardsCommand extends BaseCommand {
 
 		@Subcommand("pack|boosterpack")
 		@CommandPermission("cards.buy.pack")
+		@Description("Buy a pack.")
 		public void onBuyPack(final Player player, final String name) {
 			if (!hasVault(player))
 				return;
@@ -527,6 +546,7 @@ public class CardsCommand extends BaseCommand {
 
 		@Subcommand("card")
 		@CommandPermission("cards.buy.card")
+		@Description("Buy a card.")
 		public void onBuyCard(final Player player, @NotNull final String rarity, @NotNull final String card) {
 			if (!hasVault(player))
 				return;
