@@ -232,13 +232,13 @@ public class CardsCommand extends BaseCommand {
 
 			if (player.getGameMode() == GameMode.CREATIVE) {
 				if (plugin.getMainConfig().decksInCreative) {
-					plugin.openDeck(player, deckNumber);
+					DeckManager.openDeck(player, deckNumber);
 					return;
 				}
 				sendPrefixedMessage(player, plugin.getMessagesConfig().deckCreativeError);
 				return;
 			}
-			plugin.openDeck(player, deckNumber);
+			DeckManager.openDeck(player, deckNumber);
 			return;
 		}
 
