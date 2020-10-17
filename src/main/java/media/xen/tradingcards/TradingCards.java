@@ -59,7 +59,7 @@ public class TradingCards extends JavaPlugin implements Listener {
 	public static Permission permRarities = new Permission("cards.rarity");
 	boolean hasVault;
 	private TradingCardsConfig mainConfig;
-
+	private DeckManager deckManager;
 	private SimpleConfig deckConfig;
 	private MessagesConfig messagesConfig;
 	private CardsConfig cardsConfig;
@@ -194,13 +194,14 @@ public class TradingCards extends JavaPlugin implements Listener {
 
 		CardUtil.init(this);
 		CardManager.init(this);
+		DeckManager.init(this);
 		BukkitCommandManager commandManager = new BukkitCommandManager(this);
 		commandManager.registerCommand(new CardsCommand(this));
 		commandManager.enableUnstableAPI("help");
 		hookFileSystem();
 		hookVault();
 
-		if (this.getConfig().getBoolean("General.Schedule-Cards")) {
+		if (this.getMainConfig().scheduleCards) {
 			this.startTimer();
 		}
 	}
@@ -208,9 +209,9 @@ public class TradingCards extends JavaPlugin implements Listener {
 
 	@Override
 	public void onDisable() {
-		econ = null;
-		perms = null;
-		chat = null;
+		TradingCards.econ = null;
+		TradingCards.perms = null;
+		TradingCards.chat = null;
 		this.getServer().getPluginManager().removePermission(permRarities);
 	}
 
@@ -540,83 +541,6 @@ public class TradingCards extends JavaPlugin implements Listener {
 		return false;
 
 
-	}
-
-	/*
-	 Deck
-	 uuid:
-	 	- Rarity, CardName, amount, isShiny
-	 */
-	public void openDeck(Player p, int deckNum) {
-		debug("Deck opened");
-		String uuidString = p.getUniqueId().toString();
-		debug("Deck UUID: " + uuidString);
-
-		List<String> contents = getDeckConfig().getConfig().getStringList("Decks.Inventories." + uuidString + "." + deckNum);
-		List<ItemStack> cards = new ArrayList<>();
-		List<Integer> quantity = new ArrayList<>();
-		ItemStack card = null;
-		boolean isNull = false;
-
-		for (final String s : contents) {
-			debug("Deck file content: " + s);
-
-			String[] splitContents = s.split(",");
-			if (splitContents.length > 1) {
-				if (splitContents[1] == null) {
-					splitContents[1] = "None";
-				}
-
-				if (splitContents[3].equalsIgnoreCase("yes")) {
-					if (!splitContents[0].equalsIgnoreCase("BLANK") && !splitContents[1].equalsIgnoreCase("None") && !splitContents[1].isEmpty()) {
-						card = this.createPlayerCard(splitContents[1], splitContents[0], Integer.valueOf(splitContents[2]), true);
-					} else {
-						getLogger().warning("A null card has been found in a deck. It was truncated for safety.");
-						isNull = true;
-					}
-				} else if (!splitContents[1].equalsIgnoreCase("None") && !splitContents[0].equalsIgnoreCase("BLANK") && !splitContents[1].isEmpty()) {
-					card = this.getNormalCard(splitContents[1], splitContents[0], Integer.parseInt(splitContents[2]));
-				} else {
-					getLogger().warning("A null card has been found in a deck. It was truncated for safety.");
-					isNull = true;
-				}
-			}
-
-			if (!isNull) {
-				cards.add(card);
-			}
-
-			if (splitContents.length > 1) {
-				quantity.add(Integer.valueOf(splitContents[2]));
-			} else {
-				quantity.add(1);
-			}
-
-			isNull = false;
-			if (splitContents.length > 1) {
-				debug("Put " + card + "," + splitContents[2] + " into respective lists.");
-			} else {
-				debug("Put spacer into list.");
-			}
-		}
-
-		int invSlots = 27;
-		if (this.getConfig().getBoolean("General.Use-Large-Decks")) {
-			invSlots = 54;
-		}
-
-		Inventory inv = Bukkit.createInventory(null, invSlots, this.cMsg("&c" + p.getName() + "'s Deck #" + deckNum));
-		debug("Created inventory.");
-		int iter = 0;
-
-		for (Iterator<ItemStack> var12 = cards.iterator(); var12.hasNext(); ++iter) {
-			ItemStack i = var12.next();
-			debug("Item " + i.getType().toString() + " added to inventory!");
-			i.setAmount(quantity.get(iter));
-			inv.addItem(i);
-		}
-
-		p.openInventory(inv);
 	}
 
 	@Deprecated
