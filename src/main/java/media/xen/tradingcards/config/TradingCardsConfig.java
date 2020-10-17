@@ -91,7 +91,7 @@ public class TradingCardsConfig implements Config {
 	@ConfigOption(path = "General.Info-Line-Length")
 	public int infoLineLength = 25;
 	@ConfigOption(path = "General.Drop-Deck-Items")
-	public boolean dropDeckItems = true;
+	public boolean dropDeckItems = false;
 	@ConfigOption(path = "General.Allow-Rewards")
 	public boolean allowRewards = true;
 	@ConfigOption(path = "General.Eat-Shiny-Cards")
