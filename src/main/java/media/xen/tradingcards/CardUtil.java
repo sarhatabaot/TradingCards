@@ -11,7 +11,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * @author sarhatabaot
@@ -28,6 +31,10 @@ public class CardUtil {
 
 	public static void init(final TradingCards plugin) {
 		CardUtil.plugin = plugin;
+	}
+
+	public static String getRarityName(@NotNull final String rarity){
+		return rarity.replace(stripAllColor(plugin.getMainConfig().shinyName),"").trim();
 	}
 
 	public String upgradeRarity(String packName, String rarity) {
@@ -232,51 +239,47 @@ public class CardUtil {
 		String cardName = cardNames.get(cIndex);
 		return CardManager.getCard(cardName, rarityName);
 	}
+	private static final char ALT_COLOR_CHAR = '&';
+	private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)" + ALT_COLOR_CHAR + "[0-9A-FK-ORX]");
 
-	public static String getCardName(String rarity, String display) {
-		boolean hasPrefix = false;
-		String prefix = "";
-		if (plugin.getConfig().contains("General.Card-Prefix") && !plugin.getConfig().getString("General.Card-Prefix").equals("")) {
-			hasPrefix = true;
-			prefix = ChatColor.stripColor(plugin.getConfig().getString("General.Card-Prefix"));
+	/**
+	 * Strips the given message of all color codes
+	 *
+	 * @param input String to strip of color
+	 * @return A copy of the input string, without any coloring
+	 */
+	@Contract("!null -> !null; null -> null")
+	@Nullable
+	public static String stripAllColor(@Nullable final String input) {
+		if (input == null) {
+			return null;
 		}
-		String shinyPrefix = plugin.getConfig().getString("General.Shiny-Name");
-		String cleaned = ChatColor.stripColor(display);
-		if (hasPrefix) cleaned = cleaned.replaceAll(prefix, "");
-		cleaned = cleaned.replaceAll(shinyPrefix + " ", "");
-		String[] cleanedArray = cleaned.split(" ");
-		ConfigurationSection cs = plugin.getCardsConfig().getConfig().getConfigurationSection("Cards." + rarity);
-		Set<String> keys = cs.getKeys(false);
-		for (String s : keys) {
-			plugin.debug("getCardName s: " + s);
-			plugin.debug("getCardName display: " + display);
-			if (cleanedArray.length > 1) {
-				plugin.debug("cleanedArray > 1");
-				if ((cleanedArray[0] + "_" + cleanedArray[1]).matches(s)) return s;
-				if ((cleanedArray[0] + " " + cleanedArray[1]).matches(s)) return s;
-				if (cleanedArray.length > 2 && (cleanedArray[1] + "_" + cleanedArray[2]).matches(s)) return s;
-				if (cleanedArray.length > 2 && (cleanedArray[1] + " " + cleanedArray[2]).matches(s)) return s;
-				if (cleanedArray.length > 3 && (cleanedArray[1] + "_" + cleanedArray[2] + "_" + cleanedArray[3]).matches(s))
-					return s;
-				if (cleanedArray.length > 3 && (cleanedArray[1] + " " + cleanedArray[2] + " " + cleanedArray[3]).matches(s))
-					return s;
-				if (cleanedArray.length > 4 && (cleanedArray[1] + "_" + cleanedArray[2] + "_" + cleanedArray[3] + "_" + cleanedArray[4]).matches(s))
-					return s;
-				if (cleanedArray.length > 4 && (cleanedArray[1] + " " + cleanedArray[2] + " " + cleanedArray[3] + " " + cleanedArray[4]).matches(s))
-					return s;
-				if (cleanedArray.length > 5 && (cleanedArray[1] + "_" + cleanedArray[2] + "_" + cleanedArray[3] + "_" + cleanedArray[4] + "_" + cleanedArray[5]).matches(s))
-					return s;
-				if (cleanedArray.length > 5 && (cleanedArray[1] + " " + cleanedArray[2] + " " + cleanedArray[3] + " " + cleanedArray[4] + " " + cleanedArray[5]).matches(s))
-					return s;
-				if (cleanedArray.length > 6 && (cleanedArray[1] + "_" + cleanedArray[2] + "_" + cleanedArray[3] + "_" + cleanedArray[4] + "_" + cleanedArray[5] + "_" + cleanedArray[6]).matches(s))
-					return s;
-				if (cleanedArray.length > 6 && (cleanedArray[1] + " " + cleanedArray[2] + " " + cleanedArray[3] + " " + cleanedArray[4] + " " + cleanedArray[5] + " " + cleanedArray[6]).matches(s))
-					return s;
-				if (cleanedArray.length == 2 && cleanedArray[1].matches(s)) return s;
-			}
+
+		return ChatColor.stripColor(STRIP_COLOR_PATTERN.matcher(input).replaceAll(""));
+	}
+
+	@NotNull
+	public static String getCardName(@NotNull final String displayRarity,@NotNull final String displayCard){
+		final String strippedRarity = getRarityName(displayRarity);
+		final boolean hasPrefix = plugin.getMainConfig().cardPrefix != null || !plugin.getMainConfig().cardPrefix.equals("");
+		final String strippedPrefix = stripAllColor(plugin.getMainConfig().cardPrefix);
+		final String strippedShiny = stripAllColor(plugin.getMainConfig().shinyName);
+		final String strippedDisplay = StringUtils.replaceEach(stripAllColor(displayCard),new String[]{strippedPrefix,strippedShiny},new String[]{"",""}).trim();
+		plugin.debug("stripped|rarity="+strippedRarity+"|hasPrefix="+hasPrefix+"|prefix="+strippedPrefix+"|shiny="+strippedShiny+"|display="+strippedDisplay);
+
+		if(!plugin.getCardsConfig().getConfig().contains("Cards."+strippedRarity)) {
+			plugin.debug("No such card. card=" + strippedDisplay + "rarity=" + strippedRarity);
+			return "None";
+		}
+
+		final ConfigurationSection configurationSection = plugin.getCardsConfig().getConfig().getConfigurationSection("Cards."+strippedRarity);
+		for(String name: configurationSection.getKeys(false)){
+			if(name.equals(strippedDisplay.replace(" ","_")))
+				return name;
 		}
 		return "None";
 	}
+
 
 	private static String getMobType(EntityType e, int shouldItDrop, boolean alwaysDrop) {
 		if (plugin.isMobHostile(e)) {
