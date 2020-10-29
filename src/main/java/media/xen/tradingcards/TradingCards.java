@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+import com.google.common.collect.ImmutableList;
 import media.xen.tradingcards.config.CardsConfig;
 import media.xen.tradingcards.config.MessagesConfig;
 import media.xen.tradingcards.config.TradingCardsConfig;
@@ -35,6 +36,7 @@ import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -141,35 +143,24 @@ public class TradingCards extends JavaPlugin implements Listener {
 		pm.registerEvents(new DeckListener(this), this);
 	}
 
-	@Override
-	public void onEnable() {
-		String serverVersion = Bukkit.getServer().getVersion();
-		List<EntityType> safeHostileMobs = Arrays.asList(EntityType.SPIDER, EntityType.CAVE_SPIDER, EntityType.ZOMBIE, EntityType.SKELETON, EntityType.CREEPER, EntityType.BLAZE, EntityType.SILVERFISH, EntityType.GHAST, EntityType.SLIME, EntityType.EVOKER, EntityType.VINDICATOR, EntityType.VEX, EntityType.SHULKER, EntityType.GUARDIAN, EntityType.MAGMA_CUBE, EntityType.ELDER_GUARDIAN, EntityType.STRAY, EntityType.HUSK, EntityType.DROWNED, EntityType.WITCH, EntityType.ZOGLIN, EntityType.HOGLIN, EntityType.ZOMBIE_VILLAGER, EntityType.PILLAGER, EntityType.RAVAGER, EntityType.ENDERMITE);
-		List<EntityType> safeNeutralMobs = Arrays.asList(EntityType.ENDERMAN, EntityType.POLAR_BEAR, EntityType.LLAMA, EntityType.WOLF, EntityType.BEE, EntityType.DOLPHIN, EntityType.PANDA, EntityType.PIGLIN, EntityType.ZOMBIFIED_PIGLIN, EntityType.DOLPHIN, EntityType.SNOWMAN, EntityType.IRON_GOLEM);
-		List<EntityType> safePassiveMobs = Arrays.asList(EntityType.DONKEY, EntityType.MULE, EntityType.SKELETON_HORSE, EntityType.CHICKEN, EntityType.COW, EntityType.SQUID, EntityType.WANDERING_TRADER, EntityType.TURTLE, EntityType.STRIDER, EntityType.TROPICAL_FISH, EntityType.PUFFERFISH, EntityType.SHEEP, EntityType.PIG, EntityType.PHANTOM, EntityType.SALMON, EntityType.COD, EntityType.RABBIT, EntityType.VILLAGER, EntityType.BAT, EntityType.PARROT, EntityType.HORSE);
-		List<EntityType> safeBossMobs = Arrays.asList(EntityType.ENDER_DRAGON, EntityType.WITHER);
-		this.hostileMobs.addAll(safeHostileMobs);
-		this.neutralMobs.addAll(safeNeutralMobs);
-		this.passiveMobs.addAll(safePassiveMobs);
-		this.bossMobs.addAll(safeBossMobs);
-		// Previous version compatibility
-		if (serverVersion.contains("1.14") || serverVersion.contains("1.15") || serverVersion.contains("1.16")) {
-			this.neutralMobs.add(EntityType.PANDA);
-			this.hostileMobs.add(EntityType.PILLAGER);
-			this.hostileMobs.add(EntityType.RAVAGER);
-			this.passiveMobs.add(EntityType.WANDERING_TRADER);
-			this.neutralMobs.add(EntityType.FOX);
-			this.passiveMobs.add(EntityType.CAT);
-			this.passiveMobs.add(EntityType.MUSHROOM_COW);
-			this.passiveMobs.add(EntityType.TRADER_LLAMA);
-			if (serverVersion.contains("1.15") || serverVersion.contains("1.16")) {
-				this.neutralMobs.add(EntityType.BEE);
-				if (serverVersion.contains("1.16")) {
-					this.hostileMobs.add(EntityType.HOGLIN);
-					this.hostileMobs.add(EntityType.PIGLIN);
-					this.hostileMobs.add(EntityType.STRIDER);
-					this.hostileMobs.add(EntityType.ZOGLIN);
-					this.hostileMobs.add(EntityType.ZOMBIFIED_PIGLIN);
+	private void cacheMobs(){
+		final String serverVersion = Bukkit.getServer().getVersion();
+		ImmutableList.Builder<EntityType> safeHostileMobs = ImmutableList.builder();
+		ImmutableList.Builder<EntityType> safeNeutralMobs = ImmutableList.builder();
+		ImmutableList.Builder<EntityType> safePassiveMobs = ImmutableList.builder();
+		ImmutableList.Builder<EntityType> safeBossMobs = ImmutableList.builder();
+		safeHostileMobs.add(EntityType.SPIDER, EntityType.CAVE_SPIDER, EntityType.ZOMBIE, EntityType.SKELETON, EntityType.CREEPER, EntityType.BLAZE, EntityType.SILVERFISH, EntityType.GHAST, EntityType.SLIME, EntityType.EVOKER, EntityType.VINDICATOR, EntityType.VEX, EntityType.SHULKER, EntityType.GUARDIAN, EntityType.MAGMA_CUBE, EntityType.ELDER_GUARDIAN, EntityType.STRAY, EntityType.HUSK, EntityType.DROWNED, EntityType.WITCH, EntityType.ZOMBIE_VILLAGER, EntityType.ENDERMITE);
+		safeNeutralMobs.add(EntityType.ENDERMAN, EntityType.POLAR_BEAR, EntityType.LLAMA, EntityType.WOLF, EntityType.DOLPHIN, EntityType.DOLPHIN, EntityType.SNOWMAN, EntityType.IRON_GOLEM);
+		safePassiveMobs.add(EntityType.DONKEY, EntityType.MULE, EntityType.SKELETON_HORSE, EntityType.CHICKEN, EntityType.COW, EntityType.SQUID, EntityType.TURTLE, EntityType.TROPICAL_FISH, EntityType.PUFFERFISH, EntityType.SHEEP, EntityType.PIG, EntityType.PHANTOM, EntityType.SALMON, EntityType.COD, EntityType.RABBIT, EntityType.VILLAGER, EntityType.BAT, EntityType.PARROT, EntityType.HORSE);
+		safeBossMobs.add(EntityType.ENDER_DRAGON, EntityType.WITHER);
+		if(serverVersion.contains("1.14") || serverVersion.contains("1.15") || serverVersion.contains("1.16")){
+			safeHostileMobs.add(EntityType.PILLAGER, EntityType.RAVAGER);
+			safeNeutralMobs.add(EntityType.PANDA,EntityType.FOX);
+			safePassiveMobs.add(EntityType.WANDERING_TRADER,EntityType.CAT,EntityType.MUSHROOM_COW,EntityType.TRADER_LLAMA);
+			if(serverVersion.contains("1.15") || serverVersion.contains("1.16")){
+				safeNeutralMobs.add(EntityType.BEE);
+				if(serverVersion.contains("1.16")){
+					safeHostileMobs.add(EntityType.HOGLIN,EntityType.PIGLIN,EntityType.STRIDER,EntityType.ZOGLIN,EntityType.ZOMBIFIED_PIGLIN);
 					getLogger().info("1.16 mode enabled! Enjoy the plugin!");
 				} else {
 					getLogger().info("Legacy 1.15 mode enabled! Consider upgrading though <3");
@@ -178,6 +169,16 @@ public class TradingCards extends JavaPlugin implements Listener {
 				getLogger().info("Legacy 1.14 mode enabled! Consider upgrading though <3");
 			}
 		}
+
+		this.hostileMobs = safeHostileMobs.build();
+		this.neutralMobs = safeNeutralMobs.build();
+		this.passiveMobs = safePassiveMobs.build();
+		this.bossMobs = safeBossMobs.build();
+	}
+
+	@Override
+	public void onEnable() {
+		cacheMobs();
 		registerListeners();
 		this.saveDefaultConfig();
 		mainConfig = new TradingCardsConfig(this);
@@ -701,10 +702,10 @@ public class TradingCards extends JavaPlugin implements Listener {
 			this.saveDefaultConfig();
 		}*/
 
-		ConfigLoader.load(mainConfig);
+		ConfigLoader.loadAndSave(mainConfig);
 		//this.reloadConfig();
 		this.deckConfig.reloadConfig();
-		ConfigLoader.load(messagesConfig);
+		ConfigLoader.loadAndSave(messagesConfig);
 		//this.messagesConfig.reloadConfig();
 		this.cardsConfig.reloadConfig();
 	}
