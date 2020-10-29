@@ -55,13 +55,9 @@ public class CardManager {
 		return true;
 	}
 
-	public static ItemStack getCard(final String cardName,final String rarity){
+	public static ItemStack getCard(final String cardName,final String rarity, final boolean forcedShiny){
 		if(cards.containsKey(rarity+"."+cardName))
 			return cards.get(rarity+"."+cardName);
-		return CardUtil.generateCard(cardName,rarity,false);
-	}
-
-	public static ItemStack getCard(final String cardName,final String rarity,final boolean forcedShiny){
 		return CardUtil.generateCard(cardName,rarity,forcedShiny);
 	}
 
