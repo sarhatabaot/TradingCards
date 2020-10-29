@@ -1,6 +1,7 @@
 package media.xen.tradingcards;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.World;
@@ -228,16 +229,15 @@ public class CardUtil {
 	}
 
 	@NotNull
-	public static ItemStack getRandomCard(final String rarityName, final boolean forcedShiny) {
+	public static ItemStack getRandomCard(@NotNull final String rarityName,@NotNull final boolean forcedShiny) {
 		ConfigurationSection cardSection = plugin.getCardsConfig().getConfig().getConfigurationSection("Cards." + rarityName);
-		plugin.debug("generateCard.cardSection: " + plugin.getCardsConfig().getConfig().contains("Cards." + rarityName));
-		plugin.debug("generateCard.rarity: " + rarityName);
+		Validate.notNull(cardSection,"No such section."+rarityName);
 
 		Set<String> cards = cardSection.getKeys(false);
 		List<String> cardNames = new ArrayList<>(cards);
 		int cIndex = plugin.r.nextInt(cardNames.size());
 		String cardName = cardNames.get(cIndex);
-		return CardManager.getCard(cardName, rarityName);
+		return CardManager.getCard(cardName, rarityName,forcedShiny);
 	}
 	private static final char ALT_COLOR_CHAR = '&';
 	private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)" + ALT_COLOR_CHAR + "[0-9A-FK-ORX]");

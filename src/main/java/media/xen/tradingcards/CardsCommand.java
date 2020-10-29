@@ -117,7 +117,7 @@ public class CardsCommand extends BaseCommand {
 		@Description("Gives a card.")
 		public void onGiveCard(final Player player, final String name, final String rarity){
 			if (plugin.getCardsConfig().getConfig().contains("Cards." + rarity + "." + name)) {
-				player.getInventory().addItem(CardManager.getCard(name, rarity));
+				player.getInventory().addItem(CardManager.getCard(name, rarity,false));
 				return;
 			}
 			sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().noCard));
@@ -440,7 +440,7 @@ public class CardsCommand extends BaseCommand {
 							break;
 						}
 					}
-					CardUtil.dropItem(p5, CardManager.getCard(cardName,keyToUse));
+					CardUtil.dropItem(p5, CardManager.getCard(cardName,keyToUse,false));
 				}
 			} else {
 				sendPrefixedMessage(sender, plugin.getMessagesConfig().noRarity);
@@ -564,7 +564,7 @@ public class CardsCommand extends BaseCommand {
 				if (plugin.getConfig().getBoolean("PluginSupport.Vault.Closed-Economy")) {//TODO
 					econ.bankDeposit(plugin.getConfig().getString("PluginSupport.Vault.Server-Account"), buyPrice2);
 				}
-				CardUtil.dropItem(player, CardManager.getCard(card, rarity));
+				CardUtil.dropItem(player, CardManager.getCard(card, rarity,false));
 				sendPrefixedMessage(player, plugin.getMessagesConfig().boughtCard.replaceAll("%amount%", String.valueOf(buyPrice2)));
 				return;
 			}

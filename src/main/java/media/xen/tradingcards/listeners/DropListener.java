@@ -40,7 +40,7 @@ public class DropListener extends SimpleListener {
 				if (k != null) {
 					int rndm = plugin.r.nextInt(100) + 1;
 					if (rndm <= plugin.getConfig().getInt("General.Player-Drops-Card-Rarity")) {
-						e.getDrops().add(CardManager.getCard(e.getEntity().getName(),k));
+						e.getDrops().add(CardManager.getCard(e.getEntity().getName(),k,false));
 						plugin.debug(e.getDrops().toString());
 					}
 				} else {

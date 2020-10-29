@@ -38,37 +38,31 @@ public class DeckManager {
 			final String cardName = splitContents[1];
 			final String amount = splitContents[2];
 			final String isShiny = splitContents[3];
-			if (splitContents.length > 1) {
-				if (splitContents[1] == null) {
-					splitContents[1] = "None";
-				}
+			if (splitContents[1] == null) {
+				splitContents[1] = "None";
+			}
 
-				if (isShiny.equalsIgnoreCase("yes")) {
-					if (!rarity.equalsIgnoreCase("BLANK") && !rarity.equalsIgnoreCase("None") && !rarity.isEmpty()) {
-						card = CardManager.getCard(cardName,rarity,true);
-						card.setAmount(Integer.parseInt(amount));
-					} else {
-						plugin.getLogger().warning("A null card has been found in a deck. It was truncated for safety.");
-						isNull = true;
-					}
-				} else if (!rarity.equalsIgnoreCase("None") && !rarity.equalsIgnoreCase("BLANK") && !rarity.isEmpty()) {
-					card = CardManager.getCard(cardName,rarity,Integer.parseInt(amount));
+			if (isShiny.equalsIgnoreCase("yes")) {
+				if (!rarity.equalsIgnoreCase("BLANK") && !rarity.equalsIgnoreCase("None") && !rarity.isEmpty()) {
+					card = CardManager.getCard(cardName,rarity,true);
+					card.setAmount(Integer.parseInt(amount));
 				} else {
 					plugin.getLogger().warning("A null card has been found in a deck. It was truncated for safety.");
 					isNull = true;
 				}
+			} else if (!rarity.equalsIgnoreCase("None") && !rarity.equalsIgnoreCase("BLANK") && !rarity.isEmpty()) {
+				card = CardManager.getCard(cardName,rarity,Integer.parseInt(amount));
+			} else {
+				plugin.getLogger().warning("A null card has been found in a deck. It was truncated for safety.");
+				isNull = true;
 			}
 
 			if (!isNull) {
 				cards.add(card);
 			}
 
-			if (splitContents.length > 1) {
-				quantity.add(Integer.valueOf(splitContents[2]));
-				plugin.debug("Put " + card + "," + splitContents[2] + " into respective lists.");
-			} else {
-				quantity.add(1);
-			}
+			quantity.add(Integer.valueOf(splitContents[2]));
+			plugin.debug("Put " + card + "," + splitContents[2] + " into respective lists.");
 
 			isNull = false;
 		}
@@ -79,9 +73,7 @@ public class DeckManager {
 		}
 
 		Inventory inv = Bukkit.createInventory(null, invSlots, plugin.cMsg("&c" + p.getName() + "'s Deck #" + deckNum));
-		plugin.debug("Created inventory.");
 		int iter = 0;
-
 		for (Iterator<ItemStack> var12 = cards.iterator(); var12.hasNext(); ++iter) {
 			ItemStack i = var12.next();
 			plugin.debug("Item " + i.getType().toString() + " added to inventory!");
