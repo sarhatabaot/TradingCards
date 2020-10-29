@@ -6,7 +6,6 @@ import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -49,7 +48,7 @@ public class PackListener extends SimpleListener {
 		final ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
 		if (itemInMainHand.getType() == Material.valueOf(plugin.getMainConfig().boosterPackMaterial)  && player.getInventory().getItemInMainHand().containsEnchantment(Enchantment.ARROW_INFINITE)) {
 			if(!player.hasPermission("cards.openboosterpack")) {
-				sendMessage(player,plugin.getPrefixedMessage("No permission: "+"cards.openboosterpack"));
+				sendMessage(player,plugin.getPrefixedMessage("No permission: cards.openboosterpack"));
 				return;
 			}
 			if (player.getGameMode() == GameMode.CREATIVE) {
