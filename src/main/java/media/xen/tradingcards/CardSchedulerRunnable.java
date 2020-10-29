@@ -33,7 +33,6 @@ public class CardSchedulerRunnable extends BukkitRunnable {
 			plugin.getLogger().info("Error! schedule-card-mob is an invalid mob?");
 			return;
 		}
-		plugin.debug("Schedule cards is true.");
 
 		ConfigurationSection rarities = plugin.getCardsConfig().getConfig().getConfigurationSection("Cards");
 		Set<String> rarityKeys = rarities.getKeys(false);
