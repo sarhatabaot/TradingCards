@@ -14,7 +14,7 @@ import media.xen.tradingcards.CardManager;
 import media.xen.tradingcards.CardUtil;
 import media.xen.tradingcards.DeckManager;
 import media.xen.tradingcards.TradingCards;
-import media.xen.tradingcards.addons.TradingCardsAddon;
+import media.xen.tradingcards.api.addons.TradingCardsAddon;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
@@ -38,6 +38,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import static media.xen.tradingcards.ChatUtil.sendPrefixedMessage;
 import static media.xen.tradingcards.TradingCards.econ;
 import static media.xen.tradingcards.TradingCards.sendMessage;
 
@@ -165,9 +166,6 @@ public class CardsCommand extends BaseCommand {
 		}
 	}
 
-	private void sendPrefixedMessage(final CommandSender toWhom, final String message) {
-		sendMessage(toWhom, plugin.getPrefixedMessage(message));
-	}
 
 	@Subcommand("debug")
 	@CommandPermission("cards.admin.debug")
@@ -230,16 +228,16 @@ public class CardsCommand extends BaseCommand {
 		World curWorld;
 		if (player.hasPermission("cards.decks." + deckNumber)) {
 			if (plugin.getConfig().getBoolean("General.Use-Deck-Item")) {
-				if (!plugin.hasDeck(player, deckNumber)) {
+				if (!DeckManager.hasDeck(player, deckNumber)) {
 					if (player.getInventory().firstEmpty() != -1) {
 						sendPrefixedMessage(player, plugin.getMessagesConfig().giveDeck);
-						player.getInventory().addItem(plugin.createDeck(player, deckNumber));
+						player.getInventory().addItem(DeckManager.createDeck(player, deckNumber));
 					} else {
 						curWorld = player.getWorld();
 						if (player.getGameMode() == GameMode.SURVIVAL) {
 							sendPrefixedMessage(player, plugin.getMessagesConfig().giveDeck);
 
-							curWorld.dropItem(player.getLocation(), plugin.createDeck(player, deckNumber));
+							curWorld.dropItem(player.getLocation(), DeckManager.createDeck(player, deckNumber));
 						}
 					}
 				} else {

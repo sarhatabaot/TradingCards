@@ -19,14 +19,12 @@ import java.util.List;
 public class DeckManager {
 	private static TradingCards plugin;
 
-
 	public static void init(final TradingCards plugin){
 		DeckManager.plugin = plugin;
 	}
 
 
 	public static void openDeck(Player p, int deckNum) {
-		plugin.debug("Deck opened");
 		String uuidString = p.getUniqueId().toString();
 		plugin.debug("Deck UUID: " + uuidString);
 

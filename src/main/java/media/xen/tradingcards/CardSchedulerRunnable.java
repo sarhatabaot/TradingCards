@@ -64,7 +64,7 @@ public class CardSchedulerRunnable extends BukkitRunnable {
 					}
 				}
 
-				CardUtil.dropItem(p,CardManager.getCard(cardName, keyToUse, false));
+				CardUtil.dropItem(p, CardManager.getCard(cardName, keyToUse, false));
 			}
 		}
 	}
