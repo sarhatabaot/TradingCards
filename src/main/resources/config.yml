@@ -170,7 +170,7 @@ Chances:
   Shiny-Version-Chance: 1
   # Enter the chances for various rarities below, out of 100,000. 1 = 1 in 100,000 or 0.001%
   # 10,000 = 10% chance, 1000 = 1% chance, 100 = 0.1% chance, 10 = 0.01% chance, 1 = 0.001% chance
-  # Chances are in descending order - make sure the chances for Common are higher than Uncommon etcetera.
+  # Chances are in descending order - make sure the chances for Common are higher than Uncommon etc.
   # If a type is omitted from this section, the rarity won't drop at ALL from that type.
   Common:
     Hostile: 100000
