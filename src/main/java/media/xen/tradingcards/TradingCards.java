@@ -3,9 +3,7 @@ package media.xen.tradingcards;
 import co.aikar.commands.BukkitCommandManager;
 
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -14,6 +12,7 @@ import java.util.Random;
 import java.util.Set;
 
 import com.google.common.collect.ImmutableList;
+import media.xen.tradingcards.commands.CardsCommand;
 import media.xen.tradingcards.config.CardsConfig;
 import media.xen.tradingcards.config.MessagesConfig;
 import media.xen.tradingcards.config.TradingCardsConfig;
@@ -53,7 +52,7 @@ public class TradingCards extends JavaPlugin implements Listener {
 	List<EntityType> bossMobs = new ArrayList<>();
 	private final Map<String, Database> databases = new HashMap<>();
 	public static Permission permRarities = new Permission("cards.rarity");
-	boolean hasVault;
+	private boolean hasVault;
 	private TradingCardsConfig mainConfig;
 	private SimpleConfig deckConfig;
 	private MessagesConfig messagesConfig;
@@ -65,6 +64,9 @@ public class TradingCards extends JavaPlugin implements Listener {
 	public Random r = new Random();
 	int taskid;
 
+	public boolean isHasVault() {
+		return hasVault;
+	}
 
 	public SimpleConfig getDeckConfig() {
 		return deckConfig;
