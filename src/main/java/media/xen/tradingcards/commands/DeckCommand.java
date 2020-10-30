@@ -5,13 +5,11 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Description;
-import co.aikar.commands.annotation.Subcommand;
 import media.xen.tradingcards.CardUtil;
 import media.xen.tradingcards.ChatUtil;
 import media.xen.tradingcards.DeckManager;
 import media.xen.tradingcards.TradingCards;
 import org.bukkit.GameMode;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import static media.xen.tradingcards.TradingCards.sendMessage;
@@ -26,12 +24,12 @@ public class DeckCommand extends BaseCommand {
 
 
 	@Default
-	@CommandPermission("cards.decks.get")
+	@CommandPermission("cards.decks.open")
 	@Description("Get a deck item. Or opens a deck.")
 	public void onGetDeck(final Player player, final int deckNumber) {
 		if (player.hasPermission("cards.decks." + deckNumber)) {
-			if (plugin.getConfig().getBoolean("General.Use-Deck-Item")) {
-				if (!plugin.hasDeck(player, deckNumber)) {
+			if (plugin.getMainConfig().useDeckItems) {
+				if (!DeckManager.hasDeck(player, deckNumber)) {
 					CardUtil.dropItem(player,DeckManager.createDeck(player,deckNumber));
 				} else {
 					ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().alreadyHaveDeck);

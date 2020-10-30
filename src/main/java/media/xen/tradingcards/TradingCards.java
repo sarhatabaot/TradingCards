@@ -28,6 +28,7 @@ import media.xen.tradingcards.listeners.DropListener;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.sarhatabaot.configloader.ConfigLoader;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -241,15 +242,6 @@ public class TradingCards extends JavaPlugin implements Listener {
 		return this.bossMobs.contains(e);
 	}
 
-	@Deprecated
-	public ItemStack createDeck(final Player p,final int num) {
-		return DeckManager.createDeck(p,num);
-	}
-
-	@Deprecated
-	public boolean hasDeck(Player p, int num) {
-		return DeckManager.hasDeck(p,num);
-	}
 
 	public int getCardID(String name, String rarity) {
 		return (Integer) getDatabase("trading_cards").queryValue("SELECT id FROM cards WHERE name = '" + name + "' AND rarity = '" + rarity + "'", "ID");
@@ -391,22 +383,9 @@ public class TradingCards extends JavaPlugin implements Listener {
 		ConfigurationSection deckList = getDeckConfig().getConfig().getConfigurationSection("Decks.Inventories." + uuidString);
 		debug("Deck UUID: " + uuidString);
 
-
-		if (getDeckConfig().getConfig().contains("Decks.Inventories." + uuidString)) {
-			debug("Deck.yml contains player!");
-		}
-
 		Iterator<String> var7;
 		String s;
-		if (this.getConfig().getBoolean("General.Debug-Mode")) {
-			var7 = deckList.getKeys(false).iterator();
-
-			while (var7.hasNext()) {
-				s = var7.next();
-				getLogger().info("Deck rarity content: " + s);
-			}
-			debug("Done!");
-		}
+		debug(StringUtils.join(deckList.getKeys(false),","));
 
 		if (deckList == null) {
 			return 0;
@@ -440,9 +419,7 @@ public class TradingCards extends JavaPlugin implements Listener {
 					debug(rarity + " - " + splitContents[0]);
 
 					if (splitContents[0].equalsIgnoreCase(rarity)) {
-						if (this.getConfig().getBoolean("General.Debug-Mode")) {
-							System.out.println("[Cards] Rarity match: " + splitContents[0]);
-						}
+						debug("Rarity match: " + splitContents[0]);
 
 						if (splitContents[1].equalsIgnoreCase(card) && splitContents[3].equalsIgnoreCase("no")) {
 							if (this.getConfig().getBoolean("General.Debug-Mode")) {
