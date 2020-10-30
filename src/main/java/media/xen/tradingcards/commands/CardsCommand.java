@@ -1,4 +1,4 @@
-package media.xen.tradingcards;
+package media.xen.tradingcards.commands;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
@@ -10,6 +10,10 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.HelpCommand;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
+import media.xen.tradingcards.CardManager;
+import media.xen.tradingcards.CardUtil;
+import media.xen.tradingcards.DeckManager;
+import media.xen.tradingcards.TradingCards;
 import media.xen.tradingcards.addons.TradingCardsAddon;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.apache.commons.lang.StringUtils;
@@ -391,7 +395,8 @@ public class CardsCommand extends BaseCommand {
 			if (plugin.getConfig().getBoolean("General.Reward-Broadcast")) {
 				Bukkit.broadcastMessage(plugin.getPrefixedMessage(plugin.getMessagesConfig().rewardBroadcast.replaceAll("%player%", sender.getName()).replaceAll("%rarity%", plugin.isRarity(rarity))));
 			}
-
+			//TODO wait, why does the plugin delete a rarity once its been completed?
+			// instead it should mark in a data file if a player has completed the rarity or not...
 			if (!plugin.deleteRarity((Player) sender, plugin.isRarity(rarity)) && plugin.getMainConfig().debugMode) {
 				plugin.getLogger().warning("Cannot delete rarity: " + plugin.isRarity(rarity));
 			}
@@ -501,7 +506,7 @@ public class CardsCommand extends BaseCommand {
 	}
 
 	private boolean hasVault(final Player player) {
-		if (!plugin.hasVault) {
+		if (!plugin.isHasVault()) {
 			sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().noVault));
 			return false;
 		}
