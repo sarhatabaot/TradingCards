@@ -1,4 +1,4 @@
-package media.xen.tradingcards.addons;
+package media.xen.tradingcards.api.addons;
 
 
 import org.bukkit.plugin.java.JavaPlugin;

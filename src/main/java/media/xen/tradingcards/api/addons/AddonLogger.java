@@ -1,4 +1,4 @@
-package media.xen.tradingcards.addons;
+package media.xen.tradingcards.api.addons;
 
 import media.xen.tradingcards.TradingCards;
 
