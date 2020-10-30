@@ -1,10 +1,16 @@
 package media.xen.tradingcards;
 
 
+import media.xen.tradingcards.config.TradingCardsConfig;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -82,5 +88,33 @@ public class DeckManager {
 		}
 
 		p.openInventory(inv);
+	}
+	@NotNull
+	public static ItemStack createDeck(@NotNull final Player p, final int num) {
+		ItemStack deck = TradingCardsConfig.getBlankDeck();
+		ItemMeta deckMeta = deck.getItemMeta();
+		deckMeta.setDisplayName(plugin.cMsg(plugin.getConfig().getString("General.Deck-Prefix") + p.getName() + "'s Deck #" + num));
+		if (plugin.getConfig().getBoolean("General.Hide-Enchants", true)) {
+			deckMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+		}
+
+		deck.setItemMeta(deckMeta);
+		deck.addUnsafeEnchantment(Enchantment.DURABILITY, 10);
+		return deck;
+	}
+
+
+	public static boolean hasDeck(@NotNull final Player p,final int num) {
+		for (final ItemStack i : p.getInventory()) {
+			if (i != null && i.getType() == Material.valueOf(plugin.getConfig().getString("General.Deck-Material")) && i.containsEnchantment(Enchantment.DURABILITY) && i.getEnchantmentLevel(Enchantment.DURABILITY) == 10) {
+				String name = i.getItemMeta().getDisplayName();
+				String[] splitName = name.split("#");
+				if (num == Integer.parseInt(splitName[1])) {
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 }

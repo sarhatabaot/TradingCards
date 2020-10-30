@@ -32,18 +32,12 @@ import net.sarhatabaot.configloader.ConfigLoader;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -61,7 +55,6 @@ public class TradingCards extends JavaPlugin implements Listener {
 	public static Permission permRarities = new Permission("cards.rarity");
 	boolean hasVault;
 	private TradingCardsConfig mainConfig;
-	private DeckManager deckManager;
 	private SimpleConfig deckConfig;
 	private MessagesConfig messagesConfig;
 	private CardsConfig cardsConfig;
@@ -76,10 +69,6 @@ public class TradingCards extends JavaPlugin implements Listener {
 	public SimpleConfig getDeckConfig() {
 		return deckConfig;
 	}
-	/*
-	public SimpleConfig getMessagesConfig() {
-		return messagesConfig;
-	}*/
 
 	public CardsConfig getCardsConfig() {
 		return cardsConfig;
@@ -250,31 +239,14 @@ public class TradingCards extends JavaPlugin implements Listener {
 		return this.bossMobs.contains(e);
 	}
 
-	public ItemStack createDeck(Player p, int num) {
-		ItemStack deck = TradingCardsConfig.getBlankDeck();
-		ItemMeta deckMeta = deck.getItemMeta();
-		deckMeta.setDisplayName(this.cMsg(this.getConfig().getString("General.Deck-Prefix") + p.getName() + "'s Deck #" + num));
-		if (this.getConfig().getBoolean("General.Hide-Enchants", true)) {
-			deckMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-		}
-
-		deck.setItemMeta(deckMeta);
-		deck.addUnsafeEnchantment(Enchantment.DURABILITY, 10);
-		return deck;
+	@Deprecated
+	public ItemStack createDeck(final Player p,final int num) {
+		return DeckManager.createDeck(p,num);
 	}
 
+	@Deprecated
 	public boolean hasDeck(Player p, int num) {
-		for (final ItemStack i : p.getInventory()) {
-			if (i != null && i.getType() == Material.valueOf(this.getConfig().getString("General.Deck-Material")) && i.containsEnchantment(Enchantment.DURABILITY) && i.getEnchantmentLevel(Enchantment.DURABILITY) == 10) {
-				String name = i.getItemMeta().getDisplayName();
-				String[] splitName = name.split("#");
-				if (num == Integer.parseInt(splitName[1])) {
-					return true;
-				}
-			}
-		}
-
-		return false;
+		return DeckManager.hasDeck(p,num);
 	}
 
 	public int getCardID(String name, String rarity) {
