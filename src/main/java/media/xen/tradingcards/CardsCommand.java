@@ -13,6 +13,7 @@ import co.aikar.commands.annotation.Subcommand;
 import media.xen.tradingcards.addons.TradingCardsAddon;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -23,6 +24,7 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
@@ -504,6 +506,56 @@ public class CardsCommand extends BaseCommand {
 			return false;
 		}
 		return true;
+	}
+
+	@Subcommand("sell")
+	@CommandPermission("cards.sell")
+	public class SellSubCommand extends BaseCommand {
+		@Default
+		@Description("Sells the card in your main hand.")
+		public void onSell(final Player player){
+			if(!hasVault(player))
+				return;
+
+			if (player.getInventory().getItemInMainHand().getType() != Material.valueOf(plugin.getMainConfig().cardMaterial)) {
+				sendPrefixedMessage(player, plugin.getMessagesConfig().notACard);
+				return;
+			}
+
+
+			final ItemStack itemInHand = player.getInventory().getItemInMainHand();
+			final String[] splitName = ChatColor.stripColor(itemInHand.getItemMeta().getDisplayName()).split(" ");
+			final String card = (splitName.length>1) ? splitName[1] : splitName[0];
+
+			plugin.debug(card);
+
+
+			List<String> lore = itemInHand.getItemMeta().getLore();
+			Validate.notNull(lore, "Lore cannot be null.");
+			String rarity = ChatColor.stripColor(lore.get(3));
+			plugin.debug(rarity);
+
+			if(!plugin.getCardsConfig().getConfig().contains("Cards."+rarity+"."+card+".Sell-Price")){
+				if(card.contains(plugin.getMainConfig().shinyName))
+					sendPrefixedMessage(player,"Cannot sell shiny card.");
+				sendPrefixedMessage(player,"Cannot sell this card.");
+				return;
+			}
+
+			final double sellPrice = plugin.getCardsConfig().getConfig().getDouble("Cards."+rarity+"."+card+".Sell-Price");
+			if(sellPrice == 0) {
+				sendPrefixedMessage(player,"Cannot sell this card.");
+				return;
+			}
+
+			Inventory inventory = player.getInventory();
+			inventory.remove(itemInHand);
+			double sellAmount = sellPrice*itemInHand.getAmount();
+			EconomyResponse economyResponse = econ.depositPlayer(player,sellAmount);
+			if(economyResponse.transactionSuccess()){
+				sendPrefixedMessage(player,String.format("You have sold %d x%s for %.2f", itemInHand.getAmount(), (rarity+" "+card),sellAmount));
+			}
+		}
 	}
 
 
