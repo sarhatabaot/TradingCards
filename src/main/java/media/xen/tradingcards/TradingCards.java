@@ -400,7 +400,6 @@ public class TradingCards extends JavaPlugin implements Listener {
 		}
 
 		if (deckNumber == 0) {
-			debug("No decks?!");
 			return 0;
 		}
 
