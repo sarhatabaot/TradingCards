@@ -22,7 +22,7 @@ public class DropListener extends SimpleListener {
 
 	@EventHandler
 	public void onPlayerDeath(PlayerDeathEvent e) {
-		if (plugin.getConfig().getBoolean("General.Player-Drops-Card") && plugin.getConfig().getBoolean("General.Auto-Add-Players")) {
+		if (plugin.getMainConfig().playerDropCard && plugin.getMainConfig().autoAddPlayers) {
 			Player player = e.getEntity().getKiller();
 			if (player != null) {
 				ConfigurationSection rarities = plugin.getConfig().getConfigurationSection("Rarities");
@@ -60,13 +60,12 @@ public class DropListener extends SimpleListener {
 		String worldName = e.getEntity().getLocation().getWorld().getName();
 		if (drop && !worlds.contains(worldName)) {
 
-			String rare = plugin.calculateRarity(e.getEntityType(), false);
+			String rare = CardUtil.calculateRarity(e.getEntityType(), false);
 			if (plugin.getConfig().getBoolean("Chances.Boss-Drop") && plugin.isMobBoss(e.getEntityType())) rare = plugin.getConfig().getString("Chances.Boss-Drop-Rarity");
 			boolean cancelled = false;
 
-			if (!rare.equals("None")) {
+			if (!"None".equalsIgnoreCase(rare)) {
 				if (plugin.getConfig().getBoolean("General.Spawner-Block") && e.getEntity().getCustomName() != null && e.getEntity().getCustomName().equals(plugin.getConfig().getString("General.Spawner-Mob-Name"))) {
-
 					plugin.debug("Mob came from spawner, not dropping card.");
 					cancelled = true;
 				}

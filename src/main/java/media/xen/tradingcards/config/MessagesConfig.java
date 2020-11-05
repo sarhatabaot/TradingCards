@@ -69,6 +69,10 @@ public class MessagesConfig implements Config {
 	public String canBuy= "This card can be bought for %buyAmount%!";
 	@ConfigOption(path = "Messages.CanNotBuy")
 	public String canNotBuy= "This card cannot be bought!";
+	@ConfigOption(path = "Messages.CanSell")
+	public String canSell = "This card can be sold for %sellAmount%!";
+	@ConfigOption(path = "Messages.CanNotSell")
+	public String canNotSell = "This card cannot be sold!";
 	@ConfigOption(path = "Messages.ChooseCard")
 	public String chooseCard= "Please specify a card!";
 	@ConfigOption(path = "Messages.ChooseRarity")

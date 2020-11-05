@@ -8,4 +8,5 @@ public class AddonListener implements Listener {
 	public AddonListener(final TradingCardsAddon tradingCardsAddon) {
 		this.tradingCardsAddon = tradingCardsAddon;
 	}
+
 }

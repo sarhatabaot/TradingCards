@@ -6,6 +6,7 @@ Spigot plugin for Trading Cards.
 A modified version of Trading Cards for the TreasureIsland minecraft network.
 Currently, has only some improvements over the original plugin:
 * Cached Cards (On load).
+* Sell Command
 * Debug commands - Version, Modules, Rarities.
 
 #### Patches:

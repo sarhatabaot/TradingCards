@@ -221,46 +221,6 @@ public class CardsCommand extends BaseCommand {
 
 
 
-	@Subcommand("getdeck")
-	@CommandPermission("cards.decks.get")
-	@Description("Get a deck item.")
-	public void onGetDeck(final Player player, final int deckNumber) {
-		World curWorld;
-		if (player.hasPermission("cards.decks." + deckNumber)) {
-			if (plugin.getConfig().getBoolean("General.Use-Deck-Item")) {
-				if (!DeckManager.hasDeck(player, deckNumber)) {
-					if (player.getInventory().firstEmpty() != -1) {
-						sendPrefixedMessage(player, plugin.getMessagesConfig().giveDeck);
-						player.getInventory().addItem(DeckManager.createDeck(player, deckNumber));
-					} else {
-						curWorld = player.getWorld();
-						if (player.getGameMode() == GameMode.SURVIVAL) {
-							sendPrefixedMessage(player, plugin.getMessagesConfig().giveDeck);
-
-							curWorld.dropItem(player.getLocation(), DeckManager.createDeck(player, deckNumber));
-						}
-					}
-				} else {
-					sendPrefixedMessage(player, plugin.getMessagesConfig().alreadyHaveDeck);
-				}
-				return;
-			}
-
-			if (player.getGameMode() == GameMode.CREATIVE) {
-				if (plugin.getMainConfig().decksInCreative) {
-					DeckManager.openDeck(player, deckNumber);
-					return;
-				}
-				sendPrefixedMessage(player, plugin.getMessagesConfig().deckCreativeError);
-				return;
-			}
-			DeckManager.openDeck(player, deckNumber);
-			return;
-		}
-
-		sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().maxDecks));
-	}
-
 
 	@Subcommand("list")
 	@CommandPermission("cards.list")
@@ -462,7 +422,7 @@ public class CardsCommand extends BaseCommand {
 		if (!hasVault(player)) {
 			return;
 		}
-		if (player.getInventory().getItemInMainHand().getType() != Material.valueOf(plugin.getConfig().getString("General.Card-Material"))) {
+		if (!CardUtil.isCard(player.getInventory().getItemInMainHand())) {
 			sendPrefixedMessage(player, plugin.getMessagesConfig().notACard);
 			return;
 		}
@@ -486,21 +446,31 @@ public class CardsCommand extends BaseCommand {
 		String rarity = ChatColor.stripColor(lore.get(3));
 		plugin.debug(rarity);
 
-		boolean canBuy = false;
-		double buyPrice = 0.0D;
-		if (plugin.getCardsConfig().getConfig().contains("Cards." + rarity + "." + cardName2 + ".Buy-Price")) {
-			buyPrice = plugin.getCardsConfig().getConfig().getDouble("Cards." + rarity + "." + cardName2 + ".Buy-Price");
-			if (buyPrice > 0.0D) {
-				canBuy = true;
-			}
-		}
+		double buyPrice = getBuyPrice(rarity,cardName2);
+		double sellPrice = getSellPrice(rarity,cardName2);
+		String buyMessage = (buyPrice > 0.0D) ? plugin.getMessagesConfig().canBuy.replaceAll("%buyAmount%", String.valueOf(buyPrice)) : plugin.getMessagesConfig().canNotBuy;
+		String sellMessage = (buyPrice > 0.0D) ? plugin.getMessagesConfig().canSell.replaceAll("%sellAmount%", String.valueOf(sellPrice)) : plugin.getMessagesConfig().canNotSell;
 
-		if (canBuy) {
-			sendPrefixedMessage(player, plugin.getMessagesConfig().canBuy.replaceAll("%buyAmount%", String.valueOf(buyPrice)));
-		} else {
-			sendPrefixedMessage(player, plugin.getMessagesConfig().canNotBuy);
-		}
+		sendPrefixedMessage(player,buyMessage);
+		sendPrefixedMessage(player,sellMessage);
+	}
 
+	/**
+	 *
+	 * @return 0.0D if you can't buy, or the price if you can.
+	 */
+	private double getBuyPrice(final String rarity, final String cardName){
+		if (plugin.getCardsConfig().getConfig().contains("Cards." + rarity + "." + cardName + ".Buy-Price")) {
+			return plugin.getCardsConfig().getConfig().getDouble("Cards." + rarity + "." + cardName + ".Buy-Price");
+		}
+		return 0.0D;
+	}
+
+	private double getSellPrice(final String rarity, final String cardName){
+		if (plugin.getCardsConfig().getConfig().contains("Cards." + rarity + "." + cardName + ".Sell-Price")) {
+			return plugin.getCardsConfig().getConfig().getDouble("Cards." + rarity + "." + cardName + ".Sell-Price");
+		}
+		return 0.0D;
 	}
 
 	private boolean hasVault(final Player player) {

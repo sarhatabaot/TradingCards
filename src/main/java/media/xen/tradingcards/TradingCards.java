@@ -13,6 +13,7 @@ import java.util.Set;
 
 import com.google.common.collect.ImmutableList;
 import media.xen.tradingcards.commands.CardsCommand;
+import media.xen.tradingcards.commands.DeckCommand;
 import media.xen.tradingcards.config.CardsConfig;
 import media.xen.tradingcards.config.MessagesConfig;
 import media.xen.tradingcards.config.TradingCardsConfig;
@@ -190,6 +191,7 @@ public class TradingCards extends JavaPlugin implements Listener {
 		DeckManager.init(this);
 		BukkitCommandManager commandManager = new BukkitCommandManager(this);
 		commandManager.registerCommand(new CardsCommand(this));
+		commandManager.registerCommand(new DeckCommand(this));
 		commandManager.enableUnstableAPI("help");
 		hookFileSystem();
 		hookVault();
