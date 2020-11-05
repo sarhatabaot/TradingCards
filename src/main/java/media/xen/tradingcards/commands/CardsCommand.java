@@ -30,6 +30,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
@@ -433,24 +434,19 @@ public class CardsCommand extends BaseCommand {
 		plugin.debug(ChatColor.stripColor(keyToUse));
 
 		String[] splitName = ChatColor.stripColor(keyToUse).split(" ");
-		String cardName2 = "";
-		if (splitName.length > 1) {
-			cardName2 = splitName[1];
-		} else {
-			cardName2 = splitName[0];
-		}
-		plugin.debug(cardName2);
+		String cardName2 = splitName.length > 1 ? splitName[1] : splitName[0];
+		plugin.debug("card="+cardName2);
 
 
 		List<String> lore = itemInHand.getItemMeta().getLore();
-		String rarity = ChatColor.stripColor(lore.get(3));
-		plugin.debug(rarity);
+		String rarity = ChatColor.stripColor(lore.get(lore.size()-1));
+		plugin.debug("rarity="+rarity);
 
 		double buyPrice = getBuyPrice(rarity,cardName2);
 		double sellPrice = getSellPrice(rarity,cardName2);
 		String buyMessage = (buyPrice > 0.0D) ? plugin.getMessagesConfig().canBuy.replaceAll("%buyAmount%", String.valueOf(buyPrice)) : plugin.getMessagesConfig().canNotBuy;
 		String sellMessage = (buyPrice > 0.0D) ? plugin.getMessagesConfig().canSell.replaceAll("%sellAmount%", String.valueOf(sellPrice)) : plugin.getMessagesConfig().canNotSell;
-
+		plugin.debug("buy="+buyPrice+"|sell="+sellPrice);
 		sendPrefixedMessage(player,buyMessage);
 		sendPrefixedMessage(player,sellMessage);
 	}
@@ -460,17 +456,11 @@ public class CardsCommand extends BaseCommand {
 	 * @return 0.0D if you can't buy, or the price if you can.
 	 */
 	private double getBuyPrice(final String rarity, final String cardName){
-		if (plugin.getCardsConfig().getConfig().contains("Cards." + rarity + "." + cardName + ".Buy-Price")) {
-			return plugin.getCardsConfig().getConfig().getDouble("Cards." + rarity + "." + cardName + ".Buy-Price");
-		}
-		return 0.0D;
+		return plugin.getCardsConfig().getConfig().getDouble("Cards." + rarity + "." + cardName + ".Buy-Price", 0.0D);
 	}
 
 	private double getSellPrice(final String rarity, final String cardName){
-		if (plugin.getCardsConfig().getConfig().contains("Cards." + rarity + "." + cardName + ".Sell-Price")) {
-			return plugin.getCardsConfig().getConfig().getDouble("Cards." + rarity + "." + cardName + ".Sell-Price");
-		}
-		return 0.0D;
+		return plugin.getCardsConfig().getConfig().getDouble("Cards." + rarity + "." + cardName + ".Sell-Price", 0.0D);
 	}
 
 	private boolean hasVault(final Player player) {
@@ -497,6 +487,7 @@ public class CardsCommand extends BaseCommand {
 
 
 			final ItemStack itemInHand = player.getInventory().getItemInMainHand();
+			final int itemInHandSlot = player.getInventory().getHeldItemSlot();
 			final String[] splitName = ChatColor.stripColor(itemInHand.getItemMeta().getDisplayName()).split(" ");
 			final String card = (splitName.length>1) ? splitName[1] : splitName[0];
 
@@ -505,7 +496,7 @@ public class CardsCommand extends BaseCommand {
 
 			List<String> lore = itemInHand.getItemMeta().getLore();
 			Validate.notNull(lore, "Lore cannot be null.");
-			String rarity = ChatColor.stripColor(lore.get(3));
+			String rarity = ChatColor.stripColor(lore.get(lore.size()-1));
 			plugin.debug(rarity);
 
 			if(!plugin.getCardsConfig().getConfig().contains("Cards."+rarity+"."+card+".Sell-Price")){
@@ -515,18 +506,18 @@ public class CardsCommand extends BaseCommand {
 				return;
 			}
 
-			final double sellPrice = plugin.getCardsConfig().getConfig().getDouble("Cards."+rarity+"."+card+".Sell-Price");
+			final double sellPrice = getSellPrice(rarity,card);
 			if(sellPrice == 0) {
 				sendPrefixedMessage(player,"Cannot sell this card.");
 				return;
 			}
 
-			Inventory inventory = player.getInventory();
-			inventory.remove(itemInHand);
+			PlayerInventory inventory = player.getInventory();
 			double sellAmount = sellPrice*itemInHand.getAmount();
 			EconomyResponse economyResponse = econ.depositPlayer(player,sellAmount);
 			if(economyResponse.transactionSuccess()){
-				sendPrefixedMessage(player,String.format("You have sold %d x%s for %.2f", itemInHand.getAmount(), (rarity+" "+card),sellAmount));
+				sendPrefixedMessage(player,String.format("You have sold %dx%s for %.2f", itemInHand.getAmount(), (rarity+" "+card),sellAmount));
+				inventory.setItem(itemInHandSlot, null);
 			}
 		}
 	}

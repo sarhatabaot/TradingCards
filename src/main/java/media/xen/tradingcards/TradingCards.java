@@ -187,6 +187,7 @@ public class TradingCards extends JavaPlugin implements Listener {
 		cardsConfig.saveDefaultConfig();
 
 		CardUtil.init(this);
+		ChatUtil.init(this);
 		CardManager.init(this);
 		DeckManager.init(this);
 		BukkitCommandManager commandManager = new BukkitCommandManager(this);

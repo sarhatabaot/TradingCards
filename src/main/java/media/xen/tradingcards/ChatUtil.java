@@ -8,7 +8,7 @@ import static media.xen.tradingcards.TradingCards.sendMessage;
 public class ChatUtil {
 	private static TradingCards plugin;
 
-	public void init(final TradingCards plugin){
+	public static void init(final TradingCards plugin){
 		ChatUtil.plugin = plugin;
 	}
 
