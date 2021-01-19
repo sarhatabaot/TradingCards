@@ -11,10 +11,9 @@ import java.sql.Statement;
 import java.util.logging.Level;
 
 public class SQLite extends Database {
-	private String databaseName;
-	private String createTestTable = "CREATE TABLE IF NOT EXISTS test (`test` varchar(32) NOT NULL,PRIMARY KEY (`test`));";
-	private String createStatement;
-	private File dataFolder;
+	private final String databaseName;
+	private final String createStatement;
+	private final File dataFolder;
 
 	public SQLite(final TradingCards plugin, String databaseName, String createStatement, File dataFolder) {
 		super(plugin);
@@ -53,11 +52,10 @@ public class SQLite extends Database {
 	public void load() {
 		this.connection = this.getSQLConnection();
 
-		try {
-			Statement s = this.connection.createStatement();
-			s.executeUpdate(this.createTestTable);
+		try (Statement s = this.connection.createStatement()){ ;
+			final String createTestTable = "CREATE TABLE IF NOT EXISTS test (`test` varchar(32) NOT NULL,PRIMARY KEY (`test`));";
+			s.executeUpdate(createTestTable);
 			s.executeUpdate(this.createStatement);
-			s.close();
 		} catch (SQLException var2) {
 			var2.printStackTrace();
 		}
