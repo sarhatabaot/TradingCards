@@ -40,7 +40,6 @@ import java.util.List;
 import java.util.Set;
 
 import static media.xen.tradingcards.ChatUtil.sendPrefixedMessage;
-import static media.xen.tradingcards.TradingCards.econ;
 import static media.xen.tradingcards.TradingCards.sendMessage;
 
 @CommandAlias("cards")
@@ -511,7 +510,7 @@ public class CardsCommand extends BaseCommand {
 
 			PlayerInventory inventory = player.getInventory();
 			double sellAmount = sellPrice*itemInHand.getAmount();
-			EconomyResponse economyResponse = econ.depositPlayer(player,sellAmount);
+			EconomyResponse economyResponse = plugin.getEcon().depositPlayer(player,sellAmount);
 			if(economyResponse.transactionSuccess()){
 				sendPrefixedMessage(player,String.format("You have sold %dx%s for %.2f", itemInHand.getAmount(), (rarity+" "+card),sellAmount));
 				inventory.setItem(itemInHandSlot, null);
@@ -543,10 +542,10 @@ public class CardsCommand extends BaseCommand {
 				return;
 			}
 
-			EconomyResponse economyResponse = econ.withdrawPlayer(player, buyPrice2);
+			EconomyResponse economyResponse = plugin.getEcon().withdrawPlayer(player, buyPrice2);
 			if (economyResponse.transactionSuccess()) {
 				if (plugin.getConfig().getBoolean("PluginSupport.Vault.Closed-Economy")) {
-					econ.bankDeposit(plugin.getConfig().getString("PluginSupport.Vault.Server-Account"), buyPrice2);
+					plugin.getEcon().bankDeposit(plugin.getConfig().getString("PluginSupport.Vault.Server-Account"), buyPrice2);
 				}
 				sendPrefixedMessage(player, plugin.getMessagesConfig().boughtCard.replaceAll("%amount%", String.valueOf(buyPrice2)));
 				CardUtil.dropItem(player, CardManager.generatePack(name));
@@ -572,10 +571,10 @@ public class CardsCommand extends BaseCommand {
 
 			double buyPrice2 = plugin.getCardsConfig().getConfig().getDouble("Cards." + rarity + "." + card + ".Buy-Price", 0.0D);
 
-			EconomyResponse economyResponse = econ.withdrawPlayer(player, buyPrice2);
+			EconomyResponse economyResponse = plugin.getEcon().withdrawPlayer(player, buyPrice2);
 			if (economyResponse.transactionSuccess()) {
 				if (plugin.getConfig().getBoolean("PluginSupport.Vault.Closed-Economy")) {
-					econ.bankDeposit(plugin.getConfig().getString("PluginSupport.Vault.Server-Account"), buyPrice2);
+					plugin.getEcon().bankDeposit(plugin.getConfig().getString("PluginSupport.Vault.Server-Account"), buyPrice2);
 				}
 				CardUtil.dropItem(player, CardManager.getCard(card, rarity,false));
 				sendPrefixedMessage(player, plugin.getMessagesConfig().boughtCard.replaceAll("%amount%", String.valueOf(buyPrice2)));

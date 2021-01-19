@@ -39,7 +39,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -61,7 +60,7 @@ public class TradingCards extends JavaPlugin implements Listener {
 	private MessagesConfig messagesConfig;
 	private CardsConfig cardsConfig;
 	private boolean usingSqlite;
-	public static Economy econ = null;
+	private Economy econ = null;
 	public static Permission perms = null;
 	public static Chat chat = null;
 	public Random r = new Random();
@@ -69,6 +68,10 @@ public class TradingCards extends JavaPlugin implements Listener {
 
 	public boolean isHasVault() {
 		return hasVault;
+	}
+
+	public Economy getEcon() {
+		return econ;
 	}
 
 	public SimpleConfig getDeckConfig() {
@@ -206,7 +209,7 @@ public class TradingCards extends JavaPlugin implements Listener {
 
 	@Override
 	public void onDisable() {
-		TradingCards.econ = null;
+		econ = null;
 		TradingCards.perms = null;
 		TradingCards.chat = null;
 		this.getServer().getPluginManager().removePermission(permRarities);
@@ -220,7 +223,7 @@ public class TradingCards extends JavaPlugin implements Listener {
 			if (rsp == null) {
 				return false;
 			} else {
-				econ = (Economy) rsp.getProvider();
+				econ = rsp.getProvider();
 				return econ != null;
 			}
 		}
