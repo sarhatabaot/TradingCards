@@ -149,7 +149,7 @@ public class CardUtil {
 	@NotNull
 	public static ItemStack generateCard(String cardName, String rarityName, boolean forcedShiny) {
 		if (rarityName.equals("None")) {
-			return null;
+			return new ItemStack(Material.AIR);
 		}
 		//plugin.reloadAllConfig();
 		plugin.debug("generateCard.cardSection: " + plugin.getCardsConfig().getConfig().contains("Cards." + rarityName));
@@ -210,7 +210,7 @@ public class CardUtil {
 
 
 	@NotNull
-	public static ItemStack getRandomCard(@NotNull final String rarityName, @NotNull final boolean forcedShiny) {
+	public static ItemStack getRandomCard(@NotNull final String rarityName, final boolean forcedShiny) {
 		ConfigurationSection cardSection = plugin.getCardsConfig().getConfig().getConfigurationSection("Cards." + rarityName);
 		Validate.notNull(cardSection, "No such section." + rarityName);
 
