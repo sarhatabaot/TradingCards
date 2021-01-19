@@ -220,7 +220,7 @@ public class CardManager {
 		private List<String> formatLore(){
 			List<String> lore = new ArrayList<>();
 			lore.add(plugin.cMsg(type.getColour() + type.getDisplay() + ": &f" + type.getName()));
-			if (!"None".equals(info) && !"".equals(info)) {
+			if (!"None".equals(info.getName()) && !"".equals(info.getName())) {
 				lore.add(plugin.cMsg(info.getColour() + info.getDisplay() + ":"));
 				lore.addAll(plugin.wrapString(info.getName()));
 			} else {
