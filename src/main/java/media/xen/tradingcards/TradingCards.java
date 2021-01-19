@@ -521,16 +521,6 @@ public class TradingCards extends JavaPlugin implements Listener {
 		}
 	}
 
-	@Deprecated
-	public ItemStack createBoosterPack(String name) {
-		return CardManager.generatePack(name);
-	}
-
-	@Deprecated
-	public String calculateRarity(EntityType e, boolean alwaysDrop) {
-		return CardUtil.calculateRarity(e, alwaysDrop);
-	}
-
 	public boolean isOnList(Player p) {
 		return getMainConfig().blacklistPlayers.contains(p.getName());
 	}
