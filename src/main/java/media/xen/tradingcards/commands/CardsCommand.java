@@ -356,6 +356,7 @@ public class CardsCommand extends BaseCommand {
 			}
 			//TODO wait, why does the plugin delete a rarity once its been completed?
 			// instead it should mark in a data file if a player has completed the rarity or not...
+			// playeruuid:rarityname,1:
 			if (!plugin.deleteRarity((Player) sender, plugin.isRarity(rarity)) && plugin.getMainConfig().debugMode) {
 				plugin.getLogger().warning("Cannot delete rarity: " + plugin.isRarity(rarity));
 			}
@@ -451,10 +452,6 @@ public class CardsCommand extends BaseCommand {
 		sendPrefixedMessage(player,sellMessage);
 	}
 
-	/**
-	 *
-	 * @return 0.0D if you can't buy, or the price if you can.
-	 */
 	private double getBuyPrice(final String rarity, final String cardName){
 		return plugin.getCardsConfig().getConfig().getDouble("Cards." + rarity + "." + cardName + ".Buy-Price", 0.0D);
 	}
@@ -548,7 +545,7 @@ public class CardsCommand extends BaseCommand {
 
 			EconomyResponse economyResponse = econ.withdrawPlayer(player, buyPrice2);
 			if (economyResponse.transactionSuccess()) {
-				if (plugin.getConfig().getBoolean("PluginSupport.Vault.Closed-Economy")) {//TODO
+				if (plugin.getConfig().getBoolean("PluginSupport.Vault.Closed-Economy")) {
 					econ.bankDeposit(plugin.getConfig().getString("PluginSupport.Vault.Server-Account"), buyPrice2);
 				}
 				sendPrefixedMessage(player, plugin.getMessagesConfig().boughtCard.replaceAll("%amount%", String.valueOf(buyPrice2)));
@@ -577,7 +574,7 @@ public class CardsCommand extends BaseCommand {
 
 			EconomyResponse economyResponse = econ.withdrawPlayer(player, buyPrice2);
 			if (economyResponse.transactionSuccess()) {
-				if (plugin.getConfig().getBoolean("PluginSupport.Vault.Closed-Economy")) {//TODO
+				if (plugin.getConfig().getBoolean("PluginSupport.Vault.Closed-Economy")) {
 					econ.bankDeposit(plugin.getConfig().getString("PluginSupport.Vault.Server-Account"), buyPrice2);
 				}
 				CardUtil.dropItem(player, CardManager.getCard(card, rarity,false));

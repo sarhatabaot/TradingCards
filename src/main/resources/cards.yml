@@ -242,3 +242,27 @@ Cards:
       Type: 'Boss'
       Has-Shiny-Version: true
       Info: 'None'
+  # Doesn't drop
+  Davy_Jones:
+    Ender_Dragon:
+      Series: '2020'
+      Type: 'Boss'
+      Has-Shiny-Version: true
+      Info: 'None'
+      Buy-Price: 100000
+      Sell-Price: 40000
+    Wither:
+      Series: '2020'
+      Type: 'Boss'
+      Has-Shiny-Version: true
+      Info: 'None'
+    Elder_Guardian:
+      Series: '2020'
+      Type: 'Boss'
+      Has-Shiny-Version: true
+      Info: 'None'
+    Giant:
+      Series: '2020'
+      Type: 'Boss'
+      Has-Shiny-Version: true
+      Info: 'None'

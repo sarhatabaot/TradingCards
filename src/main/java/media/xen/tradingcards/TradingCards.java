@@ -5,6 +5,7 @@ import co.aikar.commands.BukkitCommandManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -378,37 +379,26 @@ public class TradingCards extends JavaPlugin implements Listener {
 	}
 
 	@Deprecated
+	//TODO Why doesn't this return a boolean?
 	public int hasCard(Player p, String card, String rarity) {
 		int deckNumber = 0;
 		debug("Started check for card: " + card + ", " + rarity);
 
 		String uuidString = p.getUniqueId().toString();
 		ConfigurationSection deckList = getDeckConfig().getConfig().getConfigurationSection("Decks.Inventories." + uuidString);
-		debug("Deck UUID: " + uuidString);
+		debug("Deck UUID: " + uuidString +",Card: "+ rarity+ " "+ card);
 
-		Iterator<String> var7;
-		String s;
-		debug(StringUtils.join(deckList.getKeys(false),","));
 
 		if (deckList == null) {
 			return 0;
 		}
 
-		var7 = deckList.getKeys(false).iterator();
-
-		while (var7.hasNext()) {
-			s = var7.next();
-			deckNumber += Integer.parseInt(s);
-			debug("Deck running total: " + deckNumber);
-		}
-
-		if (deckNumber == 0) {
-			return 0;
-		}
+		debug(StringUtils.join(deckList.getKeys(false),","));
+		HashSet<String> deck = new HashSet<>(deckList.getKeys(false));
 
 		debug("Decks:" + deckNumber);
 
-		for (int i = 0; i < deckNumber; ++i) {
+		for (int i = 0; i < deck.size(); ++i) {
 			debug("Starting iteration " + i);
 
 			if (getDeckConfig().getConfig().contains("Decks.Inventories." + uuidString + "." + (i + 1))) {
@@ -424,10 +414,7 @@ public class TradingCards extends JavaPlugin implements Listener {
 						debug("Rarity match: " + splitContents[0]);
 
 						if (splitContents[1].equalsIgnoreCase(card) && splitContents[3].equalsIgnoreCase("no")) {
-							if (this.getConfig().getBoolean("General.Debug-Mode")) {
-								System.out.println("[Cards] Card match: " + splitContents[1]);
-							}
-
+							debug("Card match: " + splitContents[1]);
 							return Integer.parseInt(splitContents[2]);
 						}
 					}
@@ -436,8 +423,6 @@ public class TradingCards extends JavaPlugin implements Listener {
 		}
 
 		return 0;
-
-
 	}
 
 	@Deprecated
@@ -589,21 +574,6 @@ public class TradingCards extends JavaPlugin implements Listener {
 			getLogger().info("DEBUG " + message);
 		}
 	}
-
-	@Deprecated
-	public ItemStack createPlayerCard(String cardName, String rarity, Integer num, boolean forcedShiny) {
-		ItemStack card = CardUtil.generateCard(cardName, rarity, forcedShiny);
-		card.setAmount(num);
-		return card;
-	}
-
-	@Deprecated
-	public ItemStack getNormalCard(String cardName, String rarity, int num) {
-		ItemStack card = CardUtil.generateCard(cardName, rarity, false);
-		card.setAmount(num);
-		return card;
-	}
-
 
 	public String getPrefixedMessage(final String message) {
 		return cMsg(messagesConfig.prefix+ "&r " + message);
