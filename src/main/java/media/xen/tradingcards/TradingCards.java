@@ -19,11 +19,9 @@ import media.xen.tradingcards.config.CardsConfig;
 import media.xen.tradingcards.config.DeckConfig;
 import media.xen.tradingcards.config.MessagesConfig;
 import media.xen.tradingcards.config.TradingCardsConfig;
-import media.xen.tradingcards.config.SimpleConfig;
 import media.xen.tradingcards.db.Database;
 import media.xen.tradingcards.db.DbUtil;
 import media.xen.tradingcards.db.SQLite;
-import media.xen.tradingcards.listeners.AddOnJoinListener;
 import media.xen.tradingcards.listeners.DeckListener;
 import media.xen.tradingcards.listeners.MobSpawnListener;
 import media.xen.tradingcards.listeners.PackListener;
@@ -137,7 +135,6 @@ public class TradingCards extends JavaPlugin implements Listener {
 		pm.registerEvents(new DropListener(this), this);
 		pm.registerEvents(new PackListener(this), this);
 		pm.registerEvents(new MobSpawnListener(this), this);
-		pm.registerEvents(new AddOnJoinListener(this), this);
 		pm.registerEvents(new DeckListener(this), this);
 	}
 

@@ -40,9 +40,6 @@ General:
   Spawner-Block: true
   # In the case of 'true', what should we name the monster with to identify it's from a spawner?
   Spawner-Mob-Name: 'Spawned Mob'
-  # Should we automatically add players as cards?
-  Auto-Add-Players: false
-  Auto-Add-Player-Rarity: Common
   Player-Op-Rarity: Legendary
   Player-Series: "2020"
   Player-Type: "Player"
