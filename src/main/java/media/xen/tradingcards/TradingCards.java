@@ -676,7 +676,7 @@ public class TradingCards extends JavaPlugin implements Listener {
 
 		int hours = Math.max(this.getConfig().getInt("General.Schedule-Card-Time-In-Hours"), 1);
 
-		String tmessage = messagesConfig.timerMessage.replaceAll("%hour%", String.valueOf(hours));
+		String tmessage = messagesConfig.timerMessage.replace("%hour%", String.valueOf(hours));
 		Bukkit.broadcastMessage(getPrefixedMessage(tmessage));
 		this.taskid = new CardSchedulerRunnable(this).runTaskTimer(this, ((long) hours * 20 * 60 * 60), ((long) hours * 20 * 60 * 60)).getTaskId();
 	}
