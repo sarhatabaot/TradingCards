@@ -16,6 +16,7 @@ import com.google.common.collect.ImmutableList;
 import media.xen.tradingcards.commands.CardsCommand;
 import media.xen.tradingcards.commands.DeckCommand;
 import media.xen.tradingcards.config.CardsConfig;
+import media.xen.tradingcards.config.DeckConfig;
 import media.xen.tradingcards.config.MessagesConfig;
 import media.xen.tradingcards.config.TradingCardsConfig;
 import media.xen.tradingcards.config.SimpleConfig;
@@ -56,7 +57,7 @@ public class TradingCards extends JavaPlugin implements Listener {
 	public static Permission permRarities = new Permission("cards.rarity");
 	private boolean hasVault;
 	private TradingCardsConfig mainConfig;
-	private SimpleConfig deckConfig;
+	private DeckConfig deckConfig;
 	private MessagesConfig messagesConfig;
 	private CardsConfig cardsConfig;
 	private boolean usingSqlite;
@@ -74,7 +75,7 @@ public class TradingCards extends JavaPlugin implements Listener {
 		return econ;
 	}
 
-	public SimpleConfig getDeckConfig() {
+	public DeckConfig getDeckConfig() {
 		return deckConfig;
 	}
 
@@ -183,7 +184,7 @@ public class TradingCards extends JavaPlugin implements Listener {
 		ConfigLoader.load(mainConfig);
 		ConfigLoader.loadAndSave(messagesConfig);
 
-		deckConfig = new SimpleConfig(this, "decks.yml");
+		deckConfig = new DeckConfig(this);
 		cardsConfig = new CardsConfig(this);
 
 		deckConfig.saveDefaultConfig();
@@ -388,9 +389,14 @@ public class TradingCards extends JavaPlugin implements Listener {
 		debug("Started check for card: " + card + ", " + rarity);
 
 		String uuidString = p.getUniqueId().toString();
-		ConfigurationSection deckList = getDeckConfig().getConfig().getConfigurationSection("Decks.Inventories." + uuidString);
-		debug("Deck UUID: " + uuidString +",Card: "+ rarity+ " "+ card);
 
+		if(!getDeckConfig().containsPlayer(p.getUniqueId()))
+			return 0;
+
+
+		ConfigurationSection deckList = getDeckConfig().getInventory(p.getUniqueId());
+
+		debug("Deck UUID: " + uuidString +",Card: "+ rarity+ " "+ card);
 
 		if (deckList == null) {
 			return 0;
@@ -402,8 +408,6 @@ public class TradingCards extends JavaPlugin implements Listener {
 		debug("Decks:" + deckNumber);
 
 		for (int i = 0; i < deck.size(); ++i) {
-			debug("Starting iteration " + i);
-
 			if (getDeckConfig().getConfig().contains("Decks.Inventories." + uuidString + "." + (i + 1))) {
 				List<String> contents = getDeckConfig().getConfig().getStringList("Decks.Inventories." + uuidString + "." + (i + 1));
 
@@ -612,17 +616,9 @@ public class TradingCards extends JavaPlugin implements Listener {
 	}
 
 	public void reloadAllConfig() {
-		/*File file = new File(this.getDataFolder() + File.separator + "config.yml");
-		if (!file.exists()) {
-			this.getConfig().options().copyDefaults(true);
-			this.saveDefaultConfig();
-		}*/
-
 		ConfigLoader.loadAndSave(mainConfig);
-		//this.reloadConfig();
 		this.deckConfig.reloadConfig();
 		ConfigLoader.loadAndSave(messagesConfig);
-		//this.messagesConfig.reloadConfig();
 		this.cardsConfig.reloadConfig();
 	}
 
@@ -685,7 +681,7 @@ public class TradingCards extends JavaPlugin implements Listener {
 
 		String tmessage = messagesConfig.timerMessage.replaceAll("%hour%", String.valueOf(hours));
 		Bukkit.broadcastMessage(getPrefixedMessage(tmessage));
-		this.taskid = new CardSchedulerRunnable(this).runTaskTimer(this, (hours * 20 * 60 * 60), (hours * 20 * 60 * 60)).getTaskId();
+		this.taskid = new CardSchedulerRunnable(this).runTaskTimer(this, ((long) hours * 20 * 60 * 60), ((long) hours * 20 * 60 * 60)).getTaskId();
 	}
 
 }
