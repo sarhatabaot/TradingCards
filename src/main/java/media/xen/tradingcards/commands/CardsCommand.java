@@ -81,7 +81,7 @@ public class CardsCommand extends BaseCommand {
 	@CommandPermission("cards.resolve")
 	@Description("Shows a player's uuid")
 	public void onResolve(final CommandSender sender, final Player player) {
-		sendMessage(sender, plugin.getMessagesConfig().resolveMsg.replaceAll("%name%", player.getName()).replaceAll("%uuid%", player.getUniqueId().toString()));
+		sendMessage(sender, plugin.getMessagesConfig().resolveMsg.replace("%name%", player.getName()).replaceAll("%uuid%", player.getUniqueId().toString()));
 	}
 
 	@Subcommand("toggle")
@@ -181,12 +181,9 @@ public class CardsCommand extends BaseCommand {
 		@CommandPermission("cards.admin.debug.modules")
 		@Description("Shows all enabled hooks and addons.")
 		public void onModules(final CommandSender sender){
-			final StringBuilder builder = new StringBuilder("Enabled Modules:");
+			final StringBuilder builder = new StringBuilder("Enabled Modules/Addons:");
 			builder.append("\n");
-			for (Plugin bukkitPlugin: Bukkit.getPluginManager().getPlugins()) {
-				if(plugin instanceof TradingCardsAddon)
-					builder.append(ChatColor.GREEN).append(bukkitPlugin.getName()).append(" ");
-			}
+			builder.append(ChatColor.GOLD).append(ChatColor.BOLD).append("Modules:");
 			for(String depend: plugin.getDescription().getSoftDepend()){
 				if(Bukkit.getPluginManager().getPlugin(depend) == null)
 					builder.append(ChatColor.GRAY);
@@ -195,6 +192,12 @@ public class CardsCommand extends BaseCommand {
 				}
 				builder.append(depend).append(" ");
 			}
+			builder.append(ChatColor.GOLD).append(ChatColor.BOLD).append("Addons:");
+			for (Plugin bukkitPlugin: Bukkit.getPluginManager().getPlugins()) {
+				if(plugin instanceof TradingCardsAddon)
+					builder.append(ChatColor.GREEN).append(bukkitPlugin.getName()).append(" ");
+			}
+
 			sender.sendMessage(builder.toString());
 		}
 
