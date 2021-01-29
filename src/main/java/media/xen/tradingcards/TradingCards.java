@@ -489,17 +489,17 @@ public class TradingCards extends JavaPlugin implements Listener {
 	@Deprecated
 	public String isRarity(String input) {
 		String output = input.substring(0, 1).toUpperCase() + input.substring(1);
-		if (this.getConfig().contains("Rarities." + input.replaceAll("_", " "))) {
-			return input.replaceAll("_", " ");
-		} else if (this.getConfig().contains("Rarities." + input.replaceAll("_", " ").toUpperCase())) {
-			return input.replaceAll("_", " ").toUpperCase();
-		} else if (this.getConfig().contains("Rarities." + input.replaceAll("_", " ").toLowerCase())) {
-			return input.replaceAll("_", " ").toLowerCase();
-		} else if (this.getConfig().contains("Rarities." + output.replaceAll("_", " "))) {
-			return output.replaceAll("_", " ");
+		if (this.getConfig().contains("Rarities." + input.replace("_", " "))) {
+			return input.replace("_", " ");
+		} else if (this.getConfig().contains("Rarities." + input.replace("_", " ").toUpperCase())) {
+			return input.replace("_", " ").toUpperCase();
+		} else if (this.getConfig().contains("Rarities." + input.replace("_", " ").toLowerCase())) {
+			return input.replace("_", " ").toLowerCase();
+		} else if (this.getConfig().contains("Rarities." + output.replace("_", " "))) {
+			return output.replace("_", " ");
 		}
 
-		return this.getConfig().contains("Rarities." + this.capitaliseUnderscores(input)) ? output.replaceAll("_", " ") : "None";
+		return this.getConfig().contains("Rarities." + this.capitaliseUnderscores(input)) ? output.replace("_", " ") : "None";
 	}
 
 	public String capitaliseUnderscores(String input) {
