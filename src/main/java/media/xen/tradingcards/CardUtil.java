@@ -1,7 +1,5 @@
 package media.xen.tradingcards;
 
-import com.google.common.collect.Collections2;
-import com.google.common.collect.Maps;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
@@ -265,6 +263,7 @@ public class CardUtil {
 
 	private static String getMobType(EntityType e, int shouldItDrop, boolean alwaysDrop) {
 		if (plugin.isMobHostile(e)) {
+
 			if (!alwaysDrop) {
 				if (shouldItDrop > plugin.getConfig().getInt("Chances.Hostile-Chance")) {
 					return "None";
@@ -318,6 +317,7 @@ public class CardUtil {
 	 * @param alwaysDrop
 	 * @return
 	 */
+	@NotNull
 	public static String calculateRarity(EntityType e, boolean alwaysDrop) {
 		int shouldItDrop = plugin.r.nextInt(100) + 1;
 		String type = getMobType(e, shouldItDrop, alwaysDrop);
