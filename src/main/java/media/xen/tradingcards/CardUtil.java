@@ -27,6 +27,9 @@ import java.util.regex.Pattern;
  */
 public class CardUtil {
 	private static TradingCards plugin;
+	private static final char ALT_COLOR_CHAR = '&';
+	private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)" + ALT_COLOR_CHAR + "[0-9A-FK-ORX]");
+	private static final String NAME_TEMPLATE = "^[a-zA-Z0-9-_]+$";
 
 	public static void init(final TradingCards plugin) {
 		CardUtil.plugin = plugin;
@@ -82,66 +85,57 @@ public class CardUtil {
 		}
 	}
 
-	public static void createCard(Player creator, String rarity, String name, String series, String type, boolean hasShiny, String info, String about) {
-		final String nameTemplate = "^[a-zA-Z0-9-_]+$";
-		if (!plugin.getCardsConfig().getConfig().contains("Cards." + rarity + "." + name)) {
-			if (name.matches(nameTemplate)) {
-				if (isPlayerCard(name)) {
-					name = name.replaceAll(" ", "_");
-				}
-
-				ConfigurationSection rarities = plugin.getCardsConfig().getConfig().getConfigurationSection("Cards");
-				Set<String> rarityKeys = rarities.getKeys(false);
-				String keyToUse = "";
-				Iterator var12 = rarityKeys.iterator();
-
-				String type2;
-				while (var12.hasNext()) {
-					type2 = (String) var12.next();
-					if (type2.equalsIgnoreCase(rarity)) {
-						keyToUse = type2;
-					}
-				}
-
-				if (!keyToUse.equals("")) {
-					String series2 = "";
-					type2 = "";
-					String info2 = "";
-					if (series.matches(nameTemplate)) {
-						series2 = series;
-					} else {
-						series2 = "None";
-					}
-
-					if (type.matches(nameTemplate)) {
-						type2 = type;
-					} else {
-						type2 = "None";
-					}
-
-					if (info.matches(nameTemplate)) {
-						info2 = info;
-					} else {
-						info2 = "None";
-					}
-
-					plugin.getCardsConfig().getConfig().set("Cards." + rarity + "." + name + ".Series", series2);
-					plugin.getCardsConfig().getConfig().set("Cards." + rarity + "." + name + ".Type", type2);
-					plugin.getCardsConfig().getConfig().set("Cards." + rarity + "." + name + ".Has-Shiny-Version", hasShiny);
-					plugin.getCardsConfig().getConfig().set("Cards." + rarity + "." + name + ".Info", info2);
-					plugin.getCardsConfig().saveConfig();
-					plugin.getCardsConfig().reloadConfig();
-					plugin.sendMessage(creator, plugin.getPrefixedMessage(plugin.getMessagesConfig().createSuccess.replaceAll("%name%", name).replaceAll("%rarity%", rarity)));
-				} else {
-					creator.sendMessage(plugin.cMsg(plugin.getMessagesConfig().prefix + " " + plugin.getMessagesConfig().noRarity));
-				}
-			} else {
-				creator.sendMessage(plugin.cMsg(plugin.getMessagesConfig().prefix + " " + plugin.getMessagesConfig().createNoName));
+	private static boolean rarityExists(Set<String> rarityKeys, String rarity){
+		for (String type2 : rarityKeys) {
+			if (type2.equalsIgnoreCase(rarity)) {
+				return true;
 			}
-		} else {
+		}
+		return false;
+	}
+
+	//returns "None" if it doesn't match.
+	private static String getCorrectNameTemplate(String string) {
+		if(string.matches(NAME_TEMPLATE)){
+			return string;
+		}
+		return "None";
+	}
+	
+	public static void createCard(Player creator, String rarity, String name, String series, String type, boolean hasShiny, String info, String about) {
+
+		if (plugin.getCardsConfig().getConfig().contains("Cards." + rarity + "." + name)) {
 			creator.sendMessage(plugin.cMsg(plugin.getMessagesConfig().prefix + " " + plugin.getMessagesConfig().createExists));
+			return;
+		}
+		if (!name.matches(NAME_TEMPLATE)) {
+			creator.sendMessage(plugin.cMsg(plugin.getMessagesConfig().prefix + " " + plugin.getMessagesConfig().createNoName));
+			return;
 		}
 
+		if (isPlayerCard(name)) {
+			name = name.replace(" ", "_");
+		}
+
+		ConfigurationSection rarities = plugin.getCardsConfig().getConfig().getConfigurationSection("Cards");
+		Set<String> rarityKeys = rarities.getKeys(false);
+		String rarityKeyToUse = "";
+		if(rarityExists(rarityKeys,rarity))
+			rarityKeyToUse = rarity;
+
+		if (rarityKeyToUse.equals("") || rarityKeyToUse.isEmpty()) {
+			creator.sendMessage(plugin.cMsg(plugin.getMessagesConfig().prefix + " " + plugin.getMessagesConfig().noRarity));
+			return;
+		}
+
+
+		plugin.getCardsConfig().getConfig().set("Cards." + rarity + "." + name + ".Series", getCorrectNameTemplate(series));
+		plugin.getCardsConfig().getConfig().set("Cards." + rarity + "." + name + ".Type", getCorrectNameTemplate(type));
+		plugin.getCardsConfig().getConfig().set("Cards." + rarity + "." + name + ".Has-Shiny-Version", hasShiny);
+		plugin.getCardsConfig().getConfig().set("Cards." + rarity + "." + name + ".Info", getCorrectNameTemplate(info));
+		plugin.getCardsConfig().saveConfig();
+		plugin.getCardsConfig().reloadConfig();
+		TradingCards.sendMessage(creator, plugin.getPrefixedMessage(plugin.getMessagesConfig().createSuccess.replaceAll("%name%", name).replaceAll("%rarity%", rarity)));
 	}
 
 	@NotNull
@@ -218,9 +212,6 @@ public class CardUtil {
 		String cardName = cardNames.get(cIndex);
 		return CardManager.getCard(cardName, rarityName, forcedShiny);
 	}
-
-	private static final char ALT_COLOR_CHAR = '&';
-	private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)" + ALT_COLOR_CHAR + "[0-9A-FK-ORX]");
 
 	/**
 	 * Strips the given message of all color codes
@@ -408,7 +399,7 @@ public class CardUtil {
 	 * TODO
 	 * We should check if an item is a card a different way, as the card material is an obtainable item
 	 */
-	public static boolean isCard(final ItemStack itemStack){
+	public static boolean isCard(final ItemStack itemStack) {
 		return itemStack.getType() == Material.valueOf(plugin.getConfig().getString("General.Card-Material"));
 	}
 }
