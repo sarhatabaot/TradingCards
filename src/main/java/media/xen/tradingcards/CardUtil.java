@@ -252,30 +252,23 @@ public class CardUtil {
 	}
 
 
-	private static String getMobType(EntityType e, int shouldItDrop, boolean alwaysDrop) {
+	private static String getMobTypeOrNone(EntityType e, int shouldItDrop, boolean alwaysDrop) {
 		if (plugin.isMobHostile(e)) {
 
-			if (!alwaysDrop) {
-				if (shouldItDrop > plugin.getConfig().getInt("Chances.Hostile-Chance")) {
-					return "None";
-				}
+			if (!alwaysDrop && shouldItDrop > plugin.getMainConfig().hostileChance) {
+				return "None";
 			}
 			return "Hostile";
 		}
 		if (plugin.isMobNeutral(e)) {
-			if (!alwaysDrop) {
-				if (shouldItDrop > plugin.getConfig().getInt("Chances.Neutral-Chance")) {
-					return "None";
-				}
-
+			if (!alwaysDrop && shouldItDrop > plugin.getMainConfig().neutralChance) {
+				return "None";
 			}
 			return "Neutral";
 		}
 		if (plugin.isMobPassive(e)) {
-			if (!alwaysDrop) {
-				if (shouldItDrop > plugin.getConfig().getInt("Chances.Passive-Chance")) {
-					return "None";
-				}
+			if (!alwaysDrop && shouldItDrop > plugin.getMainConfig().passiveChance) {
+				return "None";
 
 			}
 			return "Passive";
@@ -311,7 +304,7 @@ public class CardUtil {
 	@NotNull
 	public static String calculateRarity(EntityType e, boolean alwaysDrop) {
 		int shouldItDrop = plugin.r.nextInt(100) + 1;
-		String type = getMobType(e, shouldItDrop, alwaysDrop);
+		String type = getMobTypeOrNone(e, shouldItDrop, alwaysDrop);
 		plugin.debug("shouldItDrop Num: " + shouldItDrop);
 
 		ConfigurationSection rarities = plugin.getConfig().getConfigurationSection("Rarities");

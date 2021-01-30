@@ -155,6 +155,14 @@ public class TradingCardsConfig implements Config {
 	@ConfigOption(path = "DisplayNames.Cards.About")
 	public String aboutDisplay = "About";
 
+	@ConfigOption(path = "Chances.Hostile-Chance")
+	public int hostileChance = 20;
+	@ConfigOption(path = "Chances.Neutral-Chance")
+	public int neutralChance = 10;
+	@ConfigOption(path = "Chances.Passive-Chance")
+	public int passiveChance = 5;
+	@ConfigOption(path = "Chances.Boss-Chance")
+	public int bossChance = 100;
 
 	public static ItemStack getBlankCard(int quantity) {
 		return new ItemStack(Material.getMaterial(plugin.getMainConfig().cardMaterial), quantity);
