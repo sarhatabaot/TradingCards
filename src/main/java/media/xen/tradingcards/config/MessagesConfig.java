@@ -8,11 +8,8 @@ import java.io.File;
 
 
 public class MessagesConfig implements Config {
-	private File file;
-
-	public MessagesConfig(final TradingCards plugin) {
-		this.file = new File(plugin.getDataFolder(),"messages.yml");
-	}
+	private final File file;
+	
 	@ConfigOption(path = "Messages.Prefix")
 	public String prefix= "&7[&fCards&7]&7";
 	@ConfigOption(path = "Messages.Reload")
@@ -128,6 +125,9 @@ public class MessagesConfig implements Config {
 	@ConfigOption(path = "Messages.RewardDisabled")
 	public String rewardDisabled= "Rewards have been disabled!";
 
+	public MessagesConfig(final TradingCards plugin) {
+		this.file = new File(plugin.getDataFolder(),"messages.yml");
+	}
 	@Override
 	public File getFile() {
 		return file;
