@@ -12,31 +12,33 @@ public class CardsConfig extends SimpleConfig {
 	}
 
 	public boolean deleteRarity(final Player player, final String rarity) {
-		if (!plugin.isRarity(rarity).equals("None")) {
-			ConfigurationSection cards = plugin.getConfig().getConfigurationSection("Cards." + plugin.isRarity(rarity));
-			Set<String> cardKeys = cards.getKeys(false);
-			int numCardsCounter = 0;
+		if (plugin.isRarityAndFormat(rarity).equalsIgnoreCase("None"))
+			return false;
 
-			for (final String key : cardKeys) {
-				plugin.debug("deleteRarity iteration: " + numCardsCounter);
 
-				if (plugin.hasShiny(player, key, rarity) && !plugin.hasCard(player, key, rarity)) {
-					plugin.debug("Deleted: Cards." + key + ".key2");
+		ConfigurationSection cards = plugin.getConfig().getConfigurationSection("Cards." + plugin.isRarityAndFormat(rarity));
+		Set<String> cardKeys = cards.getKeys(false);
+		int numCardsCounter = 0;
 
-					plugin.deleteCard(player, key, rarity);
-					++numCardsCounter;
-				}
+		for (final String key : cardKeys) {
+			plugin.debug("deleteRarity iteration: " + numCardsCounter);
 
-				if (plugin.hasCard(player, key, rarity)) {
-					plugin.debug("Deleted: Cards." + key + ".key2");
+			if (plugin.hasShiny(player, key, rarity) && !plugin.hasCard(player, key, rarity)) {
+				plugin.debug("Deleted: Cards." + key + ".key2");
 
-					plugin.deleteCard(player, key, rarity);
-					++numCardsCounter;
-				}
+				plugin.deleteCard(player, key, rarity);
+				++numCardsCounter;
 			}
-			return true;
-		}
 
-		return false;
+			if (plugin.hasCard(player, key, rarity)) {
+				plugin.debug("Deleted: Cards." + key + ".key2");
+
+				plugin.deleteCard(player, key, rarity);
+				++numCardsCounter;
+			}
+		}
+		return true;
+
+
 	}
 }

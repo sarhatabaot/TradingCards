@@ -12,7 +12,6 @@ import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import media.xen.tradingcards.CardManager;
 import media.xen.tradingcards.CardUtil;
-import media.xen.tradingcards.DeckManager;
 import media.xen.tradingcards.TradingCards;
 import media.xen.tradingcards.api.addons.TradingCardsAddon;
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -20,15 +19,12 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.Plugin;
@@ -238,7 +234,7 @@ public class CardsCommand extends BaseCommand {
 		@CommandPermission("cards.list.player")
 		@Description("Lists all cards by a player.")
 		public void onListPlayer(final CommandSender sender, final Player target, @Optional final String rarity) {
-			if(rarity == null || plugin.isRarity(rarity).equals("None")){
+			if(rarity == null || plugin.isRarityAndFormat(rarity).equals("None")){
 				final String sectionFormat = String.format("&e&l------- &7(&6&l%s's Collection&7)&e&l -------", target.getName());
 				sendMessage(sender, String.format(sectionFormat,target.getName()));
 				for(String raritySection: plugin.getCardsConfig().getConfig().getConfigurationSection("Cards").getKeys(false)){
@@ -298,7 +294,7 @@ public class CardsCommand extends BaseCommand {
 
 			for(String cardName: rarityCardSection.getKeys(false)){
 				if(cardCounter > 32){
-					if (plugin.hasCard(target, cardName, rarity) > 0) {
+					if (plugin.hasCard(target, cardName, rarity)) {
 						++cardCounter;
 					}
 					stringBuilder.append(cardName).append("&7and more!");
@@ -309,20 +305,20 @@ public class CardsCommand extends BaseCommand {
 					if (plugin.hasShiny(target, cardName, rarity)) {
 						++cardCounter;
 						colour = plugin.getMainConfig().listHaveShinyCardColour;
-						stringBuilder.append(colour).append(cardName.replaceAll("_", " ")).append("&f, ");
-					} else if (plugin.hasCard(target, cardName, rarity) > 0 && !plugin.hasShiny(target, cardName, rarity)) {
+						stringBuilder.append(colour).append(cardName.replace("_", " ")).append("&f, ");
+					} else if (plugin.hasCard(target, cardName, rarity) && !plugin.hasShiny(target, cardName, rarity)) {
 						++cardCounter;
-						stringBuilder.append(colour).append(cardName.replaceAll("_", " ")).append("&f, ");
+						stringBuilder.append(colour).append(cardName.replace("_", " ")).append("&f, ");
 					} else {
-						stringBuilder.append("&7").append(cardName.replaceAll("_", " ")).append("&f, ");
+						stringBuilder.append("&7").append(cardName.replace("_", " ")).append("&f, ");
 					}
 				}
 			}
 			//send title
 			if(cardCounter == cardTotal){
-				sendMessage(sender,String.format(sectionFormatComplete, plugin.isRarity(rarity),plugin.getConfig().getString("Colours.ListRarityComplete")));
+				sendMessage(sender,String.format(sectionFormatComplete, plugin.isRarityAndFormat(rarity),plugin.getConfig().getString("Colours.ListRarityComplete")));
 			} else {
-				sendMessage(sender,String.format(sectionFormat,plugin.isRarity(rarity),cardCounter,cardTotal));
+				sendMessage(sender,String.format(sectionFormat,plugin.isRarityAndFormat(rarity),cardCounter,cardTotal));
 			}
 
 			sendMessage(sender,stringBuilder.toString());
@@ -330,8 +326,8 @@ public class CardsCommand extends BaseCommand {
 	}
 
 	private void execCommand(final CommandSender sender, final String rarity, final String path) {
-		if (plugin.getConfig().contains("Rarities." + plugin.isRarity(rarity) + path) && !plugin.getConfig().getString("Rarities." + plugin.isRarity(rarity) + path).equalsIgnoreCase("None")) {
-			plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), plugin.getConfig().getString("Rarities." + plugin.isRarity(rarity + path).replaceAll("%player%", sender.getName())));
+		if (plugin.getConfig().contains("Rarities." + plugin.isRarityAndFormat(rarity) + path) && !plugin.getConfig().getString("Rarities." + plugin.isRarityAndFormat(rarity) + path).equalsIgnoreCase("None")) {
+			plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), plugin.getConfig().getString("Rarities." + plugin.isRarityAndFormat(rarity + path).replaceAll("%player%", sender.getName())));
 		}
 	}
 
@@ -343,24 +339,24 @@ public class CardsCommand extends BaseCommand {
 			sendMessage(sender, plugin.getPrefixedMessage(plugin.getMessagesConfig().rewardDisabled));
 			return;
 		}
-		if (plugin.isRarity(rarity).equalsIgnoreCase("None")) {
+		if (plugin.isRarityAndFormat(rarity).equalsIgnoreCase("None")) {
 			sendPrefixedMessage(sender, plugin.getMessagesConfig().rewardError);
 			return;
 		}
 
-		if (plugin.completedRarity((Player) sender, plugin.isRarity(rarity))) {
+		if (plugin.completedRarity((Player) sender, plugin.isRarityAndFormat(rarity))) {
 			execCommand(sender, rarity, ".RewardCmd1");
 			execCommand(sender, rarity, ".RewardCmd2");
 			execCommand(sender, rarity, ".RewardCmd3");
 
 			if (plugin.getConfig().getBoolean("General.Reward-Broadcast")) {
-				Bukkit.broadcastMessage(plugin.getPrefixedMessage(plugin.getMessagesConfig().rewardBroadcast.replaceAll("%player%", sender.getName()).replaceAll("%rarity%", plugin.isRarity(rarity))));
+				Bukkit.broadcastMessage(plugin.getPrefixedMessage(plugin.getMessagesConfig().rewardBroadcast.replaceAll("%player%", sender.getName()).replaceAll("%rarity%", plugin.isRarityAndFormat(rarity))));
 			}
 			//TODO wait, why does the plugin delete a rarity once its been completed?
 			// instead it should mark in a data file if a player has completed the rarity or not...
 			// playeruuid:rarityname,1:
-			if (!plugin.deleteRarity((Player) sender, plugin.isRarity(rarity)) && plugin.getMainConfig().debugMode) {
-				plugin.getLogger().warning("Cannot delete rarity: " + plugin.isRarity(rarity));
+			if (!plugin.deleteRarity((Player) sender, plugin.isRarityAndFormat(rarity)) && plugin.getMainConfig().debugMode) {
+				plugin.getLogger().warning("Cannot delete rarity: " + plugin.isRarityAndFormat(rarity));
 			}
 		} else if (plugin.getConfig().getBoolean("General.Eat-Shiny-Cards")) {
 			sendPrefixedMessage(sender, plugin.getMessagesConfig().rewardError2);

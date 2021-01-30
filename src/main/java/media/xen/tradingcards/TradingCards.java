@@ -4,7 +4,6 @@ import co.aikar.commands.BukkitCommandManager;
 
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
@@ -24,7 +23,6 @@ import media.xen.tradingcards.listeners.DropListener;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.sarhatabaot.configloader.ConfigLoader;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -221,7 +219,7 @@ public class TradingCards extends JavaPlugin implements Listener {
 
 	@Deprecated
 	public boolean deleteCard(Player p, String card, String rarity) {
-		if (hasCard(p, card, rarity) > 0) {
+		if (hasCard(p, card, rarity)) {
 			String uuidString = p.getUniqueId().toString();
 			int deckNumber = 0;
 			ConfigurationSection deckList = getDeckConfig().getConfig().getConfigurationSection("Decks.Inventories." + uuidString);
@@ -336,7 +334,7 @@ public class TradingCards extends JavaPlugin implements Listener {
 	}
 
 	@Deprecated
-	public String isRarity(String input) {
+	public String isRarityAndFormat(String input) {
 		String output = input.substring(0, 1).toUpperCase() + input.substring(1);
 		if (this.getConfig().contains("Rarities." + input.replace("_", " "))) {
 			return input.replace("_", " ");
@@ -473,11 +471,11 @@ public class TradingCards extends JavaPlugin implements Listener {
 	}
 
 	public boolean completedRarity(Player p, String rarity) {
-		if ("None".equals(isRarity(rarity))) {
+		if ("None".equals(isRarityAndFormat(rarity))) {
 			return false;
 		}
 
-		ConfigurationSection cards = getCardsConfig().getConfig().getConfigurationSection("Cards." + this.isRarity(rarity));
+		ConfigurationSection cards = getCardsConfig().getConfig().getConfigurationSection("Cards." + this.isRarityAndFormat(rarity));
 		Set<String> cardKeys = cards.getKeys(false);
 		int i = 0;
 		int numCardsCounter = 0;
@@ -490,11 +488,11 @@ public class TradingCards extends JavaPlugin implements Listener {
 
 			boolean shinyVersion = false;
 			boolean regularVersion = false;
-			if (this.hasShiny(p, key, this.isRarity(rarity))) {
+			if (hasShiny(p, key, isRarityAndFormat(rarity))) {
 				shinyVersion = true;
 			}
 
-			if (this.hasCard(p, key, this.isRarity(rarity)) > 0) {
+			if (hasCard(p, key, isRarityAndFormat(rarity))) {
 				regularVersion = true;
 			}
 
