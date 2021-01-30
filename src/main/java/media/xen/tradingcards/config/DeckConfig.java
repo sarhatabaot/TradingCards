@@ -7,19 +7,32 @@ import org.jetbrains.annotations.Nullable;
 import java.util.UUID;
 
 public class DeckConfig extends SimpleConfig{
-	private final String inventoryPath = "Decks.Inventories.";
+	private static final String INVENTORY_PATH = "Decks.Inventories.";
 	public DeckConfig(final TradingCards plugin) {
 		super(plugin, "decks.yml");
 	}
 
-	public boolean containsPlayer(UUID uuid) {
-		return getConfig().contains(inventoryPath+uuid.toString());
+	public boolean containsPlayer(final UUID uuid) {
+		return getConfig().contains(INVENTORY_PATH +uuid.toString());
 	}
 
 	@Nullable
-	public ConfigurationSection getInventory(UUID uuid) {
+	public ConfigurationSection getInventory(final UUID uuid) {
 		if(containsPlayer(uuid))
-			return getConfig().getConfigurationSection(inventoryPath+uuid.toString());
+			return getConfig().getConfigurationSection(INVENTORY_PATH +uuid.toString());
 		return null;
+	}
+
+	@Nullable
+	public ConfigurationSection getDeck(final UUID uuid, int deckNumber){
+		if(containsDeck(uuid,deckNumber))
+			return getInventory(uuid).getConfigurationSection(String.valueOf(deckNumber));
+		return null;
+	}
+
+	public boolean containsDeck(final UUID uuid,int deckNumber) {
+		if(containsPlayer(uuid))
+			return getInventory(uuid).contains(String.valueOf(deckNumber));
+		return false;
 	}
 }
