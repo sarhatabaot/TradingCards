@@ -350,7 +350,7 @@ public class CardsCommand extends BaseCommand {
 			execCommand(sender, rarity, ".RewardCmd3");
 
 			if (plugin.getConfig().getBoolean("General.Reward-Broadcast")) {
-				Bukkit.broadcastMessage(plugin.getPrefixedMessage(plugin.getMessagesConfig().rewardBroadcast.replaceAll("%player%", sender.getName()).replaceAll("%rarity%", plugin.isRarityAndFormat(rarity))));
+				Bukkit.broadcastMessage(plugin.getPrefixedMessage(plugin.getMessagesConfig().rewardBroadcast.replace("%player%", sender.getName()).replaceAll("%rarity%", plugin.isRarityAndFormat(rarity))));
 			}
 			//TODO wait, why does the plugin delete a rarity once its been completed?
 			// instead it should mark in a data file if a player has completed the rarity or not...
@@ -361,7 +361,7 @@ public class CardsCommand extends BaseCommand {
 		} else if (plugin.getConfig().getBoolean("General.Eat-Shiny-Cards")) {
 			sendPrefixedMessage(sender, plugin.getMessagesConfig().rewardError2);
 		} else {
-			sendPrefixedMessage(sender, plugin.getMessagesConfig().rewardError3.replaceAll("%shinyName%", plugin.getMainConfig().shinyName));
+			sendPrefixedMessage(sender, plugin.getMessagesConfig().rewardError3.replace("%shinyName%", plugin.getMainConfig().shinyName));
 		}
 
 
@@ -389,7 +389,7 @@ public class CardsCommand extends BaseCommand {
 			}
 
 			if (!keyToUse.equals("")) {
-				Bukkit.broadcastMessage(plugin.getPrefixedMessage(plugin.getMessagesConfig().giveaway.replaceAll("%player%", sender.getName()).replaceAll("%rarity%", keyToUse)));
+				Bukkit.broadcastMessage(plugin.getPrefixedMessage(plugin.getMessagesConfig().giveaway.replace("%player%", sender.getName()).replaceAll("%rarity%", keyToUse)));
 
 				for (final Player p5 : Bukkit.getOnlinePlayers()) {
 					ConfigurationSection cards4 = plugin.getCardsConfig().getConfig().getConfigurationSection("Cards." + keyToUse);
@@ -443,8 +443,8 @@ public class CardsCommand extends BaseCommand {
 
 		double buyPrice = getBuyPrice(rarity,cardName2);
 		double sellPrice = getSellPrice(rarity,cardName2);
-		String buyMessage = (buyPrice > 0.0D) ? plugin.getMessagesConfig().canBuy.replaceAll("%buyAmount%", String.valueOf(buyPrice)) : plugin.getMessagesConfig().canNotBuy;
-		String sellMessage = (buyPrice > 0.0D) ? plugin.getMessagesConfig().canSell.replaceAll("%sellAmount%", String.valueOf(sellPrice)) : plugin.getMessagesConfig().canNotSell;
+		String buyMessage = (buyPrice > 0.0D) ? plugin.getMessagesConfig().canBuy.replace("%buyAmount%", String.valueOf(buyPrice)) : plugin.getMessagesConfig().canNotBuy;
+		String sellMessage = (buyPrice > 0.0D) ? plugin.getMessagesConfig().canSell.replace("%sellAmount%", String.valueOf(sellPrice)) : plugin.getMessagesConfig().canNotSell;
 		plugin.debug("buy="+buyPrice+"|sell="+sellPrice);
 		sendPrefixedMessage(player,buyMessage);
 		sendPrefixedMessage(player,sellMessage);
@@ -546,7 +546,7 @@ public class CardsCommand extends BaseCommand {
 				if (plugin.getConfig().getBoolean("PluginSupport.Vault.Closed-Economy")) {
 					plugin.getEcon().bankDeposit(plugin.getConfig().getString("PluginSupport.Vault.Server-Account"), buyPrice2);
 				}
-				sendPrefixedMessage(player, plugin.getMessagesConfig().boughtCard.replaceAll("%amount%", String.valueOf(buyPrice2)));
+				sendPrefixedMessage(player, plugin.getMessagesConfig().boughtCard.replace("%amount%", String.valueOf(buyPrice2)));
 				CardUtil.dropItem(player, CardManager.generatePack(name));
 				return;
 			}
@@ -576,7 +576,7 @@ public class CardsCommand extends BaseCommand {
 					plugin.getEcon().bankDeposit(plugin.getConfig().getString("PluginSupport.Vault.Server-Account"), buyPrice2);
 				}
 				CardUtil.dropItem(player, CardManager.getCard(card, rarity,false));
-				sendPrefixedMessage(player, plugin.getMessagesConfig().boughtCard.replaceAll("%amount%", String.valueOf(buyPrice2)));
+				sendPrefixedMessage(player, plugin.getMessagesConfig().boughtCard.replace("%amount%", String.valueOf(buyPrice2)));
 				return;
 			}
 			sendPrefixedMessage(player, plugin.getMessagesConfig().notEnoughMoney);
