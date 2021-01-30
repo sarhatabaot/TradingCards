@@ -101,7 +101,7 @@ public class CardUtil {
 		}
 		return "None";
 	}
-	
+
 	public static void createCard(Player creator, String rarity, String name, String series, String type, boolean hasShiny, String info, String about) {
 
 		if (plugin.getCardsConfig().getConfig().contains("Cards." + rarity + "." + name)) {

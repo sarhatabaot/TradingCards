@@ -110,7 +110,7 @@ public class CardsCommand extends BaseCommand {
 		@CommandPermission("cards.create.card")
 		@Description("Creates a card.")
 		public void onCreateCard(final Player player, final String rarity, final String name, final String series, final String type, final boolean shiny, final String info, final String about){
-			CardUtil.createCard(player, rarity.replaceAll("_", " "), name, series.replaceAll("_", " "), type.replaceAll("_", " "), shiny, info.replaceAll("_", " "), about.replaceAll("_", " "));
+			CardUtil.createCard(player, rarity.replace("_", " "), name, series.replace("_", " "), type.replaceAll("_", " "), shiny, info.replace("_", " "), about.replace("_", " "));
 		}
 
 		//more commands here, pack, rarity, series etc.
@@ -387,7 +387,7 @@ public class CardsCommand extends BaseCommand {
 		} else {
 
 			for (final String rarityKey : rarityKeys) {
-				if (rarityKey.equalsIgnoreCase(rarity.replaceAll("_", " "))) {
+				if (rarityKey.equalsIgnoreCase(rarity.replace("_", " "))) {
 					keyToUse = rarityKey;
 				}
 			}

@@ -19,9 +19,6 @@ import media.xen.tradingcards.config.CardsConfig;
 import media.xen.tradingcards.config.DeckConfig;
 import media.xen.tradingcards.config.MessagesConfig;
 import media.xen.tradingcards.config.TradingCardsConfig;
-import media.xen.tradingcards.db.Database;
-import media.xen.tradingcards.db.DbUtil;
-import media.xen.tradingcards.db.SQLite;
 import media.xen.tradingcards.listeners.DeckListener;
 import media.xen.tradingcards.listeners.MobSpawnListener;
 import media.xen.tradingcards.listeners.PackListener;
@@ -51,7 +48,6 @@ public class TradingCards extends JavaPlugin implements Listener {
 	List<EntityType> passiveMobs = new ArrayList<>();
 	List<EntityType> neutralMobs = new ArrayList<>();
 	List<EntityType> bossMobs = new ArrayList<>();
-	private final Map<String, Database> databases = new HashMap<>();
 	public static Permission permRarities = new Permission("cards.rarity");
 	private boolean hasVault;
 	private TradingCardsConfig mainConfig;
@@ -97,35 +93,11 @@ public class TradingCards extends JavaPlugin implements Listener {
 		}
 	}
 
-	public void initializeDatabase(String databaseName, String createStatement) {
-		Database db = new SQLite(this, databaseName, createStatement, this.getDataFolder());
-		db.load();
-		this.databases.put(databaseName, db);
-	}
-
-	public Map<String, Database> getDatabases() {
-		return this.databases;
-	}
-
-	public Database getDatabase(String databaseName) {
-		return this.getDatabases().get(databaseName);
-	}
-
-	public Boolean exists(String statement) {
-		return this.getDatabase("trading_cards").queryValue(statement, "ID") != null;
-	}
 
 	private void hookFileSystem() {
-		if (this.getConfig().getBoolean("General.SQLite")) {
-			this.usingSqlite = true;
-			this.initializeDatabase("trading_cards", "CREATE TABLE IF NOT EXISTS cards(`id` INTEGER NOT NULL PRIMARY KEY, `rarity` varchar(255), `about` varchar(255), `series` varchar(255), `name` varchar(255), `type` varchar(255), `info` varchar(255), `price` int); CREATE TABLE IF NOT EXISTS decks(`id` INTEGER NOT NULL PRIMARY KEY, `uuid` varchar(512), `deckID` int, `card` int, `isShiny` int, `count` int)");
-			getLogger().info("SQLite is enabled");
-			DbUtil.init(this);
-			DbUtil.convertToDb();
-		} else {
-			this.usingSqlite = false;
-			getLogger().info("Legacy YML mode is enabled!");
-		}
+		this.usingSqlite = false;
+		getLogger().info("Legacy YML mode is enabled!");
+
 	}
 
 	private void registerListeners() {
@@ -138,7 +110,7 @@ public class TradingCards extends JavaPlugin implements Listener {
 		pm.registerEvents(new DeckListener(this), this);
 	}
 
-	private void cacheMobs(){
+	private void cacheMobs() {
 		final String serverVersion = Bukkit.getServer().getVersion();
 		ImmutableList.Builder<EntityType> safeHostileMobs = ImmutableList.builder();
 		ImmutableList.Builder<EntityType> safeNeutralMobs = ImmutableList.builder();
@@ -148,14 +120,14 @@ public class TradingCards extends JavaPlugin implements Listener {
 		safeNeutralMobs.add(EntityType.ENDERMAN, EntityType.POLAR_BEAR, EntityType.LLAMA, EntityType.WOLF, EntityType.DOLPHIN, EntityType.DOLPHIN, EntityType.SNOWMAN, EntityType.IRON_GOLEM);
 		safePassiveMobs.add(EntityType.DONKEY, EntityType.MULE, EntityType.SKELETON_HORSE, EntityType.CHICKEN, EntityType.COW, EntityType.SQUID, EntityType.TURTLE, EntityType.TROPICAL_FISH, EntityType.PUFFERFISH, EntityType.SHEEP, EntityType.PIG, EntityType.PHANTOM, EntityType.SALMON, EntityType.COD, EntityType.RABBIT, EntityType.VILLAGER, EntityType.BAT, EntityType.PARROT, EntityType.HORSE);
 		safeBossMobs.add(EntityType.ENDER_DRAGON, EntityType.WITHER);
-		if(serverVersion.contains("1.14") || serverVersion.contains("1.15") || serverVersion.contains("1.16")){
+		if (serverVersion.contains("1.14") || serverVersion.contains("1.15") || serverVersion.contains("1.16")) {
 			safeHostileMobs.add(EntityType.PILLAGER, EntityType.RAVAGER);
-			safeNeutralMobs.add(EntityType.PANDA,EntityType.FOX);
-			safePassiveMobs.add(EntityType.WANDERING_TRADER,EntityType.CAT,EntityType.MUSHROOM_COW,EntityType.TRADER_LLAMA);
-			if(serverVersion.contains("1.15") || serverVersion.contains("1.16")){
+			safeNeutralMobs.add(EntityType.PANDA, EntityType.FOX);
+			safePassiveMobs.add(EntityType.WANDERING_TRADER, EntityType.CAT, EntityType.MUSHROOM_COW, EntityType.TRADER_LLAMA);
+			if (serverVersion.contains("1.15") || serverVersion.contains("1.16")) {
 				safeNeutralMobs.add(EntityType.BEE);
-				if(serverVersion.contains("1.16")){
-					safeHostileMobs.add(EntityType.HOGLIN,EntityType.PIGLIN,EntityType.STRIDER,EntityType.ZOGLIN,EntityType.ZOMBIFIED_PIGLIN);
+				if (serverVersion.contains("1.16")) {
+					safeHostileMobs.add(EntityType.HOGLIN, EntityType.PIGLIN, EntityType.STRIDER, EntityType.ZOGLIN, EntityType.ZOMBIFIED_PIGLIN);
 					getLogger().info("1.16 mode enabled! Enjoy the plugin!");
 				} else {
 					getLogger().info("Legacy 1.15 mode enabled! Consider upgrading though <3");
@@ -248,34 +220,9 @@ public class TradingCards extends JavaPlugin implements Listener {
 	}
 
 
-	public int getCardID(String name, String rarity) {
-		return (Integer) getDatabase("trading_cards").queryValue("SELECT id FROM cards WHERE name = '" + name + "' AND rarity = '" + rarity + "'", "ID");
-	}
-
-	public int getCardCount(String uuid, Integer deckNum, Integer cardID) {
-		return (Integer) getDatabase("trading_cards").queryValue("SELECT count FROM decks WHERE uuid = '" + uuid + "' AND deckID = " + deckNum + " AND card = " + cardID + "", "ID");
-	}
-
-	public int getPlayerDeckFromCard(String uuid, Integer cardID) {
-		return (Integer) getDatabase("trading_cards").queryValue("SELECT deckID FROM decks WHERE uuid = '" + uuid + "' AND card = " + cardID + "", "ID");
-	}
-
-	public boolean deleteCardSqlite(Player p, String card, String rarity) {
-		int cardID = getCardID(card, rarity);
-		String playerID = p.getUniqueId().toString();
-		if (hasCard(p, card, rarity) == 1) {
-			getDatabase("trading_cards").executeStatement("DELETE FROM decks WHERE uuid = '" + playerID + "' AND card=" + cardID + " LIMIT 1");
-			return true;
-		} else if (hasCard(p, card, rarity) > 1) {
-			int cardCount = hasCard(p, card, rarity) - 1;
-			getDatabase("trading_cards").executeStatement("UPDATE decks SET count = " + cardCount + " WHERE uuid = '" + playerID + "' AND card=" + cardID + " LIMIT 1");
-			return true;
-		} else return false;
-	}
 
 	@Deprecated
 	public boolean deleteCard(Player p, String card, String rarity) {
-		if (usingSqlite) return deleteCardSqlite(p, card, rarity);
 		if (hasCard(p, card, rarity) > 0) {
 			String uuidString = p.getUniqueId().toString();
 			int deckNumber = 0;
@@ -387,19 +334,19 @@ public class TradingCards extends JavaPlugin implements Listener {
 
 		String uuidString = p.getUniqueId().toString();
 
-		if(!getDeckConfig().containsPlayer(p.getUniqueId()))
+		if (!getDeckConfig().containsPlayer(p.getUniqueId()))
 			return 0;
 
 
 		ConfigurationSection deckList = getDeckConfig().getInventory(p.getUniqueId());
 
-		debug("Deck UUID: " + uuidString +",Card: "+ rarity+ " "+ card);
+		debug("Deck UUID: " + uuidString + ",Card: " + rarity + " " + card);
 
 		if (deckList == null) {
 			return 0;
 		}
 
-		debug(StringUtils.join(deckList.getKeys(false),","));
+		debug(StringUtils.join(deckList.getKeys(false), ","));
 		HashSet<String> deck = new HashSet<>(deckList.getKeys(false));
 
 		debug("Decks:" + deckNumber);
@@ -570,7 +517,7 @@ public class TradingCards extends JavaPlugin implements Listener {
 	}
 
 	public String getPrefixedMessage(final String message) {
-		return cMsg(messagesConfig.prefix+ "&r " + message);
+		return cMsg(messagesConfig.prefix + "&r " + message);
 	}
 
 	public void giveawayNatural(EntityType mob, Player sender) {
