@@ -5,19 +5,19 @@
 Spigot plugin for Trading Cards.
 A modified version of Trading Cards for the TreasureIsland minecraft network.
 Currently, has only some improvements over the original plugin:
-* Cached Cards (On load).
-* Sell Command
-* Debug commands - Version, Modules, Rarities.
+  * Cached Cards (On load).
+  * Sell Command.
+  * Debug commands - Version, Modules, Rarities.
 
-#### Patches:
-* Proper use of VaultAPI.
-* Tab Completions for commands.
+## Patches:
+  * Proper use of VaultAPI.
+  * Tab Completions for commands.
 
-### Addons:
+## Addons:
 This version of Trading Cards doesn't support MythicMobs, MobArena & Towny out of the box. 
 For support, you need to install additional addons:
-* [TCTowny](https://github.com/TreasureIslandMC/TCTowny)
-* [TCMythicMobs](https://github.com/TreasureIslandMC/TCMythicMobs)
-* [TCMobArena](https://github.com/TreasureIslandMC/TCMobArena)
+  * [TCTowny](https://github.com/TreasureIslandMC/TCTowny)
+  * [TCMythicMobs](https://github.com/TreasureIslandMC/TCMythicMobs)
+  * [TCMobArena](https://github.com/TreasureIslandMC/TCMobArena)
 
 These are normal plugins, to install just place in your plugins folder.
