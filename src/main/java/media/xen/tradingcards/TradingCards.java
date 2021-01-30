@@ -4,11 +4,9 @@ import co.aikar.commands.BukkitCommandManager;
 
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
@@ -338,7 +336,7 @@ public class TradingCards extends JavaPlugin implements Listener {
 			return 0;
 
 
-		ConfigurationSection deckList = getDeckConfig().getInventory(p.getUniqueId());
+		ConfigurationSection deckList = getDeckConfig().getAllDecks(p.getUniqueId());
 
 		debug("Deck UUID: " + uuidString + ",Card: " + rarity + " " + card);
 

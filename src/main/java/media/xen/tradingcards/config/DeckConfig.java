@@ -17,7 +17,7 @@ public class DeckConfig extends SimpleConfig{
 	}
 
 	@Nullable
-	public ConfigurationSection getInventory(final UUID uuid) {
+	public ConfigurationSection getAllDecks(final UUID uuid) {
 		if(containsPlayer(uuid))
 			return getConfig().getConfigurationSection(INVENTORY_PATH +uuid.toString());
 		return null;
@@ -26,13 +26,13 @@ public class DeckConfig extends SimpleConfig{
 	@Nullable
 	public ConfigurationSection getDeck(final UUID uuid, int deckNumber){
 		if(containsDeck(uuid,deckNumber))
-			return getInventory(uuid).getConfigurationSection(String.valueOf(deckNumber));
+			return getAllDecks(uuid).getConfigurationSection(String.valueOf(deckNumber));
 		return null;
 	}
 
 	public boolean containsDeck(final UUID uuid,int deckNumber) {
 		if(containsPlayer(uuid))
-			return getInventory(uuid).contains(String.valueOf(deckNumber));
+			return getAllDecks(uuid).contains(String.valueOf(deckNumber));
 		return false;
 	}
 }
