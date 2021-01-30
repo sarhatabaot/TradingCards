@@ -326,109 +326,13 @@ public class TradingCards extends JavaPlugin implements Listener {
 
 	@Deprecated
 	//TODO Why doesn't this return a boolean?
-	public int hasCard(Player p, String card, String rarity) {
-		int deckNumber = 0;
-		debug("Started check for card: " + card + ", " + rarity);
-
-		String uuidString = p.getUniqueId().toString();
-
-		if (!getDeckConfig().containsPlayer(p.getUniqueId()))
-			return 0;
-
-
-		ConfigurationSection deckList = getDeckConfig().getAllDecks(p.getUniqueId());
-
-		debug("Deck UUID: " + uuidString + ",Card: " + rarity + " " + card);
-
-		if (deckList == null) {
-			return 0;
-		}
-
-		debug(StringUtils.join(deckList.getKeys(false), ","));
-		HashSet<String> deck = new HashSet<>(deckList.getKeys(false));
-
-		debug("Decks:" + deckNumber);
-
-		for (int i = 0; i < deck.size(); ++i) {
-			if (getDeckConfig().getConfig().contains("Decks.Inventories." + uuidString + "." + (i + 1))) {
-				List<String> contents = getDeckConfig().getConfig().getStringList("Decks.Inventories." + uuidString + "." + (i + 1));
-
-				for (final String s2 : contents) {
-					String[] splitContents = s2.split(",");
-					debug("Deck file content: " + s2);
-					debug(card + " - " + splitContents[1]);
-					debug(rarity + " - " + splitContents[0]);
-
-					if (splitContents[0].equalsIgnoreCase(rarity)) {
-						debug("Rarity match: " + splitContents[0]);
-
-						if (splitContents[1].equalsIgnoreCase(card) && splitContents[3].equalsIgnoreCase("no")) {
-							debug("Card match: " + splitContents[1]);
-							return Integer.parseInt(splitContents[2]);
-						}
-					}
-				}
-			}
-		}
-
-		return 0;
+	public boolean hasCard(Player player, String card, String rarity) {
+		return getDeckConfig().containsCard(player.getUniqueId(),card,rarity);
 	}
 
 	@Deprecated
 	public boolean hasShiny(Player p, String card, String rarity) {
-		int deckNumber = 0;
-		debug("Started check for card: " + card + ", " + rarity);
-
-		String uuidString = p.getUniqueId().toString();
-		ConfigurationSection deckList = getDeckConfig().getConfig().getConfigurationSection("Decks.Inventories." + uuidString);
-		debug("Deck UUID: " + uuidString);
-
-		Iterator<String> var7;
-		String s;
-
-		if (deckList == null)
-			return false;
-
-		var7 = deckList.getKeys(false).iterator();
-
-		while (var7.hasNext()) {
-			s = var7.next();
-			deckNumber += Integer.parseInt(s);
-			debug("Deck running total: " + deckNumber);
-		}
-
-		if (deckNumber == 0) {
-			return false;
-		}
-		debug("Decks:" + deckNumber);
-
-		for (int i = 0; i < deckNumber; ++i) {
-			if (getDeckConfig().getConfig().contains("Decks.Inventories." + uuidString + "." + (i + 1))) {
-				List<String> contents = getDeckConfig().getConfig().getStringList("Decks.Inventories." + uuidString + "." + (i + 1));
-
-				for (final String s2 : contents) {
-					debug("Deck file content: " + s2);
-					String[] splitContents = s2.split(",");
-					debug(card + " - " + splitContents[1]);
-					debug(rarity + " - " + splitContents[0]);
-
-					if (splitContents[0].equalsIgnoreCase(rarity)) {
-						debug("Rarity match: " + splitContents[0]);
-
-						if (splitContents[1].equalsIgnoreCase(card)) {
-							debug("Card match: " + splitContents[1]);
-							if (splitContents[3].equalsIgnoreCase("yes")) {
-								return true;
-							}
-						}
-					}
-				}
-			}
-		}
-
-		return false;
-
-
+		return getDeckConfig().containsShinyCard(p.getUniqueId(),card,rarity);
 	}
 
 	@Deprecated

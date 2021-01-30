@@ -20,14 +20,14 @@ public class CardsConfig extends SimpleConfig {
 			for (final String key : cardKeys) {
 				plugin.debug("deleteRarity iteration: " + numCardsCounter);
 
-				if (plugin.hasShiny(player, key, rarity) && plugin.hasCard(player, key, rarity) == 0) {
+				if (plugin.hasShiny(player, key, rarity) && !plugin.hasCard(player, key, rarity)) {
 					plugin.debug("Deleted: Cards." + key + ".key2");
 
 					plugin.deleteCard(player, key, rarity);
 					++numCardsCounter;
 				}
 
-				if (plugin.hasCard(player, key, rarity) > 0) {
+				if (plugin.hasCard(player, key, rarity)) {
 					plugin.debug("Deleted: Cards." + key + ".key2");
 
 					plugin.deleteCard(player, key, rarity);

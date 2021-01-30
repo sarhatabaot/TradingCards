@@ -4,6 +4,7 @@ import media.xen.tradingcards.TradingCards;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.UUID;
 
 public class DeckConfig extends SimpleConfig{
@@ -24,15 +25,48 @@ public class DeckConfig extends SimpleConfig{
 	}
 
 	@Nullable
-	public ConfigurationSection getDeck(final UUID uuid, int deckNumber){
+	public List<String> getDeck(final UUID uuid, String deckNumber){
 		if(containsDeck(uuid,deckNumber))
-			return getAllDecks(uuid).getConfigurationSection(String.valueOf(deckNumber));
+			return getAllDecks(uuid).getStringList(String.valueOf(deckNumber));
 		return null;
 	}
 
-	public boolean containsDeck(final UUID uuid,int deckNumber) {
+	public boolean containsDeck(final UUID uuid,String deckNumber) {
 		if(containsPlayer(uuid))
 			return getAllDecks(uuid).contains(String.valueOf(deckNumber));
+		return false;
+	}
+
+
+	public boolean containsDeck(final UUID uuid,int deckNumber) {
+		return containsDeck(uuid,String.valueOf(deckNumber));
+	}
+
+	public boolean containsCard(final UUID uuid,final String card, final String rarity){
+		for(String deckNumber : getAllDecks(uuid).getValues(false).keySet()){
+			for(String cardString: getDeck(uuid,deckNumber)) {
+				String[] splitCardString = cardString.split(",");
+				String rarityName = splitCardString[0];
+				String cardName = splitCardString[1];
+				String shiny = splitCardString[2];
+				if(rarity.equalsIgnoreCase(rarityName) && card.equalsIgnoreCase(cardName) && shiny.equalsIgnoreCase("no"))
+					return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean containsShinyCard(final UUID uuid,final String card, final String rarity) {
+		for(String deckNumber : getAllDecks(uuid).getValues(false).keySet()){
+			for(String cardString: getDeck(uuid,deckNumber)) {
+				String[] splitCardString = cardString.split(",");
+				String rarityName = splitCardString[0];
+				String cardName = splitCardString[1];
+				String shinyName = splitCardString[2];
+				if(rarity.equalsIgnoreCase(rarityName) && card.equalsIgnoreCase(cardName) && shinyName.equalsIgnoreCase("yes"))
+					return true;
+			}
+		}
 		return false;
 	}
 }
