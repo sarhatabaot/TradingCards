@@ -88,7 +88,7 @@ public class CardManager {
 
 		String specialCardColour = plugin.getConfig().getString("Colours.BoosterPackSpecialCards");
 		ItemMeta pMeta = boosterPack.getItemMeta();
-		pMeta.setDisplayName(plugin.cMsg(prefix + nameColour + name.replaceAll("_", " ")));
+		pMeta.setDisplayName(plugin.cMsg(prefix + nameColour + name.replace("_", " ")));
 		List<String> lore = new ArrayList<>();
 		lore.add(plugin.cMsg(normalCardColour + numNormalCards + loreColour + " " + normalRarity.toUpperCase()));
 		if (hasExtraRarity) {
