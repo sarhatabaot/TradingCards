@@ -1,10 +1,10 @@
 package media.xen.tradingcards;
 
+import de.tr7zw.nbtapi.NBTItem;
 import lombok.Data;
 import media.xen.tradingcards.config.TradingCardsConfig;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -89,7 +89,7 @@ public class CardManager {
 
 		String specialCardColour = plugin.getConfig().getString("Colours.BoosterPackSpecialCards");
 		ItemMeta pMeta = boosterPack.getItemMeta();
-		pMeta.setDisplayName(plugin.cMsg(prefix + nameColour + name.replaceAll("_", " ")));
+		pMeta.setDisplayName(plugin.cMsg(prefix + nameColour + name.replace("_", " ")));
 		List<String> lore = new ArrayList<>();
 		lore.add(plugin.cMsg(normalCardColour + numNormalCards + loreColour + " " + normalRarity.toUpperCase()));
 		if (hasExtraRarity) {
@@ -202,7 +202,7 @@ public class CardManager {
 		}
 
 
-		public ItemStack build(){
+		private ItemStack buildItem(){
 			ItemStack card = blankCard.clone();
 			ItemMeta cardMeta = blankCard.getItemMeta();
 			cardMeta.setDisplayName(formatDisplayName(isPlayerCard,isShiny,prefix,rarityColour,cardName.replace('_',' '),cost,shinyPrefix));
@@ -215,13 +215,21 @@ public class CardManager {
 			}
 
 			card.setItemMeta(cardMeta);
+
 			return card;
+		}
+
+
+		public ItemStack build(){
+			NBTItem nbtItem = new NBTItem(buildItem());
+			nbtItem.setBoolean("isCard",true);
+			return nbtItem.getItem();
 		}
 
 		private List<String> formatLore(){
 			List<String> lore = new ArrayList<>();
 			lore.add(plugin.cMsg(type.getColour() + type.getDisplay() + ": &f" + type.getName()));
-			if (!"None".equals(info) && !"".equals(info)) {
+			if (!"None".equals(info.getName()) && !"".equals(info.getName())) {
 				lore.add(plugin.cMsg(info.getColour() + info.getDisplay() + ":"));
 				lore.addAll(plugin.wrapString(info.getName()));
 			} else {

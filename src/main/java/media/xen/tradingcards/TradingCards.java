@@ -3,25 +3,19 @@ package media.xen.tradingcards;
 import co.aikar.commands.BukkitCommandManager;
 
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
 import com.google.common.collect.ImmutableList;
+import media.xen.tradingcards.commands.CardsCommand;
+import media.xen.tradingcards.commands.DeckCommand;
 import media.xen.tradingcards.config.CardsConfig;
+import media.xen.tradingcards.config.DeckConfig;
 import media.xen.tradingcards.config.MessagesConfig;
 import media.xen.tradingcards.config.TradingCardsConfig;
-import media.xen.tradingcards.config.SimpleConfig;
-import media.xen.tradingcards.db.Database;
-import media.xen.tradingcards.db.DbUtil;
-import media.xen.tradingcards.db.SQLite;
-import media.xen.tradingcards.listeners.AddOnJoinListener;
 import media.xen.tradingcards.listeners.DeckListener;
 import media.xen.tradingcards.listeners.MobSpawnListener;
 import media.xen.tradingcards.listeners.PackListener;
@@ -32,18 +26,11 @@ import net.sarhatabaot.configloader.ConfigLoader;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemFlag;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -57,29 +44,30 @@ public class TradingCards extends JavaPlugin implements Listener {
 	List<EntityType> passiveMobs = new ArrayList<>();
 	List<EntityType> neutralMobs = new ArrayList<>();
 	List<EntityType> bossMobs = new ArrayList<>();
-	private final Map<String, Database> databases = new HashMap<>();
 	public static Permission permRarities = new Permission("cards.rarity");
-	boolean hasVault;
+	private boolean hasVault;
 	private TradingCardsConfig mainConfig;
-	private DeckManager deckManager;
-	private SimpleConfig deckConfig;
+	private DeckConfig deckConfig;
 	private MessagesConfig messagesConfig;
 	private CardsConfig cardsConfig;
 	private boolean usingSqlite;
-	public static Economy econ = null;
+	private Economy econ = null;
 	public static Permission perms = null;
 	public static Chat chat = null;
 	public Random r = new Random();
 	int taskid;
 
+	public boolean isHasVault() {
+		return hasVault;
+	}
 
-	public SimpleConfig getDeckConfig() {
+	public Economy getEcon() {
+		return econ;
+	}
+
+	public DeckConfig getDeckConfig() {
 		return deckConfig;
 	}
-	/*
-	public SimpleConfig getMessagesConfig() {
-		return messagesConfig;
-	}*/
 
 	public CardsConfig getCardsConfig() {
 		return cardsConfig;
@@ -101,35 +89,11 @@ public class TradingCards extends JavaPlugin implements Listener {
 		}
 	}
 
-	public void initializeDatabase(String databaseName, String createStatement) {
-		Database db = new SQLite(this, databaseName, createStatement, this.getDataFolder());
-		db.load();
-		this.databases.put(databaseName, db);
-	}
-
-	public Map<String, Database> getDatabases() {
-		return this.databases;
-	}
-
-	public Database getDatabase(String databaseName) {
-		return this.getDatabases().get(databaseName);
-	}
-
-	public Boolean exists(String statement) {
-		return this.getDatabase("trading_cards").queryValue(statement, "ID") != null;
-	}
 
 	private void hookFileSystem() {
-		if (this.getConfig().getBoolean("General.SQLite")) {
-			this.usingSqlite = true;
-			this.initializeDatabase("trading_cards", "CREATE TABLE IF NOT EXISTS cards(`id` INTEGER NOT NULL PRIMARY KEY, `rarity` varchar(255), `about` varchar(255), `series` varchar(255), `name` varchar(255), `type` varchar(255), `info` varchar(255), `price` int); CREATE TABLE IF NOT EXISTS decks(`id` INTEGER NOT NULL PRIMARY KEY, `uuid` varchar(512), `deckID` int, `card` int, `isShiny` int, `count` int)");
-			getLogger().info("SQLite is enabled");
-			DbUtil.init(this);
-			DbUtil.convertToDb();
-		} else {
-			this.usingSqlite = false;
-			getLogger().info("Legacy YML mode is enabled!");
-		}
+		this.usingSqlite = false;
+		getLogger().info("Legacy YML mode is enabled!");
+
 	}
 
 	private void registerListeners() {
@@ -139,11 +103,10 @@ public class TradingCards extends JavaPlugin implements Listener {
 		pm.registerEvents(new DropListener(this), this);
 		pm.registerEvents(new PackListener(this), this);
 		pm.registerEvents(new MobSpawnListener(this), this);
-		pm.registerEvents(new AddOnJoinListener(this), this);
 		pm.registerEvents(new DeckListener(this), this);
 	}
 
-	private void cacheMobs(){
+	private void cacheMobs() {
 		final String serverVersion = Bukkit.getServer().getVersion();
 		ImmutableList.Builder<EntityType> safeHostileMobs = ImmutableList.builder();
 		ImmutableList.Builder<EntityType> safeNeutralMobs = ImmutableList.builder();
@@ -153,14 +116,14 @@ public class TradingCards extends JavaPlugin implements Listener {
 		safeNeutralMobs.add(EntityType.ENDERMAN, EntityType.POLAR_BEAR, EntityType.LLAMA, EntityType.WOLF, EntityType.DOLPHIN, EntityType.DOLPHIN, EntityType.SNOWMAN, EntityType.IRON_GOLEM);
 		safePassiveMobs.add(EntityType.DONKEY, EntityType.MULE, EntityType.SKELETON_HORSE, EntityType.CHICKEN, EntityType.COW, EntityType.SQUID, EntityType.TURTLE, EntityType.TROPICAL_FISH, EntityType.PUFFERFISH, EntityType.SHEEP, EntityType.PIG, EntityType.PHANTOM, EntityType.SALMON, EntityType.COD, EntityType.RABBIT, EntityType.VILLAGER, EntityType.BAT, EntityType.PARROT, EntityType.HORSE);
 		safeBossMobs.add(EntityType.ENDER_DRAGON, EntityType.WITHER);
-		if(serverVersion.contains("1.14") || serverVersion.contains("1.15") || serverVersion.contains("1.16")){
+		if (serverVersion.contains("1.14") || serverVersion.contains("1.15") || serverVersion.contains("1.16")) {
 			safeHostileMobs.add(EntityType.PILLAGER, EntityType.RAVAGER);
-			safeNeutralMobs.add(EntityType.PANDA,EntityType.FOX);
-			safePassiveMobs.add(EntityType.WANDERING_TRADER,EntityType.CAT,EntityType.MUSHROOM_COW,EntityType.TRADER_LLAMA);
-			if(serverVersion.contains("1.15") || serverVersion.contains("1.16")){
+			safeNeutralMobs.add(EntityType.PANDA, EntityType.FOX);
+			safePassiveMobs.add(EntityType.WANDERING_TRADER, EntityType.CAT, EntityType.MUSHROOM_COW, EntityType.TRADER_LLAMA);
+			if (serverVersion.contains("1.15") || serverVersion.contains("1.16")) {
 				safeNeutralMobs.add(EntityType.BEE);
-				if(serverVersion.contains("1.16")){
-					safeHostileMobs.add(EntityType.HOGLIN,EntityType.PIGLIN,EntityType.STRIDER,EntityType.ZOGLIN,EntityType.ZOMBIFIED_PIGLIN);
+				if (serverVersion.contains("1.16")) {
+					safeHostileMobs.add(EntityType.HOGLIN, EntityType.PIGLIN, EntityType.STRIDER, EntityType.ZOGLIN, EntityType.ZOMBIFIED_PIGLIN);
 					getLogger().info("1.16 mode enabled! Enjoy the plugin!");
 				} else {
 					getLogger().info("Legacy 1.15 mode enabled! Consider upgrading though <3");
@@ -186,7 +149,7 @@ public class TradingCards extends JavaPlugin implements Listener {
 		ConfigLoader.load(mainConfig);
 		ConfigLoader.loadAndSave(messagesConfig);
 
-		deckConfig = new SimpleConfig(this, "decks.yml");
+		deckConfig = new DeckConfig(this);
 		cardsConfig = new CardsConfig(this);
 
 		deckConfig.saveDefaultConfig();
@@ -194,10 +157,12 @@ public class TradingCards extends JavaPlugin implements Listener {
 		cardsConfig.saveDefaultConfig();
 
 		CardUtil.init(this);
+		ChatUtil.init(this);
 		CardManager.init(this);
 		DeckManager.init(this);
 		BukkitCommandManager commandManager = new BukkitCommandManager(this);
 		commandManager.registerCommand(new CardsCommand(this));
+		commandManager.registerCommand(new DeckCommand(this));
 		commandManager.enableUnstableAPI("help");
 		hookFileSystem();
 		hookVault();
@@ -210,7 +175,7 @@ public class TradingCards extends JavaPlugin implements Listener {
 
 	@Override
 	public void onDisable() {
-		TradingCards.econ = null;
+		econ = null;
 		TradingCards.perms = null;
 		TradingCards.chat = null;
 		this.getServer().getPluginManager().removePermission(permRarities);
@@ -224,7 +189,7 @@ public class TradingCards extends JavaPlugin implements Listener {
 			if (rsp == null) {
 				return false;
 			} else {
-				econ = (Economy) rsp.getProvider();
+				econ = rsp.getProvider();
 				return econ != null;
 			}
 		}
@@ -250,62 +215,11 @@ public class TradingCards extends JavaPlugin implements Listener {
 		return this.bossMobs.contains(e);
 	}
 
-	public ItemStack createDeck(Player p, int num) {
-		ItemStack deck = TradingCardsConfig.getBlankDeck();
-		ItemMeta deckMeta = deck.getItemMeta();
-		deckMeta.setDisplayName(this.cMsg(this.getConfig().getString("General.Deck-Prefix") + p.getName() + "'s Deck #" + num));
-		if (this.getConfig().getBoolean("General.Hide-Enchants", true)) {
-			deckMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-		}
 
-		deck.setItemMeta(deckMeta);
-		deck.addUnsafeEnchantment(Enchantment.DURABILITY, 10);
-		return deck;
-	}
-
-	public boolean hasDeck(Player p, int num) {
-		for (final ItemStack i : p.getInventory()) {
-			if (i != null && i.getType() == Material.valueOf(this.getConfig().getString("General.Deck-Material")) && i.containsEnchantment(Enchantment.DURABILITY) && i.getEnchantmentLevel(Enchantment.DURABILITY) == 10) {
-				String name = i.getItemMeta().getDisplayName();
-				String[] splitName = name.split("#");
-				if (num == Integer.parseInt(splitName[1])) {
-					return true;
-				}
-			}
-		}
-
-		return false;
-	}
-
-	public int getCardID(String name, String rarity) {
-		return (Integer) getDatabase("trading_cards").queryValue("SELECT id FROM cards WHERE name = '" + name + "' AND rarity = '" + rarity + "'", "ID");
-	}
-
-	public int getCardCount(String uuid, Integer deckNum, Integer cardID) {
-		return (Integer) getDatabase("trading_cards").queryValue("SELECT count FROM decks WHERE uuid = '" + uuid + "' AND deckID = " + deckNum + " AND card = " + cardID + "", "ID");
-	}
-
-	public int getPlayerDeckFromCard(String uuid, Integer cardID) {
-		return (Integer) getDatabase("trading_cards").queryValue("SELECT deckID FROM decks WHERE uuid = '" + uuid + "' AND card = " + cardID + "", "ID");
-	}
-
-	public boolean deleteCardSqlite(Player p, String card, String rarity) {
-		int cardID = getCardID(card, rarity);
-		String playerID = p.getUniqueId().toString();
-		if (hasCard(p, card, rarity) == 1) {
-			getDatabase("trading_cards").executeStatement("DELETE FROM decks WHERE uuid = '" + playerID + "' AND card=" + cardID + " LIMIT 1");
-			return true;
-		} else if (hasCard(p, card, rarity) > 1) {
-			int cardCount = hasCard(p, card, rarity) - 1;
-			getDatabase("trading_cards").executeStatement("UPDATE decks SET count = " + cardCount + " WHERE uuid = '" + playerID + "' AND card=" + cardID + " LIMIT 1");
-			return true;
-		} else return false;
-	}
 
 	@Deprecated
 	public boolean deleteCard(Player p, String card, String rarity) {
-		if (usingSqlite) return deleteCardSqlite(p, card, rarity);
-		if (hasCard(p, card, rarity) > 0) {
+		if (hasCard(p, card, rarity)) {
 			String uuidString = p.getUniqueId().toString();
 			int deckNumber = 0;
 			ConfigurationSection deckList = getDeckConfig().getConfig().getConfigurationSection("Decks.Inventories." + uuidString);
@@ -409,155 +323,30 @@ public class TradingCards extends JavaPlugin implements Listener {
 	}
 
 	@Deprecated
-	public int hasCard(Player p, String card, String rarity) {
-		int deckNumber = 0;
-		debug("Started check for card: " + card + ", " + rarity);
-
-		String uuidString = p.getUniqueId().toString();
-		ConfigurationSection deckList = getDeckConfig().getConfig().getConfigurationSection("Decks.Inventories." + uuidString);
-		debug("Deck UUID: " + uuidString);
-
-
-		if (getDeckConfig().getConfig().contains("Decks.Inventories." + uuidString)) {
-			debug("Deck.yml contains player!");
-		}
-
-		Iterator<String> var7;
-		String s;
-		if (this.getConfig().getBoolean("General.Debug-Mode")) {
-			var7 = deckList.getKeys(false).iterator();
-
-			while (var7.hasNext()) {
-				s = var7.next();
-				getLogger().info("Deck rarity content: " + s);
-			}
-			debug("Done!");
-		}
-
-		if (deckList == null) {
-			return 0;
-		}
-
-		var7 = deckList.getKeys(false).iterator();
-
-		while (var7.hasNext()) {
-			s = var7.next();
-			deckNumber += Integer.parseInt(s);
-			debug("Deck running total: " + deckNumber);
-		}
-
-		if (deckNumber == 0) {
-			debug("No decks?!");
-			return 0;
-		}
-
-		debug("Decks:" + deckNumber);
-
-		for (int i = 0; i < deckNumber; ++i) {
-			debug("Starting iteration " + i);
-
-			if (getDeckConfig().getConfig().contains("Decks.Inventories." + uuidString + "." + (i + 1))) {
-				List<String> contents = getDeckConfig().getConfig().getStringList("Decks.Inventories." + uuidString + "." + (i + 1));
-
-				for (final String s2 : contents) {
-					String[] splitContents = s2.split(",");
-					debug("Deck file content: " + s2);
-					debug(card + " - " + splitContents[1]);
-					debug(rarity + " - " + splitContents[0]);
-
-					if (splitContents[0].equalsIgnoreCase(rarity)) {
-						if (this.getConfig().getBoolean("General.Debug-Mode")) {
-							System.out.println("[Cards] Rarity match: " + splitContents[0]);
-						}
-
-						if (splitContents[1].equalsIgnoreCase(card) && splitContents[3].equalsIgnoreCase("no")) {
-							if (this.getConfig().getBoolean("General.Debug-Mode")) {
-								System.out.println("[Cards] Card match: " + splitContents[1]);
-							}
-
-							return Integer.parseInt(splitContents[2]);
-						}
-					}
-				}
-			}
-		}
-
-		return 0;
-
-
+	//TODO Why doesn't this return a boolean?
+	public boolean hasCard(Player player, String card, String rarity) {
+		return getDeckConfig().containsCard(player.getUniqueId(),card,rarity);
 	}
 
 	@Deprecated
 	public boolean hasShiny(Player p, String card, String rarity) {
-		int deckNumber = 0;
-		debug("Started check for card: " + card + ", " + rarity);
-
-		String uuidString = p.getUniqueId().toString();
-		ConfigurationSection deckList = getDeckConfig().getConfig().getConfigurationSection("Decks.Inventories." + uuidString);
-		debug("Deck UUID: " + uuidString);
-
-		Iterator<String> var7;
-		String s;
-
-		if (deckList == null)
-			return false;
-
-		var7 = deckList.getKeys(false).iterator();
-
-		while (var7.hasNext()) {
-			s = var7.next();
-			deckNumber += Integer.parseInt(s);
-			debug("Deck running total: " + deckNumber);
-		}
-
-		if (deckNumber == 0) {
-			return false;
-		}
-		debug("Decks:" + deckNumber);
-
-		for (int i = 0; i < deckNumber; ++i) {
-			if (getDeckConfig().getConfig().contains("Decks.Inventories." + uuidString + "." + (i + 1))) {
-				List<String> contents = getDeckConfig().getConfig().getStringList("Decks.Inventories." + uuidString + "." + (i + 1));
-
-				for (final String s2 : contents) {
-					debug("Deck file content: " + s2);
-					String[] splitContents = s2.split(",");
-					debug(card + " - " + splitContents[1]);
-					debug(rarity + " - " + splitContents[0]);
-
-					if (splitContents[0].equalsIgnoreCase(rarity)) {
-						debug("Rarity match: " + splitContents[0]);
-
-						if (splitContents[1].equalsIgnoreCase(card)) {
-							debug("Card match: " + splitContents[1]);
-							if (splitContents[3].equalsIgnoreCase("yes")) {
-								return true;
-							}
-						}
-					}
-				}
-			}
-		}
-
-		return false;
-
-
+		return getDeckConfig().containsShinyCard(p.getUniqueId(),card,rarity);
 	}
 
 	@Deprecated
-	public String isRarity(String input) {
+	public String isRarityAndFormat(String input) {
 		String output = input.substring(0, 1).toUpperCase() + input.substring(1);
-		if (this.getConfig().contains("Rarities." + input.replaceAll("_", " "))) {
-			return input.replaceAll("_", " ");
-		} else if (this.getConfig().contains("Rarities." + input.replaceAll("_", " ").toUpperCase())) {
-			return input.replaceAll("_", " ").toUpperCase();
-		} else if (this.getConfig().contains("Rarities." + input.replaceAll("_", " ").toLowerCase())) {
-			return input.replaceAll("_", " ").toLowerCase();
-		} else if (this.getConfig().contains("Rarities." + output.replaceAll("_", " "))) {
-			return output.replaceAll("_", " ");
+		if (this.getConfig().contains("Rarities." + input.replace("_", " "))) {
+			return input.replace("_", " ");
+		} else if (this.getConfig().contains("Rarities." + input.replace("_", " ").toUpperCase())) {
+			return input.replace("_", " ").toUpperCase();
+		} else if (this.getConfig().contains("Rarities." + input.replace("_", " ").toLowerCase())) {
+			return input.replace("_", " ").toLowerCase();
+		} else if (this.getConfig().contains("Rarities." + output.replace("_", " "))) {
+			return output.replace("_", " ");
 		}
 
-		return this.getConfig().contains("Rarities." + this.capitaliseUnderscores(input)) ? output.replaceAll("_", " ") : "None";
+		return this.getConfig().contains("Rarities." + this.capitaliseUnderscores(input)) ? output.replace("_", " ") : "None";
 	}
 
 	public String capitaliseUnderscores(String input) {
@@ -581,16 +370,6 @@ public class TradingCards extends JavaPlugin implements Listener {
 		} catch (IllegalArgumentException var4) {
 			return false;
 		}
-	}
-
-	@Deprecated
-	public ItemStack createBoosterPack(String name) {
-		return CardManager.generatePack(name);
-	}
-
-	@Deprecated
-	public String calculateRarity(EntityType e, boolean alwaysDrop) {
-		return CardUtil.calculateRarity(e, alwaysDrop);
 	}
 
 	public boolean isOnList(Player p) {
@@ -637,23 +416,8 @@ public class TradingCards extends JavaPlugin implements Listener {
 		}
 	}
 
-	@Deprecated
-	public ItemStack createPlayerCard(String cardName, String rarity, Integer num, boolean forcedShiny) {
-		ItemStack card = CardUtil.generateCard(cardName, rarity, forcedShiny);
-		card.setAmount(num);
-		return card;
-	}
-
-	@Deprecated
-	public ItemStack getNormalCard(String cardName, String rarity, int num) {
-		ItemStack card = CardUtil.generateCard(cardName, rarity, false);
-		card.setAmount(num);
-		return card;
-	}
-
-
 	public String getPrefixedMessage(final String message) {
-		return cMsg(messagesConfig.prefix+ "&r " + message);
+		return cMsg(messagesConfig.prefix + "&r " + message);
 	}
 
 	public void giveawayNatural(EntityType mob, Player sender) {
@@ -696,17 +460,9 @@ public class TradingCards extends JavaPlugin implements Listener {
 	}
 
 	public void reloadAllConfig() {
-		/*File file = new File(this.getDataFolder() + File.separator + "config.yml");
-		if (!file.exists()) {
-			this.getConfig().options().copyDefaults(true);
-			this.saveDefaultConfig();
-		}*/
-
 		ConfigLoader.loadAndSave(mainConfig);
-		//this.reloadConfig();
 		this.deckConfig.reloadConfig();
 		ConfigLoader.loadAndSave(messagesConfig);
-		//this.messagesConfig.reloadConfig();
 		this.cardsConfig.reloadConfig();
 	}
 
@@ -715,11 +471,11 @@ public class TradingCards extends JavaPlugin implements Listener {
 	}
 
 	public boolean completedRarity(Player p, String rarity) {
-		if ("None".equals(isRarity(rarity))) {
+		if ("None".equals(isRarityAndFormat(rarity))) {
 			return false;
 		}
 
-		ConfigurationSection cards = getCardsConfig().getConfig().getConfigurationSection("Cards." + this.isRarity(rarity));
+		ConfigurationSection cards = getCardsConfig().getConfig().getConfigurationSection("Cards." + this.isRarityAndFormat(rarity));
 		Set<String> cardKeys = cards.getKeys(false);
 		int i = 0;
 		int numCardsCounter = 0;
@@ -732,11 +488,11 @@ public class TradingCards extends JavaPlugin implements Listener {
 
 			boolean shinyVersion = false;
 			boolean regularVersion = false;
-			if (this.hasShiny(p, key, this.isRarity(rarity))) {
+			if (hasShiny(p, key, isRarityAndFormat(rarity))) {
 				shinyVersion = true;
 			}
 
-			if (this.hasCard(p, key, this.isRarity(rarity)) > 0) {
+			if (hasCard(p, key, isRarityAndFormat(rarity))) {
 				regularVersion = true;
 			}
 
@@ -767,9 +523,9 @@ public class TradingCards extends JavaPlugin implements Listener {
 
 		int hours = Math.max(this.getConfig().getInt("General.Schedule-Card-Time-In-Hours"), 1);
 
-		String tmessage = messagesConfig.timerMessage.replaceAll("%hour%", String.valueOf(hours));
+		String tmessage = messagesConfig.timerMessage.replace("%hour%", String.valueOf(hours));
 		Bukkit.broadcastMessage(getPrefixedMessage(tmessage));
-		this.taskid = new CardSchedulerRunnable(this).runTaskTimer(this, (hours * 20 * 60 * 60), (hours * 20 * 60 * 60)).getTaskId();
+		this.taskid = new CardSchedulerRunnable(this).runTaskTimer(this, ((long) hours * 20 * 60 * 60), ((long) hours * 20 * 60 * 60)).getTaskId();
 	}
 
 }

@@ -1,4 +1,4 @@
-package media.xen.tradingcards.addons;
+package media.xen.tradingcards.api.addons;
 
 import org.bukkit.event.Listener;
 
@@ -8,4 +8,5 @@ public class AddonListener implements Listener {
 	public AddonListener(final TradingCardsAddon tradingCardsAddon) {
 		this.tradingCardsAddon = tradingCardsAddon;
 	}
+
 }

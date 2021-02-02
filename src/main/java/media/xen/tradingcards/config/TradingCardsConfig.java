@@ -5,12 +5,10 @@ import net.sarhatabaot.configloader.Config;
 import net.sarhatabaot.configloader.ConfigOption;
 import net.sarhatabaot.configloader.transform.ListClone;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -18,10 +16,6 @@ public class TradingCardsConfig implements Config {
 	private static TradingCards plugin;
 	private final File file;
 
-	public TradingCardsConfig(final TradingCards plugin) {
-		this.file = new File(plugin.getDataFolder(),"config.yml");
-		TradingCardsConfig.plugin = plugin;
-	}
 
 	@ConfigOption(path = "General.Server-Name")
 	public String serverName = "Server";
@@ -155,6 +149,19 @@ public class TradingCardsConfig implements Config {
 	@ConfigOption(path = "DisplayNames.Cards.About")
 	public String aboutDisplay = "About";
 
+	@ConfigOption(path = "Chances.Hostile-Chance")
+	public int hostileChance = 20;
+	@ConfigOption(path = "Chances.Neutral-Chance")
+	public int neutralChance = 10;
+	@ConfigOption(path = "Chances.Passive-Chance")
+	public int passiveChance = 5;
+	@ConfigOption(path = "Chances.Boss-Chance")
+	public int bossChance = 100;
+
+	public TradingCardsConfig(final TradingCards plugin) {
+		this.file = new File(plugin.getDataFolder(),"config.yml");
+		TradingCardsConfig.plugin = plugin;
+	}
 
 	public static ItemStack getBlankCard(int quantity) {
 		return new ItemStack(Material.getMaterial(plugin.getMainConfig().cardMaterial), quantity);

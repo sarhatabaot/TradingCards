@@ -4,7 +4,6 @@ import media.xen.tradingcards.CardUtil;
 import media.xen.tradingcards.DeckManager;
 import media.xen.tradingcards.TradingCards;
 import media.xen.tradingcards.uuid.UuidUtil;
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -44,21 +43,22 @@ public class DeckListener extends SimpleListener {
 
 		Player player = event.getPlayer();
 		final ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
+		if (!DeckManager.isDeck(itemInMainHand))
+			return;
 
-		if (itemInMainHand.getType() == Material.valueOf(plugin.getMainConfig().deckMaterial)) {
-			if (player.getGameMode() == GameMode.CREATIVE) {
-				sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().deckCreativeError));
-				return;
-			}
 
-			if (itemInMainHand.getEnchantmentLevel(Enchantment.DURABILITY) == 10) {
-				String name = player.getInventory().getItemInMainHand().getItemMeta().getDisplayName();
-				String[] nameSplit = name.split("#");
-				int num = Integer.parseInt(nameSplit[1]);
-				DeckManager.openDeck(player, num);
-
-			}
+		if (player.getGameMode() == GameMode.CREATIVE) {
+			sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().deckCreativeError));
+			return;
 		}
+
+
+		String name = player.getInventory().getItemInMainHand().getItemMeta().getDisplayName();
+		String[] nameSplit = name.split("#");
+		int num = Integer.parseInt(nameSplit[1]);
+		DeckManager.openDeck(player, num);
+
+
 	}
 
 
