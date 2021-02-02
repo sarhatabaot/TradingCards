@@ -395,7 +395,7 @@ public class CardUtil {
 		NBTItem nbtItem = new NBTItem(itemStack);
 		return nbtItem.getBoolean("isCard");
 	}
-	
+
 	private static boolean isCardMaterial(final  Material material) {
 		return material == Material.valueOf(plugin.getMainConfig().cardMaterial);
 	}

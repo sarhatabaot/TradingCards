@@ -1,6 +1,7 @@
 package media.xen.tradingcards;
 
 
+import de.tr7zw.nbtapi.NBTItem;
 import media.xen.tradingcards.config.TradingCardsConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -15,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class DeckManager {
 	private static TradingCards plugin;
@@ -88,7 +90,7 @@ public class DeckManager {
 		p.openInventory(inv);
 	}
 	@NotNull
-	public static ItemStack createDeck(@NotNull final Player p, final int num) {
+	public static ItemStack createDeckItem(@NotNull final Player p, final int num) {
 		ItemStack deck = TradingCardsConfig.getBlankDeck();
 		ItemMeta deckMeta = deck.getItemMeta();
 		deckMeta.setDisplayName(plugin.cMsg(plugin.getConfig().getString("General.Deck-Prefix") + p.getName() + "'s Deck #" + num));
@@ -101,11 +103,29 @@ public class DeckManager {
 		return deck;
 	}
 
+	@NotNull
+	public static ItemStack createDeck(@NotNull final Player player, final int num) {
+		NBTItem nbtItem = new NBTItem(createDeckItem(player,num));
+		nbtItem.setBoolean("isDeck",true);
+		return nbtItem.getItem();
+	}
+
+	public static boolean isDeckMaterial(final Material material) {
+		return material == Material.valueOf(plugin.getMainConfig().deckMaterial);
+	}
+
+	public static boolean isDeck(final ItemStack item){
+		return isDeckMaterial(item.getType()) && hasEnchantments(item) && new NBTItem(item).getBoolean("isDeck");
+	}
+
+	private static boolean hasEnchantments(final ItemStack item) {
+		return item.containsEnchantment(Enchantment.DURABILITY) && item.getEnchantmentLevel(Enchantment.DURABILITY) == 10;
+	}
 
 	public static boolean hasDeck(@NotNull final Player p,final int num) {
-		for (final ItemStack i : p.getInventory()) {
-			if (i != null && i.getType() == Material.valueOf(plugin.getConfig().getString("General.Deck-Material")) && i.containsEnchantment(Enchantment.DURABILITY) && i.getEnchantmentLevel(Enchantment.DURABILITY) == 10) {
-				String name = i.getItemMeta().getDisplayName();
+		for (final ItemStack itemStack : p.getInventory()) {
+			if (itemStack != null && isDeck(itemStack)) {
+				String name = itemStack.getItemMeta().getDisplayName();
 				String[] splitName = name.split("#");
 				if (num == Integer.parseInt(splitName[1])) {
 					return true;
