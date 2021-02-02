@@ -1,5 +1,6 @@
 package media.xen.tradingcards;
 
+import de.tr7zw.nbtapi.NBTItem;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
@@ -387,12 +388,16 @@ public class CardUtil {
 		return plugin.getCardsConfig().getConfig().contains("Cards." + rarity + "." + name) && plugin.getCardsConfig().getConfig().getString("Cards." + rarity + "." + name + ".Type").equalsIgnoreCase(type);
 	}
 
-	@Deprecated
-	/*
-	 * TODO
-	 * We should check if an item is a card a different way, as the card material is an obtainable item
-	 */
 	public static boolean isCard(final ItemStack itemStack) {
-		return itemStack.getType() == Material.valueOf(plugin.getConfig().getString("General.Card-Material"));
+		if(!isCardMaterial(itemStack.getType()))
+			return false;
+
+		NBTItem nbtItem = new NBTItem(itemStack);
+		return nbtItem.getBoolean("isCard");
 	}
+
+	private static boolean isCardMaterial(final  Material material) {
+		return material == Material.valueOf(plugin.getMainConfig().cardMaterial);
+	}
+
 }

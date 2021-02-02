@@ -80,6 +80,11 @@
             <id>lumine-repo</id>
             <url>https://mvn.lumine.io/repository/maven-snapshots/</url>
         </repository>
+        <repository>
+            <id>codemc-repo</id>
+            <url>https://repo.codemc.org/repository/maven-public/</url>
+            <layout>default</layout>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -118,6 +123,12 @@
             <artifactId>ConfigLoader</artifactId>
             <version>main-3ecaac350c-1</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>de.tr7zw</groupId>
+            <artifactId>item-nbt-api-plugin</artifactId>
+            <version>2.5.0</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>
