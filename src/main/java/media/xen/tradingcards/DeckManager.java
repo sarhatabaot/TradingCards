@@ -54,11 +54,11 @@ public class DeckManager {
 
 			String[] splitContents = s.split(",");
 			final String rarity = splitContents[0];
-			final String cardName = splitContents[1];
+			String cardName = splitContents[1];
 			final int amount = Integer.parseInt(splitContents[2]);
 			final String isShiny = splitContents[3];
-			if (splitContents[1] == null) {
-				splitContents[1] = "None";
+			if (cardName == null) {
+				cardName = "None";
 			}
 			if (rarity.isEmpty() || "BLANK".equalsIgnoreCase(rarity) || "None".equalsIgnoreCase(rarity))
 				isNull = true;
@@ -76,9 +76,6 @@ public class DeckManager {
 				card.setAmount(amount);
 				cards.add(card);
 			}
-
-			//quantity.add(amount);
-			//plugin.debug("Put " + card + "," + amount + " into respective lists.");
 
 			isNull = false;
 		}

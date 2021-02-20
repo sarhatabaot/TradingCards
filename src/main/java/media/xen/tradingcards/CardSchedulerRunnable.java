@@ -52,7 +52,7 @@ public class CardSchedulerRunnable extends BukkitRunnable {
 			for (final Player p : Bukkit.getOnlinePlayers()) {
 				ConfigurationSection cards = plugin.getCardsConfig().getConfig().getConfigurationSection("Cards." + keyToUse);
 				Set<String> cardKeys = cards.getKeys(false);
-				int rIndex = plugin.r.nextInt(cardKeys.size());
+				int rIndex = plugin.getRandom().nextInt(cardKeys.size());
 				int i = 0;
 				String cardName = "";
 

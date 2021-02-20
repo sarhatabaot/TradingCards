@@ -58,7 +58,7 @@ public class CardUtil {
 			plugin.debug("Pack has upgrade chance set to 0! Exiting..");
 			return rarityMap.get(curRarity);
 		}
-		int random = plugin.r.nextInt(100000) + 1;
+		int random = plugin.getRandom().nextInt(100000) + 1;
 		if (random <= chance) {
 			if (curRarity < i) curRarity++;
 			plugin.debug("Card upgraded! new rarity is " + rarityMap.get(curRarity) + "!");
@@ -152,7 +152,7 @@ public class CardUtil {
 		boolean hasShinyVersion = plugin.getCardsConfig().getConfig().getBoolean("Cards." + rarityName + "." + cardName + ".Has-Shiny-Version");
 		boolean isShiny = false;
 		if (hasShinyVersion) {
-			int shinyRandom = plugin.r.nextInt(100) + 1;
+			int shinyRandom = plugin.getRandom().nextInt(100) + 1;
 			if (shinyRandom <= plugin.getConfig().getInt("Chances.Shiny-Version-Chance")) {
 				isShiny = true;
 			}
@@ -209,7 +209,7 @@ public class CardUtil {
 
 		Set<String> cards = cardSection.getKeys(false);
 		List<String> cardNames = new ArrayList<>(cards);
-		int cIndex = plugin.r.nextInt(cardNames.size());
+		int cIndex = plugin.getRandom().nextInt(cardNames.size());
 		String cardName = cardNames.get(cIndex);
 		return CardManager.getCard(cardName, rarityName, forcedShiny);
 	}
@@ -304,7 +304,7 @@ public class CardUtil {
 	 */
 	@NotNull
 	public static String calculateRarity(EntityType e, boolean alwaysDrop) {
-		int shouldItDrop = plugin.r.nextInt(100) + 1;
+		int shouldItDrop = plugin.getRandom().nextInt(100) + 1;
 		String type = getMobTypeOrNone(e, shouldItDrop, alwaysDrop);
 		plugin.debug("shouldItDrop Num: " + shouldItDrop);
 
@@ -317,7 +317,7 @@ public class CardUtil {
 		//todo loads the rarirty index + chances everytime it needs to caclulate a rarity..
 		int i = 0;
 		int mini = 0;
-		int random = plugin.r.nextInt(100000) + 1;
+		int random = plugin.getRandom().nextInt(100000) + 1;
 		plugin.debug("Random Card Num: " + random);
 		plugin.debug("Type: " + type);
 

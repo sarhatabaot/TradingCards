@@ -40,21 +40,20 @@ import org.jetbrains.annotations.NotNull;
 
 
 public class TradingCards extends JavaPlugin implements Listener {
-	List<EntityType> hostileMobs = new ArrayList<>();
-	List<EntityType> passiveMobs = new ArrayList<>();
-	List<EntityType> neutralMobs = new ArrayList<>();
-	List<EntityType> bossMobs = new ArrayList<>();
+	private List<EntityType> hostileMobs = new ArrayList<>();
+	private List<EntityType> passiveMobs = new ArrayList<>();
+	private List<EntityType> neutralMobs = new ArrayList<>();
+	private List<EntityType> bossMobs = new ArrayList<>();
 	public static Permission permRarities = new Permission("cards.rarity");
 	private boolean hasVault;
 	private TradingCardsConfig mainConfig;
 	private DeckConfig deckConfig;
 	private MessagesConfig messagesConfig;
 	private CardsConfig cardsConfig;
-	private boolean usingSqlite;
 	private Economy econ = null;
 	public static Permission perms = null;
 	public static Chat chat = null;
-	public Random r = new Random();
+	private Random random = new Random();
 	int taskid;
 
 	public boolean isHasVault() {
@@ -91,9 +90,7 @@ public class TradingCards extends JavaPlugin implements Listener {
 
 
 	private void hookFileSystem() {
-		this.usingSqlite = false;
 		getLogger().info("Legacy YML mode is enabled!");
-
 	}
 
 	private void registerListeners() {
@@ -184,15 +181,15 @@ public class TradingCards extends JavaPlugin implements Listener {
 	private boolean setupEconomy() {
 		if (this.getServer().getPluginManager().getPlugin("Vault") == null) {
 			return false;
-		} else {
-			RegisteredServiceProvider<Economy> rsp = Bukkit.getServicesManager().getRegistration(Economy.class);
-			if (rsp == null) {
-				return false;
-			} else {
-				econ = rsp.getProvider();
-				return econ != null;
-			}
 		}
+
+		RegisteredServiceProvider<Economy> rsp = Bukkit.getServicesManager().getRegistration(Economy.class);
+		if (rsp == null) {
+			return false;
+		}
+
+		econ = rsp.getProvider();
+		return econ != null;
 	}
 
 	public MessagesConfig getMessagesConfig() {
@@ -214,7 +211,6 @@ public class TradingCards extends JavaPlugin implements Listener {
 	public boolean isMobBoss(EntityType e) {
 		return this.bossMobs.contains(e);
 	}
-
 
 
 	@Deprecated
@@ -323,14 +319,13 @@ public class TradingCards extends JavaPlugin implements Listener {
 	}
 
 	@Deprecated
-	//TODO Why doesn't this return a boolean?
 	public boolean hasCard(Player player, String card, String rarity) {
-		return getDeckConfig().containsCard(player.getUniqueId(),card,rarity);
+		return getDeckConfig().containsCard(player.getUniqueId(), card, rarity);
 	}
 
 	@Deprecated
 	public boolean hasShiny(Player p, String card, String rarity) {
-		return getDeckConfig().containsShinyCard(p.getUniqueId(),card,rarity);
+		return getDeckConfig().containsShinyCard(p.getUniqueId(), card, rarity);
 	}
 
 	@Deprecated
@@ -523,9 +518,19 @@ public class TradingCards extends JavaPlugin implements Listener {
 
 		int hours = Math.max(this.getConfig().getInt("General.Schedule-Card-Time-In-Hours"), 1);
 
-		String tmessage = messagesConfig.timerMessage.replace("%hour%", String.valueOf(hours));
-		Bukkit.broadcastMessage(getPrefixedMessage(tmessage));
+		Bukkit.broadcastMessage(getPrefixedTimerMessage(hours));
 		this.taskid = new CardSchedulerRunnable(this).runTaskTimer(this, ((long) hours * 20 * 60 * 60), ((long) hours * 20 * 60 * 60)).getTaskId();
 	}
 
+	private String getPrefixedTimerMessage(int hours) {
+		return getPrefixedMessage(messagesConfig.timerMessage.replace("%hour%", String.valueOf(hours)));
+	}
+
+	public Random getRandom() {
+		return random;
+	}
+
+	public void setRandom(Random random) {
+		this.random = random;
+	}
 }
