@@ -91,7 +91,6 @@ public class DeckListener extends SimpleListener {
 			if (it.getType() == Material.valueOf(plugin.getMainConfig().cardMaterial) && it.getItemMeta().hasDisplayName()) {
 				List<String> lore = it.getItemMeta().getLore();
 				String rarity = CardUtil.getRarityName(ChatColor.stripColor(lore.get(lore.size() - 1)));
-				//final String cardName = StringUtils.replaceEach(it.getItemMeta().getDisplayName(), new String[]{plugin.getMainConfig().cardPrefix, plugin.getMainConfig().shinyName + " "}, new String[]{"", ""});
 				String card = CardUtil.getCardName(rarity, it.getItemMeta().getDisplayName());
 				String amount = String.valueOf(it.getAmount());
 				String shiny = "no";
