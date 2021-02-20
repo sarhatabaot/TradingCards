@@ -394,7 +394,7 @@ public class CardsCommand extends BaseCommand {
 				for (final Player p5 : Bukkit.getOnlinePlayers()) {
 					ConfigurationSection cards4 = plugin.getCardsConfig().getConfig().getConfigurationSection("Cards." + keyToUse);
 					Set<String> cardKeys4 = cards4.getKeys(false);
-					int rIndex = plugin.r.nextInt(cardKeys4.size());
+					int rIndex = plugin.getRandom().nextInt(cardKeys4.size());
 					int l = 0;
 					String cardName = "";
 
