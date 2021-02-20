@@ -17,11 +17,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class DeckManager {
 	private static TradingCards plugin;
 
-	public static void init(final TradingCards plugin){
+	public static void init(final TradingCards plugin) {
 		DeckManager.plugin = plugin;
 	}
 
@@ -29,66 +30,68 @@ public class DeckManager {
 	public static void openDeck(Player p, int deckNum) {
 		String uuidString = p.getUniqueId().toString();
 		plugin.debug("Deck UUID: " + uuidString);
+		p.openInventory(generateDeckInventory(p, deckNum));
+	}
 
-		List<String> contents = plugin.getDeckConfig().getConfig().getStringList("Decks.Inventories." + uuidString + "." + deckNum);
+	private static Inventory generateDeckInventory(final Player player, final int deckNum) {
+		List<ItemStack> cards = addCards(player.getUniqueId(), deckNum);
+		Inventory inv = Bukkit.createInventory(null, getDeckSize(), plugin.cMsg("&c" + player.getName() + "'s Deck #" + deckNum));
+		for (ItemStack cardItem : cards) {
+			inv.addItem(cardItem);
+			plugin.debug("Item=" + cardItem.getType().toString() + ",amount=" + cardItem.getAmount() + ", added to inventory");
+		}
+		return inv;
+	}
+
+
+	private static List<ItemStack> addCards(final UUID uuid, final int deckNum) {
+		List<String> contents = plugin.getDeckConfig().getConfig().getStringList("Decks.Inventories." + uuid.toString() + "." + deckNum);
 		List<ItemStack> cards = new ArrayList<>();
-		List<Integer> quantity = new ArrayList<>();
 		ItemStack card = null;
 		boolean isNull = false;
-
 		for (final String s : contents) {
 			plugin.debug("Deck file content: " + s);
 
 			String[] splitContents = s.split(",");
 			final String rarity = splitContents[0];
 			final String cardName = splitContents[1];
-			final String amount = splitContents[2];
+			final int amount = Integer.parseInt(splitContents[2]);
 			final String isShiny = splitContents[3];
 			if (splitContents[1] == null) {
 				splitContents[1] = "None";
 			}
+			if (rarity.isEmpty() || "BLANK".equalsIgnoreCase(rarity) || "None".equalsIgnoreCase(rarity))
+				isNull = true;
 
 			if (isShiny.equalsIgnoreCase("yes")) {
-				if (!rarity.equalsIgnoreCase("BLANK") && !rarity.equalsIgnoreCase("None") && !rarity.isEmpty()) {
-					card = CardManager.getCard(cardName,rarity,true);
-					card.setAmount(Integer.parseInt(amount));
-				} else {
-					plugin.getLogger().warning("A null card has been found in a deck. It was truncated for safety.");
-					isNull = true;
-				}
-			} else if (!rarity.equalsIgnoreCase("None") && !rarity.equalsIgnoreCase("BLANK") && !rarity.isEmpty()) {
-				card = CardManager.getCard(cardName,rarity,Integer.parseInt(amount));
-			} else {
-				plugin.getLogger().warning("A null card has been found in a deck. It was truncated for safety.");
-				isNull = true;
+				card = CardManager.getCard(cardName, rarity, true);
+				card.setAmount(amount);
+			} else if (!isNull) {
+				card = CardManager.getCard(cardName, rarity, amount);
 			}
 
-			if (!isNull) {
+			if (isNull) {
+				plugin.getLogger().warning("A null card has been found in a deck. It was truncated for safety.");
+			} else {
+				card.setAmount(amount);
 				cards.add(card);
 			}
 
-			quantity.add(Integer.valueOf(splitContents[2]));
-			plugin.debug("Put " + card + "," + splitContents[2] + " into respective lists.");
+			//quantity.add(amount);
+			//plugin.debug("Put " + card + "," + amount + " into respective lists.");
 
 			isNull = false;
 		}
-
-		int invSlots = 27;
-		if (plugin.getMainConfig().useLargeDecks) {
-			invSlots = 54;
-		}
-
-		Inventory inv = Bukkit.createInventory(null, invSlots, plugin.cMsg("&c" + p.getName() + "'s Deck #" + deckNum));
-		int iter = 0;
-		for (Iterator<ItemStack> var12 = cards.iterator(); var12.hasNext(); ++iter) {
-			ItemStack i = var12.next();
-			plugin.debug("Item " + i.getType().toString() + " added to inventory!");
-			i.setAmount(quantity.get(iter));
-			inv.addItem(i);
-		}
-
-		p.openInventory(inv);
+		return cards;
 	}
+
+
+	private static int getDeckSize() {
+		if (plugin.getMainConfig().useLargeDecks)
+			return 54;
+		return 27;
+	}
+
 	@NotNull
 	public static ItemStack createDeckItem(@NotNull final Player p, final int num) {
 		ItemStack deck = TradingCardsConfig.getBlankDeck();
@@ -105,8 +108,8 @@ public class DeckManager {
 
 	@NotNull
 	public static ItemStack createDeck(@NotNull final Player player, final int num) {
-		NBTItem nbtItem = new NBTItem(createDeckItem(player,num));
-		nbtItem.setBoolean("isDeck",true);
+		NBTItem nbtItem = new NBTItem(createDeckItem(player, num));
+		nbtItem.setBoolean("isDeck", true);
 		return nbtItem.getItem();
 	}
 
@@ -114,7 +117,7 @@ public class DeckManager {
 		return material == Material.valueOf(plugin.getMainConfig().deckMaterial);
 	}
 
-	public static boolean isDeck(final ItemStack item){
+	public static boolean isDeck(final ItemStack item) {
 		return isDeckMaterial(item.getType()) && hasEnchantments(item) && new NBTItem(item).getBoolean("isDeck");
 	}
 
@@ -122,7 +125,7 @@ public class DeckManager {
 		return item.containsEnchantment(Enchantment.DURABILITY) && item.getEnchantmentLevel(Enchantment.DURABILITY) == 10;
 	}
 
-	public static boolean hasDeck(@NotNull final Player p,final int num) {
+	public static boolean hasDeck(@NotNull final Player p, final int num) {
 		for (final ItemStack itemStack : p.getInventory()) {
 			if (itemStack != null && isDeck(itemStack)) {
 				String name = itemStack.getItemMeta().getDisplayName();
