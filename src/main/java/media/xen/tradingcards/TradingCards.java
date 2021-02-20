@@ -29,7 +29,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
+
 import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -38,7 +38,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 import org.jetbrains.annotations.NotNull;
 
 
-public class TradingCards extends JavaPlugin implements Listener {
+public class TradingCards extends JavaPlugin {
 	private List<EntityType> hostileMobs = new ArrayList<>();
 	private List<EntityType> passiveMobs = new ArrayList<>();
 	private List<EntityType> neutralMobs = new ArrayList<>();
@@ -92,7 +92,6 @@ public class TradingCards extends JavaPlugin implements Listener {
 	private void registerListeners() {
 		PluginManager pm = Bukkit.getPluginManager();
 		pm.addPermission(new Permission("cards.rarity"));
-		pm.registerEvents(this, this);
 		pm.registerEvents(new DropListener(this), this);
 		pm.registerEvents(new PackListener(this), this);
 		pm.registerEvents(new MobSpawnListener(this), this);
@@ -209,107 +208,7 @@ public class TradingCards extends JavaPlugin implements Listener {
 
 	@Deprecated
 	public boolean deleteCard(Player p, String card, String rarity) {
-		if (hasCard(p, card, rarity)) {
-			String uuidString = p.getUniqueId().toString();
-			int deckNumber = 0;
-			ConfigurationSection deckList = getDeckConfig().getConfig().getConfigurationSection("Decks.Inventories." + uuidString);
-			if (deckList != null) for (String s : deckList.getKeys(false)) {
-				deckNumber += Integer.parseInt(s);
-				debug("Deck running total: " + deckNumber);
-			}
-			if (deckNumber == 0) {
-				return true;
-			}
-
-			debug("Decks:" + deckNumber);
-			for (int i = 0; i < deckNumber; i++) {
-				if (getDeckConfig().getConfig().contains("Decks.Inventories." + uuidString + "." + (i + 1))) {
-					List<String> contents = getDeckConfig().getConfig().getStringList("Decks.Inventories." + uuidString + "." + (i + 1));
-					List<String> contentsNew = new ArrayList<>();
-					for (String s2 : contents) {
-						String[] splitContents = s2.split(",");
-						if (getConfig().getBoolean("General.Eat-Shiny-Cards") && splitContents[3].equalsIgnoreCase("yes")) {
-							debug("Eat-Shiny-Cards is true and card is shiny!");
-							if (splitContents[0].equalsIgnoreCase(rarity)) {
-								if (splitContents[1].equalsIgnoreCase(card)) {
-									if (Integer.parseInt(splitContents[2]) <= 1) continue;
-									int number = Integer.parseInt(splitContents[2]);
-									splitContents[2] = String.valueOf(number - 1);
-									StringBuilder strBuilder = new StringBuilder();
-									for (final String splitContent : splitContents) {
-										strBuilder.append(splitContent);
-										strBuilder.append(",");
-									}
-									String newString = strBuilder.substring(0, strBuilder.length() - 1);
-									contentsNew.add(newString);
-									continue;
-								}
-								contentsNew.add(s2);
-								continue;
-							}
-							contentsNew.add(s2);
-							continue;
-						}
-						if (getConfig().getBoolean("General.Eat-Shiny-Cards") && splitContents[3].equalsIgnoreCase("no")) {
-							debug("Eat-Shiny-Cards is true and card is not shiny!");
-							if (splitContents[0].equalsIgnoreCase(rarity)) {
-								if (splitContents[1].equalsIgnoreCase(card)) {
-									if (Integer.parseInt(splitContents[2]) <= 1) continue;
-									int number = Integer.parseInt(splitContents[2]);
-									splitContents[2] = String.valueOf(number - 1);
-									StringBuilder strBuilder = new StringBuilder();
-									for (final String splitContent : splitContents) {
-										strBuilder.append(splitContent);
-										strBuilder.append(",");
-									}
-									String newString = strBuilder.substring(0, strBuilder.length() - 1);
-									contentsNew.add(newString);
-									continue;
-								}
-								contentsNew.add(s2);
-								continue;
-							}
-							contentsNew.add(s2);
-							continue;
-						}
-						if (!getConfig().getBoolean("General.Eat-Shiny-Cards") && splitContents[3].equalsIgnoreCase("yes")) {
-							debug("Eat-Shiny-Cards is false and card is shiny!");
-							if (!splitContents[0].equalsIgnoreCase(rarity)) continue;
-							debug("Adding card..");
-							contentsNew.add(s2);
-							continue;
-						}
-						if (getConfig().getBoolean("General.Eat-Shiny-Cards") || !splitContents[3].equalsIgnoreCase("no"))
-							continue;
-						debug("Eat-Shiny-Cards is false and card is not shiny!");
-						if (splitContents[0].equalsIgnoreCase(rarity)) {
-							if (splitContents[1].equalsIgnoreCase(card)) {
-								if (Integer.parseInt(splitContents[2]) <= 1) continue;
-								int number = Integer.parseInt(splitContents[2]);
-								splitContents[2] = String.valueOf(number - 1);
-								StringBuilder strBuilder = new StringBuilder();
-								for (final String splitContent : splitContents) {
-									strBuilder.append(splitContent);
-									strBuilder.append(",");
-								}
-								String newString = strBuilder.substring(0, strBuilder.length() - 1);
-								contentsNew.add(newString);
-								continue;
-							}
-							contentsNew.add(s2);
-							continue;
-						}
-						contentsNew.add(s2);
-					}
-					getDeckConfig().getConfig().set("Decks.Inventories." + uuidString + "." + (i + 1), contentsNew);
-					getDeckConfig().saveConfig();
-					reloadAllConfig();
-					contentsNew.clear();
-				}
-			}
-
-		}
-		return true;
+		return getCardsConfig().deleteCard(p,card,rarity);
 	}
 
 	@Deprecated
