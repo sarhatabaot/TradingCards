@@ -20,7 +20,6 @@ import media.xen.tradingcards.listeners.DeckListener;
 import media.xen.tradingcards.listeners.MobSpawnListener;
 import media.xen.tradingcards.listeners.PackListener;
 import media.xen.tradingcards.listeners.DropListener;
-import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.sarhatabaot.configloader.ConfigLoader;
 import org.apache.commons.lang.WordUtils;
@@ -44,15 +43,12 @@ public class TradingCards extends JavaPlugin implements Listener {
 	private List<EntityType> passiveMobs = new ArrayList<>();
 	private List<EntityType> neutralMobs = new ArrayList<>();
 	private List<EntityType> bossMobs = new ArrayList<>();
-	public static Permission permRarities = new Permission("cards.rarity");
 	private boolean hasVault;
 	private TradingCardsConfig mainConfig;
 	private DeckConfig deckConfig;
 	private MessagesConfig messagesConfig;
 	private CardsConfig cardsConfig;
 	private Economy econ = null;
-	public static Permission perms = null;
-	public static Chat chat = null;
 	private Random random = new Random();
 	int taskid;
 
@@ -95,7 +91,7 @@ public class TradingCards extends JavaPlugin implements Listener {
 
 	private void registerListeners() {
 		PluginManager pm = Bukkit.getPluginManager();
-		pm.addPermission(permRarities);
+		pm.addPermission(new Permission("cards.rarity"));
 		pm.registerEvents(this, this);
 		pm.registerEvents(new DropListener(this), this);
 		pm.registerEvents(new PackListener(this), this);
@@ -173,9 +169,7 @@ public class TradingCards extends JavaPlugin implements Listener {
 	@Override
 	public void onDisable() {
 		econ = null;
-		TradingCards.perms = null;
-		TradingCards.chat = null;
-		this.getServer().getPluginManager().removePermission(permRarities);
+		this.getServer().getPluginManager().removePermission("cards.rarity");
 	}
 
 	private boolean setupEconomy() {
