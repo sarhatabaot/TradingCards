@@ -32,6 +32,10 @@ public class PackListener extends SimpleListener {
 		}
 	}
 
+	private boolean hasExtra(List<String> lore){
+		return lore.size() > 2;
+	}
+
 	@EventHandler
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
@@ -46,58 +50,57 @@ public class PackListener extends SimpleListener {
 
 		Player player = event.getPlayer();
 		final ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
-		if (itemInMainHand.getType() == Material.valueOf(plugin.getMainConfig().boosterPackMaterial)  && player.getInventory().getItemInMainHand().containsEnchantment(Enchantment.ARROW_INFINITE)) {
-			if(!player.hasPermission("cards.openboosterpack")) {
-				sendMessage(player,plugin.getPrefixedMessage("No permission: cards.openboosterpack"));
-				return;
-			}
-			if (player.getGameMode() == GameMode.CREATIVE) {
-				player.sendMessage(plugin.cMsg(plugin.getMessagesConfig().prefix + " " + plugin.getMessagesConfig().noCreative));
-				return;
-			}
+		if (itemInMainHand.getType() != Material.valueOf(plugin.getMainConfig().boosterPackMaterial) || !player.getInventory().getItemInMainHand().containsEnchantment(Enchantment.ARROW_INFINITE)) {
+			return;
+		}
 
-			ItemMeta packMeta = itemInMainHand.getItemMeta();
-			List<String> lore = packMeta.getLore();
-			removeItemMain(player);
+		if (!player.hasPermission("cards.openboosterpack")) {
+			sendMessage(player, plugin.getPrefixedMessage("No permission: cards.openboosterpack"));
+			return;
+		}
+		if (player.getGameMode() == GameMode.CREATIVE) {
+			player.sendMessage(plugin.cMsg(plugin.getMessagesConfig().prefix + " " + plugin.getMessagesConfig().noCreative));
+			return;
+		}
 
-			boolean hasExtra = false;
-			if (lore.size() > 2) {
-				hasExtra = true;
-			}
+		ItemMeta packMeta = itemInMainHand.getItemMeta();
+		List<String> lore = packMeta.getLore();
+		removeItemMain(player);
 
-			String[] line1 = (lore.get(0)).split(" ", 2);
-			String[] line2 = (lore.get(1)).split(" ", 2);
-			String[] line3 = new String[]{""};
-			if (hasExtra) {
-				line3 = (lore.get(2)).split(" ", 2);
-			}
+		boolean hasExtra = hasExtra(lore);
 
-			int normalCardAmount = Integer.parseInt(ChatColor.stripColor(line1[0]));
-			int specialCardAmount = Integer.parseInt(ChatColor.stripColor(line2[0]));
-			int extraCardAmount = 0;
-			if (hasExtra) {
-				extraCardAmount = Integer.parseInt(ChatColor.stripColor(line3[0]));
-			}
+		String[] line1 = (lore.get(0)).split(" ", 2);
+		String[] line2 = (lore.get(1)).split(" ", 2);
+		String[] line3 = new String[]{""};
+		if (hasExtra) {
+			line3 = (lore.get(2)).split(" ", 2);
+		}
 
-			player.sendMessage(plugin.cMsg(plugin.getMessagesConfig().prefix + " " + plugin.getMessagesConfig().openBoosterPack));
+		int normalCardAmount = Integer.parseInt(ChatColor.stripColor(line1[0]));
+		int specialCardAmount = Integer.parseInt(ChatColor.stripColor(line2[0]));
+		int extraCardAmount = 0;
+		if (hasExtra) {
+			extraCardAmount = Integer.parseInt(ChatColor.stripColor(line3[0]));
+		}
 
-			for (int i = 0; i < normalCardAmount; ++i) {
-				CardUtil.dropItem(player, CardUtil.getRandomCard(WordUtils.capitalizeFully(line1[1]), false));
-			}
+		player.sendMessage(plugin.cMsg(plugin.getMessagesConfig().prefix + " " + plugin.getMessagesConfig().openBoosterPack));
 
-			for (int i = 0; i < specialCardAmount; ++i) {
-				CardUtil.dropItem(player, CardUtil.getRandomCard(WordUtils.capitalizeFully(line2[1]), false));
-			}
+		for (int i = 0; i < normalCardAmount; ++i) {
+			CardUtil.dropItem(player, CardUtil.getRandomCard(WordUtils.capitalizeFully(line1[1]), false));
+		}
 
-			if (hasExtra) {
-				for (int i = 0; i < extraCardAmount; ++i) {
-					CardUtil.dropItem(player, CardUtil.getRandomCard(WordUtils.capitalizeFully(line3[1]), false));
-				}
+		for (int i = 0; i < specialCardAmount; ++i) {
+			CardUtil.dropItem(player, CardUtil.getRandomCard(WordUtils.capitalizeFully(line2[1]), false));
+		}
+
+		if (hasExtra) {
+			for (int i = 0; i < extraCardAmount; ++i) {
+				CardUtil.dropItem(player, CardUtil.getRandomCard(WordUtils.capitalizeFully(line3[1]), false));
 			}
 		}
 
-	}
 
+	}
 
 
 }
