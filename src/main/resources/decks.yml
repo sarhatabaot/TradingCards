@@ -1,3 +1,4 @@
-# Ya'll shouldn't touch this unless you know what you're doing.
+# Don't touch this unless you know what you're doing.
+# This files stores the decks of people.
 Decks:
   Inventories: []
