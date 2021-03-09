@@ -363,34 +363,23 @@ public class TradingCards extends JavaPlugin {
 			return false;
 		}
 
-		ConfigurationSection cards = getCardsConfig().getConfig().getConfigurationSection("Cards." + this.isRarityAndFormat(rarity));
-		Set<String> cardKeys = cards.getKeys(false);
-		int i = 0;
+		Set<String> cardNamesKeys = getCardsConfig().getConfig().getConfigurationSection("Cards." + this.isRarityAndFormat(rarity)).getKeys(false);
+		return countCardsInRarity(p,rarity,cardNamesKeys) >= cardNamesKeys.size()-1;
+	}
+
+	private int countCardsInRarity(final Player player, final String rarity, final Set<String> cardNamesKeys) {
 		int numCardsCounter = 0;
 
-		for (Iterator<String> var7 = cardKeys.iterator(); var7.hasNext(); ++i) {
-			String key = var7.next();
-			debug("Iteration:: " + i);
-			debug("Key: " + key);
+		for (String cardName: cardNamesKeys) {
+			debug("CardName: " + cardName);
 			debug("Counter: " + numCardsCounter);
 
-			boolean shinyVersion = false;
-			boolean regularVersion = false;
-			if (hasShiny(p, key, isRarityAndFormat(rarity))) {
-				shinyVersion = true;
-			}
-
-			if (hasCard(p, key, isRarityAndFormat(rarity))) {
-				regularVersion = true;
-			}
-
-			if (regularVersion || shinyVersion) {
-				++numCardsCounter;
+			if (hasShiny(player, cardName, isRarityAndFormat(rarity))
+					|| hasCard(player, cardName, isRarityAndFormat(rarity))) {
+				numCardsCounter++;
 			}
 		}
-
-		return numCardsCounter >= i;
-
+		return numCardsCounter;
 	}
 
 	@Deprecated

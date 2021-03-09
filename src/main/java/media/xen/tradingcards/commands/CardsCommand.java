@@ -355,9 +355,9 @@ public class CardsCommand extends BaseCommand {
 			//TODO wait, why does the plugin delete a rarity once its been completed?
 			// instead it should mark in a data file if a player has completed the rarity or not...
 			// playeruuid:rarityname,1:
-			if (!plugin.deleteRarity((Player) sender, plugin.isRarityAndFormat(rarity)) && plugin.getMainConfig().debugMode) {
-				plugin.getLogger().warning("Cannot delete rarity: " + plugin.isRarityAndFormat(rarity));
-			}
+			//if (!plugin.deleteRarity((Player) sender, plugin.isRarityAndFormat(rarity)) && plugin.getMainConfig().debugMode) {
+			//	plugin.getLogger().warning("Cannot delete rarity: " + plugin.isRarityAndFormat(rarity));
+			//}
 		} else if (plugin.getConfig().getBoolean("General.Eat-Shiny-Cards")) {
 			sendPrefixedMessage(sender, plugin.getMessagesConfig().rewardError2);
 		} else {

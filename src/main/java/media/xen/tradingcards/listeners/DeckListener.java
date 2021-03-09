@@ -8,7 +8,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -57,8 +56,6 @@ public class DeckListener extends SimpleListener {
 		String[] nameSplit = name.split("#");
 		int num = Integer.parseInt(nameSplit[1]);
 		DeckManager.openDeck(player, num);
-
-
 	}
 
 
@@ -71,46 +68,46 @@ public class DeckListener extends SimpleListener {
 
 		debug("Deck closed");
 
-		String[] title = viewTitle.split("'");
-		String[] titleNum = viewTitle.split("#");
-		int deckNum = Integer.parseInt(titleNum[1]);
-		String playerName = ChatColor.stripColor(title[0]);
-		debug("Deck num: " + deckNum);
-		debug("Title: " + title[0]);
-		debug("Title: " + title[1]);
+		int deckNum = Integer.parseInt(viewTitle.split("#")[1]);
+		String playerName = ChatColor.stripColor(viewTitle.split("'")[0]);
+		debug("Deck num: " + deckNum+",PlayerName: " + playerName+",DeckNumber:  "+ deckNum);
+
 
 		UUID id = UuidUtil.getPlayerUuid(playerName);
 		List<String> serialized = new ArrayList<>();
-		int j = e.getInventory().getContents().length;
 
-		for (int i = 0; i < j; ++i) {
-			ItemStack it = e.getInventory().getContents()[i];
-			if (it == null || it.getItemMeta().getLore() == null)
+		for (ItemStack it : e.getInventory().getContents()) {
+			if (it == null || !it.getItemMeta().hasLore())
 				continue;
 
-			if (it.getType() == Material.valueOf(plugin.getMainConfig().cardMaterial) && it.getItemMeta().hasDisplayName()) {
-				List<String> lore = it.getItemMeta().getLore();
-				String rarity = CardUtil.getRarityName(ChatColor.stripColor(lore.get(lore.size() - 1)));
-				String card = CardUtil.getCardName(rarity, it.getItemMeta().getDisplayName());
-				String amount = String.valueOf(it.getAmount());
-				String shiny = "no";
-				if (it.containsEnchantment(Enchantment.ARROW_INFINITE)) {
-					shiny = "yes";
-				}
-
-				String serializedString = rarity + "," + card + "," + amount + "," + shiny;
-				serialized.add(serializedString);
-				debug("Added " + serializedString + " to deck file.");
-			} else if (plugin.getMainConfig().dropDeckItems) {
-				Player p = Bukkit.getPlayer(ChatColor.stripColor(title[0]));
-				World w = p.getWorld();
-				w.dropItemNaturally(p.getLocation(), it);
+			if (!CardUtil.isCard(it) && plugin.getMainConfig().dropDeckItems) {
+				Player player = Bukkit.getPlayer(id);
+				CardUtil.dropItem(player, it);
+				continue;
 			}
 
-			plugin.getDeckConfig().getConfig().set("Decks.Inventories." + id.toString() + "." + deckNum, serialized);
-			plugin.getDeckConfig().saveConfig();
+			String serializedString = formatSerializedString(it);
+			serialized.add(serializedString);
+			debug("Added " + serializedString + " to deck file.");
 		}
 
+		plugin.getDeckConfig().getConfig().set("Decks.Inventories." + id.toString() + "." + deckNum, serialized);
+		plugin.getDeckConfig().saveConfig();
+	}
 
+
+
+
+	private String formatSerializedString(ItemStack itemStack) {
+		List<String> lore = itemStack.getItemMeta().getLore();
+		String rarity = CardUtil.getRarityName(ChatColor.stripColor(lore.get(lore.size() - 1)));
+		String cardName = CardUtil.getCardName(rarity, itemStack.getItemMeta().getDisplayName());
+		String amount = String.valueOf(itemStack.getAmount());
+		String shiny = "no";
+		if (itemStack.containsEnchantment(Enchantment.ARROW_INFINITE)) {
+			shiny = "yes";
+		}
+
+		return rarity + "," + cardName + "," + amount + "," + shiny;
 	}
 }
