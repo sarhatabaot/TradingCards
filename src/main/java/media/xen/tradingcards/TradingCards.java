@@ -1,13 +1,6 @@
 package media.xen.tradingcards;
 
 import co.aikar.commands.BukkitCommandManager;
-
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-
 import com.google.common.collect.ImmutableList;
 import media.xen.tradingcards.commands.CardsCommand;
 import media.xen.tradingcards.commands.DeckCommand;
@@ -17,9 +10,9 @@ import media.xen.tradingcards.config.MessagesConfig;
 import media.xen.tradingcards.config.SimpleConfig;
 import media.xen.tradingcards.config.TradingCardsConfig;
 import media.xen.tradingcards.listeners.DeckListener;
+import media.xen.tradingcards.listeners.DropListener;
 import media.xen.tradingcards.listeners.MobSpawnListener;
 import media.xen.tradingcards.listeners.PackListener;
-import media.xen.tradingcards.listeners.DropListener;
 import media.xen.tradingcards.whitelist.PlayerBlacklist;
 import media.xen.tradingcards.whitelist.WorldBlacklist;
 import net.milkbowl.vault.economy.Economy;
@@ -27,17 +20,20 @@ import net.sarhatabaot.configloader.ConfigLoader;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-
 import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
 
 public class TradingCards extends JavaPlugin {

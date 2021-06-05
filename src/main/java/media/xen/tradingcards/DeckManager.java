@@ -36,7 +36,7 @@ public class DeckManager {
 		Inventory inv = Bukkit.createInventory(null, getDeckSize(), plugin.cMsg("&c" + player.getName() + "'s Deck #" + deckNum));
 		for (ItemStack cardItem : cards) {
 			inv.addItem(cardItem);
-			plugin.debug("Item=" + cardItem.getType().toString() + ",amount=" + cardItem.getAmount() + ", added to inventory");
+			plugin.debug("Item=" + cardItem.getType() + ",amount=" + cardItem.getAmount() + ", added to inventory");
 		}
 		return inv;
 	}
