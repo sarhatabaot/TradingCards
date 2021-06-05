@@ -6,7 +6,7 @@
 
     <groupId>media.xen</groupId>
     <artifactId>TradingCards</artifactId>
-    <version>5.1.3-D2</version>
+    <version>5.2.0-SNAPSHOT</version>
     <name>TradingCards (Modified-TI)</name>
     <properties>
         <java.version>11</java.version>
