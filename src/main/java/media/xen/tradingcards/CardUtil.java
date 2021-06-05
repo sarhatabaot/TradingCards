@@ -284,9 +284,8 @@ public class CardUtil {
 				return "None";
 			}
 
-			//TODO: Implement this
 			if (plugin.getConfig().getBoolean("Chances.Boss-Drop")) {
-				int var16 = plugin.getConfig().getInt("Chances.Boss-Drop-Rarity");
+				return plugin.getConfig().getString("Chances.Boss-Drop-Rarity");
 			}
 
 		}
