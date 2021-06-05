@@ -119,7 +119,10 @@ public class TradingCards extends JavaPlugin {
     public void onEnable() {
         cacheMobs();
         this.saveDefaultConfig();
-
+        this.playerBlacklistConfig = new SimpleConfig(this,"player-blacklist.yml");
+        this.worldBlacklistConfig = new SimpleConfig(this,"world-blacklist.yml");
+        playerBlacklistConfig.saveDefaultConfig();
+        worldBlacklistConfig.saveDefaultConfig();
         var playerBlacklist = new PlayerBlacklist(playerBlacklistConfig);
         var worldBlacklist = new WorldBlacklist(worldBlacklistConfig);
         registerListeners(playerBlacklist,worldBlacklist);

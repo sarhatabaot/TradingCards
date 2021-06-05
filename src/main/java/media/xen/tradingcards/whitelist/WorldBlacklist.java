@@ -1,7 +1,10 @@
 package media.xen.tradingcards.whitelist;
 
+import media.xen.tradingcards.TradingCards;
 import media.xen.tradingcards.config.SimpleConfig;
 import org.bukkit.World;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -15,9 +18,11 @@ public class WorldBlacklist {
     private List<String> listedWorlds;
     private WhitelistMode whitelistMode;
 
+
     public WorldBlacklist(SimpleConfig config) {
         this.config = config;
         loadWorlds();
+        setWhitelistMode();
     }
 
     private void loadWorlds() {
@@ -44,7 +49,6 @@ public class WorldBlacklist {
         if (this.whitelistMode == WhitelistMode.WHITELIST) {
             return isOnList;
         }
-
         return false;
     }
 
