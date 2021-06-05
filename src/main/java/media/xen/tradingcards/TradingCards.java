@@ -14,6 +14,7 @@ import media.xen.tradingcards.commands.DeckCommand;
 import media.xen.tradingcards.config.CardsConfig;
 import media.xen.tradingcards.config.DeckConfig;
 import media.xen.tradingcards.config.MessagesConfig;
+import media.xen.tradingcards.config.SimpleConfig;
 import media.xen.tradingcards.config.TradingCardsConfig;
 import media.xen.tradingcards.listeners.DeckListener;
 import media.xen.tradingcards.listeners.MobSpawnListener;
@@ -47,6 +48,8 @@ public class TradingCards extends JavaPlugin {
     private DeckConfig deckConfig;
     private MessagesConfig messagesConfig;
     private CardsConfig cardsConfig;
+    private SimpleConfig playerBlacklistConfig;
+    private SimpleConfig worldBlacklistConfig;
     private Economy econ = null;
     private Random random = new Random();
     int taskid;
@@ -243,14 +246,17 @@ public class TradingCards extends JavaPlugin {
         }
     }
 
+    @Deprecated
     public boolean isOnList(Player p) {
         return getMainConfig().blacklistPlayers.contains(p.getName());
     }
 
+    @Deprecated
     public boolean isOnList(World world) {
         return getMainConfig().worldBlackList.contains(world.getName());
     }
 
+    @Deprecated
     public void addToList(Player p) {
         List<String> playersOnList = this.getConfig().getStringList("Blacklist.Players");
         playersOnList.add(p.getName());
@@ -258,7 +264,7 @@ public class TradingCards extends JavaPlugin {
         this.getConfig().set("Blacklist.Players", playersOnList);
         this.saveConfig();
     }
-
+    @Deprecated
     public void removeFromList(Player p) {
         List<String> playersOnList = this.getConfig().getStringList("Blacklist.Players");
         playersOnList.remove(p.getName());
@@ -266,7 +272,7 @@ public class TradingCards extends JavaPlugin {
         this.getConfig().set("Blacklist.Players", playersOnList);
         this.saveConfig();
     }
-
+    @Deprecated
     public char blacklistMode() {
         return (this.getConfig().getBoolean("Blacklist.Whitelist-Mode") ? 'w' : 'b');
     }
@@ -401,5 +407,13 @@ public class TradingCards extends JavaPlugin {
 
     public void setRandom(Random random) {
         this.random = random;
+    }
+
+    public SimpleConfig getPlayerBlacklistConfig() {
+        return playerBlacklistConfig;
+    }
+
+    public SimpleConfig getWorldBlacklistConfig() {
+        return worldBlacklistConfig;
     }
 }

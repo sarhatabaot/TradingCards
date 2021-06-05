@@ -4,6 +4,8 @@ package media.xen.tradingcards.listeners;
 import media.xen.tradingcards.CardManager;
 import media.xen.tradingcards.CardUtil;
 import media.xen.tradingcards.TradingCards;
+import media.xen.tradingcards.whitelist.PlayerBlacklist;
+import media.xen.tradingcards.whitelist.WorldBlacklist;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
@@ -18,9 +20,13 @@ import java.util.Set;
 
 public class DropListener extends SimpleListener {
 	private List<String> worlds;
-	public DropListener(final TradingCards plugin) {
+	private PlayerBlacklist playerBlacklist;
+	private WorldBlacklist worldBlacklist;
+	public DropListener(final TradingCards plugin, final PlayerBlacklist playerBlacklist, final WorldBlacklist worldBlacklist) {
 		super(plugin);
 		worlds = plugin.getConfig().getStringList("World-Blacklist");
+		this.playerBlacklist = playerBlacklist;
+		this.worldBlacklist = worldBlacklist;
 	}
 
 
@@ -62,8 +68,8 @@ public class DropListener extends SimpleListener {
 
 		//Do Validations
 		if(killer == null) return;
-		if(!isAllowed(killer)) return;
-		if(!isAllowed(world)) return;
+		if(!this.playerBlacklist.isAllowed(killer)) return;
+		if(!this.worldBlacklist.isAllowed(world)) return;
 		if(isSpawnerMob(killedEntity)) return;
 
 		//Get card rarity
@@ -95,20 +101,6 @@ public class DropListener extends SimpleListener {
 
 		plugin.getLogger().info("rarityKey is null");
 		return null;
-	}
-
-	private boolean isAllowed(Player player){
-		//If the player is blacklisted
-		if(plugin.blacklistMode() == 'b' && plugin.isOnList(player))
-			return false;
-
-		//If the player is not whitelisted
-		return plugin.blacklistMode() != 'w' || plugin.isOnList(player);
-	}
-
-	private boolean isAllowed(World world){
-		//If the world is blacklisted
-		return !plugin.isOnList(world);
 	}
 
 	private boolean isSpawnerMob(LivingEntity killedEntity){

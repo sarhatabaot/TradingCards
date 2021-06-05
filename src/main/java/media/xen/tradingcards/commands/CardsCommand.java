@@ -14,6 +14,7 @@ import media.xen.tradingcards.CardManager;
 import media.xen.tradingcards.CardUtil;
 import media.xen.tradingcards.TradingCards;
 import media.xen.tradingcards.api.addons.TradingCardsAddon;
+import media.xen.tradingcards.whitelist.PlayerBlacklist;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
@@ -41,9 +42,11 @@ import static media.xen.tradingcards.TradingCards.sendMessage;
 @CommandAlias("cards")
 public class CardsCommand extends BaseCommand {
 	private final TradingCards plugin;
+	private PlayerBlacklist playerBlacklist;
 
-	public CardsCommand(final TradingCards plugin) {
+	public CardsCommand(final TradingCards plugin, final PlayerBlacklist playerBlacklist) {
 		this.plugin = plugin;
+		this.playerBlacklist = playerBlacklist;
 	}
 
 	@CatchUnknown
@@ -84,17 +87,12 @@ public class CardsCommand extends BaseCommand {
 	@CommandPermission("cards.toggle")
 	@Description("Toggles card drops from mobs.")
 	public void onToggle(final Player player) {
-		if (plugin.isOnList(player) && plugin.blacklistMode() == 'b') {
-			plugin.removeFromList(player);
-			sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().toggleEnabled));
-		} else if (plugin.isOnList(player) && plugin.blacklistMode() == 'w') {
-			plugin.removeFromList(player);
+		if(playerBlacklist.isAllowed(player)){
+			playerBlacklist.remove(player);
 			sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().toggleDisabled));
-		} else if (!plugin.isOnList(player) && plugin.blacklistMode() == 'b') {
-			plugin.addToList(player);
-			sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().toggleDisabled));
-		} else if (!plugin.isOnList(player) && plugin.blacklistMode() == 'w') {
-			plugin.addToList(player);
+		}
+		else{
+			playerBlacklist.add(player);
 			sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().toggleEnabled));
 		}
 	}
