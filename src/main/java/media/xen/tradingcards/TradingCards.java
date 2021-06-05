@@ -24,6 +24,7 @@ import net.sarhatabaot.configloader.ConfigLoader;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -244,6 +245,10 @@ public class TradingCards extends JavaPlugin {
 
     public boolean isOnList(Player p) {
         return getMainConfig().blacklistPlayers.contains(p.getName());
+    }
+
+    public boolean isOnList(World world) {
+        return getMainConfig().worldBlackList.contains(world.getName());
     }
 
     public void addToList(Player p) {
