@@ -1,7 +1,6 @@
 package media.xen.tradingcards;
 
 import de.tr7zw.nbtapi.NBTItem;
-import media.xen.tradingcards.config.TradingCardsConfig;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
@@ -17,9 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -141,7 +138,12 @@ public class CardUtil {
 		plugin.getCardsConfig().reloadConfig();
 		TradingCards.sendMessage(creator, plugin.getPrefixedMessage(plugin.getMessagesConfig().createSuccess.replaceAll("%name%", name).replaceAll("%rarity%", rarity)));
 	}
-
+	private static boolean calculateIfShiny(boolean forcedShiny) {
+		if(forcedShiny)
+			return true;
+		int shinyRandom = plugin.getRandom().nextInt(100) + 1;
+		return shinyRandom <= plugin.getConfig().getInt("Chances.Shiny-Version-Chance");
+	}
 	@NotNull
 	public static ItemStack generateCard(String cardName, String rarityName, boolean forcedShiny) {
 		if (rarityName.equals("None")) {
@@ -155,15 +157,9 @@ public class CardUtil {
 		boolean hasShinyVersion = plugin.getCardsConfig().getConfig().getBoolean("Cards." + rarityName + "." + cardName + ".Has-Shiny-Version");
 		boolean isShiny = false;
 		if (hasShinyVersion) {
-			int shinyRandom = plugin.getRandom().nextInt(100) + 1;
-			if (shinyRandom <= plugin.getConfig().getInt("Chances.Shiny-Version-Chance")) {
-				isShiny = true;
-			}
+			isShiny = calculateIfShiny(forcedShiny);
 		}
 
-		if (forcedShiny) {
-			isShiny = true;
-		}
 		String rarityColour = plugin.getConfig().getString("Rarities." + rarityName + ".Colour");
 		String prefix = plugin.getConfig().getString("General.Card-Prefix");
 		String series = plugin.getCardsConfig().getConfig().getString("Cards." + rarityName + "." + cardName + ".Series");
@@ -186,10 +182,7 @@ public class CardUtil {
 			cost = "None";
 		}
 
-		boolean isPlayerCard = false;
-		if (isPlayerCard(cardName)) {
-			isPlayerCard = true;
-		}
+		boolean isPlayerCard = isPlayerCard(cardName);
 
 		return builder.isShiny(isShiny)
 				.rarityColour(rarityColour)
