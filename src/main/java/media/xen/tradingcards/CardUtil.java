@@ -296,7 +296,7 @@ public class CardUtil {
 	 *
 	 * @param e
 	 * @param alwaysDrop
-	 * @return
+	 * @return String Rarity that should drop
 	 */
 	@NotNull
 	public static String calculateRarity(EntityType e, boolean alwaysDrop) {
