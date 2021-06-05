@@ -20,6 +20,8 @@ import media.xen.tradingcards.listeners.DeckListener;
 import media.xen.tradingcards.listeners.MobSpawnListener;
 import media.xen.tradingcards.listeners.PackListener;
 import media.xen.tradingcards.listeners.DropListener;
+import media.xen.tradingcards.whitelist.PlayerBlacklist;
+import media.xen.tradingcards.whitelist.WorldBlacklist;
 import net.milkbowl.vault.economy.Economy;
 import net.sarhatabaot.configloader.ConfigLoader;
 import org.apache.commons.lang.WordUtils;
@@ -91,10 +93,10 @@ public class TradingCards extends JavaPlugin {
         getLogger().info("Legacy YML mode is enabled!");
     }
 
-    private void registerListeners() {
+    private void registerListeners(final PlayerBlacklist playerBlacklist,final WorldBlacklist worldBlacklist) {
         PluginManager pm = Bukkit.getPluginManager();
         pm.addPermission(new Permission("cards.rarity"));
-        pm.registerEvents(new DropListener(this), this);
+        pm.registerEvents(new DropListener(this,playerBlacklist,worldBlacklist), this);
         pm.registerEvents(new PackListener(this), this);
         pm.registerEvents(new MobSpawnListener(this), this);
         pm.registerEvents(new DeckListener(this), this);
@@ -120,8 +122,11 @@ public class TradingCards extends JavaPlugin {
     @Override
     public void onEnable() {
         cacheMobs();
-        registerListeners();
         this.saveDefaultConfig();
+
+        var playerBlacklist = new PlayerBlacklist(playerBlacklistConfig);
+        var worldBlacklist = new WorldBlacklist(worldBlacklistConfig);
+        registerListeners(playerBlacklist,worldBlacklist);
         mainConfig = new TradingCardsConfig(this);
         messagesConfig = new MessagesConfig(this);
         ConfigLoader.load(mainConfig);
@@ -139,7 +144,7 @@ public class TradingCards extends JavaPlugin {
         CardManager.init(this);
         DeckManager.init(this);
         var commandManager = new BukkitCommandManager(this);
-        commandManager.registerCommand(new CardsCommand(this));
+        commandManager.registerCommand(new CardsCommand(this,playerBlacklist));
         commandManager.registerCommand(new DeckCommand(this));
         commandManager.enableUnstableAPI("help");
         hookFileSystem();
@@ -245,38 +250,7 @@ public class TradingCards extends JavaPlugin {
             return false;
         }
     }
-
-    @Deprecated
-    public boolean isOnList(Player p) {
-        return getMainConfig().blacklistPlayers.contains(p.getName());
-    }
-
-    @Deprecated
-    public boolean isOnList(World world) {
-        return getMainConfig().worldBlackList.contains(world.getName());
-    }
-
-    @Deprecated
-    public void addToList(Player p) {
-        List<String> playersOnList = this.getConfig().getStringList("Blacklist.Players");
-        playersOnList.add(p.getName());
-        this.getConfig().set("Blacklist.Players", null);
-        this.getConfig().set("Blacklist.Players", playersOnList);
-        this.saveConfig();
-    }
-    @Deprecated
-    public void removeFromList(Player p) {
-        List<String> playersOnList = this.getConfig().getStringList("Blacklist.Players");
-        playersOnList.remove(p.getName());
-        this.getConfig().set("Blacklist.Players", null);
-        this.getConfig().set("Blacklist.Players", playersOnList);
-        this.saveConfig();
-    }
-    @Deprecated
-    public char blacklistMode() {
-        return (this.getConfig().getBoolean("Blacklist.Whitelist-Mode") ? 'w' : 'b');
-    }
-
+    
     public List<String> wrapString(@NotNull String s) {
         String parsedString = ChatColor.stripColor(s);
         String addedString = WordUtils.wrap(parsedString, this.getConfig().getInt("General.Info-Line-Length", 25), "\n", true);
