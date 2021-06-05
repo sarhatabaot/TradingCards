@@ -5,6 +5,7 @@ import net.sarhatabaot.configloader.Config;
 import net.sarhatabaot.configloader.ConfigOption;
 import net.sarhatabaot.configloader.transform.ListClone;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
@@ -173,6 +174,10 @@ public class TradingCardsConfig implements Config {
 
 	public static ItemStack getBlankDeck() {
 		return new ItemStack(Material.getMaterial(plugin.getMainConfig().deckMaterial));
+	}
+
+	public ConfigurationSection rarities(){
+		return plugin.getConfig().getConfigurationSection("Rarities");
 	}
 
 	@Override

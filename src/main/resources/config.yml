@@ -169,23 +169,24 @@ Chances:
   # 10,000 = 10% chance, 1000 = 1% chance, 100 = 0.1% chance, 10 = 0.01% chance, 1 = 0.001% chance
   # Chances are in descending order - make sure the chances for Common are higher than Uncommon etc.
   # If a type is omitted from this section, the rarity won't drop at ALL from that type.
-  Common:
-    Hostile: 100000
-    Neutral: 100000
-    Passive: 100000
-  Uncommon:
-    Hostile: 20000
-    Neutral: 10000
-    Passive: 5000
-  Rare:
-    Hostile: 1000
-    Neutral: 500
-  Very Rare:
-    Hostile: 10
-    Boss: 100000
-  Legendary:
-    Hostile: 1
-    Boss: 50000
+  Rarities:
+    Common:
+      Hostile: 100000
+      Neutral: 100000
+      Passive: 100000
+    Uncommon:
+      Hostile: 20000
+      Neutral: 10000
+      Passive: 5000
+    Rare:
+      Hostile: 1000
+      Neutral: 500
+    Very Rare:
+      Hostile: 10
+      Boss: 100000
+    Legendary:
+      Hostile: 1
+      Boss: 50000
 
 DisplayNames:
   Cards:

@@ -1,6 +1,7 @@
 package media.xen.tradingcards;
 
 import de.tr7zw.nbtapi.NBTItem;
+import media.xen.tradingcards.config.TradingCardsConfig;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
@@ -16,11 +17,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.regex.Pattern;
 
 /**
@@ -252,23 +255,25 @@ public class CardUtil {
 		return "None";
 	}
 
-
-	private static String getMobTypeOrNone(EntityType e, int shouldItDrop, boolean alwaysDrop) {
+	@NotNull
+	private static String getMobTypeOrNone(EntityType e, boolean alwaysDrop) {
+		int generatedDropChance = plugin.getRandom().nextInt(100) + 1;
+		plugin.debug("shouldItDrop Num: " + generatedDropChance);
 		if (plugin.isMobHostile(e)) {
-
-			if (!alwaysDrop && shouldItDrop > plugin.getMainConfig().hostileChance) {
+			if (!alwaysDrop && generatedDropChance > plugin.getMainConfig().hostileChance) {
 				return "None";
 			}
+
 			return "Hostile";
 		}
 		if (plugin.isMobNeutral(e)) {
-			if (!alwaysDrop && shouldItDrop > plugin.getMainConfig().neutralChance) {
+			if (!alwaysDrop && generatedDropChance > plugin.getMainConfig().neutralChance) {
 				return "None";
 			}
 			return "Neutral";
 		}
 		if (plugin.isMobPassive(e)) {
-			if (!alwaysDrop && shouldItDrop > plugin.getMainConfig().passiveChance) {
+			if (!alwaysDrop && generatedDropChance > plugin.getMainConfig().passiveChance) {
 				return "None";
 
 			}
@@ -276,23 +281,15 @@ public class CardUtil {
 		}
 
 		if (!plugin.isMobBoss(e)) {
-			return "None";
-		}
-
-		if (!alwaysDrop) {
-			if (shouldItDrop > plugin.getConfig().getInt("Chances.Boss-Chance")) {
+			if (!alwaysDrop && generatedDropChance > plugin.getMainConfig().bossChance) {
 				return "None";
 			}
-
-			if (plugin.getConfig().getBoolean("Chances.Boss-Drop")) {
-				return plugin.getConfig().getString("Chances.Boss-Drop-Rarity");
-			}
+			return "Boss";
 
 		}
-		return "Boss";
 
+		return "None";
 	}
-	//TODO This guy is responsible for the drop rate..
 
 	/**
 	 * Returns the rarity that should drop.
@@ -303,82 +300,18 @@ public class CardUtil {
 	 */
 	@NotNull
 	public static String calculateRarity(EntityType e, boolean alwaysDrop) {
-		int shouldItDrop = plugin.getRandom().nextInt(100) + 1;
-		String type = getMobTypeOrNone(e, shouldItDrop, alwaysDrop);
-		plugin.debug("shouldItDrop Num: " + shouldItDrop);
+		String mobType = getMobTypeOrNone(e, alwaysDrop);
+		if(mobType.equalsIgnoreCase("None"))
+			return "None";
 
-		ConfigurationSection rarities = plugin.getConfig().getConfigurationSection("Rarities");
-		Set<String> rarityKeys = rarities.getKeys(false);
-		Map<String, Integer> rarityChances = new HashMap<>();
-		Map<Integer, String> rarityIndexes = new HashMap<>();
-		plugin.debug(printIntOrStringMap(rarityChances));
-		plugin.debug(printIntOrStringMap(rarityIndexes));
-		//todo loads the rarirty index + chances everytime it needs to caclulate a rarity..
-		int i = 0;
-		int mini = 0;
-		int random = plugin.getRandom().nextInt(100000) + 1;
-		plugin.debug("Random Card Num: " + random);
-		plugin.debug("Type: " + type);
-
-		String key;
-		int chance;
-		for (Iterator<String> var13 = rarityKeys.iterator(); var13.hasNext(); rarityChances.put(key, chance)) {
-			key = var13.next();
-			rarityIndexes.put(i, key);
-			++i;
-
-			plugin.debug(i + ", " + key);
-
-
-			if (plugin.getConfig().contains("Chances." + key + "." + StringUtils.capitalize(e.getKey().getKey())) && mini == 0) {
-				plugin.debug("Mini: " + i);
-				mini = i;
-			}
-
-			chance = plugin.getConfig().getInt("Chances." + key + "." + type, -1);
-			plugin.debug("Keys: " + key + ", " + chance + ", i=" + i);
-		}
-
-		if (mini != 0) {
-			plugin.debug("Mini: " + mini);
-			plugin.debug("i: " + i);
-
-			while (i >= mini) {
-				--i;
-				plugin.debug("i: " + i);
-
-
-				chance = plugin.getConfig().getInt("Chances." + rarityIndexes.get(i) + "." + StringUtils.capitalize(e.getKey().getKey()), -1);
-				plugin.debug("Chance: " + chance);
-				plugin.debug("Rarity: " + rarityIndexes.get(i));
-
-				if (chance > 0 && random <= chance) {
-					return rarityIndexes.get(i);
-				}
-			}
-		} else {
-			while (i > 0) {
-				--i;
-				plugin.debug("Iteration " + i + " in HashMap is: " + rarityIndexes.get(i) + ", " + plugin.getConfig().getString("Rarities." + rarityIndexes.get(i) + ".Name"));
-
-				chance = plugin.getConfig().getInt("Chances." + rarityIndexes.get(i) + "." + type, -1);
-				plugin.debug(plugin.getConfig().getString("Rarities." + rarityIndexes.get(i) + ".Name") + "'s chance of dropping: " + chance + " out of 100,000");
-
-				if (chance > 0 && random <= chance) {
-					plugin.debug("Giving a " + plugin.getConfig().getString("Rarities." + rarityIndexes.get(i) + ".Name") + " card.");
-					return rarityIndexes.get(i);
-				}
-			}
+		int randomChance = plugin.getRandom().nextInt(100000) + 1;
+		TreeSet<String> rarityKeys = new TreeSet<>(plugin.getMainConfig().rarities().getKeys(false));
+		for(String rarity: rarityKeys.descendingSet()) {
+			var chance = plugin.getConfig().getInt("Chances." + rarity + "." + mobType, -1);
+			if(randomChance < chance)
+				return rarity;
 		}
 		return "None";
-	}
-
-	private static String printIntOrStringMap(Map<?, ?> map) {
-		final StringBuilder sb = new StringBuilder();
-		for (Map.Entry<?, ?> entry : map.entrySet()) {
-			sb.append(entry.getKey()).append(":").append(entry.getValue());
-		}
-		return sb.toString();
 	}
 
 	public static boolean isPlayerCard(String name) {
