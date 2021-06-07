@@ -1,6 +1,7 @@
 package media.xen.tradingcards.listeners;
 
 
+import de.tr7zw.nbtapi.NBTItem;
 import media.xen.tradingcards.CardManager;
 import media.xen.tradingcards.CardUtil;
 import media.xen.tradingcards.TradingCards;
@@ -15,6 +16,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -54,11 +56,23 @@ public class DropListener extends SimpleListener {
             return;
 
         ItemStack playerCard = CardManager.getCard(killedPlayer.getName(), rarityKey, false);
+        String series = getSeriesFromLore(playerCard.getLore());
+        plugin.debug(series);
+        if(series.isEmpty() || !plugin.getMainConfig().activeSeries.contains(series))
+            return;
+        if(!plugin.getMainConfig().activeSeries.contains(series))
+            return;
         e.getDrops().add(playerCard);
         plugin.debug(e.getDrops().toString());
     }
 
-
+    private String getSeriesFromLore(List<String> lore) {
+        for(String line: lore) {
+            if (line.contains("Series"))
+                return CardUtil.stripAllColor(line).split("Series:")[1].trim();
+        }
+        return "";
+    }
     @EventHandler
     public void onEntityDeath(EntityDeathEvent e) {
         final LivingEntity killedEntity = e.getEntity();
@@ -77,6 +91,13 @@ public class DropListener extends SimpleListener {
 
         //Generate the card
         ItemStack randomCard = CardUtil.getRandomCard(rarityName, false);
+
+        String series = getSeriesFromLore(randomCard.getLore());
+        plugin.debug(series);
+        plugin.debug(Arrays.toString(plugin.getMainConfig().activeSeries.toArray()));
+        plugin.debug("active series contains?"+plugin.getMainConfig().activeSeries.contains(series));
+        if(series.isEmpty() || !plugin.getMainConfig().activeSeries.contains(series))
+            return;
         debug("Successfully generated card.");
 
         //Add the card to the killedEntity drops

@@ -95,13 +95,13 @@ public class TradingCardsConfig implements Config {
 	@ConfigOption(path = "General.SQLite")
 	public boolean SQLite = false;
 
-	@ConfigOption(path = "World-Blacklist", transform = ListClone.class)
+	/*@ConfigOption(path = "World-Blacklist", transform = ListClone.class)
 	public List<String> worldBlackList = new ArrayList<>();
 
 	@ConfigOption(path = "Blacklist.Whitelist-Mode")
 	public boolean blacklistWhitelistMode = false;
 	@ConfigOption(path = "Blacklist.Players", transform = ListClone.class)
-	public List<String> blacklistPlayers = Collections.singletonList("Herobrine");
+	public List<String> blacklistPlayers = Collections.singletonList("Herobrine");*/
 
 	@ConfigOption(path = "PluginSupport.Vault.Vault-Enabled")
 	public boolean vaultEnabled = true;
@@ -159,6 +159,9 @@ public class TradingCardsConfig implements Config {
 	@ConfigOption(path = "Chances.Boss-Chance")
 	public int bossChance = 100;
 
+	@ConfigOption(path = "General.Active-Series", transform = ListClone.class)
+	public List<String> activeSeries = new ArrayList<>();
+
 	public TradingCardsConfig(final TradingCards plugin) {
 		this.file = new File(plugin.getDataFolder(),"config.yml");
 		TradingCardsConfig.plugin = plugin;
@@ -179,6 +182,8 @@ public class TradingCardsConfig implements Config {
 	public ConfigurationSection rarities(){
 		return plugin.getConfig().getConfigurationSection("Rarities");
 	}
+
+
 
 	@Override
 	public File getFile() {

@@ -42,6 +42,7 @@ public class CardManager {
 	}
 
 
+
 	/**
 	 *
 	 * @param cardName
@@ -60,6 +61,8 @@ public class CardManager {
 			return cards.get(rarity+"."+cardName);
 		return CardUtil.generateCard(cardName,rarity,forcedShiny);
 	}
+
+
 
 	public static ItemStack getCard(final String cardName,final String rarity, int num){
 		ItemStack card = cards.get(rarity+"."+cardName);
@@ -108,7 +111,7 @@ public class CardManager {
 	}
 
 
-	public static class CardBuilder {
+	public static class TradingCard {
 		private final String cardName;
 		private String rarity;
 		private boolean isShiny = false;
@@ -122,61 +125,61 @@ public class CardManager {
 		private String shinyPrefix = null;
 		private String cost;
 
-		public CardBuilder(final String cardName) {
+		public TradingCard(final String cardName) {
 			this.cardName = cardName;
 		}
 
-		public CardBuilder isShiny(boolean isShiny){
+		public TradingCard isShiny(boolean isShiny){
 			this.isShiny = isShiny;
 			return this;
 		}
 
-		public CardBuilder rarityColour(String rarityColour){
+		public TradingCard rarityColour(String rarityColour){
 			this.rarityColour = rarityColour;
 			return this;
 		}
 
-		public CardBuilder prefix(String prefix){
+		public TradingCard prefix(String prefix){
 			this.prefix = prefix;
 			return this;
 		}
 
-		public CardBuilder series(String name, String colour, String display){
+		public TradingCard series(String name, String colour, String display){
 			this.series = new CardInfo(name,colour,display);
 			return this;
 		}
 
-		public CardBuilder about(String name, String colour, String display){
+		public TradingCard about(String name, String colour, String display){
 			this.about = new CardInfo(name,colour,display);
 			return this;
 		}
 
-		public CardBuilder type(String name, String colour, String display){
+		public TradingCard type(String name, String colour, String display){
 			this.type = new CardInfo(name,colour,display);
 			return this;
 		}
 
-		public CardBuilder info(String name, String colour, String display){
+		public TradingCard info(String name, String colour, String display){
 			this.info = new CardInfo(name,colour,display);
 			return this;
 		}
 
-		public CardBuilder shinyPrefix(String shinyPrefix){
+		public TradingCard shinyPrefix(String shinyPrefix){
 			this.shinyPrefix = shinyPrefix;
 			return this;
 		}
 
-		public CardBuilder cost(String cost){
+		public TradingCard cost(String cost){
 			this.cost = cost;
 			return this;
 		}
 
-		public CardBuilder rarity(String rarity){
+		public TradingCard rarity(String rarity){
 			this.rarity = rarity;
 			return this;
 		}
 
-		public CardBuilder isPlayerCard(boolean isPlayerCard){
+		public TradingCard isPlayerCard(boolean isPlayerCard){
 			this.isPlayerCard = isPlayerCard;
 			return this;
 		}

@@ -1,7 +1,7 @@
 Cards:
   Common:
     Zombie:
-      Series: '2020'
+      Series: '2021'
       Type: 'Monster'
       Has-Shiny-Version: true
       Info: 'None'
@@ -9,260 +9,260 @@ Cards:
       Buy-Price: 100.0
       Sell-Price: 50.0
     Skeleton:
-      Series: '2020'
+      Series: '2021'
       Type: 'Monster'
       Has-Shiny-Version: true
       Info: 'None'
     Creeper:
-      Series: '2020'
+      Series: '2021'
       Type: 'Monster'
       Has-Shiny-Version: true
       Info: 'None'
     Spider:
-      Series: '2020'
+      Series: '2021'
       Type: 'Monster'
       Has-Shiny-Version: true
       Info: 'None'
     Enderman:
-      Series: '2020'
+      Series: '2021'
       Type: 'Monster'
       Has-Shiny-Version: true
       Info: 'None'
     Pig:
-      Series: '2020'
+      Series: '2021'
       Type: 'Animal'
       Has-Shiny-Version: true
       Info: 'None'
     Cow:
-      Series: '2020'
+      Series: '2021'
       Type: 'Animal'
       Has-Shiny-Version: true
       Info: 'None'
     Sheep:
-      Series: '2020'
+      Series: '2021'
       Type: 'Animal'
       Has-Shiny-Version: true
       Info: 'None'
     Chicken:
-      Series: '2020'
+      Series: '2021'
       Type: 'Animal'
       Has-Shiny-Version: true
       Info: 'None'
     Horse:
-      Series: '2020'
+      Series: '2021'
       Type: 'Animal'
       Has-Shiny-Version: true
       Info: 'None'
     Donkey:
-      Series: '2020'
+      Series: '2021'
       Type: 'Animal'
       Has-Shiny-Version: true
       Info: 'None'
     Mule:
-      Series: '2020'
+      Series: '2021'
       Type: 'Animal'
       Has-Shiny-Version: true
       Info: 'None'
     Squid:
-      Series: '2020'
+      Series: '2021'
       Type: 'Animal'
       Has-Shiny-Version: true
       Info: 'None'
     Villager:
-      Series: '2020'
+      Series: '2021'
       Type: 'Animal'
       Has-Shiny-Version: true
       Info: 'None'
     Bat:
-      Series: '2020'
+      Series: '2021'
       Type: 'Animal'
       Has-Shiny-Version: true
       Info: 'None'
     Rabbit:
-      Series: '2020'
+      Series: '2021'
       Type: 'Animal'
       Has-Shiny-Version: true
       Info: 'None'
   Uncommon:
     Blaze:
-      Series: '2020'
+      Series: '2021'
       Type: 'Monster'
       Has-Shiny-Version: true
       Info: 'None'
     Magma_Cube:
-      Series: '2020'
+      Series: '2021'
       Type: 'Monster'
       Has-Shiny-Version: true
       Info: 'None'
     Ghast:
-      Series: '2020'
+      Series: '2021'
       Type: 'Monster'
       Has-Shiny-Version: true
       Info: 'None'
     Witch:
-      Series: '2020'
+      Series: '2021'
       Type: 'Monster'
       Has-Shiny-Version: true
       Info: 'None'
     Zombie_Pigman:
-      Series: '2020'
+      Series: '2021'
       Type: 'Monster'
       Has-Shiny-Version: true
       Info: 'None'
     Cave_Spider:
-      Series: '2020'
+      Series: '2021'
       Type: 'Monster'
       Has-Shiny-Version: true
       Info: 'None'
     Wolf:
-      Series: '2020'
+      Series: '2021'
       Type: 'Animal'
       Has-Shiny-Version: true
       Info: 'None'
     Ocelot:
-      Series: '2020'
+      Series: '2021'
       Type: 'Animal'
       Has-Shiny-Version: true
       Info: 'None'
     Polar_Bear:
-      Series: '2020'
+      Series: '2021'
       Type: 'Animal'
       Has-Shiny-Version: true
       Info: 'None'
     Stray_Skeleton:
-      Series: '2020'
+      Series: '2021'
       Type: 'Monster'
       Has-Shiny-Version: true
       Info: 'None'
     Silverfish:
-      Series: '2020'
+      Series: '2021'
       Type: 'Monster'
       Has-Shiny-Version: true
       Info: 'None'
     Skeleton_Horseman:
-      Series: '2020'
+      Series: '2021'
       Type: 'Monster'
       Has-Shiny-Version: true
       Info: 'None'
     Husk:
-      Series: '2020'
+      Series: '2021'
       Type: 'Monster'
       Has-Shiny-Version: true
       Info: 'None'
     Zombie_Villager:
-      Series: '2020'
+      Series: '2021'
       Type: 'Monster'
       Has-Shiny-Version: true
       Info: 'None'
   Rare:
     Guardian:
-      Series: '2020'
+      Series: '2021'
       Type: 'Monster'
       Has-Shiny-Version: true
       Info: 'None'
     Slime:
-      Series: '2020'
+      Series: '2021'
       Type: 'Monster'
       Has-Shiny-Version: true
       Info: 'None'
     Wither_Skeleton:
-      Series: '2020'
+      Series: '2021'
       Type: 'Monster'
       Has-Shiny-Version: true
       Info: 'None'
     Spider_Jockey:
-      Series: '2020'
+      Series: '2021'
       Type: 'Monster'
       Has-Shiny-Version: true
       Info: 'None'
     Endermite:
-      Series: '2020'
+      Series: '2021'
       Type: 'Monster'
       Has-Shiny-Version: true
       Info: 'None'
     Mushroom_Cow:
-      Series: '2020'
+      Series: '2021'
       Type: 'Animal'
       Has-Shiny-Version: true
       Info: 'None'
     Chicken_Jockey:
-      Series: '2020'
+      Series: '2021'
       Type: 'Animal'
       Has-Shiny-Version: true
       Info: 'None'
     Snow_Golem:
-      Series: '2020'
+      Series: '2021'
       Type: 'Monster'
       Has-Shiny-Version: true
       Info: 'None'
     Iron_Golem:
-      Series: '2020'
+      Series: '2021'
       Type: 'Monster'
       Has-Shiny-Version: true
       Info: 'None'
     Shulker:
-      Series: '2020'
+      Series: '2021'
       Type: 'Monster'
       Has-Shiny-Version: true
       Info: 'None'
   Very Rare:
     Killer_Bunny:
-      Series: '2020'
+      Series: '2021'
       Type: 'Monster'
       Has-Shiny-Version: true
       Info: 'None'
     Skeleton_Horse:
-      Series: '2020'
+      Series: '2021'
       Type: 'Monster'
       Has-Shiny-Version: true
       Info: 'None'
     Zombie_Horse:
-      Series: '2020'
+      Series: '2021'
       Type: 'Monster'
       Has-Shiny-Version: true
       Info: 'None'
   Legendary:
     Ender_Dragon:
-      Series: '2020'
+      Series: '2021'
       Type: 'Boss'
       Has-Shiny-Version: true
       Info: 'None'
     Wither:
-      Series: '2020'
+      Series: '2021'
       Type: 'Boss'
       Has-Shiny-Version: true
       Info: 'None'
     Elder_Guardian:
-      Series: '2020'
+      Series: '2021'
       Type: 'Boss'
       Has-Shiny-Version: true
       Info: 'None'
     Giant:
-      Series: '2020'
+      Series: '2021'
       Type: 'Boss'
       Has-Shiny-Version: true
       Info: 'None'
   # Doesn't drop
   Davy_Jones:
     Ender_Dragon:
-      Series: '2020'
+      Series: '2021'
       Type: 'Boss'
       Has-Shiny-Version: true
       Info: 'None'
       Buy-Price: 100000
       Sell-Price: 40000
     Wither:
-      Series: '2020'
+      Series: '2021'
       Type: 'Boss'
       Has-Shiny-Version: true
       Info: 'None'
     Elder_Guardian:
-      Series: '2020'
+      Series: '2021'
       Type: 'Boss'
       Has-Shiny-Version: true
       Info: 'None'
     Giant:
-      Series: '2020'
+      Series: '2021'
       Type: 'Boss'
       Has-Shiny-Version: true
       Info: 'None'

@@ -60,6 +60,10 @@ General:
   Eat-Shiny-Cards: false
   # DO NOT USE
   SQLite: false
+  # Only drop cards from a certain series.
+  # You can still get other series with /cards give
+  Active-Series:
+    - '2021'
 
 PluginSupport:
   Vault:
@@ -74,6 +78,7 @@ BoosterPacks:
     NormalCardRarity: Common
     NumSpecialCards: 1
     SpecialCardRarity: Rare
+    Series: ['2021']
     Price: 100.00
   Advanced_Pack:
     NumNormalCards: 12
@@ -82,6 +87,7 @@ BoosterPacks:
     ExtraCardRarity: Uncommon
     NumSpecialCards: 2
     SpecialCardRarity: Rare
+    Series: ['2021']
     Price: 150.00
   Expert_Pack:
     NumNormalCards: 6
@@ -90,12 +96,14 @@ BoosterPacks:
     ExtraCardRarity: Rare
     NumSpecialCards: 2
     SpecialCardRarity: Very Rare
+    Series: ['2021']
     Price: 250.00
   Ultimate_Pack:
     NumNormalCards: 5
     NormalCardRarity: Rare
     NumSpecialCards: 1
     SpecialCardRarity: Legendary
+    Series: ['2021']
     Price: 500.00
 
 Rarities:

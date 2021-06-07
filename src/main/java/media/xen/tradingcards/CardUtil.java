@@ -153,7 +153,7 @@ public class CardUtil {
 		plugin.debug("generateCard.cardSection: " + plugin.getCardsConfig().getConfig().contains("Cards." + rarityName));
 		plugin.debug("generateCard.rarity: " + rarityName);
 
-		CardManager.CardBuilder builder = new CardManager.CardBuilder(cardName);
+		CardManager.TradingCard builder = new CardManager.TradingCard(cardName);
 		boolean hasShinyVersion = plugin.getCardsConfig().getConfig().getBoolean("Cards." + rarityName + "." + cardName + ".Has-Shiny-Version");
 		boolean isShiny = false;
 		if (hasShinyVersion) {
