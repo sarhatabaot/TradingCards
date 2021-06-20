@@ -1,7 +1,6 @@
 package media.xen.tradingcards.listeners;
 
 
-import de.tr7zw.nbtapi.NBTItem;
 import media.xen.tradingcards.CardManager;
 import media.xen.tradingcards.CardUtil;
 import media.xen.tradingcards.TradingCards;
@@ -16,13 +15,12 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
 public class DropListener extends SimpleListener {
-    private PlayerBlacklist playerBlacklist;
-    private WorldBlacklist worldBlacklist;
+    private final PlayerBlacklist playerBlacklist;
+    private final WorldBlacklist worldBlacklist;
 
     public DropListener(final TradingCards plugin, final PlayerBlacklist playerBlacklist, final WorldBlacklist worldBlacklist) {
         super(plugin);
@@ -47,21 +45,14 @@ public class DropListener extends SimpleListener {
         if (killer == null)
             return;
 
-        int rndm = plugin.getRandom().nextInt(100) + 1;
-        if (rndm > playerCardDropRarity)
+        if (plugin.getRandom().nextInt(100) + 1 > playerCardDropRarity)
             return;
 
         String rarityKey = getRarityKey(killedPlayer);
         if (rarityKey == null)
             return;
 
-        ItemStack playerCard = CardManager.getCard(killedPlayer.getName(), rarityKey, false);
-        String series = getSeriesFromLore(playerCard.getLore());
-        plugin.debug(series);
-        if(series.isEmpty() || !plugin.getMainConfig().activeSeries.contains(series))
-            return;
-        if(!plugin.getMainConfig().activeSeries.contains(series))
-            return;
+        ItemStack playerCard = CardManager.getActiveCard(killedPlayer.getName(), rarityKey, false);
         e.getDrops().add(playerCard);
         plugin.debug(e.getDrops().toString());
     }
@@ -84,20 +75,15 @@ public class DropListener extends SimpleListener {
         if (!this.playerBlacklist.isAllowed(killer)) return;
         if (!this.worldBlacklist.isAllowed(world)) return;
         if (isSpawnerMob(killedEntity)) return;
+
         //Get card rarity
         String rarityName = CardUtil.calculateRarity(e.getEntityType(), false);
         if (rarityName.equals("None"))
             return;
 
         //Generate the card
-        ItemStack randomCard = CardUtil.getRandomCard(rarityName, false);
+        ItemStack randomCard = CardUtil.getRandomActiveCard(rarityName, false);
 
-        String series = getSeriesFromLore(randomCard.getLore());
-        plugin.debug(series);
-        plugin.debug(Arrays.toString(plugin.getMainConfig().activeSeries.toArray()));
-        plugin.debug("active series contains?"+plugin.getMainConfig().activeSeries.contains(series));
-        if(series.isEmpty() || !plugin.getMainConfig().activeSeries.contains(series))
-            return;
         debug("Successfully generated card.");
 
         //Add the card to the killedEntity drops
@@ -124,8 +110,8 @@ public class DropListener extends SimpleListener {
 
     private boolean isSpawnerMob(LivingEntity killedEntity) {
         String customName = killedEntity.getCustomName();
-        boolean spawnerDropBlocked = plugin.getConfig().getBoolean("General.Spawner-Block");
-        String spawnerMobName = plugin.getConfig().getString("General.Spawner-Mob-Name");
+        boolean spawnerDropBlocked = plugin.getMainConfig().spawnerBlock;
+        String spawnerMobName = plugin.getMainConfig().spawnerMobName;
 
         if (spawnerDropBlocked && customName != null && customName.equals(spawnerMobName)) {
             plugin.debug("Mob came from spawner, not dropping card.");
