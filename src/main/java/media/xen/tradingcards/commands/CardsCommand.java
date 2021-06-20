@@ -163,10 +163,17 @@ public class CardsCommand extends BaseCommand {
     @Subcommand("debug")
     @CommandPermission("cards.admin.debug")
     public class DebugCommands extends BaseCommand {
-        @Subcommand("showcache")
+        @Subcommand("showcache all")
         @CommandPermission("cards.admin.debug.showcache")
         @Description("Shows the card cache")
-        public void showCache(final CommandSender sender) {
+        public void showCacheAll(final CommandSender sender) {
+            sender.sendMessage(StringUtils.join(CardManager.getCards().keySet(), ","));
+        }
+
+        @Subcommand("showcache active")
+        @CommandPermission("cards.admin.debug.showcache")
+        @Description("Shows the card cache")
+        public void showCacheActive(final CommandSender sender) {
             sender.sendMessage(StringUtils.join(CardManager.getCards().keySet(), ","));
         }
 
