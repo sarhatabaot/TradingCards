@@ -20,6 +20,7 @@ public class CardManager {
 	private static TradingCards plugin;
 	private static ItemStack blankCard;
 	private static final Map<String,ItemStack> cards = new HashMap<>();
+	private static final Map<String,ItemStack> activeCards = new HashMap<>();
 
 	/**
 	 * Pre-loads all existing cards.
@@ -30,6 +31,10 @@ public class CardManager {
 		for(String rarity: plugin.getCardsConfig().getConfig().getConfigurationSection("Cards").getKeys(false)){
 			for(String name: plugin.getCardsConfig().getConfig().getConfigurationSection("Cards."+rarity).getKeys(false)) {
 				cards.put(rarity+"."+name, CardUtil.generateCard(name,rarity,false));
+				final String series = plugin.getCardsConfig().getConfig().getString("Cards."+rarity+"."+name+".series");
+				if(plugin.getMainConfig().activeSeries.contains(series)) {
+					activeCards.put(rarity + "." + name, cards.get(rarity + "." + name));
+				}
 			}
 		}
 
@@ -41,7 +46,9 @@ public class CardManager {
 		return cards;
 	}
 
-
+	public static Map<String, ItemStack> getActiveCards() {
+		return activeCards;
+	}
 
 	/**
 	 *
@@ -60,6 +67,13 @@ public class CardManager {
 		if(cards.containsKey(rarity+"."+cardName))
 			return cards.get(rarity+"."+cardName);
 		return CardUtil.generateCard(cardName,rarity,forcedShiny);
+	}
+
+	public static ItemStack getActiveCard(final String cardName,final String rarity, final boolean forcedShiny){
+		if(activeCards.containsKey(rarity+"."+cardName))
+			return activeCards.get(rarity+"."+cardName);
+		//fallthrough
+		return getCard(cardName,rarity,forcedShiny);
 	}
 
 
