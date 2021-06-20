@@ -210,6 +210,18 @@ public class CardUtil {
 		return CardManager.getCard(cardName, rarityName, forcedShiny);
 	}
 
+	@NotNull
+	public static ItemStack getRandomActiveCard(@NotNull final String rarityName, final boolean forcedShiny) {
+		ConfigurationSection cardSection = plugin.getCardsConfig().getConfig().getConfigurationSection("Cards." + rarityName);
+		Validate.notNull(cardSection, "No such section." + rarityName);
+
+		Set<String> cards = cardSection.getKeys(false);
+		List<String> cardNames = new ArrayList<>(cards);
+		int cIndex = plugin.getRandom().nextInt(cardNames.size());
+		String cardName = cardNames.get(cIndex);
+		return CardManager.getActiveCard(cardName, rarityName, forcedShiny);
+	}
+
 	/**
 	 * Strips the given message of all color codes
 	 *
