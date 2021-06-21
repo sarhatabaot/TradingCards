@@ -1,5 +1,7 @@
 package media.xen.tradingcards.whitelist;
 
+import media.xen.tradingcards.api.blacklist.WhitelistMode;
+import media.xen.tradingcards.api.blacklist.Blacklist;
 import media.xen.tradingcards.config.SimpleConfig;
 import org.bukkit.entity.Player;
 
@@ -8,7 +10,7 @@ import java.util.List;
 /**
  * @author ketelsb
  */
-public class PlayerBlacklist {
+public class PlayerBlacklist implements Blacklist<Player> {
     private SimpleConfig config;
     private String listedPlayersName = "Players";
     private String whitelistModeName = "Whitelist-Mode";
@@ -32,7 +34,7 @@ public class PlayerBlacklist {
         else
             this.whitelistMode = WhitelistMode.BLACKLIST;
     }
-
+    @Override
     public boolean isAllowed(Player p) {
         boolean isOnList = listedPlayers.contains(p.getName());
 
@@ -48,18 +50,23 @@ public class PlayerBlacklist {
 
         return false;
     }
-
+    @Override
     public void add(Player p) {
         listedPlayers.add(p.getName());
         this.config.getConfig().set(listedPlayersName, null);
         this.config.getConfig().set(listedPlayersName, listedPlayers);
         this.config.saveConfig();
     }
-
+    @Override
     public void remove(Player p) {
         listedPlayers.remove(p.getName());
         this.config.getConfig().set(listedPlayersName, null);
         this.config.getConfig().set(listedPlayersName, listedPlayers);
         this.config.saveConfig();
+    }
+
+    @Override
+    public WhitelistMode getMode() {
+        return whitelistMode;
     }
 }

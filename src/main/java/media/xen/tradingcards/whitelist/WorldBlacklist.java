@@ -1,19 +1,18 @@
 package media.xen.tradingcards.whitelist;
 
-import media.xen.tradingcards.TradingCards;
+import media.xen.tradingcards.api.blacklist.WhitelistMode;
+import media.xen.tradingcards.api.blacklist.Blacklist;
 import media.xen.tradingcards.config.SimpleConfig;
 import org.bukkit.World;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 /**
  * @author ketelsb
  */
-public class WorldBlacklist {
-    private SimpleConfig config;
-    private String listedWorldsName = "Worlds";
+public class WorldBlacklist implements Blacklist<World> {
+    private final SimpleConfig config;
+    private final String listedWorldsName = "Worlds";
     private String whitelistModeName = "Whitelist-Mode";
     private List<String> listedWorlds;
     private WhitelistMode whitelistMode;
@@ -37,6 +36,7 @@ public class WorldBlacklist {
             this.whitelistMode = WhitelistMode.BLACKLIST;
     }
 
+    @Override
     public boolean isAllowed(World w) {
         boolean isOnList = listedWorlds.contains(w.getName());
 
@@ -52,6 +52,7 @@ public class WorldBlacklist {
         return false;
     }
 
+    @Override
     public void add(World w) {
         listedWorlds.add(w.getName());
         this.config.getConfig().set(listedWorldsName, null);
@@ -59,10 +60,16 @@ public class WorldBlacklist {
         this.config.saveConfig();
     }
 
+    @Override
     public void remove(World w) {
         listedWorlds.remove(w.getName());
         this.config.getConfig().set(listedWorldsName, null);
         this.config.getConfig().set(listedWorldsName, listedWorlds);
         this.config.saveConfig();
+    }
+
+    @Override
+    public WhitelistMode getMode() {
+        return whitelistMode;
     }
 }
