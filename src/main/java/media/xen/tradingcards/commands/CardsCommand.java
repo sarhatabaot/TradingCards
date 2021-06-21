@@ -174,7 +174,7 @@ public class CardsCommand extends BaseCommand {
         @CommandPermission("cards.admin.debug.showcache")
         @Description("Shows the card cache")
         public void showCacheActive(final CommandSender sender) {
-            sender.sendMessage(StringUtils.join(CardManager.getCards().keySet(), ","));
+            sender.sendMessage(StringUtils.join(CardManager.getActiveCards().keySet(), ","));
         }
 
         @Subcommand("modules")

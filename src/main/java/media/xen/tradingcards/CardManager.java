@@ -1,15 +1,11 @@
 package media.xen.tradingcards;
 
-import de.tr7zw.nbtapi.NBTItem;
-import media.xen.tradingcards.api.card.CardInfo;
 import media.xen.tradingcards.config.TradingCardsConfig;
 import org.apache.commons.lang.StringUtils;
-import org.bukkit.ChatColor;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,7 +14,6 @@ import java.util.Map;
 
 public class CardManager {
 	private static TradingCards plugin;
-	private static ItemStack blankCard;
 	private static final Map<String,ItemStack> cards = new HashMap<>();
 	private static final Map<String,ItemStack> activeCards = new HashMap<>();
 
@@ -27,7 +22,6 @@ public class CardManager {
 	 */
 	public static void init(final TradingCards plugin) {
 		CardManager.plugin = plugin;
-		CardManager.blankCard = new ItemStack(TradingCardsConfig.getBlankCard(1));
 		for(String rarity: plugin.getCardsConfig().getConfig().getConfigurationSection("Cards").getKeys(false)){
 			for(String name: plugin.getCardsConfig().getConfig().getConfigurationSection("Cards."+rarity).getKeys(false)) {
 				cards.put(rarity+"."+name, CardUtil.generateCard(name,rarity,false));
