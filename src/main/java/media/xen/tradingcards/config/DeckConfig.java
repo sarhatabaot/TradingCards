@@ -1,13 +1,14 @@
 package media.xen.tradingcards.config;
 
 import media.xen.tradingcards.TradingCards;
+import media.xen.tradingcards.core.SimpleConfig;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.UUID;
 
-public class DeckConfig extends SimpleConfig{
+public class DeckConfig extends SimpleConfig {
 	private static final String INVENTORY_PATH = "Decks.Inventories.";
 	public DeckConfig(final TradingCards plugin) {
 		super(plugin, "decks.yml");
@@ -43,6 +44,8 @@ public class DeckConfig extends SimpleConfig{
 	}
 
 	public boolean containsCard(final UUID uuid,final String card, final String rarity){
+		if(getAllDecks(uuid) == null || getAllDecks(uuid).getValues(false).isEmpty())
+			return false;
 		for(String deckNumber : getAllDecks(uuid).getValues(false).keySet()){
 			for(String cardString: getDeck(uuid,deckNumber)) {
 				String[] splitCardString = cardString.split(",");
@@ -57,6 +60,8 @@ public class DeckConfig extends SimpleConfig{
 	}
 
 	public boolean containsShinyCard(final UUID uuid,final String card, final String rarity) {
+		if(getAllDecks(uuid) == null || getAllDecks(uuid).getValues(false).isEmpty())
+			return false;
 		for(String deckNumber : getAllDecks(uuid).getValues(false).keySet()){
 			for(String cardString: getDeck(uuid,deckNumber)) {
 				String[] splitCardString = cardString.split(",");
