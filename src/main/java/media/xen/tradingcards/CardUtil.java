@@ -1,6 +1,7 @@
 package media.xen.tradingcards;
 
 import de.tr7zw.nbtapi.NBTItem;
+import media.xen.tradingcards.api.card.TradingCard;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
@@ -153,7 +154,7 @@ public class CardUtil {
 		plugin.debug("generateCard.cardSection: " + plugin.getCardsConfig().getConfig().contains("Cards." + rarityName));
 		plugin.debug("generateCard.rarity: " + rarityName);
 
-		CardManager.TradingCard builder = new CardManager.TradingCard(cardName);
+		TradingCard builder = new TradingCard(plugin, cardName);
 		boolean hasShinyVersion = plugin.getCardsConfig().getConfig().getBoolean("Cards." + rarityName + "." + cardName + ".Has-Shiny-Version");
 		boolean isShiny = false;
 		if (hasShinyVersion) {
