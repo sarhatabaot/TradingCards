@@ -1,6 +1,7 @@
 package media.xen.tradingcards.config;
 
 import media.xen.tradingcards.TradingCards;
+import media.xen.tradingcards.core.SimpleConfig;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 

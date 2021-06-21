@@ -1,4 +1,4 @@
-package media.xen.tradingcards.config;
+package media.xen.tradingcards.core;
 
 import media.xen.tradingcards.TradingCards;
 import org.bukkit.configuration.file.FileConfiguration;

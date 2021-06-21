@@ -7,7 +7,7 @@ import media.xen.tradingcards.commands.DeckCommand;
 import media.xen.tradingcards.config.CardsConfig;
 import media.xen.tradingcards.config.DeckConfig;
 import media.xen.tradingcards.config.MessagesConfig;
-import media.xen.tradingcards.config.SimpleConfig;
+import media.xen.tradingcards.core.SimpleConfig;
 import media.xen.tradingcards.config.TradingCardsConfig;
 import media.xen.tradingcards.listeners.DeckListener;
 import media.xen.tradingcards.listeners.DropListener;

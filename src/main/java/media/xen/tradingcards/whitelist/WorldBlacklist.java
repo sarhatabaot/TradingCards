@@ -2,7 +2,7 @@ package media.xen.tradingcards.whitelist;
 
 import media.xen.tradingcards.api.blacklist.WhitelistMode;
 import media.xen.tradingcards.api.blacklist.Blacklist;
-import media.xen.tradingcards.config.SimpleConfig;
+import media.xen.tradingcards.core.SimpleConfig;
 import org.bukkit.World;
 
 import java.util.List;
