@@ -308,7 +308,7 @@ public class TradingCards extends JavaPlugin {
         for (final Player p : Bukkit.getOnlinePlayers()) {
             String rare = CardUtil.calculateRarity(mob, true);
             debug("onCommand.rare: " + rare);
-            CardUtil.dropItem(p, CardUtil.getRandomCard(rare, false));
+            CardUtil.dropItem(p, CardUtil.getRandomCard(rare, false).build());
         }
 
     }
