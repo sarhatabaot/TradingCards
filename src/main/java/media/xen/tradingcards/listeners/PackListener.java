@@ -77,29 +77,32 @@ public class PackListener extends SimpleListener {
 		}
 
 		int normalCardAmount = Integer.parseInt(ChatColor.stripColor(line1[0]));
+		String normalCardRarity = WordUtils.capitalizeFully(line1[1]);
 		int specialCardAmount = Integer.parseInt(ChatColor.stripColor(line2[0]));
+		String specialCardRarity = WordUtils.capitalizeFully(line2[1]);
 		int extraCardAmount = 0;
+		String extraCardRarity = "";
 		if (hasExtra) {
 			extraCardAmount = Integer.parseInt(ChatColor.stripColor(line3[0]));
+			extraCardRarity = WordUtils.capitalizeFully(line3[1]);
 		}
 
 		player.sendMessage(plugin.cMsg(plugin.getMessagesConfig().prefix + " " + plugin.getMessagesConfig().openBoosterPack));
-
-		for (int i = 0; i < normalCardAmount; ++i) {
-			CardUtil.dropItem(player, CardUtil.getRandomCard(WordUtils.capitalizeFully(line1[1]), false).build());
-		}
-
-		for (int i = 0; i < specialCardAmount; ++i) {
-			CardUtil.dropItem(player, CardUtil.getRandomCard(WordUtils.capitalizeFully(line2[1]), false).build());
-		}
+		dropRandomCards(player,normalCardRarity,normalCardAmount);
+		dropRandomCards(player,specialCardRarity,specialCardAmount);
 
 		if (hasExtra) {
-			for (int i = 0; i < extraCardAmount; ++i) {
-				CardUtil.dropItem(player, CardUtil.getRandomCard(WordUtils.capitalizeFully(line3[1]), false).build());
-			}
+			dropRandomCards(player,extraCardRarity,extraCardAmount);
 		}
 
 
+	}
+
+
+	private void dropRandomCards(Player player, final String rarity, int amount) {
+		for(var i = 0; i< amount;i++) {
+			CardUtil.dropItem(player,CardUtil.getRandomCard(WordUtils.capitalizeFully(rarity), false).build());
+		}
 	}
 
 

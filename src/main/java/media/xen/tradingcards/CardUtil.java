@@ -212,6 +212,8 @@ public class CardUtil {
 		return CardManager.getCard(cardName, rarityName, forcedShiny);
 	}
 
+
+
 	@NotNull
 	public static TradingCard getRandomActiveCard(@NotNull final String rarityName, final boolean forcedShiny) {
 		ConfigurationSection cardSection = plugin.getCardsConfig().getConfig().getConfigurationSection("Cards." + rarityName);
