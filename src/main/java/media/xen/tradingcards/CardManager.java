@@ -1,6 +1,5 @@
 package media.xen.tradingcards;
 
-import media.xen.tradingcards.api.card.TradingCard;
 import media.xen.tradingcards.config.TradingCardsConfig;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.enchantments.Enchantment;
@@ -15,8 +14,8 @@ import java.util.Map;
 
 public class CardManager {
 	private static TradingCards plugin;
-	private static final Map<String, TradingCard> cards = new HashMap<>();
-	private static final Map<String, TradingCard> activeCards = new HashMap<>();
+	private static final Map<String,ItemStack> cards = new HashMap<>();
+	private static final Map<String,ItemStack> activeCards = new HashMap<>();
 
 	/**
 	 * Pre-loads all existing cards.
@@ -37,11 +36,11 @@ public class CardManager {
 		plugin.debug(StringUtils.join(cards.keySet(), ","));
 	}
 
-	public static Map<String,TradingCard> getCards(){
+	public static Map<String,ItemStack> getCards(){
 		return cards;
 	}
 
-	public static Map<String, TradingCard> getActiveCards() {
+	public static Map<String, ItemStack> getActiveCards() {
 		return activeCards;
 	}
 
@@ -58,13 +57,13 @@ public class CardManager {
 		return true;
 	}
 
-	public static TradingCard getCard(final String cardName,final String rarity, final boolean forcedShiny){
+	public static ItemStack getCard(final String cardName,final String rarity, final boolean forcedShiny){
 		if(cards.containsKey(rarity+"."+cardName))
-			return cards.get(rarity+"."+cardName).isShiny(true);
+			return cards.get(rarity+"."+cardName);
 		return CardUtil.generateCard(cardName,rarity,forcedShiny);
 	}
 
-	public static TradingCard getActiveCard(final String cardName,final String rarity, final boolean forcedShiny){
+	public static ItemStack getActiveCard(final String cardName,final String rarity, final boolean forcedShiny){
 		if(activeCards.containsKey(rarity+"."+cardName))
 			return activeCards.get(rarity+"."+cardName);
 		//fallthrough
@@ -74,10 +73,9 @@ public class CardManager {
 
 
 	public static ItemStack getCard(final String cardName,final String rarity, int num){
-		TradingCard card = cards.get(rarity+"."+cardName);
-		ItemStack cardItem = card.build();
-		cardItem.setAmount(num);
-		return cardItem;
+		ItemStack card = cards.get(rarity+"."+cardName);
+		card.setAmount(num);
+		return card;
 	}
 
 	public static ItemStack generatePack(final String name) {
