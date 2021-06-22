@@ -51,7 +51,7 @@ public class CardSchedulerRunnable extends BukkitRunnable {
         Bukkit.broadcastMessage(plugin.cMsg(plugin.getMessagesConfig().prefix + " " + plugin.getMessagesConfig().scheduledGiveaway));
         for (final Player p : Bukkit.getOnlinePlayers()) {
             String cardName = getRandomCardName(keyToUse);
-            CardUtil.dropItem(p, CardManager.getCard(cardName, keyToUse, false));
+            CardUtil.dropItem(p, CardManager.getCard(cardName, keyToUse, false).build());
         }
 
     }

@@ -1,6 +1,7 @@
 package media.xen.tradingcards;
 
 import de.tr7zw.nbtapi.NBTItem;
+import media.xen.tradingcards.api.card.NullTradingCard;
 import media.xen.tradingcards.api.card.TradingCard;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
@@ -18,6 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -146,9 +148,9 @@ public class CardUtil {
 		return shinyRandom <= plugin.getConfig().getInt("Chances.Shiny-Version-Chance");
 	}
 	@NotNull
-	public static ItemStack generateCard(String cardName, String rarityName, boolean forcedShiny) {
+	public static TradingCard generateCard(String cardName, String rarityName, boolean forcedShiny) {
 		if (rarityName.equals("None")) {
-			return new ItemStack(Material.AIR);
+			return new NullTradingCard(plugin);
 		}
 		//plugin.reloadAllConfig();
 		plugin.debug("generateCard.cardSection: " + plugin.getCardsConfig().getConfig().contains("Cards." + rarityName));
@@ -195,12 +197,12 @@ public class CardUtil {
 				.shinyPrefix(shinyPrefix)
 				.isPlayerCard(isPlayerCard)
 				.cost(cost)
-				.rarity(rarityName).build();
+				.rarity(rarityName);
 	}
 
 
 	@NotNull
-	public static ItemStack getRandomCard(@NotNull final String rarityName, final boolean forcedShiny) {
+	public static TradingCard getRandomCard(@NotNull final String rarityName, final boolean forcedShiny) {
 		ConfigurationSection cardSection = plugin.getCardsConfig().getConfig().getConfigurationSection("Cards." + rarityName);
 		Validate.notNull(cardSection, "No such section." + rarityName);
 
@@ -212,7 +214,7 @@ public class CardUtil {
 	}
 
 	@NotNull
-	public static ItemStack getRandomActiveCard(@NotNull final String rarityName, final boolean forcedShiny) {
+	public static TradingCard getRandomActiveCard(@NotNull final String rarityName, final boolean forcedShiny) {
 		ConfigurationSection cardSection = plugin.getCardsConfig().getConfig().getConfigurationSection("Cards." + rarityName);
 		Validate.notNull(cardSection, "No such section." + rarityName);
 
@@ -326,6 +328,42 @@ public class CardUtil {
 		return plugin.getCardsConfig().getConfig().contains("Cards." + rarity + "." + name) && plugin.getCardsConfig().getConfig().getString("Cards." + rarity + "." + name + ".Type").equalsIgnoreCase(type);
 	}
 
+	public static String getRarityId(final ItemStack itemStack) {
+		return getNbtId(itemStack,"rarity");
+	}
+
+	public static String getNbtId(final ItemStack itemStack, final String tag) {
+		NBTItem nbtItem = new NBTItem(itemStack);
+		if(nbtItem.getString(tag) == null) {
+			return getTagFromLore(itemStack,tag);
+		}
+		return new NBTItem(itemStack).getString(tag);
+	}
+
+
+	public static String getSeriesId(final ItemStack itemStack) {
+		return getNbtId(itemStack,"series");
+	}
+
+	private static String getTagFromLore(ItemStack itemStack, final String tag) {
+		for (String string : itemStack.getLore()) {
+			if (StringUtils.containsIgnoreCase(string,tag))
+				return ChatColor.stripColor(string.split(":")[1].trim());
+		}
+		return null;
+	}
+
+
+	public static boolean isShiny(final ItemStack itemStack) throws NotACardException{
+		if(!isCard(itemStack))
+			throw new NotACardException("Item isn't a card. You shouldn't even call this method.");
+
+		NBTItem nbtItem = new NBTItem(itemStack);
+		if(nbtItem.getString("isShiny") == null)
+			return itemStack.getItemMeta().getDisplayName().contains(plugin.getConfig().getString("DisplayNames.Cards.ShinyTitle"));
+		return nbtItem.getBoolean("isShiny");
+	}
+
 	public static boolean isCard(final ItemStack itemStack) {
 		if(!isCardMaterial(itemStack.getType()))
 			return false;
@@ -337,5 +375,15 @@ public class CardUtil {
 	private static boolean isCardMaterial(final  Material material) {
 		return material == Material.valueOf(plugin.getMainConfig().cardMaterial);
 	}
+
+
+	public static class NotACardException extends Exception {
+		private final long serial = 1L;
+
+		public NotACardException(final String message) {
+			super(message);
+		}
+	}
+
 
 }

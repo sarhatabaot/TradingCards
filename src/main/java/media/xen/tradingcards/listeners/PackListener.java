@@ -86,16 +86,16 @@ public class PackListener extends SimpleListener {
 		player.sendMessage(plugin.cMsg(plugin.getMessagesConfig().prefix + " " + plugin.getMessagesConfig().openBoosterPack));
 
 		for (int i = 0; i < normalCardAmount; ++i) {
-			CardUtil.dropItem(player, CardUtil.getRandomCard(WordUtils.capitalizeFully(line1[1]), false));
+			CardUtil.dropItem(player, CardUtil.getRandomCard(WordUtils.capitalizeFully(line1[1]), false).build());
 		}
 
 		for (int i = 0; i < specialCardAmount; ++i) {
-			CardUtil.dropItem(player, CardUtil.getRandomCard(WordUtils.capitalizeFully(line2[1]), false));
+			CardUtil.dropItem(player, CardUtil.getRandomCard(WordUtils.capitalizeFully(line2[1]), false).build());
 		}
 
 		if (hasExtra) {
 			for (int i = 0; i < extraCardAmount; ++i) {
-				CardUtil.dropItem(player, CardUtil.getRandomCard(WordUtils.capitalizeFully(line3[1]), false));
+				CardUtil.dropItem(player, CardUtil.getRandomCard(WordUtils.capitalizeFully(line3[1]), false).build());
 			}
 		}
 

@@ -52,7 +52,7 @@ public class DropListener extends SimpleListener {
         if (rarityKey == null)
             return;
 
-        ItemStack playerCard = CardManager.getActiveCard(killedPlayer.getName(), rarityKey, false);
+        ItemStack playerCard = CardManager.getActiveCard(killedPlayer.getName(), rarityKey, false).build();
         e.getDrops().add(playerCard);
         plugin.debug(e.getDrops().toString());
     }
@@ -82,7 +82,7 @@ public class DropListener extends SimpleListener {
             return;
 
         //Generate the card
-        ItemStack randomCard = CardUtil.getRandomActiveCard(rarityName, false);
+        ItemStack randomCard = CardUtil.getRandomActiveCard(rarityName, false).build();
 
         debug("Successfully generated card.");
 
