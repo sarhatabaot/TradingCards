@@ -196,10 +196,6 @@ public class TradingCards extends JavaPlugin {
     }
 
 
-    @Deprecated
-    public boolean deleteCard(Player p, String card, String rarity) {
-        return getCardsConfig().deleteCard(p, card, rarity);
-    }
 
     @Deprecated
     public boolean hasCard(Player player, String card, String rarity) {
@@ -348,10 +344,6 @@ public class TradingCards extends JavaPlugin {
         return numCardsCounter;
     }
 
-    @Deprecated
-    public boolean deleteRarity(Player p, String rarity) {
-        return getCardsConfig().deleteRarity(p, rarity);
-    }
 
     public String cMsg(String message) {
         return ChatColor.translateAlternateColorCodes('&', message);
