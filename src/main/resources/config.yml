@@ -72,13 +72,16 @@ PluginSupport:
     Closed-Economy: false
     Server-Account: TradingCards-Bank
 
+#
+# Series can be active, or all
+#
 BoosterPacks:
   Starter_Pack:
     NumNormalCards: 9
     NormalCardRarity: Common
     NumSpecialCards: 1
     SpecialCardRarity: Rare
-    Series: ['2021']
+    Series: "Active"
     Price: 100.00
   Advanced_Pack:
     NumNormalCards: 12
@@ -87,7 +90,7 @@ BoosterPacks:
     ExtraCardRarity: Uncommon
     NumSpecialCards: 2
     SpecialCardRarity: Rare
-    Series: ['2021']
+    Series: "Active"
     Price: 150.00
   Expert_Pack:
     NumNormalCards: 6
@@ -96,14 +99,14 @@ BoosterPacks:
     ExtraCardRarity: Rare
     NumSpecialCards: 2
     SpecialCardRarity: Very Rare
-    Series: ['2021']
+    Series: "Active"
     Price: 250.00
   Ultimate_Pack:
     NumNormalCards: 5
     NormalCardRarity: Rare
     NumSpecialCards: 1
     SpecialCardRarity: Legendary
-    Series: ['2021']
+    Series: "Active"
     Price: 500.00
 
 Rarities:
