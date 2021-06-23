@@ -183,6 +183,10 @@ public class TradingCardsConfig implements Config {
 		return plugin.getConfig().getConfigurationSection("Rarities");
 	}
 
+	public static String getPackSeries(final String packName) {
+		return plugin.getConfig().getString("BoosterPacks."+packName+".Series");
+	}
+
 
 
 	@Override
