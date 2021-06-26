@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class CardManager {
 	private static TradingCards plugin;
@@ -25,6 +26,10 @@ public class CardManager {
 
 	public static List<String> getRarityCardList(final String rarity) {
 		return rarityCardList.get(rarity);
+	}
+
+	public static Set<String> getRarityNames() {
+		return rarityCardList.keySet();
 	}
 
 
