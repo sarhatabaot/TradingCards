@@ -29,6 +29,8 @@ public class TradingCard {
     private CardInfo info;
     private String shinyPrefix = null;
     private String cost;
+    private double buyPrice;
+    private double sellPrice;
 
     public TradingCard(TradingCards plugin, final String cardName) {
         this.plugin = plugin;
@@ -90,27 +92,61 @@ public class TradingCard {
         return this;
     }
 
-    /**
-     * Saves the card to disk.
-     *
-     * @return Returns false if the card already exists, or if the rarity doesn't exist
-     */
-    public boolean save(TradingCards plugin) {
-        //Checks should happen in the commands... this should be a stupid method, towny hooks should handle this as well.
-        //This method should only return false if there was an io exception or something like that.
-        if (plugin.getCardsConfig().getConfig().contains("Cards." + rarity + "." + cardName)) {
-            plugin.debug("Card already exists. Try a different name?");
-            return false;
-        }
-        if (!plugin.getCardsConfig().getConfig().contains("Cards." + rarity)) {
-            plugin.debug("No such rarity, try /cards rarities");
-            return false;
-        }
-
-        //checks for formatting should be done through the command.
-        return true;
+    public String getCardName() {
+        return cardName;
     }
 
+    public String getRarity() {
+        return rarity;
+    }
+
+    public boolean isShiny() {
+        return isShiny;
+    }
+
+    public boolean isPlayerCard() {
+        return isPlayerCard;
+    }
+
+    public String getRarityColour() {
+        return rarityColour;
+    }
+
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public CardInfo getSeries() {
+        return series;
+    }
+
+    public CardInfo getAbout() {
+        return about;
+    }
+
+    public CardInfo getType() {
+        return type;
+    }
+
+    public CardInfo getInfo() {
+        return info;
+    }
+
+    public String getShinyPrefix() {
+        return shinyPrefix;
+    }
+
+    public String getCost() {
+        return cost;
+    }
+
+    public double getBuyPrice() {
+        return buyPrice;
+    }
+
+    public double getSellPrice() {
+        return sellPrice;
+    }
 
     private ItemStack buildItem() {
         ItemStack card = TradingCardsConfig.getBlankCard(1).clone();
@@ -132,7 +168,12 @@ public class TradingCard {
 
     public ItemStack build() {
         NBTItem nbtItem = new NBTItem(buildItem());
+        nbtItem.setString("name",cardName);
+        nbtItem.setString("rarity",rarity);
         nbtItem.setBoolean("isCard", true);
+        nbtItem.setBoolean("isShiny",isShiny);
+        nbtItem.setString("series",series.getName());
+        nbtItem.setString("rarity",rarity);
         return nbtItem.getItem();
     }
 
@@ -147,7 +188,7 @@ public class TradingCard {
         }
 
         lore.add(plugin.cMsg(series.getColour() + series.getDisplay() + ": &f" + series.getName()));
-        if (plugin.getCardsConfig().getConfig().contains("Cards." + rarity + "." + cardName + ".About")) {
+        if (about!=null) {
             lore.add(plugin.cMsg(about.getColour() + about.getDisplay() + ": &f" + about.getName()));
         }
 
