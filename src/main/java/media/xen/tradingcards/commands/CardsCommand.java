@@ -276,11 +276,10 @@ public class CardsCommand extends BaseCommand {
             final StringBuilder stringBuilder = new StringBuilder();
             final String sectionFormat = "&6--- %s &7(&c%d&f/&a%d&7)&6 ---";
             final String sectionFormatComplete = "&6--- %s &7(%sComplete&7)&6 ---";
-            final ConfigurationSection rarityCardSection = plugin.getCardsConfig().getConfig().getConfigurationSection("Cards." + rarity);
-            final int cardTotal = rarityCardSection.getKeys(false).size();
+
             int cardCounter = 0;
 
-            for (String cardName : rarityCardSection.getKeys(false)) {
+            for (String cardName : CardManager.getRarityCardList(rarity)) {
                 if (cardCounter > 32) {
                     if (plugin.hasCard(target, cardName, rarity)) {
                         ++cardCounter;
@@ -303,10 +302,10 @@ public class CardsCommand extends BaseCommand {
                 }
             }
             //send title
-            if (cardCounter == cardTotal) {
+            if (cardCounter == CardManager.getRarityCardList(rarity).size()) {
                 sendMessage(sender, String.format(sectionFormatComplete, plugin.isRarityAndFormat(rarity), plugin.getConfig().getString("Colours.ListRarityComplete")));
             } else {
-                sendMessage(sender, String.format(sectionFormat, plugin.isRarityAndFormat(rarity), cardCounter, cardTotal));
+                sendMessage(sender, String.format(sectionFormat, plugin.isRarityAndFormat(rarity), cardCounter, CardManager.getRarityCardList(rarity).size()));
             }
 
             sendMessage(sender, stringBuilder.toString());
