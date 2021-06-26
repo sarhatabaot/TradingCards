@@ -8,27 +8,31 @@ import org.bukkit.configuration.ConfigurationSection;
  * @author sarhatabaot
  */
 public class SimpleCardsConfig extends SimpleConfig {
-    private final ConfigurationSection cards = getConfig().getConfigurationSection("Cards");
+    private final ConfigurationSection cards;
     public SimpleCardsConfig(final TradingCards plugin, final String fileName) {
-        super(plugin, fileName);
+        super(plugin, fileName, "cards");
+        this.cards = getConfig().getConfigurationSection("Cards");
+        reloadConfig();
+        plugin.debug("Created: "+fileName);
     }
     public ConfigurationSection getCardSection(final String rarity, final String name) {
+        plugin.debug("rarity="+rarity+",name="+name);
         return cards.getConfigurationSection(rarity+"."+name);
     }
     public String getSeries(final String rarity, final String name) {
-        return getCardSection(rarity,name).getString("Series");
+        return getCardSection(rarity,name).getString("Series", "");
     }
 
     public String getAbout(final String rarity, final String name) {
-        return getCardSection(rarity,name).getString("About");
+        return getCardSection(rarity,name).getString("About", "");
     }
 
     public String getType(final String rarity,final String name) {
-        return getCardSection(rarity,name).getString("Type");
+        return getCardSection(rarity,name).getString("Type", "");
     }
 
     public String getInfo(final String rarity, final String name) {
-        return getCardSection(rarity, name).getString("Info");
+        return getCardSection(rarity, name).getString("Info", "");
     }
 
     public String getCost(final String rarity, final String name) {
@@ -47,7 +51,7 @@ public class SimpleCardsConfig extends SimpleConfig {
     }
 
     public boolean hasShiny(final String rarity, final String name) {
-        return getCardSection(rarity, name).getBoolean("Has-Shiny-Version");
+        return getCardSection(rarity, name).getBoolean("Has-Shiny-Version", false);
     }
 
     public ConfigurationSection getCards() {

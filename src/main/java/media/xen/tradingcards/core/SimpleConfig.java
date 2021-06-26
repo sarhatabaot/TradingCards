@@ -16,18 +16,28 @@ import java.nio.charset.StandardCharsets;
 public class SimpleConfig {
 	protected final TradingCards plugin;
 	private final String fileName;
+	private final File folder;
 
 	private File file;
 	private FileConfiguration config;
 
+	public SimpleConfig(final TradingCards plugin, final String fileName, final String folder) {
+		this.plugin = plugin;
+		this.fileName = fileName;
+		this.folder = new File(plugin.getDataFolder().getPath()+File.separator+folder);
+
+		plugin.debug(this.folder.getName());
+	}
+
 	public SimpleConfig(final TradingCards plugin, final String fileName) {
 		this.plugin = plugin;
 		this.fileName = fileName;
+		this.folder = plugin.getDataFolder();
 	}
 
 	public void saveDefaultConfig() {
 		if (this.file == null) {
-			this.file = new File(plugin.getDataFolder(), fileName);
+			this.file = new File(folder, fileName);
 		}
 
 		if (!this.file.exists()) {
@@ -54,7 +64,7 @@ public class SimpleConfig {
 
 	public void reloadConfig(){
 		if (file == null) {
-			file = new File(plugin.getDataFolder(), fileName);
+			file = new File(folder, fileName);
 		}
 
 		config = YamlConfiguration.loadConfiguration(file);
@@ -62,7 +72,7 @@ public class SimpleConfig {
 
 	public void reloadDefaultConfig(){
 		if (file == null) {
-			file = new File(plugin.getDataFolder(), fileName);
+			file = new File(folder, fileName);
 		}
 
 		if(!file.exists()) {
