@@ -1,6 +1,8 @@
 package media.xen.tradingcards;
 
+import media.xen.tradingcards.api.card.NullTradingCard;
 import media.xen.tradingcards.api.card.TradingCard;
+import media.xen.tradingcards.config.SimpleCardsConfig;
 import media.xen.tradingcards.config.TradingCardsConfig;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.enchantments.Enchantment;
@@ -8,33 +10,56 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class CardManager {
 	private static TradingCards plugin;
 	private static final Map<String, TradingCard> cards = new HashMap<>();
 	private static final Map<String, TradingCard> activeCards = new HashMap<>();
 
+	private static final Map<String, List<String>> rarityCardList = new HashMap<>();
+
+
+	public static List<String> getRarityCardList(final String rarity) {
+		return rarityCardList.get(rarity);
+	}
+
+	public static Set<String> getRarityNames() {
+		return rarityCardList.keySet();
+	}
+
+
 	/**
 	 * Pre-loads all existing cards.
 	 */
 	public static void init(final TradingCards plugin) {
 		CardManager.plugin = plugin;
-		for(String rarity: plugin.getCardsConfig().getConfig().getConfigurationSection("Cards").getKeys(false)){
-			for(String name: plugin.getCardsConfig().getConfig().getConfigurationSection("Cards."+rarity).getKeys(false)) {
-				cards.put(rarity+"."+name, CardUtil.generateCard(name,rarity,false));
-				final String series = plugin.getCardsConfig().getConfig().getString("Cards."+rarity+"."+name+".series");
-				if(plugin.getMainConfig().activeSeries.contains(series)) {
-					activeCards.put(rarity + "." + name, cards.get(rarity + "." + name));
+		loadCards();
+		plugin.getLogger().info(String.format("Loaded %d cards.",cards.size()));
+		plugin.debug(StringUtils.join(cards.keySet(), ","));
+	}
+
+
+
+	private static void loadCards() {
+		for(SimpleCardsConfig simpleCardsConfig: plugin.getCardsConfig().getCardConfigs()) {
+			for(final String rarity: simpleCardsConfig.getCards().getKeys(false)) {
+				rarityCardList.put(rarity,new ArrayList<>());
+				for(String name: simpleCardsConfig.getCards().getConfigurationSection(rarity).getKeys(false)) {
+					cards.put(rarity+"."+name,CardUtil.generateCard(simpleCardsConfig,name,rarity,false));
+					rarityCardList.get(rarity).add(name);
+					if(plugin.getMainConfig().activeSeries.contains(simpleCardsConfig.getSeries(rarity,name))) {
+						activeCards.put(rarity+"."+name, cards.get(rarity+"."+name));
+					}
 				}
 			}
 		}
-
-		plugin.getLogger().info(String.format("Loaded %d cards.",cards.size()));
-		plugin.debug(StringUtils.join(cards.keySet(), ","));
 	}
 
 	public static Map<String,TradingCard> getCards(){
@@ -45,23 +70,11 @@ public class CardManager {
 		return activeCards;
 	}
 
-	/**
-	 *
-	 * @param cardName
-	 * @param rarity
-	 * @return false if cards already exists. True if successfully added.
-	 */
-	public static boolean addCard(final String cardName, final String rarity){
-		if(cards.containsKey(rarity+"."+cardName))
-			return false;
-		cards.put(rarity+"."+cardName, CardUtil.generateCard(cardName,rarity,false));
-		return true;
-	}
 
 	public static TradingCard getCard(final String cardName,final String rarity, final boolean forcedShiny){
 		if(cards.containsKey(rarity+"."+cardName))
-			return cards.get(rarity+"."+cardName).isShiny(true);
-		return CardUtil.generateCard(cardName,rarity,forcedShiny);
+			return cards.get(rarity+"."+cardName).isShiny(forcedShiny);
+		return new NullTradingCard(plugin);
 	}
 
 	public static TradingCard getActiveCard(final String cardName,final String rarity, final boolean forcedShiny){
@@ -70,8 +83,18 @@ public class CardManager {
 		//fallthrough
 		return getCard(cardName,rarity,forcedShiny);
 	}
+	public static TradingCard getRandomCard(final String rarity, final boolean forcedShiny) {
+		var cindex = plugin.getRandom().nextInt(getRarityCardList(rarity).size());
+		String randomCardName = getRarityCardList(rarity).get(cindex);
+		return CardManager.getCard(randomCardName, rarity, forcedShiny);
+	}
 
-
+	public static TradingCard getRandomActiveCard(final String rarity, final boolean forcedShiny) {
+		var cindex = plugin.getRandom().nextInt(activeCards.keySet().size());
+		List<String> cardNames = getRarityCardList(rarity);
+		String randomCardName = cardNames.get(cindex);
+		return CardManager.getActiveCard(randomCardName, rarity, forcedShiny); //Might return NullTradingCard TODO
+	}
 
 	public static ItemStack getCard(final String cardName,final String rarity, int num){
 		TradingCard card = cards.get(rarity+"."+cardName);

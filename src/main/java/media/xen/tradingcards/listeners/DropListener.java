@@ -97,10 +97,10 @@ public class DropListener extends SimpleListener {
 
         Set<String> rarityKeys = rarities.getKeys(false);
 
-        for (final String key : rarityKeys) {
-            if (plugin.getCardsConfig().getConfig().contains("Cards." + key + "." + player.getName())) {
-                plugin.debug(key);
-                return key;
+        for (final String rarity : rarityKeys) {
+            if(!CardManager.getCard(player.getName(),rarity,false).getCardName().equals("nullCard")) {
+                plugin.debug(rarity);
+                return rarity;
             }
         }
 

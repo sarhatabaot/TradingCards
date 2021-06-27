@@ -8,6 +8,7 @@ Cards:
       # If vault is enabled, how much this card is worth. Set to 0 to not allow buying.
       Buy-Price: 100.0
       Sell-Price: 50.0
+      About: ''
     Skeleton:
       Series: 'Default'
       Type: 'Monster'
