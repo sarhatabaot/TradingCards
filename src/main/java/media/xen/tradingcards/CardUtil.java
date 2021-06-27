@@ -127,7 +127,7 @@ public class CardUtil {
 		final String seriesColour = plugin.getMainConfig().seriesColour;
 		final String seriesDisplay = plugin.getMainConfig().seriesDisplay;
 
-		final String about = simpleCardsConfig.getAbout(rarityColor,cardName);
+		final String about = simpleCardsConfig.getAbout(rarityName,cardName);
 		final String aboutColour = plugin.getMainConfig().aboutColour;
 		final String aboutDisplay = plugin.getMainConfig().aboutDisplay;
 
