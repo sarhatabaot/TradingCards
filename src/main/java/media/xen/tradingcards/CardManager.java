@@ -76,22 +76,16 @@ public class CardManager {
 		return getCard(cardName,rarity,forcedShiny);
 	}
 	public static TradingCard getRandomCard(final String rarity, final boolean forcedShiny) {
-		int cindex = plugin.getRandom().nextInt(getRarityCardList(rarity).size());
+		var cindex = plugin.getRandom().nextInt(getRarityCardList(rarity).size());
 		String randomCardName = getRarityCardList(rarity).get(cindex);
 		return CardManager.getCard(randomCardName, rarity, forcedShiny);
 	}
 
-	//TODO Reallly inefficient, creates a list every time a random card is called.
 	public static TradingCard getRandomActiveCard(final String rarity, final boolean forcedShiny) {
-		int cindex = plugin.getRandom().nextInt(activeCards.keySet().size());
-		List<String> cardNames = new ArrayList<>();
-		for(String keys: activeCards.keySet()) {
-			if(keys.contains(rarity)) {
-				cardNames.add(keys.split(".")[1]);
-			}
-		}
+		var cindex = plugin.getRandom().nextInt(activeCards.keySet().size());
+		List<String> cardNames = getRarityCardList(rarity);
 		String randomCardName = cardNames.get(cindex);
-		return CardManager.getActiveCard(randomCardName, rarity, forcedShiny);
+		return CardManager.getActiveCard(randomCardName, rarity, forcedShiny); //Might return NullTradingCard TODO
 	}
 
 	public static ItemStack getCard(final String cardName,final String rarity, int num){
