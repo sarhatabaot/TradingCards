@@ -18,7 +18,6 @@ public class SimpleCardsConfig extends SimpleConfig {
         plugin.debug("Created: "+fileName);
     }
     public ConfigurationSection getCardSection(final String rarity, final String name) {
-        plugin.debug("rarity="+rarity+",name="+name);
         return cards.getConfigurationSection(rarity+"."+name);
     }
     public String getSeries(final String rarity, final String name) {
