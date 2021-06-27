@@ -15,10 +15,10 @@ import java.nio.charset.StandardCharsets;
  */
 public class SimpleConfig {
 	protected final TradingCards plugin;
-	private final String fileName;
-	private final File folder;
+	protected final String fileName;
+	protected final File folder;
 
-	private File file;
+	protected File file;
 	private FileConfiguration config;
 
 	public SimpleConfig(final TradingCards plugin, final String fileName, final String folder) {

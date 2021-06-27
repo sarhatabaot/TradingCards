@@ -10,6 +10,8 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,6 +40,14 @@ public class CardManager {
 	 */
 	public static void init(final TradingCards plugin) {
 		CardManager.plugin = plugin;
+		loadCards();
+		plugin.getLogger().info(String.format("Loaded %d cards.",cards.size()));
+		plugin.debug(StringUtils.join(cards.keySet(), ","));
+	}
+
+
+
+	private static void loadCards() {
 		for(SimpleCardsConfig simpleCardsConfig: plugin.getCardsConfig().getCardConfigs()) {
 			for(final String rarity: simpleCardsConfig.getCards().getKeys(false)) {
 				rarityCardList.put(rarity,new ArrayList<>());
@@ -50,8 +60,6 @@ public class CardManager {
 				}
 			}
 		}
-		plugin.getLogger().info(String.format("Loaded %d cards.",cards.size()));
-		plugin.debug(StringUtils.join(cards.keySet(), ","));
 	}
 
 	public static Map<String,TradingCard> getCards(){

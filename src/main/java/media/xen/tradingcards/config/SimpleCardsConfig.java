@@ -4,6 +4,8 @@ import media.xen.tradingcards.TradingCards;
 import media.xen.tradingcards.core.SimpleConfig;
 import org.bukkit.configuration.ConfigurationSection;
 
+import java.io.File;
+
 /**
  * @author sarhatabaot
  */
@@ -56,5 +58,18 @@ public class SimpleCardsConfig extends SimpleConfig {
 
     public ConfigurationSection getCards() {
         return cards;
+    }
+
+    @Override
+    public void saveDefaultConfig() {
+        if (this.file == null) {
+            this.file = new File(folder, fileName);
+        }
+
+        if (!this.file.exists()) {
+            plugin.saveResource(fileName, false);
+        }
+
+        reloadConfig();
     }
 }

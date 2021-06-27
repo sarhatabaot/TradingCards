@@ -66,7 +66,7 @@ public class TradingCards extends JavaPlugin {
 
     public CardsConfig getCardsConfig() {
         return cardsConfig;
-    }
+   }
 
     public TradingCardsConfig getMainConfig() {
         return mainConfig;
@@ -313,7 +313,7 @@ public class TradingCards extends JavaPlugin {
         ConfigLoader.loadAndSave(mainConfig);
         this.deckConfig.reloadConfig();
         ConfigLoader.loadAndSave(messagesConfig);
-        this.cardsConfig = new CardsConfig(this);
+        //this.cardsConfig = new CardsConfig(this);
         //this.cardsConfig.reloadConfig();
     }
 
