@@ -139,7 +139,7 @@ public class CardsCommand extends BaseCommand {
                 String rare = CardUtil.calculateRarity(EntityType.valueOf(entityType.toUpperCase()), true);
                 plugin.debug("onCommand.rare: " + rare);
                 sendPrefixedMessage(sender, plugin.getMessagesConfig().giveRandomCardMsg.replaceAll("%player%", player.getName()));
-                CardUtil.dropItem(player, CardUtil.getRandomCard(rare, false).build());
+                CardUtil.dropItem(player, CardUtil.getRandomCard(rare, false));
             } catch (IllegalArgumentException exception) {
                 sendPrefixedMessage(player, plugin.getMessagesConfig().noEntity);
             }
@@ -542,7 +542,7 @@ public class CardsCommand extends BaseCommand {
                 if (plugin.getConfig().getBoolean("PluginSupport.Vault.Closed-Economy")) {
                     plugin.getEcon().bankDeposit(plugin.getConfig().getString("PluginSupport.Vault.Server-Account"), buyPrice2);
                 }
-                CardUtil.dropItem(player, CardManager.getCard(card, rarity, false).build());
+                CardUtil.dropItem(player, CardManager.getCard(card, rarity, false));
                 sendPrefixedMessage(player, plugin.getMessagesConfig().boughtCard.replace("%amount%", String.valueOf(buyPrice2)));
                 return;
             }

@@ -20,8 +20,8 @@ import java.util.Set;
 
 public class CardManager {
 	private static TradingCards plugin;
-	private static final Map<String, TradingCard> cards = new HashMap<>();
-	private static final Map<String, TradingCard> activeCards = new HashMap<>();
+	private static final Map<String,ItemStack> cards = new HashMap<>();
+	private static final Map<String,ItemStack> activeCards = new HashMap<>();
 
 	private static final Map<String, List<String>> rarityCardList = new HashMap<>();
 
@@ -62,22 +62,22 @@ public class CardManager {
 		}
 	}
 
-	public static Map<String,TradingCard> getCards(){
+	public static Map<String,ItemStack> getCards(){
 		return cards;
 	}
 
-	public static Map<String, TradingCard> getActiveCards() {
+	public static Map<String, ItemStack> getActiveCards() {
 		return activeCards;
 	}
 
 
-	public static TradingCard getCard(final String cardName,final String rarity, final boolean forcedShiny){
+	public static ItemStack getCard(final String cardName,final String rarity, final boolean forcedShiny){
 		if(cards.containsKey(rarity+"."+cardName))
 			return cards.get(rarity+"."+cardName).isShiny(forcedShiny);
 		return new NullTradingCard(plugin);
 	}
 
-	public static TradingCard getActiveCard(final String cardName,final String rarity, final boolean forcedShiny){
+	public static ItemStack getActiveCard(final String cardName,final String rarity, final boolean forcedShiny){
 		if(activeCards.containsKey(rarity+"."+cardName))
 			return activeCards.get(rarity+"."+cardName);
 		//fallthrough
@@ -97,10 +97,9 @@ public class CardManager {
 	}
 
 	public static ItemStack getCard(final String cardName,final String rarity, int num){
-		TradingCard card = cards.get(rarity+"."+cardName);
-		ItemStack cardItem = card.build();
-		cardItem.setAmount(num);
-		return cardItem;
+		ItemStack card = cards.get(rarity+"."+cardName);
+		card.setAmount(num);
+		return card;
 	}
 
 	public static ItemStack generatePack(final String name) {
