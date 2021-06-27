@@ -34,11 +34,9 @@ public class CardSchedulerRunnable extends BukkitRunnable {
             return;
         }
 
-        final ConfigurationSection rarities = plugin.getCardsConfig().getConfig().getConfigurationSection("Cards");
-        final Set<String> rarityKeys = rarities.getKeys(false);
         String keyToUse = "";
 
-        for (final String key : rarityKeys) {
+        for (final String key : CardManager.getRarityNames()) {
             plugin.debug("Rarity key: " + key);
             if (key.equalsIgnoreCase(plugin.getConfig().getString("General.Schedule-Card-Rarity"))) {
                 keyToUse = key;
@@ -55,13 +53,11 @@ public class CardSchedulerRunnable extends BukkitRunnable {
         }
 
     }
-    private String getRandomCardName(final String keyToUse) {
-        ConfigurationSection cards = plugin.getCardsConfig().getConfig().getConfigurationSection("Cards." + keyToUse);
-        Set<String> cardKeys = cards.getKeys(false);
-        var rIndex = plugin.getRandom().nextInt(cardKeys.size());
+    private String getRandomCardName(final String rarity) {
+        var rIndex = plugin.getRandom().nextInt(CardManager.getRarityCardList(rarity).size());
         var i = 0;
         var cardName = "";
-        for (Iterator<String> var11 = cardKeys.iterator(); var11.hasNext(); ++i) {
+        for (Iterator<String> var11 = CardManager.getRarityCardList(rarity).iterator(); var11.hasNext(); ++i) {
             String theCardName = var11.next();
             if (i == rIndex) {
                 return theCardName;

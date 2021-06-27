@@ -66,7 +66,7 @@ public class TradingCards extends JavaPlugin {
 
     public CardsConfig getCardsConfig() {
         return cardsConfig;
-    }
+   }
 
     public TradingCardsConfig getMainConfig() {
         return mainConfig;
@@ -136,7 +136,7 @@ public class TradingCards extends JavaPlugin {
 
         deckConfig.saveDefaultConfig();
         //messagesConfig.saveDefaultConfig();
-        cardsConfig.saveDefaultConfig();
+        //cardsConfig.saveDefaultConfig();
 
         CardUtil.init(this);
         ChatUtil.init(this);
@@ -196,10 +196,6 @@ public class TradingCards extends JavaPlugin {
     }
 
 
-    @Deprecated
-    public boolean deleteCard(Player p, String card, String rarity) {
-        return getCardsConfig().deleteCard(p, card, rarity);
-    }
 
     @Deprecated
     public boolean hasCard(Player player, String card, String rarity) {
@@ -317,21 +313,14 @@ public class TradingCards extends JavaPlugin {
         ConfigLoader.loadAndSave(mainConfig);
         this.deckConfig.reloadConfig();
         ConfigLoader.loadAndSave(messagesConfig);
-        this.cardsConfig.reloadConfig();
+        //this.cardsConfig = new CardsConfig(this);
+        //this.cardsConfig.reloadConfig();
     }
 
     public static void sendMessage(final CommandSender toWhom, final String message) {
         toWhom.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
     }
 
-    public boolean completedRarity(Player p, String rarity) {
-        if ("None".equals(isRarityAndFormat(rarity))) {
-            return false;
-        }
-
-        Set<String> cardNamesKeys = getCardsConfig().getConfig().getConfigurationSection("Cards." + this.isRarityAndFormat(rarity)).getKeys(false);
-        return countCardsInRarity(p, rarity, cardNamesKeys) >= cardNamesKeys.size() - 1;
-    }
 
     private int countCardsInRarity(final Player player, final String rarity, final Set<String> cardNamesKeys) {
         int numCardsCounter = 0;
@@ -348,10 +337,6 @@ public class TradingCards extends JavaPlugin {
         return numCardsCounter;
     }
 
-    @Deprecated
-    public boolean deleteRarity(Player p, String rarity) {
-        return getCardsConfig().deleteRarity(p, rarity);
-    }
 
     public String cMsg(String message) {
         return ChatColor.translateAlternateColorCodes('&', message);

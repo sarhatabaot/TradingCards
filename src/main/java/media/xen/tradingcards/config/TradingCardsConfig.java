@@ -12,6 +12,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 public class TradingCardsConfig implements Config {
 	private static TradingCards plugin;
@@ -162,6 +163,10 @@ public class TradingCardsConfig implements Config {
 	@ConfigOption(path = "General.Active-Series", transform = ListClone.class)
 	public List<String> activeSeries = new ArrayList<>();
 
+	public Set<String> getRarities() {
+		return plugin.getConfig().getConfigurationSection("Rarities").getKeys(false);
+	}
+
 	public TradingCardsConfig(final TradingCards plugin) {
 		this.file = new File(plugin.getDataFolder(),"config.yml");
 		TradingCardsConfig.plugin = plugin;
@@ -181,6 +186,10 @@ public class TradingCardsConfig implements Config {
 
 	public ConfigurationSection rarities(){
 		return plugin.getConfig().getConfigurationSection("Rarities");
+	}
+
+	public static String getPackSeries(final String packName) {
+		return plugin.getConfig().getString("BoosterPacks."+packName+".Series");
 	}
 
 
