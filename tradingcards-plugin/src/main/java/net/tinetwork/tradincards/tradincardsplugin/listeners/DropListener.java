@@ -1,7 +1,7 @@
 package net.tinetwork.tradincards.tradincardsplugin.listeners;
 
 
-import net.tinetwork.tradincards.tradincardsplugin.CardManager;
+import net.tinetwork.tradincards.tradincardsplugin.TradingCardManager;
 import net.tinetwork.tradincards.tradincardsplugin.CardUtil;
 import net.tinetwork.tradincards.tradincardsplugin.TradingCards;
 import net.tinetwork.tradincards.tradincardsplugin.whitelist.PlayerBlacklist;
@@ -52,7 +52,7 @@ public class DropListener extends SimpleListener {
         if (rarityKey == null)
             return;
 
-        ItemStack playerCard = CardManager.getActiveCard(killedPlayer.getName(), rarityKey, false).build();
+        ItemStack playerCard = TradingCardManager.getActiveCard(killedPlayer.getName(), rarityKey, false).build();
         e.getDrops().add(playerCard);
         plugin.debug(e.getDrops().toString());
     }
@@ -98,7 +98,7 @@ public class DropListener extends SimpleListener {
         Set<String> rarityKeys = rarities.getKeys(false);
 
         for (final String rarity : rarityKeys) {
-            if(!CardManager.getCard(player.getName(),rarity,false).getCardName().equals("nullCard")) {
+            if(!TradingCardManager.getCard(player.getName(),rarity,false).getCardName().equals("nullCard")) {
                 plugin.debug(rarity);
                 return rarity;
             }

@@ -157,7 +157,7 @@ public class CardUtil {
 	@NotNull
 	@Deprecated
 	public static TradingCard getRandomCard(@NotNull final String rarityName, final boolean forcedShiny) {
-		return CardManager.getRandomCard(rarityName,forcedShiny);
+		return TradingCardManager.getRandomCard(rarityName,forcedShiny);
 	}
 
 
@@ -165,7 +165,7 @@ public class CardUtil {
 	@NotNull
 	@Deprecated
 	public static TradingCard getRandomActiveCard(@NotNull final String rarityName, final boolean forcedShiny) {
-		return CardManager.getRandomActiveCard(rarityName,forcedShiny);
+		return TradingCardManager.getRandomActiveCard(rarityName,forcedShiny);
 	}
 
 	/**
@@ -193,12 +193,12 @@ public class CardUtil {
 		final String strippedDisplay = StringUtils.replaceEach(stripAllColor(displayCard), new String[]{strippedPrefix, strippedShiny}, new String[]{"", ""}).trim();
 		plugin.debug("stripped|rarity=" + strippedRarity + "|hasPrefix=" + hasPrefix + "|prefix=" + strippedPrefix + "|shiny=" + strippedShiny + "|display=" + strippedDisplay);
 
-		if (CardManager.getCard(strippedDisplay,strippedRarity,false).getCardName().equals("nullCard")) {
+		if (TradingCardManager.getCard(strippedDisplay,strippedRarity,false).getCardName().equals("nullCard")) {
 			plugin.debug("No such card. card=" + strippedDisplay + "rarity=" + strippedRarity);
 			return "None";
 		}
 
-		if (CardManager.getCards().keySet().contains(strippedRarity+"."+strippedDisplay.replace(" ","_")))
+		if (TradingCardManager.getCards().keySet().contains(strippedRarity+"."+strippedDisplay.replace(" ","_")))
 			return strippedDisplay.replace(" ","_");
 
 		return "None";
@@ -265,7 +265,7 @@ public class CardUtil {
 
 	public static boolean isPlayerCard(String name) {
 		String rarity = plugin.getConfig().getString("General.Auto-Add-Player-Rarity");
-		return !CardManager.getCard(name,rarity,false).getCardName().equals("nullCard") && CardManager.getCard(name,rarity,false).isPlayerCard();
+		return !TradingCardManager.getCard(name,rarity,false).getCardName().equals("nullCard") && TradingCardManager.getCard(name,rarity,false).isPlayerCard();
 	}
 
 	public static String getRarityId(final ItemStack itemStack) {

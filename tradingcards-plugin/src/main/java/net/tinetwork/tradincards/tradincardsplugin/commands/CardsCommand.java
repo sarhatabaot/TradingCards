@@ -10,7 +10,7 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.HelpCommand;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
-import net.tinetwork.tradincards.tradincardsplugin.CardManager;
+import net.tinetwork.tradincards.tradincardsplugin.TradingCardManager;
 import net.tinetwork.tradincards.tradincardsplugin.CardUtil;
 import net.tinetwork.tradincards.tradincardsplugin.TradingCards;
 import net.tinetwork.tradingcards.api.addons.TradingCardsAddon;
@@ -101,8 +101,8 @@ public class CardsCommand extends BaseCommand {
         @CommandPermission("cards.give.card")
         @Description("Gives a card.")
         public void onGiveCard(final Player player, final String name, final String rarity) {
-            if (CardManager.getCards().containsKey(rarity + "." + name)) {
-                player.getInventory().addItem(CardManager.getCard(name, rarity, false).build());
+            if (TradingCardManager.getCards().containsKey(rarity + "." + name)) {
+                player.getInventory().addItem(TradingCardManager.getCard(name, rarity, false).build());
                 return;
             }
             sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().noCard));
@@ -112,8 +112,8 @@ public class CardsCommand extends BaseCommand {
         @CommandPermission("cards.give.card.shiny")
         @Description("Gives a shiny card.")
         public void onGiveShinyCard(final Player player, final String name, final String rarity) {
-            if (CardManager.getCards().containsKey(rarity + "." + name)) {
-                player.getInventory().addItem(CardManager.getCard(name, rarity, true).build());
+            if (TradingCardManager.getCards().containsKey(rarity + "." + name)) {
+                player.getInventory().addItem(TradingCardManager.getCard(name, rarity, true).build());
                 return;
             }
             sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().noCard));
@@ -125,7 +125,7 @@ public class CardsCommand extends BaseCommand {
         @CommandPermission("cards.give.pack")
         public void onGiveBoosterPack(final CommandSender sender, final Player player, final String boosterpack) {
             sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().boosterPackMsg));
-            CardUtil.dropItem(player, CardManager.generatePack(boosterpack));
+            CardUtil.dropItem(player, TradingCardManager.generatePack(boosterpack));
         }
 
         @Subcommand("random")
@@ -152,14 +152,14 @@ public class CardsCommand extends BaseCommand {
         @CommandPermission("cards.admin.debug.showcache")
         @Description("Shows the card cache")
         public void showCacheAll(final CommandSender sender) {
-            sender.sendMessage(StringUtils.join(CardManager.getCards().keySet(), ","));
+            sender.sendMessage(StringUtils.join(TradingCardManager.getCards().keySet(), ","));
         }
 
         @Subcommand("showcache active")
         @CommandPermission("cards.admin.debug.showcache")
         @Description("Shows the card cache")
         public void showCacheActive(final CommandSender sender) {
-            sender.sendMessage(StringUtils.join(CardManager.getActiveCards().keySet(), ","));
+            sender.sendMessage(StringUtils.join(TradingCardManager.getActiveCards().keySet(), ","));
         }
 
         @Subcommand("modules")
@@ -198,7 +198,7 @@ public class CardsCommand extends BaseCommand {
         @CommandPermission("cards.admin.debug.exists")
         @Description("Shows if a card exists or not.")
         public void onExists(final CommandSender sender, final String card, final String rarity) {
-            if (CardManager.getCards().containsKey(rarity + "." + card)) {
+            if (TradingCardManager.getCards().containsKey(rarity + "." + card)) {
                 sender.sendMessage(String.format("Card %s.%s exists", rarity, card));
                 return;
             }
@@ -274,7 +274,7 @@ public class CardsCommand extends BaseCommand {
 
             int cardCounter = 0;
 
-            for (String cardName : CardManager.getRarityCardList(rarity)) {
+            for (String cardName : TradingCardManager.getRarityCardList(rarity)) {
                 if (cardCounter > 32) {
                     if (plugin.hasCard(target, cardName, rarity)) {
                         ++cardCounter;
@@ -297,10 +297,10 @@ public class CardsCommand extends BaseCommand {
                 }
             }
             //send title
-            if (cardCounter == CardManager.getRarityCardList(rarity).size()) {
+            if (cardCounter == TradingCardManager.getRarityCardList(rarity).size()) {
                 sendMessage(sender, String.format(sectionFormatComplete, plugin.isRarityAndFormat(rarity), plugin.getConfig().getString("Colours.ListRarityComplete")));
             } else {
-                sendMessage(sender, String.format(sectionFormat, plugin.isRarityAndFormat(rarity), cardCounter, CardManager.getRarityCardList(rarity).size()));
+                sendMessage(sender, String.format(sectionFormat, plugin.isRarityAndFormat(rarity), cardCounter, TradingCardManager.getRarityCardList(rarity).size()));
             }
 
             sendMessage(sender, stringBuilder.toString());
@@ -373,7 +373,7 @@ public class CardsCommand extends BaseCommand {
             Bukkit.broadcastMessage(plugin.getPrefixedMessage(plugin.getMessagesConfig().giveaway.replace("%player%", sender.getName()).replaceAll("%rarity%", keyToUse)));
 
             for (final Player p5 : Bukkit.getOnlinePlayers()) {
-                CardUtil.dropItem(p5,  CardManager.getRandomCard(rarity,false).build());
+                CardUtil.dropItem(p5,  TradingCardManager.getRandomCard(rarity,false).build());
             }
         } else {
             sendPrefixedMessage(sender, plugin.getMessagesConfig().noRarity);
@@ -409,8 +409,8 @@ public class CardsCommand extends BaseCommand {
         plugin.debug("rarity=" + rarity);
 
 
-        double buyPrice = CardManager.getCard(rarity,cardName2,false).getBuyPrice();
-        double sellPrice =        CardManager.getCard(rarity,cardName2,false).getSellPrice();
+        double buyPrice = TradingCardManager.getCard(rarity,cardName2,false).getBuyPrice();
+        double sellPrice =        TradingCardManager.getCard(rarity,cardName2,false).getSellPrice();
         String buyMessage = (buyPrice > 0.0D) ? plugin.getMessagesConfig().canBuy.replace("%buyAmount%", String.valueOf(buyPrice)) : plugin.getMessagesConfig().canNotBuy;
         String sellMessage = (buyPrice > 0.0D) ? plugin.getMessagesConfig().canSell.replace("%sellAmount%", String.valueOf(sellPrice)) : plugin.getMessagesConfig().canNotSell;
         plugin.debug("buy=" + buyPrice + "|sell=" + sellPrice);
@@ -456,14 +456,14 @@ public class CardsCommand extends BaseCommand {
             String rarity = ChatColor.stripColor(lore.get(lore.size() - 1));
             plugin.debug(rarity);
 
-            if (CardManager.getCard(rarity,card,false).getSellPrice() == 0.0D) {
+            if (TradingCardManager.getCard(rarity,card,false).getSellPrice() == 0.0D) {
                 if (card.contains(plugin.getMainConfig().shinyName))
                     sendPrefixedMessage(player, "Cannot sell shiny card.");
                 sendPrefixedMessage(player, "Cannot sell this card.");
                 return;
             }
 
-            final double sellPrice = CardManager.getCard(rarity,card,false).getSellPrice();
+            final double sellPrice = TradingCardManager.getCard(rarity,card,false).getSellPrice();
             if (sellPrice == 0) {
                 sendPrefixedMessage(player, "Cannot sell this card.");
                 return;
@@ -509,7 +509,7 @@ public class CardsCommand extends BaseCommand {
                     plugin.getEcon().bankDeposit(plugin.getConfig().getString("PluginSupport.Vault.Server-Account"), buyPrice2);
                 }
                 sendPrefixedMessage(player, plugin.getMessagesConfig().boughtCard.replace("%amount%", String.valueOf(buyPrice2)));
-                CardUtil.dropItem(player, CardManager.generatePack(name));
+                CardUtil.dropItem(player, TradingCardManager.generatePack(name));
                 return;
             }
 
@@ -524,20 +524,20 @@ public class CardsCommand extends BaseCommand {
             if (!hasVault(player))
                 return;
 
-            if (CardManager.getCard(rarity,card,false).getCardName().equals("nullCard")) {
+            if (TradingCardManager.getCard(rarity,card,false).getCardName().equals("nullCard")) {
                 sendPrefixedMessage(player, plugin.getMessagesConfig().cardDoesntExist);
                 return;
             }
 
 
-            double buyPrice2 = CardManager.getCard(rarity,card,false).getBuyPrice();
+            double buyPrice2 = TradingCardManager.getCard(rarity,card,false).getBuyPrice();
 
             EconomyResponse economyResponse = plugin.getEcon().withdrawPlayer(player, buyPrice2);
             if (economyResponse.transactionSuccess()) {
                 if (plugin.getConfig().getBoolean("PluginSupport.Vault.Closed-Economy")) {
                     plugin.getEcon().bankDeposit(plugin.getConfig().getString("PluginSupport.Vault.Server-Account"), buyPrice2);
                 }
-                CardUtil.dropItem(player, CardManager.getCard(card, rarity, false).build());
+                CardUtil.dropItem(player, TradingCardManager.getCard(card, rarity, false).build());
                 sendPrefixedMessage(player, plugin.getMessagesConfig().boughtCard.replace("%amount%", String.valueOf(buyPrice2)));
                 return;
             }

@@ -17,6 +17,7 @@ import net.tinetwork.tradincards.tradincardsplugin.whitelist.WorldBlacklist;
 import net.milkbowl.vault.economy.Economy;
 import net.sarhatabaot.configloader.ConfigLoader;
 import net.tinetwork.tradingcards.api.TradingCardsPlugin;
+import net.tinetwork.tradingcards.api.manager.CardManager;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -43,9 +44,15 @@ public class TradingCards extends TradingCardsPlugin {
     private DeckConfig deckConfig;
     private MessagesConfig messagesConfig;
     private CardsConfig cardsConfig;
+    private TradingCardManager cardManager;
     private Economy econ = null;
     private Random random = new Random();
     int taskid;
+
+    @Override
+    public CardManager getCardManager() {
+        return cardManager;
+    }
 
     public boolean isHasVault() {
         return hasVault;
@@ -131,7 +138,7 @@ public class TradingCards extends TradingCardsPlugin {
 
         CardUtil.init(this);
         ChatUtil.init(this);
-        CardManager.init(this);
+        TradingCardManager.init(this);
         DeckManager.init(this);
         var commandManager = new BukkitCommandManager(this);
         commandManager.registerCommand(new CardsCommand(this,playerBlacklist));

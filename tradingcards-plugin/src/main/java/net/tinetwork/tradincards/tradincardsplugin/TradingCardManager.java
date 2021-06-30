@@ -3,6 +3,7 @@ package net.tinetwork.tradincards.tradincardsplugin;
 import net.tinetwork.tradingcards.api.card.Card;
 import net.tinetwork.tradincards.tradincardsplugin.config.SimpleCardsConfig;
 import net.tinetwork.tradincards.tradincardsplugin.config.TradingCardsConfig;
+import net.tinetwork.tradingcards.api.manager.CardManager;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -15,10 +16,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class CardManager {
+public class TradingCardManager extends CardManager<TradingCard> {
 	private static TradingCards plugin;
-	private static final Map<String, TradingCard> cards = new HashMap<>();
-	private static final Map<String, TradingCard> activeCards = new HashMap<>();
+	private static final Map<String, Card<TradingCard>> cards = new HashMap<>();
+	private static final Map<String, Card<TradingCard>> activeCards = new HashMap<>();
 
 	private static final Map<String, List<String>> rarityCardList = new HashMap<>();
 
@@ -36,7 +37,7 @@ public class CardManager {
 	 * Pre-loads all existing cards.
 	 */
 	public static void init(final TradingCards plugin) {
-		CardManager.plugin = plugin;
+		TradingCardManager.plugin = plugin;
 		loadCards();
 		plugin.getLogger().info(String.format("Loaded %d cards.",cards.size()));
 		plugin.debug(StringUtils.join(cards.keySet(), ","));
@@ -59,16 +60,21 @@ public class CardManager {
 		}
 	}
 
-	public static Map<String,TradingCard> getCards(){
+	/*public static Map<String,TradingCard> getCards(){
+		return cards;
+	}*/
+
+	@Override
+	public Map<String, Card<TradingCard>> getCards() {
 		return cards;
 	}
 
-	public static Map<String, TradingCard> getActiveCards() {
+	public Map<String, Card<TradingCard>> getActiveCards() {
 		return activeCards;
 	}
 
 
-	public static Card getCard(final String cardName,final String rarity, final boolean forcedShiny){
+	public static Card<TradingCard> getCard(final String cardName,final String rarity, final boolean forcedShiny){
 		if(cards.containsKey(rarity+"."+cardName))
 			return cards.get(rarity+"."+cardName).isShiny(forcedShiny);
 		return new NullCard(plugin);
@@ -76,25 +82,25 @@ public class CardManager {
 
 	public static TradingCard getActiveCard(final String cardName,final String rarity, final boolean forcedShiny){
 		if(activeCards.containsKey(rarity+"."+cardName))
-			return activeCards.get(rarity+"."+cardName);
+			return (TradingCard) activeCards.get(rarity+"."+cardName);
 		//fallthrough
 		return (TradingCard) getCard(cardName,rarity,forcedShiny);
 	}
 	public static TradingCard getRandomCard(final String rarity, final boolean forcedShiny) {
 		var cindex = plugin.getRandom().nextInt(getRarityCardList(rarity).size());
 		String randomCardName = getRarityCardList(rarity).get(cindex);
-		return (TradingCard) CardManager.getCard(randomCardName, rarity, forcedShiny);
+		return (TradingCard) TradingCardManager.getCard(randomCardName, rarity, forcedShiny);
 	}
 
 	public static TradingCard getRandomActiveCard(final String rarity, final boolean forcedShiny) {
 		var cindex = plugin.getRandom().nextInt(activeCards.keySet().size());
 		List<String> cardNames = getRarityCardList(rarity);
 		String randomCardName = cardNames.get(cindex);
-		return CardManager.getActiveCard(randomCardName, rarity, forcedShiny);
+		return TradingCardManager.getActiveCard(randomCardName, rarity, forcedShiny);
 	}
 
 	public static ItemStack getCard(final String cardName,final String rarity, int num){
-		TradingCard card = cards.get(rarity+"."+cardName);
+		TradingCard card = (TradingCard) cards.get(rarity+"."+cardName);
 		ItemStack cardItem = card.build();
 		cardItem.setAmount(num);
 		return cardItem;

@@ -1,7 +1,6 @@
 package net.tinetwork.tradincards.tradincardsplugin;
 
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -35,7 +34,7 @@ public class CardSchedulerRunnable extends BukkitRunnable {
 
         String keyToUse = "";
 
-        for (final String key : CardManager.getRarityNames()) {
+        for (final String key : TradingCardManager.getRarityNames()) {
             plugin.debug("Rarity key: " + key);
             if (key.equalsIgnoreCase(plugin.getConfig().getString("General.Schedule-Card-Rarity"))) {
                 keyToUse = key;
@@ -48,15 +47,15 @@ public class CardSchedulerRunnable extends BukkitRunnable {
         Bukkit.broadcastMessage(plugin.cMsg(plugin.getMessagesConfig().prefix + " " + plugin.getMessagesConfig().scheduledGiveaway));
         for (final Player p : Bukkit.getOnlinePlayers()) {
             String cardName = getRandomCardName(keyToUse);
-            CardUtil.dropItem(p, CardManager.getCard(cardName, keyToUse, false).build());
+            CardUtil.dropItem(p, TradingCardManager.getCard(cardName, keyToUse, false).build());
         }
 
     }
     private String getRandomCardName(final String rarity) {
-        var rIndex = plugin.getRandom().nextInt(CardManager.getRarityCardList(rarity).size());
+        var rIndex = plugin.getRandom().nextInt(TradingCardManager.getRarityCardList(rarity).size());
         var i = 0;
         var cardName = "";
-        for (Iterator<String> var11 = CardManager.getRarityCardList(rarity).iterator(); var11.hasNext(); ++i) {
+        for (Iterator<String> var11 = TradingCardManager.getRarityCardList(rarity).iterator(); var11.hasNext(); ++i) {
             String theCardName = var11.next();
             if (i == rIndex) {
                 return theCardName;

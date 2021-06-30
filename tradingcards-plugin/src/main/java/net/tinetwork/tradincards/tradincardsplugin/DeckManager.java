@@ -62,10 +62,10 @@ public class DeckManager {
 				isNull = true;
 
 			if (isShiny.equalsIgnoreCase("yes")) {
-				card = CardManager.getCard(cardName, rarity, true).build();
+				card = TradingCardManager.getCard(cardName, rarity, true).build();
 				card.setAmount(amount);
 			} else if (!isNull) {
-				card = CardManager.getCard(cardName, rarity, amount);
+				card = TradingCardManager.getCard(cardName, rarity, amount);
 			}
 
 			if (isNull) {
