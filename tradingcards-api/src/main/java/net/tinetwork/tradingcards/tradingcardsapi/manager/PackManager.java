@@ -2,7 +2,6 @@ package net.tinetwork.tradingcards.tradingcardsapi.manager;
 
 import org.bukkit.inventory.ItemStack;
 
-import java.util.List;
 import java.util.Map;
 
 public abstract class PackManager {

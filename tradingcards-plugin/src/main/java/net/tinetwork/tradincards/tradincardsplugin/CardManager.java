@@ -100,6 +100,10 @@ public class CardManager {
 		return cardItem;
 	}
 
+	/**
+	 * @deprecated Use PackManager.getPackItem(String name);
+	 */
+	@Deprecated
 	public static ItemStack generatePack(final String name) {
 		ItemStack boosterPack = TradingCardsConfig.getBlankBoosterPack();
 		int numNormalCards = plugin.getConfig().getInt("BoosterPacks." + name + ".NumNormalCards");
