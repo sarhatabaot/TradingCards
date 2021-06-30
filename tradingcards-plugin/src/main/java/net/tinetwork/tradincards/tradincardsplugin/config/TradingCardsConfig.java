@@ -184,6 +184,10 @@ public class TradingCardsConfig implements Config {
 		return new ItemStack(Material.getMaterial(plugin.getMainConfig().deckMaterial));
 	}
 
+	public static Set<String> getPacks() {
+		return plugin.getConfig().getConfigurationSection("BoosterPacks").getKeys(false);
+	}
+
 	public ConfigurationSection rarities(){
 		return plugin.getConfig().getConfigurationSection("Rarities");
 	}
