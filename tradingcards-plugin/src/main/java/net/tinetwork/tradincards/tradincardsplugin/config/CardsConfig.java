@@ -8,10 +8,8 @@ import java.util.List;
 
 public class CardsConfig{
 	private final List<SimpleCardsConfig> cardConfigs;
-	private final TradingCards plugin;
 
 	public CardsConfig(final TradingCards plugin) {
-		this.plugin = plugin;
 		this.cardConfigs = new ArrayList<>();
 		createCardsFolder(plugin);
 		createDefaultCardConfig(plugin);
