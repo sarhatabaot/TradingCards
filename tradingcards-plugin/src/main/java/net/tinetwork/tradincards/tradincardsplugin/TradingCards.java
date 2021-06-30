@@ -49,8 +49,6 @@ public class TradingCards extends TradingCardsPlugin {
     private DeckConfig deckConfig;
     private MessagesConfig messagesConfig;
     private CardsConfig cardsConfig;
-    private SimpleConfig playerBlacklistConfig;
-    private SimpleConfig worldBlacklistConfig;
     private Economy econ = null;
     private Random random = new Random();
     int taskid;
@@ -93,7 +91,7 @@ public class TradingCards extends TradingCardsPlugin {
     }
 
     private void registerListeners(final PlayerBlacklist playerBlacklist,final WorldBlacklist worldBlacklist) {
-        PluginManager pm = Bukkit.getPluginManager();
+        var pm = Bukkit.getPluginManager();
         pm.addPermission(new Permission("cards.rarity"));
         pm.registerEvents(new DropListener(this,playerBlacklist,worldBlacklist), this);
         pm.registerEvents(new PackListener(this), this);
@@ -122,12 +120,8 @@ public class TradingCards extends TradingCardsPlugin {
     public void onEnable() {
         cacheMobs();
         this.saveDefaultConfig();
-        this.playerBlacklistConfig = new SimpleConfig(this,"player-blacklist.yml");
-        this.worldBlacklistConfig = new SimpleConfig(this,"world-blacklist.yml");
-        playerBlacklistConfig.saveDefaultConfig();
-        worldBlacklistConfig.saveDefaultConfig();
-        var playerBlacklist = new PlayerBlacklist(playerBlacklistConfig);
-        var worldBlacklist = new WorldBlacklist(worldBlacklistConfig);
+        var playerBlacklist = new PlayerBlacklist(this);
+        var worldBlacklist = new WorldBlacklist(this);
         registerListeners(playerBlacklist,worldBlacklist);
         mainConfig = new TradingCardsConfig(this);
         messagesConfig = new MessagesConfig(this);
@@ -336,22 +330,6 @@ public class TradingCards extends TradingCardsPlugin {
     }
 
 
-    private int countCardsInRarity(final Player player, final String rarity, final Set<String> cardNamesKeys) {
-        int numCardsCounter = 0;
-
-        for (String cardName : cardNamesKeys) {
-            debug("CardName: " + cardName);
-            debug("Counter: " + numCardsCounter);
-
-            if (hasShiny(player, cardName, isRarityAndFormat(rarity))
-                    || hasCard(player, cardName, isRarityAndFormat(rarity))) {
-                numCardsCounter++;
-            }
-        }
-        return numCardsCounter;
-    }
-
-
     public String cMsg(String message) {
         return ChatColor.translateAlternateColorCodes('&', message);
     }
@@ -381,11 +359,4 @@ public class TradingCards extends TradingCardsPlugin {
         this.random = random;
     }
 
-    public SimpleConfig getPlayerBlacklistConfig() {
-        return playerBlacklistConfig;
-    }
-
-    public SimpleConfig getWorldBlacklistConfig() {
-        return worldBlacklistConfig;
-    }
 }

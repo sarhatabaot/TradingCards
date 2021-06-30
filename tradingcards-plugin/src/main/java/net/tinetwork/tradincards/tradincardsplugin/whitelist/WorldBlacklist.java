@@ -1,5 +1,6 @@
 package net.tinetwork.tradincards.tradincardsplugin.whitelist;
 
+import net.tinetwork.tradincards.tradincardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsapi.blacklist.WhitelistMode;
 import net.tinetwork.tradingcards.tradingcardsapi.blacklist.Blacklist;
 import net.tinetwork.tradincards.tradincardsplugin.core.SimpleConfig;
@@ -18,8 +19,9 @@ public class WorldBlacklist implements Blacklist<World> {
     private WhitelistMode whitelistMode;
 
 
-    public WorldBlacklist(SimpleConfig config) {
-        this.config = config;
+    public WorldBlacklist(TradingCards plugin) {
+        this.config = new SimpleConfig(plugin,"world-blacklist.yml");
+        this.config.saveDefaultConfig();
         loadWorlds();
         setWhitelistMode();
     }

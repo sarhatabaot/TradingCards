@@ -1,5 +1,6 @@
 package net.tinetwork.tradincards.tradincardsplugin.whitelist;
 
+import net.tinetwork.tradincards.tradincardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsapi.blacklist.WhitelistMode;
 import net.tinetwork.tradingcards.tradingcardsapi.blacklist.Blacklist;
 import net.tinetwork.tradincards.tradincardsplugin.core.SimpleConfig;
@@ -17,8 +18,9 @@ public class PlayerBlacklist implements Blacklist<Player> {
     private List<String> listedPlayers;
     private WhitelistMode whitelistMode;
 
-    public PlayerBlacklist(SimpleConfig config) {
-        this.config = config;
+    public PlayerBlacklist(TradingCards plugin) {
+        this.config = new SimpleConfig(plugin,"player-blacklist.yml");
+        this.config.saveDefaultConfig();
         loadPlayers();
         setWhitelistMode();
     }
