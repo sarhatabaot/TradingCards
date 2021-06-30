@@ -1,6 +1,0 @@
-name: TradingCards
-main: media.xen.tradingcards.TradingCards
-version: ${project.version}
-softdepend: [Vault]
-authors: [Xenoyia, sarhatabaot, TreasureIslandMC]
-api-version: "1.13"
