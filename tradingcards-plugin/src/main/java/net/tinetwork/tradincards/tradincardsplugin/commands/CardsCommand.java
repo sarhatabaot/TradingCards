@@ -410,8 +410,8 @@ public class CardsCommand extends BaseCommand {
         plugin.debug("rarity=" + rarity);
 
 
-        double buyPrice = CardManager.getCard(rarity,cardName2,false).getBuyPrice();;
-        double sellPrice =        CardManager.getCard(rarity,cardName2,false).getSellPrice();;
+        double buyPrice = CardManager.getCard(rarity,cardName2,false).getBuyPrice();
+        double sellPrice =        CardManager.getCard(rarity,cardName2,false).getSellPrice();
         String buyMessage = (buyPrice > 0.0D) ? plugin.getMessagesConfig().canBuy.replace("%buyAmount%", String.valueOf(buyPrice)) : plugin.getMessagesConfig().canNotBuy;
         String sellMessage = (buyPrice > 0.0D) ? plugin.getMessagesConfig().canSell.replace("%sellAmount%", String.valueOf(sellPrice)) : plugin.getMessagesConfig().canNotSell;
         plugin.debug("buy=" + buyPrice + "|sell=" + sellPrice);
