@@ -13,7 +13,7 @@ import co.aikar.commands.annotation.Subcommand;
 import net.tinetwork.tradincards.tradincardsplugin.CardManager;
 import net.tinetwork.tradincards.tradincardsplugin.CardUtil;
 import net.tinetwork.tradincards.tradincardsplugin.TradingCards;
-import net.tinetwork.tradingcards.tradingcardsapi.addons.TradingCardsAddon;
+import net.tinetwork.tradingcards.api.addons.TradingCardsAddon;
 import net.tinetwork.tradincards.tradincardsplugin.whitelist.PlayerBlacklist;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.apache.commons.lang.StringUtils;
@@ -31,7 +31,6 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 

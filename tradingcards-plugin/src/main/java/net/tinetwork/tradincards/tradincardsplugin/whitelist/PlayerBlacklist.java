@@ -1,8 +1,8 @@
 package net.tinetwork.tradincards.tradincardsplugin.whitelist;
 
 import net.tinetwork.tradincards.tradincardsplugin.TradingCards;
-import net.tinetwork.tradingcards.tradingcardsapi.blacklist.WhitelistMode;
-import net.tinetwork.tradingcards.tradingcardsapi.blacklist.Blacklist;
+import net.tinetwork.tradingcards.api.blacklist.WhitelistMode;
+import net.tinetwork.tradingcards.api.blacklist.Blacklist;
 import net.tinetwork.tradincards.tradincardsplugin.core.SimpleConfig;
 import org.bukkit.entity.Player;
 

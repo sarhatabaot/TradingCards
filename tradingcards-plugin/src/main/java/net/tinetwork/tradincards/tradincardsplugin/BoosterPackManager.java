@@ -1,7 +1,7 @@
 package net.tinetwork.tradincards.tradincardsplugin;
 
 import net.tinetwork.tradincards.tradincardsplugin.config.TradingCardsConfig;
-import net.tinetwork.tradingcards.tradingcardsapi.manager.PackManager;
+import net.tinetwork.tradingcards.api.manager.PackManager;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;

@@ -1,4 +1,4 @@
-package net.tinetwork.tradingcards.tradingcardsapi.card;
+package net.tinetwork.tradingcards.api.card;
 
 import de.tr7zw.nbtapi.NBTItem;
 import org.bukkit.inventory.ItemStack;

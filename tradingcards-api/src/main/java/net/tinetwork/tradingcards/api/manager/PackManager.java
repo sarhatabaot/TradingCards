@@ -1,4 +1,4 @@
-package net.tinetwork.tradingcards.tradingcardsapi.manager;
+package net.tinetwork.tradingcards.api.manager;
 
 import org.bukkit.inventory.ItemStack;
 

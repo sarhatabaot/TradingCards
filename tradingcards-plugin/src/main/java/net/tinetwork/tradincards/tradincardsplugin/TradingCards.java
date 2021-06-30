@@ -2,14 +2,11 @@ package net.tinetwork.tradincards.tradincardsplugin;
 
 import co.aikar.commands.BukkitCommandManager;
 import com.google.common.collect.ImmutableList;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.TextComponent;
 import net.tinetwork.tradincards.tradincardsplugin.commands.CardsCommand;
 import net.tinetwork.tradincards.tradincardsplugin.commands.DeckCommand;
 import net.tinetwork.tradincards.tradincardsplugin.config.CardsConfig;
 import net.tinetwork.tradincards.tradincardsplugin.config.DeckConfig;
 import net.tinetwork.tradincards.tradincardsplugin.config.MessagesConfig;
-import net.tinetwork.tradincards.tradincardsplugin.core.SimpleConfig;
 import net.tinetwork.tradincards.tradincardsplugin.config.TradingCardsConfig;
 import net.tinetwork.tradincards.tradincardsplugin.listeners.DeckListener;
 import net.tinetwork.tradincards.tradincardsplugin.listeners.DropListener;
@@ -19,7 +16,7 @@ import net.tinetwork.tradincards.tradincardsplugin.whitelist.PlayerBlacklist;
 import net.tinetwork.tradincards.tradincardsplugin.whitelist.WorldBlacklist;
 import net.milkbowl.vault.economy.Economy;
 import net.sarhatabaot.configloader.ConfigLoader;
-import net.tinetwork.tradingcards.tradingcardsapi.TradingCardsPlugin;
+import net.tinetwork.tradingcards.api.TradingCardsPlugin;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -27,16 +24,13 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 
 public class TradingCards extends TradingCardsPlugin {

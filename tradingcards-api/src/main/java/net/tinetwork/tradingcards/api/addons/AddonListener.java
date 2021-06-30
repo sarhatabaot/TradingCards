@@ -1,4 +1,4 @@
-package net.tinetwork.tradingcards.tradingcardsapi.addons;
+package net.tinetwork.tradingcards.api.addons;
 
 import org.bukkit.event.Listener;
 

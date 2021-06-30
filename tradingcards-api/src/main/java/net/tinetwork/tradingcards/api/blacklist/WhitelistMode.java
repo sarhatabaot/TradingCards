@@ -1,4 +1,4 @@
-package net.tinetwork.tradingcards.tradingcardsapi.blacklist;
+package net.tinetwork.tradingcards.api.blacklist;
 /**
  * @author ketelsb
  */

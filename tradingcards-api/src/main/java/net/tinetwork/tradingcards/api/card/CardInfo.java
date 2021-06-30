@@ -1,4 +1,4 @@
-package net.tinetwork.tradingcards.tradingcardsapi.card;
+package net.tinetwork.tradingcards.api.card;
 
 import lombok.Data;
 

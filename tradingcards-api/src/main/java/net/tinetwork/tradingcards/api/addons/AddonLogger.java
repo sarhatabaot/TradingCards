@@ -1,6 +1,6 @@
-package net.tinetwork.tradingcards.tradingcardsapi.addons;
+package net.tinetwork.tradingcards.api.addons;
 
-import net.tinetwork.tradingcards.tradingcardsapi.TradingCardsPlugin;
+import net.tinetwork.tradingcards.api.TradingCardsPlugin;
 
 public class AddonLogger {
 	private final String addonName;

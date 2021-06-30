@@ -1,7 +1,7 @@
 package net.tinetwork.tradincards.tradincardsplugin;
 
 import net.tinetwork.tradincards.tradincardsplugin.config.TradingCardsConfig;
-import net.tinetwork.tradingcards.tradingcardsapi.card.Card;
+import net.tinetwork.tradingcards.api.card.Card;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.enchantments.Enchantment;
