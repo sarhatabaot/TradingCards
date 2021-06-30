@@ -232,41 +232,38 @@ public class CardsCommand extends BaseCommand {
             listRarity(sender, target, rarity);
         }
 
+        private boolean canBuyPack(final String name) {
+            return plugin.getMainConfig().vaultEnabled && plugin.getConfig().getDouble("BoosterPacks." + name + ".Price", 0.0D) > 0.0D;
+        }
+
+        private boolean hasExtra(final String name) {
+            return plugin.getConfig().contains("BoosterPacks." + name + ".ExtraCardRarity") && plugin.getConfig().contains("BoosterPacks." + name + ".NumExtraCards");
+
+        }
+
         @Subcommand("pack")
         @CommandPermission("cards.list.pack")
         @Description("Lists all packs.")
         public void onListPack(final CommandSender sender) {
-            ConfigurationSection rarities = plugin.getConfig().getConfigurationSection("BoosterPacks");
-            Set<String> rarityKeys = rarities.getKeys(false);
+            ConfigurationSection boosterPacks = plugin.getConfig().getConfigurationSection("BoosterPacks");
+            Set<String> rarityKeys = boosterPacks.getKeys(false);
             int k = 0;
             sendMessage(sender, "&6--- Booster Packs --- ");
-            boolean canBuy2 = false;
-            boolean hasExtra = false;
 
-            for (Iterator<String> iterator = rarityKeys.iterator(); iterator.hasNext(); hasExtra = false) {
-                String rarity = iterator.next();
-                if (plugin.getConfig().getBoolean("PluginSupport.Vault.Vault-Enabled") && plugin.getConfig().contains("BoosterPacks." + rarity + ".Price") && plugin.getConfig().getDouble("BoosterPacks." + rarity + ".Price") > 0.0D) {
-                    canBuy2 = true;
-                }
-
-                if (plugin.getConfig().contains("BoosterPacks." + rarity + ".ExtraCardRarity") && plugin.getConfig().contains("BoosterPacks." + rarity + ".NumExtraCards")) {
-                    hasExtra = true;
-                }
-
+            for (String pack : rarityKeys) {
                 ++k;
-                if (canBuy2) {
-                    sendPrefixedMessage(sender, "&6" + k + ") &e" + rarity + " &7(&aPrice: " + plugin.getConfig().getDouble("BoosterPacks." + rarity + ".Price") + "&7)");
+                if (canBuyPack(pack)) {
+                    sendPrefixedMessage(sender, "&6" + k + ") &e" + pack + " &7(&aPrice: " + plugin.getConfig().getDouble("BoosterPacks." + pack + ".Price") + "&7)");
                 } else {
-                    sendPrefixedMessage(sender, "&6" + k + ") &e" + rarity);
+                    sendPrefixedMessage(sender, "&6" + k + ") &e" + pack);
                 }
 
-                if (hasExtra) {
-                    sendMessage(sender, "  &7- &f&o" + plugin.getConfig().getInt("BoosterPacks." + rarity + ".NumNormalCards") + " " + plugin.getConfig().getString("BoosterPacks." + rarity + ".NormalCardRarity") + ", " + plugin.getConfig().getInt("BoosterPacks." + rarity + ".NumExtraCards") + " " + plugin.getConfig().getString("BoosterPacks." + rarity + ".ExtraCardRarity") + ", " + plugin.getConfig().getInt("BoosterPacks." + rarity + ".NumSpecialCards") + " " + plugin.getConfig().getString("BoosterPacks." + rarity + ".SpecialCardRarity"));
+                if (hasExtra(pack)) {
+                    sendMessage(sender, "  &7- &f&o" + plugin.getConfig().getInt("BoosterPacks." + pack + ".NumNormalCards") + " " + plugin.getConfig().getString("BoosterPacks." + pack + ".NormalCardRarity") + ", " + plugin.getConfig().getInt("BoosterPacks." + pack + ".NumExtraCards") + " " + plugin.getConfig().getString("BoosterPacks." + pack + ".ExtraCardRarity") + ", " + plugin.getConfig().getInt("BoosterPacks." + pack + ".NumSpecialCards") + " " + plugin.getConfig().getString("BoosterPacks." + pack + ".SpecialCardRarity"));
                 } else {
-                    sendMessage(sender, "  &7- &f&o" + plugin.getConfig().getInt("BoosterPacks." + rarity + ".NumNormalCards") + " " + plugin.getConfig().getString("BoosterPacks." + rarity + ".NormalCardRarity") + ", " + plugin.getConfig().getInt("BoosterPacks." + rarity + ".NumSpecialCards") + " " + plugin.getConfig().getString("BoosterPacks." + rarity + ".SpecialCardRarity"));
+                    sendMessage(sender, "  &7- &f&o" + plugin.getConfig().getInt("BoosterPacks." + pack + ".NumNormalCards") + " " + plugin.getConfig().getString("BoosterPacks." + pack + ".NormalCardRarity") + ", " + plugin.getConfig().getInt("BoosterPacks." + pack + ".NumSpecialCards") + " " + plugin.getConfig().getString("BoosterPacks." + pack + ".SpecialCardRarity"));
                 }
 
-                canBuy2 = false;
             }
         }
 
