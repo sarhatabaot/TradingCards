@@ -78,19 +78,19 @@ public class CardManager {
 		if(activeCards.containsKey(rarity+"."+cardName))
 			return activeCards.get(rarity+"."+cardName);
 		//fallthrough
-		return (TradingCard) getCard(cardName,rarity,forcedShiny); //Might be a NullCard TODO
+		return (TradingCard) getCard(cardName,rarity,forcedShiny);
 	}
 	public static TradingCard getRandomCard(final String rarity, final boolean forcedShiny) {
 		var cindex = plugin.getRandom().nextInt(getRarityCardList(rarity).size());
 		String randomCardName = getRarityCardList(rarity).get(cindex);
-		return (TradingCard) CardManager.getCard(randomCardName, rarity, forcedShiny); //Might be a NullCard TODO
+		return (TradingCard) CardManager.getCard(randomCardName, rarity, forcedShiny);
 	}
 
 	public static TradingCard getRandomActiveCard(final String rarity, final boolean forcedShiny) {
 		var cindex = plugin.getRandom().nextInt(activeCards.keySet().size());
 		List<String> cardNames = getRarityCardList(rarity);
 		String randomCardName = cardNames.get(cindex);
-		return CardManager.getActiveCard(randomCardName, rarity, forcedShiny); //Might return NullTradingCard TODO
+		return CardManager.getActiveCard(randomCardName, rarity, forcedShiny);
 	}
 
 	public static ItemStack getCard(final String cardName,final String rarity, int num){
