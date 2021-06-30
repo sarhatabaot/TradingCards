@@ -1,9 +1,8 @@
 package net.tinetwork.tradincards.tradincardsplugin;
 
 import de.tr7zw.nbtapi.NBTItem;
-import net.tinetwork.tradingcards.tradingcardsapi.card.NullTradingCard;
-import net.tinetwork.tradingcards.tradingcardsapi.card.TradingCard;
 import net.tinetwork.tradincards.tradincardsplugin.config.SimpleCardsConfig;
+import net.tinetwork.tradingcards.tradingcardsapi.card.Card;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -113,7 +112,7 @@ public class CardUtil {
 	@NotNull
 	public static TradingCard generateCard(final SimpleCardsConfig simpleCardsConfig, final String cardName, final String rarityName, boolean forcedShiny) {
 		if("None".equalsIgnoreCase(rarityName))
-			return new NullTradingCard(plugin);
+			return new NullCard(plugin);
 
 		TradingCard builder = new TradingCard(plugin,cardName);
 		boolean isShiny = false;
@@ -153,7 +152,7 @@ public class CardUtil {
 				.shinyPrefix(shinyPrefix)
 				.isPlayerCard(isPlayerCard)
 				.cost(cost)
-				.rarity(rarityName);
+				.rarity(rarityName).get();
 	}
 
 	@NotNull

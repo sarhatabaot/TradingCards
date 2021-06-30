@@ -1,7 +1,6 @@
 package net.tinetwork.tradincards.tradincardsplugin;
 
 import net.tinetwork.tradincards.tradincardsplugin.config.TradingCardsConfig;
-import net.tinetwork.tradingcards.tradingcardsapi.TradingCardsPlugin;
 import net.tinetwork.tradingcards.tradingcardsapi.card.Card;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
@@ -14,12 +13,17 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TradingCard extends Card {
-    private TradingCards plugin;
+public class TradingCard extends Card<TradingCard> {
+    private final TradingCards plugin;
 
     public TradingCard(TradingCards plugin, String cardName) {
         super(cardName);
         this.plugin = plugin;
+    }
+
+    @Override
+    public TradingCard get() {
+        return this;
     }
 
     @Override

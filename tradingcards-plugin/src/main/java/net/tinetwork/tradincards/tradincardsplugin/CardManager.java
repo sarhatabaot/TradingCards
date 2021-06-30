@@ -1,7 +1,6 @@
 package net.tinetwork.tradincards.tradincardsplugin;
 
-import net.tinetwork.tradingcards.tradingcardsapi.card.NullTradingCard;
-import net.tinetwork.tradingcards.tradingcardsapi.card.TradingCard;
+import net.tinetwork.tradingcards.tradingcardsapi.card.Card;
 import net.tinetwork.tradincards.tradincardsplugin.config.SimpleCardsConfig;
 import net.tinetwork.tradincards.tradincardsplugin.config.TradingCardsConfig;
 import org.apache.commons.lang.StringUtils;
@@ -69,22 +68,22 @@ public class CardManager {
 	}
 
 
-	public static TradingCard getCard(final String cardName,final String rarity, final boolean forcedShiny){
+	public static Card getCard(final String cardName,final String rarity, final boolean forcedShiny){
 		if(cards.containsKey(rarity+"."+cardName))
 			return cards.get(rarity+"."+cardName).isShiny(forcedShiny);
-		return new NullTradingCard(plugin);
+		return new NullCard(plugin);
 	}
 
 	public static TradingCard getActiveCard(final String cardName,final String rarity, final boolean forcedShiny){
 		if(activeCards.containsKey(rarity+"."+cardName))
 			return activeCards.get(rarity+"."+cardName);
 		//fallthrough
-		return getCard(cardName,rarity,forcedShiny);
+		return (TradingCard) getCard(cardName,rarity,forcedShiny); //Might be a NullCard TODO
 	}
 	public static TradingCard getRandomCard(final String rarity, final boolean forcedShiny) {
 		var cindex = plugin.getRandom().nextInt(getRarityCardList(rarity).size());
 		String randomCardName = getRarityCardList(rarity).get(cindex);
-		return CardManager.getCard(randomCardName, rarity, forcedShiny);
+		return (TradingCard) CardManager.getCard(randomCardName, rarity, forcedShiny); //Might be a NullCard TODO
 	}
 
 	public static TradingCard getRandomActiveCard(final String rarity, final boolean forcedShiny) {

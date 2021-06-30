@@ -3,7 +3,7 @@ package net.tinetwork.tradingcards.tradingcardsapi.card;
 import de.tr7zw.nbtapi.NBTItem;
 import org.bukkit.inventory.ItemStack;
 
-public abstract class Card {
+public abstract class Card<T> {
     private final String cardName;
     private String rarity;
     private boolean isShiny = false;
@@ -25,57 +25,57 @@ public abstract class Card {
         this.cardName = cardName;
     }
 
-    public Card isShiny(boolean isShiny) {
+    public Card<T> isShiny(boolean isShiny) {
         this.isShiny = isShiny;
         return this;
     }
 
-    public Card rarityColour(String rarityColour) {
+    public Card<T>  rarityColour(String rarityColour) {
         this.rarityColour = rarityColour;
         return this;
     }
 
-    public Card prefix(String prefix) {
+    public Card<T>  prefix(String prefix) {
         this.prefix = prefix;
         return this;
     }
 
-    public Card series(String name, String colour, String display) {
+    public Card<T>  series(String name, String colour, String display) {
         this.series = new CardInfo(name, colour, display);
         return this;
     }
 
-    public Card about(String name, String colour, String display) {
+    public Card<T>  about(String name, String colour, String display) {
         this.about = new CardInfo(name, colour, display);
         return this;
     }
 
-    public Card type(String name, String colour, String display) {
+    public Card<T>  type(String name, String colour, String display) {
         this.type = new CardInfo(name, colour, display);
         return this;
     }
 
-    public Card info(String name, String colour, String display) {
+    public Card<T>  info(String name, String colour, String display) {
         this.info = new CardInfo(name, colour, display);
         return this;
     }
 
-    public Card shinyPrefix(String shinyPrefix) {
+    public Card<T>  shinyPrefix(String shinyPrefix) {
         this.shinyPrefix = shinyPrefix;
         return this;
     }
 
-    public Card cost(String cost) {
+    public Card<T>  cost(String cost) {
         this.cost = cost;
         return this;
     }
 
-    public Card rarity(String rarity) {
+    public Card<T>  rarity(String rarity) {
         this.rarity = rarity;
         return this;
     }
 
-    public Card isPlayerCard(boolean isPlayerCard) {
+    public Card<T>  isPlayerCard(boolean isPlayerCard) {
         this.isPlayerCard = isPlayerCard;
         return this;
     }
@@ -136,6 +136,7 @@ public abstract class Card {
         return sellPrice;
     }
 
+    public abstract T get();
 
     public NBTItem buildNBTItem() {
         NBTItem nbtItem = new NBTItem(buildItem());
