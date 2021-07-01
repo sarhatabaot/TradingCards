@@ -36,24 +36,18 @@ public class TradingCardManager extends CardManager<TradingCard> {
 		return rarityCardList.keySet();
 	}
 
-
-	/**
-	 * Pre-loads all existing cards.
-	 */
-	public static void init(final TradingCards plugin) {
+	
+	public TradingCardManager(final TradingCards plugin) {
 		TradingCardManager.plugin = plugin;
 		loadCards();
 		plugin.getLogger().info(String.format("Loaded %d cards.",cards.size()));
 		plugin.debug(StringUtils.join(cards.keySet(), ","));
 	}
 
-	public TradingCardManager(final TradingCards plugin) {
-		this.plugin = plugin;
-		loadCards();
-		plugin.getLogger().info(String.format("Loaded %d cards.",cards.size()));
-		plugin.debug(StringUtils.join(cards.keySet(), ","));
-	}
 
+	/**
+	 * Pre-loads all existing cards.
+	 */
 	private static void loadCards() {
 		for(SimpleCardsConfig simpleCardsConfig: plugin.getCardsConfig().getCardConfigs()) {
 			for(final String rarity: simpleCardsConfig.getCards().getKeys(false)) {
@@ -68,10 +62,6 @@ public class TradingCardManager extends CardManager<TradingCard> {
 			}
 		}
 	}
-
-	/*public static Map<String,TradingCard> getCards(){
-		return cards;
-	}*/
 
 	@Override
 	public Map<String, Card<TradingCard>> getCards() {
@@ -93,7 +83,7 @@ public class TradingCardManager extends CardManager<TradingCard> {
 		if(activeCards.containsKey(rarity+"."+cardName))
 			return (TradingCard) activeCards.get(rarity+"."+cardName);
 		//fallthrough
-		return (TradingCard) getCard(cardName,rarity,forcedShiny);
+		return getCard(cardName,rarity,forcedShiny);
 	}
 	public TradingCard getRandomCard(final String rarity, final boolean forcedShiny) {
 		var cindex = plugin.getRandom().nextInt(getRarityCardList(rarity).size());
@@ -122,50 +112,5 @@ public class TradingCardManager extends CardManager<TradingCard> {
 		cardItem.setAmount(num);
 		return cardItem;
 	}
-
-	/**
-	 * @deprecated Use PackManager.getPackItem(String name);
-	 */
-	@Deprecated
-	public static ItemStack generatePack(final String name) {
-		ItemStack boosterPack = TradingCardsConfig.getBlankBoosterPack();
-		int numNormalCards = plugin.getConfig().getInt("BoosterPacks." + name + ".NumNormalCards");
-		int numSpecialCards = plugin.getConfig().getInt("BoosterPacks." + name + ".NumSpecialCards");
-		String prefix = plugin.getMainConfig().boosterPackPrefix;
-		String normalCardColour = plugin.getConfig().getString("Colours.BoosterPackNormalCards");
-		String extraCardColour = plugin.getConfig().getString("Colours.BoosterPackExtraCards");
-		String loreColour = plugin.getMainConfig().boosterPackLoreColour;
-		String nameColour = plugin.getMainConfig().boosterPackNameColour;
-		String normalRarity = plugin.getConfig().getString("BoosterPacks." + name + ".NormalCardRarity");
-		String specialRarity = plugin.getConfig().getString("BoosterPacks." + name + ".SpecialCardRarity");
-		String extraRarity = "";
-		int numExtraCards = 0;
-		boolean hasExtraRarity = false;
-		if (plugin.getConfig().contains("BoosterPacks." + name + ".ExtraCardRarity") && plugin.getConfig().contains("BoosterPacks." + name + ".NumExtraCards")) {
-			hasExtraRarity = true;
-			extraRarity = plugin.getConfig().getString("BoosterPacks." + name + ".ExtraCardRarity");
-			numExtraCards = plugin.getConfig().getInt("BoosterPacks." + name + ".NumExtraCards");
-		}
-
-		String specialCardColour = plugin.getConfig().getString("Colours.BoosterPackSpecialCards");
-		ItemMeta pMeta = boosterPack.getItemMeta();
-		pMeta.setDisplayName(plugin.cMsg(prefix + nameColour + name.replace("_", " ")));
-		List<String> lore = new ArrayList<>();
-		lore.add(plugin.cMsg(normalCardColour + numNormalCards + loreColour + " " + normalRarity.toUpperCase()));
-		if (hasExtraRarity) {
-			lore.add(plugin.cMsg(extraCardColour + numExtraCards + loreColour + " " + extraRarity.toUpperCase()));
-		}
-
-		lore.add(plugin.cMsg(specialCardColour + numSpecialCards + loreColour + " " + specialRarity.toUpperCase()));
-		pMeta.setLore(lore);
-		if (plugin.getMainConfig().hideEnchants) {
-			pMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-		}
-
-		boosterPack.setItemMeta(pMeta);
-		boosterPack.addUnsafeEnchantment(Enchantment.ARROW_INFINITE, 10);
-		return boosterPack;
-	}
-
 
 }
