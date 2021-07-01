@@ -139,7 +139,7 @@ public class CardsCommand extends BaseCommand {
                 String rare = CardUtil.calculateRarity(EntityType.valueOf(entityType.toUpperCase()), true);
                 plugin.debug("onCommand.rare: " + rare);
                 sendPrefixedMessage(sender, plugin.getMessagesConfig().giveRandomCardMsg.replaceAll("%player%", player.getName()));
-                CardUtil.dropItem(player, CardUtil.getRandomCard(rare, false));
+                CardUtil.dropItem(player, plugin.getCardManager().getRandomCard(rare, false).build());
             } catch (IllegalArgumentException exception) {
                 sendPrefixedMessage(player, plugin.getMessagesConfig().noEntity);
             }
