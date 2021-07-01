@@ -17,7 +17,7 @@ import static net.tinetwork.tradincards.tradincardsplugin.TradingCards.sendMessa
 
 @CommandAlias("deck|decks")
 public class DeckCommand extends BaseCommand {
-	private TradingCards plugin;
+	private final TradingCards plugin;
 
 	public DeckCommand(final TradingCards plugin) {
 		this.plugin = plugin;

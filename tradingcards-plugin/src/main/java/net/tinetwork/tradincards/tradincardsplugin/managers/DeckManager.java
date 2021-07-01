@@ -136,4 +136,12 @@ public class DeckManager {
 
 		return false;
 	}
+
+	public boolean hasCard(Player player, String card, String rarity) {
+		return plugin.getDeckConfig().containsCard(player.getUniqueId(), card, rarity);
+	}
+
+	public boolean hasShiny(Player p, String card, String rarity) {
+		return  plugin.getDeckConfig().containsShinyCard(p.getUniqueId(), card, rarity);
+	}
 }

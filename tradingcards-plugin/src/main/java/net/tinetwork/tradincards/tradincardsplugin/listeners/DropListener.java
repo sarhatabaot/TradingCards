@@ -84,7 +84,7 @@ public class DropListener extends SimpleListener {
             return;
 
         //Generate the card
-        ItemStack randomCard = CardUtil.getRandomActiveCard(rarityName, false).build();
+        ItemStack randomCard = plugin.getCardManager().getRandomActiveCard(rarityName, false).build();
 
         debug("Successfully generated card.");
 

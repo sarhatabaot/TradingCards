@@ -2,6 +2,8 @@ package net.tinetwork.tradincards.tradincardsplugin;
 
 import co.aikar.commands.BukkitCommandManager;
 import com.google.common.collect.ImmutableList;
+import net.milkbowl.vault.economy.Economy;
+import net.sarhatabaot.configloader.ConfigLoader;
 import net.tinetwork.tradincards.tradincardsplugin.card.TradingCard;
 import net.tinetwork.tradincards.tradincardsplugin.commands.CardsCommand;
 import net.tinetwork.tradincards.tradincardsplugin.commands.DeckCommand;
@@ -19,9 +21,6 @@ import net.tinetwork.tradincards.tradincardsplugin.managers.TradingCardManager;
 import net.tinetwork.tradincards.tradincardsplugin.utils.CardUtil;
 import net.tinetwork.tradincards.tradincardsplugin.utils.ChatUtil;
 import net.tinetwork.tradincards.tradincardsplugin.whitelist.PlayerBlacklist;
-import net.tinetwork.tradincards.tradincardsplugin.whitelist.WorldBlacklist;
-import net.milkbowl.vault.economy.Economy;
-import net.sarhatabaot.configloader.ConfigLoader;
 import net.tinetwork.tradingcards.api.TradingCardsPlugin;
 import net.tinetwork.tradingcards.api.manager.PackManager;
 import org.apache.commons.lang.WordUtils;
@@ -41,20 +40,71 @@ import java.util.Random;
 
 
 public class TradingCards extends TradingCardsPlugin<TradingCard> {
+    private Random random = new Random();
+    int taskid;
+
+    /* Mobs */
     private ImmutableList<EntityType> hostileMobs;
     private ImmutableList<EntityType> passiveMobs;
     private ImmutableList<EntityType> neutralMobs;
     private ImmutableList<EntityType> bossMobs;
-    private boolean hasVault;
+
+    /* Configs */
     private TradingCardsConfig mainConfig;
     private DeckConfig deckConfig;
     private MessagesConfig messagesConfig;
     private CardsConfig cardsConfig;
+
+    /* Managers */
     private TradingCardManager cardManager;
     private BoosterPackManager packManager;
+    private DeckManager deckManager;
+
+    /* Hooks */
+    private boolean hasVault;
     private Economy econ = null;
-    private Random random = new Random();
-    int taskid;
+
+
+    @Override
+    public void onEnable() {
+        cacheMobs();
+        saveDefaultConfig();
+        var playerBlacklist = new PlayerBlacklist(this);
+        registerListeners(playerBlacklist);
+        mainConfig = new TradingCardsConfig(this);
+        messagesConfig = new MessagesConfig(this);
+        ConfigLoader.load(mainConfig);
+        ConfigLoader.loadAndSave(messagesConfig);
+
+        deckConfig = new DeckConfig(this);
+        cardsConfig = new CardsConfig(this);
+
+        deckConfig.saveDefaultConfig();
+
+        CardUtil.init(this);
+        ChatUtil.init(this);
+        this.cardManager = new TradingCardManager(this);
+        this.packManager = new BoosterPackManager(this);
+        DeckManager.init(this);
+        var commandManager = new BukkitCommandManager(this);
+        commandManager.registerCommand(new CardsCommand(this,playerBlacklist));
+        commandManager.registerCommand(new DeckCommand(this));
+        commandManager.enableUnstableAPI("help");
+        hookFileSystem();
+        hookVault();
+
+        if (this.getMainConfig().scheduleCards) {
+            this.startTimer();
+        }
+    }
+
+
+    @Override
+    public void onDisable() {
+        econ = null;
+        this.getServer().getPluginManager().removePermission("cards.rarity");
+    }
+
 
     @Override
     public TradingCardManager getCardManager() {
@@ -129,45 +179,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         this.bossMobs = ImmutableList.<EntityType>builder().add(EntityType.ENDER_DRAGON, EntityType.WITHER).build();
     }
 
-    @Override
-    public void onEnable() {
-        cacheMobs();
-        saveDefaultConfig();
-        var playerBlacklist = new PlayerBlacklist(this);
-        registerListeners(playerBlacklist);
-        mainConfig = new TradingCardsConfig(this);
-        messagesConfig = new MessagesConfig(this);
-        ConfigLoader.load(mainConfig);
-        ConfigLoader.loadAndSave(messagesConfig);
-
-        deckConfig = new DeckConfig(this);
-        cardsConfig = new CardsConfig(this);
-
-        deckConfig.saveDefaultConfig();
-
-        CardUtil.init(this);
-        ChatUtil.init(this);
-        this.cardManager = new TradingCardManager(this);
-        this.packManager = new BoosterPackManager(this);
-        DeckManager.init(this);
-        var commandManager = new BukkitCommandManager(this);
-        commandManager.registerCommand(new CardsCommand(this,playerBlacklist));
-        commandManager.registerCommand(new DeckCommand(this));
-        commandManager.enableUnstableAPI("help");
-        hookFileSystem();
-        hookVault();
-
-        if (this.getMainConfig().scheduleCards) {
-            this.startTimer();
-        }
-    }
-
-
-    @Override
-    public void onDisable() {
-        econ = null;
-        this.getServer().getPluginManager().removePermission("cards.rarity");
-    }
 
     private boolean setupEconomy() {
         if (this.getServer().getPluginManager().getPlugin("Vault") == null) {

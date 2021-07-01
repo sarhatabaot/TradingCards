@@ -23,14 +23,6 @@ public class TradingCardManager implements CardManager<TradingCard> {
 
     private static final Map<String, List<String>> rarityCardList = new HashMap<>();
 
-    @Override
-    public List<String> getRarityCardList(final String rarity) {
-        return rarityCardList.get(rarity);
-    }
-    @Override
-    public Set<String> getRarityNames() {
-        return rarityCardList.keySet();
-    }
 
 
     public TradingCardManager(final TradingCards plugin) {
@@ -58,6 +50,16 @@ public class TradingCardManager implements CardManager<TradingCard> {
             }
         }
     }
+
+    @Override
+    public List<String> getRarityCardList(final String rarity) {
+        return rarityCardList.get(rarity);
+    }
+    @Override
+    public Set<String> getRarityNames() {
+        return rarityCardList.keySet();
+    }
+
 
     @Override
     public Map<String, Card<TradingCard>> getCards() {

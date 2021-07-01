@@ -104,9 +104,9 @@ public class PackListener extends SimpleListener {
     private void dropRandomCards(Player player, final String rarity, int amount, String packName) {
         for (var i = 0; i < amount; i++) {
             if (TradingCardsConfig.getPackSeries(packName).equalsIgnoreCase("active"))
-                CardUtil.dropItem(player, CardUtil.getRandomCard(WordUtils.capitalizeFully(rarity), false).build());
+                CardUtil.dropItem(player, plugin.getCardManager().getRandomCard(WordUtils.capitalizeFully(rarity), false).build());
             else
-                CardUtil.dropItem(player, CardUtil.getRandomActiveCard(WordUtils.capitalizeFully(rarity), false).build());
+                CardUtil.dropItem(player, plugin.getCardManager().getRandomActiveCard(WordUtils.capitalizeFully(rarity), false).build());
         }
     }
 

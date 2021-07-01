@@ -154,6 +154,8 @@ public abstract class Card<T> {
 
 
     public ItemStack build() {
+        if(nbtItem == null)
+            nbtItem = buildNBTItem();
         return nbtItem.getItem();
     }
 
