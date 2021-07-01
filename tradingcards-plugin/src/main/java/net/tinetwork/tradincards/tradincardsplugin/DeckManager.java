@@ -19,9 +19,11 @@ import java.util.UUID;
 
 public class DeckManager {
 	private static TradingCards plugin;
+	private static TradingCardManager cardManager;
 
 	public static void init(final TradingCards plugin) {
 		DeckManager.plugin = plugin;
+		DeckManager.cardManager = plugin.getCardManager();
 	}
 
 
@@ -62,10 +64,10 @@ public class DeckManager {
 				isNull = true;
 
 			if (isShiny.equalsIgnoreCase("yes")) {
-				card = TradingCardManager.getCard(cardName, rarity, true).build();
+				card = cardManager.getCard(cardName, rarity, true).build();
 				card.setAmount(amount);
 			} else if (!isNull) {
-				card = TradingCardManager.getCard(cardName, rarity, amount);
+				card = cardManager.getCardItem(cardName, rarity, amount);
 			}
 
 			if (isNull) {

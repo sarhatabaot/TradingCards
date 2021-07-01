@@ -17,7 +17,6 @@ import net.tinetwork.tradincards.tradincardsplugin.whitelist.WorldBlacklist;
 import net.milkbowl.vault.economy.Economy;
 import net.sarhatabaot.configloader.ConfigLoader;
 import net.tinetwork.tradingcards.api.TradingCardsPlugin;
-import net.tinetwork.tradingcards.api.manager.CardManager;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -34,7 +33,7 @@ import java.util.List;
 import java.util.Random;
 
 
-public class TradingCards extends TradingCardsPlugin {
+public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private ImmutableList<EntityType> hostileMobs;
     private ImmutableList<EntityType> passiveMobs;
     private ImmutableList<EntityType> neutralMobs;
@@ -94,7 +93,7 @@ public class TradingCards extends TradingCardsPlugin {
     private void registerListeners(final PlayerBlacklist playerBlacklist,final WorldBlacklist worldBlacklist) {
         var pm = Bukkit.getPluginManager();
         pm.addPermission(new Permission("cards.rarity"));
-        pm.registerEvents(new DropListener(this,playerBlacklist,worldBlacklist), this);
+        pm.registerEvents(new DropListener(this,playerBlacklist,worldBlacklist, cardManager), this);
         pm.registerEvents(new PackListener(this), this);
         pm.registerEvents(new MobSpawnListener(this), this);
         pm.registerEvents(new DeckListener(this), this);

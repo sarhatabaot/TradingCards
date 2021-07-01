@@ -76,7 +76,7 @@ public class TradingCardManager extends CardManager<TradingCard> {
 
 	public TradingCard getCard(final String cardName,final String rarity, final boolean forcedShiny){
 		if(cards.containsKey(rarity+"."+cardName))
-			return cards.get(rarity+"."+cardName).isShiny(forcedShiny);
+			return (TradingCard) cards.get(rarity+"."+cardName).isShiny(forcedShiny);
 		return new NullCard(plugin);
 	}
 
@@ -89,14 +89,14 @@ public class TradingCardManager extends CardManager<TradingCard> {
 	public TradingCard getRandomCard(final String rarity, final boolean forcedShiny) {
 		var cindex = plugin.getRandom().nextInt(getRarityCardList(rarity).size());
 		String randomCardName = getRarityCardList(rarity).get(cindex);
-		return (TradingCard) TradingCardManager.getCard(randomCardName, rarity, forcedShiny);
+		return getCard(randomCardName, rarity, forcedShiny);
 	}
 
 	public TradingCard getRandomActiveCard(final String rarity, final boolean forcedShiny) {
 		var cindex = plugin.getRandom().nextInt(activeCards.keySet().size());
 		List<String> cardNames = getRarityCardList(rarity);
 		String randomCardName = cardNames.get(cindex);
-		return TradingCardManager.getActiveCard(randomCardName, rarity, forcedShiny);
+		return getActiveCard(randomCardName, rarity, forcedShiny);
 	}
 
 	@Override

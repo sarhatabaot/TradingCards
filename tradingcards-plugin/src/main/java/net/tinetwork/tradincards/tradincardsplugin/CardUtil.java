@@ -26,12 +26,14 @@ import java.util.regex.Pattern;
  */
 public class CardUtil {
 	private static TradingCards plugin;
+	private static TradingCardManager cardManager;
 	private static final char ALT_COLOR_CHAR = '&';
 	private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)" + ALT_COLOR_CHAR + "[0-9A-FK-ORX]");
 	private static final String NAME_TEMPLATE = "^[a-zA-Z0-9-_]+$";
 
 	public static void init(final TradingCards plugin) {
 		CardUtil.plugin = plugin;
+		CardUtil.cardManager = plugin.getCardManager();
 	}
 
 	public static String getRarityName(@NotNull final String rarity) {
@@ -157,7 +159,7 @@ public class CardUtil {
 	@NotNull
 	@Deprecated
 	public static TradingCard getRandomCard(@NotNull final String rarityName, final boolean forcedShiny) {
-		return TradingCardManager.getRandomCard(rarityName,forcedShiny);
+		return cardManager.getRandomCard(rarityName,forcedShiny);
 	}
 
 
@@ -165,7 +167,7 @@ public class CardUtil {
 	@NotNull
 	@Deprecated
 	public static TradingCard getRandomActiveCard(@NotNull final String rarityName, final boolean forcedShiny) {
-		return TradingCardManager.getRandomActiveCard(rarityName,forcedShiny);
+		return cardManager.getRandomActiveCard(rarityName,forcedShiny);
 	}
 
 	/**
@@ -193,12 +195,12 @@ public class CardUtil {
 		final String strippedDisplay = StringUtils.replaceEach(stripAllColor(displayCard), new String[]{strippedPrefix, strippedShiny}, new String[]{"", ""}).trim();
 		plugin.debug("stripped|rarity=" + strippedRarity + "|hasPrefix=" + hasPrefix + "|prefix=" + strippedPrefix + "|shiny=" + strippedShiny + "|display=" + strippedDisplay);
 
-		if (TradingCardManager.getCard(strippedDisplay,strippedRarity,false).getCardName().equals("nullCard")) {
+		if (cardManager.getCard(strippedDisplay,strippedRarity,false).getCardName().equals("nullCard")) {
 			plugin.debug("No such card. card=" + strippedDisplay + "rarity=" + strippedRarity);
 			return "None";
 		}
 
-		if (TradingCardManager.getCards().keySet().contains(strippedRarity+"."+strippedDisplay.replace(" ","_")))
+		if (cardManager.getCards().keySet().contains(strippedRarity+"."+strippedDisplay.replace(" ","_")))
 			return strippedDisplay.replace(" ","_");
 
 		return "None";
@@ -265,7 +267,7 @@ public class CardUtil {
 
 	public static boolean isPlayerCard(String name) {
 		String rarity = plugin.getConfig().getString("General.Auto-Add-Player-Rarity");
-		return !TradingCardManager.getCard(name,rarity,false).getCardName().equals("nullCard") && TradingCardManager.getCard(name,rarity,false).isPlayerCard();
+		return !cardManager.getCard(name,rarity,false).getCardName().equals("nullCard") && cardManager.getCard(name,rarity,false).isPlayerCard();
 	}
 
 	public static String getRarityId(final ItemStack itemStack) {

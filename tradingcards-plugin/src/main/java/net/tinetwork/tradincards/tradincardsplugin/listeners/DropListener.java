@@ -21,11 +21,13 @@ import java.util.Set;
 public class DropListener extends SimpleListener {
     private final PlayerBlacklist playerBlacklist;
     private final WorldBlacklist worldBlacklist;
+    private final TradingCardManager cardManager;
 
-    public DropListener(final TradingCards plugin, final PlayerBlacklist playerBlacklist, final WorldBlacklist worldBlacklist) {
+    public DropListener(final TradingCards plugin, final PlayerBlacklist playerBlacklist, final WorldBlacklist worldBlacklist, TradingCardManager cardManager) {
         super(plugin);
         this.playerBlacklist = playerBlacklist;
         this.worldBlacklist = worldBlacklist;
+        this.cardManager = cardManager;
     }
 
 
@@ -52,7 +54,7 @@ public class DropListener extends SimpleListener {
         if (rarityKey == null)
             return;
 
-        ItemStack playerCard = TradingCardManager.getActiveCard(killedPlayer.getName(), rarityKey, false).build();
+        ItemStack playerCard = cardManager.getActiveCard(killedPlayer.getName(), rarityKey, false).build();
         e.getDrops().add(playerCard);
         plugin.debug(e.getDrops().toString());
     }
@@ -98,7 +100,7 @@ public class DropListener extends SimpleListener {
         Set<String> rarityKeys = rarities.getKeys(false);
 
         for (final String rarity : rarityKeys) {
-            if(!TradingCardManager.getCard(player.getName(),rarity,false).getCardName().equals("nullCard")) {
+            if(!cardManager.getCard(player.getName(),rarity,false).getCardName().equals("nullCard")) {
                 plugin.debug(rarity);
                 return rarity;
             }
