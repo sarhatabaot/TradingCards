@@ -4,7 +4,7 @@ import net.tinetwork.tradingcards.api.manager.CardManager;
 import org.bukkit.entity.EntityType;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public abstract class TradingCardsPlugin extends JavaPlugin {
+public abstract class TradingCardsPlugin<T> extends JavaPlugin {
 
     public abstract void debug(String message);
 
@@ -12,5 +12,5 @@ public abstract class TradingCardsPlugin extends JavaPlugin {
 
     public abstract boolean isMob(EntityType type);
 
-    public abstract CardManager getCardManager();
+    public abstract CardManager<T> getCardManager();
 }

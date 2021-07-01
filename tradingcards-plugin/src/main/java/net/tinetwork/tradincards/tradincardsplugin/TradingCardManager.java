@@ -99,6 +99,14 @@ public class TradingCardManager extends CardManager<TradingCard> {
 		return TradingCardManager.getActiveCard(randomCardName, rarity, forcedShiny);
 	}
 
+	@Override
+	public ItemStack getCardItem(String cardName, String rarity, int num) {
+		TradingCard card = (TradingCard) cards.get(rarity+"."+cardName);
+		ItemStack cardItem = card.build();
+		cardItem.setAmount(num);
+		return cardItem;
+	}
+
 	public static ItemStack getCard(final String cardName,final String rarity, int num){
 		TradingCard card = (TradingCard) cards.get(rarity+"."+cardName);
 		ItemStack cardItem = card.build();
