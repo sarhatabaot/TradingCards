@@ -16,7 +16,7 @@ public class CardSchedulerRunnable extends BukkitRunnable {
 
     public CardSchedulerRunnable(final TradingCards plugin) {
         this.plugin = plugin;
-        this.cardManager = (TradingCardManager) plugin.getCardManager();
+        this.cardManager =  plugin.getCardManager();
     }
 
     @Override
@@ -29,7 +29,7 @@ public class CardSchedulerRunnable extends BukkitRunnable {
         if (plugin.getConfig().getBoolean("General.Schedule-Cards-Natural")) {
             String mob = plugin.getConfig().getString("General.Schedule-Card-Mob");
             if (plugin.isMob(mob.toUpperCase())) {
-                plugin.giveawayNatural(EntityType.valueOf(mob.toUpperCase()), null);
+                CardUtil.giveawayNatural(EntityType.valueOf(mob.toUpperCase()), null);
                 return;
             }
             plugin.getLogger().info("Error! schedule-card-mob is an invalid mob?");
@@ -38,7 +38,7 @@ public class CardSchedulerRunnable extends BukkitRunnable {
 
         String keyToUse = "";
 
-        for (final String key : TradingCardManager.getRarityNames()) {
+        for (final String key : plugin.getCardManager().getRarityNames()) {
             plugin.debug("Rarity key: " + key);
             if (key.equalsIgnoreCase(plugin.getConfig().getString("General.Schedule-Card-Rarity"))) {
                 keyToUse = key;
@@ -56,10 +56,10 @@ public class CardSchedulerRunnable extends BukkitRunnable {
 
     }
     private String getRandomCardName(final String rarity) {
-        var rIndex = plugin.getRandom().nextInt(TradingCardManager.getRarityCardList(rarity).size());
+        var rIndex = plugin.getRandom().nextInt(plugin.getCardManager().getRarityCardList(rarity).size());
         var i = 0;
         var cardName = "";
-        for (Iterator<String> var11 = TradingCardManager.getRarityCardList(rarity).iterator(); var11.hasNext(); ++i) {
+        for (Iterator<String> var11 = plugin.getCardManager().getRarityCardList(rarity).iterator(); var11.hasNext(); ++i) {
             String theCardName = var11.next();
             if (i == rIndex) {
                 return theCardName;

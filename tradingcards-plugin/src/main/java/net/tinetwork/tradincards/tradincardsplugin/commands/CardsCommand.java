@@ -276,7 +276,7 @@ public class CardsCommand extends BaseCommand {
 
             int cardCounter = 0;
 
-            for (String cardName : TradingCardManager.getRarityCardList(rarity)) {
+            for (String cardName : plugin.getCardManager().getRarityCardList(rarity)) {
                 if (cardCounter > 32) {
                     if (plugin.hasCard(target, cardName, rarity)) {
                         ++cardCounter;
@@ -299,10 +299,10 @@ public class CardsCommand extends BaseCommand {
                 }
             }
             //send title
-            if (cardCounter == TradingCardManager.getRarityCardList(rarity).size()) {
+            if (cardCounter == plugin.getCardManager().getRarityCardList(rarity).size()) {
                 sendMessage(sender, String.format(sectionFormatComplete, plugin.isRarityAndFormat(rarity), plugin.getConfig().getString("Colours.ListRarityComplete")));
             } else {
-                sendMessage(sender, String.format(sectionFormat, plugin.isRarityAndFormat(rarity), cardCounter, TradingCardManager.getRarityCardList(rarity).size()));
+                sendMessage(sender, String.format(sectionFormat, plugin.isRarityAndFormat(rarity), cardCounter, plugin.getCardManager().getRarityCardList(rarity).size()));
             }
 
             sendMessage(sender, stringBuilder.toString());

@@ -1,18 +1,14 @@
 package net.tinetwork.tradincards.tradincardsplugin.managers;
 
-import net.tinetwork.tradincards.tradincardsplugin.utils.CardUtil;
 import net.tinetwork.tradincards.tradincardsplugin.TradingCards;
 import net.tinetwork.tradincards.tradincardsplugin.card.NullCard;
 import net.tinetwork.tradincards.tradincardsplugin.card.TradingCard;
-import net.tinetwork.tradingcards.api.card.Card;
 import net.tinetwork.tradincards.tradincardsplugin.config.SimpleCardsConfig;
-import net.tinetwork.tradincards.tradincardsplugin.config.TradingCardsConfig;
+import net.tinetwork.tradincards.tradincardsplugin.utils.CardUtil;
+import net.tinetwork.tradingcards.api.card.Card;
 import net.tinetwork.tradingcards.api.manager.CardManager;
 import org.apache.commons.lang.StringUtils;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,19 +16,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class TradingCardManager extends CardManager<TradingCard> {
+public class TradingCardManager implements CardManager<TradingCard> {
     private final TradingCards plugin;
     private final Map<String, Card<TradingCard>> cards = new HashMap<>();
     private final Map<String, Card<TradingCard>> activeCards = new HashMap<>();
 
     private static final Map<String, List<String>> rarityCardList = new HashMap<>();
 
-
-    public static List<String> getRarityCardList(final String rarity) {
+    @Override
+    public List<String> getRarityCardList(final String rarity) {
         return rarityCardList.get(rarity);
     }
-
-    public static Set<String> getRarityNames() {
+    @Override
+    public Set<String> getRarityNames() {
         return rarityCardList.keySet();
     }
 
