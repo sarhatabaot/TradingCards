@@ -1,0 +1,6 @@
+name: TradingCards
+main: net.tinetwork.tradincards.tradincardsplugin.TradingCards
+version: ${project.version}
+softdepend: [Vault]
+authors: [Xenoyia, sarhatabaot, TreasureIslandMC]
+api-version: "1.13"
