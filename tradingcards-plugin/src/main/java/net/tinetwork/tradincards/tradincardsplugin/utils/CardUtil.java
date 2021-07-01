@@ -7,6 +7,7 @@ import net.tinetwork.tradincards.tradincardsplugin.card.TradingCard;
 import net.tinetwork.tradincards.tradincardsplugin.config.SimpleCardsConfig;
 import net.tinetwork.tradincards.tradincardsplugin.managers.TradingCardManager;
 import org.apache.commons.lang.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -329,6 +330,51 @@ public class CardUtil {
 		public NotACardException(final String message) {
 			super(message);
 		}
+	}
+
+
+
+	private static void broadcastPrefixedMessage(final String message) {
+		Bukkit.broadcastMessage(plugin.getPrefixedMessage(message));
+	}
+
+	public static void giveawayNatural(EntityType mob, Player sender) {
+		if (plugin.isMobBoss(mob)) {
+			if (sender == null) {
+				broadcastPrefixedMessage(plugin.getMessagesConfig().giveawayNaturalBossNoPlayer);
+			} else {
+				broadcastPrefixedMessage(plugin.getMessagesConfig().giveawayNaturalBoss.replaceAll("%player%", sender.getName()));
+			}
+		} else if (plugin.isMobHostile(mob)) {
+			if (sender == null) {
+				broadcastPrefixedMessage(plugin.getMessagesConfig().giveawayNaturalHostileNoPlayer);
+			} else {
+				broadcastPrefixedMessage(plugin.getMessagesConfig().giveawayNaturalHostile.replaceAll("%player%", sender.getName()));
+			}
+		} else if (plugin.isMobNeutral(mob)) {
+			if (sender == null) {
+				broadcastPrefixedMessage(plugin.getPrefixedMessage(plugin.getMessagesConfig().giveawayNaturalNeutralNoPlayer));
+			} else {
+				broadcastPrefixedMessage(plugin.getPrefixedMessage(plugin.getMessagesConfig().giveawayNaturalNeutral.replaceAll("%player%", sender.getName())));
+			}
+		} else if (plugin.isMobPassive(mob)) {
+			if (sender == null) {
+				broadcastPrefixedMessage(plugin.getPrefixedMessage(plugin.getMessagesConfig().giveawayNaturalPassiveNoPlayer));
+			} else {
+				broadcastPrefixedMessage(plugin.getPrefixedMessage(plugin.getMessagesConfig().giveawayNaturalPassive.replaceAll("%player%", sender.getName())));
+			}
+		} else if (sender == null) {
+			broadcastPrefixedMessage(plugin.getMessagesConfig().giveawayNaturalNoPlayer);
+		} else {
+			broadcastPrefixedMessage(plugin.getMessagesConfig().giveawayNatural.replaceAll("%player%", sender.getName()));
+		}
+
+		for (final Player p : Bukkit.getOnlinePlayers()) {
+			String rare = CardUtil.calculateRarity(mob, true);
+			plugin.debug("onCommand.rare: " + rare);
+			CardUtil.dropItem(p, CardUtil.getRandomCard(rare, false).build());
+		}
+
 	}
 
 

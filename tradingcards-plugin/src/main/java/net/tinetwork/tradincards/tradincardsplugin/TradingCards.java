@@ -132,7 +132,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     @Override
     public void onEnable() {
         cacheMobs();
-        this.saveDefaultConfig();
+        saveDefaultConfig();
         var playerBlacklist = new PlayerBlacklist(this);
         registerListeners(playerBlacklist);
         mainConfig = new TradingCardsConfig(this);
@@ -147,7 +147,8 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
         CardUtil.init(this);
         ChatUtil.init(this);
-        TradingCardManager.init(this);
+        this.cardManager = new TradingCardManager(this);
+        this.packManager = new BoosterPackManager(this);
         DeckManager.init(this);
         var commandManager = new BukkitCommandManager(this);
         commandManager.registerCommand(new CardsCommand(this,playerBlacklist));
@@ -284,48 +285,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         return cMsg(messagesConfig.prefix + "&r " + message);
     }
 
-    private void broadcastPrefixedMessage(final String message) {
-        Bukkit.broadcastMessage(getPrefixedMessage(message));
-    }
-
-    public void giveawayNatural(EntityType mob, Player sender) {
-        if (this.isMobBoss(mob)) {
-            if (sender == null) {
-                broadcastPrefixedMessage(messagesConfig.giveawayNaturalBossNoPlayer);
-            } else {
-                broadcastPrefixedMessage(messagesConfig.giveawayNaturalBoss.replaceAll("%player%", sender.getName()));
-            }
-        } else if (this.isMobHostile(mob)) {
-            if (sender == null) {
-                broadcastPrefixedMessage(messagesConfig.giveawayNaturalHostileNoPlayer);
-            } else {
-                broadcastPrefixedMessage(messagesConfig.giveawayNaturalHostile.replaceAll("%player%", sender.getName()));
-            }
-        } else if (this.isMobNeutral(mob)) {
-            if (sender == null) {
-                broadcastPrefixedMessage(getPrefixedMessage(messagesConfig.giveawayNaturalNeutralNoPlayer));
-            } else {
-                broadcastPrefixedMessage(getPrefixedMessage(messagesConfig.giveawayNaturalNeutral.replaceAll("%player%", sender.getName())));
-            }
-        } else if (this.isMobPassive(mob)) {
-            if (sender == null) {
-                broadcastPrefixedMessage(getPrefixedMessage(messagesConfig.giveawayNaturalPassiveNoPlayer));
-            } else {
-                broadcastPrefixedMessage(getPrefixedMessage(messagesConfig.giveawayNaturalPassive.replaceAll("%player%", sender.getName())));
-            }
-        } else if (sender == null) {
-            broadcastPrefixedMessage(messagesConfig.giveawayNaturalNoPlayer);
-        } else {
-            broadcastPrefixedMessage(messagesConfig.giveawayNatural.replaceAll("%player%", sender.getName()));
-        }
-
-        for (final Player p : Bukkit.getOnlinePlayers()) {
-            String rare = CardUtil.calculateRarity(mob, true);
-            debug("onCommand.rare: " + rare);
-            CardUtil.dropItem(p, CardUtil.getRandomCard(rare, false).build());
-        }
-
-    }
 
     public void reloadAllConfig() {
         ConfigLoader.loadAndSave(mainConfig);
@@ -361,10 +320,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
     public Random getRandom() {
         return random;
-    }
-
-    public void setRandom(Random random) {
-        this.random = random;
     }
 
 }

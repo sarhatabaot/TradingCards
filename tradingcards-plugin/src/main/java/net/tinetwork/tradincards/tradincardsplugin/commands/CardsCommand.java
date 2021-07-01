@@ -358,9 +358,9 @@ public class CardsCommand extends BaseCommand {
         String keyToUse = "";
         if (plugin.isMob(rarity)) {
             if (sender instanceof ConsoleCommandSender) {
-                plugin.giveawayNatural(EntityType.valueOf(rarity.toUpperCase()), null);
+                CardUtil.giveawayNatural(EntityType.valueOf(rarity.toUpperCase()), null);
             } else {
-                plugin.giveawayNatural(EntityType.valueOf(rarity.toUpperCase()), (Player) sender);
+                CardUtil.giveawayNatural(EntityType.valueOf(rarity.toUpperCase()), (Player) sender);
             }
             return;
         }
