@@ -1,5 +1,6 @@
-package net.tinetwork.tradincards.tradincardsplugin;
+package net.tinetwork.tradincards.tradincardsplugin.card;
 
+import net.tinetwork.tradincards.tradincardsplugin.TradingCards;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 

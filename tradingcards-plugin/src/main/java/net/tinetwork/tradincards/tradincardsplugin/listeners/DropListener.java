@@ -1,8 +1,8 @@
 package net.tinetwork.tradincards.tradincardsplugin.listeners;
 
 
-import net.tinetwork.tradincards.tradincardsplugin.TradingCardManager;
-import net.tinetwork.tradincards.tradincardsplugin.CardUtil;
+import net.tinetwork.tradincards.tradincardsplugin.managers.TradingCardManager;
+import net.tinetwork.tradincards.tradincardsplugin.utils.CardUtil;
 import net.tinetwork.tradincards.tradincardsplugin.TradingCards;
 import net.tinetwork.tradincards.tradincardsplugin.whitelist.PlayerBlacklist;
 import net.tinetwork.tradincards.tradincardsplugin.whitelist.WorldBlacklist;

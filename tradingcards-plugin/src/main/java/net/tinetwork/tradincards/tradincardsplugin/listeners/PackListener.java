@@ -1,6 +1,6 @@
 package net.tinetwork.tradincards.tradincardsplugin.listeners;
 
-import net.tinetwork.tradincards.tradincardsplugin.CardUtil;
+import net.tinetwork.tradincards.tradincardsplugin.utils.CardUtil;
 import net.tinetwork.tradincards.tradincardsplugin.TradingCards;
 import net.tinetwork.tradincards.tradincardsplugin.config.TradingCardsConfig;
 import org.apache.commons.lang.WordUtils;

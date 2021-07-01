@@ -1,7 +1,11 @@
-package net.tinetwork.tradincards.tradincardsplugin;
+package net.tinetwork.tradincards.tradincardsplugin.utils;
 
 import de.tr7zw.nbtapi.NBTItem;
+import net.tinetwork.tradincards.tradincardsplugin.TradingCards;
+import net.tinetwork.tradincards.tradincardsplugin.card.NullCard;
+import net.tinetwork.tradincards.tradincardsplugin.card.TradingCard;
 import net.tinetwork.tradincards.tradincardsplugin.config.SimpleCardsConfig;
+import net.tinetwork.tradincards.tradincardsplugin.managers.TradingCardManager;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;

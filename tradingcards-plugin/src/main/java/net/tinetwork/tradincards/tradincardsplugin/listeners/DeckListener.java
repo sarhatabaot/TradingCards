@@ -1,13 +1,12 @@
 package net.tinetwork.tradincards.tradincardsplugin.listeners;
 
-import net.tinetwork.tradincards.tradincardsplugin.CardUtil;
-import net.tinetwork.tradincards.tradincardsplugin.DeckManager;
+import net.tinetwork.tradincards.tradincardsplugin.utils.CardUtil;
+import net.tinetwork.tradincards.tradincardsplugin.managers.DeckManager;
 import net.tinetwork.tradincards.tradincardsplugin.TradingCards;
-import net.tinetwork.tradincards.tradincardsplugin.uuid.UuidUtil;
+import net.tinetwork.tradincards.tradincardsplugin.utils.UuidUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
-import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

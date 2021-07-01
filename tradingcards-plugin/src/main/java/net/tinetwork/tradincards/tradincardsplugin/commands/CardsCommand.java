@@ -10,8 +10,8 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.HelpCommand;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
-import net.tinetwork.tradincards.tradincardsplugin.TradingCardManager;
-import net.tinetwork.tradincards.tradincardsplugin.CardUtil;
+import net.tinetwork.tradincards.tradincardsplugin.managers.TradingCardManager;
+import net.tinetwork.tradincards.tradincardsplugin.utils.CardUtil;
 import net.tinetwork.tradincards.tradincardsplugin.TradingCards;
 import net.tinetwork.tradingcards.api.addons.TradingCardsAddon;
 import net.tinetwork.tradincards.tradincardsplugin.whitelist.PlayerBlacklist;
@@ -34,7 +34,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Set;
 
-import static net.tinetwork.tradincards.tradincardsplugin.ChatUtil.sendPrefixedMessage;
+import static net.tinetwork.tradincards.tradincardsplugin.utils.ChatUtil.sendPrefixedMessage;
 import static net.tinetwork.tradincards.tradincardsplugin.TradingCards.sendMessage;
 
 @CommandAlias("cards")

@@ -1,7 +1,8 @@
-package net.tinetwork.tradincards.tradincardsplugin;
+package net.tinetwork.tradincards.tradincardsplugin.managers;
 
 
 import de.tr7zw.nbtapi.NBTItem;
+import net.tinetwork.tradincards.tradincardsplugin.TradingCards;
 import net.tinetwork.tradincards.tradincardsplugin.config.TradingCardsConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

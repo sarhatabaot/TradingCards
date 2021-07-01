@@ -2,6 +2,7 @@ package net.tinetwork.tradincards.tradincardsplugin;
 
 import co.aikar.commands.BukkitCommandManager;
 import com.google.common.collect.ImmutableList;
+import net.tinetwork.tradincards.tradincardsplugin.card.TradingCard;
 import net.tinetwork.tradincards.tradincardsplugin.commands.CardsCommand;
 import net.tinetwork.tradincards.tradincardsplugin.commands.DeckCommand;
 import net.tinetwork.tradincards.tradincardsplugin.config.CardsConfig;
@@ -12,6 +13,10 @@ import net.tinetwork.tradincards.tradincardsplugin.listeners.DeckListener;
 import net.tinetwork.tradincards.tradincardsplugin.listeners.DropListener;
 import net.tinetwork.tradincards.tradincardsplugin.listeners.MobSpawnListener;
 import net.tinetwork.tradincards.tradincardsplugin.listeners.PackListener;
+import net.tinetwork.tradincards.tradincardsplugin.managers.DeckManager;
+import net.tinetwork.tradincards.tradincardsplugin.managers.TradingCardManager;
+import net.tinetwork.tradincards.tradincardsplugin.utils.CardUtil;
+import net.tinetwork.tradincards.tradincardsplugin.utils.ChatUtil;
 import net.tinetwork.tradincards.tradincardsplugin.whitelist.PlayerBlacklist;
 import net.tinetwork.tradincards.tradincardsplugin.whitelist.WorldBlacklist;
 import net.milkbowl.vault.economy.Economy;

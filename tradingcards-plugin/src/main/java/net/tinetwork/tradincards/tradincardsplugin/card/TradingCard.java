@@ -1,5 +1,6 @@
-package net.tinetwork.tradincards.tradincardsplugin;
+package net.tinetwork.tradincards.tradincardsplugin.card;
 
+import net.tinetwork.tradincards.tradincardsplugin.TradingCards;
 import net.tinetwork.tradincards.tradincardsplugin.config.TradingCardsConfig;
 import net.tinetwork.tradingcards.api.card.Card;
 import org.apache.commons.lang.StringUtils;

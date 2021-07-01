@@ -1,5 +1,6 @@
-package net.tinetwork.tradincards.tradincardsplugin;
+package net.tinetwork.tradincards.tradincardsplugin.utils;
 
+import net.tinetwork.tradincards.tradincardsplugin.TradingCards;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 

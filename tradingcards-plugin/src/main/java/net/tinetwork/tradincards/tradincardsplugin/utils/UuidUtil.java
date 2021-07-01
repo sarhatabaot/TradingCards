@@ -1,4 +1,4 @@
-package net.tinetwork.tradincards.tradincardsplugin.uuid;
+package net.tinetwork.tradincards.tradincardsplugin.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;

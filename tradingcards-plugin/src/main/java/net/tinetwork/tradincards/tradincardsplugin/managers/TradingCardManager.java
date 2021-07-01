@@ -1,5 +1,9 @@
-package net.tinetwork.tradincards.tradincardsplugin;
+package net.tinetwork.tradincards.tradincardsplugin.managers;
 
+import net.tinetwork.tradincards.tradincardsplugin.utils.CardUtil;
+import net.tinetwork.tradincards.tradincardsplugin.TradingCards;
+import net.tinetwork.tradincards.tradincardsplugin.card.NullCard;
+import net.tinetwork.tradincards.tradincardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.api.card.Card;
 import net.tinetwork.tradincards.tradincardsplugin.config.SimpleCardsConfig;
 import net.tinetwork.tradincards.tradincardsplugin.config.TradingCardsConfig;
@@ -50,7 +54,7 @@ public class TradingCardManager extends CardManager<TradingCard> {
 			for(final String rarity: simpleCardsConfig.getCards().getKeys(false)) {
 				rarityCardList.put(rarity,new ArrayList<>());
 				for(String name: simpleCardsConfig.getCards().getConfigurationSection(rarity).getKeys(false)) {
-					cards.put(rarity+"."+name,CardUtil.generateCard(simpleCardsConfig,name,rarity,false));
+					cards.put(rarity+"."+name, CardUtil.generateCard(simpleCardsConfig,name,rarity,false));
 					rarityCardList.get(rarity).add(name);
 					if(plugin.getMainConfig().activeSeries.contains(simpleCardsConfig.getSeries(rarity,name))) {
 						activeCards.put(rarity+"."+name, cards.get(rarity+"."+name));

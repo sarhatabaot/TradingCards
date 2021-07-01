@@ -1,5 +1,7 @@
 package net.tinetwork.tradincards.tradincardsplugin;
 
+import net.tinetwork.tradincards.tradincardsplugin.managers.TradingCardManager;
+import net.tinetwork.tradincards.tradincardsplugin.utils.CardUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;

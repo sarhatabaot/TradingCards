@@ -1,5 +1,6 @@
-package net.tinetwork.tradincards.tradincardsplugin;
+package net.tinetwork.tradincards.tradincardsplugin.managers;
 
+import net.tinetwork.tradincards.tradincardsplugin.TradingCards;
 import net.tinetwork.tradincards.tradincardsplugin.config.TradingCardsConfig;
 import net.tinetwork.tradingcards.api.manager.PackManager;
 import org.bukkit.enchantments.Enchantment;
