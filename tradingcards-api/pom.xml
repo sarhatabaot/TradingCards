@@ -12,7 +12,7 @@
     </properties>
     <groupId>net.tinetwork.tradingcards</groupId>
     <version>5.3.0-SNAPSHOT</version>
-    <artifactId>tradincards-api</artifactId>
+    <artifactId>tradingcards-api</artifactId>
     <name>TradingCardsApi</name>
 
     <build>
