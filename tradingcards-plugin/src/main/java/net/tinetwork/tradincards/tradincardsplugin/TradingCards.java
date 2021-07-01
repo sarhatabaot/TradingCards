@@ -16,12 +16,13 @@ import net.tinetwork.tradincards.tradincardsplugin.listeners.DropListener;
 import net.tinetwork.tradincards.tradincardsplugin.listeners.MobSpawnListener;
 import net.tinetwork.tradincards.tradincardsplugin.listeners.PackListener;
 import net.tinetwork.tradincards.tradincardsplugin.managers.BoosterPackManager;
-import net.tinetwork.tradincards.tradincardsplugin.managers.DeckManager;
+import net.tinetwork.tradincards.tradincardsplugin.managers.TradingDeckManager;
 import net.tinetwork.tradincards.tradincardsplugin.managers.TradingCardManager;
 import net.tinetwork.tradincards.tradincardsplugin.utils.CardUtil;
 import net.tinetwork.tradincards.tradincardsplugin.utils.ChatUtil;
 import net.tinetwork.tradincards.tradincardsplugin.whitelist.PlayerBlacklist;
 import net.tinetwork.tradingcards.api.TradingCardsPlugin;
+import net.tinetwork.tradingcards.api.manager.DeckManager;
 import net.tinetwork.tradingcards.api.manager.PackManager;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
@@ -58,12 +59,17 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     /* Managers */
     private TradingCardManager cardManager;
     private BoosterPackManager packManager;
-    private DeckManager deckManager;
+    private TradingDeckManager deckManager;
 
     /* Hooks */
     private boolean hasVault;
     private Economy econ = null;
 
+
+    @Override
+    public TradingDeckManager getDeckManager() {
+        return deckManager;
+    }
 
     @Override
     public void onEnable() {
@@ -85,7 +91,8 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         ChatUtil.init(this);
         this.cardManager = new TradingCardManager(this);
         this.packManager = new BoosterPackManager(this);
-        DeckManager.init(this);
+        this.deckManager = new TradingDeckManager(this);
+
         var commandManager = new BukkitCommandManager(this);
         commandManager.registerCommand(new CardsCommand(this,playerBlacklist));
         commandManager.registerCommand(new DeckCommand(this));

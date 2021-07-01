@@ -7,7 +7,7 @@ import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Description;
 import net.tinetwork.tradincards.tradincardsplugin.utils.CardUtil;
 import net.tinetwork.tradincards.tradincardsplugin.utils.ChatUtil;
-import net.tinetwork.tradincards.tradincardsplugin.managers.DeckManager;
+import net.tinetwork.tradincards.tradincardsplugin.managers.TradingDeckManager;
 import net.tinetwork.tradincards.tradincardsplugin.TradingCards;
 import org.apache.commons.lang.Validate;
 import org.bukkit.GameMode;
@@ -36,8 +36,8 @@ public class DeckCommand extends BaseCommand {
 		}
 
 		if (plugin.getMainConfig().useDeckItems) {
-			if (!DeckManager.hasDeck(player, deckNumber)) {
-				CardUtil.dropItem(player, DeckManager.createDeck(player, deckNumber));
+			if (!plugin.getDeckManager().hasDeck(player, deckNumber)) {
+				CardUtil.dropItem(player, plugin.getDeckManager().createDeck(player, deckNumber));
 			} else {
 				ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().alreadyHaveDeck);
 			}
@@ -46,13 +46,13 @@ public class DeckCommand extends BaseCommand {
 
 		if (player.getGameMode() == GameMode.CREATIVE) {
 			if (plugin.getMainConfig().decksInCreative) {
-				DeckManager.openDeck(player, deckNumber);
+				plugin.getDeckManager().openDeck(player, deckNumber);
 				return;
 			}
 			ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().deckCreativeError);
 			return;
 		}
-		DeckManager.openDeck(player, deckNumber);
+		plugin.getDeckManager().openDeck(player, deckNumber);
 
 	}
 }

@@ -1,7 +1,7 @@
 package net.tinetwork.tradincards.tradincardsplugin.listeners;
 
 import net.tinetwork.tradincards.tradincardsplugin.utils.CardUtil;
-import net.tinetwork.tradincards.tradincardsplugin.managers.DeckManager;
+import net.tinetwork.tradincards.tradincardsplugin.managers.TradingDeckManager;
 import net.tinetwork.tradincards.tradincardsplugin.TradingCards;
 import net.tinetwork.tradincards.tradincardsplugin.utils.UuidUtil;
 import org.bukkit.Bukkit;
@@ -41,7 +41,7 @@ public class DeckListener extends SimpleListener {
 
 		Player player = event.getPlayer();
 		final ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
-		if (!DeckManager.isDeck(itemInMainHand))
+		if (!plugin.getDeckManager().isDeck(itemInMainHand))
 			return;
 
 
@@ -54,7 +54,7 @@ public class DeckListener extends SimpleListener {
 		String name = player.getInventory().getItemInMainHand().getItemMeta().getDisplayName();
 		String[] nameSplit = name.split("#");
 		int num = Integer.parseInt(nameSplit[1]);
-		DeckManager.openDeck(player, num);
+		plugin.getDeckManager().openDeck(player, num);
 	}
 
 
