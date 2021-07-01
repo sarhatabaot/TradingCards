@@ -326,8 +326,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         ConfigLoader.loadAndSave(mainConfig);
         this.deckConfig.reloadConfig();
         ConfigLoader.loadAndSave(messagesConfig);
-        //this.cardsConfig = new CardsConfig(this);
-        //this.cardsConfig.reloadConfig();
     }
 
     public static void sendMessage(final CommandSender toWhom, final String message) {
