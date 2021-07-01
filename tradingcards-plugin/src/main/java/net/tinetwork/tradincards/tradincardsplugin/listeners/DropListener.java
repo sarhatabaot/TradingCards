@@ -23,10 +23,10 @@ public class DropListener extends SimpleListener {
     private final WorldBlacklist worldBlacklist;
     private final TradingCardManager cardManager;
 
-    public DropListener(final TradingCards plugin, final PlayerBlacklist playerBlacklist, final WorldBlacklist worldBlacklist, TradingCardManager cardManager) {
+    public DropListener(final TradingCards plugin, TradingCardManager cardManager) {
         super(plugin);
-        this.playerBlacklist = playerBlacklist;
-        this.worldBlacklist = worldBlacklist;
+        this.playerBlacklist = new PlayerBlacklist(plugin);
+        this.worldBlacklist = new WorldBlacklist(plugin);
         this.cardManager = cardManager;
     }
 

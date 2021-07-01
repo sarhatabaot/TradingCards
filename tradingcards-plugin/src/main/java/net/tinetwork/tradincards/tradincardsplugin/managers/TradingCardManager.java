@@ -47,7 +47,12 @@ public class TradingCardManager extends CardManager<TradingCard> {
 		plugin.debug(StringUtils.join(cards.keySet(), ","));
 	}
 
-
+	public TradingCardManager(final TradingCards plugin) {
+		this.plugin = plugin;
+		loadCards();
+		plugin.getLogger().info(String.format("Loaded %d cards.",cards.size()));
+		plugin.debug(StringUtils.join(cards.keySet(), ","));
+	}
 
 	private static void loadCards() {
 		for(SimpleCardsConfig simpleCardsConfig: plugin.getCardsConfig().getCardConfigs()) {

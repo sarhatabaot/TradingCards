@@ -95,10 +95,10 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         getLogger().info("Legacy YML mode is enabled!");
     }
 
-    private void registerListeners(final PlayerBlacklist playerBlacklist,final WorldBlacklist worldBlacklist) {
+    private void registerListeners() {
         var pm = Bukkit.getPluginManager();
         pm.addPermission(new Permission("cards.rarity"));
-        pm.registerEvents(new DropListener(this,playerBlacklist,worldBlacklist, cardManager), this);
+        pm.registerEvents(new DropListener(this, cardManager), this);
         pm.registerEvents(new PackListener(this), this);
         pm.registerEvents(new MobSpawnListener(this), this);
         pm.registerEvents(new DeckListener(this), this);
@@ -126,8 +126,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         cacheMobs();
         this.saveDefaultConfig();
         var playerBlacklist = new PlayerBlacklist(this);
-        var worldBlacklist = new WorldBlacklist(this);
-        registerListeners(playerBlacklist,worldBlacklist);
+        registerListeners();
         mainConfig = new TradingCardsConfig(this);
         messagesConfig = new MessagesConfig(this);
         ConfigLoader.load(mainConfig);
@@ -137,8 +136,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         cardsConfig = new CardsConfig(this);
 
         deckConfig.saveDefaultConfig();
-        //messagesConfig.saveDefaultConfig();
-        //cardsConfig.saveDefaultConfig();
 
         CardUtil.init(this);
         ChatUtil.init(this);
