@@ -13,6 +13,7 @@ import net.tinetwork.tradincards.tradincardsplugin.listeners.DeckListener;
 import net.tinetwork.tradincards.tradincardsplugin.listeners.DropListener;
 import net.tinetwork.tradincards.tradincardsplugin.listeners.MobSpawnListener;
 import net.tinetwork.tradincards.tradincardsplugin.listeners.PackListener;
+import net.tinetwork.tradincards.tradincardsplugin.managers.BoosterPackManager;
 import net.tinetwork.tradincards.tradincardsplugin.managers.DeckManager;
 import net.tinetwork.tradincards.tradincardsplugin.managers.TradingCardManager;
 import net.tinetwork.tradincards.tradincardsplugin.utils.CardUtil;
@@ -22,6 +23,7 @@ import net.tinetwork.tradincards.tradincardsplugin.whitelist.WorldBlacklist;
 import net.milkbowl.vault.economy.Economy;
 import net.sarhatabaot.configloader.ConfigLoader;
 import net.tinetwork.tradingcards.api.TradingCardsPlugin;
+import net.tinetwork.tradingcards.api.manager.PackManager;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -49,6 +51,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private MessagesConfig messagesConfig;
     private CardsConfig cardsConfig;
     private TradingCardManager cardManager;
+    private BoosterPackManager packManager;
     private Economy econ = null;
     private Random random = new Random();
     int taskid;
@@ -56,6 +59,11 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     @Override
     public TradingCardManager getCardManager() {
         return cardManager;
+    }
+
+    @Override
+    public PackManager getPackManager() {
+        return packManager;
     }
 
     public boolean isHasVault() {
@@ -95,10 +103,10 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         getLogger().info("Legacy YML mode is enabled!");
     }
 
-    private void registerListeners() {
+    private void registerListeners(PlayerBlacklist playerBlacklist) {
         var pm = Bukkit.getPluginManager();
         pm.addPermission(new Permission("cards.rarity"));
-        pm.registerEvents(new DropListener(this, cardManager), this);
+        pm.registerEvents(new DropListener(this, playerBlacklist, cardManager), this);
         pm.registerEvents(new PackListener(this), this);
         pm.registerEvents(new MobSpawnListener(this), this);
         pm.registerEvents(new DeckListener(this), this);
@@ -126,7 +134,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         cacheMobs();
         this.saveDefaultConfig();
         var playerBlacklist = new PlayerBlacklist(this);
-        registerListeners();
+        registerListeners(playerBlacklist);
         mainConfig = new TradingCardsConfig(this);
         messagesConfig = new MessagesConfig(this);
         ConfigLoader.load(mainConfig);

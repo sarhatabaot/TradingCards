@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.Map;
 
 public class BoosterPackManager extends PackManager {
-    private TradingCards plugin;
-    private Map<String,ItemStack> packs = new HashMap<>();
+    private final TradingCards plugin;
+    private final Map<String,ItemStack> packs = new HashMap<>();
 
     public BoosterPackManager(TradingCards plugin) {
         this.plugin = plugin;

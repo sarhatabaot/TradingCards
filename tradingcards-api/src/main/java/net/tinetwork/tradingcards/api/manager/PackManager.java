@@ -12,4 +12,5 @@ public abstract class PackManager {
     }
 
     public abstract ItemStack generatePack(String name);
+
 }

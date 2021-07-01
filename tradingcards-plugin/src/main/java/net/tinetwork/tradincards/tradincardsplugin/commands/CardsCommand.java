@@ -127,7 +127,7 @@ public class CardsCommand extends BaseCommand {
         @CommandPermission("cards.give.pack")
         public void onGiveBoosterPack(final CommandSender sender, final Player player, final String boosterpack) {
             sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().boosterPackMsg));
-            CardUtil.dropItem(player, TradingCardManager.generatePack(boosterpack));
+            CardUtil.dropItem(player, plugin.getPackManager().getPackItem(boosterpack));
         }
 
         @Subcommand("random")
@@ -511,7 +511,7 @@ public class CardsCommand extends BaseCommand {
                     plugin.getEcon().bankDeposit(plugin.getConfig().getString("PluginSupport.Vault.Server-Account"), buyPrice2);
                 }
                 sendPrefixedMessage(player, plugin.getMessagesConfig().boughtCard.replace("%amount%", String.valueOf(buyPrice2)));
-                CardUtil.dropItem(player, TradingCardManager.generatePack(name));
+                CardUtil.dropItem(player, plugin.getPackManager().getPackItem(name));
                 return;
             }
 
