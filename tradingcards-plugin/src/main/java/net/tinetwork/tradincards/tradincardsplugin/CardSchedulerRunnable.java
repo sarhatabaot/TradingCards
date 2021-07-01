@@ -10,9 +10,11 @@ import java.util.Iterator;
 
 public class CardSchedulerRunnable extends BukkitRunnable {
     private final TradingCards plugin;
+    private final TradingCardManager cardManager;
 
     public CardSchedulerRunnable(final TradingCards plugin) {
         this.plugin = plugin;
+        this.cardManager = (TradingCardManager) plugin.getCardManager();
     }
 
     @Override
@@ -47,7 +49,7 @@ public class CardSchedulerRunnable extends BukkitRunnable {
         Bukkit.broadcastMessage(plugin.cMsg(plugin.getMessagesConfig().prefix + " " + plugin.getMessagesConfig().scheduledGiveaway));
         for (final Player p : Bukkit.getOnlinePlayers()) {
             String cardName = getRandomCardName(keyToUse);
-            CardUtil.dropItem(p, TradingCardManager.getCard(cardName, keyToUse, false).build());
+            CardUtil.dropItem(p, cardManager.getCard(cardName, keyToUse, false).build());
         }
 
     }

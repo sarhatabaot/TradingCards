@@ -50,7 +50,7 @@ public class TradingCards extends TradingCardsPlugin {
     int taskid;
 
     @Override
-    public CardManager getCardManager() {
+    public CardManager<TradingCard> getCardManager() {
         return cardManager;
     }
 
