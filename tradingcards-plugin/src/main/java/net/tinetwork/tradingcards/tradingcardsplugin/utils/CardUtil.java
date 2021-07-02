@@ -212,7 +212,7 @@ public class CardUtil {
 	}
 
 	@NotNull
-	private static String getMobTypeOrNone(EntityType e, boolean alwaysDrop) {
+	public static String getMobTypeOrNone(EntityType e, boolean alwaysDrop) {
 		int generatedDropChance = plugin.getRandom().nextInt(100) + 1;
 		plugin.debug("shouldItDrop Num: " + generatedDropChance);
 		if (plugin.isMobHostile(e)) {

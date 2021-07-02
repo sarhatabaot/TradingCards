@@ -1,6 +1,7 @@
 package net.tinetwork.tradingcards.api.manager;
 
 import net.tinetwork.tradingcards.api.card.Card;
+import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
@@ -16,6 +17,7 @@ public interface CardManager<T> {
     Card<T> getRandomCard(final String rarity, final boolean forcedShiny);
     Card<T> getRandomActiveCard(final String rarity, final boolean forcedShiny);
     ItemStack getCardItem(final String cardName, final String rarity, int num);
+    String getRandomRarity(final EntityType e, boolean alwaysDrop);
 
     List<String> getRarityCardList(final String rarity);
 

@@ -20,4 +20,6 @@ public interface TradingCardsAddon {
 	 * @return the addon logger.
 	 */
 	AddonLogger getAddonLogger();
+
+
 }

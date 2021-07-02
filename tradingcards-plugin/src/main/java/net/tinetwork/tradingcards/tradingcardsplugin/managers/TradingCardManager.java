@@ -8,6 +8,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.api.card.Card;
 import net.tinetwork.tradingcards.api.manager.CardManager;
 import org.apache.commons.lang.StringUtils;
+import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 public class TradingCardManager implements CardManager<TradingCard> {
     private final TradingCards plugin;
@@ -22,7 +24,6 @@ public class TradingCardManager implements CardManager<TradingCard> {
     private final Map<String, Card<TradingCard>> activeCards = new HashMap<>();
 
     private static final Map<String, List<String>> rarityCardList = new HashMap<>();
-
 
 
     public TradingCardManager(final TradingCards plugin) {
@@ -55,6 +56,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
     public List<String> getRarityCardList(final String rarity) {
         return rarityCardList.get(rarity);
     }
+
     @Override
     public Set<String> getRarityNames() {
         return rarityCardList.keySet();
@@ -110,4 +112,19 @@ public class TradingCardManager implements CardManager<TradingCard> {
         return cardItem;
     }
 
+    @Override
+    public String getRandomRarity(EntityType e, boolean alwaysDrop) {
+        String mobType = CardUtil.getMobTypeOrNone(e, alwaysDrop);
+        if (mobType.equalsIgnoreCase("None"))
+            return "None";
+
+        int randomChance = plugin.getRandom().nextInt(100000) + 1;
+        TreeSet<String> rarityKeys = new TreeSet<>(plugin.getMainConfig().rarities().getKeys(false));
+        for (String rarity : rarityKeys.descendingSet()) {
+            var chance = plugin.getConfig().getInt("Chances." + rarity + "." + mobType, -1);
+            if (randomChance < chance)
+                return rarity;
+        }
+        return "None";
+    }
 }
