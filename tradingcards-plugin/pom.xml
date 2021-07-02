@@ -121,9 +121,9 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>net.sarhatabaot</groupId>
-            <artifactId>configloader</artifactId>
-            <version>0.1.1</version>
+            <groupId>com.github.sarhatabaot</groupId>
+            <artifactId>ConfigLoader</artifactId>
+            <version>3c2953a6be</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
