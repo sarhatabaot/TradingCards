@@ -108,59 +108,6 @@ public class CardUtil {
 		return "None";
 	}
 
-	private static boolean calculateIfShiny(boolean forcedShiny) {
-		if(forcedShiny)
-			return true;
-		int shinyRandom = plugin.getRandom().nextInt(100) + 1;
-		return shinyRandom <= plugin.getConfig().getInt("Chances.Shiny-Version-Chance");
-	}
-
-	@NotNull
-	public static TradingCard generateCard(final SimpleCardsConfig simpleCardsConfig, final String cardName, final String rarityName, boolean forcedShiny) {
-		if("None".equalsIgnoreCase(rarityName))
-			return new NullCard(plugin);
-
-		TradingCard builder = new TradingCard(plugin,cardName);
-		boolean isShiny = false;
-		if(simpleCardsConfig.hasShiny(rarityName,cardName))
-			isShiny = calculateIfShiny(forcedShiny);
-
-		final String rarityColor = plugin.getMainConfig().rarityColour;
-		final String prefix = plugin.getMainConfig().cardPrefix;
-
-		final String series = simpleCardsConfig.getSeries(rarityName,cardName);
-		final String seriesColour = plugin.getMainConfig().seriesColour;
-		final String seriesDisplay = plugin.getMainConfig().seriesDisplay;
-
-		final String about = simpleCardsConfig.getAbout(rarityName,cardName);
-		final String aboutColour = plugin.getMainConfig().aboutColour;
-		final String aboutDisplay = plugin.getMainConfig().aboutDisplay;
-
-		final String type = simpleCardsConfig.getType(rarityName,cardName);
-		final String typeColour = plugin.getMainConfig().typeColour;
-		final String typeDisplay = plugin.getMainConfig().typeDisplay;
-
-		final String info = simpleCardsConfig.getInfo(rarityName,cardName);
-		final String infoColour = plugin.getMainConfig().infoColour;
-		final String infoDisplay = plugin.getMainConfig().infoDisplay;
-
-		final String shinyPrefix = plugin.getMainConfig().shinyName;
-		final String cost = simpleCardsConfig.getCost(rarityName,cardName);
-
-		boolean isPlayerCard = isPlayerCard(cardName);
-		return builder.isShiny(isShiny)
-				.rarityColour(rarityColor)
-				.prefix(prefix)
-				.series(series, seriesColour, seriesDisplay)
-				.about(about, aboutColour, aboutDisplay)
-				.type(type, typeColour, typeDisplay)
-				.info(info, infoColour, infoDisplay)
-				.shinyPrefix(shinyPrefix)
-				.isPlayerCard(isPlayerCard)
-				.cost(cost)
-				.rarity(rarityName).get();
-	}
-
 	@NotNull
 	@Deprecated
 	public static TradingCard getRandomCard(@NotNull final String rarityName, final boolean forcedShiny) {
@@ -334,9 +281,9 @@ public class CardUtil {
 		}
 
 		for (final Player p : Bukkit.getOnlinePlayers()) {
-			String rare = CardUtil.calculateRarity(mob, true);
+			String rare = cardManager.getRandomRarity(mob, true);
 			plugin.debug("onCommand.rare: " + rare);
-			CardUtil.dropItem(p, CardUtil.getRandomCard(rare, false).build());
+			CardUtil.dropItem(p, cardManager.getRandomCard(rare, false).build());
 		}
 
 	}

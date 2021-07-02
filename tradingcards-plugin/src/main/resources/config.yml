@@ -125,7 +125,7 @@ Rarities:
     RewardCmd1: "eco give %player% 500"
     RewardCmd2: "give %player% diamond 32"
     RewardCmd3: "None"
-  Veryrare:
+  Very_Rare:
     Colour: "&6"
     RewardCmd1: "eco give %player% 1000"
     RewardCmd2: "give %player% diamond 64"
@@ -183,7 +183,7 @@ Chances:
   Rare:
     Hostile: 1000
     Neutral: 500
-  Very Rare:
+  Very_Rare:
     Hostile: 10
     Boss: 100000
   Legendary:

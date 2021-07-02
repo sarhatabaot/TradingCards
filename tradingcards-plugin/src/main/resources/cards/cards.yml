@@ -206,7 +206,7 @@ Cards:
       Type: 'Monster'
       Has-Shiny-Version: true
       Info: 'None'
-  Very Rare:
+  Very_Rare:
     Killer_Bunny:
       Series: 'Default'
       Type: 'Monster'

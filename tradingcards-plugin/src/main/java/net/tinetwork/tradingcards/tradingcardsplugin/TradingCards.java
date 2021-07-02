@@ -98,12 +98,12 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
         deckConfig.saveDefaultConfig();
 
-        CardUtil.init(this);
+
         ChatUtil.init(this);
         this.cardManager = new TradingCardManager(this);
         this.packManager = new BoosterPackManager(this);
         this.deckManager = new TradingDeckManager(this);
-
+        CardUtil.init(this);
         var commandManager = new BukkitCommandManager(this);
         commandManager.registerCommand(new CardsCommand(this,playerBlacklist));
         commandManager.registerCommand(new DeckCommand(this));

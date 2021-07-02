@@ -134,7 +134,7 @@ public class CardsCommand extends BaseCommand {
         public void onGiveRandomCard(final CommandSender sender, final Player player, final String entityType) {
             try {
                 EntityType.valueOf(entityType.toUpperCase());
-                String rare = CardUtil.calculateRarity(EntityType.valueOf(entityType.toUpperCase()), true);
+                String rare = cardManager.getRandomRarity(EntityType.valueOf(entityType.toUpperCase()), true);
                 plugin.debug("onCommand.rare: " + rare);
                 ChatUtil.sendPrefixedMessage(sender, plugin.getMessagesConfig().giveRandomCardMsg.replaceAll("%player%", player.getName()));
                 CardUtil.dropItem(player, plugin.getCardManager().getRandomCard(rare, false).build());

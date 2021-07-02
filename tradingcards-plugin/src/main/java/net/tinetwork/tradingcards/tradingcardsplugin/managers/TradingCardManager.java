@@ -10,6 +10,7 @@ import net.tinetwork.tradingcards.api.manager.CardManager;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,7 +43,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
             for (final String rarity : simpleCardsConfig.getCards().getKeys(false)) {
                 rarityCardList.put(rarity, new ArrayList<>());
                 for (String name : simpleCardsConfig.getCards().getConfigurationSection(rarity).getKeys(false)) {
-                    cards.put(rarity + "." + name, CardUtil.generateCard(simpleCardsConfig, name, rarity, false));
+                    cards.put(rarity + "." + name, generateCard(simpleCardsConfig, name, rarity, false));
                     rarityCardList.get(rarity).add(name);
                     if (plugin.getMainConfig().activeSeries.contains(simpleCardsConfig.getSeries(rarity, name))) {
                         activeCards.put(rarity + "." + name, cards.get(rarity + "." + name));
@@ -54,6 +55,8 @@ public class TradingCardManager implements CardManager<TradingCard> {
 
     @Override
     public List<String> getRarityCardList(final String rarity) {
+        plugin.debug(rarity);
+        plugin.debug(StringUtils.join(getRarityNames(),","));
         return rarityCardList.get(rarity);
     }
 
@@ -127,4 +130,63 @@ public class TradingCardManager implements CardManager<TradingCard> {
         }
         return "None";
     }
+
+    @NotNull
+    public TradingCard generateCard(final SimpleCardsConfig simpleCardsConfig, final String cardName, final String rarityName, boolean forcedShiny) {
+        if("None".equalsIgnoreCase(rarityName))
+            return new NullCard(plugin);
+
+        TradingCard builder = new TradingCard(plugin,cardName);
+        boolean isShiny = false;
+        if(simpleCardsConfig.hasShiny(rarityName,cardName))
+            isShiny = calculateIfShiny(forcedShiny);
+
+        final String rarityColor = plugin.getMainConfig().rarityColour;
+        final String prefix = plugin.getMainConfig().cardPrefix;
+
+        final String series = simpleCardsConfig.getSeries(rarityName,cardName);
+        final String seriesColour = plugin.getMainConfig().seriesColour;
+        final String seriesDisplay = plugin.getMainConfig().seriesDisplay;
+
+        final String about = simpleCardsConfig.getAbout(rarityName,cardName);
+        final String aboutColour = plugin.getMainConfig().aboutColour;
+        final String aboutDisplay = plugin.getMainConfig().aboutDisplay;
+
+        final String type = simpleCardsConfig.getType(rarityName,cardName);
+        final String typeColour = plugin.getMainConfig().typeColour;
+        final String typeDisplay = plugin.getMainConfig().typeDisplay;
+
+        final String info = simpleCardsConfig.getInfo(rarityName,cardName);
+        final String infoColour = plugin.getMainConfig().infoColour;
+        final String infoDisplay = plugin.getMainConfig().infoDisplay;
+
+        final String shinyPrefix = plugin.getMainConfig().shinyName;
+        final String cost = simpleCardsConfig.getCost(rarityName,cardName);
+
+        boolean isPlayerCard = isPlayerCard(cardName);
+        return builder.isShiny(isShiny)
+                .rarityColour(rarityColor)
+                .prefix(prefix)
+                .series(series, seriesColour, seriesDisplay)
+                .about(about, aboutColour, aboutDisplay)
+                .type(type, typeColour, typeDisplay)
+                .info(info, infoColour, infoDisplay)
+                .shinyPrefix(shinyPrefix)
+                .isPlayerCard(isPlayerCard)
+                .cost(cost)
+                .rarity(rarityName).get();
+    }
+
+    private boolean calculateIfShiny(boolean forcedShiny) {
+        if(forcedShiny)
+            return true;
+        int shinyRandom = plugin.getRandom().nextInt(100) + 1;
+        return shinyRandom <= plugin.getConfig().getInt("Chances.Shiny-Version-Chance");
+    }
+
+    public boolean isPlayerCard(String name) {
+        String rarity = plugin.getConfig().getString("General.Auto-Add-Player-Rarity");
+        return !getCard(name,rarity,false).getCardName().equals("nullCard") && getCard(name,rarity,false).isPlayerCard();
+    }
+
 }

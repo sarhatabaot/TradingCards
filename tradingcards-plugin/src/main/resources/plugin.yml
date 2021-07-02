@@ -1,5 +1,5 @@
 name: TradingCards
-main: net.tinetwork.tradincards.tradincardsplugin.TradingCards
+main: net.tinetwork.tradingcards.tradingcardsplugin.TradingCards
 version: ${project.version}
 softdepend: [Vault]
 authors: [Xenoyia, sarhatabaot, TreasureIslandMC]
