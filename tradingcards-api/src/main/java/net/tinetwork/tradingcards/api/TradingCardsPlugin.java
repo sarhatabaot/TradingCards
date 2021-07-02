@@ -19,4 +19,6 @@ public abstract class TradingCardsPlugin<T> extends JavaPlugin {
     public abstract PackManager getPackManager();
 
     public abstract DeckManager getDeckManager();
+
+    public abstract TradingCardsPlugin<T> get();
 }

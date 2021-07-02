@@ -72,6 +72,11 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     }
 
     @Override
+    public TradingCards get() {
+        return this;
+    }
+
+    @Override
     public void onEnable() {
         cacheMobs();
         saveDefaultConfig();
