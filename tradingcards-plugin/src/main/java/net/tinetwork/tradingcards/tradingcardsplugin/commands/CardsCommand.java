@@ -100,7 +100,7 @@ public class CardsCommand extends BaseCommand {
         @Subcommand("card")
         @CommandPermission("cards.give.card")
         @Description("Gives a card.")
-        public void onGiveCard(final Player player, final String name, final String rarity) {
+        public void onGiveCard(final Player player, final String rarity, final String name,) {
             if (cardManager.getCards().containsKey(rarity + "." + name)) {
                 player.getInventory().addItem(cardManager.getCard(name, rarity, false).build());
                 return;
@@ -111,7 +111,7 @@ public class CardsCommand extends BaseCommand {
         @Subcommand("card shiny")
         @CommandPermission("cards.give.card.shiny")
         @Description("Gives a shiny card.")
-        public void onGiveShinyCard(final Player player, final String name, final String rarity) {
+        public void onGiveShinyCard(final Player player, final String rarity, final String name) {
             if (cardManager.getCards().containsKey(rarity + "." + name)) {
                 player.getInventory().addItem(cardManager.getCard(name, rarity, true).build());
                 return;
