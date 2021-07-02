@@ -23,6 +23,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.whitelist.PlayerBlacklist;
 import net.tinetwork.tradingcards.api.TradingCardsPlugin;
 import net.tinetwork.tradingcards.api.manager.PackManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.whitelist.WorldBlacklist;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -65,6 +66,11 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private Economy econ = null;
 
 
+    /* Blacklists */
+    private PlayerBlacklist playerBlacklist;
+    private WorldBlacklist worldBlacklist;
+
+
     @Override
     public TradingDeckManager getDeckManager() {
         return deckManager;
@@ -79,8 +85,9 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     public void onEnable() {
         cacheMobs();
         saveDefaultConfig();
-        var playerBlacklist = new PlayerBlacklist(this);
-        registerListeners(playerBlacklist);
+        this.playerBlacklist = new PlayerBlacklist(this);
+        this.worldBlacklist = new WorldBlacklist(this);
+        registerListeners();
         mainConfig = new TradingCardsConfig(this);
         messagesConfig = new MessagesConfig(this);
         ConfigLoader.load(mainConfig);
@@ -164,10 +171,21 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         getLogger().info("Legacy YML mode is enabled!");
     }
 
-    private void registerListeners(PlayerBlacklist playerBlacklist) {
+
+    @Override
+    public PlayerBlacklist getPlayerBlacklist() {
+        return playerBlacklist;
+    }
+
+    @Override
+    public WorldBlacklist getWorldBlacklist() {
+        return worldBlacklist;
+    }
+
+    private void registerListeners() {
         var pm = Bukkit.getPluginManager();
         pm.addPermission(new Permission("cards.rarity"));
-        pm.registerEvents(new DropListener(this, playerBlacklist, cardManager), this);
+        pm.registerEvents(new DropListener(this, cardManager), this);
         pm.registerEvents(new PackListener(this), this);
         pm.registerEvents(new MobSpawnListener(this), this);
         pm.registerEvents(new DeckListener(this), this);
