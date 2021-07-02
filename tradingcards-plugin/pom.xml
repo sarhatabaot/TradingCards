@@ -134,8 +134,8 @@
         </dependency>
         <dependency>
             <groupId>com.github.sarhatabaot</groupId>
-            <artifactId>ConfigLoader</artifactId>
-            <version>main-3ecaac350c-1</version>
+            <artifactId>configloader</artifactId>
+            <version>0.1.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
