@@ -72,16 +72,20 @@
                     </dependencyReducedPomLocation>
                     <relocations>
                         <relocation>
+                            <pattern>net.sarhatabaot.configloader</pattern>
+                            <shadedPattern>${project.groupId}.configloader</shadedPattern>
+                        </relocation>
+                        <relocation>
                             <pattern>co.aikar.commands</pattern>
-                            <shadedPattern>media.xen.tradingcards.acf</shadedPattern>
+                            <shadedPattern>${project.groupId}.acf</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>co.aikar.locales</pattern>
-                            <shadedPattern>media.xen.tradingcards.locales</shadedPattern>
+                            <shadedPattern>${project.groupId}.locales</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>de.tr7zw.changeme.nbtapi</pattern>
-                            <shadedPattern>media.xen.tradingcards.nbt</shadedPattern>
+                            <shadedPattern>${project.groupId}.nbt</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>
@@ -117,9 +121,9 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.sarhatabaot</groupId>
+            <groupId>net.sarhatabaot</groupId>
             <artifactId>configloader</artifactId>
-            <version>0.1.0</version>
+            <version>0.1.1</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
