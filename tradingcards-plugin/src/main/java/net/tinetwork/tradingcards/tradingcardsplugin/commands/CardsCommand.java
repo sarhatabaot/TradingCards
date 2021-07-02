@@ -100,7 +100,7 @@ public class CardsCommand extends BaseCommand {
         @Subcommand("card")
         @CommandPermission("cards.give.card")
         @Description("Gives a card.")
-        public void onGiveCard(final Player player, final String rarity, final String name,) {
+        public void onGiveCard(final Player player, final String rarity, final String name) {
             if (cardManager.getCards().containsKey(rarity + "." + name)) {
                 player.getInventory().addItem(cardManager.getCard(name, rarity, false).build());
                 return;
