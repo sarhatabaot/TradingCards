@@ -4,6 +4,7 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.CatchUnknown;
 import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Description;
@@ -99,6 +100,7 @@ public class CardsCommand extends BaseCommand {
     public class GiveCommands extends BaseCommand {
         @Subcommand("card")
         @CommandPermission("cards.give.card")
+        @CommandCompletion("@rarities @cards")
         @Description("Gives a card.")
         public void onGiveCard(final Player player, final String rarity, final String name) {
             if (cardManager.getCards().containsKey(rarity + "." + name)) {
@@ -110,6 +112,7 @@ public class CardsCommand extends BaseCommand {
 
         @Subcommand("card shiny")
         @CommandPermission("cards.give.card.shiny")
+        @CommandCompletion("@rarities @cards")
         @Description("Gives a shiny card.")
         public void onGiveShinyCard(final Player player, final String rarity, final String name) {
             if (cardManager.getCards().containsKey(rarity + "." + name)) {
@@ -212,12 +215,14 @@ public class CardsCommand extends BaseCommand {
     @Description("Lists all cards by rarities")
     public class ListSubCommand extends BaseCommand {
         @Default
+        @CommandCompletion("@rarities")
         public void onList(final CommandSender sender, @Optional final String rarity) {
             onListPlayer(sender, (Player) sender, rarity);
         }
 
         @Subcommand("player")
         @CommandPermission("cards.list.player")
+        @CommandCompletion("@players @rarities")
         @Description("Lists all cards by a player.")
         public void onListPlayer(final CommandSender sender, final Player target, @Optional final String rarity) {
             if (rarity == null || plugin.isRarityAndFormat(rarity).equals("None")) {
@@ -352,6 +357,7 @@ public class CardsCommand extends BaseCommand {
     @Subcommand("giveaway")
     @CommandPermission("cards.giveaway")
     @Description("Give away a random card by rarity to the server.")
+    @CommandCompletion("@rarities")
     public void onGiveaway(final CommandSender sender, final String rarity) {
         String keyToUse = "";
         if (plugin.isMob(rarity)) {
@@ -520,6 +526,7 @@ public class CardsCommand extends BaseCommand {
         @Subcommand("card")
         @CommandPermission("cards.buy.card")
         @Description("Buy a card.")
+        @CommandCompletion("@rarities @cards")
         public void onBuyCard(final Player player, @NotNull final String rarity, @NotNull final String card) {
             if (!hasVault(player))
                 return;

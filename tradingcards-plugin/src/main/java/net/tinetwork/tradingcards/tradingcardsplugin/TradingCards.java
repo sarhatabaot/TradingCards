@@ -107,6 +107,8 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         var commandManager = new BukkitCommandManager(this);
         commandManager.registerCommand(new CardsCommand(this,playerBlacklist));
         commandManager.registerCommand(new DeckCommand(this));
+        commandManager.getCommandCompletions().registerCompletion("rarities", c -> cardManager.getRarityNames());
+        commandManager.getCommandCompletions().registerCompletion("cards", c -> cardManager.getRarityCardList(c.getContextValueByName(String.class, "rarity")));
         commandManager.enableUnstableAPI("help");
         hookFileSystem();
         hookVault();
