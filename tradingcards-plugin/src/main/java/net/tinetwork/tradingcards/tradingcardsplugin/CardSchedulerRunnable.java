@@ -7,8 +7,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.Iterator;
-
 
 public class CardSchedulerRunnable extends BukkitRunnable {
     private final TradingCards plugin;
@@ -36,36 +34,27 @@ public class CardSchedulerRunnable extends BukkitRunnable {
             return;
         }
 
-        String keyToUse = "";
+        final String rarity = getRarity();
 
-        for (final String key : plugin.getCardManager().getRarityNames()) {
-            plugin.debug("Rarity key: " + key);
-            if (key.equalsIgnoreCase(plugin.getConfig().getString("General.Schedule-Card-Rarity"))) {
-                keyToUse = key;
-            }
-        }
-        plugin.debug("keyToUse: " + keyToUse);
-        if (keyToUse.isEmpty())
+        plugin.debug("keyToUse: " + rarity);
+        if (rarity.isEmpty())
             return;
 
         Bukkit.broadcastMessage(plugin.cMsg(plugin.getMessagesConfig().prefix + " " + plugin.getMessagesConfig().scheduledGiveaway));
         for (final Player p : Bukkit.getOnlinePlayers()) {
-            String cardName = getRandomCardName(keyToUse);
-            CardUtil.dropItem(p, cardManager.getCard(cardName, keyToUse, false).build());
+            CardUtil.dropItem(p, cardManager.getRandomCard(rarity, false).build());
         }
 
     }
-    private String getRandomCardName(final String rarity) {
-        var rIndex = plugin.getRandom().nextInt(plugin.getCardManager().getRarityCardList(rarity).size());
-        var i = 0;
-        var cardName = "";
-        for (Iterator<String> var11 = plugin.getCardManager().getRarityCardList(rarity).iterator(); var11.hasNext(); ++i) {
-            String theCardName = var11.next();
-            if (i == rIndex) {
-                return theCardName;
+
+    private String getRarity() {
+        for (final String key : plugin.getCardManager().getRarityNames()) {
+            plugin.debug("Rarity key: " + key);
+            if (key.equalsIgnoreCase(plugin.getMainConfig().scheduleCardRarity)) {
+               return key;
             }
         }
-        return cardName;
+        return "";
     }
 
 
