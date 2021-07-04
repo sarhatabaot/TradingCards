@@ -40,7 +40,7 @@ import java.util.Set;
 public class CardsCommand extends BaseCommand {
     private final TradingCards plugin;
     private final TradingCardManager cardManager;
-    private PlayerBlacklist playerBlacklist;
+    private final PlayerBlacklist playerBlacklist;
 
     public CardsCommand(final TradingCards plugin, final PlayerBlacklist playerBlacklist) {
         this.plugin = plugin;
@@ -125,6 +125,7 @@ public class CardsCommand extends BaseCommand {
 
         @Subcommand("boosterpack|pack")
         @Description("Gives a pack to a player.")
+        @CommandCompletion("@players @packs")
         @CommandPermission("cards.give.pack")
         public void onGiveBoosterPack(final CommandSender sender, final Player player, final String boosterpack) {
             TradingCards.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().boosterPackMsg));
@@ -134,10 +135,9 @@ public class CardsCommand extends BaseCommand {
         @Subcommand("random")
         @Description("Gives a random card to a player.")
         @CommandPermission("cards.give.random")
-        public void onGiveRandomCard(final CommandSender sender, final Player player, final String entityType) {
+        public void onGiveRandomCard(final CommandSender sender, final Player player, final EntityType entityType) {
             try {
-                EntityType.valueOf(entityType.toUpperCase());
-                String rare = cardManager.getRandomRarity(EntityType.valueOf(entityType.toUpperCase()), true);
+                String rare = cardManager.getRandomRarity(entityType, true);
                 plugin.debug("onCommand.rare: " + rare);
                 ChatUtil.sendPrefixedMessage(sender, plugin.getMessagesConfig().giveRandomCardMsg.replaceAll("%player%", player.getName()));
                 CardUtil.dropItem(player, plugin.getCardManager().getRandomCard(rare, false).build());
@@ -492,6 +492,7 @@ public class CardsCommand extends BaseCommand {
 
         @Subcommand("pack|boosterpack")
         @CommandPermission("cards.buy.pack")
+        @CommandCompletion("packs")
         @Description("Buy a pack.")
         public void onBuyPack(final Player player, final String name) {
             if (!hasVault(player))

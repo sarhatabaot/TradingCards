@@ -41,7 +41,7 @@ import java.util.Random;
 
 
 public class TradingCards extends TradingCardsPlugin<TradingCard> {
-    private Random random = new Random();
+    private final Random random = new Random();
     int taskid;
 
     /* Mobs */
@@ -109,6 +109,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         commandManager.registerCommand(new DeckCommand(this));
         commandManager.getCommandCompletions().registerCompletion("rarities", c -> cardManager.getRarityNames());
         commandManager.getCommandCompletions().registerCompletion("cards", c -> cardManager.getRarityCardList(c.getContextValueByName(String.class, "rarity")));
+        commandManager.getCommandCompletions().registerCompletion("packs",c -> packManager.packs().keySet());
         commandManager.enableUnstableAPI("help");
         hookFileSystem();
         hookVault();
