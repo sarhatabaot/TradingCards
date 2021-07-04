@@ -49,7 +49,6 @@ public class CardSchedulerRunnable extends BukkitRunnable {
 
     private String getRarity() {
         for (final String key : plugin.getCardManager().getRarityNames()) {
-            plugin.debug("Rarity key: " + key);
             if (key.equalsIgnoreCase(plugin.getMainConfig().scheduleCardRarity)) {
                return key;
             }
