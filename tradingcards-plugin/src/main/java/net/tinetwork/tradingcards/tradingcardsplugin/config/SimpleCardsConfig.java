@@ -55,6 +55,10 @@ public class SimpleCardsConfig extends SimpleConfig {
         return getCardSection(rarity, name).getBoolean("Has-Shiny-Version", false);
     }
 
+    public int getCustomModelNbt(final String rarity, final String name) {
+        return getCardSection(rarity,name).getInt("Custom-Model-Data",0);
+    }
+
     public ConfigurationSection getCards() {
         return cards;
     }

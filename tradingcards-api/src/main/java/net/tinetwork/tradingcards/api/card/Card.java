@@ -16,6 +16,7 @@ public abstract class Card<T> {
     private CardInfo info;
     private String shinyPrefix = null;
     private String cost;
+    private int customModelNbt;
     private double buyPrice;
     private double sellPrice;
 
@@ -27,6 +28,11 @@ public abstract class Card<T> {
 
     public Card<T> isShiny(boolean isShiny) {
         this.isShiny = isShiny;
+        return this;
+    }
+
+    public Card<T> customModelNbt(final int data) {
+        this.customModelNbt(data);
         return this;
     }
 
@@ -146,8 +152,13 @@ public abstract class Card<T> {
         nbtItem.setBoolean("isShiny",isShiny);
         nbtItem.setString("series",series.getName());
         nbtItem.setString("rarity",rarity);
+        nbtItem.setInteger("CustomModelData", customModelNbt);
         this.nbtItem = nbtItem;
         return nbtItem;
+    }
+
+    public int getCustomModelNbt() {
+        return customModelNbt;
     }
 
     public abstract ItemStack buildItem();
