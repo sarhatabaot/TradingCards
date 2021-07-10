@@ -11,7 +11,9 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.HelpCommand;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.BoosterPackManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingCardManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingDeckManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.api.addons.TradingCardsAddon;
@@ -69,6 +71,7 @@ public class CardsCommand extends BaseCommand {
         final String format = "%s %s";
         TradingCards.sendMessage(sender, String.format(format, plugin.getMessagesConfig().prefix, plugin.getMessagesConfig().reload));
         plugin.reloadAllConfig();
+        plugin.reloadManagers();
         if (plugin.getMainConfig().scheduleCards) {
             plugin.startTimer();
         }

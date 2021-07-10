@@ -77,9 +77,12 @@ public class DropListener extends SimpleListener {
         if (!this.playerBlacklist.isAllowed(killer)) return;
         if (!this.worldBlacklist.isAllowed(world)) return;
         if (isSpawnerMob(killedEntity)) return;
-
         //Get card rarity
-        String rarityName = cardManager.getRandomRarity(e.getEntityType(), false);
+        plugin.debug("EntityType="+killedEntity.getType());
+        plugin.debug("MobType="+CardUtil.getMobTypeOrNone(killedEntity.getType(),false));
+        String rarityName =
+                cardManager.getRandomRarity(
+                        CardUtil.getMobTypeOrNone(killedEntity.getType(),false));
         if (rarityName.equals("None"))
             return;
 

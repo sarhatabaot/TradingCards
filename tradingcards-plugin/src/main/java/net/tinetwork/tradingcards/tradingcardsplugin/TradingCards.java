@@ -119,6 +119,19 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         }
     }
 
+    public void disableManagers() {
+        this.cardManager = null;
+        this.packManager = null;
+        this.deckManager = null;
+    }
+
+    public void reloadManagers() {
+        disableManagers();
+        this.cardManager = new TradingCardManager(this);
+        this.packManager = new BoosterPackManager(this);
+        this.deckManager = new TradingDeckManager(this);
+    }
+
 
     @Override
     public void onDisable() {

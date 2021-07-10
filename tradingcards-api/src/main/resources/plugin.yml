@@ -1,4 +1,0 @@
-name: TradingCards Api
-version: ${project.version}
-main: net.tinetwork.tradingcards.tradingcardsapi.TradingCardsApi
-api-version: 1.16

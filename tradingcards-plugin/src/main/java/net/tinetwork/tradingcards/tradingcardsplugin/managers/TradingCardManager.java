@@ -31,6 +31,8 @@ public class TradingCardManager implements CardManager<TradingCard> {
         this.plugin = plugin;
         loadCards();
         plugin.getLogger().info(String.format("Loaded %d cards.", cards.size()));
+        plugin.getLogger().info(String.format("Loaded %d rarities", rarityCardList.keySet().size()));
+        plugin.debug(StringUtils.join(rarityCardList.keySet(),","));
         plugin.debug(StringUtils.join(cards.keySet(), ","));
     }
 
@@ -115,15 +117,38 @@ public class TradingCardManager implements CardManager<TradingCard> {
         return cardItem;
     }
 
-    @Override
-    public String getRandomRarity(EntityType e, boolean alwaysDrop) {
-        String mobType = CardUtil.getMobTypeOrNone(e, alwaysDrop);
+
+    public String getRandomRarity(String mobType) {
+        plugin.debug("getRandomRarity="+mobType);
         if (mobType.equalsIgnoreCase("None"))
             return "None";
 
         int randomChance = plugin.getRandom().nextInt(100000) + 1;
-        TreeSet<String> rarityKeys = new TreeSet<>(plugin.getMainConfig().rarities().getKeys(false));
+
+        TreeSet<String> rarityKeys = new TreeSet<>(plugin.getCardManager().getRarityNames());
         for (String rarity : rarityKeys.descendingSet()) {
+            plugin.debug("rarity="+rarity);
+            var chance = plugin.getConfig().getInt("Chances." + rarity + "." + mobType, -1);
+            if (randomChance < chance)
+                return rarity;
+        }
+        return "None";
+    }
+
+    @Override
+    @NotNull
+    public String getRandomRarity(EntityType e, boolean alwaysDrop) {
+        String mobType = CardUtil.getMobTypeOrNone(e, alwaysDrop);
+        plugin.debug(mobType);
+        if (mobType.equalsIgnoreCase("None"))
+            return "None";
+
+        //TODO, this checks twice, once in getMobTypeOrNone, and once here
+        int randomChance = plugin.getRandom().nextInt(100000) + 1;
+
+        TreeSet<String> rarityKeys = new TreeSet<>(plugin.getCardManager().getRarityNames());
+        for (String rarity : rarityKeys.descendingSet()) {
+            plugin.debug("rarity="+rarity);
             var chance = plugin.getConfig().getInt("Chances." + rarity + "." + mobType, -1);
             if (randomChance < chance)
                 return rarity;
