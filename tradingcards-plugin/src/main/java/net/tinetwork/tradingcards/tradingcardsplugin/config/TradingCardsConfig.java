@@ -73,7 +73,7 @@ public class TradingCardsConfig implements Config {
 	@ConfigOption(path = "General.Player-Op-Rarity")
 	public String playerOpRarity = "Legendary";
 	@ConfigOption(path = "General.Player-Series")
-	public String playerSeries = "2020";
+	public String playerSeries = "Default";
 	@ConfigOption(path = "General.Player-Type")
 	public String playerType = "Player";
 	@ConfigOption(path = "General.Player-Has-Shiny-Version")
@@ -91,17 +91,6 @@ public class TradingCardsConfig implements Config {
 	public boolean allowRewards = true;
 	@ConfigOption(path = "General.Eat-Shiny-Cards")
 	public boolean eatShinyCards = false;
-
-	@ConfigOption(path = "General.SQLite")
-	public boolean SQLite = false;
-
-	/*@ConfigOption(path = "World-Blacklist", transform = ListClone.class)
-	public List<String> worldBlackList = new ArrayList<>();
-
-	@ConfigOption(path = "Blacklist.Whitelist-Mode")
-	public boolean blacklistWhitelistMode = false;
-	@ConfigOption(path = "Blacklist.Players", transform = ListClone.class)
-	public List<String> blacklistPlayers = Collections.singletonList("Herobrine");*/
 
 	@ConfigOption(path = "PluginSupport.Vault.Vault-Enabled")
 	public boolean vaultEnabled = true;
