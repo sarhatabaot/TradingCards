@@ -9,22 +9,68 @@ import org.jetbrains.annotations.NotNull;
  * @author sarhatabaot
  */
 public interface DeckManager {
-
+    /**
+     *
+     * @param p
+     * @param deckNum
+     */
     void openDeck(Player p, int deckNum);
 
+    /**
+     *
+     * @param p
+     * @param num
+     * @return
+     */
     @NotNull
     ItemStack createDeckItem(@NotNull final Player p, final int num);
 
+    /**
+     *
+     * @param player
+     * @param num
+     * @return
+     */
     @NotNull
     ItemStack createDeck(@NotNull final Player player, final int num);
 
+    /**
+     *
+     * @param material
+     * @return
+     */
     boolean isDeckMaterial(final Material material);
 
+    /**
+     *
+     * @param item
+     * @return
+     */
     boolean isDeck(final ItemStack item);
 
+    /**
+     *
+     * @param p
+     * @param num
+     * @return
+     */
     boolean hasDeck(@NotNull final Player p, final int num);
 
-    boolean hasCard(Player player, String card, String rarity);
+    /**
+     *
+     * @param player
+     * @param card
+     * @param rarity
+     * @return
+     */
+    boolean hasCard(final Player player,final  String card,final  String rarity);
 
-    boolean hasShiny(Player p, String card, String rarity);
+    /**
+     *
+     * @param player
+     * @param card
+     * @param rarity
+     * @return
+     */
+    boolean hasShiny(final Player player,final  String card,final  String rarity);
 }

@@ -26,11 +26,21 @@ public abstract class Card<T> {
         this.cardName = cardName;
     }
 
+    /**
+     * Set if a card is shiny
+     * @param isShiny
+     * @return
+     */
     public Card<T> isShiny(boolean isShiny) {
         this.isShiny = isShiny;
         return this;
     }
 
+    /**
+     * Set custom model nbt
+     * @param data custom model nbt
+     * @return Builder
+     */
     public Card<T> customModelNbt(final int data) {
         this.customModelNbt(data);
         return this;

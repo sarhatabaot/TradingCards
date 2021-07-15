@@ -148,7 +148,7 @@ public class TradingDeckManager implements DeckManager {
 	}
 
 	@Override
-	public boolean hasShiny(Player p, String card, String rarity) {
-		return  plugin.getDeckConfig().containsShinyCard(p.getUniqueId(), card, rarity);
+	public boolean hasShiny(Player player, String card, String rarity) {
+		return  plugin.getDeckConfig().containsShinyCard(player.getUniqueId(), card, rarity);
 	}
 }

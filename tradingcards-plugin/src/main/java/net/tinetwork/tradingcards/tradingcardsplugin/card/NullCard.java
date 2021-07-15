@@ -14,7 +14,6 @@ public class NullCard extends TradingCard {
         super(plugin, "nullCard");
     }
 
-
     @Override
     public NullCard get() {
         return this;
