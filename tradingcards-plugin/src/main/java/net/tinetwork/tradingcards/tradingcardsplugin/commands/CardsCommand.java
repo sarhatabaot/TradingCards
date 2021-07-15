@@ -315,54 +315,20 @@ public class CardsCommand extends BaseCommand {
         }
     }
 
-//    private void execCommand(final CommandSender sender, final String rarity, final String path) {
-//        if (plugin.getConfig().contains("Rarities." + plugin.isRarityAndFormat(rarity) + path) && !plugin.getConfig().getString("Rarities." + plugin.isRarityAndFormat(rarity) + path).equalsIgnoreCase("None")) {
-//            plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), plugin.getConfig().getString("Rarities." + plugin.isRarityAndFormat(rarity + path).replaceAll("%player%", sender.getName())));
-//        }
-//    }
-//
-//    @Subcommand("reward")
-//    @CommandPermission("cards.reward")
-//    @Description("Rewards a player with the rarity.")
-//    public void onReward(final CommandSender sender, final String rarity) {
-//        if (!plugin.getMainConfig().allowRewards) {
-//            sendMessage(sender, plugin.getPrefixedMessage(plugin.getMessagesConfig().rewardDisabled));
-//            return;
-//        }
-//        if (plugin.isRarityAndFormat(rarity).equalsIgnoreCase("None")) {
-//            sendPrefixedMessage(sender, plugin.getMessagesConfig().rewardError);
-//            return;
-//        }
-//
-//        if (plugin.completedRarity((Player) sender, plugin.isRarityAndFormat(rarity))) {
-//            execCommand(sender, rarity, ".RewardCmd1");
-//            execCommand(sender, rarity, ".RewardCmd2");
-//            execCommand(sender, rarity, ".RewardCmd3");
-//
-//            if (plugin.getConfig().getBoolean("General.Reward-Broadcast")) {
-//                Bukkit.broadcastMessage(plugin.getPrefixedMessage(plugin.getMessagesConfig().rewardBroadcast.replace("%player%", sender.getName()).replaceAll("%rarity%", plugin.isRarityAndFormat(rarity))));
-//            }
-//            //TODO wait, why does the plugin delete a rarity once its been completed?
-//            // instead it should mark in a data file if a player has completed the rarity or not...
-//            // playeruuid:rarityname,1:
-//            //if (!plugin.deleteRarity((Player) sender, plugin.isRarityAndFormat(rarity)) && plugin.getMainConfig().debugMode) {
-//            //	plugin.getLogger().warning("Cannot delete rarity: " + plugin.isRarityAndFormat(rarity));
-//            //}
-//        } else if (plugin.getConfig().getBoolean("General.Eat-Shiny-Cards")) {
-//            sendPrefixedMessage(sender, plugin.getMessagesConfig().rewardError2);
-//        } else {
-//            sendPrefixedMessage(sender, plugin.getMessagesConfig().rewardError3.replace("%shinyName%", plugin.getMainConfig().shinyName));
-//        }
-//
-//
-//    }
+    private String getFormattedRarity(final String rarity) {
+        for (final String rarityKey : plugin.getMainConfig().getRarities()) {
+            if (rarityKey.equalsIgnoreCase(rarity.replace("_", " "))) {
+                return rarityKey;
+            }
+        }
+        return "";
+    }
 
     @Subcommand("giveaway")
     @CommandPermission("cards.giveaway")
     @Description("Give away a random card by rarity to the server.")
     @CommandCompletion("@rarities")
     public void onGiveaway(final CommandSender sender, final String rarity) {
-        String keyToUse = "";
         if (plugin.isMob(rarity)) {
             if (sender instanceof ConsoleCommandSender) {
                 CardUtil.giveawayNatural(EntityType.valueOf(rarity.toUpperCase()), null);
@@ -371,24 +337,16 @@ public class CardsCommand extends BaseCommand {
             }
             return;
         }
-
-        for (final String rarityKey : plugin.getMainConfig().getRarities()) {
-            if (rarityKey.equalsIgnoreCase(rarity.replace("_", " "))) {
-                keyToUse = rarityKey;
-            }
-        }
-
-        if (!keyToUse.equals("")) {
-            Bukkit.broadcastMessage(plugin.getPrefixedMessage(plugin.getMessagesConfig().giveaway.replace("%player%", sender.getName()).replaceAll("%rarity%", keyToUse)));
-
-            for (final Player p5 : Bukkit.getOnlinePlayers()) {
-                CardUtil.dropItem(p5,  cardManager.getRandomCard(rarity,false).build());
-            }
-        } else {
+        if (getFormattedRarity(rarity).equals("")) {
             ChatUtil.sendPrefixedMessage(sender, plugin.getMessagesConfig().noRarity);
+            return;
         }
 
 
+        Bukkit.broadcastMessage(plugin.getPrefixedMessage(plugin.getMessagesConfig().giveaway.replace("%player%", sender.getName()).replaceAll("%rarity%", getFormattedRarity(rarity))));
+        for (final Player p5 : Bukkit.getOnlinePlayers()) {
+            CardUtil.dropItem(p5, cardManager.getRandomCard(rarity, false).build());
+        }
     }
 
     @Subcommand("worth")
@@ -418,15 +376,14 @@ public class CardsCommand extends BaseCommand {
         plugin.debug("rarity=" + rarity);
 
 
-        double buyPrice = cardManager.getCard(rarity,cardName2,false).getBuyPrice();
-        double sellPrice =        cardManager.getCard(rarity,cardName2,false).getSellPrice();
+        double buyPrice = cardManager.getCard(rarity, cardName2, false).getBuyPrice();
+        double sellPrice = cardManager.getCard(rarity, cardName2, false).getSellPrice();
         String buyMessage = (buyPrice > 0.0D) ? plugin.getMessagesConfig().canBuy.replace("%buyAmount%", String.valueOf(buyPrice)) : plugin.getMessagesConfig().canNotBuy;
         String sellMessage = (buyPrice > 0.0D) ? plugin.getMessagesConfig().canSell.replace("%sellAmount%", String.valueOf(sellPrice)) : plugin.getMessagesConfig().canNotSell;
         plugin.debug("buy=" + buyPrice + "|sell=" + sellPrice);
         ChatUtil.sendPrefixedMessage(player, buyMessage);
         ChatUtil.sendPrefixedMessage(player, sellMessage);
     }
-
 
 
     private boolean hasVault(final Player player) {
@@ -465,14 +422,14 @@ public class CardsCommand extends BaseCommand {
             String rarity = ChatColor.stripColor(lore.get(lore.size() - 1));
             plugin.debug(rarity);
 
-            if (cardManager.getCard(rarity,card,false).getSellPrice() == 0.0D) {
+            if (cardManager.getCard(rarity, card, false).getSellPrice() == 0.0D) {
                 if (card.contains(plugin.getMainConfig().shinyName))
                     ChatUtil.sendPrefixedMessage(player, "Cannot sell shiny card.");
                 ChatUtil.sendPrefixedMessage(player, "Cannot sell this card.");
                 return;
             }
 
-            final double sellPrice = cardManager.getCard(rarity,card,false).getSellPrice();
+            final double sellPrice = cardManager.getCard(rarity, card, false).getSellPrice();
             if (sellPrice == 0) {
                 ChatUtil.sendPrefixedMessage(player, "Cannot sell this card.");
                 return;
@@ -535,13 +492,13 @@ public class CardsCommand extends BaseCommand {
             if (!hasVault(player))
                 return;
 
-            if (cardManager.getCard(rarity,card,false).getCardName().equals("nullCard")) {
+            if (cardManager.getCard(card, rarity, false).getCardName().equals("nullCard")) {
                 ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().cardDoesntExist);
                 return;
             }
 
 
-            double buyPrice2 = cardManager.getCard(rarity,card,false).getBuyPrice();
+            double buyPrice2 = cardManager.getCard(card, rarity, false).getBuyPrice();
 
             EconomyResponse economyResponse = plugin.getEcon().withdrawPlayer(player, buyPrice2);
             if (economyResponse.transactionSuccess()) {
