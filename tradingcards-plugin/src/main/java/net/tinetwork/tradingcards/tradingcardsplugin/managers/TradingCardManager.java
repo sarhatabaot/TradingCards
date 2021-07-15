@@ -137,23 +137,23 @@ public class TradingCardManager implements CardManager<TradingCard> {
 
     @Override
     @NotNull
-    public String getRandomRarity(EntityType e, boolean alwaysDrop) {
-        String mobType = CardUtil.getMobTypeOrNone(e, alwaysDrop);
-        plugin.debug(mobType);
-        if (mobType.equalsIgnoreCase("None"))
-            return "None";
+    public String getRandomRarity(final EntityType entityType, boolean alwaysDrop) {
+        CardUtil.MobType mobType = CardUtil.getMobTypeFromEntity(entityType);
+        plugin.debug(mobType.name());
+        if(mobType.equals(CardUtil.MobType.NONE))
+            return mobType.getConfigPath();
 
-        //TODO, this checks twice, once in getMobTypeOrNone, and once here
         int randomChance = plugin.getRandom().nextInt(100000) + 1;
 
         TreeSet<String> rarityKeys = new TreeSet<>(plugin.getCardManager().getRarityNames());
         for (String rarity : rarityKeys.descendingSet()) {
             plugin.debug("rarity="+rarity);
-            var chance = plugin.getConfig().getInt("Chances." + rarity + "." + mobType, -1);
-            if (randomChance < chance)
+            var chance = plugin.getConfig().getInt("Chances." + rarity + "." + mobType.getConfigPath(), -1);
+            if (alwaysDrop || randomChance < chance)
                 return rarity;
         }
-        return "None";
+
+        return mobType.getConfigPath();
     }
 
     @NotNull
