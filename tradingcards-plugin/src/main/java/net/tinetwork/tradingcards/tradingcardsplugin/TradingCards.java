@@ -4,6 +4,8 @@ import co.aikar.commands.BukkitCommandManager;
 import com.google.common.collect.ImmutableList;
 import net.milkbowl.vault.economy.Economy;
 import net.sarhatabaot.configloader.ConfigLoader;
+import net.tinetwork.tradingcards.api.TradingCardsPlugin;
+import net.tinetwork.tradingcards.api.manager.PackManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.CardsCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.DeckCommand;
@@ -16,18 +18,15 @@ import net.tinetwork.tradingcards.tradingcardsplugin.listeners.DropListener;
 import net.tinetwork.tradingcards.tradingcardsplugin.listeners.MobSpawnListener;
 import net.tinetwork.tradingcards.tradingcardsplugin.listeners.PackListener;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.BoosterPackManager;
-import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingDeckManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingCardManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingDeckManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.whitelist.PlayerBlacklist;
-import net.tinetwork.tradingcards.api.TradingCardsPlugin;
-import net.tinetwork.tradingcards.api.manager.PackManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.whitelist.WorldBlacklist;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
@@ -111,7 +110,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         commandManager.getCommandCompletions().registerCompletion("cards", c -> cardManager.getRarityCardList(c.getContextValueByName(String.class, "rarity")));
         commandManager.getCommandCompletions().registerCompletion("packs",c -> packManager.packs().keySet());
         commandManager.enableUnstableAPI("help");
-        hookFileSystem();
         hookVault();
 
         if (this.getMainConfig().scheduleCards) {
@@ -181,12 +179,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
             }
         }
     }
-
-
-    private void hookFileSystem() {
-        getLogger().info("Legacy YML mode is enabled!");
-    }
-
 
     @Override
     public PlayerBlacklist getPlayerBlacklist() {
@@ -332,7 +324,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
     @Override
     public void debug(final String message) {
-        if (getConfig().getBoolean("General.Debug-Mode")) {
+        if (getMainConfig().debugMode) {
             getLogger().info("DEBUG " + message);
         }
     }
@@ -341,17 +333,11 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         return cMsg(messagesConfig.prefix + "&r " + message);
     }
 
-
     public void reloadAllConfig() {
         ConfigLoader.loadAndSave(mainConfig);
         this.deckConfig.reloadConfig();
         ConfigLoader.loadAndSave(messagesConfig);
     }
-
-    public static void sendMessage(final CommandSender toWhom, final String message) {
-        toWhom.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
-    }
-
 
     public String cMsg(String message) {
         return ChatColor.translateAlternateColorCodes('&', message);
@@ -364,7 +350,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
             debug("Successfully cancelled task " + this.taskid);
         }
 
-        int hours = Math.max(this.getConfig().getInt("General.Schedule-Card-Time-In-Hours"), 1);
+        int hours = Math.max(getMainConfig().scheduleCardTimeInHours, 1);
 
         Bukkit.broadcastMessage(getPrefixedTimerMessage(hours));
         this.taskid = new CardSchedulerRunnable(this).runTaskTimer(this, ((long) hours * 20 * 60 * 60), ((long) hours * 20 * 60 * 60)).getTaskId();

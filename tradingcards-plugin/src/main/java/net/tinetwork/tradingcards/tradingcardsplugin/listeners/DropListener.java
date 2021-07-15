@@ -34,9 +34,9 @@ public class DropListener extends SimpleListener {
     //When a player is killed, he can drop a card
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent e) {
-        boolean canPlayerDropCards = plugin.getConfig().getBoolean("General.Player-Drops-Card");
-        boolean automaticallyAddPlayerAsCards = plugin.getConfig().getBoolean("General.Auto-Add-Players");
-        int playerCardDropRarity = plugin.getConfig().getInt("General.Player-Drops-Card-Rarity");
+        boolean canPlayerDropCards = plugin.getMainConfig().playerDropCard;
+        boolean automaticallyAddPlayerAsCards = plugin.getMainConfig().autoAddPlayers;
+        int playerCardDropRarity = plugin.getMainConfig().playerDropCardRarity;
 
         if (!canPlayerDropCards || !automaticallyAddPlayerAsCards)
             return;
