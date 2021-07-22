@@ -61,7 +61,7 @@ public class CardsCommand extends BaseCommand {
     @Description("Show the plugin version.")
     public void onVersion(final CommandSender sender) {
         final String format = "%s %s API-%s";
-        TradingCards.sendMessage(sender, String.format(format, plugin.getName(), plugin.getDescription().getVersion(), plugin.getDescription().getAPIVersion()));
+        ChatUtil.sendMessage(sender, String.format(format, plugin.getName(), plugin.getDescription().getVersion(), plugin.getDescription().getAPIVersion()));
     }
 
     @Subcommand("reload")
@@ -69,7 +69,7 @@ public class CardsCommand extends BaseCommand {
     @Description("Reloads all the configs & restart the timer.")
     public void onReload(final CommandSender sender) {
         final String format = "%s %s";
-        TradingCards.sendMessage(sender, String.format(format, plugin.getMessagesConfig().prefix, plugin.getMessagesConfig().reload));
+        ChatUtil.sendMessage(sender, String.format(format, plugin.getMessagesConfig().prefix, plugin.getMessagesConfig().reload));
         plugin.reloadAllConfig();
         plugin.reloadManagers();
         if (plugin.getMainConfig().scheduleCards) {
@@ -82,7 +82,7 @@ public class CardsCommand extends BaseCommand {
     @CommandPermission("cards.resolve")
     @Description("Shows a player's uuid")
     public void onResolve(final CommandSender sender, final Player player) {
-        TradingCards.sendMessage(sender, plugin.getMessagesConfig().resolveMsg.replace("%name%", player.getName()).replaceAll("%uuid%", player.getUniqueId().toString()));
+        ChatUtil.sendMessage(sender, plugin.getMessagesConfig().resolveMsg.replace("%name%", player.getName()).replaceAll("%uuid%", player.getUniqueId().toString()));
     }
 
     @Subcommand("toggle")
@@ -91,10 +91,10 @@ public class CardsCommand extends BaseCommand {
     public void onToggle(final Player player) {
         if (playerBlacklist.isAllowed(player)) {
             playerBlacklist.remove(player);
-            TradingCards.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().toggleDisabled));
+            ChatUtil.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().toggleDisabled));
         } else {
             playerBlacklist.add(player);
-            TradingCards.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().toggleEnabled));
+            ChatUtil.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().toggleEnabled));
         }
     }
 
@@ -110,7 +110,7 @@ public class CardsCommand extends BaseCommand {
                 player.getInventory().addItem(cardManager.getCard(name, rarity, false).build());
                 return;
             }
-            TradingCards.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().noCard));
+            ChatUtil.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().noCard));
         }
 
         @Subcommand("card shiny")
@@ -122,7 +122,7 @@ public class CardsCommand extends BaseCommand {
                 player.getInventory().addItem(cardManager.getCard(name, rarity, true).build());
                 return;
             }
-            TradingCards.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().noCard));
+            ChatUtil.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().noCard));
         }
 
 
@@ -131,7 +131,7 @@ public class CardsCommand extends BaseCommand {
         @CommandCompletion("@players @packs")
         @CommandPermission("cards.give.pack")
         public void onGiveBoosterPack(final CommandSender sender, final Player player, final String boosterpack) {
-            TradingCards.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().boosterPackMsg));
+            ChatUtil.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().boosterPackMsg));
             CardUtil.dropItem(player, plugin.getPackManager().getPackItem(boosterpack));
         }
 
@@ -230,7 +230,7 @@ public class CardsCommand extends BaseCommand {
         public void onListPlayer(final CommandSender sender, final Player target, @Optional final String rarity) {
             if (rarity == null || plugin.isRarityAndFormat(rarity).equals("None")) {
                 final String sectionFormat = String.format("&e&l------- &7(&6&l%s's Collection&7)&e&l -------", target.getName());
-                TradingCards.sendMessage(sender, String.format(sectionFormat, target.getName()));
+                ChatUtil.sendMessage(sender, String.format(sectionFormat, target.getName()));
                 for (String raritySection : plugin.getMainConfig().getRarities()) {
                     listRarity(sender, target, raritySection);
                 }
@@ -255,7 +255,7 @@ public class CardsCommand extends BaseCommand {
             ConfigurationSection boosterPacks = plugin.getConfig().getConfigurationSection("BoosterPacks");
             Set<String> rarityKeys = boosterPacks.getKeys(false);
             int k = 0;
-            TradingCards.sendMessage(sender, "&6--- Booster Packs --- ");
+            ChatUtil.sendMessage(sender, "&6--- Booster Packs --- ");
 
             for (String pack : rarityKeys) {
                 ++k;
@@ -266,9 +266,9 @@ public class CardsCommand extends BaseCommand {
                 }
 
                 if (hasExtra(pack)) {
-                    TradingCards.sendMessage(sender, "  &7- &f&o" + plugin.getConfig().getInt("BoosterPacks." + pack + ".NumNormalCards") + " " + plugin.getConfig().getString("BoosterPacks." + pack + ".NormalCardRarity") + ", " + plugin.getConfig().getInt("BoosterPacks." + pack + ".NumExtraCards") + " " + plugin.getConfig().getString("BoosterPacks." + pack + ".ExtraCardRarity") + ", " + plugin.getConfig().getInt("BoosterPacks." + pack + ".NumSpecialCards") + " " + plugin.getConfig().getString("BoosterPacks." + pack + ".SpecialCardRarity"));
+                    ChatUtil.sendMessage(sender, "  &7- &f&o" + plugin.getConfig().getInt("BoosterPacks." + pack + ".NumNormalCards") + " " + plugin.getConfig().getString("BoosterPacks." + pack + ".NormalCardRarity") + ", " + plugin.getConfig().getInt("BoosterPacks." + pack + ".NumExtraCards") + " " + plugin.getConfig().getString("BoosterPacks." + pack + ".ExtraCardRarity") + ", " + plugin.getConfig().getInt("BoosterPacks." + pack + ".NumSpecialCards") + " " + plugin.getConfig().getString("BoosterPacks." + pack + ".SpecialCardRarity"));
                 } else {
-                    TradingCards.sendMessage(sender, "  &7- &f&o" + plugin.getConfig().getInt("BoosterPacks." + pack + ".NumNormalCards") + " " + plugin.getConfig().getString("BoosterPacks." + pack + ".NormalCardRarity") + ", " + plugin.getConfig().getInt("BoosterPacks." + pack + ".NumSpecialCards") + " " + plugin.getConfig().getString("BoosterPacks." + pack + ".SpecialCardRarity"));
+                    ChatUtil.sendMessage(sender, "  &7- &f&o" + plugin.getConfig().getInt("BoosterPacks." + pack + ".NumNormalCards") + " " + plugin.getConfig().getString("BoosterPacks." + pack + ".NormalCardRarity") + ", " + plugin.getConfig().getInt("BoosterPacks." + pack + ".NumSpecialCards") + " " + plugin.getConfig().getString("BoosterPacks." + pack + ".SpecialCardRarity"));
                 }
 
             }
@@ -306,12 +306,12 @@ public class CardsCommand extends BaseCommand {
             }
             //send title
             if (cardCounter == plugin.getCardManager().getRarityCardList(rarity).size()) {
-                TradingCards.sendMessage(sender, String.format(sectionFormatComplete, plugin.isRarityAndFormat(rarity), plugin.getConfig().getString("Colours.ListRarityComplete")));
+                ChatUtil.sendMessage(sender, String.format(sectionFormatComplete, plugin.isRarityAndFormat(rarity), plugin.getConfig().getString("Colours.ListRarityComplete")));
             } else {
-                TradingCards.sendMessage(sender, String.format(sectionFormat, plugin.isRarityAndFormat(rarity), cardCounter, plugin.getCardManager().getRarityCardList(rarity).size()));
+                ChatUtil.sendMessage(sender, String.format(sectionFormat, plugin.isRarityAndFormat(rarity), cardCounter, plugin.getCardManager().getRarityCardList(rarity).size()));
             }
 
-            TradingCards.sendMessage(sender, stringBuilder.toString());
+            ChatUtil.sendMessage(sender, stringBuilder.toString());
         }
     }
 
@@ -388,7 +388,7 @@ public class CardsCommand extends BaseCommand {
 
     private boolean hasVault(final Player player) {
         if (!plugin.isHasVault()) {
-            TradingCards.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().noVault));
+            ChatUtil.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().noVault));
             return false;
         }
         return true;

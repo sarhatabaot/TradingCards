@@ -83,10 +83,32 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     @Override
     public void onEnable() {
         cacheMobs();
-        saveDefaultConfig();
+        initConfigs();
+        initBlacklist();
+        initManagers();
+        initListeners();
+        initUtils();
+        initCommands();
+
+        hookVault();
+
+        if (this.getMainConfig().scheduleCards) {
+            this.startTimer();
+        }
+    }
+
+    private void initUtils() {
+        ChatUtil.init(this);
+        CardUtil.init(this);
+    }
+
+    private void initBlacklist() {
         this.playerBlacklist = new PlayerBlacklist(this);
         this.worldBlacklist = new WorldBlacklist(this);
-        registerListeners();
+    }
+
+    private void initConfigs() {
+        saveDefaultConfig();
         mainConfig = new TradingCardsConfig(this);
         messagesConfig = new MessagesConfig(this);
         ConfigLoader.load(mainConfig);
@@ -96,13 +118,15 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         cardsConfig = new CardsConfig(this);
 
         deckConfig.saveDefaultConfig();
+    }
 
-
-        ChatUtil.init(this);
+    private void initManagers() {
         this.cardManager = new TradingCardManager(this);
         this.packManager = new BoosterPackManager(this);
         this.deckManager = new TradingDeckManager(this);
-        CardUtil.init(this);
+    }
+
+    private void initCommands() {
         var commandManager = new BukkitCommandManager(this);
         commandManager.registerCommand(new CardsCommand(this,playerBlacklist));
         commandManager.registerCommand(new DeckCommand(this));
@@ -110,11 +134,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         commandManager.getCommandCompletions().registerCompletion("cards", c -> cardManager.getRarityCardList(c.getContextValueByName(String.class, "rarity")));
         commandManager.getCommandCompletions().registerCompletion("packs",c -> packManager.packs().keySet());
         commandManager.enableUnstableAPI("help");
-        hookVault();
-
-        if (this.getMainConfig().scheduleCards) {
-            this.startTimer();
-        }
     }
 
     public void disableManagers() {
@@ -190,7 +209,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         return worldBlacklist;
     }
 
-    private void registerListeners() {
+    private void initListeners() {
         var pm = Bukkit.getPluginManager();
         pm.addPermission(new Permission("cards.rarity"));
         pm.registerEvents(new DropListener(this, cardManager), this);

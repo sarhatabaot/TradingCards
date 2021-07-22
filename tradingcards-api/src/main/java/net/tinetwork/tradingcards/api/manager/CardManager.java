@@ -74,15 +74,24 @@ public interface CardManager<T> {
     String getRandomRarity(final EntityType entityType, boolean alwaysDrop);
 
     /**
-     *
-     * @param rarity
-     * @return
+     * @param rarity Rarity
+     * @return returns a list of card names from rarity.
      */
     List<String> getRarityCardList(final String rarity);
 
     /**
-     *
-     * @return
+     * @param rarity Rarity
+     * @return returns a list of actives card names from an active rarity.
+     */
+    List<String> getActiveRarityCardList(final String rarity);
+
+    /**
+     * @return A set of all rarity names.
      */
     Set<String> getRarityNames();
+
+    /**
+     * @return A set of active rarity names.
+     */
+    Set<String> getActiveRarityNames();
 }

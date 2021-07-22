@@ -80,9 +80,7 @@ public class DropListener extends SimpleListener {
         //Get card rarity
         plugin.debug("EntityType="+killedEntity.getType());
         plugin.debug("MobType="+CardUtil.getMobTypeOrNone(killedEntity.getType(),false));
-        String rarityName =
-                cardManager.getRandomRarity(
-                        CardUtil.getMobTypeOrNone(killedEntity.getType(),false));
+        String rarityName = cardManager.getRandomRarity(CardUtil.getMobTypeOrNone(killedEntity.getType(), false));
         if (rarityName.equals("None"))
             return;
 

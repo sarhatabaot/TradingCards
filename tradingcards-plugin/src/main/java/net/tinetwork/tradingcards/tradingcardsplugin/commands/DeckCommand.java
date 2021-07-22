@@ -28,7 +28,7 @@ public class DeckCommand extends BaseCommand {
 		Validate.notNull(player, "Cannot run this command from console, or there was a problem getting the player object.");
 
 		if (!player.hasPermission("cards.decks." + deckNumber)) {
-			TradingCards.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().maxDecks));
+			ChatUtil.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().maxDecks));
 			return;
 		}
 

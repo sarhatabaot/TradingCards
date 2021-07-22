@@ -3,6 +3,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.listeners;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.TradingCardsConfig;
+import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -54,7 +55,7 @@ public class PackListener extends SimpleListener {
         }
 
         if (!player.hasPermission("cards.openboosterpack")) {
-            TradingCards.sendMessage(player, plugin.getPrefixedMessage("No permission: cards.openboosterpack"));
+            ChatUtil.sendMessage(player, plugin.getPrefixedMessage("No permission: cards.openboosterpack"));
             return;
         }
         if (player.getGameMode() == GameMode.CREATIVE) {

@@ -2,6 +2,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.listeners;
 
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
+import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.UuidUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -43,7 +44,7 @@ public class DeckListener extends SimpleListener {
 
 
 		if (player.getGameMode() == GameMode.CREATIVE) {
-			TradingCards.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().deckCreativeError));
+			ChatUtil.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().deckCreativeError));
 			return;
 		}
 

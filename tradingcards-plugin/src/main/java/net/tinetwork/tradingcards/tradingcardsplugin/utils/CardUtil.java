@@ -157,40 +157,33 @@ public class CardUtil {
 
 		return "None";
 	}
+
 	public enum MobType {
-		HOSTILE("Hostile"),
-		NEUTRAL("Neutral"),
-		PASSIVE("Passive"),
-		BOSS("Boss"),
-		NONE("None");
-
-		private final String configPath;
-
-		MobType(final String configPath) {
-			this.configPath = configPath;
-		}
-
-		public String getConfigPath() {
-			return configPath;
-		}
+		HOSTILE,
+		NEUTRAL,
+		PASSIVE,
+		BOSS
 	}
 
-	public static MobType getMobTypeFromEntity(final EntityType type) {
-		if(plugin.isMobPassive(type))
-			return MobType.PASSIVE;
-		if(plugin.isMobNeutral(type))
-			return MobType.NEUTRAL;
-		if(plugin.isMobHostile(type))
+	public static MobType getMobType(EntityType e) {
+		if (plugin.isMobHostile(e)) {
 			return MobType.HOSTILE;
-		if(plugin.isMobBoss(type))
-			return MobType.BOSS;
-		return MobType.NONE;
+		}
+		if (plugin.isMobNeutral(e)) {
+			return MobType.NEUTRAL;
+		}
+		if(plugin.isMobPassive(e)) {
+			return MobType.PASSIVE;
+		}
+		return MobType.BOSS;
 	}
+
+
 	@NotNull
 	//TODO
 	//This should not calculate a rarity, but rather just return the mobtype
 	public static String getMobTypeOrNone(EntityType e, boolean alwaysDrop) {
-		int generatedDropChance = plugin.getRandom().nextInt(100) + 1;
+		int generatedDropChance = plugin.getRandom().nextInt(100000) + 1;
 		plugin.debug("shouldItDrop Num: " + generatedDropChance);
 		if (plugin.isMobHostile(e)) {
 			if (!alwaysDrop && generatedDropChance > plugin.getMainConfig().hostileChance) {
