@@ -11,7 +11,7 @@
     <parent>
         <groupId>net.tinetwork.tradingcards</groupId>
         <artifactId>tradingcards-parent</artifactId>
-        <version>5.3.1-SNAPSHOT</version>
+        <version>5.3.2</version>
     </parent>
 
 
@@ -113,7 +113,7 @@
         <dependency>
             <groupId>net.tinetwork.tradingcards</groupId>
             <artifactId>tradingcards-api</artifactId>
-            <version>5.3.1-SNAPSHOT</version>
+            <version>5.3.2</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
