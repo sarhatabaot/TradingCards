@@ -30,7 +30,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
 
     public TradingCardManager(final TradingCards plugin) {
         this.plugin = plugin;
-        loadCards();
+        loadAllCards();
         plugin.getLogger().info(String.format("Loaded %d cards.", cards.size()));
         plugin.getLogger().info(String.format("Loaded %d rarities", rarityCardList.keySet().size()));
         plugin.debug(StringUtils.join(rarityCardList.keySet(), ","));
@@ -41,7 +41,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
     /**
      * Pre-loads all existing cards.
      */
-    private void loadCards() {
+    private void loadAllCards() {
         for (SimpleCardsConfig simpleCardsConfig : plugin.getCardsConfig().getCardConfigs()) {
             for (final String rarity : simpleCardsConfig.getCards().getKeys(false)) {
                 rarityCardList.put(rarity, new ArrayList<>());

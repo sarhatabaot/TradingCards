@@ -41,7 +41,7 @@ import java.util.Random;
 
 public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private final Random random = new Random();
-    int taskid;
+    private int taskId;
 
     /* Mobs */
     private ImmutableList<EntityType> hostileMobs;
@@ -131,9 +131,12 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         commandManager.registerCommand(new CardsCommand(this,playerBlacklist));
         commandManager.registerCommand(new DeckCommand(this));
         commandManager.getCommandCompletions().registerCompletion("rarities", c -> cardManager.getRarityNames());
+        commandManager.getCommandCompletions().registerCompletion("active-rarities", c -> cardManager.getActiveRarityNames());
         commandManager.getCommandCompletions().registerCompletion("cards", c -> cardManager.getRarityCardList(c.getContextValueByName(String.class, "rarity")));
+        commandManager.getCommandCompletions().registerCompletion("active-cards", c -> cardManager.getActiveRarityCardList(c.getContextValueByName(String.class, "rarity")));
         commandManager.getCommandCompletions().registerCompletion("packs",c -> packManager.packs().keySet());
         commandManager.enableUnstableAPI("help");
+        commandManager.enableUnstableAPI("brigadier");
     }
 
     public void disableManagers() {
@@ -364,15 +367,15 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
     public void startTimer() {
         BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
-        if (scheduler.isQueued(this.taskid) || scheduler.isCurrentlyRunning(this.taskid)) {
-            scheduler.cancelTask(this.taskid);
-            debug("Successfully cancelled task " + this.taskid);
+        if (scheduler.isQueued(this.taskId) || scheduler.isCurrentlyRunning(this.taskId)) {
+            scheduler.cancelTask(this.taskId);
+            debug("Successfully cancelled task " + this.taskId);
         }
 
         int hours = Math.max(getMainConfig().scheduleCardTimeInHours, 1);
 
         Bukkit.broadcastMessage(getPrefixedTimerMessage(hours));
-        this.taskid = new CardSchedulerRunnable(this).runTaskTimer(this, ((long) hours * 20 * 60 * 60), ((long) hours * 20 * 60 * 60)).getTaskId();
+        this.taskId = new CardSchedulerRunnable(this).runTaskTimer(this, ((long) hours * 20 * 60 * 60), ((long) hours * 20 * 60 * 60)).getTaskId();
     }
 
     private String getPrefixedTimerMessage(int hours) {

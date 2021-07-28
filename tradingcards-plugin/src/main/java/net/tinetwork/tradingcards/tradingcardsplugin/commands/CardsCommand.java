@@ -2,24 +2,15 @@ package net.tinetwork.tradingcards.tradingcardsplugin.commands;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
-import co.aikar.commands.annotation.CatchUnknown;
-import co.aikar.commands.annotation.CommandAlias;
-import co.aikar.commands.annotation.CommandCompletion;
-import co.aikar.commands.annotation.CommandPermission;
-import co.aikar.commands.annotation.Default;
-import co.aikar.commands.annotation.Description;
-import co.aikar.commands.annotation.HelpCommand;
-import co.aikar.commands.annotation.Optional;
-import co.aikar.commands.annotation.Subcommand;
-import net.tinetwork.tradingcards.tradingcardsplugin.managers.BoosterPackManager;
+import co.aikar.commands.annotation.*;
+import net.milkbowl.vault.economy.EconomyResponse;
+import net.tinetwork.tradingcards.api.addons.TradingCardsAddon;
+import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingCardManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingDeckManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
-import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.api.addons.TradingCardsAddon;
-import net.tinetwork.tradingcards.tradingcardsplugin.whitelist.PlayerBlacklist;
-import net.milkbowl.vault.economy.EconomyResponse;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
+import net.tinetwork.tradingcards.tradingcardsplugin.whitelist.PlayerBlacklist;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
@@ -42,12 +33,14 @@ import java.util.Set;
 public class CardsCommand extends BaseCommand {
     private final TradingCards plugin;
     private final TradingCardManager cardManager;
+    private final TradingDeckManager deckManager;
     private final PlayerBlacklist playerBlacklist;
 
     public CardsCommand(final TradingCards plugin, final PlayerBlacklist playerBlacklist) {
         this.plugin = plugin;
         this.playerBlacklist = playerBlacklist;
         this.cardManager = plugin.getCardManager();
+        this.deckManager = plugin.getDeckManager();
     }
 
     @CatchUnknown
@@ -284,7 +277,7 @@ public class CardsCommand extends BaseCommand {
 
             for (String cardName : plugin.getCardManager().getRarityCardList(rarity)) {
                 if (cardCounter > 32) {
-                    if (plugin.hasCard(target, cardName, rarity)) {
+                    if (deckManager.hasCard(target, cardName, rarity)) {
                         ++cardCounter;
                     }
                     stringBuilder.append(cardName).append("&7and more!");
@@ -292,11 +285,11 @@ public class CardsCommand extends BaseCommand {
                     plugin.debug(rarity + ", " + cardName);
 
                     String colour = plugin.getMainConfig().listHaveCardColour;
-                    if (plugin.hasShiny(target, cardName, rarity)) {
+                    if (deckManager.hasShiny(target, cardName, rarity)) {
                         ++cardCounter;
                         colour = plugin.getMainConfig().listHaveShinyCardColour;
                         stringBuilder.append(colour).append(cardName.replace("_", " ")).append("&f, ");
-                    } else if (plugin.hasCard(target, cardName, rarity) && !plugin.hasShiny(target, cardName, rarity)) {
+                    } else if (deckManager.hasCard(target, cardName, rarity) && !deckManager.hasShiny(target, cardName, rarity)) {
                         ++cardCounter;
                         stringBuilder.append(colour).append(cardName.replace("_", " ")).append("&f, ");
                     } else {
