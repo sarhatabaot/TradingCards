@@ -58,8 +58,10 @@ public class TradingCardManager implements CardManager<TradingCard> {
                 for (String name : names) {
                     cards.put(rarity + "." + name, generateCard(simpleCardsConfig, name, rarity, false));
                     rarityCardList.get(rarity).add(name);
-                    activeRarityCardList.get(rarity).add(name);
-                    activeCards.put(rarity + "." + name, cards.get(rarity + "." + name));
+                    if (plugin.getMainConfig().activeSeries.contains(simpleCardsConfig.getSeries(rarity, name))) {
+                        activeRarityCardList.get(rarity).add(name);
+                        activeCards.put(rarity + "." + name, cards.get(rarity + "." + name));
+                    }
                 }
             }
         }
