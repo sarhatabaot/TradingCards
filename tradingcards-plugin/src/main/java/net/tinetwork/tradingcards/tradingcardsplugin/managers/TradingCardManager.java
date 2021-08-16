@@ -42,14 +42,23 @@ public class TradingCardManager implements CardManager<TradingCard> {
      * Pre-loads all existing cards.
      */
     private void loadAllCards() {
-        for (SimpleCardsConfig simpleCardsConfig : plugin.getCardsConfig().getCardConfigs()) {
-            for (final String rarity : simpleCardsConfig.getCards().getKeys(false)) {
+        var cardConfigs = plugin.getCardsConfig().getCardConfigs();
+        for (SimpleCardsConfig simpleCardsConfig : cardConfigs) {
+            var cardsConfigSection = simpleCardsConfig.getCards();
+            var rarities = cardsConfigSection.getKeys(false);
+            for (final String rarity : rarities) {
                 rarityCardList.put(rarity, new ArrayList<>());
-                for (String name : simpleCardsConfig.getCards().getConfigurationSection(rarity).getKeys(false)) {
+                activeRarityCardList.put(rarity, new ArrayList<>());
+                var raritySection = cardsConfigSection.getConfigurationSection(rarity);
+                if (raritySection == null) {
+                    continue;
+                }
+                var names = raritySection.getKeys(false);
+
+                for (String name : names) {
                     cards.put(rarity + "." + name, generateCard(simpleCardsConfig, name, rarity, false));
                     rarityCardList.get(rarity).add(name);
                     if (plugin.getMainConfig().activeSeries.contains(simpleCardsConfig.getSeries(rarity, name))) {
-                        activeRarityCardList.put(rarity, new ArrayList<>()); //TODO Probably not the most efficient way to do this.
                         activeRarityCardList.get(rarity).add(name);
                         activeCards.put(rarity + "." + name, cards.get(rarity + "." + name));
                     }
@@ -122,9 +131,10 @@ public class TradingCardManager implements CardManager<TradingCard> {
             plugin.getLogger().warning("There are no cards in the active series. Not dropping anything.");
             return new NullCard(plugin);
         }
-        var cindex = plugin.getRandom().nextInt(activeCards.keySet().size());
+        //var cindex = plugin.getRandom().nextInt(activeCards.keySet().size());
         List<String> cardNames = getActiveRarityCardList(rarity);
-        String randomCardName = cardNames.get(cindex);
+        var cardIndex = plugin.getRandom().nextInt(cardNames.size());
+        String randomCardName = cardNames.get(cardIndex);
         return getActiveCard(randomCardName, rarity, forcedShiny);
     }
 
@@ -188,7 +198,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
 
     @NotNull
     public String getRandomActiveRarity(EntityType e, boolean alwaysDrop) {
-        String mobTypeName = getMobTypeName(CardUtil.getMobType(e),alwaysDrop);
+        String mobTypeName = getMobTypeName(CardUtil.getMobType(e), alwaysDrop);
         plugin.debug(mobTypeName);
         if (mobTypeName.equalsIgnoreCase("None"))
             return "None";
@@ -210,7 +220,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
     @NotNull
     public String getRandomRarity(EntityType e, boolean alwaysDrop) {
         //String mobTypeName = CardUtil.getMobTypeOrNone(e, alwaysDrop);
-        String mobTypeName = getMobTypeName(CardUtil.getMobType(e),alwaysDrop);
+        String mobTypeName = getMobTypeName(CardUtil.getMobType(e), alwaysDrop);
         plugin.debug(mobTypeName);
         if (mobTypeName.equalsIgnoreCase("None"))
             return "None";
@@ -271,7 +281,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
                 .isPlayerCard(isPlayerCard)
                 .cost(cost)
                 .rarity(rarityName);
-        if(!about.isEmpty())
+        if (!about.isEmpty())
             builder.about(about, aboutColour, aboutDisplay);
         return builder.get();
     }
