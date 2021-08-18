@@ -31,6 +31,7 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.jetbrains.annotations.NotNull;
+import org.spongepowered.configurate.ConfigurateException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +53,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private DeckConfig deckConfig;
     private MessagesConfig messagesConfig;
     private CardsConfig cardsConfig;
+    private GeneralConfig generalConfig;
 
     /* Managers */
     private TradingCardManager cardManager;
@@ -109,9 +111,11 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         saveDefaultConfig();
         mainConfig = new TradingCardsConfig(this);
         messagesConfig = new MessagesConfig(this);
-
-        GeneralConfig generalConfig = new GeneralConfig(this);
-
+        try {
+            this.generalConfig = new GeneralConfig(this);
+        } catch (ConfigurateException e) {
+            getLogger().severe(e.getMessage());
+        }
         ConfigLoader.load(mainConfig);
         ConfigLoader.loadAndSave(messagesConfig);
 
