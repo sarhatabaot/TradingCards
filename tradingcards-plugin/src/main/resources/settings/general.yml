@@ -27,7 +27,7 @@ colors:
 # ##############################
 # Default Card Settings
 # ##############################
-# The material the card will be. Make this something useless for maximum effect. Defa
+# The material the card will be. Make this something useless for maximum effect.
 card-material: PAPER
 # The prefix of the card. This is optional. Will show like: [Trading Card] Zombie
 card-prefix: "&7[&fCard&7]&f "
