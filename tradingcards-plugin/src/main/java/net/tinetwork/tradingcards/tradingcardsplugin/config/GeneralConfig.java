@@ -32,6 +32,7 @@ public class GeneralConfig extends SimpleConfig {
 
         this.debugMode = rootNode.node("debug-mode").getBoolean(false);
         this.cardPrefix = rootNode.node("card-prefix").getString("Card ");
+        this.shinyName = rootNode.node("shiny-name").getString("Shiny");
     }
 
     public boolean debugMode() {
@@ -43,7 +44,7 @@ public class GeneralConfig extends SimpleConfig {
     }
 
     public String shinyName() {
-        return rootNode.node("shiny-name").getString("Shiny");
+        return shinyName;
     }
     @Override
     public void reloadConfig()  {
