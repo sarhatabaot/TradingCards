@@ -9,10 +9,8 @@ import net.tinetwork.tradingcards.api.manager.PackManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.CardsCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.DeckCommand;
-import net.tinetwork.tradingcards.tradingcardsplugin.config.CardsConfig;
-import net.tinetwork.tradingcards.tradingcardsplugin.config.DeckConfig;
-import net.tinetwork.tradingcards.tradingcardsplugin.config.MessagesConfig;
-import net.tinetwork.tradingcards.tradingcardsplugin.config.TradingCardsConfig;
+import net.tinetwork.tradingcards.tradingcardsplugin.config.*;
+import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.listeners.DeckListener;
 import net.tinetwork.tradingcards.tradingcardsplugin.listeners.DropListener;
 import net.tinetwork.tradingcards.tradingcardsplugin.listeners.MobSpawnListener;
@@ -111,6 +109,9 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         saveDefaultConfig();
         mainConfig = new TradingCardsConfig(this);
         messagesConfig = new MessagesConfig(this);
+
+        GeneralConfig generalConfig = new GeneralConfig(this);
+
         ConfigLoader.load(mainConfig);
         ConfigLoader.loadAndSave(messagesConfig);
 

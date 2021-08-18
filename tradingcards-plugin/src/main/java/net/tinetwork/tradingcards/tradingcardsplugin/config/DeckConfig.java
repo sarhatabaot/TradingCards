@@ -11,7 +11,7 @@ import java.util.UUID;
 public class DeckConfig extends SimpleConfig {
 	private static final String INVENTORY_PATH = "Decks.Inventories.";
 	public DeckConfig(final TradingCards plugin) {
-		super(plugin, "decks.yml");
+		super(plugin, "data/decks.yml");
 	}
 
 	public boolean containsPlayer(final UUID uuid) {

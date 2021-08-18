@@ -126,7 +126,7 @@ public class MessagesConfig implements Config {
 	public String rewardDisabled= "Rewards have been disabled!";
 
 	public MessagesConfig(final TradingCards plugin) {
-		this.file = new File(plugin.getDataFolder(),"messages.yml");
+		this.file = new File(plugin.getDataFolder(), "settings/messages.yml");
 	}
 	@Override
 	public File getFile() {

@@ -156,7 +156,7 @@ public class TradingCardsConfig implements Config {
 	}
 
 	public TradingCardsConfig(final TradingCards plugin) {
-		this.file = new File(plugin.getDataFolder(),"config.yml");
+		this.file = new File(plugin.getDataFolder(), "config.yml");
 		TradingCardsConfig.plugin = plugin;
 	}
 
