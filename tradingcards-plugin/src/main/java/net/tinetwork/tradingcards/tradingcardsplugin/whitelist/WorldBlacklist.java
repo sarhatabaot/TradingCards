@@ -3,7 +3,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.whitelist;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.api.blacklist.WhitelistMode;
 import net.tinetwork.tradingcards.api.blacklist.Blacklist;
-import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfig;
+import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigFile;
 import org.bukkit.World;
 
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.List;
  * @author ketelsb
  */
 public class WorldBlacklist implements Blacklist<World> {
-    private final SimpleConfig config;
+    private final SimpleConfigFile config;
     private final String listedWorldsName = "worlds";
     private String whitelistModeName = "whitelist-mode";
     private List<String> listedWorlds;
@@ -20,7 +20,7 @@ public class WorldBlacklist implements Blacklist<World> {
 
 
     public WorldBlacklist(TradingCards plugin) {
-        this.config = new SimpleConfig(plugin,"world-blacklist.yml");
+        this.config = new SimpleConfigFile(plugin,"world-blacklist.yml");
         this.config.saveDefaultConfig();
         loadWorlds();
         setWhitelistMode();

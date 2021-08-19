@@ -1,7 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
 
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfig;
+import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigFile;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
@@ -9,7 +9,7 @@ import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 import java.nio.file.Paths;
 import java.util.List;
 
-public class RaritiesConfig extends SimpleConfig {
+public class RaritiesConfig extends SimpleConfigFile {
     private final YamlConfigurationLoader loader = YamlConfigurationLoader.builder().
             path(Paths.get("settings/rarities",".yml")).build();
     private CommentedConfigurationNode rootNode;

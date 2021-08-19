@@ -3,7 +3,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.whitelist;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.api.blacklist.WhitelistMode;
 import net.tinetwork.tradingcards.api.blacklist.Blacklist;
-import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfig;
+import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigFile;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -12,14 +12,14 @@ import java.util.List;
  * @author ketelsb
  */
 public class PlayerBlacklist implements Blacklist<Player> {
-    private SimpleConfig config;
+    private SimpleConfigFile config;
     private String listedPlayersName = "players";
     private String whitelistModeName = "whitelist-Mode";
     private List<String> listedPlayers;
     private WhitelistMode whitelistMode;
 
     public PlayerBlacklist(TradingCards plugin) {
-        this.config = new SimpleConfig(plugin,"player-blacklist.yml");
+        this.config = new SimpleConfigFile(plugin,"player-blacklist.yml");
         this.config.saveDefaultConfig();
         loadPlayers();
         setWhitelistMode();

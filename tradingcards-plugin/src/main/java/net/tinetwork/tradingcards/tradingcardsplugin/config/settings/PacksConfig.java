@@ -1,14 +1,14 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
 
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfig;
+import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigFile;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.nio.file.Paths;
 
-public class PacksConfig extends SimpleConfig {
+public class PacksConfig extends SimpleConfigFile {
     private final YamlConfigurationLoader loader = YamlConfigurationLoader.builder().
             path(Paths.get("settings/packs",".yml")).build();
     private CommentedConfigurationNode rootNode;

@@ -1,7 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config;
 
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfig;
+import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigFile;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.File;
@@ -9,7 +9,7 @@ import java.io.File;
 /**
  * @author sarhatabaot
  */
-public class SimpleCardsConfig extends SimpleConfig {
+public class SimpleCardsConfig extends SimpleConfigFile {
     private final ConfigurationSection cards;
     public SimpleCardsConfig(final TradingCards plugin, final String fileName) {
         super(plugin, fileName, "cards");

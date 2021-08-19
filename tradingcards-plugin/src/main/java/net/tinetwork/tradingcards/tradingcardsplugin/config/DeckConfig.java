@@ -1,14 +1,14 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config;
 
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfig;
+import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigFile;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.UUID;
 
-public class DeckConfig extends SimpleConfig {
+public class DeckConfig extends SimpleConfigFile {
 	private static final String INVENTORY_PATH = "Decks.Inventories.";
 	public DeckConfig(final TradingCards plugin) {
 		super(plugin, "data/decks.yml");

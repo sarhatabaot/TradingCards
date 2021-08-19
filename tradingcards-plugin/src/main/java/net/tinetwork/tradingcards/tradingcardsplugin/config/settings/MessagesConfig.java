@@ -1,14 +1,14 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
 
-import net.sarhatabaot.configloader.ConfigOption;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfig;
+import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigFile;
 import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.nio.file.Paths;
 
-public class MessagesConfig extends SimpleConfig {
+public class MessagesConfig extends SimpleConfigFile {
     private final YamlConfigurationLoader loader = YamlConfigurationLoader.builder().
             path(Paths.get("settings/messages",".yml")).build();
     private CommentedConfigurationNode rootNode;
@@ -72,7 +72,9 @@ public class MessagesConfig extends SimpleConfig {
     private String rewardDisabled = "Rewards have been disabled!";
 
 
-    public MessagesConfig(TradingCards plugin) {
+    public MessagesConfig(TradingCards plugin) throws ConfigurateException {
         super(plugin, "messages.yml", "settings");
+
+        this.rootNode = loader.load();
     }
 }

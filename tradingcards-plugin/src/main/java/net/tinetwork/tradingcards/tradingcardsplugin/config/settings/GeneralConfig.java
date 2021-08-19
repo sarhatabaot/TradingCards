@@ -1,8 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
 
-import com.google.common.collect.ImmutableList;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfig;
+import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigFile;
 import org.bukkit.Material;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
@@ -11,7 +10,7 @@ import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 import java.nio.file.Paths;
 import java.util.List;
 
-public class GeneralConfig extends SimpleConfig {
+public class GeneralConfig extends SimpleConfigFile {
     private final YamlConfigurationLoader loader = YamlConfigurationLoader.builder().
             path(Paths.get("settings/general",".yml")).build();
     private CommentedConfigurationNode rootNode;
