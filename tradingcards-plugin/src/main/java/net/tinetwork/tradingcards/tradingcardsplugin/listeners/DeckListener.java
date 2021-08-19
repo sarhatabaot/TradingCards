@@ -44,7 +44,7 @@ public class DeckListener extends SimpleListener {
 
 
 		if (player.getGameMode() == GameMode.CREATIVE) {
-			ChatUtil.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().deckCreativeError));
+			ChatUtil.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesOldConfig().deckCreativeError));
 			return;
 		}
 

@@ -7,7 +7,7 @@ import net.sarhatabaot.configloader.ConfigOption;
 import java.io.File;
 
 
-public class MessagesConfig implements Config {
+public class MessagesOldConfig implements Config {
 	private final File file;
 	
 	@ConfigOption(path = "Messages.Prefix")
@@ -125,7 +125,7 @@ public class MessagesConfig implements Config {
 	@ConfigOption(path = "Messages.RewardDisabled")
 	public String rewardDisabled= "Rewards have been disabled!";
 
-	public MessagesConfig(final TradingCards plugin) {
+	public MessagesOldConfig(final TradingCards plugin) {
 		this.file = new File(plugin.getDataFolder(), "settings/messages.yml");
 	}
 	@Override

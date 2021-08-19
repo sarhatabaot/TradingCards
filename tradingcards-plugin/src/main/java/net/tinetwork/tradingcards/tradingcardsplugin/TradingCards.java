@@ -12,6 +12,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.commands.DeckCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.*;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.ChancesConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.GeneralConfig;
+import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.MessagesConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.RaritiesConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.listeners.DeckListener;
 import net.tinetwork.tradingcards.tradingcardsplugin.listeners.DropListener;
@@ -53,12 +54,13 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     /* Configs */
     private TradingCardsConfig mainConfig;
     private DeckConfig deckConfig;
-    private MessagesConfig messagesConfig;
+    private MessagesOldConfig messagesOldConfig;
     private CardsConfig cardsConfig;
 
     private GeneralConfig generalConfig;
     private RaritiesConfig raritiesConfig;
     private ChancesConfig chancesConfig;
+    private MessagesConfig messagesConfig;
 
     /* Managers */
     private TradingCardManager cardManager;
@@ -115,16 +117,22 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private void initConfigs() {
         saveDefaultConfig();
         mainConfig = new TradingCardsConfig(this);
-        messagesConfig = new MessagesConfig(this);
+        messagesOldConfig = new MessagesOldConfig(this);
         try {
             this.generalConfig = new GeneralConfig(this);
             this.raritiesConfig = new RaritiesConfig(this);
             this.chancesConfig = new ChancesConfig(this);
+            this.messagesConfig = new MessagesConfig(this);
+
+            this.generalConfig.saveDefaultConfig();
+            this.raritiesConfig.saveDefaultConfig();
+            this.chancesConfig.saveDefaultConfig();
+            this.messagesConfig.saveDefaultConfig();
         } catch (ConfigurateException e) {
             getLogger().severe(e.getMessage());
         }
         ConfigLoader.load(mainConfig);
-        ConfigLoader.loadAndSave(messagesConfig);
+        ConfigLoader.loadAndSave(messagesOldConfig);
 
         deckConfig = new DeckConfig(this);
         cardsConfig = new CardsConfig(this);
@@ -265,8 +273,8 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         return econ != null;
     }
 
-    public MessagesConfig getMessagesConfig() {
-        return messagesConfig;
+    public MessagesOldConfig getMessagesOldConfig() {
+        return messagesOldConfig;
     }
 
     public boolean isMobHostile(EntityType e) {
@@ -364,13 +372,13 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     }
 
     public String getPrefixedMessage(final String message) {
-        return cMsg(messagesConfig.prefix + "&r " + message);
+        return cMsg(messagesOldConfig.prefix + "&r " + message);
     }
 
     public void reloadAllConfig() {
         ConfigLoader.loadAndSave(mainConfig);
         this.deckConfig.reloadConfig();
-        ConfigLoader.loadAndSave(messagesConfig);
+        ConfigLoader.loadAndSave(messagesOldConfig);
     }
 
     public String cMsg(String message) {
@@ -391,7 +399,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     }
 
     private String getPrefixedTimerMessage(int hours) {
-        return getPrefixedMessage(messagesConfig.timerMessage.replace("%hour%", String.valueOf(hours)));
+        return getPrefixedMessage(messagesOldConfig.timerMessage.replace("%hour%", String.valueOf(hours)));
     }
 
     public Random getRandom() {

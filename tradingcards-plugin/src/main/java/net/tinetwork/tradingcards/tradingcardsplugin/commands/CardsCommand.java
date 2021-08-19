@@ -62,7 +62,7 @@ public class CardsCommand extends BaseCommand {
     @Description("Reloads all the configs & restart the timer.")
     public void onReload(final CommandSender sender) {
         final String format = "%s %s";
-        ChatUtil.sendMessage(sender, String.format(format, plugin.getMessagesConfig().prefix, plugin.getMessagesConfig().reload));
+        ChatUtil.sendMessage(sender, String.format(format, plugin.getMessagesOldConfig().prefix, plugin.getMessagesOldConfig().reload));
         plugin.reloadAllConfig();
         plugin.reloadManagers();
         if (plugin.getMainConfig().scheduleCards) {
@@ -75,7 +75,7 @@ public class CardsCommand extends BaseCommand {
     @CommandPermission("cards.resolve")
     @Description("Shows a player's uuid")
     public void onResolve(final CommandSender sender, final Player player) {
-        ChatUtil.sendMessage(sender, plugin.getMessagesConfig().resolveMsg.replace("%name%", player.getName()).replaceAll("%uuid%", player.getUniqueId().toString()));
+        ChatUtil.sendMessage(sender, plugin.getMessagesOldConfig().resolveMsg.replace("%name%", player.getName()).replaceAll("%uuid%", player.getUniqueId().toString()));
     }
 
     @Subcommand("toggle")
@@ -84,10 +84,10 @@ public class CardsCommand extends BaseCommand {
     public void onToggle(final Player player) {
         if (playerBlacklist.isAllowed(player)) {
             playerBlacklist.remove(player);
-            ChatUtil.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().toggleDisabled));
+            ChatUtil.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesOldConfig().toggleDisabled));
         } else {
             playerBlacklist.add(player);
-            ChatUtil.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().toggleEnabled));
+            ChatUtil.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesOldConfig().toggleEnabled));
         }
     }
 
@@ -103,7 +103,7 @@ public class CardsCommand extends BaseCommand {
                 player.getInventory().addItem(cardManager.getCard(name, rarity, false).build());
                 return;
             }
-            ChatUtil.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().noCard));
+            ChatUtil.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesOldConfig().noCard));
         }
 
         @Subcommand("card shiny")
@@ -115,7 +115,7 @@ public class CardsCommand extends BaseCommand {
                 player.getInventory().addItem(cardManager.getCard(name, rarity, true).build());
                 return;
             }
-            ChatUtil.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().noCard));
+            ChatUtil.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesOldConfig().noCard));
         }
 
 
@@ -124,7 +124,7 @@ public class CardsCommand extends BaseCommand {
         @CommandCompletion("@players @packs")
         @CommandPermission("cards.give.pack")
         public void onGiveBoosterPack(final CommandSender sender, final Player player, final String boosterpack) {
-            ChatUtil.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().boosterPackMsg));
+            ChatUtil.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesOldConfig().boosterPackMsg));
             CardUtil.dropItem(player, plugin.getPackManager().getPackItem(boosterpack));
         }
 
@@ -135,10 +135,10 @@ public class CardsCommand extends BaseCommand {
             try {
                 String rare = cardManager.getRandomRarity(entityType, true);
                 plugin.debug("onCommand.rare: " + rare);
-                ChatUtil.sendPrefixedMessage(sender, plugin.getMessagesConfig().giveRandomCardMsg.replaceAll("%player%", player.getName()));
+                ChatUtil.sendPrefixedMessage(sender, plugin.getMessagesOldConfig().giveRandomCardMsg.replaceAll("%player%", player.getName()));
                 CardUtil.dropItem(player, plugin.getCardManager().getRandomCard(rare, false).build());
             } catch (IllegalArgumentException exception) {
-                ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().noEntity);
+                ChatUtil.sendPrefixedMessage(player, plugin.getMessagesOldConfig().noEntity);
             }
         }
     }
@@ -331,12 +331,12 @@ public class CardsCommand extends BaseCommand {
             return;
         }
         if (getFormattedRarity(rarity).equals("")) {
-            ChatUtil.sendPrefixedMessage(sender, plugin.getMessagesConfig().noRarity);
+            ChatUtil.sendPrefixedMessage(sender, plugin.getMessagesOldConfig().noRarity);
             return;
         }
 
 
-        Bukkit.broadcastMessage(plugin.getPrefixedMessage(plugin.getMessagesConfig().giveaway.replace("%player%", sender.getName()).replaceAll("%rarity%", getFormattedRarity(rarity))));
+        Bukkit.broadcastMessage(plugin.getPrefixedMessage(plugin.getMessagesOldConfig().giveaway.replace("%player%", sender.getName()).replaceAll("%rarity%", getFormattedRarity(rarity))));
         for (final Player p5 : Bukkit.getOnlinePlayers()) {
             CardUtil.dropItem(p5, cardManager.getRandomCard(rarity, false).build());
         }
@@ -350,7 +350,7 @@ public class CardsCommand extends BaseCommand {
             return;
         }
         if (!CardUtil.isCard(player.getInventory().getItemInMainHand())) {
-            ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().notACard);
+            ChatUtil.sendPrefixedMessage(player, plugin.getMessagesOldConfig().notACard);
             return;
         }
 
@@ -371,8 +371,8 @@ public class CardsCommand extends BaseCommand {
 
         double buyPrice = cardManager.getCard(rarity, cardName2, false).getBuyPrice();
         double sellPrice = cardManager.getCard(rarity, cardName2, false).getSellPrice();
-        String buyMessage = (buyPrice > 0.0D) ? plugin.getMessagesConfig().canBuy.replace("%buyAmount%", String.valueOf(buyPrice)) : plugin.getMessagesConfig().canNotBuy;
-        String sellMessage = (buyPrice > 0.0D) ? plugin.getMessagesConfig().canSell.replace("%sellAmount%", String.valueOf(sellPrice)) : plugin.getMessagesConfig().canNotSell;
+        String buyMessage = (buyPrice > 0.0D) ? plugin.getMessagesOldConfig().canBuy.replace("%buyAmount%", String.valueOf(buyPrice)) : plugin.getMessagesOldConfig().canNotBuy;
+        String sellMessage = (buyPrice > 0.0D) ? plugin.getMessagesOldConfig().canSell.replace("%sellAmount%", String.valueOf(sellPrice)) : plugin.getMessagesOldConfig().canNotSell;
         plugin.debug("buy=" + buyPrice + "|sell=" + sellPrice);
         ChatUtil.sendPrefixedMessage(player, buyMessage);
         ChatUtil.sendPrefixedMessage(player, sellMessage);
@@ -381,7 +381,7 @@ public class CardsCommand extends BaseCommand {
 
     private boolean hasVault(final Player player) {
         if (!plugin.isHasVault()) {
-            ChatUtil.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().noVault));
+            ChatUtil.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesOldConfig().noVault));
             return false;
         }
         return true;
@@ -397,7 +397,7 @@ public class CardsCommand extends BaseCommand {
                 return;
 
             if (player.getInventory().getItemInMainHand().getType() != Material.valueOf(plugin.getMainConfig().cardMaterial)) {
-                ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().notACard);
+                ChatUtil.sendPrefixedMessage(player, plugin.getMessagesOldConfig().notACard);
                 return;
             }
 
@@ -451,7 +451,7 @@ public class CardsCommand extends BaseCommand {
             if (!hasVault(player))
                 return;
             if (!plugin.getConfig().contains("BoosterPacks." + name)) {
-                ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().packDoesntExist);
+                ChatUtil.sendPrefixedMessage(player, plugin.getMessagesOldConfig().packDoesntExist);
                 return;
             }
 
@@ -459,7 +459,7 @@ public class CardsCommand extends BaseCommand {
             double buyPrice2 = plugin.getConfig().getDouble("BoosterPacks." + name + ".Price", 0.0D);
 
             if (buyPrice2 <= 0.0D) {
-                ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().cannotBeBought);
+                ChatUtil.sendPrefixedMessage(player, plugin.getMessagesOldConfig().cannotBeBought);
                 return;
             }
 
@@ -468,12 +468,12 @@ public class CardsCommand extends BaseCommand {
                 if (plugin.getConfig().getBoolean("PluginSupport.Vault.Closed-Economy")) {
                     plugin.getEcon().bankDeposit(plugin.getConfig().getString("PluginSupport.Vault.Server-Account"), buyPrice2);
                 }
-                ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().boughtCard.replace("%amount%", String.valueOf(buyPrice2)));
+                ChatUtil.sendPrefixedMessage(player, plugin.getMessagesOldConfig().boughtCard.replace("%amount%", String.valueOf(buyPrice2)));
                 CardUtil.dropItem(player, plugin.getPackManager().getPackItem(name));
                 return;
             }
 
-            ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().notEnoughMoney);
+            ChatUtil.sendPrefixedMessage(player, plugin.getMessagesOldConfig().notEnoughMoney);
         }
 
 
@@ -486,7 +486,7 @@ public class CardsCommand extends BaseCommand {
                 return;
 
             if (cardManager.getCard(card, rarity, false).getCardName().equals("nullCard")) {
-                ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().cardDoesntExist);
+                ChatUtil.sendPrefixedMessage(player, plugin.getMessagesOldConfig().cardDoesntExist);
                 return;
             }
 
@@ -499,10 +499,10 @@ public class CardsCommand extends BaseCommand {
                     plugin.getEcon().bankDeposit(plugin.getConfig().getString("PluginSupport.Vault.Server-Account"), buyPrice2);
                 }
                 CardUtil.dropItem(player, cardManager.getCard(card, rarity, false).build());
-                ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().boughtCard.replace("%amount%", String.valueOf(buyPrice2)));
+                ChatUtil.sendPrefixedMessage(player, plugin.getMessagesOldConfig().boughtCard.replace("%amount%", String.valueOf(buyPrice2)));
                 return;
             }
-            ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().notEnoughMoney);
+            ChatUtil.sendPrefixedMessage(player, plugin.getMessagesOldConfig().notEnoughMoney);
         }
     }
 }

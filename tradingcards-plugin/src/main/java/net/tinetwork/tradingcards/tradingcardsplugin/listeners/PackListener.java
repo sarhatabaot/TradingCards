@@ -59,7 +59,7 @@ public class PackListener extends SimpleListener {
             return;
         }
         if (player.getGameMode() == GameMode.CREATIVE) {
-            player.sendMessage(plugin.cMsg(plugin.getMessagesConfig().prefix + " " + plugin.getMessagesConfig().noCreative));
+            player.sendMessage(plugin.cMsg(plugin.getMessagesOldConfig().prefix + " " + plugin.getMessagesOldConfig().noCreative));
             return;
         }
 
@@ -88,7 +88,7 @@ public class PackListener extends SimpleListener {
             extraCardRarity = WordUtils.capitalizeFully(line3[1]);
         }
 
-        player.sendMessage(plugin.cMsg(plugin.getMessagesConfig().prefix + " " + plugin.getMessagesConfig().openBoosterPack));
+        player.sendMessage(plugin.cMsg(plugin.getMessagesOldConfig().prefix + " " + plugin.getMessagesOldConfig().openBoosterPack));
         dropRandomCards(player, normalCardRarity, normalCardAmount, packName);
         dropRandomCards(player, specialCardRarity, specialCardAmount, packName);
 

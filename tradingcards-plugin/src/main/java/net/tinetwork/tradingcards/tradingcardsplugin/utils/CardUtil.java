@@ -2,9 +2,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.utils;
 
 import de.tr7zw.nbtapi.NBTItem;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.tradingcardsplugin.card.NullCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
-import net.tinetwork.tradingcards.tradingcardsplugin.config.SimpleCardsConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingCardManager;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
@@ -275,32 +273,32 @@ public class CardUtil {
 	public static void giveawayNatural(EntityType mob, Player sender) {
 		if (plugin.isMobBoss(mob)) {
 			if (sender == null) {
-				broadcastPrefixedMessage(plugin.getMessagesConfig().giveawayNaturalBossNoPlayer);
+				broadcastPrefixedMessage(plugin.getMessagesOldConfig().giveawayNaturalBossNoPlayer);
 			} else {
-				broadcastPrefixedMessage(plugin.getMessagesConfig().giveawayNaturalBoss.replaceAll("%player%", sender.getName()));
+				broadcastPrefixedMessage(plugin.getMessagesOldConfig().giveawayNaturalBoss.replaceAll("%player%", sender.getName()));
 			}
 		} else if (plugin.isMobHostile(mob)) {
 			if (sender == null) {
-				broadcastPrefixedMessage(plugin.getMessagesConfig().giveawayNaturalHostileNoPlayer);
+				broadcastPrefixedMessage(plugin.getMessagesOldConfig().giveawayNaturalHostileNoPlayer);
 			} else {
-				broadcastPrefixedMessage(plugin.getMessagesConfig().giveawayNaturalHostile.replaceAll("%player%", sender.getName()));
+				broadcastPrefixedMessage(plugin.getMessagesOldConfig().giveawayNaturalHostile.replaceAll("%player%", sender.getName()));
 			}
 		} else if (plugin.isMobNeutral(mob)) {
 			if (sender == null) {
-				broadcastPrefixedMessage(plugin.getPrefixedMessage(plugin.getMessagesConfig().giveawayNaturalNeutralNoPlayer));
+				broadcastPrefixedMessage(plugin.getPrefixedMessage(plugin.getMessagesOldConfig().giveawayNaturalNeutralNoPlayer));
 			} else {
-				broadcastPrefixedMessage(plugin.getPrefixedMessage(plugin.getMessagesConfig().giveawayNaturalNeutral.replaceAll("%player%", sender.getName())));
+				broadcastPrefixedMessage(plugin.getPrefixedMessage(plugin.getMessagesOldConfig().giveawayNaturalNeutral.replaceAll("%player%", sender.getName())));
 			}
 		} else if (plugin.isMobPassive(mob)) {
 			if (sender == null) {
-				broadcastPrefixedMessage(plugin.getPrefixedMessage(plugin.getMessagesConfig().giveawayNaturalPassiveNoPlayer));
+				broadcastPrefixedMessage(plugin.getPrefixedMessage(plugin.getMessagesOldConfig().giveawayNaturalPassiveNoPlayer));
 			} else {
-				broadcastPrefixedMessage(plugin.getPrefixedMessage(plugin.getMessagesConfig().giveawayNaturalPassive.replaceAll("%player%", sender.getName())));
+				broadcastPrefixedMessage(plugin.getPrefixedMessage(plugin.getMessagesOldConfig().giveawayNaturalPassive.replaceAll("%player%", sender.getName())));
 			}
 		} else if (sender == null) {
-			broadcastPrefixedMessage(plugin.getMessagesConfig().giveawayNaturalNoPlayer);
+			broadcastPrefixedMessage(plugin.getMessagesOldConfig().giveawayNaturalNoPlayer);
 		} else {
-			broadcastPrefixedMessage(plugin.getMessagesConfig().giveawayNatural.replaceAll("%player%", sender.getName()));
+			broadcastPrefixedMessage(plugin.getMessagesOldConfig().giveawayNatural.replaceAll("%player%", sender.getName()));
 		}
 
 		for (final Player p : Bukkit.getOnlinePlayers()) {
