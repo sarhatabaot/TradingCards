@@ -5,9 +5,9 @@ passive-chance: 1000
 boss-chance: 100000
 # should bosses always drop a certain rarity?
 boss-drop: false
-boss-drop-rarity: 5
+boss-drop-rarity: 5000
 # chance that, wherever a card is given, it'll be a 'shiny' version instead, if it has one.
-shiny-version-chance: 1
+shiny-version-chance: 1000
   # enter the chances for various rarities below, out of 100,000. 1 = 1 in 100,000 or 0.001%
   # 10,000 = 10% chance, 1000 = 1% chance, 100 = 0.1% chance, 10 = 0.01% chance, 1 = 0.001% chance
   # chances are in descending order - make sure the chances for common are higher than uncommon etc.

@@ -53,7 +53,10 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private DeckConfig deckConfig;
     private MessagesConfig messagesConfig;
     private CardsConfig cardsConfig;
+
     private GeneralConfig generalConfig;
+    private RaritiesConfig raritiesConfig;
+    private ChancesConfig chancesConfig;
 
     /* Managers */
     private TradingCardManager cardManager;
@@ -113,6 +116,8 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         messagesConfig = new MessagesConfig(this);
         try {
             this.generalConfig = new GeneralConfig(this);
+            this.raritiesConfig = new RaritiesConfig(this);
+            this.chancesConfig = new ChancesConfig(this);
         } catch (ConfigurateException e) {
             getLogger().severe(e.getMessage());
         }
