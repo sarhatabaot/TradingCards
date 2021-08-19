@@ -13,8 +13,8 @@ import java.util.List;
  */
 public class PlayerBlacklist implements Blacklist<Player> {
     private SimpleConfig config;
-    private String listedPlayersName = "Players";
-    private String whitelistModeName = "Whitelist-Mode";
+    private String listedPlayersName = "players";
+    private String whitelistModeName = "whitelist-Mode";
     private List<String> listedPlayers;
     private WhitelistMode whitelistMode;
 

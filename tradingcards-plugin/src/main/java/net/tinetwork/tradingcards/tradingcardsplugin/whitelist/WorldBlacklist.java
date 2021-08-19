@@ -13,8 +13,8 @@ import java.util.List;
  */
 public class WorldBlacklist implements Blacklist<World> {
     private final SimpleConfig config;
-    private final String listedWorldsName = "Worlds";
-    private String whitelistModeName = "Whitelist-Mode";
+    private final String listedWorldsName = "worlds";
+    private String whitelistModeName = "whitelist-mode";
     private List<String> listedWorlds;
     private WhitelistMode whitelistMode;
 
