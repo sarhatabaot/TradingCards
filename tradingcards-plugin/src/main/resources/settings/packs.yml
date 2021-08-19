@@ -22,7 +22,7 @@ expert-pack:
   numextracards: 4
   extracardrarity: rare
   numspecialcards: 2
-  specialcardrarity: very rare
+  specialcardrarity: very-rare
   series: "active"
   price: 250.00
   permission: "cards.packs.expert-pack"

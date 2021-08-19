@@ -1,4 +1,4 @@
-package net.tinetwork.tradingcards.tradingcardsplugin.config;
+package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
 
 import com.google.common.collect.ImmutableList;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
