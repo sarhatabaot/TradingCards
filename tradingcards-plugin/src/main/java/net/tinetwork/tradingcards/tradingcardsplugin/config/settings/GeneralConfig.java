@@ -1,20 +1,13 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
 
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigFile;
+import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigurate;
 import org.bukkit.Material;
-import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
-import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
-import java.nio.file.Paths;
 import java.util.List;
 
-public class GeneralConfig extends SimpleConfigFile {
-    private final YamlConfigurationLoader loader = YamlConfigurationLoader.builder().
-            path(Paths.get("settings/general",".yml")).build();
-    private CommentedConfigurationNode rootNode;
-
+public class GeneralConfig extends SimpleConfigurate {
     private boolean debugMode;
 
     private Material cardMaterial;
@@ -54,7 +47,6 @@ public class GeneralConfig extends SimpleConfigFile {
     private List<String> activeSeries;
     public GeneralConfig(TradingCards plugin) throws ConfigurateException {
         super(plugin, "general.yml", "settings");
-        this.rootNode = loader.load();
 
         this.debugMode = rootNode.node("debug-mode").getBoolean(false);
 
@@ -218,13 +210,5 @@ public class GeneralConfig extends SimpleConfigFile {
 
     public Material cardMaterial() {
         return cardMaterial;
-    }
-    @Override
-    public void reloadConfig()  {
-        try {
-            this.rootNode = loader.load();
-        } catch (ConfigurateException e) {
-            plugin.getLogger().severe(e.getMessage());
-        }
     }
 }

@@ -1,18 +1,12 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
 
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigFile;
-import org.spongepowered.configurate.CommentedConfigurationNode;
+import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigurate;
 import org.spongepowered.configurate.ConfigurateException;
-import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
-import java.nio.file.Paths;
 import java.util.List;
 
-public class ChancesConfig extends SimpleConfigFile {
-    private final YamlConfigurationLoader loader = YamlConfigurationLoader.builder().
-            path(Paths.get("settings/chances",".yml")).build();
-    private CommentedConfigurationNode rootNode;
+public class ChancesConfig extends SimpleConfigurate {
     private List<String> raritiesId;
 
     private int hostileChance;
@@ -25,7 +19,6 @@ public class ChancesConfig extends SimpleConfigFile {
 
     public ChancesConfig(TradingCards plugin) throws ConfigurateException {
         super(plugin, "chances.yml", "settings");
-        this.rootNode = loader.load();
 
         this.hostileChance = rootNode.node("hostile-chance").getInt(20000);
         this.neutralChance = rootNode.node("neutral-chance").getInt(5000);

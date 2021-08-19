@@ -1,18 +1,10 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
 
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigFile;
-import org.spongepowered.configurate.CommentedConfigurationNode;
+import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigurate;
 import org.spongepowered.configurate.ConfigurateException;
-import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
-import java.nio.file.Paths;
-
-public class MessagesConfig extends SimpleConfigFile {
-    private final YamlConfigurationLoader loader = YamlConfigurationLoader.builder().
-            path(Paths.get("settings/messages",".yml")).build();
-    private CommentedConfigurationNode rootNode;
-
+public class MessagesConfig extends SimpleConfigurate {
     private String prefix = "&7[&fCards&7]&7";
     private String reload = "Successfully reloaded config!";
     private String noCard = "No such card exists! Make sure to use the EXACT card name!";
@@ -75,6 +67,5 @@ public class MessagesConfig extends SimpleConfigFile {
     public MessagesConfig(TradingCards plugin) throws ConfigurateException {
         super(plugin, "messages.yml", "settings");
 
-        this.rootNode = loader.load();
     }
 }
