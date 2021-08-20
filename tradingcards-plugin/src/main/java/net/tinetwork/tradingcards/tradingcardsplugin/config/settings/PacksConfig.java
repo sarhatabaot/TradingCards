@@ -39,7 +39,6 @@ public class PacksConfig extends SimpleConfigurate {
             return numSpecialCards;
         }
 
-
         public String getSpecialCardsRarity() {
             return specialCardsRarity;
         }
@@ -76,8 +75,10 @@ public class PacksConfig extends SimpleConfigurate {
         private static final String SERIES = "series";
         private static final String PRICE = "prices";
         private static final String PERMISSION = "permission";
+
         private PackSerializer() {
         }
+
         @Override
         public Pack deserialize(Type type, ConfigurationNode node) throws SerializationException {
             return null;

@@ -5,20 +5,20 @@ import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigurate;
 import org.spongepowered.configurate.ConfigurateException;
 
 public class MessagesConfig extends SimpleConfigurate {
-    private String prefix = "&7[&fCards&7]&7";
-    private String reload = "Successfully reloaded config!";
-    private String noCard = "No such card exists! Make sure to use the EXACT card name!";
-    private String noPlayer = "That player does not exist!";
-    private String noCmd = "Invalid command!";
-    private String noEntity = "That entity/mob does not exist!";
-    private String noCreative = "You cannot open booster packs in creative!";
-    private String noRarity = "That rarity does not exist!";
-    private String noBoosterPack = "That booster pack does not exist!";
-    private String scheduledGiveaway = "A card has been given to everyone on the server!";
-    private String giveaway = "%player% has given everyone a random card of rarity %rarity%!";
-    private String giveawayNatural = "%player% has given everyone a random card!";
-    private String giveawayNaturalBoss = "%player% has given everyone a random boss mob card!";
-    private String giveawayNaturalHostile = "%player% gave everyone a random hostile mob card!";
+    private String prefix;
+    private String reload;
+    private String noCard;
+    private String noPlayer;
+    private String noCmd;
+    private String noEntity;
+    private String noCreative;
+    private String noRarity;
+    private String noBoosterPack;
+    private String scheduledGiveaway;
+    private String giveaway;
+    private String giveawayNatural;
+    private String giveawayNaturalBoss;
+    private String giveawayNaturalHostile;
     private String giveawayNaturalPassive = "%player% gave everyone a random passive mob card!";
     private String giveawayNaturalNeutral = "%player% gave everyone a random neutral mob card!";
     private String giveawayNaturalBossNoPlayer = "Everyone's received a random boss mob card!";
@@ -66,6 +66,21 @@ public class MessagesConfig extends SimpleConfigurate {
 
     public MessagesConfig(TradingCards plugin) throws ConfigurateException {
         super(plugin, "messages.yml", "settings");
+
+        this.prefix = rootNode.node("prefix").getString("Cards > ");
+        this.reload = rootNode.node("reload").getString("Reloaded config.");
+        this.noCard = rootNode.node("no-card").getString();
+        this.noPlayer = rootNode.node("no-player").getString();
+        this.noCmd  = rootNode.node("no-cmd").getString();
+        this.noEntity  = rootNode.node("no-entity").getString();
+        this.noCreative = rootNode.node("no-creative").getString();
+        this.noRarity = rootNode.node("no-rarity").getString();
+        this.noBoosterPack = rootNode.node("no-booster-pack").getString();
+        this.scheduledGiveaway = rootNode.node("scheduled-giveaway").getString();
+        this.giveaway= rootNode.node("giveaway").getString();
+        this.giveawayNatural = rootNode.node("giveaway-natural").getString();
+        this.giveawayNaturalBoss = rootNode.node("giveaway-natural-boss").getString();
+        this.giveawayNaturalHostile = rootNode.node("giveaway-natural-hostile").getString();
 
     }
 }
