@@ -53,7 +53,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
     /* Configs */
     private TradingCardsConfig mainConfig;
-    private DeckConfig deckConfig;
+    private DeckOldConfig deckOldConfig;
     private MessagesOldConfig messagesOldConfig;
     private CardsConfig cardsConfig;
 
@@ -134,10 +134,10 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         ConfigLoader.load(mainConfig);
         ConfigLoader.loadAndSave(messagesOldConfig);
 
-        deckConfig = new DeckConfig(this);
+        deckOldConfig = new DeckOldConfig(this);
         cardsConfig = new CardsConfig(this);
 
-        deckConfig.saveDefaultConfig();
+        deckOldConfig.saveDefaultConfig();
     }
 
     private void initManagers() {
@@ -198,8 +198,8 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         return econ;
     }
 
-    public DeckConfig getDeckConfig() {
-        return deckConfig;
+    public DeckOldConfig getDeckConfig() {
+        return deckOldConfig;
     }
 
     public CardsConfig getCardsConfig() {
@@ -377,7 +377,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
     public void reloadAllConfig() {
         ConfigLoader.loadAndSave(mainConfig);
-        this.deckConfig.reloadConfig();
+        this.deckOldConfig.reloadConfig();
         ConfigLoader.loadAndSave(messagesOldConfig);
     }
 
