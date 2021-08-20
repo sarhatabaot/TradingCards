@@ -2,7 +2,13 @@ package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
 
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigurate;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
+import org.spongepowered.configurate.serialize.TypeSerializer;
+
+import java.lang.reflect.Type;
 
 public class PacksConfig extends SimpleConfigurate {
     public PacksConfig(TradingCards plugin) throws ConfigurateException {
@@ -11,8 +17,7 @@ public class PacksConfig extends SimpleConfigurate {
 
     }
 
-    //TODO, anything named entry is temporary, this should be renamed to just the item
-    public class PackEntry {
+    public static class Pack {
         private int numNormalCards;
         private int normalCardRarity;
         private int numSpecialCards;
@@ -47,6 +52,18 @@ public class PacksConfig extends SimpleConfigurate {
 
         public String getPermissions() {
             return permissions;
+        }
+    }
+
+    public static class PackSerializer implements TypeSerializer<Pack> {
+        @Override
+        public Pack deserialize(Type type, ConfigurationNode node) throws SerializationException {
+            return null;
+        }
+
+        @Override
+        public void serialize(Type type, @Nullable Pack obj, ConfigurationNode node) throws SerializationException {
+
         }
     }
 }

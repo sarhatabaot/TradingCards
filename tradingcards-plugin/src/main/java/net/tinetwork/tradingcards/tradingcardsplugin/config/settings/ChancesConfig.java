@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ChancesConfig extends SimpleConfigurate {
-    private List<String> raritiesId; //TODO
+    private List<String> raritiesId; //TODO not sure if we even need this
 
     private int hostileChance;
     private int neutralChance;
@@ -122,7 +122,7 @@ public class ChancesConfig extends SimpleConfigurate {
 
         @Override
         public Chance deserialize(Type type, ConfigurationNode node) throws SerializationException {
-            final ConfigurationNode hostileNode = nonVirtualNode(node, HOSTILE);
+            final ConfigurationNode hostileNode = nonVirtualNode(node, HOSTILE); //TODO, this can happen, in that case the values should default to 0.
             final ConfigurationNode neutralNode = nonVirtualNode(node, NEUTRAL);
             final ConfigurationNode passiveNode = nonVirtualNode(node, PASSIVE);
             final ConfigurationNode bossNode = nonVirtualNode(node, BOSS);

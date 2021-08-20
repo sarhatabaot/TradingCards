@@ -104,6 +104,22 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         }
     }
 
+    public GeneralConfig getGeneralConfig() {
+        return generalConfig;
+    }
+
+    public RaritiesConfig getRaritiesConfig() {
+        return raritiesConfig;
+    }
+
+    public ChancesConfig getChancesConfig() {
+        return chancesConfig;
+    }
+
+    public MessagesConfig getMessagesConfig() {
+        return messagesConfig;
+    }
+
     private void initUtils() {
         ChatUtil.init(this);
         CardUtil.init(this);
