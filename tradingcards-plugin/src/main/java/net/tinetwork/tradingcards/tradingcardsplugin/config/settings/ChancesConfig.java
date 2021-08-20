@@ -70,7 +70,7 @@ public class ChancesConfig extends SimpleConfigurate {
         return rootNode.node(rarityId).get(Chance.class);
     }
 
-    public class Chance {
+    public static class Chance {
         private String id;
         private int hostile;
         private int neutral;
