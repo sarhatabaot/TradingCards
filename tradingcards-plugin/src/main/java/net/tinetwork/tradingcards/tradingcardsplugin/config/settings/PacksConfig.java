@@ -27,6 +27,18 @@ public class PacksConfig extends SimpleConfigurate {
         private double price;
         private String permissions;
 
+        public Pack(int numNormalCards, String normalCardRarity, int numSpecialCards, String specialCardsRarity, int numExtraCards, String extraCardsRarity, String series, double price, String permissions) {
+            this.numNormalCards = numNormalCards;
+            this.normalCardRarity = normalCardRarity;
+            this.numSpecialCards = numSpecialCards;
+            this.specialCardsRarity = specialCardsRarity;
+            this.numExtraCards = numExtraCards;
+            this.extraCardsRarity = extraCardsRarity;
+            this.series = series;
+            this.price = price;
+            this.permissions = permissions;
+        }
+
         public int getNumNormalCards() {
             return numNormalCards;
         }
@@ -81,12 +93,45 @@ public class PacksConfig extends SimpleConfigurate {
 
         @Override
         public Pack deserialize(Type type, ConfigurationNode node) throws SerializationException {
-            return null;
+            final ConfigurationNode numNormalCardsNode = node.node(NUM_NORMAL_CARDS);
+            final ConfigurationNode normalCardRarityNode = node.node(NORMAL_CARDS_RARITY);
+            final ConfigurationNode numExtraCardsNode = node.node(NUM_EXTRA_CARDS);
+            final ConfigurationNode extraCardRarityNode = node.node(EXTRA_CARDS_RARITY);
+            final ConfigurationNode numSpecialCardsNode = node.node(NUM_SPECIAL_CARDS);
+            final ConfigurationNode specialCardRarityNode = node.node(SPECIAL_CARD_RARITY);
+            final ConfigurationNode seriesNode = node.node(SERIES);
+            final ConfigurationNode priceNode = node.node(PRICE);
+            final ConfigurationNode permissionsNode = node.node(PERMISSION);
+
+            final int numNormalCards = numNormalCardsNode.getInt(0);
+            final String normalCardRarity = normalCardRarityNode.getString();
+            final int numExtraCards = numExtraCardsNode.getInt(0);
+            final String extraCardRarity = extraCardRarityNode.getString();
+            final int numSpecialCards = numSpecialCardsNode.getInt(0);
+            final String specialCardRarity = specialCardRarityNode.getString();
+            final String series = seriesNode.getString();
+            final double price = priceNode.getDouble(0.0D);
+            final String permissions = permissionsNode.getString();
+            return new Pack(numNormalCards,normalCardRarity,numSpecialCards,specialCardRarity,numExtraCards,extraCardRarity,series,price,permissions);
         }
 
+        //Only implemented this since it's required. We don't actually use this feature yet.
         @Override
-        public void serialize(Type type, @Nullable Pack obj, ConfigurationNode node) throws SerializationException {
+        public void serialize(Type type, @Nullable Pack pack, ConfigurationNode target) throws SerializationException {
+            if(pack == null) {
+                target.raw(null);
+                return;
+            }
 
+            target.node(NUM_NORMAL_CARDS).set(pack.getNumNormalCards());
+            target.node(NORMAL_CARDS_RARITY).set(pack.getNormalCardRarity());
+            target.node(NUM_EXTRA_CARDS).set(pack.getNumExtraCards());
+            target.node(EXTRA_CARDS_RARITY).set(pack.getExtraCardsRarity());
+            target.node(NUM_SPECIAL_CARDS).set(pack.getNumSpecialCards());
+            target.node(SPECIAL_CARD_RARITY).set(pack.specialCardsRarity);
+            target.node(SERIES).set(pack.getSeries());
+            target.node(PRICE).set(pack.getPrice());
+            target.node(PERMISSION).set(pack.getPermissions());
         }
     }
 }
