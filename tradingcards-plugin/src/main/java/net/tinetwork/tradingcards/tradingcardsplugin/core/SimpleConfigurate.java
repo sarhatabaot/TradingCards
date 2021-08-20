@@ -8,7 +8,7 @@ import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 import java.nio.file.Paths;
 
 public class SimpleConfigurate extends SimpleConfigFile{
-    private final YamlConfigurationLoader loader = YamlConfigurationLoader.builder().
+    protected final YamlConfigurationLoader loader = YamlConfigurationLoader.builder().
             path(Paths.get(folder+"/"+fileName)).build();
     protected CommentedConfigurationNode rootNode;
 

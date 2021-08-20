@@ -8,9 +8,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.UUID;
 
-public class DeckConfig extends SimpleConfigFile {
+public class DeckOldConfig extends SimpleConfigFile {
 	private static final String INVENTORY_PATH = "Decks.Inventories.";
-	public DeckConfig(final TradingCards plugin) {
+	public DeckOldConfig(final TradingCards plugin) {
 		super(plugin, "data/decks.yml");
 	}
 
