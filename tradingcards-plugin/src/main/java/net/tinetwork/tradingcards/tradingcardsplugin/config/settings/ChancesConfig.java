@@ -3,10 +3,8 @@ package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigurate;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.checkerframework.checker.units.qual.C;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
-import org.spongepowered.configurate.ConfigurationOptions;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
 
@@ -15,7 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ChancesConfig extends SimpleConfigurate {
-    private List<String> raritiesId;
+    private List<String> raritiesId; //TODO
 
     private int hostileChance;
     private int neutralChance;
@@ -66,7 +64,7 @@ public class ChancesConfig extends SimpleConfigurate {
         return shinyVersionChance;
     }
 
-    public Chance getChance(final String rarityId) {
+    public Chance getChance(final String rarityId) throws SerializationException {
         return rootNode.node(rarityId).get(Chance.class);
     }
 
