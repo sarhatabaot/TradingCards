@@ -13,15 +13,16 @@ import java.lang.reflect.Type;
 public class PacksConfig extends SimpleConfigurate {
     public PacksConfig(TradingCards plugin) throws ConfigurateException {
         super(plugin, "packs.yml", "settings");
-
-
+        loader.defaultOptions().serializers(builder -> builder.register(Pack.class, PackSerializer.INSTANCE));
     }
 
     public static class Pack {
         private int numNormalCards;
-        private int normalCardRarity;
+        private String normalCardRarity;
         private int numSpecialCards;
-        private int specialCardRarity;
+        private String specialCardsRarity;
+        private int numExtraCards;
+        private String extraCardsRarity;
         private String series;
         private double price;
         private String permissions;
@@ -30,7 +31,7 @@ public class PacksConfig extends SimpleConfigurate {
             return numNormalCards;
         }
 
-        public int getNormalCardRarity() {
+        public String getNormalCardRarity() {
             return normalCardRarity;
         }
 
@@ -38,8 +39,17 @@ public class PacksConfig extends SimpleConfigurate {
             return numSpecialCards;
         }
 
-        public int getSpecialCardRarity() {
-            return specialCardRarity;
+
+        public String getSpecialCardsRarity() {
+            return specialCardsRarity;
+        }
+
+        public int getNumExtraCards() {
+            return numExtraCards;
+        }
+
+        public String getExtraCardsRarity() {
+            return extraCardsRarity;
         }
 
         public String getSeries() {
@@ -56,6 +66,18 @@ public class PacksConfig extends SimpleConfigurate {
     }
 
     public static class PackSerializer implements TypeSerializer<Pack> {
+        public static final PackSerializer INSTANCE = new PackSerializer();
+        private static final String NUM_NORMAL_CARDS = "num-normal-cards";
+        private static final String NORMAL_CARDS_RARITY = "normal-card-rarity";
+        private static final String NUM_EXTRA_CARDS = "num-extra-cards";
+        private static final String EXTRA_CARDS_RARITY = "extra-card-rarity";
+        private static final String NUM_SPECIAL_CARDS = "num-special-cards";
+        private static final String SPECIAL_CARD_RARITY = "special-card-rarity";
+        private static final String SERIES = "series";
+        private static final String PRICE = "prices";
+        private static final String PERMISSION = "permission";
+        private PackSerializer() {
+        }
         @Override
         public Pack deserialize(Type type, ConfigurationNode node) throws SerializationException {
             return null;

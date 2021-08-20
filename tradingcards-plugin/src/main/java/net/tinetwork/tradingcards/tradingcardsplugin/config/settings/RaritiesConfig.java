@@ -62,6 +62,9 @@ public class RaritiesConfig extends SimpleConfigurate {
         private static final String DEFAULT_COLOR = "default-color";
         private static final String REWARDS = "rewards";
 
+        private RaritySerializer() {
+        }
+
         private ConfigurationNode nonVirtualNode(final ConfigurationNode source, final Object... path) throws SerializationException {
             if (!source.hasChild(path)) {
                 throw new SerializationException("Required field " + Arrays.toString(path) + " was not present in node");

@@ -1,36 +1,36 @@
 starter-pack:
-  numnormalcards: 9
-  normalcardrarity: common
-  numspecialcards: 1
-  specialcardrarity: rare
+  num-normal-cards: 9
+  normal-card-rarity: common
+  num-special-cards: 1
+  special-card-rarity: rare
   series: "active"
   price: 100.00
   permission: "cards.packs.starter-pack"
 advanced-pack:
-  numnormalcards: 12
-  normalcardrarity: common
-  numextracards: 6
-  extracardrarity: uncommon
-  numspecialcards: 2
-  specialcardrarity: rare
+  num-normal-cards: 12
+  normal-card-rarity: common
+  num-extra-cards: 6
+  extra-card-rarity: uncommon
+  num-special-cards: 2
+  special-card-rarity: rare
   series: "active"
   price: 150.00
   permission: "card.packs.advanced-pack"
 expert-pack:
-  numnormalcards: 6
-  normalcardrarity: uncommon
-  numextracards: 4
-  extracardrarity: rare
-  numspecialcards: 2
-  specialcardrarity: very-rare
+  num-normal-cards: 6
+  normal-card-rarity: uncommon
+  num-extra-cards: 4
+  extra-card-rarity: rare
+  num-special-cards: 2
+  special-card-rarity: very-rare
   series: "active"
   price: 250.00
   permission: "cards.packs.expert-pack"
 ultimate-pack:
-  numnormalcards: 5
-  normalcardrarity: rare
-  numspecialcards: 1
-  specialcardrarity: legendary
+  num-normal-cards: 5
+  normal-card-rarity: rare
+  num-special-cards: 1
+  special-card-rarity: legendary
   series: "active"
   price: 500.00
   permission: "cards.packs.ultimate-pack"
