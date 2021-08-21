@@ -38,9 +38,9 @@ shiny-name: "Shiny"
 # Default Pack Settings
 # ##############################
 # What material booster packs should be. Make it something that can't be placed.
-boosterpack-material: BOOK
+booster-pack-material: BOOK
 # The prefix of the booster pack.
-boosterpack-prefix: "&7[&fPack&7]&f "
+booster-pack-prefix: "&7[&fPack&7]&f "
 
 # ##############################
 # Default Deck Settings
