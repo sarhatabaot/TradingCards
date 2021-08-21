@@ -4,16 +4,19 @@ import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigurate;
 import org.bukkit.Material;
 import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.ConfigurationNode;
 
 import java.util.List;
 
 public class GeneralConfig extends SimpleConfigurate {
     private boolean debugMode;
 
+    //Cards
     private Material cardMaterial;
     private String cardPrefix;
     private String shinyName;
 
+    //Decks
     private boolean deckInCreative;
     private boolean useDeckItem;
     private boolean useLargeDecks;
@@ -21,21 +24,29 @@ public class GeneralConfig extends SimpleConfigurate {
     private String deckPrefix;
     private boolean dropDeckItems;
 
+    //Packs
+    private Material packMaterial;
+    private String packPrefix;
+
+    //Schedule
     private boolean scheduleCards;
     private boolean scheduleCardsNatural;
     private String scheduleCardMob;
     private String scheduleCardRarity;
     private int scheduleCardTimeInHours;
 
+    //Player
     private String playerOpRarity;
     private String playerSeries;
     private String playerType;
     private boolean playerHasShinyVersion;
 
+    //Rewards
     private boolean allowRewards;
     private boolean rewardBroadcast;
     private boolean eatShinyCards;
 
+    //Vault
     private boolean vaultEnabled;
     private boolean closedEconomy;
     private String serverAccount;
@@ -43,6 +54,21 @@ public class GeneralConfig extends SimpleConfigurate {
     private boolean spawnerBlock;
     private String spawnerMobName;
     private int infoLineLength;
+
+    //Colors
+    private String colorSeries;
+    private String colorType;
+    private String colorInfo;
+    private String colorAbout;
+    private String colorRarity;
+    private String colorPackName;
+    private String colorPackLore;
+    private String colorPackNormal;
+    private String colorPackSpecial;
+    private String colorPackExtra;
+    private String colorListHaveCard;
+    private String colorListHaveCardShiny;
+    private String colorRarityCompleted;
 
     private List<String> activeSeries;
     public GeneralConfig(TradingCards plugin) throws ConfigurateException {
@@ -63,6 +89,10 @@ public class GeneralConfig extends SimpleConfigurate {
         this.deckMaterial = rootNode.node("deck-material").get(Material.class, Material.BOOK);
         this.deckPrefix = rootNode.node("deck-prefix").getString("&7[&fDeck&7]&f ");
         this.dropDeckItems = rootNode.node("drop-deck-items").getBoolean(true);
+
+        //Packs
+        this.packMaterial = rootNode.node("boosterpack-material").get(Material.class, Material.BOOK);
+        this.packPrefix = rootNode.node("booster-pack-prefix").getString("&7[&fPack&7]&f ");
 
         //Schedule
         this.scheduleCards = rootNode.node("schedule-cards").getBoolean(false);
@@ -91,6 +121,22 @@ public class GeneralConfig extends SimpleConfigurate {
         this.spawnerBlock = rootNode.node("spawner-block").getBoolean(true);
         this.spawnerMobName = rootNode.node("spawner-mob-name").getString("Spawned Mob");
         this.infoLineLength = rootNode.node("info-line-length").getInt(25);
+
+        final ConfigurationNode colorNode = rootNode.node("colors");
+        //Colors
+        this.colorSeries = colorNode.node("series").getString();
+        this.colorType = colorNode.node("type").getString();
+        this.colorInfo = colorNode.node("info").getString();
+        this.colorAbout = colorNode.node("about").getString();
+        this.colorRarity = colorNode.node("rarity").getString();
+        this.colorPackName = colorNode.node("booster-pack-name").getString();
+        this.colorPackLore = colorNode.node("booster-pack-lore").getString();
+        this.colorPackNormal = colorNode.node("booster-pack-normal-cards").getString();
+        this.colorPackSpecial = colorNode.node("booster-pack-special-cards").getString();
+        this.colorPackExtra = colorNode.node("booster-pack-extra-cards").getString();
+        this.colorListHaveCard = colorNode.node("list-have-card").getString();
+        this.colorListHaveCardShiny = colorNode.node("list-have-shiny-card").getString();
+        this.colorRarityCompleted = colorNode.node("list-rarity-complete").getString();
 
         //Series
         this.activeSeries = rootNode.node("active-series").getList(String.class, List.of("2021"));
@@ -210,5 +256,65 @@ public class GeneralConfig extends SimpleConfigurate {
 
     public Material cardMaterial() {
         return cardMaterial;
+    }
+
+    public Material packMaterial() {
+        return packMaterial;
+    }
+
+    public String getColorSeries() {
+        return colorSeries;
+    }
+
+    public String getColorType() {
+        return colorType;
+    }
+
+    public String getColorInfo() {
+        return colorInfo;
+    }
+
+    public String getColorAbout() {
+        return colorAbout;
+    }
+
+    public String getColorRarity() {
+        return colorRarity;
+    }
+
+    public String getColorPackName() {
+        return colorPackName;
+    }
+
+    public String getColorPackLore() {
+        return colorPackLore;
+    }
+
+    public String getColorPackNormal() {
+        return colorPackNormal;
+    }
+
+    public String getColorPackSpecial() {
+        return colorPackSpecial;
+    }
+
+    public String getColorPackExtra() {
+        return colorPackExtra;
+    }
+
+    public String getColorListHaveCard() {
+        return colorListHaveCard;
+    }
+
+    public String getColorListHaveCardShiny() {
+        return colorListHaveCardShiny;
+    }
+
+    public String getColorRarityCompleted() {
+        return colorRarityCompleted;
+    }
+
+    public String packPrefix() {
+        return packPrefix;
     }
 }
