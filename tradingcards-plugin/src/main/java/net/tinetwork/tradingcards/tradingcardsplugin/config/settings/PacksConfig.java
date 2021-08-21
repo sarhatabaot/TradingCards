@@ -9,11 +9,20 @@ import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
 
 import java.lang.reflect.Type;
+import java.util.List;
 
 public class PacksConfig extends SimpleConfigurate {
     public PacksConfig(TradingCards plugin) throws ConfigurateException {
         super(plugin, "packs.yml", "settings");
         loader.defaultOptions().serializers(builder -> builder.register(Pack.class, PackSerializer.INSTANCE));
+    }
+
+    public Pack getPack(final String name) throws SerializationException {
+        return rootNode.node(name).get(Pack.class);
+    }
+
+    public List<String> getPacks() throws SerializationException {
+        return rootNode.getList(String.class);  //TODO not sure this works lol, probably better to do childrenlist
     }
 
     public static class Pack {
