@@ -41,6 +41,8 @@ public class GeneralConfig extends SimpleConfigurate {
     private String playerSeries;
     private String playerType;
     private boolean playerHasShinyVersion;
+    private boolean playerDropsCard;
+    private int playerDropsCardRarity;
 
     //Rewards
     private boolean allowRewards;
@@ -107,7 +109,8 @@ public class GeneralConfig extends SimpleConfigurate {
         this.playerSeries = rootNode.node("player-series").getString("Legacy");
         this.playerType = rootNode.node("player-type").getString("Player");
         this.playerHasShinyVersion = rootNode.node("player-has-shiny-version").getBoolean(true);
-
+        this.playerDropsCard = rootNode.node("player-drops-card").getBoolean(true);
+        this.playerDropsCardRarity = rootNode.node("player-drops-card-rarity").getInt(1000000);
         //Rewards
         this.allowRewards = rootNode.node("allow-rewards").getBoolean(true);
         this.rewardBroadcast = rootNode.node("reward-broadcast").getBoolean(true);
@@ -201,6 +204,14 @@ public class GeneralConfig extends SimpleConfigurate {
 
     public boolean eatShinyCards() {
         return eatShinyCards;
+    }
+
+    public boolean playerDropsCard() {
+        return playerDropsCard;
+    }
+
+    public int playerDropsCardRarity() {
+        return playerDropsCardRarity;
     }
 
     public boolean vaultEnabled() {

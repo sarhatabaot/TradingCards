@@ -17,18 +17,11 @@ public class TradingCardsConfig implements Config {
 	private static TradingCards plugin;
 	private final File file;
 
-
-	@ConfigOption(path = "General.Server-Name")
-	public String serverName = "Server";
-
 	@ConfigOption(path = "General.Debug-Mode")
 	public boolean debugMode = false;
 
 	@ConfigOption(path = "General.Hide-Enchants")
 	public boolean hideEnchants = true;
-
-	@ConfigOption(path = "General.American-Mode")
-	public boolean americanMode = false;
 
 	@ConfigOption(path = "General.Card-Material")
 	public String cardMaterial = "PAPER";
