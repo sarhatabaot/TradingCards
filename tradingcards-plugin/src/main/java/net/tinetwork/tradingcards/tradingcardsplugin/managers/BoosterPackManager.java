@@ -3,6 +3,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.managers;
 import de.tr7zw.nbtapi.NBTItem;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentBuilder;
+import net.tinetwork.tradingcards.api.model.Pack;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.TradingCardsConfig;
 import net.tinetwork.tradingcards.api.manager.PackManager;
@@ -13,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.spongepowered.configurate.serialize.SerializationException;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -43,7 +45,7 @@ public class BoosterPackManager extends PackManager {
     }
 
     public ItemStack generateNewPack(final String name) throws SerializationException {
-        final PacksConfig.Pack pack = packsConfig.getPack(name);
+        final Pack pack = packsConfig.getPack(name);
 
         ItemStack itemPack = blankPack.clone();
         ItemMeta itemPackMeta = itemPack.getItemMeta();
@@ -89,6 +91,17 @@ public class BoosterPackManager extends PackManager {
 
     public boolean isPack(final ItemStack item) {
         return new NBTItem(item).getBoolean("pack");
+    }
+
+    @Override
+    @Nullable
+    public Pack getPack(String id) {
+        try {
+            return plugin.getPacksConfig().getPack(id);
+        } catch (SerializationException e) {
+            plugin.getLogger().severe(e.getMessage());
+            return null;
+        }
     }
 
     @Override
