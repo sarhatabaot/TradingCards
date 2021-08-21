@@ -50,9 +50,12 @@ public class PackListener extends SimpleListener {
 
         Player player = event.getPlayer();
         final ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
-        if (itemInMainHand.getType() != Material.valueOf(plugin.getMainConfig().boosterPackMaterial) || !player.getInventory().getItemInMainHand().containsEnchantment(Enchantment.ARROW_INFINITE)) {
+        if (!plugin.getPackManager().isPack(itemInMainHand)) {
             return;
         }
+        /*if (itemInMainHand.getType() != Material.valueOf(plugin.getMainConfig().boosterPackMaterial) || !player.getInventory().getItemInMainHand().containsEnchantment(Enchantment.ARROW_INFINITE)) {
+            return;
+        }*/
 
         if (!player.hasPermission("cards.openboosterpack")) {
             ChatUtil.sendMessage(player, plugin.getPrefixedMessage("No permission: cards.openboosterpack"));

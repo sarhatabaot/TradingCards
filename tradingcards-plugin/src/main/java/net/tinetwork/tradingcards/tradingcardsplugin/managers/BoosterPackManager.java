@@ -82,6 +82,7 @@ public class BoosterPackManager extends PackManager {
         itemPack.addUnsafeEnchantment(Enchantment.ARROW_INFINITE, 10);
 
         NBTItem nbtItem = new NBTItem(itemPack);
+        nbtItem.setString("packId", name);
         nbtItem.setBoolean("pack",true);
         return nbtItem.getItem();
     }

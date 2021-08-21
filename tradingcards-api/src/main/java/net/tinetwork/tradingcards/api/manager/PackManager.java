@@ -13,4 +13,6 @@ public abstract class PackManager {
 
     public abstract ItemStack generatePack(String name);
 
+    public abstract boolean isPack(final ItemStack item);
+
 }
