@@ -10,10 +10,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.CardsCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.DeckCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.*;
-import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.ChancesConfig;
-import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.GeneralConfig;
-import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.MessagesConfig;
-import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.RaritiesConfig;
+import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.*;
 import net.tinetwork.tradingcards.tradingcardsplugin.listeners.DeckListener;
 import net.tinetwork.tradingcards.tradingcardsplugin.listeners.DropListener;
 import net.tinetwork.tradingcards.tradingcardsplugin.listeners.MobSpawnListener;
@@ -60,6 +57,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private GeneralConfig generalConfig;
     private RaritiesConfig raritiesConfig;
     private ChancesConfig chancesConfig;
+    private PacksConfig packsConfig;
     private MessagesConfig messagesConfig;
 
     /* Managers */
@@ -120,6 +118,10 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         return messagesConfig;
     }
 
+    public PacksConfig getPacksConfig() {
+        return packsConfig;
+    }
+
     private void initUtils() {
         ChatUtil.init(this);
         CardUtil.init(this);
@@ -139,11 +141,13 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
             this.raritiesConfig = new RaritiesConfig(this);
             this.chancesConfig = new ChancesConfig(this);
             this.messagesConfig = new MessagesConfig(this);
+            this.packsConfig = new PacksConfig(this);
 
             this.generalConfig.saveDefaultConfig();
             this.raritiesConfig.saveDefaultConfig();
             this.chancesConfig.saveDefaultConfig();
             this.messagesConfig.saveDefaultConfig();
+            this.packsConfig.saveDefaultConfig();
         } catch (ConfigurateException e) {
             getLogger().severe(e.getMessage());
         }
