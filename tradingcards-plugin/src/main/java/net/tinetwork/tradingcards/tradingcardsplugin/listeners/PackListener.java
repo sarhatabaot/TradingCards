@@ -1,5 +1,8 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.listeners;
 
+import de.tr7zw.nbtapi.NBTItem;
+import net.tinetwork.tradingcards.api.model.Pack;
+import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.PacksConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.TradingCardsConfig;
@@ -65,7 +68,18 @@ public class PackListener extends SimpleListener {
             player.sendMessage(plugin.cMsg(plugin.getMessagesOldConfig().prefix + " " + plugin.getMessagesOldConfig().noCreative));
             return;
         }
+        NBTItem nbtPackItem = new NBTItem(itemInMainHand);
+        final String packId = nbtPackItem.getString("packId");
+        if(packId == null) {
+            return;
+        }
 
+        Pack pack = plugin.getPackManager().getPack(packId);
+        dropRandomCards(player, pack.getNormalCardRarity(),pack.getNumNormalCards(),pack.getSeries(), packId);
+        dropRandomCards(player, pack.getSpecialCardsRarity(),pack.getNumSpecialCards(),pack.getSeries(), packId);
+        dropRandomCards(player, pack.getExtraCardsRarity(),pack.getNumExtraCards(),pack.getSeries(), packId);
+        removeItemMain(player);
+        /*
         ItemMeta packMeta = itemInMainHand.getItemMeta();
         String packName = packMeta.getDisplayName().split(" ")[1].trim();
         List<String> lore = packMeta.getLore();
@@ -98,14 +112,16 @@ public class PackListener extends SimpleListener {
         if (hasExtra) {
             dropRandomCards(player, extraCardRarity, extraCardAmount, packName);
         }
-
+        */
 
     }
 
 
-    private void dropRandomCards(Player player, final String rarity, int amount, String packName) {
+    private void dropRandomCards(Player player, final String rarity, int amount, final String series,String packName) {
+        if (amount <= 0)
+            return;
         for (var i = 0; i < amount; i++) {
-            if (TradingCardsConfig.getPackSeries(packName).equalsIgnoreCase("active"))
+            if (series.equalsIgnoreCase("active"))
                 CardUtil.dropItem(player, plugin.getCardManager().getRandomCard(WordUtils.capitalizeFully(rarity), false).build());
             else
                 CardUtil.dropItem(player, plugin.getCardManager().getRandomActiveCard(WordUtils.capitalizeFully(rarity), false).build());
