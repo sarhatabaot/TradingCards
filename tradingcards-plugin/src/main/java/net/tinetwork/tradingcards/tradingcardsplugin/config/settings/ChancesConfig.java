@@ -9,6 +9,7 @@ import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
 
+import java.io.File;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
@@ -25,7 +26,7 @@ public class ChancesConfig extends SimpleConfigurate {
     private int shinyVersionChance;
 
     public ChancesConfig(TradingCards plugin) throws ConfigurateException {
-        super(plugin, "chances.yml", "settings");
+        super(plugin, "settings" + File.separator,"chances.yml", "settings");
         loader.defaultOptions().serializers(builder -> builder.register(Chance.class, ChanceSerializer.INSTANCE));
 
         this.hostileChance = rootNode.node("hostile-chance").getInt(20000);

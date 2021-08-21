@@ -5,6 +5,7 @@ import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
+import java.io.File;
 import java.nio.file.Paths;
 
 public class SimpleConfigurate extends SimpleConfigFile{
@@ -12,8 +13,8 @@ public class SimpleConfigurate extends SimpleConfigFile{
             path(Paths.get(folder+"/"+fileName)).build();
     protected CommentedConfigurationNode rootNode;
 
-    public SimpleConfigurate(TradingCards plugin, String fileName, String folder) throws ConfigurateException {
-        super(plugin, fileName, folder);
+    public SimpleConfigurate(TradingCards plugin, final String resourcePath, String fileName, String folder) throws ConfigurateException {
+        super(plugin, resourcePath,fileName, folder);
         this.rootNode = loader.load();
     }
 

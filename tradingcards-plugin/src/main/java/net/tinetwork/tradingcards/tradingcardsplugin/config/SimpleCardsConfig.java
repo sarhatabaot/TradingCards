@@ -12,7 +12,7 @@ import java.io.File;
 public class SimpleCardsConfig extends SimpleConfigFile {
     private final ConfigurationSection cards;
     public SimpleCardsConfig(final TradingCards plugin, final String fileName) {
-        super(plugin, fileName, "cards");
+        super(plugin, "cards"+File.separator, fileName, "cards");
         this.cards = getConfig().getConfigurationSection("Cards");
         reloadConfig();
         plugin.debug("Created: "+fileName);

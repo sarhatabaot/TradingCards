@@ -9,6 +9,7 @@ import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
 
+import java.io.File;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
@@ -18,7 +19,7 @@ public class RaritiesConfig extends SimpleConfigurate {
     private List<Rarity> rarities;
 
     public RaritiesConfig(TradingCards plugin) throws ConfigurateException {
-        super(plugin, "rarities.yml", "settings");
+        super(plugin, "settings"+ File.separator,"rarities.yml", "settings");
         loader.defaultOptions().serializers(builder -> builder.register(Rarity.class, RaritySerializer.INSTANCE));
     }
 

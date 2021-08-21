@@ -90,6 +90,18 @@
                             <shadedPattern>${project.groupId}.nbt</shadedPattern>
                         </relocation>
                     </relocations>
+
+                    <filters>
+                        <filter>
+                            <artifact>*:*</artifact>
+                            <excludes>
+                                <excludes>META-INF/*.SF</excludes>
+                                <excludes>META-INF/*.DSA</excludes>
+                                <excludes>META-INF/*.RSA</excludes>
+                                <exclude>META-INF/maven/**</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
                 </configuration>
                 <executions>
                     <execution>

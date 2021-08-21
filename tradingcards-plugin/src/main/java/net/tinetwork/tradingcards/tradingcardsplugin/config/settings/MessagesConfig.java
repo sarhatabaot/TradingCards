@@ -4,6 +4,8 @@ import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigurate;
 import org.spongepowered.configurate.ConfigurateException;
 
+import java.io.File;
+
 public class MessagesConfig extends SimpleConfigurate {
     private String prefix;
     private String reload;
@@ -65,7 +67,7 @@ public class MessagesConfig extends SimpleConfigurate {
 
 
     public MessagesConfig(TradingCards plugin) throws ConfigurateException {
-        super(plugin, "messages.yml", "settings");
+        super(plugin,"settings"+ File.separator ,"messages.yml", "settings");
 
         this.prefix = rootNode.node("prefix").getString("Cards > ");
         this.reload = rootNode.node("reload").getString("Reloaded config.");

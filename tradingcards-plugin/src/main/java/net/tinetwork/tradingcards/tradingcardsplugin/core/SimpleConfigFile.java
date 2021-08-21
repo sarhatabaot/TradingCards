@@ -14,6 +14,7 @@ import java.nio.charset.StandardCharsets;
  * Simple class to initialize, reload & save config files
  */
 public class SimpleConfigFile {
+	private String resourcePath = "";
 	protected final TradingCards plugin;
 	protected final String fileName;
 	protected final File folder;
@@ -21,9 +22,10 @@ public class SimpleConfigFile {
 	protected File file;
 	private FileConfiguration config;
 
-	public SimpleConfigFile(final TradingCards plugin, final String fileName, final String folder) {
+	public SimpleConfigFile(final TradingCards plugin,final String resourcePath, final String fileName, final String folder) {
 		this.plugin = plugin;
 		this.fileName = fileName;
+		this.resourcePath = resourcePath;
 		this.folder = new File(plugin.getDataFolder().getPath()+File.separator+folder);
 
 		plugin.debug(this.folder.getName());
@@ -41,7 +43,7 @@ public class SimpleConfigFile {
 		}
 
 		if (!this.file.exists()) {
-			plugin.saveResource(fileName, false);
+			plugin.saveResource(resourcePath + fileName, false);
 		}
 
 		reloadConfig();

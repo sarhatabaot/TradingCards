@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 
+import java.io.File;
 import java.util.List;
 
 public class GeneralConfig extends SimpleConfigurate {
@@ -72,7 +73,7 @@ public class GeneralConfig extends SimpleConfigurate {
 
     private List<String> activeSeries;
     public GeneralConfig(TradingCards plugin) throws ConfigurateException {
-        super(plugin, "general.yml", "settings");
+        super(plugin, "settings" + File.separator,"general.yml", "settings");
 
         this.debugMode = rootNode.node("debug-mode").getBoolean(false);
 

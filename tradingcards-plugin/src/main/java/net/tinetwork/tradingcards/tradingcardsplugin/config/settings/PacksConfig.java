@@ -9,12 +9,13 @@ import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
 
+import java.io.File;
 import java.lang.reflect.Type;
 import java.util.List;
 
 public class PacksConfig extends SimpleConfigurate {
     public PacksConfig(TradingCards plugin) throws ConfigurateException {
-        super(plugin, "packs.yml", "settings");
+        super(plugin, "settings"+ File.separator,"packs.yml", "settings");
         loader.defaultOptions().serializers(builder -> builder.register(Pack.class, PackSerializer.INSTANCE));
     }
 
