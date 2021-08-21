@@ -3,39 +3,46 @@ package net.tinetwork.tradingcards.tradingcardsplugin.whitelist;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.api.blacklist.WhitelistMode;
 import net.tinetwork.tradingcards.api.blacklist.Blacklist;
-import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigFile;
+import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigurate;
 import org.bukkit.entity.Player;
+import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.List;
 
 /**
  * @author ketelsb
  */
-public class PlayerBlacklist implements Blacklist<Player> {
-    private SimpleConfigFile config;
-    private String listedPlayersName = "players";
-    private String whitelistModeName = "whitelist-Mode";
+public class PlayerBlacklist extends SimpleConfigurate implements Blacklist<Player> {
+    private static final String LISTED_PLAYERS_NAME = "players";
+    private static final String WHITELIST_MODE = "whitelist-mode";
     private List<String> listedPlayers;
     private WhitelistMode whitelistMode;
 
-    public PlayerBlacklist(TradingCards plugin) {
-        this.config = new SimpleConfigFile(plugin,"player-blacklist.yml");
-        this.config.saveDefaultConfig();
+    public PlayerBlacklist(TradingCards plugin) throws ConfigurateException {
+        super(plugin, "player-blacklist.yml", "lists");
+        saveDefaultConfig();
         loadPlayers();
         setWhitelistMode();
     }
 
     private void loadPlayers() {
-        listedPlayers = this.config.getConfig().getStringList(listedPlayersName);
+        try {
+            listedPlayers = rootNode.node(LISTED_PLAYERS_NAME).getList(String.class);
+        } catch (SerializationException e) {
+            plugin.getLogger().severe(e.getMessage());
+        }
     }
 
     private void setWhitelistMode() {
-        boolean isWhitelist = this.config.getConfig().getBoolean(whitelistModeName);
+        boolean isWhitelist = rootNode.node(WHITELIST_MODE).getBoolean();
         if (isWhitelist)
             this.whitelistMode = WhitelistMode.WHITELIST;
         else
             this.whitelistMode = WhitelistMode.BLACKLIST;
     }
+
     @Override
     public boolean isAllowed(Player p) {
         boolean isOnList = listedPlayers.contains(p.getName());
@@ -52,19 +59,31 @@ public class PlayerBlacklist implements Blacklist<Player> {
 
         return false;
     }
+
     @Override
     public void add(Player p) {
+        final ConfigurationNode playerNode = rootNode.node(LISTED_PLAYERS_NAME);
         listedPlayers.add(p.getName());
-        this.config.getConfig().set(listedPlayersName, null);
-        this.config.getConfig().set(listedPlayersName, listedPlayers);
-        this.config.saveConfig();
+        try {
+            playerNode.set(null);
+            playerNode.set(listedPlayers);
+            loader.save(playerNode);
+        } catch (ConfigurateException e){
+            plugin.getLogger().severe(e.getMessage());
+        }
     }
+
     @Override
     public void remove(Player p) {
+        final ConfigurationNode playerNode = rootNode.node(LISTED_PLAYERS_NAME);
         listedPlayers.remove(p.getName());
-        this.config.getConfig().set(listedPlayersName, null);
-        this.config.getConfig().set(listedPlayersName, listedPlayers);
-        this.config.saveConfig();
+        try {
+            playerNode.set(null);
+            playerNode.set(listedPlayers);
+            loader.save(playerNode);
+        } catch (ConfigurateException e){
+            plugin.getLogger().severe(e.getMessage());
+        }
     }
 
     @Override

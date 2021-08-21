@@ -4,34 +4,41 @@ import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.api.blacklist.WhitelistMode;
 import net.tinetwork.tradingcards.api.blacklist.Blacklist;
 import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigFile;
+import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigurate;
 import org.bukkit.World;
+import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.List;
 
 /**
  * @author ketelsb
  */
-public class WorldBlacklist implements Blacklist<World> {
-    private final SimpleConfigFile config;
-    private final String listedWorldsName = "worlds";
-    private String whitelistModeName = "whitelist-mode";
+public class WorldBlacklist extends SimpleConfigurate implements Blacklist<World> {
+    private static final String LISTED_WORLDS_NAME = "worlds";
+    private static final String WHITELIST_MODE_NAME = "whitelist-mode";
+    private final ConfigurationNode worldNode;
     private List<String> listedWorlds;
     private WhitelistMode whitelistMode;
 
 
-    public WorldBlacklist(TradingCards plugin) {
-        this.config = new SimpleConfigFile(plugin,"world-blacklist.yml");
-        this.config.saveDefaultConfig();
+    public WorldBlacklist(TradingCards plugin) throws ConfigurateException {
+        super(plugin, "world-blacklist.yml", "lists");
+        saveDefaultConfig();
+
+        this.worldNode = rootNode.node(LISTED_WORLDS_NAME);
+
         loadWorlds();
         setWhitelistMode();
     }
 
-    private void loadWorlds() {
-        listedWorlds = this.config.getConfig().getStringList(listedWorldsName);
+    private void loadWorlds() throws SerializationException {
+        listedWorlds = worldNode.getList(String.class);
     }
 
     private void setWhitelistMode() {
-        boolean isWhitelist = this.config.getConfig().getBoolean(whitelistModeName);
+        boolean isWhitelist = rootNode.node(WHITELIST_MODE_NAME).getBoolean();
         if (isWhitelist)
             this.whitelistMode = WhitelistMode.WHITELIST;
         else
@@ -56,18 +63,28 @@ public class WorldBlacklist implements Blacklist<World> {
 
     @Override
     public void add(World w) {
+        final ConfigurationNode worldNode = rootNode.node(LISTED_WORLDS_NAME);
         listedWorlds.add(w.getName());
-        this.config.getConfig().set(listedWorldsName, null);
-        this.config.getConfig().set(listedWorldsName, listedWorlds);
-        this.config.saveConfig();
+        try {
+            worldNode.set(null);
+            worldNode.set(listedWorlds);
+            loader.save(worldNode);
+        } catch (ConfigurateException e) {
+            plugin.getLogger().severe(e.getMessage());
+        }
     }
 
     @Override
     public void remove(World w) {
+        final ConfigurationNode worldNode = rootNode.node(LISTED_WORLDS_NAME);
         listedWorlds.remove(w.getName());
-        this.config.getConfig().set(listedWorldsName, null);
-        this.config.getConfig().set(listedWorldsName, listedWorlds);
-        this.config.saveConfig();
+        try {
+            worldNode.set(null);
+            worldNode.set(listedWorlds);
+            loader.save(worldNode);
+        } catch (ConfigurateException e) {
+            plugin.getLogger().severe(e.getMessage());
+        }
     }
 
     @Override

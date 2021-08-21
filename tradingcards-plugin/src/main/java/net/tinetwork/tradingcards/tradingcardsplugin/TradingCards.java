@@ -32,6 +32,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -128,8 +129,12 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     }
 
     private void initBlacklist() {
-        this.playerBlacklist = new PlayerBlacklist(this);
-        this.worldBlacklist = new WorldBlacklist(this);
+        try {
+            this.playerBlacklist = new PlayerBlacklist(this);
+            this.worldBlacklist = new WorldBlacklist(this);
+        } catch (ConfigurateException e){
+            getLogger().severe(e.getMessage());
+        }
     }
 
     private void initConfigs() {
@@ -168,13 +173,13 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
     private void initCommands() {
         var commandManager = new BukkitCommandManager(this);
-        commandManager.registerCommand(new CardsCommand(this,playerBlacklist));
+        commandManager.registerCommand(new CardsCommand(this, playerBlacklist));
         commandManager.registerCommand(new DeckCommand(this));
         commandManager.getCommandCompletions().registerCompletion("rarities", c -> cardManager.getRarityNames());
         commandManager.getCommandCompletions().registerCompletion("active-rarities", c -> cardManager.getActiveRarityNames());
         commandManager.getCommandCompletions().registerCompletion("cards", c -> cardManager.getRarityCardList(c.getContextValueByName(String.class, "rarity")));
         commandManager.getCommandCompletions().registerCompletion("active-cards", c -> cardManager.getActiveRarityCardList(c.getContextValueByName(String.class, "rarity")));
-        commandManager.getCommandCompletions().registerCompletion("packs",c -> packManager.packs().keySet());
+        commandManager.getCommandCompletions().registerCompletion("packs", c -> packManager.packs().keySet());
         commandManager.enableUnstableAPI("help");
         commandManager.enableUnstableAPI("brigadier");
     }
@@ -224,7 +229,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
     public CardsConfig getCardsConfig() {
         return cardsConfig;
-   }
+    }
 
     public TradingCardsConfig getMainConfig() {
         return mainConfig;
@@ -314,7 +319,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     }
 
 
-
     @Deprecated
     public boolean hasCard(Player player, String card, String rarity) {
         return getDeckConfig().containsCard(player.getUniqueId(), card, rarity);
@@ -369,7 +373,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     public boolean isMob(EntityType type) {
         return this.hostileMobs.contains(type) || this.neutralMobs.contains(type) || this.passiveMobs.contains(type) || this.bossMobs.contains(type);
     }
-    
+
     public List<String> wrapString(@NotNull String s) {
         String parsedString = ChatColor.stripColor(s);
         String addedString = WordUtils.wrap(parsedString, this.getConfig().getInt("General.Info-Line-Length", 25), "\n", true);
