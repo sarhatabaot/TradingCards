@@ -30,7 +30,7 @@ public class TradingCard extends Card<TradingCard> {
     @Override
     public ItemStack buildItem() {
         ItemStack card = TradingCardsConfig.getBlankCard(1).clone();
-        ItemMeta cardMeta = TradingCardsConfig.getBlankCard(1).getItemMeta();
+        ItemMeta cardMeta = card.getItemMeta();
         cardMeta.setDisplayName(formatDisplayName(isPlayerCard(), isShiny(), getPrefix(), getRarityColour(), getCardName().replace('_', ' '), getCost(), getShinyPrefix()));
         cardMeta.setLore(formatLore());
         if (isShiny()) {
