@@ -1,5 +1,6 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.managers;
 
+import de.tr7zw.nbtapi.NBTItem;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentBuilder;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
@@ -79,7 +80,14 @@ public class BoosterPackManager extends PackManager {
         itemPack.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         itemPack.setItemMeta(itemPackMeta);
         itemPack.addUnsafeEnchantment(Enchantment.ARROW_INFINITE, 10);
-        return itemPack;
+
+        NBTItem nbtItem = new NBTItem(itemPack);
+        nbtItem.setBoolean("pack",true);
+        return nbtItem.getItem();
+    }
+
+    public boolean isPack(final ItemStack item) {
+        return new NBTItem(item).getBoolean("pack");
     }
 
     @Override
