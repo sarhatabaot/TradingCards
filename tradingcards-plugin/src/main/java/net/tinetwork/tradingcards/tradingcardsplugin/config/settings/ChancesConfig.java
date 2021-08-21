@@ -1,5 +1,6 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
 
+import net.tinetwork.tradingcards.api.model.Chance;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigurate;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -66,43 +67,6 @@ public class ChancesConfig extends SimpleConfigurate {
 
     public Chance getChance(final String rarityId) throws SerializationException {
         return rootNode.node(rarityId).get(Chance.class);
-    }
-
-    public static class Chance {
-        private String id;
-        private int hostile;
-        private int neutral;
-        private int passive;
-        private int boss;
-
-        public String getId() {
-            return id;
-        }
-
-        public int getHostile() {
-            return hostile;
-        }
-
-        public int getNeutral() {
-            return neutral;
-        }
-
-        public int getPassive() {
-            return passive;
-        }
-
-        public int getBoss() {
-            return boss;
-        }
-
-        public Chance(String id, int hostile, int neutral, int passive, int boss) {
-            this.id = id;
-            this.hostile = hostile;
-            this.neutral = neutral;
-            this.passive = passive;
-            this.boss = boss;
-        }
-
     }
 
     public static final class ChanceSerializer implements TypeSerializer<Chance> {
