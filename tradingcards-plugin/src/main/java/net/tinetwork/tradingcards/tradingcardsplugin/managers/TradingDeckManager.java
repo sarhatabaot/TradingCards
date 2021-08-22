@@ -86,7 +86,7 @@ public class TradingDeckManager implements DeckManager {
 
 
 	private int getDeckSize() {
-		if (plugin.getMainConfig().useLargeDecks)
+		if (plugin.getGeneralConfig().useLargeDecks())
 			return 54;
 		return 27;
 	}
@@ -96,11 +96,9 @@ public class TradingDeckManager implements DeckManager {
 	public ItemStack createDeckItem(@NotNull final Player p, final int num) {
 		ItemStack deck = TradingCardsConfig.getBlankDeck();
 		ItemMeta deckMeta = deck.getItemMeta();
-		deckMeta.setDisplayName(plugin.cMsg(plugin.getConfig().getString("General.Deck-Prefix") + p.getName() + "'s Deck #" + num));
-		if (plugin.getConfig().getBoolean("General.Hide-Enchants", true)) {
-			deckMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-		}
+		deckMeta.setDisplayName(plugin.cMsg(plugin.getGeneralConfig().deckPrefix() + p.getName() + "'s Deck #" + num));
 
+		deckMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 		deck.setItemMeta(deckMeta);
 		deck.addUnsafeEnchantment(Enchantment.DURABILITY, 10);
 		return deck;
@@ -115,7 +113,7 @@ public class TradingDeckManager implements DeckManager {
 	}
 
 	public boolean isDeckMaterial(final Material material) {
-		return material == Material.valueOf(plugin.getMainConfig().deckMaterial);
+		return material == plugin.getGeneralConfig().deckMaterial();
 	}
 
 	@Override

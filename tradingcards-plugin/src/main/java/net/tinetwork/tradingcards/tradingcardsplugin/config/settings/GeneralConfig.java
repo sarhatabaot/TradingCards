@@ -101,7 +101,7 @@ public class GeneralConfig extends SimpleConfigurate {
         this.dropDeckItems = rootNode.node("drop-deck-items").getBoolean(true);
 
         //Packs
-        this.packMaterial = rootNode.node("boosterpack-material").get(Material.class, Material.BOOK);
+        this.packMaterial = rootNode.node("booster-pack-material").get(Material.class, Material.BOOK);
         this.packPrefix = rootNode.node("booster-pack-prefix").getString("&7[&fPack&7]&f ");
 
         //Schedule

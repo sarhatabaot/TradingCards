@@ -390,7 +390,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
     @Override
     public void debug(final String message) {
-        if (getMainConfig().debugMode) {
+        if (getGeneralConfig().debugMode()) {
             getLogger().info("DEBUG " + message);
         }
     }
