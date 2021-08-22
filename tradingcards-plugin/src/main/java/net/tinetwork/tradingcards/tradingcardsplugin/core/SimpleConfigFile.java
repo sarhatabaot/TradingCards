@@ -28,7 +28,7 @@ public class SimpleConfigFile {
 		this.resourcePath = resourcePath;
 		this.folder = new File(plugin.getDataFolder().getPath()+File.separator+folder);
 
-		plugin.debug(this.folder.getName());
+		//plugin.debug(this.folder.getName());
 	}
 
 	public SimpleConfigFile(final TradingCards plugin, final String fileName) {

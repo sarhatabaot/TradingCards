@@ -11,12 +11,19 @@ import org.spongepowered.configurate.serialize.TypeSerializer;
 
 import java.io.File;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PacksConfig extends SimpleConfigurate {
+    private List<String> packs = new ArrayList<>();
     public PacksConfig(TradingCards plugin) throws ConfigurateException {
         super(plugin, "settings"+ File.separator,"packs.yml", "settings");
         loader.defaultOptions().serializers(builder -> builder.register(Pack.class, PackSerializer.INSTANCE));
+
+        for(ConfigurationNode configurationNode: rootNode.childrenList()) {
+            final String name = configurationNode.key().toString();
+            packs.add(name);
+        }
     }
 
     public Pack getPack(final String name) throws SerializationException {
@@ -24,7 +31,7 @@ public class PacksConfig extends SimpleConfigurate {
     }
 
     public List<String> getPacks() throws SerializationException {
-        return rootNode.getList(String.class);  //TODO not sure this works lol, probably better to do childrenlist
+        return packs;
     }
 
 

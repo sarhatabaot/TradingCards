@@ -24,7 +24,7 @@ public class WorldBlacklist extends SimpleConfigurate implements Blacklist<World
 
 
     public WorldBlacklist(TradingCards plugin) throws ConfigurateException {
-        super(plugin, "lists"+ File.separator, "lists/world-blacklist.yml", "lists");
+        super(plugin, "lists"+ File.separator, "world-blacklist.yml", "lists");
         saveDefaultConfig();
 
         this.worldNode = rootNode.node(LISTED_WORLDS_NAME);

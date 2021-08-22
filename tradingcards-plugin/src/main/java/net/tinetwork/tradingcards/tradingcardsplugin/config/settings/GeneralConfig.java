@@ -166,21 +166,23 @@ public class GeneralConfig extends SimpleConfigurate {
         //Series
         this.activeSeries = rootNode.node("active-series").getList(String.class, List.of("2021"));
 
-        //ItemStacks
-        this.blankBoosterPack =new ItemStack(plugin.getGeneralConfig().packMaterial());
-        this.blankCard = new ItemStack(plugin.getGeneralConfig().cardMaterial());
-        this.blankDeck = new ItemStack(plugin.getGeneralConfig().deckMaterial());
     }
 
     public ItemStack blankCard() {
+        if(blankCard == null)
+            this.blankCard = new ItemStack(plugin.getGeneralConfig().cardMaterial());
         return blankCard;
     }
 
     public ItemStack blankBoosterPack() {
+        if(blankBoosterPack == null)
+            this.blankBoosterPack = new ItemStack(new ItemStack(plugin.getGeneralConfig().packMaterial()));
         return blankBoosterPack;
     }
 
     public ItemStack blankDeck() {
+        if(blankDeck == null)
+            this.blankDeck = new ItemStack(plugin.getGeneralConfig().deckMaterial());
         return blankDeck;
     }
 

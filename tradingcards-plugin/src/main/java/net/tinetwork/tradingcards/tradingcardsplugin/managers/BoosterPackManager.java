@@ -48,7 +48,8 @@ public class BoosterPackManager extends PackManager {
         return packs;
     }
 
-    public ItemStack generateNewPack(final String name) throws SerializationException {
+    @Override
+    public ItemStack generatePack(final String name) throws SerializationException {
         final Pack pack = packsConfig.getPack(name);
 
         ItemStack itemPack = blankPack.clone();
@@ -108,49 +109,4 @@ public class BoosterPackManager extends PackManager {
         }
     }
 
-    @Override
-    public ItemStack generatePack(final String name) {
-        ItemStack boosterPack = plugin.getGeneralConfig().blankBoosterPack();
-        try {
-            final Pack pack = plugin.getPacksConfig().getPack(name);
-            int numNormalCards = pack.getNumNormalCards();
-            int numSpecialCards = pack.getNumSpecialCards();
-            String prefix = plugin.getGeneralConfig().packPrefix();
-            String normalCardColour = plugin.getGeneralConfig().colorPackNormal();
-            String extraCardColour = plugin.getGeneralConfig().colorPackExtra();
-            String loreColour = plugin.getGeneralConfig().colorPackLore();
-            String nameColour = plugin.getGeneralConfig().colorPackName();
-            String normalRarity = pack.getNormalCardRarity();
-            String specialRarity = pack.getSpecialCardsRarity();
-            String extraRarity = "";
-            int numExtraCards = 0;
-            boolean hasExtraRarity = false;
-            if (pack.getExtraCardsRarity() != null && pack.getNumExtraCards() > 0) {
-                hasExtraRarity = true;
-                extraRarity = pack.getExtraCardsRarity();
-                numExtraCards = pack.getNumExtraCards();
-            }
-
-            String specialCardColour = plugin.getGeneralConfig().colorPackSpecial();
-            ItemMeta pMeta = boosterPack.getItemMeta();
-            pMeta.setDisplayName(plugin.cMsg(prefix + nameColour + name.replace("_", " ")));
-            List<String> lore = new ArrayList<>();
-            lore.add(plugin.cMsg(normalCardColour + numNormalCards + loreColour + " " + normalRarity.toUpperCase()));
-            if (hasExtraRarity) {
-                lore.add(plugin.cMsg(extraCardColour + numExtraCards + loreColour + " " + extraRarity.toUpperCase()));
-            }
-
-            lore.add(plugin.cMsg(specialCardColour + numSpecialCards + loreColour + " " + specialRarity.toUpperCase()));
-            pMeta.setLore(lore);
-            pMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-
-            boosterPack.setItemMeta(pMeta);
-            boosterPack.addUnsafeEnchantment(Enchantment.ARROW_INFINITE, 10);
-            return boosterPack;
-        } catch (SerializationException e){
-            plugin.getLogger().severe(e.getMessage());
-            return new ItemStack(Material.AIR);
-        }
-
-    }
 }

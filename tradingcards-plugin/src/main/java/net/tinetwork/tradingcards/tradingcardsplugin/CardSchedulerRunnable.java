@@ -21,11 +21,11 @@ public class CardSchedulerRunnable extends BukkitRunnable {
     public void run() {
         plugin.debug(getClass().getSimpleName() + " task running");
         //check this before the task is registered.
-        if (!plugin.getConfig().getBoolean("General.Schedule-Cards"))
+        if (!plugin.getGeneralConfig().scheduleCards())
             return;
 
-        if (plugin.getConfig().getBoolean("General.Schedule-Cards-Natural")) {
-            String mob = plugin.getConfig().getString("General.Schedule-Card-Mob");
+        if (plugin.getGeneralConfig().scheduleCardsNatural()) {
+            String mob = plugin.getGeneralConfig().scheduleCardMob();
             if (plugin.isMob(mob.toUpperCase())) {
                 CardUtil.giveawayNatural(EntityType.valueOf(mob.toUpperCase()), null);
                 return;

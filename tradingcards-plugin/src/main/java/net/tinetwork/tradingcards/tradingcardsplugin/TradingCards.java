@@ -136,7 +136,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     }
 
     private void initConfigs() {
-        saveDefaultConfig();
         try {
             this.generalConfig = new GeneralConfig(this);
             this.raritiesConfig = new RaritiesConfig(this);
