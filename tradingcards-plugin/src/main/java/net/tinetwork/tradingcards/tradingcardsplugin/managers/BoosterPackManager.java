@@ -2,8 +2,6 @@ package net.tinetwork.tradingcards.tradingcardsplugin.managers;
 
 import de.tr7zw.nbtapi.NBTItem;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.ComponentBuilder;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.tinetwork.tradingcards.api.model.Pack;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.TradingCardsConfig;
@@ -53,29 +51,29 @@ public class BoosterPackManager extends PackManager {
         ItemMeta itemPackMeta = itemPack.getItemMeta();
 
         itemPackMeta.setDisplayName(ChatUtil.color(Component.text(plugin.getGeneralConfig().packPrefix())
-                .append(Component.text(plugin.getGeneralConfig().getColorPackName()))
+                .append(Component.text(plugin.getGeneralConfig().colorPackName()))
                 .append(Component.text(name.replace("_"," ")))));
         List<String> lore = new ArrayList<>();
 
         if(pack.getNumNormalCards() > 0) {
-            lore.add(ChatUtil.color(Component.text(plugin.getGeneralConfig().getColorPackNormal())
+            lore.add(ChatUtil.color(Component.text(plugin.getGeneralConfig().colorPackNormal())
                     .append(Component.text(pack.getNumNormalCards()))
                     .append(Component.text(" "))
-                    .append(Component.text(plugin.getGeneralConfig().getColorPackLore()))
+                    .append(Component.text(plugin.getGeneralConfig().colorPackLore()))
                     .append(Component.text(pack.getNormalCardRarity()))));
         }
         if(pack.getNumSpecialCards() > 0) {
-            lore.add(ChatUtil.color(Component.text(plugin.getGeneralConfig().getColorPackSpecial())
+            lore.add(ChatUtil.color(Component.text(plugin.getGeneralConfig().colorPackSpecial())
                     .append(Component.text(pack.getNumSpecialCards()))
                     .append(Component.text(" "))
-                    .append(Component.text(plugin.getGeneralConfig().getColorPackLore()))
+                    .append(Component.text(plugin.getGeneralConfig().colorPackLore()))
                     .append(Component.text(pack.getSpecialCardsRarity()))));
         }
         if(pack.getNumExtraCards() > 0) {
-            lore.add(ChatUtil.color(Component.text(plugin.getGeneralConfig().getColorPackExtra())
+            lore.add(ChatUtil.color(Component.text(plugin.getGeneralConfig().colorPackExtra())
                     .append(Component.text(pack.getNumExtraCards()))
                     .append(Component.text(" "))
-                    .append(Component.text(plugin.getGeneralConfig().getColorPackLore()))
+                    .append(Component.text(plugin.getGeneralConfig().colorPackLore()))
                     .append(Component.text(pack.getExtraCardsRarity()))));
         }
 

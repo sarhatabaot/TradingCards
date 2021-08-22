@@ -248,26 +248,26 @@ public class TradingCardManager implements CardManager<TradingCard> {
         if (simpleCardsConfig.hasShiny(rarityName, cardName))
             isShiny = calculateIfShiny(forcedShiny);
 
-        final String rarityColor = plugin.getMainConfig().rarityColour;
-        final String prefix = plugin.getMainConfig().cardPrefix;
+        final String rarityColor = plugin.getGeneralConfig().colorRarity();
+        final String prefix = plugin.getGeneralConfig().cardPrefix();
 
         final String series = simpleCardsConfig.getSeries(rarityName, cardName);
-        final String seriesColour = plugin.getMainConfig().seriesColour;
-        final String seriesDisplay = plugin.getMainConfig().seriesDisplay;
+        final String seriesColour = plugin.getGeneralConfig().colorSeries();
+        final String seriesDisplay = plugin.getGeneralConfig().displaySeries();
 
         final String about = simpleCardsConfig.getAbout(rarityName, cardName);
-        final String aboutColour = plugin.getMainConfig().aboutColour;
-        final String aboutDisplay = plugin.getMainConfig().aboutDisplay;
+        final String aboutColour = plugin.getGeneralConfig().colorAbout();
+        final String aboutDisplay = plugin.getGeneralConfig().displayAbout();
 
         final String type = simpleCardsConfig.getType(rarityName, cardName);
-        final String typeColour = plugin.getMainConfig().typeColour;
-        final String typeDisplay = plugin.getMainConfig().typeDisplay;
+        final String typeColour = plugin.getGeneralConfig().colorType();
+        final String typeDisplay = plugin.getGeneralConfig().displayType();
 
         final String info = simpleCardsConfig.getInfo(rarityName, cardName);
-        final String infoColour = plugin.getMainConfig().infoColour;
-        final String infoDisplay = plugin.getMainConfig().infoDisplay;
+        final String infoColour = plugin.getGeneralConfig().colorInfo();
+        final String infoDisplay = plugin.getGeneralConfig().displayInfo();
 
-        final String shinyPrefix = plugin.getMainConfig().shinyName;
+        final String shinyPrefix = plugin.getGeneralConfig().shinyName();
         final String cost = simpleCardsConfig.getCost(rarityName, cardName);
 
         boolean isPlayerCard = isPlayerCard(cardName);
@@ -289,10 +289,11 @@ public class TradingCardManager implements CardManager<TradingCard> {
     private boolean calculateIfShiny(boolean forcedShiny) {
         if (forcedShiny)
             return true;
-        int shinyRandom = plugin.getRandom().nextInt(100) + 1;
-        return shinyRandom <= plugin.getConfig().getInt("Chances.Shiny-Version-Chance");
+        int shinyRandom = plugin.getRandom().nextInt(100000) + 1;
+        return shinyRandom <= plugin.getChancesConfig().shinyVersionChance();
     }
 
+    //TODO
     public boolean isPlayerCard(String name) {
         String rarity = plugin.getConfig().getString("General.Auto-Add-Player-Rarity");
         return !getCard(name, rarity, false).getCardName().equals("nullCard") && getCard(name, rarity, false).isPlayerCard();

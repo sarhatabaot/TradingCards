@@ -73,12 +73,12 @@ public class GeneralConfig extends SimpleConfigurate {
     private String colorListHaveCardShiny;
     private String colorRarityCompleted;
 
-    public String displayTitle;
-    public String displayShinyTitle;
-    public String displaySeries;
-    public String displayType;
-    public String displayInfo;
-    public String displayAbout;
+    private String displayTitle;
+    private String displayShinyTitle;
+    private String displaySeries;
+    private String displayType;
+    private String displayInfo;
+    private String displayAbout;
 
     private List<String> activeSeries;
     public GeneralConfig(TradingCards plugin) throws ConfigurateException {
@@ -294,55 +294,83 @@ public class GeneralConfig extends SimpleConfigurate {
         return colorSeries;
     }
 
-    public String getColorType() {
+    public String colorType() {
         return colorType;
     }
 
-    public String getColorInfo() {
+    public String colorInfo() {
         return colorInfo;
     }
 
-    public String getColorAbout() {
+    public String colorAbout() {
         return colorAbout;
     }
 
-    public String getColorRarity() {
+    public String colorRarity() {
         return colorRarity;
     }
 
-    public String getColorPackName() {
+    public String colorPackName() {
         return colorPackName;
     }
 
-    public String getColorPackLore() {
+    public String colorPackLore() {
         return colorPackLore;
     }
 
-    public String getColorPackNormal() {
+    public String colorPackNormal() {
         return colorPackNormal;
     }
 
-    public String getColorPackSpecial() {
+    public String colorPackSpecial() {
         return colorPackSpecial;
     }
 
-    public String getColorPackExtra() {
+    public String colorPackExtra() {
         return colorPackExtra;
     }
 
-    public String getColorListHaveCard() {
+    public String colorListHaveCard() {
         return colorListHaveCard;
     }
 
-    public String getColorListHaveCardShiny() {
+    public String colorListHaveCardShiny() {
         return colorListHaveCardShiny;
     }
 
-    public String getColorRarityCompleted() {
+    public String colorRarityCompleted() {
         return colorRarityCompleted;
     }
 
     public String packPrefix() {
         return packPrefix;
+    }
+
+    public String colorSeries() {
+        return colorSeries;
+    }
+
+    public String displayTitle() {
+        return displayTitle;
+    }
+
+    public String displayShinyTitle() {
+        return displayShinyTitle;
+    }
+
+    public String displaySeries() {
+        return displaySeries;
+    }
+
+    public String displayType() {
+        return displayType;
+    }
+
+    public String displayInfo() {
+        return displayInfo;
+    }
+
+    public String displayAbout() {
+        return displayAbout;
     }
 }
