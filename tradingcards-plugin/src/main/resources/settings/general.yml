@@ -24,6 +24,19 @@ colors:
   # What colour should /cards list give to rarities that have been fully collected?
   list-rarity-complete: "&e"
 
+display:
+  # title placeholders:
+  # %prefix% (the prefix at the start of the config)
+  # %colour% (rarity colour)
+  # %name% (card name)
+  # %cost% (card buy-price)
+  title: "%PREFIX%%COLOUR%%NAME%"
+  shiny-title: "%PREFIX%%COLOUR%%SHINYPREFIX% %NAME%"
+  series: "Series"
+  type: "Type"
+  info: "Info"
+  about: "About"
+
 # ##############################
 # Default Card Settings
 # ##############################

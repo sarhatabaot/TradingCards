@@ -73,6 +73,13 @@ public class GeneralConfig extends SimpleConfigurate {
     private String colorListHaveCardShiny;
     private String colorRarityCompleted;
 
+    public String displayTitle;
+    public String displayShinyTitle;
+    public String displaySeries;
+    public String displayType;
+    public String displayInfo;
+    public String displayAbout;
+
     private List<String> activeSeries;
     public GeneralConfig(TradingCards plugin) throws ConfigurateException {
         super(plugin, "settings" + File.separator,"general.yml", "settings");
@@ -141,6 +148,15 @@ public class GeneralConfig extends SimpleConfigurate {
         this.colorListHaveCard = colorNode.node("list-have-card").getString();
         this.colorListHaveCardShiny = colorNode.node("list-have-shiny-card").getString();
         this.colorRarityCompleted = colorNode.node("list-rarity-complete").getString();
+
+        //Display
+        final ConfigurationNode displayNode = rootNode.node("display");
+        this.displayTitle = displayNode.node("title").getString();
+        this.displayShinyTitle = displayNode.node("shiny-title").getString();
+        this.displaySeries = displayNode.node("series").getString();
+        this.displayType = displayNode.node("type").getString();
+        this.displayInfo = displayNode.node("info").getString();
+        this.displayAbout = displayNode.node("about").getString();
 
         //Series
         this.activeSeries = rootNode.node("active-series").getList(String.class, List.of("2021"));
