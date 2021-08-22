@@ -63,7 +63,6 @@ public class WorldBlacklist extends SimpleConfigurate implements Blacklist<World
 
     @Override
     public void add(World w) {
-        final ConfigurationNode worldNode = rootNode.node(LISTED_WORLDS_NAME);
         listedWorlds.add(w.getName());
         try {
             worldNode.set(null);
@@ -76,7 +75,6 @@ public class WorldBlacklist extends SimpleConfigurate implements Blacklist<World
 
     @Override
     public void remove(World w) {
-        final ConfigurationNode worldNode = rootNode.node(LISTED_WORLDS_NAME);
         listedWorlds.remove(w.getName());
         try {
             worldNode.set(null);
