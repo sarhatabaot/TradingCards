@@ -1,6 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.listeners;
 
 
+import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingCardManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
@@ -93,16 +94,17 @@ public class DropListener extends SimpleListener {
     }
 
     private String getRarityKey(Player player) {
-        ConfigurationSection rarities = plugin.getConfig().getConfigurationSection("Rarities");
+        List<Rarity> rarities = plugin.getRaritiesConfig().rarities();
+        //ConfigurationSection rarities = plugin.getConfig().getConfigurationSection("Rarities");
         if (rarities == null)
             return null;
 
-        Set<String> rarityKeys = rarities.getKeys(false);
+        //Set<String> rarityKeys = rarities.getKeys(false);
 
-        for (final String rarity : rarityKeys) {
-            if(!cardManager.getCard(player.getName(),rarity,false).getCardName().equals("nullCard")) {
-                debug(rarity);
-                return rarity;
+        for (final Rarity rarity : rarities) {
+            if(!cardManager.getCard(player.getName(),rarity.getName(),false).getCardName().equals("nullCard")) {
+                debug(rarity.getName());
+                return rarity.getName();
             }
         }
 
@@ -112,8 +114,8 @@ public class DropListener extends SimpleListener {
 
     private boolean isSpawnerMob(LivingEntity killedEntity) {
         String customName = killedEntity.getCustomName();
-        boolean spawnerDropBlocked = plugin.getMainConfig().spawnerBlock;
-        String spawnerMobName = plugin.getMainConfig().spawnerMobName;
+        boolean spawnerDropBlocked = plugin.getGeneralConfig().spawnerBlock();
+        String spawnerMobName = plugin.getGeneralConfig().spawnerMobName();
 
         if (spawnerDropBlocked && customName != null && customName.equals(spawnerMobName)) {
             debug("Mob came from spawner, not dropping card.");
