@@ -21,49 +21,49 @@ public class MessagesConfig extends SimpleConfigurate {
     private String giveawayNatural;
     private String giveawayNaturalBoss;
     private String giveawayNaturalHostile;
-    private String giveawayNaturalPassive = "%player% gave everyone a random passive mob card!";
-    private String giveawayNaturalNeutral = "%player% gave everyone a random neutral mob card!";
-    private String giveawayNaturalBossNoPlayer = "Everyone's received a random boss mob card!";
-    private String giveawayNaturalPassiveNoPlayer = "Everyone's received a random passive mob card!";
-    private String giveawayNaturalHostileNoPlayer = "Everyone's received a random hostile mob card!";
-    private String giveawayNaturalNeutralNoPlayer = "Everyone's received a random neutral mob card!";
-    private String giveawayNaturalNoPlayer = "Everyone's received a random card!";
-    private String giveRandomCard = "You have been given a random card!";
-    private String giveRandomCardMsg = "You have given %player% a random card!";
-    private String boosterPackMsg = "You have been given a booster pack!";
-    private String openBoosterPack = "You opened a booster pack!";
-    private String listError = "%name% is not online, or is not a rarity!";
-    private String canBuy = "This card can be bought for %buyAmount%!";
-    private String canNotBuy = "This card cannot be bought!";
-    private String canSell = "This card can be sold for %sellAmount%!";
-    private String canNotSell = "This card cannot be sold!";
-    private String chooseCard = "Please specify a card!";
-    private String chooseRarity = "Please specify a rarity!";
-    private String choosePack = "Please specify a pack!";
-    private String cannotBeBought = "This cannot be bought!";
-    private String notEnoughMoney = "You do not have enough money to buy this!";
-    private String boughtCard = "Successfully bought for %amount%!";
-    private String notACard = "You need to be holding a card!";
-    private String cardDoesntExist = "That card does not exist! Make sure to use the exact card and rarity names with proper capitalization.";
-    private String packDoesntExist = "That pack does not exist! Make sure to use the exact card and rarity names with proper capitalization.";
-    private String noVault = "This server has disabled economy interactions!";
-    private String deckCreativeError = "You are not allowed to use decks in creative!";
-    private String giveDeck = "You got a deck! Hold it and right click to open!";
-    private String alreadyHaveDeck = "You already have that deck in your inventory!";
-    private String maxDecks = "You do not have permission for this deck!";
-    private String createNoName = "Invalid name! Alphanumeric and underscores only!";
-    private String createExists = "That card already exists!";
-    private String createSuccess = "Successfully created %name%, rarity %rarity%!";
-    private String timerMessage = "Next card giveaway in %hour% hour(s)!";
-    private String toggleEnabled = "Cards are now enabled!";
-    private String toggleDisabled = "Cards are now disabled!";
-    private String resolveMsg = "%name% = %uuid%";
-    private String resolveError = "%name% is not online!";
-    private String rewardError = "That rarity does not exist!";
-    private String rewardError2 = "You have not collected all of that rarity!";
-    private String rewardError3 = "You have not collected all of that rarity! %shinyName% cards do not count.";
-    private String rewardBroadcast = "%player% has collected all %rarity% cards!";
-    private String rewardDisabled = "Rewards have been disabled!";
+    private String giveawayNaturalPassive;
+    private String giveawayNaturalNeutral;
+    private String giveawayNaturalBossNoPlayer;
+    private String giveawayNaturalPassiveNoPlayer;
+    private String giveawayNaturalHostileNoPlayer;
+    private String giveawayNaturalNeutralNoPlayer;
+    private String giveawayNaturalNoPlayer;
+    private String giveRandomCard;
+    private String giveRandomCardMsg;
+    private String boosterPackMsg;
+    private String openBoosterPack;
+    private String listError;
+    private String canBuy;
+    private String canNotBuy;
+    private String canSell;
+    private String canNotSell;
+    private String chooseCard;
+    private String chooseRarity;
+    private String choosePack;
+    private String cannotBeBought;
+    private String notEnoughMoney;
+    private String boughtCard;
+    private String notACard;
+    private String cardDoesntExist;
+    private String packDoesntExist;
+    private String noVault;
+    private String deckCreativeError;
+    private String giveDeck;
+    private String alreadyHaveDeck;
+    private String maxDecks;
+    private String createNoName;
+    private String createExists;
+    private String createSuccess;
+    private String timerMessage;
+    private String toggleEnabled;
+    private String toggleDisabled;
+    private String resolveMsg;
+    private String resolveError;
+    private String rewardError;
+    private String rewardError2;
+    private String rewardError3;
+    private String rewardBroadcast;
+    private String rewardDisabled;
 
 
     public MessagesConfig(TradingCards plugin) throws ConfigurateException {
@@ -83,6 +83,277 @@ public class MessagesConfig extends SimpleConfigurate {
         this.giveawayNatural = rootNode.node("giveaway-natural").getString();
         this.giveawayNaturalBoss = rootNode.node("giveaway-natural-boss").getString();
         this.giveawayNaturalHostile = rootNode.node("giveaway-natural-hostile").getString();
+        this.giveawayNaturalPassive = rootNode.node("giveaway-natural-passive").getString();
+        this.giveawayNaturalNeutral = rootNode.node("giveaway-natural-neutral").getString();
+        this.giveawayNaturalBossNoPlayer = rootNode.node("giveaway-natural-boss-no-player").getString();
+        this.giveawayNaturalPassiveNoPlayer = rootNode.node("giveaway-natural-passive-no-player").getString();
+        this.giveawayNaturalHostileNoPlayer = rootNode.node("giveaway-natural-hostile-no-player").getString();
+        this.giveawayNaturalNeutralNoPlayer = rootNode.node("giveaway-natural-neutral-no-player").getString();
+        this.giveawayNaturalNoPlayer = rootNode.node("giveaway-natural-no-player").getString();
+        this.giveRandomCard = rootNode.node("give-random-card").getString();
+        this.giveRandomCardMsg = rootNode.node("give-random-card-msg").getString();
+        this.boosterPackMsg = rootNode.node("booster-pack-msg").getString();
+        this.openBoosterPack = rootNode.node("open-booster-pack").getString();
+        this.listError = rootNode.node("list-error").getString();
+        this.canBuy = rootNode.node("can-buy").getString();
+        this.canNotBuy = rootNode.node("cannot-buy").getString();
+        this.canSell = rootNode.node("can-sell").getString();
+        this.canNotSell = rootNode.node("cannot-sell").getString();
+        this.chooseCard = rootNode.node("choose-card").getString();
+        this.choosePack = rootNode.node("choose-pack").getString();
+        this.chooseRarity = rootNode.node("choose-rarity").getString();
+        this.cannotBeBought = rootNode.node("cannot-be-bought").getString();
+        this.notEnoughMoney = rootNode.node("not-enough-money").getString();
+        this.boughtCard = rootNode.node("bought-card").getString();
+        this.notACard = rootNode.node("not-a-card").getString();
+        this.cardDoesntExist = rootNode.node("card-doesnt-exist").getString();
+        this.packDoesntExist = rootNode.node("pack-doesnt-exist").getString();
+        this.noVault = rootNode.node("no-vault").getString();
+        this.deckCreativeError = rootNode.node("deck-creative-error").getString();
+        this.giveDeck = rootNode.node("give-deck").getString();
+        this.alreadyHaveDeck = rootNode.node("already-have-deck").getString();
+        this.maxDecks = rootNode.node("max-decks").getString();
+        this.createNoName = rootNode.node("create-no-name").getString();
+        this.createExists = rootNode.node("create-exists").getString();
+        this.createSuccess = rootNode.node("create-success").getString();
+        this.timerMessage = rootNode.node("timer-message").getString();
+        this.toggleEnabled = rootNode.node("toggle-enabled").getString();
+        this.toggleDisabled = rootNode.node("toggle-disabled").getString();
+        this.resolveMsg = rootNode.node("resolve-msg").getString();
+        this.resolveError = rootNode.node("resolve-error").getString();
+        this.rewardError = rootNode.node("reward-error").getString();
+        this.rewardError2 = rootNode.node("reward-error2").getString();
+        this.rewardError3 = rootNode.node("reward-error3").getString();
+        this.rewardBroadcast = rootNode.node("reward-broadcast").getString();
+        this.rewardDisabled = rootNode.node("reward-disabled").getString();
 
+    }
+
+    public String prefix() {
+        return prefix;
+    }
+
+    public String reload() {
+        return reload;
+    }
+
+    public String noCard() {
+        return noCard;
+    }
+
+    public String noPlayer() {
+        return noPlayer;
+    }
+
+    public String noCmd() {
+        return noCmd;
+    }
+
+    public String noEntity() {
+        return noEntity;
+    }
+
+    public String noCreative() {
+        return noCreative;
+    }
+
+    public String noRarity() {
+        return noRarity;
+    }
+
+    public String noBoosterPack() {
+        return noBoosterPack;
+    }
+
+    public String scheduledGiveaway() {
+        return scheduledGiveaway;
+    }
+
+    public String giveaway() {
+        return giveaway;
+    }
+
+    public String giveawayNatural() {
+        return giveawayNatural;
+    }
+
+    public String giveawayNaturalBoss() {
+        return giveawayNaturalBoss;
+    }
+
+    public String giveawayNaturalHostile() {
+        return giveawayNaturalHostile;
+    }
+
+    public String giveawayNaturalPassive() {
+        return giveawayNaturalPassive;
+    }
+
+    public String giveawayNaturalNeutral() {
+        return giveawayNaturalNeutral;
+    }
+
+    public String giveawayNaturalBossNoPlayer() {
+        return giveawayNaturalBossNoPlayer;
+    }
+
+    public String giveawayNaturalPassiveNoPlayer() {
+        return giveawayNaturalPassiveNoPlayer;
+    }
+
+    public String giveawayNaturalHostileNoPlayer() {
+        return giveawayNaturalHostileNoPlayer;
+    }
+
+    public String giveawayNaturalNeutralNoPlayer() {
+        return giveawayNaturalNeutralNoPlayer;
+    }
+
+    public String giveawayNaturalNoPlayer() {
+        return giveawayNaturalNoPlayer;
+    }
+
+    public String giveRandomCard() {
+        return giveRandomCard;
+    }
+
+    public String giveRandomCardMsg() {
+        return giveRandomCardMsg;
+    }
+
+    public String boosterPackMsg() {
+        return boosterPackMsg;
+    }
+
+    public String openBoosterPack() {
+        return openBoosterPack;
+    }
+
+    public String listError() {
+        return listError;
+    }
+
+    public String canBuy() {
+        return canBuy;
+    }
+
+    public String canNotBuy() {
+        return canNotBuy;
+    }
+
+    public String canSell() {
+        return canSell;
+    }
+
+    public String canNotSell() {
+        return canNotSell;
+    }
+
+    public String chooseCard() {
+        return chooseCard;
+    }
+
+    public String chooseRarity() {
+        return chooseRarity;
+    }
+
+    public String choosePack() {
+        return choosePack;
+    }
+
+    public String cannotBeBought() {
+        return cannotBeBought;
+    }
+
+    public String notEnoughMoney() {
+        return notEnoughMoney;
+    }
+
+    public String boughtCard() {
+        return boughtCard;
+    }
+
+    public String notACard() {
+        return notACard;
+    }
+
+    public String cardDoesntExist() {
+        return cardDoesntExist;
+    }
+
+    public String packDoesntExist() {
+        return packDoesntExist;
+    }
+
+    public String noVault() {
+        return noVault;
+    }
+
+    public String deckCreativeError() {
+        return deckCreativeError;
+    }
+
+    public String giveDeck() {
+        return giveDeck;
+    }
+
+    public String alreadyHaveDeck() {
+        return alreadyHaveDeck;
+    }
+
+    public String maxDecks() {
+        return maxDecks;
+    }
+
+    public String createNoName() {
+        return createNoName;
+    }
+
+    public String createExists() {
+        return createExists;
+    }
+
+    public String createSuccess() {
+        return createSuccess;
+    }
+
+    public String timerMessage() {
+        return timerMessage;
+    }
+
+    public String toggleEnabled() {
+        return toggleEnabled;
+    }
+
+    public String toggleDisabled() {
+        return toggleDisabled;
+    }
+
+    public String resolveMsg() {
+        return resolveMsg;
+    }
+
+    public String resolveError() {
+        return resolveError;
+    }
+
+    public String rewardError() {
+        return rewardError;
+    }
+
+    public String rewardError2() {
+        return rewardError2;
+    }
+
+    public String rewardError3() {
+        return rewardError3;
+    }
+
+    public String rewardBroadcast() {
+        return rewardBroadcast;
+    }
+
+    public String rewardDisabled() {
+        return rewardDisabled;
     }
 }

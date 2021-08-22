@@ -28,7 +28,7 @@ public class DeckCommand extends BaseCommand {
 		Validate.notNull(player, "Cannot run this command from console, or there was a problem getting the player object.");
 
 		if (!player.hasPermission("cards.decks." + deckNumber)) {
-			ChatUtil.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesOldConfig().maxDecks));
+			ChatUtil.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().maxDecks()));
 			return;
 		}
 
@@ -36,7 +36,7 @@ public class DeckCommand extends BaseCommand {
 			if (!plugin.getDeckManager().hasDeck(player, deckNumber)) {
 				CardUtil.dropItem(player, plugin.getDeckManager().createDeck(player, deckNumber));
 			} else {
-				ChatUtil.sendPrefixedMessage(player, plugin.getMessagesOldConfig().alreadyHaveDeck);
+				ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().alreadyHaveDeck());
 			}
 			return;
 		}
@@ -46,7 +46,7 @@ public class DeckCommand extends BaseCommand {
 				plugin.getDeckManager().openDeck(player, deckNumber);
 				return;
 			}
-			ChatUtil.sendPrefixedMessage(player, plugin.getMessagesOldConfig().deckCreativeError);
+			ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().deckCreativeError());
 			return;
 		}
 		plugin.getDeckManager().openDeck(player, deckNumber);

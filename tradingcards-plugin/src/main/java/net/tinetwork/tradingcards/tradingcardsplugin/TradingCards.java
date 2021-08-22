@@ -52,7 +52,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     /* Configs */
     private TradingCardsConfig mainConfig;
     private DeckOldConfig deckOldConfig;
-    private MessagesOldConfig messagesOldConfig;
     private CardsConfig cardsConfig;
 
     private GeneralConfig generalConfig;
@@ -140,7 +139,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private void initConfigs() {
         saveDefaultConfig();
         mainConfig = new TradingCardsConfig(this);
-        messagesOldConfig = new MessagesOldConfig(this);
         try {
             this.generalConfig = new GeneralConfig(this);
             this.raritiesConfig = new RaritiesConfig(this);
@@ -157,7 +155,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
             getLogger().severe(e.getMessage());
         }
         ConfigLoader.load(mainConfig);
-        ConfigLoader.loadAndSave(messagesOldConfig);
 
         deckOldConfig = new DeckOldConfig(this);
         cardsConfig = new CardsConfig(this);
@@ -298,10 +295,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         return econ != null;
     }
 
-    public MessagesOldConfig getMessagesOldConfig() {
-        return messagesOldConfig;
-    }
-
     public boolean isMobHostile(EntityType e) {
         return this.hostileMobs.contains(e);
     }
@@ -396,13 +389,17 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     }
 
     public String getPrefixedMessage(final String message) {
-        return cMsg(messagesOldConfig.prefix + "&r " + message);
+        return cMsg(messagesConfig.prefix() + "&r " + message);
     }
 
     public void reloadAllConfig() {
         ConfigLoader.loadAndSave(mainConfig);
         this.deckOldConfig.reloadConfig();
-        ConfigLoader.loadAndSave(messagesOldConfig);
+        this.packsConfig.reloadConfig();
+        this.generalConfig.reloadConfig();
+        this.messagesConfig.reloadConfig();
+        this.raritiesConfig.reloadConfig();
+        this.chancesConfig.reloadConfig();
     }
 
     public String cMsg(String message) {
@@ -423,7 +420,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     }
 
     private String getPrefixedTimerMessage(int hours) {
-        return getPrefixedMessage(messagesOldConfig.timerMessage.replace("%hour%", String.valueOf(hours)));
+        return getPrefixedMessage(messagesConfig.timerMessage().replace("%hour%", String.valueOf(hours)));
     }
 
     public Random getRandom() {
