@@ -1,6 +1,5 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.utils;
 
-import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
