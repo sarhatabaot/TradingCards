@@ -3,7 +3,6 @@ package net.tinetwork.tradingcards.tradingcardsplugin.managers;
 
 import de.tr7zw.nbtapi.NBTItem;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.tradingcardsplugin.config.TradingCardsConfig;
 import net.tinetwork.tradingcards.api.manager.DeckManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -94,7 +93,7 @@ public class TradingDeckManager implements DeckManager {
 	@NotNull
 	@Override
 	public ItemStack createDeckItem(@NotNull final Player p, final int num) {
-		ItemStack deck = TradingCardsConfig.getBlankDeck();
+		ItemStack deck = plugin.getGeneralConfig().blankDeck();
 		ItemMeta deckMeta = deck.getItemMeta();
 		deckMeta.setDisplayName(plugin.cMsg(plugin.getGeneralConfig().deckPrefix() + p.getName() + "'s Deck #" + num));
 

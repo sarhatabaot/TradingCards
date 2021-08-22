@@ -4,7 +4,6 @@ import de.tr7zw.nbtapi.NBTItem;
 import net.kyori.adventure.text.Component;
 import net.tinetwork.tradingcards.api.model.Pack;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.tradingcardsplugin.config.TradingCardsConfig;
 import net.tinetwork.tradingcards.api.manager.PackManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.PacksConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
@@ -35,8 +34,12 @@ public class BoosterPackManager extends PackManager {
     }
 
     private void loadPacks() {
-        for(String packName: TradingCardsConfig.getPacks()){
-            packs.put(packName,generatePack(packName));
+        try {
+            for (String packName : plugin.getPacksConfig().getPacks()) {
+                packs.put(packName, generatePack(packName));
+            }
+        } catch (SerializationException e){
+            plugin.getLogger().severe(e.getMessage());
         }
     }
 
@@ -107,7 +110,7 @@ public class BoosterPackManager extends PackManager {
 
     @Override
     public ItemStack generatePack(final String name) {
-        ItemStack boosterPack = TradingCardsConfig.getBlankBoosterPack();
+        ItemStack boosterPack = plugin.getGeneralConfig().blankBoosterPack();
         try {
             final Pack pack = plugin.getPacksConfig().getPack(name);
             int numNormalCards = pack.getNumNormalCards();

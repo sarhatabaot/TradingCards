@@ -77,7 +77,7 @@ public class DeckListener extends SimpleListener {
 			if (it == null || !it.getItemMeta().hasLore())
 				continue;
 
-			if (!CardUtil.isCard(it) && plugin.getMainConfig().dropDeckItems) {
+			if (!CardUtil.isCard(it) && plugin.getGeneralConfig().dropDeckItems()) {
 				Player player = Bukkit.getPlayer(id);
 				CardUtil.dropItem(player, it);
 				continue;

@@ -32,7 +32,7 @@ public class DeckCommand extends BaseCommand {
 			return;
 		}
 
-		if (plugin.getMainConfig().useDeckItems) {
+		if (plugin.getGeneralConfig().useDeckItem()) {
 			if (!plugin.getDeckManager().hasDeck(player, deckNumber)) {
 				CardUtil.dropItem(player, plugin.getDeckManager().createDeck(player, deckNumber));
 			} else {
@@ -42,7 +42,7 @@ public class DeckCommand extends BaseCommand {
 		}
 
 		if (player.getGameMode() == GameMode.CREATIVE) {
-			if (plugin.getMainConfig().decksInCreative) {
+			if (plugin.getGeneralConfig().deckInCreative()) {
 				plugin.getDeckManager().openDeck(player, deckNumber);
 				return;
 			}

@@ -231,8 +231,8 @@ public class CardsCommand extends BaseCommand {
             if (rarity == null || plugin.isRarityAndFormat(rarity).equals("None")) {
                 final String sectionFormat = String.format("&e&l------- &7(&6&l%s's Collection&7)&e&l -------", target.getName());
                 ChatUtil.sendMessage(sender, String.format(sectionFormat, target.getName()));
-                for (String raritySection : plugin.getMainConfig().getRarities()) {
-                    listRarity(sender, target, raritySection);
+                for(Rarity rarityKey: plugin.getRaritiesConfig().rarities()) {
+                    listRarity(sender,target,rarityKey.getName());
                 }
                 return;
             }
@@ -240,7 +240,14 @@ public class CardsCommand extends BaseCommand {
         }
 
         private boolean canBuyPack(final String name) {
-            return plugin.getMainConfig().vaultEnabled && plugin.getConfig().getDouble("BoosterPacks." + name + ".Price", 0.0D) > 0.0D;
+            try {
+                Pack pack = plugin.getPacksConfig().getPack(name);
+                return plugin.getGeneralConfig().vaultEnabled() && pack.getPrice() > 0.0D;
+            } catch (SerializationException e) {
+                plugin.getLogger().severe(e.getMessage());
+                return false;
+            }
+
         }
 
         private boolean hasExtra(final String name) {
@@ -408,7 +415,7 @@ public class CardsCommand extends BaseCommand {
             if (!hasVault(player))
                 return;
 
-            if (player.getInventory().getItemInMainHand().getType() != Material.valueOf(plugin.getMainConfig().cardMaterial)) {
+            if (player.getInventory().getItemInMainHand().getType() != plugin.getGeneralConfig().cardMaterial()) {
                 ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().notACard());
                 return;
             }
@@ -428,7 +435,7 @@ public class CardsCommand extends BaseCommand {
             plugin.debug(rarity);
 
             if (cardManager.getCard(rarity, card, false).getSellPrice() == 0.0D) {
-                if (card.contains(plugin.getMainConfig().shinyName))
+                if (card.contains(plugin.getGeneralConfig().shinyName()))
                     ChatUtil.sendPrefixedMessage(player, "Cannot sell shiny card.");
                 ChatUtil.sendPrefixedMessage(player, "Cannot sell this card.");
                 return;

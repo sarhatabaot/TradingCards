@@ -3,6 +3,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigurate;
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 
@@ -79,6 +80,10 @@ public class GeneralConfig extends SimpleConfigurate {
     private String displayType;
     private String displayInfo;
     private String displayAbout;
+
+    private ItemStack blankCard;
+    private ItemStack blankBoosterPack;
+    private ItemStack blankDeck;
 
     private List<String> activeSeries;
     public GeneralConfig(TradingCards plugin) throws ConfigurateException {
@@ -160,6 +165,23 @@ public class GeneralConfig extends SimpleConfigurate {
 
         //Series
         this.activeSeries = rootNode.node("active-series").getList(String.class, List.of("2021"));
+
+        //ItemStacks
+        this.blankBoosterPack =new ItemStack(plugin.getGeneralConfig().packMaterial());
+        this.blankCard = new ItemStack(plugin.getGeneralConfig().cardMaterial());
+        this.blankDeck = new ItemStack(plugin.getGeneralConfig().deckMaterial());
+    }
+
+    public ItemStack blankCard() {
+        return blankCard;
+    }
+
+    public ItemStack blankBoosterPack() {
+        return blankBoosterPack;
+    }
+
+    public ItemStack blankDeck() {
+        return blankDeck;
     }
 
     public Material deckMaterial() {

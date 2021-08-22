@@ -50,7 +50,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private ImmutableList<EntityType> bossMobs;
 
     /* Configs */
-    private TradingCardsConfig mainConfig;
     private DeckOldConfig deckOldConfig;
     private CardsConfig cardsConfig;
 
@@ -97,7 +96,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
         hookVault();
 
-        if (this.getMainConfig().scheduleCards) {
+        if (this.getGeneralConfig().scheduleCards()) {
             this.startTimer();
         }
     }
@@ -138,7 +137,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
     private void initConfigs() {
         saveDefaultConfig();
-        mainConfig = new TradingCardsConfig(this);
         try {
             this.generalConfig = new GeneralConfig(this);
             this.raritiesConfig = new RaritiesConfig(this);
@@ -154,7 +152,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         } catch (ConfigurateException e) {
             getLogger().severe(e.getMessage());
         }
-        ConfigLoader.load(mainConfig);
 
         deckOldConfig = new DeckOldConfig(this);
         cardsConfig = new CardsConfig(this);
@@ -228,9 +225,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         return cardsConfig;
     }
 
-    public TradingCardsConfig getMainConfig() {
-        return mainConfig;
-    }
 
     private void hookVault() {
         if (this.generalConfig.vaultEnabled()) {
@@ -393,7 +387,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     }
 
     public void reloadAllConfig() {
-        ConfigLoader.loadAndSave(mainConfig);
         this.deckOldConfig.reloadConfig();
         this.packsConfig.reloadConfig();
         this.generalConfig.reloadConfig();

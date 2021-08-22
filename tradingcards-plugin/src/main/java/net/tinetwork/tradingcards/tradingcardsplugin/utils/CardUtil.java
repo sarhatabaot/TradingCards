@@ -1,6 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.utils;
 
 import de.tr7zw.nbtapi.NBTItem;
+import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingCardManager;
@@ -41,7 +42,7 @@ public class CardUtil {
 	}
 
 	public static String getRarityName(@NotNull final String rarity) {
-		return rarity.replace(stripAllColor(plugin.getMainConfig().shinyName), "").trim();
+		return rarity.replace(stripAllColor(plugin.getGeneralConfig().shinyName()), "").trim();
 	}
 
 	public String upgradeRarity(String packName, String rarity) {
@@ -140,7 +141,7 @@ public class CardUtil {
 	@NotNull
 	public static String getCardName(@NotNull final String displayRarity, @NotNull final String displayCard) {
 		final String strippedRarity = getRarityName(displayRarity);
-		final boolean hasPrefix = plugin.getGeneralConfig().cardPrefix() != null || !plugin.getMainConfig().cardPrefix.equals("");
+		final boolean hasPrefix = plugin.getGeneralConfig().cardPrefix() != null || !plugin.getGeneralConfig().cardPrefix().isEmpty();
 		final String strippedPrefix = stripAllColor(plugin.getGeneralConfig().cardPrefix());
 		final String strippedShiny = stripAllColor(plugin.getGeneralConfig().shinyName());
 		final String strippedDisplay = StringUtils.replaceEach(stripAllColor(displayCard), new String[]{strippedPrefix, strippedShiny}, new String[]{"", ""}).trim();
@@ -230,12 +231,12 @@ public class CardUtil {
 			return "None";
 
 		int randomChance = plugin.getRandom().nextInt(RANDOM_MAX) + 1;
-		TreeSet<String> rarityKeys = new TreeSet<>(plugin.getMainConfig().rarities().getKeys(false));
-		for(String rarity: rarityKeys.descendingSet()) {
-			var chance = plugin.getConfig().getInt("Chances." + rarity + "." + mobType, -1);
+		for(Rarity rarity: plugin.getRaritiesConfig().rarities()) {
+			var chance = plugin.getChancesConfig().getChance(rarity.getName()).getFromMobType(mobType);
 			if(randomChance < chance)
-				return rarity;
+				return rarity.getName();
 		}
+
 		return "None";
 	}
 
@@ -253,7 +254,7 @@ public class CardUtil {
 	}
 
 	private static boolean isCardMaterial(final  Material material) {
-		return material == Material.valueOf(plugin.getMainConfig().cardMaterial);
+		return material == plugin.getGeneralConfig().cardMaterial();
 	}
 
 	private static void broadcastPrefixedMessage(final String message) {

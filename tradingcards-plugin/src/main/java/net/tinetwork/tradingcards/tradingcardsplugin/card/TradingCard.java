@@ -1,7 +1,6 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.card;
 
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.tradingcardsplugin.config.TradingCardsConfig;
 import net.tinetwork.tradingcards.api.card.Card;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
@@ -29,7 +28,7 @@ public class TradingCard extends Card<TradingCard> {
 
     @Override
     public ItemStack buildItem() {
-        ItemStack card = TradingCardsConfig.getBlankCard(1).clone();
+        ItemStack card = plugin.getGeneralConfig().blankCard().clone();
         ItemMeta cardMeta = card.getItemMeta();
         cardMeta.setDisplayName(formatDisplayName(isPlayerCard(), isShiny(), getPrefix(), getRarityColour(), getCardName().replace('_', ' '), getCost(), getShinyPrefix()));
         cardMeta.setLore(formatLore());
