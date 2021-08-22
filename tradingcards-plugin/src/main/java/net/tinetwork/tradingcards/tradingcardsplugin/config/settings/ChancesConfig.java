@@ -1,6 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
 
 import net.tinetwork.tradingcards.api.model.Chance;
+import net.tinetwork.tradingcards.api.model.EmptyChance;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigurate;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -66,8 +67,13 @@ public class ChancesConfig extends SimpleConfigurate {
         return shinyVersionChance;
     }
 
-    public Chance getChance(final String rarityId) throws SerializationException {
-        return rootNode.node(rarityId).get(Chance.class);
+    public Chance getChance(final String rarityId) {
+        try {
+            return rootNode.node(rarityId).get(Chance.class);
+        } catch (SerializationException e){
+            plugin.getLogger().severe(e.getMessage());
+        }
+        return new EmptyChance();
     }
 
     public static final class ChanceSerializer implements TypeSerializer<Chance> {

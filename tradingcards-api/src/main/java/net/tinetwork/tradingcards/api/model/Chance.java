@@ -35,4 +35,14 @@ public class Chance {
         this.boss = boss;
     }
 
+    public int getFromMobType(final String mobType) {
+        return switch (mobType) {
+            case "HOSTILE" -> this.getHostile();
+            case "NEUTRAL" -> this.getNeutral();
+            case "PASSIVE" -> this.getPassive();
+            case "BOSS" -> this.getBoss();
+            default -> 0;
+        };
+    }
+
 }

@@ -1,5 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.managers;
 
+import net.tinetwork.tradingcards.api.model.Chance;
+import net.tinetwork.tradingcards.api.model.EmptyChance;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.NullCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
@@ -58,7 +60,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
                 for (String name : names) {
                     cards.put(rarity + "." + name, generateCard(simpleCardsConfig, name, rarity, false));
                     rarityCardList.get(rarity).add(name);
-                    if (plugin.getMainConfig().activeSeries.contains(simpleCardsConfig.getSeries(rarity, name))) {
+                    if (plugin.getGeneralConfig().activeSeries().contains(simpleCardsConfig.getSeries(rarity, name))) {
                         activeRarityCardList.get(rarity).add(name);
                         activeCards.put(rarity + "." + name, cards.get(rarity + "." + name));
                     }
@@ -157,36 +159,42 @@ public class TradingCardManager implements CardManager<TradingCard> {
         TreeSet<String> rarityKeys = new TreeSet<>(plugin.getCardManager().getRarityNames());
         for (String rarity : rarityKeys.descendingSet()) {
             plugin.debug("rarity=" + rarity);
-            var chance = plugin.getConfig().getInt("Chances." + rarity + "." + mobType, -1);
-            if (randomChance < chance)
+            Chance chance = plugin.getChancesConfig().getChance(rarity);
+            if(chance instanceof EmptyChance)
+                return "None";
+
+            int chanceInt = chance.getFromMobType(mobType);
+
+            if (randomChance < chanceInt)
                 return rarity;
         }
         return "None";
     }
 
+
     //Returns none or the mobtype
     public String getMobTypeName(CardUtil.MobType mobType, boolean alwaysDrop) {
-        int generatedDropChance = plugin.getRandom().nextInt(100) + 1;
+        int generatedDropChance = plugin.getRandom().nextInt(100000) + 1;
         if (alwaysDrop)
             return mobType.name();
         switch (mobType) {
             case BOSS:
-                if (generatedDropChance > plugin.getMainConfig().bossChance) {
+                if (generatedDropChance > plugin.getChancesConfig().bossChance()) {
                     return mobType.name();
                 }
                 break;
             case NEUTRAL:
-                if (generatedDropChance > plugin.getMainConfig().neutralChance) {
+                if (generatedDropChance > plugin.getChancesConfig().neutralChance()) {
                     return mobType.name();
                 }
                 break;
             case PASSIVE:
-                if (generatedDropChance > plugin.getMainConfig().passiveChance) {
+                if (generatedDropChance > plugin.getChancesConfig().passiveChance()) {
                     return mobType.name();
                 }
                 break;
             case HOSTILE:
-                if (generatedDropChance > plugin.getMainConfig().hostileChance) {
+                if (generatedDropChance > plugin.getChancesConfig().hostileChance()) {
                     return mobType.name();
                 }
                 break;
@@ -208,8 +216,12 @@ public class TradingCardManager implements CardManager<TradingCard> {
         TreeSet<String> rarityKeys = new TreeSet<>(plugin.getCardManager().getActiveRarityNames());
         for (String rarity : rarityKeys.descendingSet()) {
             plugin.debug("rarity=" + rarity);
-            var chance = plugin.getConfig().getInt("Chances." + rarity + "." + mobTypeName, -1);
-            if (alwaysDrop || randomChance < chance)
+            Chance chance = plugin.getChancesConfig().getChance(rarity);
+            if(chance instanceof EmptyChance)
+                return "None";
+
+            int chanceInt = chance.getFromMobType(mobTypeName);
+            if (alwaysDrop || randomChance < chanceInt)
                 return rarity;
         }
 
@@ -230,8 +242,12 @@ public class TradingCardManager implements CardManager<TradingCard> {
         TreeSet<String> rarityKeys = new TreeSet<>(plugin.getCardManager().getRarityNames());
         for (String rarity : rarityKeys.descendingSet()) {
             plugin.debug("rarity=" + rarity);
-            var chance = plugin.getConfig().getInt("Chances." + rarity + "." + mobTypeName, -1);
-            if (alwaysDrop || randomChance < chance)
+            Chance chance = plugin.getChancesConfig().getChance(rarity);
+            if(chance instanceof EmptyChance)
+                return "None";
+
+            int chanceInt = chance.getFromMobType(mobTypeName);
+            if (alwaysDrop || randomChance < chanceInt)
                 return rarity;
         }
 
