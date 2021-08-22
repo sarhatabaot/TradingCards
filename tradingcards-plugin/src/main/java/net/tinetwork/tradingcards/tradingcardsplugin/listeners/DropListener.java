@@ -47,7 +47,7 @@ public class DropListener extends SimpleListener {
         if (killer == null)
             return;
 
-        if (plugin.getRandom().nextInt(100000) + 1 > playerCardDropRarity)
+        if (plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1 > playerCardDropRarity)
             return;
 
         String rarityKey = getRarityKey(killedPlayer);

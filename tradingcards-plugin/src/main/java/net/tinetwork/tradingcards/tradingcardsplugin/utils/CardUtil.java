@@ -33,6 +33,7 @@ public class CardUtil {
 	private static final char ALT_COLOR_CHAR = '&';
 	private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)" + ALT_COLOR_CHAR + "[0-9A-FK-ORX]");
 	private static final String NAME_TEMPLATE = "^[a-zA-Z0-9-_]+$";
+	public static final int RANDOM_MAX = 100000;
 
 	public static void init(final TradingCards plugin) {
 		CardUtil.plugin = plugin;
@@ -61,7 +62,7 @@ public class CardUtil {
 			plugin.debug("Pack has upgrade chance set to 0! Exiting..");
 			return rarityMap.get(curRarity);
 		}
-		int random = plugin.getRandom().nextInt(100000) + 1;
+		int random = plugin.getRandom().nextInt(RANDOM_MAX) + 1;
 		if (random <= chance) {
 			if (curRarity < i) curRarity++;
 			plugin.debug("Card upgraded! new rarity is " + rarityMap.get(curRarity) + "!");
@@ -139,9 +140,9 @@ public class CardUtil {
 	@NotNull
 	public static String getCardName(@NotNull final String displayRarity, @NotNull final String displayCard) {
 		final String strippedRarity = getRarityName(displayRarity);
-		final boolean hasPrefix = plugin.getMainConfig().cardPrefix != null || !plugin.getMainConfig().cardPrefix.equals("");
-		final String strippedPrefix = stripAllColor(plugin.getMainConfig().cardPrefix);
-		final String strippedShiny = stripAllColor(plugin.getMainConfig().shinyName);
+		final boolean hasPrefix = plugin.getGeneralConfig().cardPrefix() != null || !plugin.getMainConfig().cardPrefix.equals("");
+		final String strippedPrefix = stripAllColor(plugin.getGeneralConfig().cardPrefix());
+		final String strippedShiny = stripAllColor(plugin.getGeneralConfig().shinyName());
 		final String strippedDisplay = StringUtils.replaceEach(stripAllColor(displayCard), new String[]{strippedPrefix, strippedShiny}, new String[]{"", ""}).trim();
 		plugin.debug("stripped|rarity=" + strippedRarity + "|hasPrefix=" + hasPrefix + "|prefix=" + strippedPrefix + "|shiny=" + strippedShiny + "|display=" + strippedDisplay);
 
@@ -181,23 +182,23 @@ public class CardUtil {
 	//TODO
 	//This should not calculate a rarity, but rather just return the mobtype
 	public static String getMobTypeOrNone(EntityType e, boolean alwaysDrop) {
-		int generatedDropChance = plugin.getRandom().nextInt(100000) + 1;
+		int generatedDropChance = plugin.getRandom().nextInt(RANDOM_MAX) + 1;
 		plugin.debug("shouldItDrop Num: " + generatedDropChance);
 		if (plugin.isMobHostile(e)) {
-			if (!alwaysDrop && generatedDropChance > plugin.getMainConfig().hostileChance) {
+			if (!alwaysDrop && generatedDropChance > plugin.getChancesConfig().hostileChance()) {
 				return "None";
 			}
 
 			return "Hostile";
 		}
 		if (plugin.isMobNeutral(e)) {
-			if (!alwaysDrop && generatedDropChance > plugin.getMainConfig().neutralChance) {
+			if (!alwaysDrop && generatedDropChance > plugin.getChancesConfig().neutralChance()) {
 				return "None";
 			}
 			return "Neutral";
 		}
 		if (plugin.isMobPassive(e)) {
-			if (!alwaysDrop && generatedDropChance > plugin.getMainConfig().passiveChance) {
+			if (!alwaysDrop && generatedDropChance >  plugin.getChancesConfig().passiveChance()) {
 				return "None";
 
 			}
@@ -205,7 +206,7 @@ public class CardUtil {
 		}
 
 		if (!plugin.isMobBoss(e)) {
-			if (!alwaysDrop && generatedDropChance > plugin.getMainConfig().bossChance) {
+			if (!alwaysDrop && generatedDropChance >  plugin.getChancesConfig().bossChance()) {
 				return "None";
 			}
 			return "Boss";
@@ -228,7 +229,7 @@ public class CardUtil {
 		if(mobType.equalsIgnoreCase("None"))
 			return "None";
 
-		int randomChance = plugin.getRandom().nextInt(100000) + 1;
+		int randomChance = plugin.getRandom().nextInt(RANDOM_MAX) + 1;
 		TreeSet<String> rarityKeys = new TreeSet<>(plugin.getMainConfig().rarities().getKeys(false));
 		for(String rarity: rarityKeys.descendingSet()) {
 			var chance = plugin.getConfig().getInt("Chances." + rarity + "." + mobType, -1);
@@ -254,17 +255,6 @@ public class CardUtil {
 	private static boolean isCardMaterial(final  Material material) {
 		return material == Material.valueOf(plugin.getMainConfig().cardMaterial);
 	}
-
-
-	public static class NotACardException extends Exception {
-		private final long serial = 1L;
-
-		public NotACardException(final String message) {
-			super(message);
-		}
-	}
-
-
 
 	private static void broadcastPrefixedMessage(final String message) {
 		Bukkit.broadcastMessage(plugin.getPrefixedMessage(message));

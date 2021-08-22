@@ -154,7 +154,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
         if (mobType.equalsIgnoreCase("None"))
             return "None";
 
-        int randomChance = plugin.getRandom().nextInt(100000) + 1;
+        int randomChance = plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1;
 
         TreeSet<String> rarityKeys = new TreeSet<>(plugin.getCardManager().getRarityNames());
         for (String rarity : rarityKeys.descendingSet()) {
@@ -174,7 +174,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
 
     //Returns none or the mobtype
     public String getMobTypeName(CardUtil.MobType mobType, boolean alwaysDrop) {
-        int generatedDropChance = plugin.getRandom().nextInt(100000) + 1;
+        int generatedDropChance = plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1;
         if (alwaysDrop)
             return mobType.name();
         switch (mobType) {
@@ -211,7 +211,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
         if (mobTypeName.equalsIgnoreCase("None"))
             return "None";
 
-        int randomChance = plugin.getRandom().nextInt(100000) + 1;
+        int randomChance = plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1;
 
         TreeSet<String> rarityKeys = new TreeSet<>(plugin.getCardManager().getActiveRarityNames());
         for (String rarity : rarityKeys.descendingSet()) {
@@ -237,7 +237,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
         if (mobTypeName.equalsIgnoreCase("None"))
             return "None";
 
-        int randomChance = plugin.getRandom().nextInt(100000) + 1;
+        int randomChance = plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1;
 
         TreeSet<String> rarityKeys = new TreeSet<>(plugin.getCardManager().getRarityNames());
         for (String rarity : rarityKeys.descendingSet()) {
@@ -305,7 +305,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
     private boolean calculateIfShiny(boolean forcedShiny) {
         if (forcedShiny)
             return true;
-        int shinyRandom = plugin.getRandom().nextInt(100000) + 1;
+        int shinyRandom = plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1;
         return shinyRandom <= plugin.getChancesConfig().shinyVersionChance();
     }
 
