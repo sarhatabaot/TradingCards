@@ -9,6 +9,7 @@ import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -21,7 +22,7 @@ public class PlayerBlacklist extends SimpleConfigurate implements Blacklist<Play
     private WhitelistMode whitelistMode;
 
     public PlayerBlacklist(TradingCards plugin) throws ConfigurateException {
-        super(plugin, "","player-blacklist.yml", "lists");
+        super(plugin, "lists"+ File.separator, "lists/player-blacklist.yml", "lists");
         saveDefaultConfig();
         loadPlayers();
         setWhitelistMode();

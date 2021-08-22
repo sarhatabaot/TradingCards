@@ -3,13 +3,13 @@ package net.tinetwork.tradingcards.tradingcardsplugin.whitelist;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.api.blacklist.WhitelistMode;
 import net.tinetwork.tradingcards.api.blacklist.Blacklist;
-import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigFile;
 import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigurate;
 import org.bukkit.World;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -24,7 +24,7 @@ public class WorldBlacklist extends SimpleConfigurate implements Blacklist<World
 
 
     public WorldBlacklist(TradingCards plugin) throws ConfigurateException {
-        super(plugin, "","world-blacklist.yml", "lists");
+        super(plugin, "lists"+ File.separator, "lists/world-blacklist.yml", "lists");
         saveDefaultConfig();
 
         this.worldNode = rootNode.node(LISTED_WORLDS_NAME);

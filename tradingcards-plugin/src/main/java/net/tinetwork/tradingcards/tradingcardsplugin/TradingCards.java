@@ -233,7 +233,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     }
 
     private void hookVault() {
-        if (this.getConfig().getBoolean("PluginSupport.Vault.Vault-Enabled")) {
+        if (this.generalConfig.vaultEnabled()) {
             if (this.getServer().getPluginManager().getPlugin("Vault") != null) {
                 this.setupEconomy();
                 getLogger().info("Vault hook successful!");
@@ -413,7 +413,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
             debug("Successfully cancelled task " + this.taskId);
         }
 
-        int hours = Math.max(getMainConfig().scheduleCardTimeInHours, 1);
+        int hours = Math.max(getGeneralConfig().scheduleCardTimeInHours(), 1);
 
         Bukkit.broadcastMessage(getPrefixedTimerMessage(hours));
         this.taskId = new CardSchedulerRunnable(this).runTaskTimer(this, ((long) hours * 20 * 60 * 60), ((long) hours * 20 * 60 * 60)).getTaskId();
