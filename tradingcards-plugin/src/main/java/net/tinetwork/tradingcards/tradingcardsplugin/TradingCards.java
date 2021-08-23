@@ -3,7 +3,6 @@ package net.tinetwork.tradingcards.tradingcardsplugin;
 import co.aikar.commands.BukkitCommandManager;
 import com.google.common.collect.ImmutableList;
 import net.milkbowl.vault.economy.Economy;
-import net.sarhatabaot.configloader.ConfigLoader;
 import net.tinetwork.tradingcards.api.TradingCardsPlugin;
 import net.tinetwork.tradingcards.api.manager.PackManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
@@ -32,7 +31,6 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurateException;
-import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +48,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private ImmutableList<EntityType> bossMobs;
 
     /* Configs */
-    private DeckOldConfig deckOldConfig;
+    private DeckConfig deckConfig;
     private CardsConfig cardsConfig;
 
     private GeneralConfig generalConfig;
@@ -142,20 +140,19 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
             this.chancesConfig = new ChancesConfig(this);
             this.messagesConfig = new MessagesConfig(this);
             this.packsConfig = new PacksConfig(this);
+            this.deckConfig = new DeckConfig(this);
 
             this.generalConfig.saveDefaultConfig();
             this.raritiesConfig.saveDefaultConfig();
             this.chancesConfig.saveDefaultConfig();
             this.messagesConfig.saveDefaultConfig();
             this.packsConfig.saveDefaultConfig();
+            this.deckConfig.saveDefaultConfig();
         } catch (ConfigurateException e) {
             getLogger().severe(e.getMessage());
         }
 
-        deckOldConfig = new DeckOldConfig(this);
         cardsConfig = new CardsConfig(this);
-
-        deckOldConfig.saveDefaultConfig();
     }
 
     private void initManagers() {
@@ -216,8 +213,8 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         return econ;
     }
 
-    public DeckOldConfig getDeckConfig() {
-        return deckOldConfig;
+    public DeckConfig getDeckConfig() {
+        return deckConfig;
     }
 
     public CardsConfig getCardsConfig() {
@@ -386,7 +383,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     }
 
     public void reloadAllConfig() {
-        this.deckOldConfig.reloadConfig();
+        this.deckConfig.reloadConfig();
         this.packsConfig.reloadConfig();
         this.generalConfig.reloadConfig();
         this.messagesConfig.reloadConfig();
