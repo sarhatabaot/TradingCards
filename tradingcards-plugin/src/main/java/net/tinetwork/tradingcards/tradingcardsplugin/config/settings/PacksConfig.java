@@ -30,7 +30,7 @@ public class PacksConfig extends SimpleConfigurate {
         return rootNode.node(name).get(Pack.class);
     }
 
-    public List<String> getPacks() throws SerializationException {
+    public List<String> getPacks() {
         return packs;
     }
 
