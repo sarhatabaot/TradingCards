@@ -1,14 +1,12 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.listeners;
 
-
 import net.tinetwork.tradingcards.api.model.Rarity;
+import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingCardManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
-import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.whitelist.PlayerBlacklist;
 import net.tinetwork.tradingcards.tradingcardsplugin.whitelist.WorldBlacklist;
 import org.bukkit.World;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -17,7 +15,6 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
-import java.util.Set;
 
 public class DropListener extends SimpleListener {
     private final PlayerBlacklist playerBlacklist;
@@ -59,13 +56,6 @@ public class DropListener extends SimpleListener {
         debug(e.getDrops().toString());
     }
 
-    private String getSeriesFromLore(List<String> lore) {
-        for(String line: lore) {
-            if (line.contains("Series"))
-                return CardUtil.stripAllColor(line).split("Series:")[1].trim();
-        }
-        return "";
-    }
     @EventHandler
     public void onEntityDeath(EntityDeathEvent e) {
         final LivingEntity killedEntity = e.getEntity();
@@ -95,11 +85,9 @@ public class DropListener extends SimpleListener {
 
     private String getRarityKey(Player player) {
         List<Rarity> rarities = plugin.getRaritiesConfig().rarities();
-        //ConfigurationSection rarities = plugin.getConfig().getConfigurationSection("Rarities");
         if (rarities == null)
             return null;
 
-        //Set<String> rarityKeys = rarities.getKeys(false);
 
         for (final Rarity rarity : rarities) {
             if(!cardManager.getCard(player.getName(),rarity.getName(),false).getCardName().equals("nullCard")) {

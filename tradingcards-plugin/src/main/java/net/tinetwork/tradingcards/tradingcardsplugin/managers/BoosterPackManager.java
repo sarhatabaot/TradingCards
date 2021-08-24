@@ -24,7 +24,7 @@ public class BoosterPackManager extends PackManager {
     private ItemStack blankPack;
     private PacksConfig packsConfig;
     private final TradingCards plugin;
-    private final Map<String,ItemStack> packs = new HashMap<>();
+    private final Map<String, ItemStack> packs = new HashMap<>();
 
     public BoosterPackManager(TradingCards plugin) {
         this.plugin = plugin;
@@ -34,14 +34,13 @@ public class BoosterPackManager extends PackManager {
     }
 
     private void loadPacks() {
-        try {
-            for (String packName : plugin.getPacksConfig().getPacks()) {
-                loadPack(packName);
-            }
-            plugin.getLogger().info("Loaded "+packs.size()+" packs.");
-        } catch (SerializationException e){
-            plugin.getLogger().severe(e.getMessage());
+
+        for (String packName : plugin.getPacksConfig().getPacks()) {
+            loadPack(packName);
         }
+        plugin.getLogger().info("Loaded " + packs.size() + " packs.");
+
+
     }
 
     @Override
@@ -51,9 +50,9 @@ public class BoosterPackManager extends PackManager {
 
     private void loadPack(final String packName) {
         try {
-        packs.put(packName, generatePack(packName));
-        plugin.debug("Loaded pack: "+packName);
-        } catch (SerializationException e){
+            packs.put(packName, generatePack(packName));
+            plugin.debug("Loaded pack: " + packName);
+        } catch (SerializationException e) {
             plugin.getLogger().severe(e.getMessage());
         }
     }
@@ -67,24 +66,24 @@ public class BoosterPackManager extends PackManager {
 
         itemPackMeta.setDisplayName(ChatUtil.color(Component.text(plugin.getGeneralConfig().packPrefix())
                 .append(Component.text(plugin.getGeneralConfig().colorPackName()))
-                .append(Component.text(name.replace("_"," ")))));
+                .append(Component.text(name.replace("_", " ")))));
         List<String> lore = new ArrayList<>();
 
-        if(pack.getNumNormalCards() > 0) {
+        if (pack.getNumNormalCards() > 0) {
             lore.add(ChatUtil.color(Component.text(plugin.getGeneralConfig().colorPackNormal())
                     .append(Component.text(pack.getNumNormalCards()))
                     .append(Component.text(" "))
                     .append(Component.text(plugin.getGeneralConfig().colorPackLore()))
                     .append(Component.text(pack.getNormalCardRarity()))));
         }
-        if(pack.getNumSpecialCards() > 0) {
+        if (pack.getNumSpecialCards() > 0) {
             lore.add(ChatUtil.color(Component.text(plugin.getGeneralConfig().colorPackSpecial())
                     .append(Component.text(pack.getNumSpecialCards()))
                     .append(Component.text(" "))
                     .append(Component.text(plugin.getGeneralConfig().colorPackLore()))
                     .append(Component.text(pack.getSpecialCardsRarity()))));
         }
-        if(pack.getNumExtraCards() > 0) {
+        if (pack.getNumExtraCards() > 0) {
             lore.add(ChatUtil.color(Component.text(plugin.getGeneralConfig().colorPackExtra())
                     .append(Component.text(pack.getNumExtraCards()))
                     .append(Component.text(" "))
@@ -100,7 +99,7 @@ public class BoosterPackManager extends PackManager {
 
         NBTItem nbtItem = new NBTItem(itemPack);
         nbtItem.setString("packId", name);
-        nbtItem.setBoolean("pack",true);
+        nbtItem.setBoolean("pack", true);
         return nbtItem.getItem();
     }
 

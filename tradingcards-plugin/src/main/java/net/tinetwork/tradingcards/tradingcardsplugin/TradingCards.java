@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableList;
 import net.milkbowl.vault.economy.Economy;
 import net.tinetwork.tradingcards.api.TradingCardsPlugin;
 import net.tinetwork.tradingcards.api.manager.PackManager;
+import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.CardsCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.DeckCommand;
@@ -31,6 +32,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -314,18 +316,20 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
     @Deprecated
     public String isRarityAndFormat(String input) {
-        String output = input.substring(0, 1).toUpperCase() + input.substring(1);
-        if (this.getConfig().contains("Rarities." + input.replace("_", " "))) {
-            return input.replace("_", " ");
-        } else if (this.getConfig().contains("Rarities." + input.replace("_", " ").toUpperCase())) {
-            return input.replace("_", " ").toUpperCase();
-        } else if (this.getConfig().contains("Rarities." + input.replace("_", " ").toLowerCase())) {
-            return input.replace("_", " ").toLowerCase();
-        } else if (this.getConfig().contains("Rarities." + output.replace("_", " "))) {
-            return output.replace("_", " ");
-        }
+        return isRarity(input);
+    }
 
-        return this.getConfig().contains("Rarities." + this.capitaliseUnderscores(input)) ? output.replace("_", " ") : "None";
+    public String isRarity(String input) {
+        try {
+            Rarity rarity = getRaritiesConfig().getRarity(input);
+            if (getRaritiesConfig().getRarity(input) != null) {
+                return rarity.getName().replace("_"," ").toLowerCase();
+            }
+
+        } catch (SerializationException e){
+            getLogger().severe(e.getMessage());
+        }
+        return "none;";
     }
 
     public String capitaliseUnderscores(String input) {

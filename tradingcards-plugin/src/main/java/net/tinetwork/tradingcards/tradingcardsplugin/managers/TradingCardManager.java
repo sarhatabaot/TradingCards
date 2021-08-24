@@ -26,6 +26,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
     private final Map<String, Card<TradingCard>> cards = new HashMap<>();
     private final Map<String, Card<TradingCard>> activeCards = new HashMap<>();
 
+    //This stores the cards from a single rarity, over multiple files
     private static final Map<String, List<String>> rarityCardList = new HashMap<>();
     private static final Map<String, List<String>> activeRarityCardList = new HashMap<>();
 
@@ -133,7 +134,6 @@ public class TradingCardManager implements CardManager<TradingCard> {
             plugin.getLogger().warning("There are no cards in the active series. Not dropping anything.");
             return new NullCard(plugin);
         }
-        //var cindex = plugin.getRandom().nextInt(activeCards.keySet().size());
         List<String> cardNames = getActiveRarityCardList(rarity);
         var cardIndex = plugin.getRandom().nextInt(cardNames.size());
         String randomCardName = cardNames.get(cardIndex);
@@ -231,7 +231,6 @@ public class TradingCardManager implements CardManager<TradingCard> {
     @Override
     @NotNull
     public String getRandomRarity(EntityType e, boolean alwaysDrop) {
-        //String mobTypeName = CardUtil.getMobTypeOrNone(e, alwaysDrop);
         String mobTypeName = getMobTypeName(CardUtil.getMobType(e), alwaysDrop);
         plugin.debug(mobTypeName);
         if (mobTypeName.equalsIgnoreCase("None"))
