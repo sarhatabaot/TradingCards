@@ -72,7 +72,7 @@ deck-prefix: "&7[&fDeck&7]&f "
 drop-deck-items: true
 
 # ##############################
-# Default Scheduler Settings TODO, this isn't used that often, maybe it's own file?
+# Default Scheduler Settings
 # ##############################
 # Should a random card be given out every so often to all players online?
 schedule-cards: false

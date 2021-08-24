@@ -11,19 +11,20 @@ import org.spongepowered.configurate.serialize.TypeSerializer;
 
 import java.io.File;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class RaritiesConfig extends SimpleConfigurate {
-    private List<Rarity> rarities;
+    private List<Rarity> rarities = new ArrayList<>();
 
     public RaritiesConfig(TradingCards plugin) throws ConfigurateException {
         super(plugin, "settings"+ File.separator,"rarities.yml", "settings");
         loader.defaultOptions().serializers(builder -> builder.register(Rarity.class, RaritySerializer.INSTANCE));
-
         for(ConfigurationNode node: rootNode.childrenList()) {
             String rarityKey = node.key().toString();
             rarities.add(getRarity(rarityKey));
+            plugin.debug("Added "+rarityKey);
         }
     }
 

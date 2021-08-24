@@ -2,12 +2,11 @@ package net.tinetwork.tradingcards.tradingcardsplugin.managers;
 
 import de.tr7zw.nbtapi.NBTItem;
 import net.kyori.adventure.text.Component;
+import net.tinetwork.tradingcards.api.manager.PackManager;
 import net.tinetwork.tradingcards.api.model.Pack;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.api.manager.PackManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.PacksConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
-import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;

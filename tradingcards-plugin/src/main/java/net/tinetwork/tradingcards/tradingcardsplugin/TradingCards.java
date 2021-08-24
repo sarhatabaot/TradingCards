@@ -332,19 +332,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         return "none;";
     }
 
-    public String capitaliseUnderscores(String input) {
-        String[] strArray = input.split("_");
-        String[] finalArray = new String[strArray.length];
-        StringBuilder finalized = new StringBuilder();
-
-        for (int i = 0; i < strArray.length; ++i) {
-            finalArray[i] = strArray[i].toLowerCase().substring(0, 1).toUpperCase() + strArray[i].substring(1);
-            finalized.append(finalArray[i]);
-            finalized.append("_");
-        }
-
-        return finalized.substring(0, finalized.length() - 1);
-    }
 
     @Override
     public boolean isMob(String input) {
