@@ -36,8 +36,9 @@ public class BoosterPackManager extends PackManager {
     private void loadPacks() {
         try {
             for (String packName : plugin.getPacksConfig().getPacks()) {
-                packs.put(packName, generatePack(packName));
+                loadPack(packName);
             }
+            plugin.getLogger().info("Loaded "+packs.size()+" packs.");
         } catch (SerializationException e){
             plugin.getLogger().severe(e.getMessage());
         }
@@ -46,6 +47,15 @@ public class BoosterPackManager extends PackManager {
     @Override
     public Map<String, ItemStack> packs() {
         return packs;
+    }
+
+    private void loadPack(final String packName) {
+        try {
+        packs.put(packName, generatePack(packName));
+        plugin.debug("Loaded pack: "+packName);
+        } catch (SerializationException e){
+            plugin.getLogger().severe(e.getMessage());
+        }
     }
 
     @Override
