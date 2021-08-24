@@ -101,9 +101,9 @@ public class CardsCommand extends BaseCommand {
         @CommandPermission("cards.give.card")
         @CommandCompletion("@rarities @cards")
         @Description("Gives a card.")
-        public void onGiveCard(final Player player, final String rarity, final String name) {
-            if (cardManager.getCards().containsKey(rarity + "." + name)) {
-                player.getInventory().addItem(cardManager.getCard(name, rarity, false).build());
+        public void onGiveCard(final Player player, final String rarity, final String cardName) {
+            if (cardManager.getCards().containsKey(rarity + "." + cardName)) {
+                player.getInventory().addItem(cardManager.getCard(cardName, rarity, false).build());
                 return;
             }
             ChatUtil.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().noCard()));
@@ -113,9 +113,9 @@ public class CardsCommand extends BaseCommand {
         @CommandPermission("cards.give.card.shiny")
         @CommandCompletion("@rarities @cards")
         @Description("Gives a shiny card.")
-        public void onGiveShinyCard(final Player player, final String rarity, final String name) {
-            if (cardManager.getCards().containsKey(rarity + "." + name)) {
-                player.getInventory().addItem(cardManager.getCard(name, rarity, true).build());
+        public void onGiveShinyCard(final Player player, final String rarity, final String cardName) {
+            if (cardManager.getCards().containsKey(rarity + "." + cardName)) {
+                player.getInventory().addItem(cardManager.getCard(cardName, rarity, true).build());
                 return;
             }
             ChatUtil.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().noCard()));
@@ -131,15 +131,29 @@ public class CardsCommand extends BaseCommand {
             CardUtil.dropItem(player, plugin.getPackManager().getPackItem(boosterpack));
         }
 
-        @Subcommand("random")
+        @Subcommand("random entity")
         @Description("Gives a random card to a player.")
-        @CommandPermission("cards.give.random")
+        @CommandPermission("cards.give.random.entity")
         public void onGiveRandomCard(final CommandSender sender, final Player player, final EntityType entityType) {
             try {
                 String rare = cardManager.getRandomRarity(entityType, true);
                 plugin.debug("onCommand.rare: " + rare);
-                ChatUtil.sendPrefixedMessage(sender, plugin.getMessagesConfig().giveRandomCardMsg().replaceAll("%player%", player.getName()));
+                ChatUtil.sendPrefixedMessage(sender, plugin.getMessagesConfig().giveRandomCardMsg().replace("%player%", player.getName()));
                 CardUtil.dropItem(player, plugin.getCardManager().getRandomCard(rare, false).build());
+            } catch (IllegalArgumentException exception) {
+                ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().noEntity());
+            }
+        }
+
+        @Subcommand("random rarity")
+        @Description("Gives a random card to a player. Specify rarity.")
+        @CommandCompletion("@players @rarities")
+        @CommandPermission("cards.give.random.rarity")
+        public void onGiveRandomCard(final CommandSender sender, final Player player, final String rarity) {
+            try {
+                plugin.debug("onCommand.rare: " + rarity);
+                ChatUtil.sendPrefixedMessage(sender, plugin.getMessagesConfig().giveRandomCardMsg().replace("%player%", player.getName()));
+                CardUtil.dropItem(player, plugin.getCardManager().getRandomCard(rarity, false).build());
             } catch (IllegalArgumentException exception) {
                 ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().noEntity());
             }
@@ -188,6 +202,16 @@ public class CardsCommand extends BaseCommand {
             sender.sendMessage(builder.toString());
         }
 
+        @Subcommand("packs")
+        @CommandPermission("cards.admin.debug.packs")
+        @Description("Show all available packs.")
+        public void onPack(final CommandSender sender) {
+            StringBuilder sb = new StringBuilder();
+            for(String pack: plugin.getPacksConfig().getPacks()) {
+                sb.append(pack).append(", ");
+            }
+            sender.sendMessage(sb.toString());
+        }
 
         @Subcommand("rarities")
         @CommandPermission("cards.admin.debug.rarities")
