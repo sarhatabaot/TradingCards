@@ -1,3 +1,4 @@
+# This file is here for legacy purposes, someone remind me to remove it when the configurate PR is merged.
 General:
   # Server name?
   Server-Name: "Server"
