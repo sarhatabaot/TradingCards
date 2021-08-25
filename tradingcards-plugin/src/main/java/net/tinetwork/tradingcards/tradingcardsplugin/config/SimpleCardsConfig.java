@@ -1,14 +1,10 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config;
 
-import net.tinetwork.tradingcards.api.card.Card;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.NullCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
-import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigFile;
 import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigurate;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.inventory.ItemStack;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;

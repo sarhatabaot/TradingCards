@@ -2,7 +2,6 @@ package net.tinetwork.tradingcards.tradingcardsplugin.config;
 
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import org.spongepowered.configurate.ConfigurateException;
-import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.io.File;
 import java.util.ArrayList;
