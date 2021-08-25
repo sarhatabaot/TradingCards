@@ -17,6 +17,7 @@ import org.spongepowered.configurate.serialize.TypeSerializer;
 
 import java.io.File;
 import java.lang.reflect.Type;
+import java.util.Map;
 
 /**
  * @author sarhatabaot
@@ -24,12 +25,12 @@ import java.lang.reflect.Type;
 public class SimpleCardsConfig extends SimpleConfigurate {
     private final ConfigurationNode cardsNode;
     @Deprecated
-    private final ConfigurationSection cards;
+    private ConfigurationSection cards;
     public SimpleCardsConfig(final TradingCards plugin, final String fileName) throws ConfigurateException {
         super(plugin, "cards"+File.separator, fileName, "cards");
 
         this.cardsNode = rootNode.node("cards");
-        this.cards = getConfig().getConfigurationSection("cards");
+        //this.cards = getConfig().getConfigurationSection("cards");
         reloadConfig();
         plugin.debug("Created: "+fileName);
     }
@@ -130,6 +131,14 @@ public class SimpleCardsConfig extends SimpleConfigurate {
 
     public ConfigurationSection getCards() {
         return cards;
+    }
+
+    public Map<Object, ? extends ConfigurationNode> getRarities() {
+        return cardsNode.childrenMap();
+    }
+
+    public Map<Object, ? extends ConfigurationNode> getCards(final String rarity) {
+        return cardsNode.node(rarity).childrenMap();
     }
 
 }

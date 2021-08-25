@@ -52,17 +52,18 @@ public class TradingCardManager implements CardManager<TradingCard> {
             for (final String rarity : rarities) {
                 rarityCardList.put(rarity, new ArrayList<>());
                 activeRarityCardList.put(rarity, new ArrayList<>());
-                var raritySection = cardsConfigSection.getConfigurationSection(rarity);
+                /*var raritySection = cardsConfigSection.getConfigurationSection(rarity);
                 if (raritySection == null) {
                     continue;
-                }
-                var names = raritySection.getKeys(false);
+                }*/
+                //cards
+                var cardNames = simpleCardsConfig.getCards(rarity).keySet();
 
-                for (String name : names) {
-                    cards.put(rarity + "." + name, generateCard(simpleCardsConfig, name, rarity, false));
-                    rarityCardList.get(rarity).add(name);
-                    if (plugin.getGeneralConfig().activeSeries().contains(simpleCardsConfig.series(rarity, name))) {
-                        activeRarityCardList.get(rarity).add(name);
+                for (Object name : cardNames) {
+                    cards.put(rarity + "." + name, generateCard(simpleCardsConfig, name.toString(), rarity, false));
+                    rarityCardList.get(rarity).add(name.toString());
+                    if (plugin.getGeneralConfig().activeSeries().contains(simpleCardsConfig.series(rarity, name.toString()))) {
+                        activeRarityCardList.get(rarity).add(name.toString());
                         activeCards.put(rarity + "." + name, cards.get(rarity + "." + name));
                     }
                 }

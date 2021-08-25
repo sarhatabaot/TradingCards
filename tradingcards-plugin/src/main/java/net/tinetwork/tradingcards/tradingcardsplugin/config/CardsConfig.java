@@ -37,7 +37,7 @@ public class CardsConfig{
 
 	private static void createDefaultCardConfig(final TradingCards plugin) {
 		try {
-			new SimpleCardsConfig(plugin, "cards/cards.yml").saveDefaultConfig();
+			new SimpleCardsConfig(plugin, "cards.yml").saveDefaultConfig();
 		} catch (ConfigurateException e) {
 			plugin.getLogger().severe(e.getMessage());
 		}
