@@ -4,6 +4,7 @@ import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigurate;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
@@ -11,37 +12,27 @@ import org.spongepowered.configurate.serialize.TypeSerializer;
 
 import java.io.File;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class RaritiesConfig extends SimpleConfigurate {
-    private List<Rarity> rarities = new ArrayList<>();
+    private final List<Rarity> rarities = new ArrayList<>();
+    private final ConfigurationNode raritiesNode;
 
     public RaritiesConfig(TradingCards plugin) throws ConfigurateException {
         super(plugin, "settings"+ File.separator,"rarities.yml", "settings");
         loader.defaultOptions().serializers(builder -> builder.register(Rarity.class, RaritySerializer.INSTANCE));
 
+        this.raritiesNode = rootNode.node("rarities");
         loadRarities();
     }
 
     public Rarity getRarity(final String id) throws SerializationException {
-        return rootNode.node(id).get(Rarity.class);
+        return raritiesNode.node(id).get(Rarity.class);
     }
 
     private void loadRarities() throws SerializationException {
-        for(String rarityKey: raritiesName()) {
-            rarities.add(getRarity(rarityKey));
-        }
-    }
-
-    public List<String> raritiesName() {
-        try {
-            return rootNode.node("list").getList(String.class);
-        } catch (SerializationException e){
-            plugin.getLogger().severe(e.getMessage());
-            return Collections.emptyList();
+        for(Map.Entry<Object, ? extends ConfigurationNode> nodeEntry: raritiesNode.childrenMap().entrySet()) {
+            rarities.add(getRarity(nodeEntry.getValue().key().toString()));
         }
     }
 
