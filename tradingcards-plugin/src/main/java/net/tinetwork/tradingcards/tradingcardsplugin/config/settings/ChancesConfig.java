@@ -93,16 +93,16 @@ public class ChancesConfig extends SimpleConfigurate {
 
         @Override
         public Chance deserialize(Type type, ConfigurationNode node) throws SerializationException {
-            final ConfigurationNode hostileNode = nonVirtualNode(node, HOSTILE); //TODO, this can happen, in that case the values should default to 0.
-            final ConfigurationNode neutralNode = nonVirtualNode(node, NEUTRAL);
-            final ConfigurationNode passiveNode = nonVirtualNode(node, PASSIVE);
-            final ConfigurationNode bossNode = nonVirtualNode(node, BOSS);
+            final ConfigurationNode hostileNode = node.node(HOSTILE);
+            final ConfigurationNode neutralNode = node.node(NEUTRAL);
+            final ConfigurationNode passiveNode = node.node(PASSIVE);
+            final ConfigurationNode bossNode = node.node(BOSS);
 
             final String id = node.key().toString();
-            final int hostile = hostileNode.getInt();
-            final int neutral = neutralNode.getInt();
-            final int passive = passiveNode.getInt();
-            final int boss = bossNode.getInt();
+            final int hostile = hostileNode.getInt(0);
+            final int neutral = neutralNode.getInt(0);
+            final int passive = passiveNode.getInt(0);
+            final int boss = bossNode.getInt(0);
 
             validateChance(hostileNode,hostile, HOSTILE);
             validateChance(neutralNode, neutral, NEUTRAL);

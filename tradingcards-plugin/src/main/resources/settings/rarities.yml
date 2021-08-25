@@ -5,6 +5,12 @@
 #   default-color: <-default color of cards supports rgb
 #   rewards: <- rewards to give on completion, not implemented yet
 #
+list:
+  - "common"
+  - "uncommon"
+  - "rare"
+  - "very-rare"
+  - "legendary"
 rarities:
   common:
     name: "Common"

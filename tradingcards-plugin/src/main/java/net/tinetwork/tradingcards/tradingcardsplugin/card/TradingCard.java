@@ -1,14 +1,20 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.card;
 
+import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.api.card.Card;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingCardManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +36,17 @@ public class TradingCard extends Card<TradingCard> {
     public ItemStack buildItem() {
         ItemStack card = plugin.getGeneralConfig().blankCard().clone();
         ItemMeta cardMeta = card.getItemMeta();
-        cardMeta.setDisplayName(formatDisplayName(isPlayerCard(), isShiny(), getPrefix(), getRarityColour(), getCardName().replace('_', ' '), getCost(), getShinyPrefix()));
+        Rarity rarity = null;
+        try {
+            rarity = plugin.getRaritiesConfig().getRarity(getRarity());
+        } catch (SerializationException e) {
+            plugin.getLogger().severe(e.getMessage());
+            return NullCard.AIR;
+        }
+        if(rarity == null) {
+            return NullCard.AIR;
+        }
+        cardMeta.setDisplayName(formatDisplayName(isPlayerCard(), isShiny(), plugin.getGeneralConfig().cardPrefix(), rarity.getDefaultColor(), getCardName().replace('_', ' '), String.valueOf(getBuyPrice()), plugin.getGeneralConfig().shinyName()));
         cardMeta.setLore(formatLore());
         if (isShiny()) {
             cardMeta.addEnchant(Enchantment.ARROW_INFINITE, 1, false);
@@ -46,23 +62,30 @@ public class TradingCard extends Card<TradingCard> {
 
     private List<String> formatLore() {
         List<String> lore = new ArrayList<>();
-        lore.add(plugin.cMsg(getType().getColour() + getType().getDisplay() + ": &f" + getType().getName()));
-        if (!"None".equals(getInfo().getName()) && !"".equals(getInfo().getName())) {
-            lore.add(plugin.cMsg(getInfo().getColour() + getInfo().getDisplay() + ":"));
-            lore.addAll(plugin.wrapString(getInfo().getName()));
+        final String typeFormat = ChatUtil.color(plugin.getGeneralConfig().colorType() + plugin.getGeneralConfig().displayType() + ": &f" + getType());
+        final String infoFormat = ChatUtil.color(plugin.getGeneralConfig().colorInfo() + plugin.getGeneralConfig().displayInfo() + ": &f");
+        final String seriesFormat = ChatUtil.color(plugin.getGeneralConfig().colorSeries()+ plugin.getGeneralConfig().displaySeries() + ": &f" + getSeries());
+        final String aboutFormat = ChatUtil.color(plugin.getGeneralConfig().colorAbout()+ plugin.getGeneralConfig().displayAbout() + ": &f");
+        final String rarityFormat = ChatUtil.color(plugin.getGeneralConfig().colorRarity() + ChatColor.BOLD);
+
+        lore.add(typeFormat);
+        if (!"None".equalsIgnoreCase(getInfo()) && !getInfo().isEmpty()) {
+            lore.add(infoFormat);
+            lore.addAll(plugin.wrapString(getInfo()));
         } else {
-            lore.add(plugin.cMsg(getInfo().getColour() + getInfo().getDisplay() + ": &f" + getInfo().getName()));
+            lore.add(infoFormat + getInfo());
         }
 
-        lore.add(plugin.cMsg(getSeries().getColour() + getSeries().getDisplay() + ": &f" + getSeries().getName()));
+        lore.add(seriesFormat);
         if (getAbout()!=null) {
-            lore.add(plugin.cMsg(getAbout().getColour() + getAbout().getDisplay() + ": &f" + getAbout().getName()));
+            lore.add(aboutFormat + getAbout());
         }
 
+        final String rarityName = getRarity().replace('_', ' ');
         if (isShiny()) {
-            lore.add(plugin.cMsg(getRarityColour() + ChatColor.BOLD + plugin.getConfig().getString("General.Shiny-Name") + " " + getRarity().replace('_', ' ')));
+            lore.add(rarityFormat + plugin.getGeneralConfig().shinyName() + " " + rarityName);
         } else {
-            lore.add(plugin.cMsg(getRarityColour() + ChatColor.BOLD + getRarity().replace('_', ' ')));
+            lore.add(rarityFormat + rarityName);
         }
 
         return lore;

@@ -25,6 +25,10 @@ public class ChatUtil {
 		return LegacyComponentSerializer.builder().character('&').build().serialize(component);
 	}
 
+	public static String color(String text) {
+		return ChatColor.translateAlternateColorCodes('&',text);
+	}
+
 	public static void sendMessage(final CommandSender target, final Component text) {
 		target.sendMessage(color(text));
 	}

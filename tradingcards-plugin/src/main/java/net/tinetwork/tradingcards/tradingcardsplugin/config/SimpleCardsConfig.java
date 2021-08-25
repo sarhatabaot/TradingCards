@@ -1,78 +1,135 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config;
 
+import net.tinetwork.tradingcards.api.card.Card;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
+import net.tinetwork.tradingcards.tradingcardsplugin.card.NullCard;
+import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigFile;
+import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigurate;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.inventory.ItemStack;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
+import org.spongepowered.configurate.serialize.TypeSerializer;
 
 import java.io.File;
+import java.lang.reflect.Type;
 
 /**
  * @author sarhatabaot
  */
-public class SimpleCardsConfig extends SimpleConfigFile {
+public class SimpleCardsConfig extends SimpleConfigurate {
+    private final ConfigurationNode cardsNode;
+    @Deprecated
     private final ConfigurationSection cards;
-    public SimpleCardsConfig(final TradingCards plugin, final String fileName) {
+    public SimpleCardsConfig(final TradingCards plugin, final String fileName) throws ConfigurateException {
         super(plugin, "cards"+File.separator, fileName, "cards");
-        this.cards = getConfig().getConfigurationSection("Cards");
+
+        this.cardsNode = rootNode.node("cards");
+        this.cards = getConfig().getConfigurationSection("cards");
         reloadConfig();
         plugin.debug("Created: "+fileName);
     }
-    public ConfigurationSection getCardSection(final String rarity, final String name) {
-        return cards.getConfigurationSection(rarity+"."+name);
-    }
-    public String getSeries(final String rarity, final String name) {
-        return getCardSection(rarity,name).getString("Series", "");
+
+    public TradingCard getCard(final String rarity, final String name) {
+        try {
+            return cardsNode.node(rarity, name).get(TradingCard.class);
+        } catch (SerializationException e) {
+            plugin.getLogger().severe(e.getMessage());
+            return new NullCard(plugin);
+        }
     }
 
-    public String getAbout(final String rarity, final String name) {
-        return getCardSection(rarity,name).getString("About", "");
+    public String series(final String rarity, final String name) {
+        return cardsNode.node(rarity,name).node("series").getString("");
     }
 
-    public String getType(final String rarity,final String name) {
-        return getCardSection(rarity,name).getString("Type", "");
+    public String about(final String rarity, final String name) {
+        return cardsNode.node(rarity,name).node("about").getString("");
     }
 
-    public String getInfo(final String rarity, final String name) {
-        return getCardSection(rarity, name).getString("Info", "");
+    public String info(final String rarity, final String name) {
+        return cardsNode.node(rarity,name).node("info").getString("");
+    }
+    public String type(final String rarity, final String name) {
+        return cardsNode.node(rarity,name).node("type").getString("");
     }
 
-    public String getCost(final String rarity, final String name) {
-        if(getCardSection(rarity, name).contains("Buy-Price"))
-            return String.valueOf(getCardSection(rarity, name).getDouble("Buy-Price"));
-        return "None";
+    public double buyPrice(final String rarity, final String name) {
+        return cardsNode.node(rarity,name).node("buy-price").getDouble(0.0D);
+    }
+    public double sellPrice(final String rarity, final String name) {
+        return cardsNode.node(rarity,name).node("sell-price").getDouble(0.0D);
     }
 
-    public double getBuyPrice(final String rarity, final String name) {
-        return getCardSection(rarity,name).getDouble("Buy-Price",0.0D);
+    public boolean hasShinyVersion(final String rarity, final String name) {
+        return cardsNode.node(rarity,name).node("has-shiny-version").getBoolean(false);
     }
 
-
-    public double getSellPrice(final String rarity, final String name) {
-        return getCardSection(rarity,name).getDouble("Sell-Price",0.0D);
+    public int customModelData(final String rarity, final String name) {
+        return cardsNode.node(rarity,name).node("custom-model-data").getInt(0);
     }
 
-    public boolean hasShiny(final String rarity, final String name) {
-        return getCardSection(rarity, name).getBoolean("Has-Shiny-Version", false);
+    public String displayName(final String rarity, final String name) {
+        return cardsNode.node(rarity,name).node("display-name").getString(name);
     }
 
-    public int getCustomModelNbt(final String rarity, final String name) {
-        return getCardSection(rarity,name).getInt("Custom-Model-Data",0);
+    public static class CardSerializer implements TypeSerializer<TradingCard> {
+        private static final String DISPLAY_NAME = "display-name";
+        private static final String SERIES = "series";
+        private static final String TYPE = "type";
+        private static final String HAS_SHINY = "has-shiny-version";
+        private static final String INFO = "info";
+        private static final String ABOUT = "about";
+        private static final String BUY_PRICE = "buy-price";
+        private static final String SELL_PRICE = "sell-price";
+        private static final String CUSTOM_MODEL_DATA = "custom-model-data";
+
+        private TradingCards plugin;
+
+        public CardSerializer(TradingCards plugin) {
+            this.plugin = plugin;
+        }
+
+        @Override
+        public TradingCard deserialize(Type type, ConfigurationNode node) throws SerializationException {
+            final String id = node.key().toString();
+            final String rarity = node.parent().key().toString();
+            final String displayName = node.node(DISPLAY_NAME).getString();
+            final String series = node.node(SERIES).getString();
+            final String cardType = node.node(TYPE).getString();
+            final boolean hasShiny  = node.node(HAS_SHINY).getBoolean();
+            final String info = node.node(INFO).getString();
+            final String about = node.node(ABOUT).getString();
+            final double buyPrice  = node.node(BUY_PRICE).getDouble(0.0D);
+            final double sellPrice = node.node(SELL_PRICE).getDouble(0.0D);
+            final int customModelData = node.node(CUSTOM_MODEL_DATA).getInt(0);
+
+            TradingCard card = new TradingCard(plugin,id);
+            return card.rarity(rarity)
+                    .displayName(displayName)
+                    .series(series)
+                    .type(cardType)
+                    .isShiny(hasShiny)
+                    .info(info)
+                    .about(about)
+                    .buyPrice(buyPrice)
+                    .sellPrice(sellPrice)
+                    .customModelNbt(customModelData).get();
+        }
+
+        @Override
+        public void serialize(Type type, @Nullable TradingCard obj, ConfigurationNode node) throws SerializationException {
+            //todo
+        }
     }
+
 
     public ConfigurationSection getCards() {
         return cards;
     }
 
-    @Override
-    public void saveDefaultConfig() {
-        if (this.file == null) {
-            this.file = new File(folder, fileName);
-        }
-
-        if (!this.file.exists()) {
-            plugin.saveResource(fileName, false);
-        }
-
-        reloadConfig();
-    }
 }

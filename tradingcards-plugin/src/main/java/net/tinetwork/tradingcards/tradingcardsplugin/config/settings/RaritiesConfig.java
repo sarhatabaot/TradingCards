@@ -13,6 +13,7 @@ import java.io.File;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class RaritiesConfig extends SimpleConfigurate {
@@ -21,15 +22,27 @@ public class RaritiesConfig extends SimpleConfigurate {
     public RaritiesConfig(TradingCards plugin) throws ConfigurateException {
         super(plugin, "settings"+ File.separator,"rarities.yml", "settings");
         loader.defaultOptions().serializers(builder -> builder.register(Rarity.class, RaritySerializer.INSTANCE));
-        for(ConfigurationNode node: rootNode.childrenList()) {
-            String rarityKey = node.key().toString();
-            rarities.add(getRarity(rarityKey));
-            plugin.debug("Added "+rarityKey);
-        }
+
+        loadRarities();
     }
 
     public Rarity getRarity(final String id) throws SerializationException {
         return rootNode.node(id).get(Rarity.class);
+    }
+
+    private void loadRarities() throws SerializationException {
+        for(String rarityKey: raritiesName()) {
+            rarities.add(getRarity(rarityKey));
+        }
+    }
+
+    public List<String> raritiesName() {
+        try {
+            return rootNode.node("list").getList(String.class);
+        } catch (SerializationException e){
+            plugin.getLogger().severe(e.getMessage());
+            return Collections.emptyList();
+        }
     }
 
     public List<Rarity> rarities() {

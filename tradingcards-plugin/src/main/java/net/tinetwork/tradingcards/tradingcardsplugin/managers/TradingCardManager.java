@@ -48,7 +48,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
         var cardConfigs = plugin.getCardsConfig().getCardConfigs();
         for (SimpleCardsConfig simpleCardsConfig : cardConfigs) {
             var cardsConfigSection = simpleCardsConfig.getCards();
-            var rarities = cardsConfigSection.getKeys(false);
+            var rarities = plugin.getRaritiesConfig().raritiesName();
             for (final String rarity : rarities) {
                 rarityCardList.put(rarity, new ArrayList<>());
                 activeRarityCardList.put(rarity, new ArrayList<>());
@@ -61,7 +61,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
                 for (String name : names) {
                     cards.put(rarity + "." + name, generateCard(simpleCardsConfig, name, rarity, false));
                     rarityCardList.get(rarity).add(name);
-                    if (plugin.getGeneralConfig().activeSeries().contains(simpleCardsConfig.getSeries(rarity, name))) {
+                    if (plugin.getGeneralConfig().activeSeries().contains(simpleCardsConfig.series(rarity, name))) {
                         activeRarityCardList.get(rarity).add(name);
                         activeCards.put(rarity + "." + name, cards.get(rarity + "." + name));
                     }
@@ -260,44 +260,26 @@ public class TradingCardManager implements CardManager<TradingCard> {
 
         TradingCard builder = new TradingCard(plugin, cardName);
         boolean isShiny = false;
-        if (simpleCardsConfig.hasShiny(rarityName, cardName))
+        if (simpleCardsConfig.hasShinyVersion(rarityName, cardName))
             isShiny = calculateIfShiny(forcedShiny);
 
-        final String rarityColor = plugin.getGeneralConfig().colorRarity();
-        final String prefix = plugin.getGeneralConfig().cardPrefix();
-
-        final String series = simpleCardsConfig.getSeries(rarityName, cardName);
-        final String seriesColour = plugin.getGeneralConfig().colorSeries();
-        final String seriesDisplay = plugin.getGeneralConfig().displaySeries();
-
-        final String about = simpleCardsConfig.getAbout(rarityName, cardName);
-        final String aboutColour = plugin.getGeneralConfig().colorAbout();
-        final String aboutDisplay = plugin.getGeneralConfig().displayAbout();
-
-        final String type = simpleCardsConfig.getType(rarityName, cardName);
-        final String typeColour = plugin.getGeneralConfig().colorType();
-        final String typeDisplay = plugin.getGeneralConfig().displayType();
-
-        final String info = simpleCardsConfig.getInfo(rarityName, cardName);
-        final String infoColour = plugin.getGeneralConfig().colorInfo();
-        final String infoDisplay = plugin.getGeneralConfig().displayInfo();
-
-        final String shinyPrefix = plugin.getGeneralConfig().shinyName();
-        final String cost = simpleCardsConfig.getCost(rarityName, cardName);
-
+        final String series = simpleCardsConfig.series(rarityName, cardName);
+        final String about = simpleCardsConfig.about(rarityName, cardName);
+        final String type = simpleCardsConfig.type(rarityName, cardName);
+        final String info = simpleCardsConfig.info(rarityName, cardName);
+        final double buyPrice = simpleCardsConfig.buyPrice(rarityName, cardName);
+        final double sellPrice = simpleCardsConfig.sellPrice(rarityName, cardName);
         boolean isPlayerCard = isPlayerCard(cardName);
         builder.isShiny(isShiny)
-                .rarityColour(rarityColor)
-                .prefix(prefix)
-                .series(series, seriesColour, seriesDisplay)
-                .type(type, typeColour, typeDisplay)
-                .info(info, infoColour, infoDisplay)
-                .shinyPrefix(shinyPrefix)
+                .series(series)
+                .type(type)
+                .info(info)
                 .isPlayerCard(isPlayerCard)
-                .cost(cost)
+                .buyPrice(buyPrice)
+                .sellPrice(sellPrice)
                 .rarity(rarityName);
         if (!about.isEmpty())
-            builder.about(about, aboutColour, aboutDisplay);
+            builder.about(about);
         return builder.get();
     }
 

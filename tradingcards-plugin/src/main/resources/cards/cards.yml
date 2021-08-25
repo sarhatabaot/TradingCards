@@ -1,245 +1,247 @@
-Cards:
-  Common:
-    Zombie:
-      Series: 'Default'
-      Type: 'Monster'
-      Has-Shiny-Version: true
-      Info: 'None'
-      # If vault is enabled, how much this card is worth. Set to 0 to not allow buying.
-      Buy-Price: 100.0
-      Sell-Price: 50.0
-      About: ''
-    Skeleton:
-      Series: 'Default'
-      Type: 'Monster'
-      Has-Shiny-Version: true
-      Info: 'None'
-    Creeper:
-      Series: 'Default'
-      Type: 'Monster'
-      Has-Shiny-Version: true
-      Info: 'None'
-    Spider:
-      Series: 'Default'
-      Type: 'Monster'
-      Has-Shiny-Version: true
-      Info: 'None'
-    Enderman:
-      Series: 'Default'
-      Type: 'Monster'
-      Has-Shiny-Version: true
-      Info: 'None'
-    Pig:
-      Series: 'Default'
-      Type: 'Animal'
-      Has-Shiny-Version: true
-      Info: 'None'
-    Cow:
-      Series: 'Default'
-      Type: 'Animal'
-      Has-Shiny-Version: true
-      Info: 'None'
-    Sheep:
-      Series: 'Default'
-      Type: 'Animal'
-      Has-Shiny-Version: true
-      Info: 'None'
-    Chicken:
-      Series: 'Default'
-      Type: 'Animal'
-      Has-Shiny-Version: true
-      Info: 'None'
-    Horse:
-      Series: 'Default'
-      Type: 'Animal'
-      Has-Shiny-Version: true
-      Info: 'None'
-    Donkey:
-      Series: 'Default'
-      Type: 'Animal'
-      Has-Shiny-Version: true
-      Info: 'None'
-    Mule:
-      Series: 'Default'
-      Type: 'Animal'
-      Has-Shiny-Version: true
-      Info: 'None'
-    Squid:
-      Series: 'Default'
-      Type: 'Animal'
-      Has-Shiny-Version: true
-      Info: 'None'
-    Villager:
-      Series: 'Default'
-      Type: 'Animal'
-      Has-Shiny-Version: true
-      Info: 'None'
-    Bat:
-      Series: 'Default'
-      Type: 'Animal'
-      Has-Shiny-Version: true
-      Info: 'None'
-    Rabbit:
-      Series: 'Default'
-      Type: 'Animal'
-      Has-Shiny-Version: true
-      Info: 'None'
-  Uncommon:
-    Blaze:
-      Series: 'Default'
-      Type: 'Monster'
-      Has-Shiny-Version: true
-      Info: 'None'
-    Magma_Cube:
-      Series: 'Default'
-      Type: 'Monster'
-      Has-Shiny-Version: true
-      Info: 'None'
-    Ghast:
-      Series: 'Default'
-      Type: 'Monster'
-      Has-Shiny-Version: true
-      Info: 'None'
-    Witch:
-      Series: 'Default'
-      Type: 'Monster'
-      Has-Shiny-Version: true
-      Info: 'None'
-    Zombie_Pigman:
-      Series: 'Default'
-      Type: 'Monster'
-      Has-Shiny-Version: true
-      Info: 'None'
-    Cave_Spider:
-      Series: 'Default'
-      Type: 'Monster'
-      Has-Shiny-Version: true
-      Info: 'None'
-    Wolf:
-      Series: 'Default'
-      Type: 'Animal'
-      Has-Shiny-Version: true
-      Info: 'None'
-    Ocelot:
-      Series: 'Default'
-      Type: 'Animal'
-      Has-Shiny-Version: true
-      Info: 'None'
-    Polar_Bear:
-      Series: 'Default'
-      Type: 'Animal'
-      Has-Shiny-Version: true
-      Info: 'None'
-    Stray_Skeleton:
-      Series: 'Default'
-      Type: 'Monster'
-      Has-Shiny-Version: true
-      Info: 'None'
-    Silverfish:
-      Series: 'Default'
-      Type: 'Monster'
-      Has-Shiny-Version: true
-      Info: 'None'
-    Skeleton_Horseman:
-      Series: 'Default'
-      Type: 'Monster'
-      Has-Shiny-Version: true
-      Info: 'None'
-    Husk:
-      Series: 'Default'
-      Type: 'Monster'
-      Has-Shiny-Version: true
-      Info: 'None'
-    Zombie_Villager:
-      Series: 'Default'
-      Type: 'Monster'
-      Has-Shiny-Version: true
-      Info: 'None'
-  Rare:
-    Guardian:
-      Series: 'Default'
-      Type: 'Monster'
-      Has-Shiny-Version: true
-      Info: 'None'
-    Slime:
-      Series: 'Default'
-      Type: 'Monster'
-      Has-Shiny-Version: true
-      Info: 'None'
-    Wither_Skeleton:
-      Series: 'Default'
-      Type: 'Monster'
-      Has-Shiny-Version: true
-      Info: 'None'
-    Spider_Jockey:
-      Series: 'Default'
-      Type: 'Monster'
-      Has-Shiny-Version: true
-      Info: 'None'
-    Endermite:
-      Series: 'Default'
-      Type: 'Monster'
-      Has-Shiny-Version: true
-      Info: 'None'
-    Mushroom_Cow:
-      Series: 'Default'
-      Type: 'Animal'
-      Has-Shiny-Version: true
-      Info: 'None'
-    Chicken_Jockey:
-      Series: 'Default'
-      Type: 'Animal'
-      Has-Shiny-Version: true
-      Info: 'None'
-    Snow_Golem:
-      Series: 'Default'
-      Type: 'Monster'
-      Has-Shiny-Version: true
-      Info: 'None'
-    Iron_Golem:
-      Series: 'Default'
-      Type: 'Monster'
-      Has-Shiny-Version: true
-      Info: 'None'
-    Shulker:
-      Series: 'Default'
-      Type: 'Monster'
-      Has-Shiny-Version: true
-      Info: 'None'
-  Very_Rare:
-    Killer_Bunny:
-      Series: 'Default'
-      Type: 'Monster'
-      Has-Shiny-Version: true
-      Info: 'None'
-    Skeleton_Horse:
-      Series: 'Default'
-      Type: 'Monster'
-      Has-Shiny-Version: true
-      Info: 'None'
-    Zombie_Horse:
-      Series: 'Default'
-      Type: 'Monster'
-      Has-Shiny-Version: true
-      Info: 'None'
-  Legendary:
-    Ender_Dragon:
-      Series: 'Default'
-      Type: 'Boss'
-      Has-Shiny-Version: true
-      Info: 'None'
-    Wither:
-      Series: 'Default'
-      Type: 'Boss'
-      Has-Shiny-Version: true
-      Info: 'None'
-    Elder_Guardian:
-      Series: 'Default'
-      Type: 'Boss'
-      Has-Shiny-Version: true
-      Info: 'None'
-    Giant:
-      Series: 'Default'
-      Type: 'Boss'
-      Has-Shiny-Version: true
-      Info: 'None'
+cards:
+  common:
+    zombie:
+      display-name: 'Zombie'
+      series: 'default'
+      type: 'monster'
+      has-shiny-version: true
+      info: 'none'
+      # if vault is enabled, how much this card is worth. set to 0 to not allow buying.
+      buy-price: 100.0
+      sell-price: 50.0
+      about: ''
+    skeleton:
+      display-name: 'Skeleton'
+      series: 'default'
+      type: 'monster'
+      has-shiny-version: true
+      info: 'none'
+    creeper:
+      series: 'default'
+      type: 'monster'
+      has-shiny-version: true
+      info: 'none'
+    spider:
+      series: 'default'
+      type: 'monster'
+      has-shiny-version: true
+      info: 'none'
+    enderman:
+      series: 'default'
+      type: 'monster'
+      has-shiny-version: true
+      info: 'none'
+    pig:
+      series: 'default'
+      type: 'animal'
+      has-shiny-version: true
+      info: 'none'
+    cow:
+      series: 'default'
+      type: 'animal'
+      has-shiny-version: true
+      info: 'none'
+    sheep:
+      series: 'default'
+      type: 'animal'
+      has-shiny-version: true
+      info: 'none'
+    chicken:
+      series: 'default'
+      type: 'animal'
+      has-shiny-version: true
+      info: 'none'
+    horse:
+      series: 'default'
+      type: 'animal'
+      has-shiny-version: true
+      info: 'none'
+    donkey:
+      series: 'default'
+      type: 'animal'
+      has-shiny-version: true
+      info: 'none'
+    mule:
+      series: 'default'
+      type: 'animal'
+      has-shiny-version: true
+      info: 'none'
+    squid:
+      series: 'default'
+      type: 'animal'
+      has-shiny-version: true
+      info: 'none'
+    villager:
+      series: 'default'
+      type: 'animal'
+      has-shiny-version: true
+      info: 'none'
+    bat:
+      series: 'default'
+      type: 'animal'
+      has-shiny-version: true
+      info: 'none'
+    rabbit:
+      series: 'default'
+      type: 'animal'
+      has-shiny-version: true
+      info: 'none'
+  uncommon:
+    blaze:
+      series: 'default'
+      type: 'monster'
+      has-shiny-version: true
+      info: 'none'
+    magma_cube:
+      series: 'default'
+      type: 'monster'
+      has-shiny-version: true
+      info: 'none'
+    ghast:
+      series: 'default'
+      type: 'monster'
+      has-shiny-version: true
+      info: 'none'
+    witch:
+      series: 'default'
+      type: 'monster'
+      has-shiny-version: true
+      info: 'none'
+    zombie_pigman:
+      series: 'default'
+      type: 'monster'
+      has-shiny-version: true
+      info: 'none'
+    cave_spider:
+      series: 'default'
+      type: 'monster'
+      has-shiny-version: true
+      info: 'none'
+    wolf:
+      series: 'default'
+      type: 'animal'
+      has-shiny-version: true
+      info: 'none'
+    ocelot:
+      series: 'default'
+      type: 'animal'
+      has-shiny-version: true
+      info: 'none'
+    polar_bear:
+      series: 'default'
+      type: 'animal'
+      has-shiny-version: true
+      info: 'none'
+    stray_skeleton:
+      series: 'default'
+      type: 'monster'
+      has-shiny-version: true
+      info: 'none'
+    silverfish:
+      series: 'default'
+      type: 'monster'
+      has-shiny-version: true
+      info: 'none'
+    skeleton_horseman:
+      series: 'default'
+      type: 'monster'
+      has-shiny-version: true
+      info: 'none'
+    husk:
+      series: 'default'
+      type: 'monster'
+      has-shiny-version: true
+      info: 'none'
+    zombie_villager:
+      series: 'default'
+      type: 'monster'
+      has-shiny-version: true
+      info: 'none'
+  rare:
+    guardian:
+      series: 'default'
+      type: 'monster'
+      has-shiny-version: true
+      info: 'none'
+    slime:
+      series: 'default'
+      type: 'monster'
+      has-shiny-version: true
+      info: 'none'
+    wither_skeleton:
+      series: 'default'
+      type: 'monster'
+      has-shiny-version: true
+      info: 'none'
+    spider_jockey:
+      series: 'default'
+      type: 'monster'
+      has-shiny-version: true
+      info: 'none'
+    endermite:
+      series: 'default'
+      type: 'monster'
+      has-shiny-version: true
+      info: 'none'
+    mushroom_cow:
+      series: 'default'
+      type: 'animal'
+      has-shiny-version: true
+      info: 'none'
+    chicken_jockey:
+      series: 'default'
+      type: 'animal'
+      has-shiny-version: true
+      info: 'none'
+    snow_golem:
+      series: 'default'
+      type: 'monster'
+      has-shiny-version: true
+      info: 'none'
+    iron_golem:
+      series: 'default'
+      type: 'monster'
+      has-shiny-version: true
+      info: 'none'
+    shulker:
+      series: 'default'
+      type: 'monster'
+      has-shiny-version: true
+      info: 'none'
+  very_rare:
+    killer_bunny:
+      series: 'default'
+      type: 'monster'
+      has-shiny-version: true
+      info: 'none'
+    skeleton_horse:
+      series: 'default'
+      type: 'monster'
+      has-shiny-version: true
+      info: 'none'
+    zombie_horse:
+      series: 'default'
+      type: 'monster'
+      has-shiny-version: true
+      info: 'none'
+  legendary:
+    ender_dragon:
+      series: 'default'
+      type: 'boss'
+      has-shiny-version: true
+      info: 'none'
+    wither:
+      series: 'default'
+      type: 'boss'
+      has-shiny-version: true
+      info: 'none'
+    elder_guardian:
+      series: 'default'
+      type: 'boss'
+      has-shiny-version: true
+      info: 'none'
+    giant:
+      series: 'default'
+      type: 'boss'
+      has-shiny-version: true
+      info: 'none'
