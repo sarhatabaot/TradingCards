@@ -36,6 +36,13 @@ public class CardUtil {
 	public static final int RANDOM_MAX = 100000;
 	public static ItemStack BLANK_CARD;
 
+	private static final String PLACEHOLDER_PREFIX = "%PREFIX%";
+	private static final String PLACEHOLDER_COLOR = "%COLOR%";
+	private static final String PLACEHOLDER_NAME ="%NAME%";
+	private static final String PLACEHOLDER_BUY_PRICE = "%BUY_PRICE%";
+	private static final String PLACEHOLDER_SELL_PRICE = "%SELL_PRICE%";
+	private static final  String PLACEHOLDER_SHINY_PREFIX = "%SHINY_PREFIX";
+
 	public static void init(final TradingCards plugin) {
 		CardUtil.plugin = plugin;
 		CardUtil.cardManager = plugin.getCardManager();
@@ -92,14 +99,6 @@ public class CardUtil {
 		}
 	}
 
-	private static boolean rarityExists(Set<String> rarityKeys, String rarity){
-		for (String type2 : rarityKeys) {
-			if (type2.equalsIgnoreCase(rarity)) {
-				return true;
-			}
-		}
-		return false;
-	}
 
 	//returns "None" if it doesn't match.
 	private static String getCorrectNameTemplate(String string) {
@@ -193,10 +192,6 @@ public class CardUtil {
 		return "None";
 	}
 
-	public static boolean isPlayerCard(String name) {
-		String rarity = plugin.getConfig().getString("General.Auto-Add-Player-Rarity");
-		return !cardManager.getCard(name,rarity,false).getCardName().equals("nullCard") && cardManager.getCard(name,rarity,false).isPlayerCard();
-	}
 
 	public static boolean isCard(final ItemStack itemStack) {
 		if(!isCardMaterial(itemStack.getType()))
@@ -253,11 +248,11 @@ public class CardUtil {
 
 	}
 	public static String formatDisplayName(final TradingCard card) {
-		final String[] shinyPlayerCardFormat = new String[]{"%PREFIX%", "%COLOUR%", "%NAME%", "%COST%", "%SHINYPREFIX%"};
-		final String[] shinyCardFormat = new String[]{"%PREFIX%", "%COLOUR%", "%NAME%", "%COST%", "%SHINYPREFIX%", "_"};
+		final String[] shinyPlayerCardFormat = new String[]{PLACEHOLDER_PREFIX, PLACEHOLDER_COLOR, PLACEHOLDER_NAME, PLACEHOLDER_BUY_PRICE,PLACEHOLDER_SELL_PRICE, PLACEHOLDER_SHINY_PREFIX};
+		final String[] shinyCardFormat = new String[]{PLACEHOLDER_PREFIX, PLACEHOLDER_COLOR, PLACEHOLDER_NAME, PLACEHOLDER_BUY_PRICE,PLACEHOLDER_SELL_PRICE, PLACEHOLDER_SHINY_PREFIX, "_"};
 
-		final String[] cardFormat = new String[]{"%PREFIX%", "%COLOUR%", "%NAME%", "%COST%", "_"};
-		final String[] playerCardFormat = new String[]{"%PREFIX%", "%COLOUR%", "%NAME%", "%COST%"};
+		final String[] cardFormat = new String[]{PLACEHOLDER_PREFIX, PLACEHOLDER_COLOR, PLACEHOLDER_NAME, PLACEHOLDER_BUY_PRICE, PLACEHOLDER_SELL_PRICE,"_"};
+		final String[] playerCardFormat = new String[]{PLACEHOLDER_PREFIX, PLACEHOLDER_COLOR, PLACEHOLDER_NAME, PLACEHOLDER_BUY_PRICE, PLACEHOLDER_SELL_PRICE};
 
 		Rarity rarity;
 		try {
@@ -272,19 +267,20 @@ public class CardUtil {
 		final String prefix = plugin.getGeneralConfig().cardPrefix();
 		final String rarityColour = rarity.getDefaultColor();
 		final String buyPrice = String.valueOf(card.getBuyPrice());
+		final String sellPrice =String.valueOf(card.getSellPrice());
 
 		if (card.isShiny() && shinyPrefix != null) {
 			if (card.isPlayerCard()) {
-				return plugin.cMsg(StringUtils.replaceEach(shinyTitle, shinyPlayerCardFormat, new String[]{prefix, rarityColour,card.getDisplayName(), buyPrice, shinyPrefix}));
+				return ChatUtil.color(StringUtils.replaceEach(shinyTitle, shinyPlayerCardFormat, new String[]{prefix, rarityColour,card.getDisplayName(), buyPrice,sellPrice, shinyPrefix}));
 			}
-			return plugin.cMsg(StringUtils.replaceEach(shinyTitle, shinyCardFormat, new String[]{prefix, rarityColour, card.getDisplayName(), buyPrice, shinyPrefix, " "}));
+			return ChatUtil.color(StringUtils.replaceEach(shinyTitle, shinyCardFormat, new String[]{prefix, rarityColour, card.getDisplayName(), buyPrice,sellPrice, shinyPrefix, " "}));
 		}
 		if (card.isPlayerCard()) {
-			return plugin.cMsg(StringUtils.replaceEach(title, playerCardFormat, new String[]{prefix, rarityColour, card.getDisplayName(), buyPrice}));
+			return ChatUtil.color(StringUtils.replaceEach(title, playerCardFormat, new String[]{prefix, rarityColour, card.getDisplayName(), buyPrice,sellPrice}));
 		}
-		return plugin.cMsg(StringUtils.replaceEach(title, cardFormat, new String[]{prefix, rarityColour, card.getDisplayName(), buyPrice, " "}));
+		return ChatUtil.color(StringUtils.replaceEach(title, cardFormat, new String[]{prefix, rarityColour, card.getDisplayName(), buyPrice,sellPrice, " "}));
 	}
-	
+
 	public static List<String> formatLore(final String info, final String about, final String rarity, final boolean isShiny, final String type, final String series) {
 		List<String> lore = new ArrayList<>();
 		final String typeFormat = ChatUtil.color(plugin.getGeneralConfig().colorType() + plugin.getGeneralConfig().displayType() + ": &f" + type);
@@ -296,7 +292,7 @@ public class CardUtil {
 		lore.add(typeFormat);
 		if (!"None".equalsIgnoreCase(info) && !info.isEmpty()) {
 			lore.add(infoFormat);
-			lore.addAll(plugin.wrapString(info));
+			lore.addAll(ChatUtil.wrapString(info));
 		} else {
 			lore.add(infoFormat + info);
 		}

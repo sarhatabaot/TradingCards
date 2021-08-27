@@ -4,6 +4,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.managers;
 import de.tr7zw.nbtapi.NBTItem;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.api.manager.DeckManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -36,7 +37,7 @@ public class TradingDeckManager implements DeckManager {
 
 	private Inventory generateDeckInventory(final Player player, final int deckNum) {
 		List<ItemStack> cards = loadCardsFromFile(player.getUniqueId(), deckNum);
-		Inventory inv = Bukkit.createInventory(null, getDeckSize(), plugin.cMsg("&c" + player.getName() + "'s Deck #" + deckNum));
+		Inventory inv = Bukkit.createInventory(null, getDeckSize(), ChatUtil.color("&c" + player.getName() + "'s Deck #" + deckNum));
 		for (ItemStack cardItem : cards) {
 			inv.addItem(cardItem);
 			plugin.debug("Item=" + cardItem.getType() + ",amount=" + cardItem.getAmount() + ", added to inventory");
@@ -95,7 +96,7 @@ public class TradingDeckManager implements DeckManager {
 	public ItemStack createDeckItem(@NotNull final Player p, final int num) {
 		ItemStack deck = plugin.getGeneralConfig().blankDeck();
 		ItemMeta deckMeta = deck.getItemMeta();
-		deckMeta.setDisplayName(plugin.cMsg(plugin.getGeneralConfig().deckPrefix() + p.getName() + "'s Deck #" + num));
+		deckMeta.setDisplayName(ChatUtil.color(plugin.getGeneralConfig().deckPrefix() + p.getName() + "'s Deck #" + num));
 
 		deckMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 		deck.setItemMeta(deckMeta);

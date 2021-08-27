@@ -193,7 +193,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     @Override
     public void onDisable() {
         econ = null;
-        this.getServer().getPluginManager().removePermission("cards.rarity");
     }
 
 
@@ -248,7 +247,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
     private void initListeners() {
         var pm = Bukkit.getPluginManager();
-        pm.addPermission(new Permission("cards.rarity"));
         pm.registerEvents(new DropListener(this, cardManager), this);
         pm.registerEvents(new PackListener(this), this);
         pm.registerEvents(new MobSpawnListener(this), this);
@@ -348,20 +346,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         return this.hostileMobs.contains(type) || this.neutralMobs.contains(type) || this.passiveMobs.contains(type) || this.bossMobs.contains(type);
     }
 
-    public List<String> wrapString(@NotNull String s) {
-        String parsedString = ChatColor.stripColor(s);
-        String addedString = WordUtils.wrap(parsedString, this.getConfig().getInt("General.Info-Line-Length", 25), "\n", true);
-        String[] splitString = addedString.split("\n");
-        List<String> finalArray = new ArrayList<>();
-
-        for (String ss : splitString) {
-            debug(ChatColor.getLastColors(ss));
-            finalArray.add(this.cMsg("&f &7- &f" + ss));
-        }
-
-        return finalArray;
-    }
-
     @Override
     public void debug(final String message) {
         if (getGeneralConfig().debugMode()) {
@@ -370,7 +354,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     }
 
     public String getPrefixedMessage(final String message) {
-        return cMsg(messagesConfig.prefix() + "&r " + message);
+        return ChatUtil.color(messagesConfig.prefix() + "&r " + message);
     }
 
     public void reloadAllConfig() {

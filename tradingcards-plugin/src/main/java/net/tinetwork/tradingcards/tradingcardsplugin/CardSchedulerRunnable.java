@@ -2,6 +2,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin;
 
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingCardManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
+import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -40,7 +41,7 @@ public class CardSchedulerRunnable extends BukkitRunnable {
         if (rarity.isEmpty())
             return;
 
-        Bukkit.broadcastMessage(plugin.cMsg(plugin.getMessagesConfig().prefix() + " " + plugin.getMessagesConfig().scheduledGiveaway()));
+        Bukkit.broadcastMessage(ChatUtil.color(plugin.getMessagesConfig().prefix() + " " + plugin.getMessagesConfig().scheduledGiveaway()));
         for (final Player p : Bukkit.getOnlinePlayers()) {
             CardUtil.dropItem(p, cardManager.getRandomCard(rarity, false).build());
         }

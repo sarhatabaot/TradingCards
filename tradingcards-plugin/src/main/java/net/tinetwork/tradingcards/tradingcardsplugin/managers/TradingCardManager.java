@@ -27,6 +27,7 @@ import java.util.TreeSet;
 
 public class TradingCardManager implements CardManager<TradingCard> {
     private final TradingCards plugin;
+    public static final NullCard NULL_CARD = new NullCard();
     private final Map<String, Card<TradingCard>> cards = new HashMap<>();
     private final Map<String, Card<TradingCard>> activeCards = new HashMap<>();
 
@@ -265,34 +266,13 @@ public class TradingCardManager implements CardManager<TradingCard> {
         return "None";
     }
 
-    @NotNull
-    public TradingCard generateCard(final SimpleCardsConfig simpleCardsConfig, final String cardName, final String rarityName, boolean forcedShiny) {
-        if ("None".equalsIgnoreCase(rarityName))
-            return new NullCard();
+    public TradingCard generateCard(final SimpleCardsConfig simpleCardsConfig, final String cardId, final String rarityId, boolean forcedShiny) {
+        if("none".equalsIgnoreCase(rarityId)) {
+            return NULL_CARD;
+        }
 
-        TradingCard builder = new TradingCard(cardName);
-        boolean isShiny = false;
-        if (simpleCardsConfig.hasShinyVersion(rarityName, cardName))
-            isShiny = calculateIfShiny(forcedShiny);
-
-        final String series = simpleCardsConfig.series(rarityName, cardName);
-        final String about = simpleCardsConfig.about(rarityName, cardName);
-        final String type = simpleCardsConfig.type(rarityName, cardName);
-        final String info = simpleCardsConfig.info(rarityName, cardName);
-        final double buyPrice = simpleCardsConfig.buyPrice(rarityName, cardName);
-        final double sellPrice = simpleCardsConfig.sellPrice(rarityName, cardName);
-        boolean isPlayerCard = isPlayerCard(cardName);
-        builder.isShiny(isShiny)
-                .series(series)
-                .type(type)
-                .info(info)
-                .isPlayerCard(isPlayerCard)
-                .buyPrice(buyPrice)
-                .sellPrice(sellPrice)
-                .rarity(rarityName);
-        if (!about.isEmpty())
-            builder.about(about);
-        return builder.get();
+        return simpleCardsConfig.getCard(rarityId,cardId)
+                .isShiny(calculateIfShiny(forcedShiny)).get();
     }
 
     private boolean calculateIfShiny(boolean forcedShiny) {
@@ -300,12 +280,6 @@ public class TradingCardManager implements CardManager<TradingCard> {
             return true;
         int shinyRandom = plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1;
         return shinyRandom <= plugin.getChancesConfig().shinyVersionChance();
-    }
-
-    //TODO
-    public boolean isPlayerCard(String name) {
-        String rarity = plugin.getConfig().getString("General.Auto-Add-Player-Rarity");
-        return !getCard(name, rarity, false).getCardName().equals("nullCard") && getCard(name, rarity, false).isPlayerCard();
     }
 
 }
