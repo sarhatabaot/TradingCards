@@ -69,8 +69,9 @@ public class DropListener extends SimpleListener {
         if (isSpawnerMob(killedEntity)) return;
         //Get card rarity
         debug("EntityType="+killedEntity.getType());
-        debug("MobType="+CardUtil.getMobTypeOrNone(killedEntity.getType(),false));
-        String rarityName = cardManager.getRandomRarity(CardUtil.getMobTypeOrNone(killedEntity.getType(), false));
+        debug("MobType="+CardUtil.getMobType(killedEntity.getType()));
+
+        String rarityName = cardManager.getRandomRarity(CardUtil.getMobType(killedEntity.getType()));
         if (rarityName.equals("None"))
             return;
 

@@ -2,6 +2,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.managers;
 
 import net.tinetwork.tradingcards.api.model.Chance;
 import net.tinetwork.tradingcards.api.model.EmptyChance;
+import net.tinetwork.tradingcards.api.model.MobType;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.NullCard;
@@ -143,7 +144,23 @@ public class TradingCardManager implements CardManager<TradingCard> {
         return cardItem;
     }
 
+    public String getRandomRarity(MobType mobType) {
+        int randomChance = plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1;
 
+        TreeSet<String> rarityKeys = new TreeSet<>(plugin.getCardManager().getRarityNames());
+        for (String rarity : rarityKeys.descendingSet()) {
+            plugin.debug("rarity=" + rarity);
+            Chance chance = plugin.getChancesConfig().getChance(rarity);
+            if(chance instanceof EmptyChance)
+                return "None";
+
+            int chanceInt = chance.getFromMobType(mobType);
+
+            if (randomChance < chanceInt)
+                return rarity;
+        }
+        return "None";
+    }
     public String getRandomRarity(String mobType) {
         plugin.debug("getRandomRarity=" + mobType);
         if (mobType.equalsIgnoreCase("None"))
@@ -168,7 +185,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
 
 
     //Returns none or the mobtype
-    public String getMobTypeName(CardUtil.MobType mobType, boolean alwaysDrop) {
+    public String getMobTypeName(MobType mobType, boolean alwaysDrop) {
         int generatedDropChance = plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1;
         if (alwaysDrop)
             return mobType.name();

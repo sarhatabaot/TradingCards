@@ -45,4 +45,14 @@ public class Chance {
         };
     }
 
+    public int getFromMobType(final MobType mobType) {
+        return switch (mobType) {
+            case HOSTILE -> this.getHostile();
+            case NEUTRAL -> this.getNeutral();
+            case PASSIVE-> this.getPassive();
+            case BOSS -> this.getBoss();
+            default -> 0;
+        };
+    }
+
 }

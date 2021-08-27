@@ -1,6 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.utils;
 
 import de.tr7zw.nbtapi.NBTItem;
+import net.tinetwork.tradingcards.api.model.MobType;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
@@ -158,13 +159,7 @@ public class CardUtil {
 		return "None";
 	}
 
-	public enum MobType {
-		HOSTILE,
-		NEUTRAL,
-		PASSIVE,
-		BOSS
-	}
-
+	@NotNull
 	public static MobType getMobType(EntityType e) {
 		if (plugin.isMobHostile(e)) {
 			return MobType.HOSTILE;
@@ -179,44 +174,6 @@ public class CardUtil {
 	}
 
 
-	@NotNull
-	//TODO
-	//This should not calculate a rarity, but rather just return the mobtype
-	public static String getMobTypeOrNone(EntityType e, boolean alwaysDrop) {
-		int generatedDropChance = plugin.getRandom().nextInt(RANDOM_MAX) + 1;
-		plugin.debug("shouldItDrop Num: " + generatedDropChance);
-		if (plugin.isMobHostile(e)) {
-			if (!alwaysDrop && generatedDropChance > plugin.getChancesConfig().hostileChance()) {
-				return "None";
-			}
-
-			return "Hostile";
-		}
-		if (plugin.isMobNeutral(e)) {
-			if (!alwaysDrop && generatedDropChance > plugin.getChancesConfig().neutralChance()) {
-				return "None";
-			}
-			return "Neutral";
-		}
-		if (plugin.isMobPassive(e)) {
-			if (!alwaysDrop && generatedDropChance >  plugin.getChancesConfig().passiveChance()) {
-				return "None";
-
-			}
-			return "Passive";
-		}
-
-		if (!plugin.isMobBoss(e)) {
-			if (!alwaysDrop && generatedDropChance >  plugin.getChancesConfig().bossChance()) {
-				return "None";
-			}
-			return "Boss";
-
-		}
-
-		return "None";
-	}
-
 	/**
 	 * Returns the rarity that should drop.
 	 *
@@ -226,14 +183,10 @@ public class CardUtil {
 	 */
 	@NotNull
 	public static String calculateRarity(EntityType e, boolean alwaysDrop) {
-		String mobType = getMobTypeOrNone(e, alwaysDrop);
-		if(mobType.equalsIgnoreCase("None"))
-			return "None";
-
 		int randomChance = plugin.getRandom().nextInt(RANDOM_MAX) + 1;
 		for(Rarity rarity: plugin.getRaritiesConfig().rarities()) {
-			var chance = plugin.getChancesConfig().getChance(rarity.getName()).getFromMobType(mobType);
-			if(randomChance < chance)
+			var chance = plugin.getChancesConfig().getChance(rarity.getName()).getFromMobType(CardUtil.getMobType(e));
+			if(alwaysDrop || randomChance < chance)
 				return rarity.getName();
 		}
 
