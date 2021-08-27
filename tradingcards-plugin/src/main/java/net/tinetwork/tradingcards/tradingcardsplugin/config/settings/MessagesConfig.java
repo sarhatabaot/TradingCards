@@ -66,6 +66,7 @@ public class MessagesConfig extends SimpleConfigurate {
     private final String rewardDisabled;
 
     private final String sectionFormat;
+    private final String sectionFormatPlayer;
     private final String sectionFormatComplete;
     private final String packSection;
 
@@ -133,6 +134,7 @@ public class MessagesConfig extends SimpleConfigurate {
         this.sectionFormat = rootNode.node("section-format").getString();
         this.sectionFormatComplete = rootNode.node("section-format-complete").getString();
         this.packSection = rootNode.node("pack-section").getString();
+        this.sectionFormatPlayer = rootNode.node("section-format-player").getString();
 
     }
 
@@ -143,6 +145,10 @@ public class MessagesConfig extends SimpleConfigurate {
 
     public String packSection() {
         return packSection;
+    }
+
+    public String sectionFormatPlayer() {
+        return sectionFormatPlayer;
     }
 
     public String sectionFormat() {

@@ -251,8 +251,8 @@ public class CardsCommand extends BaseCommand {
         @CommandCompletion("@players @rarities")
         @Description("Lists all cards by a player.")
         public void onListPlayer(final CommandSender sender, final Player target, @Optional final String rarity) {
-            if (rarity == null || plugin.isRarityAndFormat(rarity).equals("None")) {
-                final String sectionFormat = String.format("&e&l------- &7(&6&l%s's Collection&7)&e&l -------", target.getName());
+            if (rarity == null || plugin.isRarity(rarity).equalsIgnoreCase("None")) {
+                final String sectionFormat = String.format(plugin.getMessagesConfig().sectionFormatPlayer(), target.getName());
                 ChatUtil.sendMessage(sender, String.format(sectionFormat, target.getName()));
                 for(Rarity rarityKey: plugin.getRaritiesConfig().rarities()) {
                     listRarity(sender,target,rarityKey.getName());
