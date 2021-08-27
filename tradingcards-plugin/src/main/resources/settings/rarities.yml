@@ -7,31 +7,31 @@
 #
 rarities:
   common:
-    name: "Common"
+    name: "common"
     display-name: "&7Common"
     default-color: "&7"
     rewards:
       - "eco give %player% 100"
   uncommon:
-    name: "Uncommon"
+    name: "uncommon"
     display-name: "&9Uncommon"
     default-color: "&9"
     rewards:
       - ""
   rare:
-    name: "Rare"
+    name: "rare"
     display-name: "&eRare"
     default-color: "&e"
     rewards:
       - ""
   very-rare:
-    name: "Very Rare"
+    name: "very rare"
     display-name: "&6Very Rare"
     default-color: "&6"
     rewards:
       - ""
   legendary:
-    name: "Legendary"
+    name: "legendary"
     display-name: "&6Legendary"
     default-color: "&6"
     rewards:
