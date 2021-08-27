@@ -2,6 +2,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.listeners;
 
 import de.tr7zw.nbtapi.NBTItem;
 import net.tinetwork.tradingcards.api.model.Pack;
+import net.tinetwork.tradingcards.tradingcardsplugin.Permissions;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
@@ -46,8 +47,8 @@ public class PackListener extends SimpleListener {
         }
 
 
-        if (!player.hasPermission("cards.openboosterpack")) {
-            ChatUtil.sendMessage(player, plugin.getPrefixedMessage("No permission: cards.openboosterpack"));
+        if (!player.hasPermission(Permissions.USE_PACK)) {
+            ChatUtil.sendMessage(player, plugin.getPrefixedMessage("No permission: "+Permissions.USE_PACK));
             return;
         }
         if (player.getGameMode() == GameMode.CREATIVE) {

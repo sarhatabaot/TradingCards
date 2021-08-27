@@ -5,6 +5,7 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Description;
+import net.tinetwork.tradingcards.tradingcardsplugin.Permissions;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
@@ -22,7 +23,7 @@ public class DeckCommand extends BaseCommand {
 
 
 	@Default
-	@CommandPermission("cards.decks.open")
+	@CommandPermission(Permissions.USE_DECK)
 	@Description("Get a deck item. Or opens a deck.")
 	public void onGetDeck(final Player player, final int deckNumber) {
 		Validate.notNull(player, "Cannot run this command from console, or there was a problem getting the player object.");

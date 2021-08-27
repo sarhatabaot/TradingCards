@@ -2,6 +2,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin;
 
 public class Permissions {
     public static final String USE_PACK = "cards.use.pack";
+    public static final String USE_DECK = "cards.use.deck";
     public static final String RESOLVE = "cards.resolve";
     public static final String VERSION = "cards.version";
     public static final String RELOAD = "cards.reload";
@@ -27,4 +28,5 @@ public class Permissions {
     public static final String BUY = "cards.buy";
     public static final String BUY_PACK = "cards.buy.pack";
     public static final String BUY_CARD = "cards.buy.card";
+
 }
