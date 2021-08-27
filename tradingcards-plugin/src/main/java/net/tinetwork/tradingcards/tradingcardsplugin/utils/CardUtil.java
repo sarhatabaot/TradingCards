@@ -219,30 +219,30 @@ public class CardUtil {
 			if (sender == null) {
 				broadcastPrefixedMessage(plugin.getMessagesConfig().giveawayNaturalBossNoPlayer());
 			} else {
-				broadcastPrefixedMessage(plugin.getMessagesConfig().giveawayNaturalBoss().replaceAll("%player%", sender.getName()));
+				broadcastPrefixedMessage(plugin.getMessagesConfig().giveawayNaturalBoss().replace("%player%", sender.getName()));
 			}
 		} else if (plugin.isMobHostile(mob)) {
 			if (sender == null) {
 				broadcastPrefixedMessage(plugin.getMessagesConfig().giveawayNaturalHostileNoPlayer());
 			} else {
-				broadcastPrefixedMessage(plugin.getMessagesConfig().giveawayNaturalHostile().replaceAll("%player%", sender.getName()));
+				broadcastPrefixedMessage(plugin.getMessagesConfig().giveawayNaturalHostile().replace("%player%", sender.getName()));
 			}
 		} else if (plugin.isMobNeutral(mob)) {
 			if (sender == null) {
 				broadcastPrefixedMessage(plugin.getPrefixedMessage(plugin.getMessagesConfig().giveawayNaturalNeutralNoPlayer()));
 			} else {
-				broadcastPrefixedMessage(plugin.getPrefixedMessage(plugin.getMessagesConfig().giveawayNaturalNeutral().replaceAll("%player%", sender.getName())));
+				broadcastPrefixedMessage(plugin.getPrefixedMessage(plugin.getMessagesConfig().giveawayNaturalNeutral().replace("%player%", sender.getName())));
 			}
 		} else if (plugin.isMobPassive(mob)) {
 			if (sender == null) {
 				broadcastPrefixedMessage(plugin.getPrefixedMessage(plugin.getMessagesConfig().giveawayNaturalPassiveNoPlayer()));
 			} else {
-				broadcastPrefixedMessage(plugin.getPrefixedMessage(plugin.getMessagesConfig().giveawayNaturalPassive().replaceAll("%player%", sender.getName())));
+				broadcastPrefixedMessage(plugin.getPrefixedMessage(plugin.getMessagesConfig().giveawayNaturalPassive().replace("%player%", sender.getName())));
 			}
 		} else if (sender == null) {
 			broadcastPrefixedMessage(plugin.getMessagesConfig().giveawayNaturalNoPlayer());
 		} else {
-			broadcastPrefixedMessage(plugin.getMessagesConfig().giveawayNatural().replaceAll("%player%", sender.getName()));
+			broadcastPrefixedMessage(plugin.getMessagesConfig().giveawayNatural().replace("%player%", sender.getName()));
 		}
 
 		for (final Player p : Bukkit.getOnlinePlayers()) {
@@ -284,30 +284,7 @@ public class CardUtil {
 		}
 		return plugin.cMsg(StringUtils.replaceEach(title, cardFormat, new String[]{prefix, rarityColour, card.getDisplayName(), buyPrice, " "}));
 	}
-	@NotNull
-	@Deprecated
-	public static String formatDisplayName(boolean isPlayerCard, boolean isShiny, String prefix, String rarityColour, String cardName, String cost, String shinyPrefix) {
-		final String[] shinyPlayerCardFormat = new String[]{"%PREFIX%", "%COLOUR%", "%NAME%", "%COST%", "%SHINYPREFIX%"};
-		final String[] shinyCardFormat = new String[]{"%PREFIX%", "%COLOUR%", "%NAME%", "%COST%", "%SHINYPREFIX%", "_"};
-
-		final String[] cardFormat = new String[]{"%PREFIX%", "%COLOUR%", "%NAME%", "%COST%", "_"};
-		final String[] playerCardFormat = new String[]{"%PREFIX%", "%COLOUR%", "%NAME%", "%COST%"};
-
-
-		final String shinyTitle = plugin.getConfig().getString("DisplayNames.Cards.ShinyTitle");
-		final String title = plugin.getConfig().getString("DisplayNames.Cards.Title");
-		if (isShiny && shinyPrefix != null) {
-			if (isPlayerCard) {
-				return plugin.cMsg(StringUtils.replaceEach(shinyTitle, shinyPlayerCardFormat, new String[]{prefix, rarityColour, cardName, cost, shinyPrefix}));
-			}
-			return plugin.cMsg(StringUtils.replaceEach(shinyTitle, shinyCardFormat, new String[]{prefix, rarityColour, cardName, cost, shinyPrefix, " "}));
-		}
-		if (isPlayerCard) {
-			return plugin.cMsg(StringUtils.replaceEach(title, playerCardFormat, new String[]{prefix, rarityColour, cardName, cost}));
-		}
-		return plugin.cMsg(StringUtils.replaceEach(title, cardFormat, new String[]{prefix, rarityColour, cardName, cost, " "}));
-	}
-
+	
 	public static List<String> formatLore(final String info, final String about, final String rarity, final boolean isShiny, final String type, final String series) {
 		List<String> lore = new ArrayList<>();
 		final String typeFormat = ChatUtil.color(plugin.getGeneralConfig().colorType() + plugin.getGeneralConfig().displayType() + ": &f" + type);
