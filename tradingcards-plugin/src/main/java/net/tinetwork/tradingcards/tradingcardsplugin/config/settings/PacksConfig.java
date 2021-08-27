@@ -14,13 +14,14 @@ import java.io.File;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class PacksConfig extends SimpleConfigurate {
     private final List<String> packs = new ArrayList<>();
     public PacksConfig(TradingCards plugin) throws ConfigurateException {
         super(plugin, "settings"+ File.separator,"packs.yml", "settings");
-        for(ConfigurationNode configurationNode: rootNode.childrenList()) {
-            final String name = configurationNode.key().toString();
+        for(Map.Entry<Object, ? extends ConfigurationNode> nodeEntry: rootNode.childrenMap().entrySet()) {
+            final String name = nodeEntry.getValue().key().toString();
             packs.add(name);
         }
     }
@@ -41,12 +42,7 @@ public class PacksConfig extends SimpleConfigurate {
 
     public static class PackSerializer implements TypeSerializer<Pack> {
         public static final PackSerializer INSTANCE = new PackSerializer();
-        private static final String NUM_NORMAL_CARDS = "num-normal-cards";
-        private static final String NORMAL_CARDS_RARITY = "normal-card-rarity";
-        private static final String NUM_EXTRA_CARDS = "num-extra-cards";
-        private static final String EXTRA_CARDS_RARITY = "extra-card-rarity";
-        private static final String NUM_SPECIAL_CARDS = "num-special-cards";
-        private static final String SPECIAL_CARD_RARITY = "special-card-rarity";
+        private static final String CONTENT = "content";
         private static final String SERIES = "series";
         private static final String PRICE = "prices";
         private static final String PERMISSION = "permission";
@@ -56,27 +52,21 @@ public class PacksConfig extends SimpleConfigurate {
 
         @Override
         public Pack deserialize(Type type, ConfigurationNode node) throws SerializationException {
-            final ConfigurationNode numNormalCardsNode = node.node(NUM_NORMAL_CARDS);
-            final ConfigurationNode normalCardRarityNode = node.node(NORMAL_CARDS_RARITY);
-            final ConfigurationNode numExtraCardsNode = node.node(NUM_EXTRA_CARDS);
-            final ConfigurationNode extraCardRarityNode = node.node(EXTRA_CARDS_RARITY);
-            final ConfigurationNode numSpecialCardsNode = node.node(NUM_SPECIAL_CARDS);
-            final ConfigurationNode specialCardRarityNode = node.node(SPECIAL_CARD_RARITY);
+            final ConfigurationNode contentNode = node.node(CONTENT);
             final ConfigurationNode seriesNode = node.node(SERIES);
             final ConfigurationNode priceNode = node.node(PRICE);
             final ConfigurationNode permissionsNode = node.node(PERMISSION);
 
-            final int numNormalCards = numNormalCardsNode.getInt(0);
-            final String normalCardRarity = normalCardRarityNode.getString();
-            final int numExtraCards = numExtraCardsNode.getInt(0);
-            final String extraCardRarity = extraCardRarityNode.getString();
-            final int numSpecialCards = numSpecialCardsNode.getInt(0);
-            final String specialCardRarity = specialCardRarityNode.getString();
+            final List<String> contentStringList = contentNode.getList(String.class);
+            final List<Pack.PackEntry> packEntryList = new ArrayList<>();
+            for(String entry: contentStringList) {
+                packEntryList.add(Pack.PackEntry.fromString(entry));
+            }
             final String series = seriesNode.getString();
             final double price = priceNode.getDouble(0.0D);
             final String permissions = permissionsNode.getString();
 
-            return new Pack(numNormalCards,normalCardRarity,numSpecialCards,specialCardRarity,numExtraCards,extraCardRarity,series,price,permissions);
+            return new Pack(packEntryList,series,price,permissions);
         }
 
         //Only implemented this since it's required. We don't actually use this feature yet.
@@ -87,12 +77,7 @@ public class PacksConfig extends SimpleConfigurate {
                 return;
             }
 
-            target.node(NUM_NORMAL_CARDS).set(pack.getNumNormalCards());
-            target.node(NORMAL_CARDS_RARITY).set(pack.getNormalCardRarity());
-            target.node(NUM_EXTRA_CARDS).set(pack.getNumExtraCards());
-            target.node(EXTRA_CARDS_RARITY).set(pack.getExtraCardsRarity());
-            target.node(NUM_SPECIAL_CARDS).set(pack.getNumSpecialCards());
-            target.node(SPECIAL_CARD_RARITY).set(pack.getSpecialCardsRarity());
+            target.node(CONTENT).set(pack.getPackEntryList());
             target.node(SERIES).set(pack.getSeries());
             target.node(PRICE).set(pack.getPrice());
             target.node(PERMISSION).set(pack.getPermissions());

@@ -28,8 +28,8 @@ public class BoosterPackManager extends PackManager {
     public BoosterPackManager(TradingCards plugin) {
         this.plugin = plugin;
         this.packsConfig = plugin.getPacksConfig();
-        loadPacks();
         this.blankPack = new ItemStack(plugin.getGeneralConfig().packMaterial());
+        loadPacks();
     }
 
     private void loadPacks() {
@@ -66,28 +66,15 @@ public class BoosterPackManager extends PackManager {
                 .append(Component.text(name.replace("_", " ")))));
         List<String> lore = new ArrayList<>();
 
-        if (pack.getNumNormalCards() > 0) {
+        for(Pack.PackEntry entry: pack.getPackEntryList()) {
             lore.add(ChatUtil.color(Component.text(plugin.getGeneralConfig().colorPackNormal())
-                    .append(Component.text(pack.getNumNormalCards()))
+                    .append(Component.text(entry.getAmount()))
                     .append(Component.text(" "))
                     .append(Component.text(plugin.getGeneralConfig().colorPackLore()))
-                    .append(Component.text(pack.getNormalCardRarity()))));
+                    .append(Component.text(entry.getRarityId()))
+                    )
+            );
         }
-        if (pack.getNumSpecialCards() > 0) {
-            lore.add(ChatUtil.color(Component.text(plugin.getGeneralConfig().colorPackSpecial())
-                    .append(Component.text(pack.getNumSpecialCards()))
-                    .append(Component.text(" "))
-                    .append(Component.text(plugin.getGeneralConfig().colorPackLore()))
-                    .append(Component.text(pack.getSpecialCardsRarity()))));
-        }
-        if (pack.getNumExtraCards() > 0) {
-            lore.add(ChatUtil.color(Component.text(plugin.getGeneralConfig().colorPackExtra())
-                    .append(Component.text(pack.getNumExtraCards()))
-                    .append(Component.text(" "))
-                    .append(Component.text(plugin.getGeneralConfig().colorPackLore()))
-                    .append(Component.text(pack.getExtraCardsRarity()))));
-        }
-
         itemPackMeta.setLore(lore);
 
         itemPack.addItemFlags(ItemFlag.HIDE_ENCHANTS);

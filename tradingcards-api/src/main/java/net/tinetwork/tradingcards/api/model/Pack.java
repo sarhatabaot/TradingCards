@@ -1,51 +1,10 @@
 package net.tinetwork.tradingcards.api.model;
 
-public class Pack {
-    private final int numNormalCards;
-    private final String normalCardRarity;
-    private final int numSpecialCards;
-    private final String specialCardsRarity;
-    private final int numExtraCards;
-    private final String extraCardsRarity;
-    private final String series;
-    private final double price;
-    private final String permissions;
+import java.util.List;
 
-    public Pack(int numNormalCards, String normalCardRarity, int numSpecialCards, String specialCardsRarity, int numExtraCards, String extraCardsRarity, String series, double price, String permissions) {
-        this.numNormalCards = numNormalCards;
-        this.normalCardRarity = normalCardRarity;
-        this.numSpecialCards = numSpecialCards;
-        this.specialCardsRarity = specialCardsRarity;
-        this.numExtraCards = numExtraCards;
-        this.extraCardsRarity = extraCardsRarity;
-        this.series = series;
-        this.price = price;
-        this.permissions = permissions;
-    }
+public record Pack(List<PackEntry> packEntryList,
+                   String series, double price, String permissions) {
 
-    public int getNumNormalCards() {
-        return numNormalCards;
-    }
-
-    public String getNormalCardRarity() {
-        return normalCardRarity;
-    }
-
-    public int getNumSpecialCards() {
-        return numSpecialCards;
-    }
-
-    public String getSpecialCardsRarity() {
-        return specialCardsRarity;
-    }
-
-    public int getNumExtraCards() {
-        return numExtraCards;
-    }
-
-    public String getExtraCardsRarity() {
-        return extraCardsRarity;
-    }
 
     public String getSeries() {
         return series;
@@ -58,4 +17,33 @@ public class Pack {
     public String getPermissions() {
         return permissions;
     }
+
+    public List<PackEntry> getPackEntryList() {
+        return packEntryList;
+    }
+
+    public record PackEntry(String rarityId, int amount) {
+
+        public String getRarityId() {
+            return rarityId;
+        }
+
+        public int getAmount() {
+            return amount;
+        }
+
+        @Override
+        public String toString() {
+            return rarityId + ":" + amount;
+        }
+
+        public static PackEntry fromString(final String string) {
+            final String[] split = string.split(":");
+            final String rarityId = split[0];
+            final int amount = Integer.parseInt(split[1]);
+            return new PackEntry(rarityId, amount);
+        }
+    }
+
+
 }

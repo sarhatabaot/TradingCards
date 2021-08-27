@@ -50,7 +50,7 @@ public abstract class Card<T> {
      * @return Builder
      */
     public Card<T> customModelNbt(final int data) {
-        this.customModelNbt(data);
+        this.customModelNbt = data;
         return this;
     }
 
