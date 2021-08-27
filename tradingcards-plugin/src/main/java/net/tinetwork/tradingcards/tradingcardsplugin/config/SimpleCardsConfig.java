@@ -24,8 +24,6 @@ public class SimpleCardsConfig extends SimpleConfigurate {
         super(plugin, "cards"+File.separator, fileName, "cards");
 
         this.cardsNode = rootNode.node("cards");
-        //this.cards = getConfig().getConfigurationSection("cards");
-        reloadConfig();
         plugin.debug("Loaded: "+fileName);
     }
 
@@ -43,37 +41,76 @@ public class SimpleCardsConfig extends SimpleConfigurate {
             return new NullCard();
         }
     }
-
+    /**
+     * @deprecated Use node.get(Card.class) instead.
+     * @since 5.4
+     * */
+    @Deprecated
     public String series(final String rarity, final String name) {
         return cardsNode.node(rarity,name).node("series").getString("");
     }
 
+    /**
+     * @deprecated Use node.get(Card.class) instead.
+     * @since 5.4
+     * */
+    @Deprecated
     public String about(final String rarity, final String name) {
         return cardsNode.node(rarity,name).node("about").getString("");
     }
-
+    /**
+     * @deprecated Use node.get(Card.class) instead.
+     * @since 5.4
+     * */
+    @Deprecated
     public String info(final String rarity, final String name) {
         return cardsNode.node(rarity,name).node("info").getString("");
     }
+    /**
+     * @deprecated Use node.get(Card.class) instead.
+     * @since 5.4
+     * */
+    @Deprecated
     public String type(final String rarity, final String name) {
         return cardsNode.node(rarity,name).node("type").getString("");
     }
-
+    /**
+     * @deprecated Use node.get(Card.class) instead.
+     * @since 5.4
+     * */
+    @Deprecated
     public double buyPrice(final String rarity, final String name) {
         return cardsNode.node(rarity,name).node("buy-price").getDouble(0.0D);
     }
+    /**
+     * @deprecated Use node.get(Card.class) instead.
+     * @since 5.4
+     * */
+    @Deprecated
     public double sellPrice(final String rarity, final String name) {
         return cardsNode.node(rarity,name).node("sell-price").getDouble(0.0D);
     }
-
+    /**
+     * @deprecated Use node.get(Card.class) instead.
+     * @since 5.4
+     * */
+    @Deprecated
     public boolean hasShinyVersion(final String rarity, final String name) {
         return cardsNode.node(rarity,name).node("has-shiny-version").getBoolean(false);
     }
-
+    /**
+     * @deprecated Use node.get(Card.class) instead.
+     * @since 5.4
+     * */
+    @Deprecated
     public int customModelData(final String rarity, final String name) {
         return cardsNode.node(rarity,name).node("custom-model-data").getInt(0);
     }
-
+    /**
+     * @deprecated Use node.get(Card.class) instead.
+     * @since 5.4
+     * */
+    @Deprecated
     public String displayName(final String rarity, final String name) {
         return cardsNode.node(rarity,name).node("display-name").getString(name);
     }
