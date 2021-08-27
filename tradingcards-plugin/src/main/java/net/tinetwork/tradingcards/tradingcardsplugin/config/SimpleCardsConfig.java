@@ -159,8 +159,21 @@ public class SimpleCardsConfig extends SimpleConfigurate {
         }
 
         @Override
-        public void serialize(Type type, @Nullable TradingCard obj, ConfigurationNode node) throws SerializationException {
-            //todo
+        public void serialize(Type type, @Nullable TradingCard card, ConfigurationNode target) throws SerializationException {
+            if(card == null) {
+                target.raw(null);
+                return;
+            }
+
+            target.node(DISPLAY_NAME).set(card.getDisplayName());
+            target.node(SERIES).set(card.getSeries());
+            target.node(TYPE).set(card.getType());
+            target.node(HAS_SHINY).set(card.isShiny());
+            target.node(INFO).set(card.getInfo());
+            target.node(ABOUT).set(card.getAbout());
+            target.node(BUY_PRICE).set(card.getBuyPrice());
+            target.node(SELL_PRICE).set(card.getSellPrice());
+            target.node(CUSTOM_MODEL_DATA).set(card.getCustomModelNbt());
         }
     }
 
