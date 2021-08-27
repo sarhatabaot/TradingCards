@@ -53,35 +53,6 @@ public class CardUtil {
 		return rarity.replace(stripAllColor(plugin.getGeneralConfig().shinyName()), "").trim();
 	}
 
-	public String upgradeRarity(String packName, String rarity) {
-		plugin.debug("Starting booster pack upgrade check - Current rarity is " + rarity + "!");
-		ConfigurationSection rarities = plugin.getConfig().getConfigurationSection("Rarities");
-		Set<String> rarityKeys = rarities.getKeys(false);
-		Map<Integer, String> rarityMap = new HashMap<>();
-		int i = 0;
-		int curRarity = 0;
-		for (String key : rarityKeys) {
-			rarityMap.put(i, key);
-			if (key.equalsIgnoreCase(rarity)) curRarity = i;
-			plugin.debug("Rarity " + i + " is " + key);
-			i++;
-		}
-		int chance = plugin.getConfig().getInt("BoosterPacks." + packName + ".UpgradeChance", 0);
-		if (chance <= 0) {
-			plugin.debug("Pack has upgrade chance set to 0! Exiting..");
-			return rarityMap.get(curRarity);
-		}
-		int random = plugin.getRandom().nextInt(RANDOM_MAX) + 1;
-		if (random <= chance) {
-			if (curRarity < i) curRarity++;
-			plugin.debug("Card upgraded! new rarity is " + rarityMap.get(curRarity) + "!");
-			return rarityMap.get(curRarity);
-		}
-		plugin.debug("Card not upgraded! Rarity remains at " + rarityMap.get(curRarity) + "!");
-		return rarityMap.get(curRarity);
-	}
-
-
 	/**
 	 * Drops an item at the player's location.
 	 *
@@ -99,29 +70,6 @@ public class CardUtil {
 		}
 	}
 
-
-	//returns "None" if it doesn't match.
-	private static String getCorrectNameTemplate(String string) {
-		if(string.matches(NAME_TEMPLATE)){
-			return string;
-		}
-		return "None";
-	}
-
-	@NotNull
-	@Deprecated
-	public static TradingCard getRandomCard(@NotNull final String rarityName, final boolean forcedShiny) {
-		return cardManager.getRandomCard(rarityName,forcedShiny);
-	}
-
-
-
-	@NotNull
-	@Deprecated
-	public static TradingCard getRandomActiveCard(@NotNull final String rarityName, final boolean forcedShiny) {
-		return cardManager.getRandomActiveCard(rarityName,forcedShiny);
-	}
-
 	/**
 	 * Strips the given message of all color codes
 	 *
@@ -137,27 +85,7 @@ public class CardUtil {
 
 		return ChatColor.stripColor(STRIP_COLOR_PATTERN.matcher(input).replaceAll(""));
 	}
-
-	@NotNull
-	public static String getCardName(@NotNull final String displayRarity, @NotNull final String displayCard) {
-		final String strippedRarity = getRarityName(displayRarity);
-		final boolean hasPrefix = plugin.getGeneralConfig().cardPrefix() != null || !plugin.getGeneralConfig().cardPrefix().isEmpty();
-		final String strippedPrefix = stripAllColor(plugin.getGeneralConfig().cardPrefix());
-		final String strippedShiny = stripAllColor(plugin.getGeneralConfig().shinyName());
-		final String strippedDisplay = StringUtils.replaceEach(stripAllColor(displayCard), new String[]{strippedPrefix, strippedShiny}, new String[]{"", ""}).trim();
-		plugin.debug("stripped|rarity=" + strippedRarity + "|hasPrefix=" + hasPrefix + "|prefix=" + strippedPrefix + "|shiny=" + strippedShiny + "|display=" + strippedDisplay);
-
-		if (cardManager.getCard(strippedDisplay,strippedRarity,false).getCardName().equals("nullCard")) {
-			plugin.debug("No such card. card=" + strippedDisplay + "rarity=" + strippedRarity);
-			return "None";
-		}
-
-		if (cardManager.getCards().containsKey(strippedRarity+"."+strippedDisplay.replace(" ","_")))
-			return strippedDisplay.replace(" ","_");
-
-		return "None";
-	}
-
+	
 	@NotNull
 	public static MobType getMobType(EntityType e) {
 		if (plugin.isMobHostile(e)) {
