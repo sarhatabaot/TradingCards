@@ -3,10 +3,10 @@ package net.tinetwork.tradingcards.api.model;
 import java.util.List;
 
 public class Rarity {
-    private String name;
-    private String displayName;
-    private String defaultColor;
-    private List<String> rewards;
+    private final String name;
+    private final String displayName;
+    private final String defaultColor;
+    private final List<String> rewards;
 
     public Rarity(String name, String displayName, String defaultColor, List<String> rewards) {
         this.name = name;
@@ -29,5 +29,15 @@ public class Rarity {
 
     public List<String> getRewards() {
         return rewards;
+    }
+
+    @Override
+    public String toString() {
+        return "Rarity{" +
+                "name='" + name + '\'' +
+                ", displayName='" + displayName + '\'' +
+                ", defaultColor='" + defaultColor + '\'' +
+                ", rewards=" + rewards +
+                '}';
     }
 }

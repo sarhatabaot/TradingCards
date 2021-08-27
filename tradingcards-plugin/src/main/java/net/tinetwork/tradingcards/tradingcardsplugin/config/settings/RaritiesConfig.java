@@ -20,20 +20,32 @@ public class RaritiesConfig extends SimpleConfigurate {
 
     public RaritiesConfig(TradingCards plugin) throws ConfigurateException {
         super(plugin, "settings"+ File.separator,"rarities.yml", "settings");
-        loader.defaultOptions().serializers(builder -> builder.register(Rarity.class, RaritySerializer.INSTANCE));
 
         this.raritiesNode = rootNode.node("rarities");
         loadRarities();
+    }
+
+    @Override
+    protected void registerTypeSerializer() {
+        loaderBuilder.defaultOptions(opts -> opts.serializers(builder ->
+                builder.registerExact(RaritySerializer.TYPE, RaritySerializer.INSTANCE)));
     }
 
     public Rarity getRarity(final String id) throws SerializationException {
         return raritiesNode.node(id).get(Rarity.class);
     }
 
-    private void loadRarities() throws SerializationException {
+    private void loadRarities()  {
         for(Map.Entry<Object, ? extends ConfigurationNode> nodeEntry: raritiesNode.childrenMap().entrySet()) {
-            rarities.add(getRarity(nodeEntry.getValue().key().toString()));
+            final String rarityKey = nodeEntry.getValue().key().toString();
+            try {
+                rarities.add(getRarity(rarityKey));
+            } catch (SerializationException e){
+                plugin.getLogger().severe(e.getMessage());
+                plugin.debug("Couldn't add="+rarityKey);
+            }
         }
+        plugin.debug("Total="+rarities.size());
     }
 
     public List<Rarity> rarities() {
@@ -42,6 +54,7 @@ public class RaritiesConfig extends SimpleConfigurate {
 
     public static final class RaritySerializer implements TypeSerializer<Rarity> {
         public static final RaritySerializer INSTANCE = new RaritySerializer();
+        public static final Class<Rarity> TYPE = Rarity.class;
         private static final String NAME = "name";
         private static final String DISPLAY_NAME = "display-name";
         private static final String DEFAULT_COLOR = "default-color";

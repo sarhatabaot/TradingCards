@@ -31,6 +31,12 @@ public class SimpleCardsConfig extends SimpleConfigurate {
         plugin.debug("Created: "+fileName);
     }
 
+    @Override
+    protected void registerTypeSerializer() {
+        loaderBuilder.defaultOptions(opts -> opts.serializers(builder ->
+                builder.registerExact(TradingCard.class, CardSerializer.INSTANCE))).build();
+    }
+
     public TradingCard getCard(final String rarity, final String name) {
         try {
             return cardsNode.node(rarity, name).get(TradingCard.class);
@@ -75,6 +81,7 @@ public class SimpleCardsConfig extends SimpleConfigurate {
     }
 
     public static class CardSerializer implements TypeSerializer<TradingCard> {
+        public static CardSerializer INSTANCE;
         private static final String DISPLAY_NAME = "display-name";
         private static final String SERIES = "series";
         private static final String TYPE = "type";
@@ -89,6 +96,7 @@ public class SimpleCardsConfig extends SimpleConfigurate {
 
         public CardSerializer(TradingCards plugin) {
             this.plugin = plugin;
+            CardSerializer.INSTANCE = new CardSerializer(plugin);
         }
 
         @Override

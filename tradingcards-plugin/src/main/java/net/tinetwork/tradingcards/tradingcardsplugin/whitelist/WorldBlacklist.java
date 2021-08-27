@@ -33,6 +33,11 @@ public class WorldBlacklist extends SimpleConfigurate implements Blacklist<World
         setWhitelistMode();
     }
 
+    @Override
+    protected void registerTypeSerializer() {
+
+    }
+
     private void loadWorlds() throws SerializationException {
         listedWorlds = worldNode.getList(String.class);
     }

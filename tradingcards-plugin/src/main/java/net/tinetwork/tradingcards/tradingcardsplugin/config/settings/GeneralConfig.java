@@ -168,6 +168,11 @@ public class GeneralConfig extends SimpleConfigurate {
 
     }
 
+    @Override
+    protected void registerTypeSerializer() {
+
+    }
+
     public ItemStack blankCard() {
         if(blankCard == null)
             this.blankCard = new ItemStack(plugin.getGeneralConfig().cardMaterial());

@@ -129,6 +129,11 @@ public class MessagesConfig extends SimpleConfigurate {
 
     }
 
+    @Override
+    protected void registerTypeSerializer() {
+
+    }
+
     public String prefix() {
         return prefix;
     }

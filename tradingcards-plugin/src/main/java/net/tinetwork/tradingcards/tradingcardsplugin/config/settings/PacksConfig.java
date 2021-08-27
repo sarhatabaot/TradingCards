@@ -1,5 +1,6 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
 
+import net.tinetwork.tradingcards.api.model.Chance;
 import net.tinetwork.tradingcards.api.model.Pack;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigurate;
@@ -18,8 +19,6 @@ public class PacksConfig extends SimpleConfigurate {
     private List<String> packs = new ArrayList<>();
     public PacksConfig(TradingCards plugin) throws ConfigurateException {
         super(plugin, "settings"+ File.separator,"packs.yml", "settings");
-        loader.defaultOptions().serializers(builder -> builder.register(Pack.class, PackSerializer.INSTANCE));
-
         for(ConfigurationNode configurationNode: rootNode.childrenList()) {
             final String name = configurationNode.key().toString();
             packs.add(name);
@@ -34,6 +33,11 @@ public class PacksConfig extends SimpleConfigurate {
         return packs;
     }
 
+    @Override
+    protected void registerTypeSerializer() {
+        loaderBuilder.defaultOptions(opts -> opts.serializers(builder ->
+                builder.registerExact(Pack.class, PackSerializer.INSTANCE)));
+    }
 
     public static class PackSerializer implements TypeSerializer<Pack> {
         public static final PackSerializer INSTANCE = new PackSerializer();

@@ -28,6 +28,11 @@ public class PlayerBlacklist extends SimpleConfigurate implements Blacklist<Play
         setWhitelistMode();
     }
 
+    @Override
+    protected void registerTypeSerializer() {
+
+    }
+
     private void loadPlayers() {
         try {
             listedPlayers = rootNode.node(LISTED_PLAYERS_NAME).getList(String.class);

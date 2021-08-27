@@ -2,6 +2,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.managers;
 
 import net.tinetwork.tradingcards.api.model.Chance;
 import net.tinetwork.tradingcards.api.model.EmptyChance;
+import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.NullCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
@@ -13,6 +14,8 @@ import org.apache.commons.lang.StringUtils;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,24 +50,20 @@ public class TradingCardManager implements CardManager<TradingCard> {
     private void loadAllCards() {
         var cardConfigs = plugin.getCardsConfig().getCardConfigs();
         for (SimpleCardsConfig simpleCardsConfig : cardConfigs) {
-            var cardsConfigSection = simpleCardsConfig.getCards();
-            var rarities = plugin.getRaritiesConfig().raritiesName();
-            for (final String rarity : rarities) {
-                rarityCardList.put(rarity, new ArrayList<>());
-                activeRarityCardList.put(rarity, new ArrayList<>());
-                /*var raritySection = cardsConfigSection.getConfigurationSection(rarity);
-                if (raritySection == null) {
-                    continue;
-                }*/
-                //cards
-                var cardNames = simpleCardsConfig.getCards(rarity).keySet();
+            for (final Rarity rarity : plugin.getRaritiesConfig().rarities()) {
+                plugin.debug(rarity.toString());
+                rarityCardList.put(rarity.getName(), new ArrayList<>());
+                activeRarityCardList.put(rarity.getName(), new ArrayList<>());
 
-                for (Object name : cardNames) {
-                    cards.put(rarity + "." + name, generateCard(simpleCardsConfig, name.toString(), rarity, false));
-                    rarityCardList.get(rarity).add(name.toString());
-                    if (plugin.getGeneralConfig().activeSeries().contains(simpleCardsConfig.series(rarity, name.toString()))) {
-                        activeRarityCardList.get(rarity).add(name.toString());
-                        activeCards.put(rarity + "." + name, cards.get(rarity + "." + name));
+                var cardNodes = simpleCardsConfig.getCards(rarity.getName()).entrySet();
+
+                for (Map.Entry<Object, ? extends ConfigurationNode> nodeEntry : cardNodes) {
+                    final String cardName = nodeEntry.getValue().key().toString();
+                    cards.put(rarity + "." + cardName, generateCard(simpleCardsConfig, cardName, rarity.getName(), false));
+                    rarityCardList.get(rarity.getName()).add(cardName);
+                    if (plugin.getGeneralConfig().activeSeries().contains(simpleCardsConfig.series(rarity.getName(), cardName))) {
+                        activeRarityCardList.get(rarity.getName()).add(cardName);
+                        activeCards.put(rarity + "." + cardName, cards.get(rarity + "." + cardName));
                     }
                 }
             }

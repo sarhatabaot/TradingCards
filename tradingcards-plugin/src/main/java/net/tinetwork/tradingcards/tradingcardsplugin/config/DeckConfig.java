@@ -38,6 +38,11 @@ public class DeckConfig extends SimpleConfigurate {
         return null;
     }
 
+    @Override
+    protected void registerTypeSerializer() {
+
+    }
+
     @Nullable
     public List<String> getDeck(final UUID uuid, String deckNumber) {
         try {

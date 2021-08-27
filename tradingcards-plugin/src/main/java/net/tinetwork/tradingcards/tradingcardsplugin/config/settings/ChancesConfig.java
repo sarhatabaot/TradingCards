@@ -16,8 +16,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ChancesConfig extends SimpleConfigurate {
-    private List<String> raritiesId; //TODO not sure if we even need this
-
     private int hostileChance;
     private int neutralChance;
     private int passiveChance;
@@ -28,8 +26,6 @@ public class ChancesConfig extends SimpleConfigurate {
 
     public ChancesConfig(TradingCards plugin) throws ConfigurateException {
         super(plugin, "settings" + File.separator,"chances.yml", "settings");
-        loader.defaultOptions().serializers(builder -> builder.register(Chance.class, ChanceSerializer.INSTANCE));
-
         this.hostileChance = rootNode.node("hostile-chance").getInt(20000);
         this.neutralChance = rootNode.node("neutral-chance").getInt(5000);
         this.passiveChance = rootNode.node("passive-chance").getInt(1000);
@@ -37,6 +33,12 @@ public class ChancesConfig extends SimpleConfigurate {
         this.bossDrop = rootNode.node("boss-drop").getBoolean(false);
         this.bossDropRarity = rootNode.node("boss-drop-rarity").getInt(5000);
         this.shinyVersionChance = rootNode.node("shiny-version-chance").getInt(1000);
+    }
+
+    @Override
+    protected void registerTypeSerializer() {
+        loaderBuilder.defaultOptions(opts -> opts.serializers(builder ->
+                builder.registerExact(Chance.class, ChanceSerializer.INSTANCE)));
     }
 
     public int hostileChance() {

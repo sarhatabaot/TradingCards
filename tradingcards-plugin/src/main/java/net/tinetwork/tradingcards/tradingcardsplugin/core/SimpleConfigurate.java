@@ -7,15 +7,20 @@ import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.nio.file.Paths;
 
-public class SimpleConfigurate extends SimpleConfigFile{
-    protected final YamlConfigurationLoader loader = YamlConfigurationLoader.builder().
-            path(Paths.get(folder+"/"+fileName)).build();
+public abstract class SimpleConfigurate extends SimpleConfigFile{
+    protected final YamlConfigurationLoader.Builder loaderBuilder = YamlConfigurationLoader.builder().
+            path(Paths.get(folder+"/"+fileName));
+    protected final YamlConfigurationLoader loader;
     protected CommentedConfigurationNode rootNode;
 
     public SimpleConfigurate(TradingCards plugin, final String resourcePath, String fileName, String folder) throws ConfigurateException {
         super(plugin, resourcePath,fileName, folder);
+        registerTypeSerializer();
+        this.loader = loaderBuilder.build();
         this.rootNode = loader.load();
     }
+
+    protected abstract void registerTypeSerializer();
 
     @Override
     public void reloadConfig()  {
