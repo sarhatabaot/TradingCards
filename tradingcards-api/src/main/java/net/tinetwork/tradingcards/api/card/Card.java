@@ -1,7 +1,6 @@
 package net.tinetwork.tradingcards.api.card;
 
 import de.tr7zw.nbtapi.NBTItem;
-import net.tinetwork.tradingcards.api.TradingCardsPlugin;
 import org.bukkit.inventory.ItemStack;
 
 public abstract class Card<T> {
