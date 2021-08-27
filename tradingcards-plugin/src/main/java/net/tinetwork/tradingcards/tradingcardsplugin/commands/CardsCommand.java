@@ -30,6 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.List;
+import java.util.StringJoiner;
 
 @CommandAlias("cards")
 public class CardsCommand extends BaseCommand {
@@ -273,22 +274,12 @@ public class CardsCommand extends BaseCommand {
 
         }
 
-        private boolean hasExtra(final String name) {
-            try {
-                final Pack pack = plugin.getPacksConfig().getPack(name);
-                return pack.getNumExtraCards() > 0 && !pack.getExtraCardsRarity().isEmpty();
-            } catch (SerializationException e) {
-                plugin.getLogger().severe(e.getMessage());
-                return false;
-            }
-        }
-
         @Subcommand("pack")
         @CommandPermission(Permissions.LIST_PACK)
         @Description("Lists all packs.")
         public void onListPack(final CommandSender sender) {
             int k = 0;
-            ChatUtil.sendMessage(sender, "&6--- Booster Packs --- ");
+            ChatUtil.sendMessage(sender, plugin.getMessagesConfig().packSection());
 
             for (String packName : plugin.getPackManager().packs().keySet()) {
                 Pack pack = plugin.getPackManager().getPack(packName);
@@ -298,13 +289,8 @@ public class CardsCommand extends BaseCommand {
                 } else {
                     ChatUtil.sendPrefixedMessage(sender, "&6" + k + ") &e" + packName);
                 }
-
-                if (hasExtra(packName)) {
-                    ChatUtil.sendMessage(sender, "  &7- &f&o" + pack.getNumNormalCards() + " " + pack.getNormalCardRarity() + ", " + pack.getNumExtraCards() + " " + pack.getExtraCardsRarity() + ", " + pack.getNumSpecialCards() + " " +pack.getSpecialCardsRarity());
-                } else {
-                    ChatUtil.sendMessage(sender, "  &7- &f&o" + pack.getNumNormalCards() + " " +pack.getNormalCardRarity() + ", " + pack.getNumSpecialCards() + " " + pack.getSpecialCardsRarity());
-                }
-
+                final String packEntries = StringUtils.join(pack.getPackEntryList()," ");
+                ChatUtil.sendMessage(sender, "  &7- &f&o" + packEntries);
             }
         }
 

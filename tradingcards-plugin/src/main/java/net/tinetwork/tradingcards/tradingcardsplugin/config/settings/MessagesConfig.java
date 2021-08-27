@@ -67,6 +67,7 @@ public class MessagesConfig extends SimpleConfigurate {
 
     private final String sectionFormat;
     private final String sectionFormatComplete;
+    private final String packSection;
 
 
     public MessagesConfig(TradingCards plugin) throws ConfigurateException {
@@ -131,12 +132,17 @@ public class MessagesConfig extends SimpleConfigurate {
         this.rewardDisabled = rootNode.node("reward-disabled").getString();
         this.sectionFormat = rootNode.node("section-format").getString();
         this.sectionFormatComplete = rootNode.node("section-format-complete").getString();
+        this.packSection = rootNode.node("pack-section").getString();
 
     }
 
     @Override
     protected void registerTypeSerializer() {
 
+    }
+
+    public String packSection() {
+        return packSection;
     }
 
     public String sectionFormat() {

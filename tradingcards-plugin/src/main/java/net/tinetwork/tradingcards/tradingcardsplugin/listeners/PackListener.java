@@ -62,9 +62,10 @@ public class PackListener extends SimpleListener {
         }
 
         Pack pack = plugin.getPackManager().getPack(packId);
-        dropRandomCards(player, pack.getNormalCardRarity(),pack.getNumNormalCards(),pack.getSeries());
-        dropRandomCards(player, pack.getSpecialCardsRarity(),pack.getNumSpecialCards(),pack.getSeries());
-        dropRandomCards(player, pack.getExtraCardsRarity(),pack.getNumExtraCards(),pack.getSeries());
+        for(Pack.PackEntry entry: pack.getPackEntryList()) {
+            dropRandomCards(player, entry.getRarityId(), entry.getAmount(),pack.getSeries());
+        }
+
         removeItemMain(player);
 
     }
