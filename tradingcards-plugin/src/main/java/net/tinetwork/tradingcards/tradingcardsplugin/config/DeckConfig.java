@@ -1,18 +1,15 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config;
 
-import net.tinetwork.tradingcards.api.model.DeckEntry;
+import net.tinetwork.tradingcards.api.model.deck.DeckEntry;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigFile;
 import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigurate;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
-import org.spongepowered.configurate.serialize.TypeSerializer;
 
 import java.io.File;
-import java.lang.reflect.Type;
 import java.util.List;
 import java.util.UUID;
 

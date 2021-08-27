@@ -1,6 +1,5 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
 
-import net.tinetwork.tradingcards.api.model.Chance;
 import net.tinetwork.tradingcards.api.model.Pack;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigurate;

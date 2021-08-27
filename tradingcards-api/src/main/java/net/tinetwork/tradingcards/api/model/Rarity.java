@@ -2,18 +2,8 @@ package net.tinetwork.tradingcards.api.model;
 
 import java.util.List;
 
-public class Rarity {
-    private final String name;
-    private final String displayName;
-    private final String defaultColor;
-    private final List<String> rewards;
-
-    public Rarity(String name, String displayName, String defaultColor, List<String> rewards) {
-        this.name = name;
-        this.displayName = displayName;
-        this.defaultColor = defaultColor;
-        this.rewards = rewards;
-    }
+public record Rarity(String name, String displayName, String defaultColor,
+                     List<String> rewards) {
 
     public String getName() {
         return name;

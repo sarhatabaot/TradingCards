@@ -1,7 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
 
-import net.tinetwork.tradingcards.api.model.Chance;
-import net.tinetwork.tradingcards.api.model.EmptyChance;
+import net.tinetwork.tradingcards.api.model.chance.Chance;
+import net.tinetwork.tradingcards.api.model.chance.EmptyChance;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigurate;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -13,7 +13,6 @@ import org.spongepowered.configurate.serialize.TypeSerializer;
 import java.io.File;
 import java.lang.reflect.Type;
 import java.util.Arrays;
-import java.util.List;
 
 public class ChancesConfig extends SimpleConfigurate {
     private final int hostileChance;

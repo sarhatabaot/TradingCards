@@ -1,4 +1,6 @@
-package net.tinetwork.tradingcards.api.model;
+package net.tinetwork.tradingcards.api.model.chance;
+
+import net.tinetwork.tradingcards.api.model.MobType;
 
 public class Chance {
     private final String id;

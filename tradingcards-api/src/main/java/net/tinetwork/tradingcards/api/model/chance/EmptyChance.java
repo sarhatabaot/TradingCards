@@ -1,4 +1,4 @@
-package net.tinetwork.tradingcards.api.model;
+package net.tinetwork.tradingcards.api.model.chance;
 
 public class EmptyChance extends Chance{
     public EmptyChance() {

@@ -1,7 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.managers;
 
-import net.tinetwork.tradingcards.api.model.Chance;
-import net.tinetwork.tradingcards.api.model.EmptyChance;
+import net.tinetwork.tradingcards.api.model.chance.Chance;
+import net.tinetwork.tradingcards.api.model.chance.EmptyChance;
 import net.tinetwork.tradingcards.api.model.MobType;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
@@ -16,7 +16,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurationNode;
-import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.ArrayList;
 import java.util.HashMap;

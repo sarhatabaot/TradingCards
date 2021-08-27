@@ -1,4 +1,4 @@
-package net.tinetwork.tradingcards.api.model;
+package net.tinetwork.tradingcards.api.model.deck;
 
 import java.util.*;
 
