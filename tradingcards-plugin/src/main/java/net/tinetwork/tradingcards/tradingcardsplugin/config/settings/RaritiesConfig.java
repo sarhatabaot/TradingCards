@@ -3,8 +3,6 @@ package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigurate;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
@@ -12,7 +10,10 @@ import org.spongepowered.configurate.serialize.TypeSerializer;
 
 import java.io.File;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 public class RaritiesConfig extends SimpleConfigurate {
     private final List<Rarity> rarities = new ArrayList<>();
@@ -87,7 +88,7 @@ public class RaritiesConfig extends SimpleConfigurate {
 
         //Only implemented this since it's required. We don't actually use this feature yet.
         @Override
-        public void serialize(Type type, @Nullable Rarity rarity, ConfigurationNode target) throws SerializationException {
+        public void serialize(Type type, Rarity rarity, ConfigurationNode target) throws SerializationException {
             if(rarity == null) {
                 target.raw(null);
                 return;

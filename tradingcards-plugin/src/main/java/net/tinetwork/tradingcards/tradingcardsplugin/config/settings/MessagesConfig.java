@@ -140,7 +140,7 @@ public class MessagesConfig extends SimpleConfigurate {
 
     @Override
     protected void registerTypeSerializer() {
-
+        //No custom type serializer to register
     }
 
     public String packSection() {

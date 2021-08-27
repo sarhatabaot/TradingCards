@@ -37,7 +37,7 @@ public class DeckConfig extends SimpleConfigurate {
 
     @Override
     protected void registerTypeSerializer() {
-
+        //No custom type serializer to register
     }
 
     @Nullable
@@ -68,7 +68,7 @@ public class DeckConfig extends SimpleConfigurate {
         for (String deckNumber : getAllDecks(uuid).getValues(false).keySet()) {
             for (String cardString : getDeck(uuid, deckNumber)) {
                 DeckEntry deckEntry = DeckEntry.fromString(cardString);
-                if(deckEntry.getRarityId().equalsIgnoreCase(rarity) && deckEntry.getCardId().equalsIgnoreCase(cardString) && !deckEntry.isShiny())
+                if (deckEntry.getRarityId().equalsIgnoreCase(rarity) && deckEntry.getCardId().equalsIgnoreCase(cardString) && !deckEntry.isShiny())
                     return true;
             }
         }
@@ -81,7 +81,7 @@ public class DeckConfig extends SimpleConfigurate {
         for (String deckNumber : getAllDecks(uuid).getValues(false).keySet()) {
             for (String cardString : getDeck(uuid, deckNumber)) {
                 DeckEntry deckEntry = DeckEntry.fromString(cardString);
-                if(deckEntry.getRarityId().equalsIgnoreCase(rarity) && deckEntry.getCardId().equalsIgnoreCase(card) && deckEntry.isShiny())
+                if (deckEntry.getRarityId().equalsIgnoreCase(rarity) && deckEntry.getCardId().equalsIgnoreCase(card) && deckEntry.isShiny())
                     return true;
             }
         }

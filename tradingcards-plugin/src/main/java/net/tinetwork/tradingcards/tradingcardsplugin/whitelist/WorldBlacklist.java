@@ -35,7 +35,7 @@ public class WorldBlacklist extends SimpleConfigurate implements Blacklist<World
 
     @Override
     protected void registerTypeSerializer() {
-
+        //No custom type serializer to register
     }
 
     private void loadWorlds() throws SerializationException {

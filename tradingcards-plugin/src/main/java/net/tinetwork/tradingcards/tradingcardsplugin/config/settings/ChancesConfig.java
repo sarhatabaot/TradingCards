@@ -12,7 +12,6 @@ import org.spongepowered.configurate.serialize.TypeSerializer;
 
 import java.io.File;
 import java.lang.reflect.Type;
-import java.util.Arrays;
 
 public class ChancesConfig extends SimpleConfigurate {
     private final int hostileChance;
@@ -85,12 +84,6 @@ public class ChancesConfig extends SimpleConfigurate {
         private static final int MAX_CHANCE = 100000;
         public static final ChanceSerializer INSTANCE = new ChanceSerializer();
 
-        private ConfigurationNode nonVirtualNode(final ConfigurationNode source, final Object... path) throws SerializationException {
-            if (!source.hasChild(path)) {
-                throw new SerializationException("Required field " + Arrays.toString(path) + " was not present in node");
-            }
-            return source.node(path);
-        }
 
         @Override
         public Chance deserialize(Type type, ConfigurationNode node) throws SerializationException {
@@ -114,7 +107,6 @@ public class ChancesConfig extends SimpleConfigurate {
         }
 
         //Only implemented this since it's required. We don't actually use this feature yet.
-        //We need to figure out how to target a specific node from chance.getId();
         @Override
         public void serialize(Type type, @Nullable Chance chance, ConfigurationNode target) throws SerializationException {
             if(chance == null) {
