@@ -30,8 +30,6 @@ import java.util.regex.Pattern;
 public class CardUtil {
 	private static TradingCards plugin;
 	private static TradingCardManager cardManager;
-	private static final char ALT_COLOR_CHAR = '&';
-	private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)" + ALT_COLOR_CHAR + "[0-9A-FK-ORX]");
 	private static final String NAME_TEMPLATE = "^[a-zA-Z0-9-_]+$";
 	public static final int RANDOM_MAX = 100000;
 	public static ItemStack BLANK_CARD;
@@ -50,7 +48,7 @@ public class CardUtil {
 	}
 
 	public static String getRarityName(@NotNull final String rarity) {
-		return rarity.replace(stripAllColor(plugin.getGeneralConfig().shinyName()), "").trim();
+		return rarity.replace(ChatUtil.stripAllColor(plugin.getGeneralConfig().shinyName()), "").trim();
 	}
 
 	/**
@@ -68,22 +66,6 @@ public class CardUtil {
 				curWorld4.dropItem(player.getLocation(), item);
 			}
 		}
-	}
-
-	/**
-	 * Strips the given message of all color codes
-	 *
-	 * @param input String to strip of color
-	 * @return A copy of the input string, without any coloring
-	 */
-	@Contract("!null -> !null; null -> null")
-	@Nullable
-	public static String stripAllColor(@Nullable final String input) {
-		if (input == null) {
-			return null;
-		}
-
-		return ChatColor.stripColor(STRIP_COLOR_PATTERN.matcher(input).replaceAll(""));
 	}
 
 	@NotNull

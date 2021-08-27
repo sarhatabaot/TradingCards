@@ -114,9 +114,9 @@ public class DeckListener extends SimpleListener {
 	private String getCardName(@NotNull final String displayRarity, @NotNull final String displayCard) {
 		final String strippedRarity = CardUtil.getRarityName(displayRarity);
 		final boolean hasPrefix = plugin.getGeneralConfig().cardPrefix() != null || !plugin.getGeneralConfig().cardPrefix().isEmpty();
-		final String strippedPrefix = CardUtil.stripAllColor(plugin.getGeneralConfig().cardPrefix());
-		final String strippedShiny = CardUtil.stripAllColor(plugin.getGeneralConfig().shinyName());
-		final String strippedDisplay = StringUtils.replaceEach(CardUtil.stripAllColor(displayCard), new String[]{strippedPrefix, strippedShiny}, new String[]{"", ""}).trim();
+		final String strippedPrefix = ChatUtil.stripAllColor(plugin.getGeneralConfig().cardPrefix());
+		final String strippedShiny = ChatUtil.stripAllColor(plugin.getGeneralConfig().shinyName());
+		final String strippedDisplay = StringUtils.replaceEach(ChatUtil.stripAllColor(displayCard), new String[]{strippedPrefix, strippedShiny}, new String[]{"", ""}).trim();
 		plugin.debug("stripped|rarity=" + strippedRarity + "|hasPrefix=" + hasPrefix + "|prefix=" + strippedPrefix + "|shiny=" + strippedShiny + "|display=" + strippedDisplay);
 
 		if (plugin.getCardManager().getCard(strippedDisplay,strippedRarity,false).getCardName().equals("nullCard")) {

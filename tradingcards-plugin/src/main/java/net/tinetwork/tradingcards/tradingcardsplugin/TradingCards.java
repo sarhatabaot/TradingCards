@@ -312,11 +312,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         return getDeckConfig().containsShinyCard(p.getUniqueId(), card, rarity);
     }
 
-    @Deprecated
-    public String isRarityAndFormat(String input) {
-        return isRarity(input);
-    }
-
     public String isRarity(String input) {
         try {
             Rarity rarity = getRaritiesConfig().getRarity(input);
@@ -327,7 +322,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         } catch (SerializationException e){
             getLogger().severe(e.getMessage());
         }
-        return "none;";
+        return "none";
     }
 
 
