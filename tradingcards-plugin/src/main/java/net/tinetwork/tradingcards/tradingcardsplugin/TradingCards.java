@@ -28,12 +28,15 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredServiceProvider;
+import org.bukkit.plugin.java.JavaPluginLoader;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.serialize.SerializationException;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -73,6 +76,12 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private PlayerBlacklist playerBlacklist;
     private WorldBlacklist worldBlacklist;
 
+    public TradingCards() {
+        super();
+    }
+    protected TradingCards(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file){
+        super(loader,description,dataFolder,file);
+    }
 
     @Override
     public TradingDeckManager getDeckManager() {

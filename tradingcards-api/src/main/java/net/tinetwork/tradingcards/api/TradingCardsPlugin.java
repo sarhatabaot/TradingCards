@@ -7,7 +7,12 @@ import net.tinetwork.tradingcards.api.manager.PackManager;
 import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.java.JavaPluginLoader;
+import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
 
 public abstract class TradingCardsPlugin<T> extends JavaPlugin {
     /**
@@ -68,4 +73,11 @@ public abstract class TradingCardsPlugin<T> extends JavaPlugin {
      * @return
      */
     public abstract TradingCardsPlugin<T> get();
+
+    public TradingCardsPlugin() {
+    }
+
+    public TradingCardsPlugin(@NotNull JavaPluginLoader loader, @NotNull PluginDescriptionFile description, @NotNull File dataFolder, @NotNull File file) {
+        super(loader, description, dataFolder, file);
+    }
 }
