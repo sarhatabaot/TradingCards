@@ -30,7 +30,6 @@ import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.List;
-import java.util.StringJoiner;
 
 @CommandAlias("cards")
 public class CardsCommand extends BaseCommand {
