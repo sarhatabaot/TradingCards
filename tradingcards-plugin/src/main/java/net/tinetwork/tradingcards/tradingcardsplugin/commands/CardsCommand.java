@@ -7,8 +7,8 @@ import net.milkbowl.vault.economy.EconomyResponse;
 import net.tinetwork.tradingcards.api.addons.TradingCardsAddon;
 import net.tinetwork.tradingcards.api.model.Pack;
 import net.tinetwork.tradingcards.api.model.Rarity;
+import net.tinetwork.tradingcards.tradingcardsplugin.Permissions;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.tradingcardsplugin.card.NullCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingCardManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingDeckManager;
@@ -52,7 +52,7 @@ public class CardsCommand extends BaseCommand {
     }
 
     @Subcommand("version|ver")
-    @CommandPermission("cards.version")
+    @CommandPermission(Permissions.VERSION)
     @Description("Show the plugin version.")
     public void onVersion(final CommandSender sender) {
         final String format = "%s %s API-%s";
@@ -60,7 +60,7 @@ public class CardsCommand extends BaseCommand {
     }
 
     @Subcommand("reload")
-    @CommandPermission("cards.reload")
+    @CommandPermission(Permissions.RELOAD)
     @Description("Reloads all the configs & restart the timer.")
     public void onReload(final CommandSender sender) {
         final String format = "%s %s";
@@ -74,14 +74,14 @@ public class CardsCommand extends BaseCommand {
 
 
     @Subcommand("resolve")
-    @CommandPermission("cards.resolve")
+    @CommandPermission(Permissions.RESOLVE)
     @Description("Shows a player's uuid")
     public void onResolve(final CommandSender sender, final Player player) {
         ChatUtil.sendMessage(sender, plugin.getMessagesConfig().resolveMsg().replace("%name%", player.getName()).replaceAll("%uuid%", player.getUniqueId().toString()));
     }
 
     @Subcommand("toggle")
-    @CommandPermission("cards.toggle")
+    @CommandPermission(Permissions.TOGGLE)
     @Description("Toggles card drops from mobs.")
     public void onToggle(final Player player) {
         if (playerBlacklist.isAllowed(player)) {
@@ -94,10 +94,10 @@ public class CardsCommand extends BaseCommand {
     }
 
     @Subcommand("give")
-    @CommandPermission("cards.give")
+    @CommandPermission(Permissions.GIVE)
     public class GiveCommands extends BaseCommand {
         @Subcommand("card")
-        @CommandPermission("cards.give.card")
+        @CommandPermission(Permissions.GIVE_CARD)
         @CommandCompletion("@rarities @cards")
         @Description("Gives a card.")
         public void onGiveCard(final Player player, final String rarity, final String cardName) {
@@ -109,7 +109,7 @@ public class CardsCommand extends BaseCommand {
         }
 
         @Subcommand("card shiny")
-        @CommandPermission("cards.give.card.shiny")
+        @CommandPermission(Permissions.GIVE_CARD_SHINY)
         @CommandCompletion("@rarities @cards")
         @Description("Gives a shiny card.")
         public void onGiveShinyCard(final Player player, final String rarity, final String cardName) {
@@ -124,7 +124,7 @@ public class CardsCommand extends BaseCommand {
         @Subcommand("boosterpack|pack")
         @Description("Gives a pack to a player.")
         @CommandCompletion("@players @packs")
-        @CommandPermission("cards.give.pack")
+        @CommandPermission(Permissions.GIVE_PACK)
         public void onGiveBoosterPack(final CommandSender sender, final Player player, final String boosterpack) {
             ChatUtil.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().boosterPackMsg()));
             CardUtil.dropItem(player, plugin.getPackManager().getPackItem(boosterpack));
@@ -132,7 +132,7 @@ public class CardsCommand extends BaseCommand {
 
         @Subcommand("random entity")
         @Description("Gives a random card to a player.")
-        @CommandPermission("cards.give.random.entity")
+        @CommandPermission(Permissions.GIVE_RANDOM_ENTITY)
         public void onGiveRandomCard(final CommandSender sender, final Player player, final EntityType entityType) {
             try {
                 String rare = cardManager.getRandomRarity(entityType, true);
@@ -147,7 +147,7 @@ public class CardsCommand extends BaseCommand {
         @Subcommand("random rarity")
         @Description("Gives a random card to a player. Specify rarity.")
         @CommandCompletion("@players @rarities")
-        @CommandPermission("cards.give.random.rarity")
+        @CommandPermission(Permissions.GIVE_RANDOM_RARITY)
         public void onGiveRandomCard(final CommandSender sender, final Player player, final String rarity) {
             try {
                 plugin.debug("onCommand.rare: " + rarity);
@@ -164,21 +164,21 @@ public class CardsCommand extends BaseCommand {
     @CommandPermission("cards.admin.debug")
     public class DebugCommands extends BaseCommand {
         @Subcommand("showcache all")
-        @CommandPermission("cards.admin.debug.showcache")
+        @CommandPermission(Permissions.ADMIN_DEBUG_SHOW_CACHE)
         @Description("Shows the card cache")
         public void showCacheAll(final CommandSender sender) {
             sender.sendMessage(StringUtils.join(cardManager.getCards().keySet(), ","));
         }
 
         @Subcommand("showcache active")
-        @CommandPermission("cards.admin.debug.showcache")
+        @CommandPermission(Permissions.ADMIN_DEBUG_SHOW_CACHE)
         @Description("Shows the card cache")
         public void showCacheActive(final CommandSender sender) {
             sender.sendMessage(StringUtils.join(cardManager.getActiveCards().keySet(), ","));
         }
 
         @Subcommand("modules")
-        @CommandPermission("cards.admin.debug.modules")
+        @CommandPermission(Permissions.ADMIN_DEBUG_MODULES)
         @Description("Shows all enabled hooks and addons.")
         public void onModules(final CommandSender sender) {
             final StringBuilder builder = new StringBuilder("Enabled Modules/Addons:");
@@ -202,7 +202,7 @@ public class CardsCommand extends BaseCommand {
         }
 
         @Subcommand("packs")
-        @CommandPermission("cards.admin.debug.packs")
+        @CommandPermission(Permissions.ADMIN_DEBUG_PACKS)
         @Description("Show all available packs.")
         public void onPack(final CommandSender sender) {
             StringBuilder sb = new StringBuilder();
@@ -213,7 +213,7 @@ public class CardsCommand extends BaseCommand {
         }
 
         @Subcommand("rarities")
-        @CommandPermission("cards.admin.debug.rarities")
+        @CommandPermission(Permissions.ADMIN_DEBUG_RARITIES)
         @Description("Shows available rarities.")
         public void onRarities(final CommandSender sender) {
             StringBuilder sb = new StringBuilder();
@@ -224,7 +224,7 @@ public class CardsCommand extends BaseCommand {
         }
 
         @Subcommand("exists")
-        @CommandPermission("cards.admin.debug.exists")
+        @CommandPermission(Permissions.ADMIN_DEBUG_EXISTS)
         @Description("Shows if a card exists or not.")
         public void onExists(final CommandSender sender, final String card, final String rarity) {
             if (cardManager.getCards().containsKey(rarity + "." + card)) {
@@ -237,7 +237,7 @@ public class CardsCommand extends BaseCommand {
 
 
     @Subcommand("list")
-    @CommandPermission("cards.list")
+    @CommandPermission(Permissions.LIST)
     @Description("Lists all cards by rarities")
     public class ListSubCommand extends BaseCommand {
         @Default
@@ -247,7 +247,7 @@ public class CardsCommand extends BaseCommand {
         }
 
         @Subcommand("player")
-        @CommandPermission("cards.list.player")
+        @CommandPermission(Permissions.LIST_PLAYER)
         @CommandCompletion("@players @rarities")
         @Description("Lists all cards by a player.")
         public void onListPlayer(final CommandSender sender, final Player target, @Optional final String rarity) {
@@ -284,7 +284,7 @@ public class CardsCommand extends BaseCommand {
         }
 
         @Subcommand("pack")
-        @CommandPermission("cards.list.pack")
+        @CommandPermission(Permissions.LIST_PACK)
         @Description("Lists all packs.")
         public void onListPack(final CommandSender sender) {
             int k = 0;
@@ -373,7 +373,7 @@ public class CardsCommand extends BaseCommand {
     }
 
     @Subcommand("giveaway rarity")
-    @CommandPermission("cards.giveaway.rarity")
+    @CommandPermission(Permissions.GIVEAWAY_RARITY)
     @Description("Give away a random card by rarity to the server.")
     @CommandCompletion("@rarities")
     public void onGiveawayRarity(final CommandSender sender, final String rarity) {
@@ -390,7 +390,7 @@ public class CardsCommand extends BaseCommand {
     }
 
     @Subcommand("giveaway entity")
-    @CommandPermission("cards.giveaway.entity")
+    @CommandPermission(Permissions.GIVEAWAY_ENTITY)
     @Description("Give away a random card by entity to the server.")
     public void onGiveawayMob(final CommandSender sender, final String entity) {
         if (getFormattedRarity(entity).equals("")) {
@@ -408,7 +408,7 @@ public class CardsCommand extends BaseCommand {
     }
 
     @Subcommand("worth")
-    @CommandPermission("cards.worth")
+    @CommandPermission(Permissions.WORTH)
     @Description("Shows a card's worth.")
     public void onWorth(final Player player) {
         if (!hasVault(player)) {
@@ -453,7 +453,7 @@ public class CardsCommand extends BaseCommand {
     }
 
     @Subcommand("sell")
-    @CommandPermission("cards.sell")
+    @CommandPermission(Permissions.SELL)
     public class SellSubCommand extends BaseCommand {
         @Default
         @Description("Sells the card in your main hand.")
@@ -505,11 +505,11 @@ public class CardsCommand extends BaseCommand {
 
 
     @Subcommand("buy")
-    @CommandPermission("cards.buy")
+    @CommandPermission(Permissions.BUY)
     public class BuySubCommand extends BaseCommand {
 
         @Subcommand("pack")
-        @CommandPermission("cards.buy.pack")
+        @CommandPermission(Permissions.BUY_PACK)
         @CommandCompletion("@packs")
         @Description("Buy a pack.")
         public void onBuyPack(final Player player, final String name) {
@@ -542,7 +542,7 @@ public class CardsCommand extends BaseCommand {
 
 
         @Subcommand("card")
-        @CommandPermission("cards.buy.card")
+        @CommandPermission(Permissions.BUY_CARD)
         @Description("Buy a card.")
         @CommandCompletion("@rarities @cards")
         public void onBuyCard(final Player player, @NotNull final String rarity, @NotNull final String card) {
