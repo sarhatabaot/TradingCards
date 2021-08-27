@@ -16,13 +16,13 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ChancesConfig extends SimpleConfigurate {
-    private int hostileChance;
-    private int neutralChance;
-    private int passiveChance;
-    private int bossChance;
-    private boolean bossDrop;
-    private int bossDropRarity;
-    private int shinyVersionChance;
+    private final int hostileChance;
+    private final int neutralChance;
+    private final int passiveChance;
+    private final int bossChance;
+    private final boolean bossDrop;
+    private final int bossDropRarity;
+    private final int shinyVersionChance;
 
     public ChancesConfig(TradingCards plugin) throws ConfigurateException {
         super(plugin, "settings" + File.separator,"chances.yml", "settings");

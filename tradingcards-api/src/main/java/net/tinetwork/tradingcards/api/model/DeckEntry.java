@@ -1,10 +1,10 @@
 package net.tinetwork.tradingcards.api.model;
 
 public class DeckEntry {
-    private String rarityId;
-    private String cardId;
-    private int amount;
-    private boolean isShiny;
+    private final String rarityId;
+    private final String cardId;
+    private final int amount;
+    private final boolean isShiny;
 
     public DeckEntry(String rarityId, String cardId, int amount, boolean isShiny) {
         this.rarityId = rarityId;

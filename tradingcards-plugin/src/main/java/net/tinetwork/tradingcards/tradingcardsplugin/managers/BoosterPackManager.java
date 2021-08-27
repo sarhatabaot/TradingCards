@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.Map;
 
 public class BoosterPackManager extends PackManager {
-    private ItemStack blankPack;
-    private PacksConfig packsConfig;
+    private final ItemStack blankPack;
+    private final PacksConfig packsConfig;
     private final TradingCards plugin;
     private final Map<String, ItemStack> packs = new HashMap<>();
 

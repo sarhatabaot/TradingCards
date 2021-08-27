@@ -19,7 +19,7 @@ import java.util.UUID;
 
 public class DeckConfig extends SimpleConfigurate {
     private static final String INVENTORY_PATH = "decks.inventories.";
-    private ConfigurationNode inventoriesNode;
+    private final ConfigurationNode inventoriesNode;
 
     public DeckConfig(final TradingCards plugin) throws ConfigurateException {
         super(plugin, "data" + File.separator, "decks.yml", "data");
@@ -34,7 +34,7 @@ public class DeckConfig extends SimpleConfigurate {
     @Nullable
     public ConfigurationSection getAllDecks(final UUID uuid) {
         if (containsPlayer(uuid))
-            return getConfig().getConfigurationSection(INVENTORY_PATH + uuid.toString());
+            return getConfig().getConfigurationSection(INVENTORY_PATH + uuid);
         return null;
     }
 

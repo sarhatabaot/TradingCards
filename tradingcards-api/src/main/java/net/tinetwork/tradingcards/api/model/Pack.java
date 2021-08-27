@@ -1,15 +1,15 @@
 package net.tinetwork.tradingcards.api.model;
 
 public class Pack {
-    private int numNormalCards;
-    private String normalCardRarity;
-    private int numSpecialCards;
-    private String specialCardsRarity;
-    private int numExtraCards;
-    private String extraCardsRarity;
-    private String series;
-    private double price;
-    private String permissions;
+    private final int numNormalCards;
+    private final String normalCardRarity;
+    private final int numSpecialCards;
+    private final String specialCardsRarity;
+    private final int numExtraCards;
+    private final String extraCardsRarity;
+    private final String series;
+    private final double price;
+    private final String permissions;
 
     public Pack(int numNormalCards, String normalCardRarity, int numSpecialCards, String specialCardsRarity, int numExtraCards, String extraCardsRarity, String series, double price, String permissions) {
         this.numNormalCards = numNormalCards;

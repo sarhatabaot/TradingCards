@@ -88,7 +88,7 @@ public class DeckListener extends SimpleListener {
 			debug("Added " + serializedString + " to deck file.");
 		}
 
-		plugin.getDeckConfig().getConfig().set("Decks.Inventories." + id.toString() + "." + deckNum, serialized);
+		plugin.getDeckConfig().getConfig().set("Decks.Inventories." + id + "." + deckNum, serialized);
 		plugin.getDeckConfig().saveConfig();
 	}
 

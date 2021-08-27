@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PacksConfig extends SimpleConfigurate {
-    private List<String> packs = new ArrayList<>();
+    private final List<String> packs = new ArrayList<>();
     public PacksConfig(TradingCards plugin) throws ConfigurateException {
         super(plugin, "settings"+ File.separator,"packs.yml", "settings");
         for(ConfigurationNode configurationNode: rootNode.childrenList()) {

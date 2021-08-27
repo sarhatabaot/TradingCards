@@ -152,7 +152,7 @@ public class CardUtil {
 			return "None";
 		}
 
-		if (cardManager.getCards().keySet().contains(strippedRarity+"."+strippedDisplay.replace(" ","_")))
+		if (cardManager.getCards().containsKey(strippedRarity+"."+strippedDisplay.replace(" ","_")))
 			return strippedDisplay.replace(" ","_");
 
 		return "None";

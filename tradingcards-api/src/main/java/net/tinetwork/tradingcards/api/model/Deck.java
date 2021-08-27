@@ -3,9 +3,9 @@ package net.tinetwork.tradingcards.api.model;
 import java.util.*;
 
 public class Deck {
-    private UUID playerUuid;
-    private int number;
-    private Map<Integer,DeckEntry> deckEntries;
+    private final UUID playerUuid;
+    private final int number;
+    private final Map<Integer,DeckEntry> deckEntries;
 
     public Deck(UUID playerUuid, int number) {
         this.playerUuid = playerUuid;

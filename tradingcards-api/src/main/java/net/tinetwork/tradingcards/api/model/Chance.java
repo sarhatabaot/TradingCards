@@ -1,11 +1,11 @@
 package net.tinetwork.tradingcards.api.model;
 
 public class Chance {
-    private String id;
-    private int hostile;
-    private int neutral;
-    private int passive;
-    private int boss;
+    private final String id;
+    private final int hostile;
+    private final int neutral;
+    private final int passive;
+    private final int boss;
 
     public String getId() {
         return id;
