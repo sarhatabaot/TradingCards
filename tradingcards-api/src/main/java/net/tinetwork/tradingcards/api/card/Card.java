@@ -1,6 +1,7 @@
 package net.tinetwork.tradingcards.api.card;
 
 import de.tr7zw.nbtapi.NBTItem;
+import net.tinetwork.tradingcards.api.TradingCardsPlugin;
 import org.bukkit.inventory.ItemStack;
 
 public abstract class Card<T> {
@@ -39,6 +40,8 @@ public abstract class Card<T> {
     }
 
     public String getDisplayName() {
+        if(displayName == null || displayName.isEmpty())
+            return cardName;
         return displayName;
     }
 
@@ -143,7 +146,6 @@ public abstract class Card<T> {
         nbtItem.setBoolean("isCard", true);
         nbtItem.setBoolean("isShiny",isShiny);
         nbtItem.setString("series",series);
-        nbtItem.setString("rarity",rarity);
         nbtItem.setInteger("CustomModelData", customModelNbt);
         this.nbtItem = nbtItem;
         return nbtItem;
@@ -162,5 +164,21 @@ public abstract class Card<T> {
         return nbtItem.getItem();
     }
 
-
+    @Override
+    public String toString() {
+        return "Card{" +
+                "cardName='" + cardName + '\'' +
+                ", displayName='" + displayName + '\'' +
+                ", rarity='" + rarity + '\'' +
+                ", isShiny=" + isShiny +
+                ", isPlayerCard=" + isPlayerCard +
+                ", series='" + series + '\'' +
+                ", about='" + about + '\'' +
+                ", type='" + type + '\'' +
+                ", info='" + info + '\'' +
+                ", customModelNbt=" + customModelNbt +
+                ", buyPrice=" + buyPrice +
+                ", sellPrice=" + sellPrice +
+                '}';
+    }
 }

@@ -75,6 +75,7 @@ public class PacksConfig extends SimpleConfigurate {
             final String series = seriesNode.getString();
             final double price = priceNode.getDouble(0.0D);
             final String permissions = permissionsNode.getString();
+
             return new Pack(numNormalCards,normalCardRarity,numSpecialCards,specialCardRarity,numExtraCards,extraCardRarity,series,price,permissions);
         }
 

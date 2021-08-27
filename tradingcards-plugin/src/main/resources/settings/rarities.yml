@@ -25,7 +25,7 @@ rarities:
     rewards:
       - ""
   very-rare:
-    name: "very rare"
+    name: "very-rare"
     display-name: "&6Very Rare"
     default-color: "&6"
     rewards:

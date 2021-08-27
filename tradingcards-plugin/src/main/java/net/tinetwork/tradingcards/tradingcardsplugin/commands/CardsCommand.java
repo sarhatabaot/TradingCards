@@ -8,6 +8,8 @@ import net.tinetwork.tradingcards.api.addons.TradingCardsAddon;
 import net.tinetwork.tradingcards.api.model.Pack;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
+import net.tinetwork.tradingcards.tradingcardsplugin.card.NullCard;
+import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingCardManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingDeckManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
@@ -306,41 +308,55 @@ public class CardsCommand extends BaseCommand {
             }
         }
 
+        private TradingCard getCard(final String id, final String rarity) {
+            return plugin.getCardManager().getCard(id,rarity,false);
+        }
 
         private void listRarity(final CommandSender sender, final Player target, final String rarity) {
             final StringBuilder stringBuilder = new StringBuilder();
+            Rarity rarityObject;
+            plugin.debug(rarity);
+            try {
+                rarityObject = plugin.getRaritiesConfig().getRarity(rarity);
+            } catch (SerializationException e){
+                plugin.getLogger().severe(e.getMessage());
+                return;
+            }
+
             final String sectionFormat = "&6--- %s &7(&c%d&f/&a%d&7)&6 ---"; //TODO - move to messages.yml
             final String sectionFormatComplete = "&6--- %s &7(%sComplete&7)&6 ---"; //TODO - move to messages.yml
 
             int cardCounter = 0;
+            for (String cardId : plugin.getCardManager().getRarityCardList(rarity)) {
+                plugin.debug("rarityId="+rarity+",cardId="+cardId);
+                TradingCard card = getCard(cardId, rarity);
+                plugin.debug(card.toString());
 
-            for (String cardName : plugin.getCardManager().getRarityCardList(rarity)) {
                 if (cardCounter > 32) {
-                    if (deckManager.hasCard(target, cardName, rarity)) {
+                    if (deckManager.hasCard(target, cardId, rarity)) {
                         ++cardCounter;
                     }
-                    stringBuilder.append(cardName).append("&7and more!");
+                    stringBuilder.append(card.getDisplayName()).append("&7and more!");
                 } else {
-                    plugin.debug(rarity + ", " + cardName);
 
                     String colour = plugin.getGeneralConfig().colorListHaveCard();
-                    if (deckManager.hasShiny(target, cardName, rarity)) {
+                    if (deckManager.hasShiny(target, cardId, rarity)) {
                         ++cardCounter;
                         colour = plugin.getGeneralConfig().colorListHaveCardShiny();
-                        stringBuilder.append(colour).append(cardName.replace("_", " ")).append("&f, ");
-                    } else if (deckManager.hasCard(target, cardName, rarity) && !deckManager.hasShiny(target, cardName, rarity)) {
+                        stringBuilder.append(colour).append(card.getDisplayName().replace("_", " ")).append("&f, ");
+                    } else if (deckManager.hasCard(target, cardId, rarity) && !deckManager.hasShiny(target, cardId, rarity)) {
                         ++cardCounter;
-                        stringBuilder.append(colour).append(cardName.replace("_", " ")).append("&f, ");
+                        stringBuilder.append(colour).append(card.getDisplayName().replace("_", " ")).append("&f, ");
                     } else {
-                        stringBuilder.append("&7").append(cardName.replace("_", " ")).append("&f, ");
+                        stringBuilder.append("&7").append(card.getDisplayName().replace("_", " ")).append("&f, ");
                     }
                 }
             }
             //send title
             if (cardCounter == plugin.getCardManager().getRarityCardList(rarity).size()) {
-                ChatUtil.sendMessage(sender, String.format(sectionFormatComplete, plugin.isRarityAndFormat(rarity), plugin.getGeneralConfig().colorRarityCompleted()));
+                ChatUtil.sendMessage(sender, String.format(sectionFormatComplete, rarityObject.getDisplayName(), plugin.getGeneralConfig().colorRarityCompleted()));
             } else {
-                ChatUtil.sendMessage(sender, String.format(sectionFormat, plugin.isRarityAndFormat(rarity), cardCounter, plugin.getCardManager().getRarityCardList(rarity).size()));
+                ChatUtil.sendMessage(sender, String.format(sectionFormat, rarityObject.getDisplayName(), cardCounter, plugin.getCardManager().getRarityCardList(rarity).size()));
             }
 
             ChatUtil.sendMessage(sender, stringBuilder.toString());

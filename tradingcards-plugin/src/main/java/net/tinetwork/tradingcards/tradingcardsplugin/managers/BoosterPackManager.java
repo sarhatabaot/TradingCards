@@ -38,8 +38,6 @@ public class BoosterPackManager extends PackManager {
             loadPack(packName);
         }
         plugin.getLogger().info("Loaded " + packs.size() + " packs.");
-
-
     }
 
     @Override

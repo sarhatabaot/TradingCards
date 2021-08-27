@@ -20,15 +20,13 @@ import java.util.Map;
  */
 public class SimpleCardsConfig extends SimpleConfigurate {
     private final ConfigurationNode cardsNode;
-    @Deprecated
-    private ConfigurationSection cards;
     public SimpleCardsConfig(final TradingCards plugin, final String fileName) throws ConfigurateException {
         super(plugin, "cards"+File.separator, fileName, "cards");
 
         this.cardsNode = rootNode.node("cards");
         //this.cards = getConfig().getConfigurationSection("cards");
         reloadConfig();
-        plugin.debug("Created: "+fileName);
+        plugin.debug("Loaded: "+fileName);
     }
 
     @Override
@@ -42,7 +40,7 @@ public class SimpleCardsConfig extends SimpleConfigurate {
             return cardsNode.node(rarity, name).get(TradingCard.class);
         } catch (SerializationException e) {
             plugin.getLogger().severe(e.getMessage());
-            return new NullCard(plugin);
+            return new NullCard();
         }
     }
 
@@ -81,7 +79,7 @@ public class SimpleCardsConfig extends SimpleConfigurate {
     }
 
     public static class CardSerializer implements TypeSerializer<TradingCard> {
-        public static CardSerializer INSTANCE;
+        public static CardSerializer INSTANCE = new CardSerializer();
         private static final String DISPLAY_NAME = "display-name";
         private static final String SERIES = "series";
         private static final String TYPE = "type";
@@ -92,11 +90,9 @@ public class SimpleCardsConfig extends SimpleConfigurate {
         private static final String SELL_PRICE = "sell-price";
         private static final String CUSTOM_MODEL_DATA = "custom-model-data";
 
-        private TradingCards plugin;
 
-        public CardSerializer(TradingCards plugin) {
-            this.plugin = plugin;
-            CardSerializer.INSTANCE = new CardSerializer(plugin);
+        private CardSerializer() {
+
         }
 
         @Override
@@ -113,7 +109,7 @@ public class SimpleCardsConfig extends SimpleConfigurate {
             final double sellPrice = node.node(SELL_PRICE).getDouble(0.0D);
             final int customModelData = node.node(CUSTOM_MODEL_DATA).getInt(0);
 
-            TradingCard card = new TradingCard(plugin,id);
+            TradingCard card = new TradingCard(id);
             return card.rarity(rarity)
                     .displayName(displayName)
                     .series(series)
@@ -130,11 +126,6 @@ public class SimpleCardsConfig extends SimpleConfigurate {
         public void serialize(Type type, @Nullable TradingCard obj, ConfigurationNode node) throws SerializationException {
             //todo
         }
-    }
-
-
-    public ConfigurationSection getCards() {
-        return cards;
     }
 
     public Map<Object, ? extends ConfigurationNode> getRarities() {

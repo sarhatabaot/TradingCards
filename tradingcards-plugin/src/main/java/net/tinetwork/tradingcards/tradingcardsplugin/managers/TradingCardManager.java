@@ -51,7 +51,6 @@ public class TradingCardManager implements CardManager<TradingCard> {
         var cardConfigs = plugin.getCardsConfig().getCardConfigs();
         for (SimpleCardsConfig simpleCardsConfig : cardConfigs) {
             for (final Rarity rarity : plugin.getRaritiesConfig().rarities()) {
-                plugin.debug(rarity.toString());
                 rarityCardList.put(rarity.getName(), new ArrayList<>());
                 activeRarityCardList.put(rarity.getName(), new ArrayList<>());
 
@@ -59,11 +58,11 @@ public class TradingCardManager implements CardManager<TradingCard> {
 
                 for (Map.Entry<Object, ? extends ConfigurationNode> nodeEntry : cardNodes) {
                     final String cardName = nodeEntry.getValue().key().toString();
-                    cards.put(rarity + "." + cardName, generateCard(simpleCardsConfig, cardName, rarity.getName(), false));
+                    cards.put(rarity.getName() + "." + cardName, generateCard(simpleCardsConfig, cardName, rarity.getName(), false));
                     rarityCardList.get(rarity.getName()).add(cardName);
                     if (plugin.getGeneralConfig().activeSeries().contains(simpleCardsConfig.series(rarity.getName(), cardName))) {
                         activeRarityCardList.get(rarity.getName()).add(cardName);
-                        activeCards.put(rarity + "." + cardName, cards.get(rarity + "." + cardName));
+                        activeCards.put(rarity + "." + cardName, cards.get(rarity.getName() + "." + cardName));
                     }
                 }
             }
@@ -72,15 +71,11 @@ public class TradingCardManager implements CardManager<TradingCard> {
 
     @Override
     public List<String> getRarityCardList(final String rarity) {
-        plugin.debug(rarity);
-        plugin.debug(StringUtils.join(getRarityNames(), ","));
         return rarityCardList.get(rarity);
     }
 
     @Override
     public List<String> getActiveRarityCardList(final String rarity) {
-        plugin.debug(rarity);
-        plugin.debug(StringUtils.join(getRarityNames(), ","));
         return activeRarityCardList.get(rarity);
     }
 
@@ -110,7 +105,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
     public TradingCard getCard(final String cardName, final String rarity, final boolean forcedShiny) {
         if (cards.containsKey(rarity + "." + cardName))
             return (TradingCard) cards.get(rarity + "." + cardName).isShiny(forcedShiny);
-        return new NullCard(plugin);
+        return new NullCard();
     }
 
     @Override
@@ -132,7 +127,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
     public TradingCard getRandomActiveCard(final String rarity, final boolean forcedShiny) {
         if (activeCards.keySet().isEmpty()) {
             plugin.getLogger().warning("There are no cards in the active series. Not dropping anything.");
-            return new NullCard(plugin);
+            return new NullCard();
         }
         List<String> cardNames = getActiveRarityCardList(rarity);
         var cardIndex = plugin.getRandom().nextInt(cardNames.size());
@@ -256,9 +251,9 @@ public class TradingCardManager implements CardManager<TradingCard> {
     @NotNull
     public TradingCard generateCard(final SimpleCardsConfig simpleCardsConfig, final String cardName, final String rarityName, boolean forcedShiny) {
         if ("None".equalsIgnoreCase(rarityName))
-            return new NullCard(plugin);
+            return new NullCard();
 
-        TradingCard builder = new TradingCard(plugin, cardName);
+        TradingCard builder = new TradingCard(cardName);
         boolean isShiny = false;
         if (simpleCardsConfig.hasShinyVersion(rarityName, cardName))
             isShiny = calculateIfShiny(forcedShiny);

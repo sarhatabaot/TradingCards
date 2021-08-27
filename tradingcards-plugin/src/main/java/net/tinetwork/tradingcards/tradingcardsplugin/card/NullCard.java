@@ -10,8 +10,8 @@ import org.bukkit.inventory.ItemStack;
 public class NullCard extends TradingCard {
     public static final ItemStack AIR = new ItemStack(Material.AIR);
 
-    public NullCard(TradingCards plugin) {
-        super(plugin, "nullCard");
+    public NullCard() {
+        super("nullCard");
     }
 
     @Override

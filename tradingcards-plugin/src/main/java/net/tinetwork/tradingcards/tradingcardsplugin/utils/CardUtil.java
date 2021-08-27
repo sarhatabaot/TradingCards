@@ -18,11 +18,9 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.serialize.SerializationException;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -35,10 +33,12 @@ public class CardUtil {
 	private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)" + ALT_COLOR_CHAR + "[0-9A-FK-ORX]");
 	private static final String NAME_TEMPLATE = "^[a-zA-Z0-9-_]+$";
 	public static final int RANDOM_MAX = 100000;
+	public static ItemStack BLANK_CARD;
 
 	public static void init(final TradingCards plugin) {
 		CardUtil.plugin = plugin;
 		CardUtil.cardManager = plugin.getCardManager();
+		CardUtil.BLANK_CARD = plugin.getGeneralConfig().blankCard();
 	}
 
 	public static String getRarityName(@NotNull final String rarity) {
@@ -299,6 +299,91 @@ public class CardUtil {
 		}
 
 	}
+	public static String formatDisplayName(final TradingCard card) {
+		final String[] shinyPlayerCardFormat = new String[]{"%PREFIX%", "%COLOUR%", "%NAME%", "%COST%", "%SHINYPREFIX%"};
+		final String[] shinyCardFormat = new String[]{"%PREFIX%", "%COLOUR%", "%NAME%", "%COST%", "%SHINYPREFIX%", "_"};
 
+		final String[] cardFormat = new String[]{"%PREFIX%", "%COLOUR%", "%NAME%", "%COST%", "_"};
+		final String[] playerCardFormat = new String[]{"%PREFIX%", "%COLOUR%", "%NAME%", "%COST%"};
+
+		Rarity rarity;
+		try {
+			rarity = plugin.getRaritiesConfig().getRarity(card.getRarity());
+		} catch (SerializationException e){
+			plugin.getLogger().severe(e.getMessage());
+			return null;
+		}
+		final String shinyTitle = plugin.getGeneralConfig().displayShinyTitle();
+		final String title = plugin.getGeneralConfig().displayTitle();
+		final String shinyPrefix = plugin.getGeneralConfig().shinyName();
+		final String prefix = plugin.getGeneralConfig().cardPrefix();
+		final String rarityColour = rarity.getDefaultColor();
+		final String buyPrice = String.valueOf(card.getBuyPrice());
+
+		if (card.isShiny() && shinyPrefix != null) {
+			if (card.isPlayerCard()) {
+				return plugin.cMsg(StringUtils.replaceEach(shinyTitle, shinyPlayerCardFormat, new String[]{prefix, rarityColour,card.getDisplayName(), buyPrice, shinyPrefix}));
+			}
+			return plugin.cMsg(StringUtils.replaceEach(shinyTitle, shinyCardFormat, new String[]{prefix, rarityColour, card.getDisplayName(), buyPrice, shinyPrefix, " "}));
+		}
+		if (card.isPlayerCard()) {
+			return plugin.cMsg(StringUtils.replaceEach(title, playerCardFormat, new String[]{prefix, rarityColour, card.getDisplayName(), buyPrice}));
+		}
+		return plugin.cMsg(StringUtils.replaceEach(title, cardFormat, new String[]{prefix, rarityColour, card.getDisplayName(), buyPrice, " "}));
+	}
+	@NotNull
+	@Deprecated
+	public static String formatDisplayName(boolean isPlayerCard, boolean isShiny, String prefix, String rarityColour, String cardName, String cost, String shinyPrefix) {
+		final String[] shinyPlayerCardFormat = new String[]{"%PREFIX%", "%COLOUR%", "%NAME%", "%COST%", "%SHINYPREFIX%"};
+		final String[] shinyCardFormat = new String[]{"%PREFIX%", "%COLOUR%", "%NAME%", "%COST%", "%SHINYPREFIX%", "_"};
+
+		final String[] cardFormat = new String[]{"%PREFIX%", "%COLOUR%", "%NAME%", "%COST%", "_"};
+		final String[] playerCardFormat = new String[]{"%PREFIX%", "%COLOUR%", "%NAME%", "%COST%"};
+
+
+		final String shinyTitle = plugin.getConfig().getString("DisplayNames.Cards.ShinyTitle");
+		final String title = plugin.getConfig().getString("DisplayNames.Cards.Title");
+		if (isShiny && shinyPrefix != null) {
+			if (isPlayerCard) {
+				return plugin.cMsg(StringUtils.replaceEach(shinyTitle, shinyPlayerCardFormat, new String[]{prefix, rarityColour, cardName, cost, shinyPrefix}));
+			}
+			return plugin.cMsg(StringUtils.replaceEach(shinyTitle, shinyCardFormat, new String[]{prefix, rarityColour, cardName, cost, shinyPrefix, " "}));
+		}
+		if (isPlayerCard) {
+			return plugin.cMsg(StringUtils.replaceEach(title, playerCardFormat, new String[]{prefix, rarityColour, cardName, cost}));
+		}
+		return plugin.cMsg(StringUtils.replaceEach(title, cardFormat, new String[]{prefix, rarityColour, cardName, cost, " "}));
+	}
+
+	public static List<String> formatLore(final String info, final String about, final String rarity, final boolean isShiny, final String type, final String series) {
+		List<String> lore = new ArrayList<>();
+		final String typeFormat = ChatUtil.color(plugin.getGeneralConfig().colorType() + plugin.getGeneralConfig().displayType() + ": &f" + type);
+		final String infoFormat = ChatUtil.color(plugin.getGeneralConfig().colorInfo() + plugin.getGeneralConfig().displayInfo() + ": &f");
+		final String seriesFormat = ChatUtil.color(plugin.getGeneralConfig().colorSeries()+ plugin.getGeneralConfig().displaySeries() + ": &f" + series);
+		final String aboutFormat = ChatUtil.color(plugin.getGeneralConfig().colorAbout()+ plugin.getGeneralConfig().displayAbout() + ": &f");
+		final String rarityFormat = ChatUtil.color(plugin.getGeneralConfig().colorRarity() + ChatColor.BOLD);
+
+		lore.add(typeFormat);
+		if (!"None".equalsIgnoreCase(info) && !info.isEmpty()) {
+			lore.add(infoFormat);
+			lore.addAll(plugin.wrapString(info));
+		} else {
+			lore.add(infoFormat + info);
+		}
+
+		lore.add(seriesFormat);
+		if (about!=null) {
+			lore.add(aboutFormat + about);
+		}
+
+		final String rarityName = rarity.replace('_', ' ');
+		if (isShiny) {
+			lore.add(rarityFormat + plugin.getGeneralConfig().shinyName() + " " + rarityName);
+		} else {
+			lore.add(rarityFormat + rarityName);
+		}
+
+		return lore;
+	}
 
 }
