@@ -65,6 +65,9 @@ public class MessagesConfig extends SimpleConfigurate {
     private final String rewardBroadcast;
     private final String rewardDisabled;
 
+    private final String sectionFormat;
+    private final String sectionFormatComplete;
+
 
     public MessagesConfig(TradingCards plugin) throws ConfigurateException {
         super(plugin,"settings"+ File.separator ,"messages.yml", "settings");
@@ -126,12 +129,22 @@ public class MessagesConfig extends SimpleConfigurate {
         this.rewardError3 = rootNode.node("reward-error3").getString();
         this.rewardBroadcast = rootNode.node("reward-broadcast").getString();
         this.rewardDisabled = rootNode.node("reward-disabled").getString();
+        this.sectionFormat = rootNode.node("section-format").getString();
+        this.sectionFormatComplete = rootNode.node("section-format-complete").getString();
 
     }
 
     @Override
     protected void registerTypeSerializer() {
 
+    }
+
+    public String sectionFormat() {
+        return sectionFormat;
+    }
+
+    public String sectionFormatComplete() {
+        return sectionFormatComplete;
     }
 
     public String prefix() {

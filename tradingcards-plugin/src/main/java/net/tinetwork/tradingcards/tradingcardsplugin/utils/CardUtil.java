@@ -85,7 +85,7 @@ public class CardUtil {
 
 		return ChatColor.stripColor(STRIP_COLOR_PATTERN.matcher(input).replaceAll(""));
 	}
-	
+
 	@NotNull
 	public static MobType getMobType(EntityType e) {
 		if (plugin.isMobHostile(e)) {

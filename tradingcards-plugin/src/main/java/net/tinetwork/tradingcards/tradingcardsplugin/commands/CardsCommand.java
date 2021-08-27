@@ -323,8 +323,8 @@ public class CardsCommand extends BaseCommand {
                 return;
             }
 
-            final String sectionFormat = "&6--- %s &7(&c%d&f/&a%d&7)&6 ---"; //TODO - move to messages.yml
-            final String sectionFormatComplete = "&6--- %s &7(%sComplete&7)&6 ---"; //TODO - move to messages.yml
+            final String sectionFormat = plugin.getMessagesConfig().sectionFormat();
+            final String sectionFormatComplete = plugin.getMessagesConfig().sectionFormatComplete();
 
             int cardCounter = 0;
             for (String cardId : plugin.getCardManager().getRarityCardList(rarity)) {
