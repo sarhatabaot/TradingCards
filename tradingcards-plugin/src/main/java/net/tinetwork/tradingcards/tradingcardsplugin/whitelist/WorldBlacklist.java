@@ -34,7 +34,7 @@ public class WorldBlacklist extends SimpleConfigurate implements Blacklist<World
     }
 
     @Override
-    protected void registerTypeSerializer() {
+    protected void preLoaderBuild() {
         //No custom type serializer to register
     }
 

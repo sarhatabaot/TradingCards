@@ -29,7 +29,7 @@ public class PlayerBlacklist extends SimpleConfigurate implements Blacklist<Play
     }
 
     @Override
-    protected void registerTypeSerializer() {
+    protected void preLoaderBuild() {
         //No custom type serializer to register
     }
 

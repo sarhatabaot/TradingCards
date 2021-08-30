@@ -27,7 +27,7 @@ public class RaritiesConfig extends SimpleConfigurate {
     }
 
     @Override
-    protected void registerTypeSerializer() {
+    protected void preLoaderBuild() {
         loaderBuilder.defaultOptions(opts -> opts.serializers(builder ->
                 builder.registerExact(RaritySerializer.TYPE, RaritySerializer.INSTANCE)));
     }

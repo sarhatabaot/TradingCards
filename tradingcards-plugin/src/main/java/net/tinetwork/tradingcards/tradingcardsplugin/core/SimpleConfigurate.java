@@ -15,12 +15,12 @@ public abstract class SimpleConfigurate extends SimpleConfigFile{
 
     public SimpleConfigurate(TradingCards plugin, final String resourcePath, String fileName, String folder) throws ConfigurateException {
         super(plugin, resourcePath,fileName, folder);
-        registerTypeSerializer();
+        preLoaderBuild();
         this.loader = loaderBuilder.build();
         this.rootNode = loader.load();
     }
 
-    protected abstract void registerTypeSerializer();
+    protected abstract void preLoaderBuild();
 
     @Override
     public void reloadConfig()  {

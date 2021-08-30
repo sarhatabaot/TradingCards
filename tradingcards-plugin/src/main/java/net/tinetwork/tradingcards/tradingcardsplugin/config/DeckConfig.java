@@ -36,7 +36,7 @@ public class DeckConfig extends SimpleConfigurate {
     }
 
     @Override
-    protected void registerTypeSerializer() {
+    protected void preLoaderBuild() {
         //No custom type serializer to register
     }
 

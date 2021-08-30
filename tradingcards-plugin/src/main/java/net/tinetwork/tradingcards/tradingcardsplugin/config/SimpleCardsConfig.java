@@ -27,7 +27,7 @@ public class SimpleCardsConfig extends SimpleConfigurate {
     }
 
     @Override
-    protected void registerTypeSerializer() {
+    protected void preLoaderBuild() {
         loaderBuilder.defaultOptions(opts -> opts.serializers(builder ->
                 builder.registerExact(TradingCard.class, CardSerializer.INSTANCE))).build();
     }

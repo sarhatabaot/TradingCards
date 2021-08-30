@@ -34,7 +34,7 @@ public class PacksConfig extends SimpleConfigurate {
     }
 
     @Override
-    protected void registerTypeSerializer() {
+    protected void preLoaderBuild() {
         loaderBuilder.defaultOptions(opts -> opts.serializers(builder ->
                 builder.registerExact(Pack.class, PackSerializer.INSTANCE)));
     }

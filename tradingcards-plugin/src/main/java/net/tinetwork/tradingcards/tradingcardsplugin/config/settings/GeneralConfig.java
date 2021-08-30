@@ -169,7 +169,7 @@ public class GeneralConfig extends SimpleConfigurate {
     }
 
     @Override
-    protected void registerTypeSerializer() {
+    protected void preLoaderBuild() {
         //No custom type serializer to register
     }
 
