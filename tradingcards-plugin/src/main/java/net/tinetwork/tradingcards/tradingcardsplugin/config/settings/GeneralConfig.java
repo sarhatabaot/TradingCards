@@ -11,84 +11,87 @@ import java.io.File;
 import java.util.List;
 
 public class GeneralConfig extends SimpleConfigurate {
-    private final boolean debugMode;
+    private boolean debugMode;
 
     //Cards
-    private final Material cardMaterial;
-    private final String cardPrefix;
-    private final String shinyName;
+    private Material cardMaterial;
+    private String cardPrefix;
+    private String shinyName;
 
     //Decks
-    private final boolean deckInCreative;
-    private final boolean useDeckItem;
-    private final boolean useLargeDecks;
-    private final Material deckMaterial;
-    private final String deckPrefix;
-    private final boolean dropDeckItems;
+    private boolean deckInCreative;
+    private boolean useDeckItem;
+    private boolean useLargeDecks;
+    private Material deckMaterial;
+    private String deckPrefix;
+    private boolean dropDeckItems;
 
     //Packs
-    private final Material packMaterial;
-    private final String packPrefix;
+    private Material packMaterial;
+    private String packPrefix;
 
     //Schedule
-    private final boolean scheduleCards;
-    private final boolean scheduleCardsNatural;
-    private final String scheduleCardMob;
-    private final String scheduleCardRarity;
-    private final int scheduleCardTimeInHours;
+    private boolean scheduleCards;
+    private boolean scheduleCardsNatural;
+    private String scheduleCardMob;
+    private String scheduleCardRarity;
+    private int scheduleCardTimeInHours;
 
     //Player
-    private final String playerOpRarity;
-    private final String playerSeries;
-    private final String playerType;
-    private final boolean playerHasShinyVersion;
-    private final boolean playerDropsCard;
-    private final int playerDropsCardRarity;
+    private String playerOpRarity;
+    private String playerSeries;
+    private String playerType;
+    private boolean playerHasShinyVersion;
+    private boolean playerDropsCard;
+    private int playerDropsCardRarity;
 
     //Rewards
-    private final boolean allowRewards;
-    private final boolean rewardBroadcast;
-    private final boolean eatShinyCards;
+    private boolean allowRewards;
+    private boolean rewardBroadcast;
+    private boolean eatShinyCards;
 
     //Vault
-    private final boolean vaultEnabled;
-    private final boolean closedEconomy;
-    private final String serverAccount;
+    private boolean vaultEnabled;
+    private boolean closedEconomy;
+    private String serverAccount;
 
-    private final boolean spawnerBlock;
-    private final String spawnerMobName;
-    private final int infoLineLength;
+    private boolean spawnerBlock;
+    private String spawnerMobName;
+    private int infoLineLength;
 
     //Colors
-    private final String colorSeries;
-    private final String colorType;
-    private final String colorInfo;
-    private final String colorAbout;
-    private final String colorRarity;
-    private final String colorPackName;
-    private final String colorPackLore;
-    private final String colorPackNormal;
-    private final String colorPackSpecial;
-    private final String colorPackExtra;
-    private final String colorListHaveCard;
-    private final String colorListHaveCardShiny;
-    private final String colorRarityCompleted;
+    private String colorSeries;
+    private String colorType;
+    private String colorInfo;
+    private String colorAbout;
+    private String colorRarity;
+    private String colorPackName;
+    private String colorPackLore;
+    private String colorPackNormal;
+    private String colorPackSpecial;
+    private String colorPackExtra;
+    private String colorListHaveCard;
+    private String colorListHaveCardShiny;
+    private String colorRarityCompleted;
 
-    private final String displayTitle;
-    private final String displayShinyTitle;
-    private final String displaySeries;
-    private final String displayType;
-    private final String displayInfo;
-    private final String displayAbout;
+    private String displayTitle;
+    private String displayShinyTitle;
+    private String displaySeries;
+    private String displayType;
+    private String displayInfo;
+    private String displayAbout;
 
     private ItemStack blankCard;
     private ItemStack blankBoosterPack;
     private ItemStack blankDeck;
 
-    private final List<String> activeSeries;
+    private List<String> activeSeries;
     public GeneralConfig(TradingCards plugin) throws ConfigurateException {
         super(plugin, "settings" + File.separator,"general.yml", "settings");
+    }
 
+    @Override
+    protected void initValues() throws ConfigurateException {
         this.debugMode = rootNode.node("debug-mode").getBoolean(false);
 
         //Cards
@@ -165,8 +168,8 @@ public class GeneralConfig extends SimpleConfigurate {
 
         //Series
         this.activeSeries = rootNode.node("active-series").getList(String.class, List.of("2021"));
-
     }
+
 
     @Override
     protected void preLoaderBuild() {

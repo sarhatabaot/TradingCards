@@ -18,7 +18,12 @@ public abstract class SimpleConfigurate extends SimpleConfigFile{
         preLoaderBuild();
         this.loader = loaderBuilder.build();
         this.rootNode = loader.load();
+
+        this.saveDefaultConfig();
+        initValues();
     }
+
+    protected abstract void initValues() throws ConfigurateException;
 
     protected abstract void preLoaderBuild();
 
@@ -26,6 +31,7 @@ public abstract class SimpleConfigurate extends SimpleConfigFile{
     public void reloadConfig()  {
         try {
             this.rootNode = loader.load();
+            initValues();
         } catch (ConfigurateException e) {
             plugin.getLogger().severe(e.getMessage());
         }

@@ -16,12 +16,10 @@ import java.util.UUID;
 
 public class DeckConfig extends SimpleConfigurate {
     private static final String INVENTORY_PATH = "decks.inventories.";
-    private final ConfigurationNode inventoriesNode;
+    private ConfigurationNode inventoriesNode;
 
     public DeckConfig(final TradingCards plugin) throws ConfigurateException {
         super(plugin, "data" + File.separator, "decks.yml", "data");
-
-        this.inventoriesNode = rootNode.node("decks", "inventories");
     }
 
     public boolean containsPlayer(final UUID uuid) {
@@ -57,6 +55,10 @@ public class DeckConfig extends SimpleConfigurate {
         return false;
     }
 
+    @Override
+    protected void initValues() throws ConfigurateException {
+        this.inventoriesNode = rootNode.node("decks", "inventories");
+    }
 
     public boolean containsDeck(final UUID uuid, int deckNumber) {
         return containsDeck(uuid, String.valueOf(deckNumber));

@@ -14,16 +14,20 @@ import java.io.File;
 import java.lang.reflect.Type;
 
 public class ChancesConfig extends SimpleConfigurate {
-    private final int hostileChance;
-    private final int neutralChance;
-    private final int passiveChance;
-    private final int bossChance;
-    private final boolean bossDrop;
-    private final int bossDropRarity;
-    private final int shinyVersionChance;
+    private int hostileChance;
+    private int neutralChance;
+    private int passiveChance;
+    private int bossChance;
+    private boolean bossDrop;
+    private int bossDropRarity;
+    private int shinyVersionChance;
 
     public ChancesConfig(TradingCards plugin) throws ConfigurateException {
-        super(plugin, "settings" + File.separator,"chances.yml", "settings");
+        super(plugin, "settings" + File.separator, "chances.yml", "settings");
+    }
+
+    @Override
+    protected void initValues() throws ConfigurateException {
         this.hostileChance = rootNode.node("hostile-chance").getInt(20000);
         this.neutralChance = rootNode.node("neutral-chance").getInt(5000);
         this.passiveChance = rootNode.node("passive-chance").getInt(1000);

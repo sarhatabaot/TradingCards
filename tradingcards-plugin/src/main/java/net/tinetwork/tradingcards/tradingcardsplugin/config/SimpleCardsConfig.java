@@ -18,18 +18,22 @@ import java.util.Map;
  * @author sarhatabaot
  */
 public class SimpleCardsConfig extends SimpleConfigurate {
-    private final ConfigurationNode cardsNode;
+    private ConfigurationNode cardsNode;
     public SimpleCardsConfig(final TradingCards plugin, final String fileName) throws ConfigurateException {
         super(plugin, "cards"+File.separator, fileName, "cards");
-
-        this.cardsNode = rootNode.node("cards");
-        plugin.debug("Loaded: "+fileName);
     }
 
     @Override
     protected void preLoaderBuild() {
         loaderBuilder.defaultOptions(opts -> opts.serializers(builder ->
                 builder.registerExact(TradingCard.class, CardSerializer.INSTANCE))).build();
+    }
+
+
+    @Override
+    protected void initValues() throws ConfigurateException {
+        this.cardsNode = rootNode.node("cards");
+        plugin.debug("Loaded: "+fileName);
     }
 
     public TradingCard getCard(final String rarity, final String name) {

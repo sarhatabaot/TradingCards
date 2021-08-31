@@ -17,11 +17,14 @@ import java.util.Map;
 
 public class RaritiesConfig extends SimpleConfigurate {
     private final List<Rarity> rarities = new ArrayList<>();
-    private final ConfigurationNode raritiesNode;
+    private ConfigurationNode raritiesNode;
 
     public RaritiesConfig(TradingCards plugin) throws ConfigurateException {
         super(plugin, "settings"+ File.separator,"rarities.yml", "settings");
+    }
 
+    @Override
+    protected void initValues() throws ConfigurateException {
         this.raritiesNode = rootNode.node("rarities");
         loadRarities();
     }

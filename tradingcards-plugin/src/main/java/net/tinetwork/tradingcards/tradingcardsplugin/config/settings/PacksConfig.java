@@ -19,10 +19,7 @@ public class PacksConfig extends SimpleConfigurate {
     private final List<String> packs = new ArrayList<>();
     public PacksConfig(TradingCards plugin) throws ConfigurateException {
         super(plugin, "settings"+ File.separator,"packs.yml", "settings");
-        for(Map.Entry<Object, ? extends ConfigurationNode> nodeEntry: rootNode.childrenMap().entrySet()) {
-            final String name = nodeEntry.getValue().key().toString();
-            packs.add(name);
-        }
+
     }
 
     public Pack getPack(final String name) throws SerializationException {
@@ -37,6 +34,14 @@ public class PacksConfig extends SimpleConfigurate {
     protected void preLoaderBuild() {
         loaderBuilder.defaultOptions(opts -> opts.serializers(builder ->
                 builder.registerExact(Pack.class, PackSerializer.INSTANCE)));
+    }
+
+    @Override
+    protected void initValues() throws ConfigurateException {
+        for(Map.Entry<Object, ? extends ConfigurationNode> nodeEntry: rootNode.childrenMap().entrySet()) {
+            final String name = nodeEntry.getValue().key().toString();
+            packs.add(name);
+        }
     }
 
     public static class PackSerializer implements TypeSerializer<Pack> {
