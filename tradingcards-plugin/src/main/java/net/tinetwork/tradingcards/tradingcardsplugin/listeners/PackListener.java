@@ -1,23 +1,19 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.listeners;
 
-import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
+import de.tr7zw.nbtapi.NBTItem;
+import net.tinetwork.tradingcards.api.model.Pack;
+import net.tinetwork.tradingcards.tradingcardsplugin.Permissions;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.tradingcardsplugin.config.TradingCardsConfig;
+import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import org.apache.commons.lang.WordUtils;
-import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
-import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-
-import java.util.List;
 
 public class PackListener extends SimpleListener {
     public PackListener(final TradingCards plugin) {
@@ -30,10 +26,6 @@ public class PackListener extends SimpleListener {
         } else {
             player.getInventory().removeItem(player.getInventory().getItemInMainHand());
         }
-    }
-
-    private boolean hasExtra(List<String> lore) {
-        return lore.size() > 2;
     }
 
     @EventHandler
@@ -50,59 +42,40 @@ public class PackListener extends SimpleListener {
 
         Player player = event.getPlayer();
         final ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
-        if (itemInMainHand.getType() != Material.valueOf(plugin.getMainConfig().boosterPackMaterial) || !player.getInventory().getItemInMainHand().containsEnchantment(Enchantment.ARROW_INFINITE)) {
+        if (!plugin.getPackManager().isPack(itemInMainHand)) {
             return;
         }
 
-        if (!player.hasPermission("cards.openboosterpack")) {
-            ChatUtil.sendMessage(player, plugin.getPrefixedMessage("No permission: cards.openboosterpack"));
+
+        if (!player.hasPermission(Permissions.USE_PACK)) {
+            ChatUtil.sendMessage(player, plugin.getPrefixedMessage("No permission: "+Permissions.USE_PACK));
             return;
         }
         if (player.getGameMode() == GameMode.CREATIVE) {
-            player.sendMessage(plugin.cMsg(plugin.getMessagesConfig().prefix + " " + plugin.getMessagesConfig().noCreative));
+            player.sendMessage(ChatUtil.color(plugin.getMessagesConfig().prefix() + " " + plugin.getMessagesConfig().noCreative()));
+            return;
+        }
+        NBTItem nbtPackItem = new NBTItem(itemInMainHand);
+        final String packId = nbtPackItem.getString("packId");
+        if(packId == null) {
             return;
         }
 
-        ItemMeta packMeta = itemInMainHand.getItemMeta();
-        String packName = packMeta.getDisplayName().split(" ")[1].trim();
-        List<String> lore = packMeta.getLore();
+        Pack pack = plugin.getPackManager().getPack(packId);
+        for(Pack.PackEntry entry: pack.getPackEntryList()) {
+            dropRandomCards(player, entry.getRarityId(), entry.getAmount(),pack.getSeries());
+        }
+
         removeItemMain(player);
-
-        boolean hasExtra = hasExtra(lore);
-
-        String[] line1 = (lore.get(0)).split(" ", 2);
-        String[] line2 = (lore.get(1)).split(" ", 2);
-        String[] line3 = new String[]{""};
-        if (hasExtra) {
-            line3 = (lore.get(2)).split(" ", 2);
-        }
-
-        int normalCardAmount = Integer.parseInt(ChatColor.stripColor(line1[0]));
-        String normalCardRarity = WordUtils.capitalizeFully(line1[1]);
-        int specialCardAmount = Integer.parseInt(ChatColor.stripColor(line2[0]));
-        String specialCardRarity = WordUtils.capitalizeFully(line2[1]);
-        int extraCardAmount = 0;
-        String extraCardRarity = "";
-        if (hasExtra) {
-            extraCardAmount = Integer.parseInt(ChatColor.stripColor(line3[0]));
-            extraCardRarity = WordUtils.capitalizeFully(line3[1]);
-        }
-
-        player.sendMessage(plugin.cMsg(plugin.getMessagesConfig().prefix + " " + plugin.getMessagesConfig().openBoosterPack));
-        dropRandomCards(player, normalCardRarity, normalCardAmount, packName);
-        dropRandomCards(player, specialCardRarity, specialCardAmount, packName);
-
-        if (hasExtra) {
-            dropRandomCards(player, extraCardRarity, extraCardAmount, packName);
-        }
-
 
     }
 
 
-    private void dropRandomCards(Player player, final String rarity, int amount, String packName) {
+    private void dropRandomCards(Player player, final String rarity, int amount, final String series) {
+        if (amount <= 0)
+            return;
         for (var i = 0; i < amount; i++) {
-            if (TradingCardsConfig.getPackSeries(packName).equalsIgnoreCase("active"))
+            if (series.equalsIgnoreCase("active"))
                 CardUtil.dropItem(player, plugin.getCardManager().getRandomCard(WordUtils.capitalizeFully(rarity), false).build());
             else
                 CardUtil.dropItem(player, plugin.getCardManager().getRandomActiveCard(WordUtils.capitalizeFully(rarity), false).build());

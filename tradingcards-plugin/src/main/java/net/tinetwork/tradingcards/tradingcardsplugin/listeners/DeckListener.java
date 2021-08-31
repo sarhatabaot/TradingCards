@@ -4,6 +4,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.UuidUtil;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -15,6 +16,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +46,7 @@ public class DeckListener extends SimpleListener {
 
 
 		if (player.getGameMode() == GameMode.CREATIVE) {
-			ChatUtil.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().deckCreativeError));
+			ChatUtil.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().deckCreativeError()));
 			return;
 		}
 
@@ -77,7 +79,7 @@ public class DeckListener extends SimpleListener {
 			if (it == null || !it.getItemMeta().hasLore())
 				continue;
 
-			if (!CardUtil.isCard(it) && plugin.getMainConfig().dropDeckItems) {
+			if (!CardUtil.isCard(it) && plugin.getGeneralConfig().dropDeckItems()) {
 				Player player = Bukkit.getPlayer(id);
 				CardUtil.dropItem(player, it);
 				continue;
@@ -88,7 +90,7 @@ public class DeckListener extends SimpleListener {
 			debug("Added " + serializedString + " to deck file.");
 		}
 
-		plugin.getDeckConfig().getConfig().set("Decks.Inventories." + id.toString() + "." + deckNum, serialized);
+		plugin.getDeckConfig().getConfig().set("Decks.Inventories." + id + "." + deckNum, serialized);
 		plugin.getDeckConfig().saveConfig();
 	}
 
@@ -98,7 +100,7 @@ public class DeckListener extends SimpleListener {
 	private String formatSerializedString(ItemStack itemStack) {
 		List<String> lore = itemStack.getItemMeta().getLore();
 		String rarity = CardUtil.getRarityName(ChatColor.stripColor(lore.get(lore.size() - 1)));
-		String cardName = CardUtil.getCardName(rarity, itemStack.getItemMeta().getDisplayName());
+		String cardName = getCardName(rarity, itemStack.getItemMeta().getDisplayName());
 		String amount = String.valueOf(itemStack.getAmount());
 		String shiny = "no";
 		if (itemStack.containsEnchantment(Enchantment.ARROW_INFINITE)) {
@@ -106,5 +108,25 @@ public class DeckListener extends SimpleListener {
 		}
 
 		return rarity + "," + cardName + "," + amount + "," + shiny;
+	}
+
+	@NotNull
+	private String getCardName(@NotNull final String displayRarity, @NotNull final String displayCard) {
+		final String strippedRarity = CardUtil.getRarityName(displayRarity);
+		final boolean hasPrefix = plugin.getGeneralConfig().cardPrefix() != null || !plugin.getGeneralConfig().cardPrefix().isEmpty();
+		final String strippedPrefix = CardUtil.stripAllColor(plugin.getGeneralConfig().cardPrefix());
+		final String strippedShiny = CardUtil.stripAllColor(plugin.getGeneralConfig().shinyName());
+		final String strippedDisplay = StringUtils.replaceEach(CardUtil.stripAllColor(displayCard), new String[]{strippedPrefix, strippedShiny}, new String[]{"", ""}).trim();
+		plugin.debug("stripped|rarity=" + strippedRarity + "|hasPrefix=" + hasPrefix + "|prefix=" + strippedPrefix + "|shiny=" + strippedShiny + "|display=" + strippedDisplay);
+
+		if (plugin.getCardManager().getCard(strippedDisplay,strippedRarity,false).getCardName().equals("nullCard")) {
+			plugin.debug("No such card. card=" + strippedDisplay + "rarity=" + strippedRarity);
+			return "None";
+		}
+
+		if (plugin.getCardManager().getCards().containsKey(strippedRarity+"."+strippedDisplay.replace(" ","_")))
+			return strippedDisplay.replace(" ","_");
+
+		return "None";
 	}
 }

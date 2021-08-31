@@ -1,0 +1,132 @@
+# Show debug messages?
+debug-mode: false
+
+# ##############################
+# Default Formatting Settings
+# ##############################
+colors:
+  # Colours for various settings of the card.
+  series: "&a"
+  type: "&b"
+  info: "&e"
+  about: "&c"
+  rarity: "&6"
+  # Booster pack colourings.
+  booster-pack-name: "&a"
+  booster-pack-lore: "&7"
+  booster-pack-normal-cards: "&e"
+  booster-pack-special-cards: "&6"
+  booster-pack-extra-cards: "&9"
+  # What colour should /cards list give to cards owned in decks?
+  list-have-card: "&a"
+  # What colour should /cards list give to shiny cards owned in decks?
+  list-have-shiny-card: "&e&l"
+  # What colour should /cards list give to rarities that have been fully collected?
+  list-rarity-complete: "&e"
+
+display:
+  # title placeholders:
+  # %prefix% (the prefix at the start of the config)
+  # %colour% (rarity colour)
+  # %name% (card name)
+  # %cost% (card buy-price)
+  title: "%PREFIX%%COLOUR%%NAME%"
+  shiny-title: "%PREFIX%%COLOUR%%SHINYPREFIX% %NAME%"
+  series: "Series"
+  type: "Type"
+  info: "Info"
+  about: "About"
+
+# ##############################
+# Default Card Settings
+# ##############################
+# The material the card will be. Make this something useless for maximum effect.
+card-material: PAPER
+# The prefix of the card. This is optional. Will show like: [Trading Card] Zombie
+card-prefix: "&7[&fCard&7]&f "
+# What shiny cards should be prefixed with.
+shiny-name: "Shiny"
+
+# ##############################
+# Default Pack Settings
+# ##############################
+# What material booster packs should be. Make it something that can't be placed.
+booster-pack-material: BOOK
+# The prefix of the booster pack.
+booster-pack-prefix: "&7[&fPack&7]&f "
+
+# ##############################
+# Default Deck Settings
+# ##############################
+# Should we be allowed to use decks in creative?
+decks-in-creative: false
+# Should we get a deck item or simply open the deck straight away with /cards getdeck #?
+use-deck-item: true
+# Should we have 27 slots in the deck, or 54 (double chest)?
+use-large-decks: false
+# What material decks should be. Make it something that can't be placed.
+deck-material: BOOK
+# The prefix of the booster pack.
+deck-prefix: "&7[&fDeck&7]&f "
+# Should we drop items in decks that aren't cards? (if false, it will delete the item)
+drop-deck-items: true
+
+# ##############################
+# Default Scheduler Settings
+# ##############################
+# Should a random card be given out every so often to all players online?
+schedule-cards: false
+# Should the cards scheduled be 'natural', as in, the same chance as if a mob dropped the card, or a single rarity?
+schedule-cards-natural: false
+# If schedule-cards-natural is true, what mob should we use for the giveaway? Zombie will drop the hostile mob chances, Wither boss chances etc.
+schedule-card-mob: ZOMBIE
+# If schedule-cards-natural is false, what should the giveaway rarity be?
+schedule-card-rarity: Common
+schedule-card-time-in-hours: 1
+
+# ##############################
+# Default Player Drop Settings
+# ##############################
+player-op-rarity: Legendary
+player-series: "2020"
+player-type: "Player"
+player-has-shiny-version: true
+# Should the player drop their own card if they're killed in PvP?
+player-drops-card: true
+# Percent of the time where the player drops the card, if the above is true.
+player-drops-card-rarity: 1000000
+
+# ##############################
+# Default Reward Settings
+# ##############################
+# Should we allow the collection of rewards for collecting a whole rarity?
+allow-rewards: true
+# Should we broadcast to the server when someone's collected a reward?
+reward-broadcast: true
+# Should we take shiny cards into account at all when collecting a reward? (recommended false, shiny cards are very rare!)
+eat-shiny-cards: false
+
+# ##############################
+# Default Plugin Support Settings
+# ##############################
+plugin-support:
+  vault:
+    vault-enabled: true
+    # Is the server running a closed economy? if so, whose account should money go into?
+    closed-economy: false
+    server-account: TradingCards-Bank
+
+# ##############################
+# Default Misc. (Everything else)
+# ##############################
+# Should we block cards for mobs from monster spawners?
+spawner-block: true
+# In the case of 'true', what should we name the monster with to identify it's from a spawner?
+spawner-mob-name: 'Spawned Mob'
+# How 'long' should each line of the card's info be?
+info-line-length: 25
+
+# Only drop cards from a certain series.
+# You can still get other series with /cards give
+active-series:
+  - '2021'

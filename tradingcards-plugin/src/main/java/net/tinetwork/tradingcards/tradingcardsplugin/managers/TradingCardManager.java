@@ -1,5 +1,9 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.managers;
 
+import net.tinetwork.tradingcards.api.model.chance.Chance;
+import net.tinetwork.tradingcards.api.model.chance.EmptyChance;
+import net.tinetwork.tradingcards.api.model.MobType;
+import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.NullCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
@@ -11,6 +15,7 @@ import org.apache.commons.lang.StringUtils;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.spongepowered.configurate.ConfigurationNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,9 +26,11 @@ import java.util.TreeSet;
 
 public class TradingCardManager implements CardManager<TradingCard> {
     private final TradingCards plugin;
+    public static final NullCard NULL_CARD = new NullCard();
     private final Map<String, Card<TradingCard>> cards = new HashMap<>();
     private final Map<String, Card<TradingCard>> activeCards = new HashMap<>();
 
+    //This stores the cards from a single rarity, over multiple files
     private static final Map<String, List<String>> rarityCardList = new HashMap<>();
     private static final Map<String, List<String>> activeRarityCardList = new HashMap<>();
 
@@ -44,23 +51,20 @@ public class TradingCardManager implements CardManager<TradingCard> {
     private void loadAllCards() {
         var cardConfigs = plugin.getCardsConfig().getCardConfigs();
         for (SimpleCardsConfig simpleCardsConfig : cardConfigs) {
-            var cardsConfigSection = simpleCardsConfig.getCards();
-            var rarities = cardsConfigSection.getKeys(false);
-            for (final String rarity : rarities) {
-                rarityCardList.put(rarity, new ArrayList<>());
-                activeRarityCardList.put(rarity, new ArrayList<>());
-                var raritySection = cardsConfigSection.getConfigurationSection(rarity);
-                if (raritySection == null) {
-                    continue;
-                }
-                var names = raritySection.getKeys(false);
+            for (final Rarity rarity : plugin.getRaritiesConfig().rarities()) {
+                rarityCardList.put(rarity.getName(), new ArrayList<>());
+                activeRarityCardList.put(rarity.getName(), new ArrayList<>());
 
-                for (String name : names) {
-                    cards.put(rarity + "." + name, generateCard(simpleCardsConfig, name, rarity, false));
-                    rarityCardList.get(rarity).add(name);
-                    if (plugin.getMainConfig().activeSeries.contains(simpleCardsConfig.getSeries(rarity, name))) {
-                        activeRarityCardList.get(rarity).add(name);
-                        activeCards.put(rarity + "." + name, cards.get(rarity + "." + name));
+                var cardNodes = simpleCardsConfig.getCards(rarity.getName()).entrySet();
+
+                for (Map.Entry<Object, ? extends ConfigurationNode> nodeEntry : cardNodes) {
+                    final String cardName = nodeEntry.getValue().key().toString();
+                    cards.put(rarity.getName() + "." + cardName, generateCard(simpleCardsConfig, cardName, rarity.getName(), false));
+                    rarityCardList.get(rarity.getName()).add(cardName);
+                    Card<TradingCard>  card = cards.get(rarity.getName() + "." + cardName);
+                    if (plugin.getGeneralConfig().activeSeries().contains(card.getSeries())) {
+                        activeRarityCardList.get(rarity.getName()).add(cardName);
+                        activeCards.put(rarity + "." + cardName, cards.get(rarity.getName() + "." + cardName));
                     }
                 }
             }
@@ -69,15 +73,11 @@ public class TradingCardManager implements CardManager<TradingCard> {
 
     @Override
     public List<String> getRarityCardList(final String rarity) {
-        plugin.debug(rarity);
-        plugin.debug(StringUtils.join(getRarityNames(), ","));
         return rarityCardList.get(rarity);
     }
 
     @Override
     public List<String> getActiveRarityCardList(final String rarity) {
-        plugin.debug(rarity);
-        plugin.debug(StringUtils.join(getRarityNames(), ","));
         return activeRarityCardList.get(rarity);
     }
 
@@ -107,7 +107,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
     public TradingCard getCard(final String cardName, final String rarity, final boolean forcedShiny) {
         if (cards.containsKey(rarity + "." + cardName))
             return (TradingCard) cards.get(rarity + "." + cardName).isShiny(forcedShiny);
-        return new NullCard(plugin);
+        return new NullCard();
     }
 
     @Override
@@ -129,9 +129,8 @@ public class TradingCardManager implements CardManager<TradingCard> {
     public TradingCard getRandomActiveCard(final String rarity, final boolean forcedShiny) {
         if (activeCards.keySet().isEmpty()) {
             plugin.getLogger().warning("There are no cards in the active series. Not dropping anything.");
-            return new NullCard(plugin);
+            return new NullCard();
         }
-        //var cindex = plugin.getRandom().nextInt(activeCards.keySet().size());
         List<String> cardNames = getActiveRarityCardList(rarity);
         var cardIndex = plugin.getRandom().nextInt(cardNames.size());
         String randomCardName = cardNames.get(cardIndex);
@@ -146,47 +145,69 @@ public class TradingCardManager implements CardManager<TradingCard> {
         return cardItem;
     }
 
+    public String getRandomRarity(MobType mobType) {
+        int randomChance = plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1;
 
+        TreeSet<String> rarityKeys = new TreeSet<>(plugin.getCardManager().getRarityNames());
+        for (String rarity : rarityKeys.descendingSet()) {
+            plugin.debug("rarity=" + rarity);
+            Chance chance = plugin.getChancesConfig().getChance(rarity);
+            if(chance instanceof EmptyChance)
+                return "None";
+
+            int chanceInt = chance.getFromMobType(mobType);
+
+            if (randomChance < chanceInt)
+                return rarity;
+        }
+        return "None";
+    }
     public String getRandomRarity(String mobType) {
         plugin.debug("getRandomRarity=" + mobType);
         if (mobType.equalsIgnoreCase("None"))
             return "None";
 
-        int randomChance = plugin.getRandom().nextInt(100000) + 1;
+        int randomChance = plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1;
 
         TreeSet<String> rarityKeys = new TreeSet<>(plugin.getCardManager().getRarityNames());
         for (String rarity : rarityKeys.descendingSet()) {
             plugin.debug("rarity=" + rarity);
-            var chance = plugin.getConfig().getInt("Chances." + rarity + "." + mobType, -1);
-            if (randomChance < chance)
+            Chance chance = plugin.getChancesConfig().getChance(rarity);
+            if(chance instanceof EmptyChance)
+                return "None";
+
+            int chanceInt = chance.getFromMobType(mobType);
+
+            if (randomChance < chanceInt)
                 return rarity;
         }
         return "None";
     }
 
+
     //Returns none or the mobtype
-    public String getMobTypeName(CardUtil.MobType mobType, boolean alwaysDrop) {
-        int generatedDropChance = plugin.getRandom().nextInt(100) + 1;
+    public String getMobTypeName(MobType mobType, boolean alwaysDrop) {
+        int generatedDropChance = plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1;
         if (alwaysDrop)
             return mobType.name();
         switch (mobType) {
             case BOSS:
-                if (generatedDropChance > plugin.getMainConfig().bossChance) {
+                if (generatedDropChance > plugin.getChancesConfig().bossChance()) {
                     return mobType.name();
                 }
                 break;
             case NEUTRAL:
-                if (generatedDropChance > plugin.getMainConfig().neutralChance) {
+                if (generatedDropChance > plugin.getChancesConfig().neutralChance()) {
                     return mobType.name();
                 }
                 break;
             case PASSIVE:
-                if (generatedDropChance > plugin.getMainConfig().passiveChance) {
+                if (generatedDropChance > plugin.getChancesConfig().passiveChance()) {
                     return mobType.name();
                 }
                 break;
             case HOSTILE:
-                if (generatedDropChance > plugin.getMainConfig().hostileChance) {
+                if (generatedDropChance > plugin.getChancesConfig().hostileChance()) {
                     return mobType.name();
                 }
                 break;
@@ -203,13 +224,17 @@ public class TradingCardManager implements CardManager<TradingCard> {
         if (mobTypeName.equalsIgnoreCase("None"))
             return "None";
 
-        int randomChance = plugin.getRandom().nextInt(100000) + 1;
+        int randomChance = plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1;
 
         TreeSet<String> rarityKeys = new TreeSet<>(plugin.getCardManager().getActiveRarityNames());
         for (String rarity : rarityKeys.descendingSet()) {
             plugin.debug("rarity=" + rarity);
-            var chance = plugin.getConfig().getInt("Chances." + rarity + "." + mobTypeName, -1);
-            if (alwaysDrop || randomChance < chance)
+            Chance chance = plugin.getChancesConfig().getChance(rarity);
+            if(chance instanceof EmptyChance)
+                return "None";
+
+            int chanceInt = chance.getFromMobType(mobTypeName);
+            if (alwaysDrop || randomChance < chanceInt)
                 return rarity;
         }
 
@@ -219,83 +244,42 @@ public class TradingCardManager implements CardManager<TradingCard> {
     @Override
     @NotNull
     public String getRandomRarity(EntityType e, boolean alwaysDrop) {
-        //String mobTypeName = CardUtil.getMobTypeOrNone(e, alwaysDrop);
         String mobTypeName = getMobTypeName(CardUtil.getMobType(e), alwaysDrop);
         plugin.debug(mobTypeName);
         if (mobTypeName.equalsIgnoreCase("None"))
             return "None";
 
-        int randomChance = plugin.getRandom().nextInt(100000) + 1;
+        int randomChance = plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1;
 
         TreeSet<String> rarityKeys = new TreeSet<>(plugin.getCardManager().getRarityNames());
         for (String rarity : rarityKeys.descendingSet()) {
             plugin.debug("rarity=" + rarity);
-            var chance = plugin.getConfig().getInt("Chances." + rarity + "." + mobTypeName, -1);
-            if (alwaysDrop || randomChance < chance)
+            Chance chance = plugin.getChancesConfig().getChance(rarity);
+            if(chance instanceof EmptyChance)
+                return "None";
+
+            int chanceInt = chance.getFromMobType(mobTypeName);
+            if (alwaysDrop || randomChance < chanceInt)
                 return rarity;
         }
 
         return "None";
     }
 
-    @NotNull
-    public TradingCard generateCard(final SimpleCardsConfig simpleCardsConfig, final String cardName, final String rarityName, boolean forcedShiny) {
-        if ("None".equalsIgnoreCase(rarityName))
-            return new NullCard(plugin);
+    public TradingCard generateCard(final SimpleCardsConfig simpleCardsConfig, final String cardId, final String rarityId, boolean forcedShiny) {
+        if("none".equalsIgnoreCase(rarityId)) {
+            return NULL_CARD;
+        }
 
-        TradingCard builder = new TradingCard(plugin, cardName);
-        boolean isShiny = false;
-        if (simpleCardsConfig.hasShiny(rarityName, cardName))
-            isShiny = calculateIfShiny(forcedShiny);
-
-        final String rarityColor = plugin.getMainConfig().rarityColour;
-        final String prefix = plugin.getMainConfig().cardPrefix;
-
-        final String series = simpleCardsConfig.getSeries(rarityName, cardName);
-        final String seriesColour = plugin.getMainConfig().seriesColour;
-        final String seriesDisplay = plugin.getMainConfig().seriesDisplay;
-
-        final String about = simpleCardsConfig.getAbout(rarityName, cardName);
-        final String aboutColour = plugin.getMainConfig().aboutColour;
-        final String aboutDisplay = plugin.getMainConfig().aboutDisplay;
-
-        final String type = simpleCardsConfig.getType(rarityName, cardName);
-        final String typeColour = plugin.getMainConfig().typeColour;
-        final String typeDisplay = plugin.getMainConfig().typeDisplay;
-
-        final String info = simpleCardsConfig.getInfo(rarityName, cardName);
-        final String infoColour = plugin.getMainConfig().infoColour;
-        final String infoDisplay = plugin.getMainConfig().infoDisplay;
-
-        final String shinyPrefix = plugin.getMainConfig().shinyName;
-        final String cost = simpleCardsConfig.getCost(rarityName, cardName);
-
-        boolean isPlayerCard = isPlayerCard(cardName);
-        builder.isShiny(isShiny)
-                .rarityColour(rarityColor)
-                .prefix(prefix)
-                .series(series, seriesColour, seriesDisplay)
-                .type(type, typeColour, typeDisplay)
-                .info(info, infoColour, infoDisplay)
-                .shinyPrefix(shinyPrefix)
-                .isPlayerCard(isPlayerCard)
-                .cost(cost)
-                .rarity(rarityName);
-        if (!about.isEmpty())
-            builder.about(about, aboutColour, aboutDisplay);
-        return builder.get();
+        return simpleCardsConfig.getCard(rarityId,cardId)
+                .isShiny(calculateIfShiny(forcedShiny)).get();
     }
 
     private boolean calculateIfShiny(boolean forcedShiny) {
         if (forcedShiny)
             return true;
-        int shinyRandom = plugin.getRandom().nextInt(100) + 1;
-        return shinyRandom <= plugin.getConfig().getInt("Chances.Shiny-Version-Chance");
-    }
-
-    public boolean isPlayerCard(String name) {
-        String rarity = plugin.getConfig().getString("General.Auto-Add-Player-Rarity");
-        return !getCard(name, rarity, false).getCardName().equals("nullCard") && getCard(name, rarity, false).isPlayerCard();
+        int shinyRandom = plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1;
+        return shinyRandom <= plugin.getChancesConfig().shinyVersionChance();
     }
 
 }

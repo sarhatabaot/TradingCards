@@ -3,8 +3,8 @@ package net.tinetwork.tradingcards.tradingcardsplugin.managers;
 
 import de.tr7zw.nbtapi.NBTItem;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.tradingcardsplugin.config.TradingCardsConfig;
 import net.tinetwork.tradingcards.api.manager.DeckManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -37,7 +37,7 @@ public class TradingDeckManager implements DeckManager {
 
 	private Inventory generateDeckInventory(final Player player, final int deckNum) {
 		List<ItemStack> cards = loadCardsFromFile(player.getUniqueId(), deckNum);
-		Inventory inv = Bukkit.createInventory(null, getDeckSize(), plugin.cMsg("&c" + player.getName() + "'s Deck #" + deckNum));
+		Inventory inv = Bukkit.createInventory(null, getDeckSize(), ChatUtil.color("&c" + player.getName() + "'s Deck #" + deckNum));
 		for (ItemStack cardItem : cards) {
 			inv.addItem(cardItem);
 			plugin.debug("Item=" + cardItem.getType() + ",amount=" + cardItem.getAmount() + ", added to inventory");
@@ -86,7 +86,7 @@ public class TradingDeckManager implements DeckManager {
 
 
 	private int getDeckSize() {
-		if (plugin.getMainConfig().useLargeDecks)
+		if (plugin.getGeneralConfig().useLargeDecks())
 			return 54;
 		return 27;
 	}
@@ -94,13 +94,11 @@ public class TradingDeckManager implements DeckManager {
 	@NotNull
 	@Override
 	public ItemStack createDeckItem(@NotNull final Player p, final int num) {
-		ItemStack deck = TradingCardsConfig.getBlankDeck();
+		ItemStack deck = plugin.getGeneralConfig().blankDeck();
 		ItemMeta deckMeta = deck.getItemMeta();
-		deckMeta.setDisplayName(plugin.cMsg(plugin.getConfig().getString("General.Deck-Prefix") + p.getName() + "'s Deck #" + num));
-		if (plugin.getConfig().getBoolean("General.Hide-Enchants", true)) {
-			deckMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-		}
+		deckMeta.setDisplayName(ChatUtil.color(plugin.getGeneralConfig().deckPrefix() + p.getName() + "'s Deck #" + num));
 
+		deckMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 		deck.setItemMeta(deckMeta);
 		deck.addUnsafeEnchantment(Enchantment.DURABILITY, 10);
 		return deck;
@@ -115,7 +113,7 @@ public class TradingDeckManager implements DeckManager {
 	}
 
 	public boolean isDeckMaterial(final Material material) {
-		return material == Material.valueOf(plugin.getMainConfig().deckMaterial);
+		return material == plugin.getGeneralConfig().deckMaterial();
 	}
 
 	@Override

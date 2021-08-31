@@ -1,0 +1,30 @@
+starter-pack:
+  content:
+    - "common:9"
+    - "rare:1"
+  series: "active"
+  price: 100.00
+  permission: "cards.packs.starter-pack"
+advanced-pack:
+  content:
+    - "common:12"
+    - "uncommon:6"
+    - "rare:2"
+  series: "active"
+  price: 150.00
+  permission: "card.packs.advanced-pack"
+expert-pack:
+  content:
+    - "uncommon:6"
+    - "rare:4"
+    - "very-rare:2"
+  series: "active"
+  price: 250.00
+  permission: "cards.packs.expert-pack"
+ultimate-pack:
+  content:
+    - "rare:5"
+    - "legendary:1"
+  series: "active"
+  price: 500.00
+  permission: "cards.packs.ultimate-pack"

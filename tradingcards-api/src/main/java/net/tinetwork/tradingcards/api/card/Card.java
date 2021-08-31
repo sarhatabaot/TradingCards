@@ -5,17 +5,14 @@ import org.bukkit.inventory.ItemStack;
 
 public abstract class Card<T> {
     private final String cardName;
+    private String displayName;
     private String rarity;
     private boolean isShiny = false;
     private boolean isPlayerCard = false;
-    private String rarityColour;
-    private String prefix;
-    private CardInfo series;
-    private CardInfo about;
-    private CardInfo type;
-    private CardInfo info;
-    private String shinyPrefix = null;
-    private String cost;
+    private String series;
+    private String about;
+    private String type;
+    private String info;
     private int customModelNbt;
     private double buyPrice;
     private double sellPrice;
@@ -36,53 +33,56 @@ public abstract class Card<T> {
         return this;
     }
 
+    public Card<T> displayName(String displayName) {
+        this.displayName = displayName;
+        return this;
+    }
+
+    public String getDisplayName() {
+        if(displayName == null || displayName.isEmpty())
+            return cardName;
+        return displayName;
+    }
+
     /**
      * Set custom model nbt
      * @param data custom model nbt
      * @return Builder
      */
     public Card<T> customModelNbt(final int data) {
-        this.customModelNbt(data);
+        this.customModelNbt = data;
         return this;
     }
 
-    public Card<T>  rarityColour(String rarityColour) {
-        this.rarityColour = rarityColour;
+
+    public Card<T> series(String name) {
+        this.series = name;
         return this;
     }
 
-    public Card<T>  prefix(String prefix) {
-        this.prefix = prefix;
+    public Card<T>  about(String name) {
+        this.about = name;
         return this;
     }
 
-    public Card<T>  series(String name, String colour, String display) {
-        this.series = new CardInfo(name, colour, display);
+    public Card<T>  type(String name) {
+        this.type = name;
         return this;
     }
 
-    public Card<T>  about(String name, String colour, String display) {
-        this.about = new CardInfo(name, colour, display);
+    public Card<T>  info(String name) {
+        this.info = name;
         return this;
     }
 
-    public Card<T>  type(String name, String colour, String display) {
-        this.type = new CardInfo(name, colour, display);
+
+    public Card<T>  buyPrice(double buyPrice) {
+        this.buyPrice = buyPrice;
         return this;
     }
 
-    public Card<T>  info(String name, String colour, String display) {
-        this.info = new CardInfo(name, colour, display);
-        return this;
-    }
-
-    public Card<T>  shinyPrefix(String shinyPrefix) {
-        this.shinyPrefix = shinyPrefix;
-        return this;
-    }
-
-    public Card<T>  cost(String cost) {
-        this.cost = cost;
+    public Card<T>  sellPrice(double sellPrice) {
+        this.sellPrice = sellPrice;
         return this;
     }
 
@@ -112,36 +112,20 @@ public abstract class Card<T> {
         return isPlayerCard;
     }
 
-    public String getRarityColour() {
-        return rarityColour;
-    }
-
-    public String getPrefix() {
-        return prefix;
-    }
-
-    public CardInfo getSeries() {
+    public String getSeries() {
         return series;
     }
 
-    public CardInfo getAbout() {
+    public String getAbout() {
         return about;
     }
 
-    public CardInfo getType() {
+    public String getType() {
         return type;
     }
 
-    public CardInfo getInfo() {
+    public String getInfo() {
         return info;
-    }
-
-    public String getShinyPrefix() {
-        return shinyPrefix;
-    }
-
-    public String getCost() {
-        return cost;
     }
 
     public double getBuyPrice() {
@@ -160,8 +144,7 @@ public abstract class Card<T> {
         nbtItem.setString("rarity",rarity);
         nbtItem.setBoolean("isCard", true);
         nbtItem.setBoolean("isShiny",isShiny);
-        nbtItem.setString("series",series.getName());
-        nbtItem.setString("rarity",rarity);
+        nbtItem.setString("series",series);
         nbtItem.setInteger("CustomModelData", customModelNbt);
         this.nbtItem = nbtItem;
         return nbtItem;
@@ -180,5 +163,21 @@ public abstract class Card<T> {
         return nbtItem.getItem();
     }
 
-
+    @Override
+    public String toString() {
+        return "Card{" +
+                "cardName='" + cardName + '\'' +
+                ", displayName='" + displayName + '\'' +
+                ", rarity='" + rarity + '\'' +
+                ", isShiny=" + isShiny +
+                ", isPlayerCard=" + isPlayerCard +
+                ", series='" + series + '\'' +
+                ", about='" + about + '\'' +
+                ", type='" + type + '\'' +
+                ", info='" + info + '\'' +
+                ", customModelNbt=" + customModelNbt +
+                ", buyPrice=" + buyPrice +
+                ", sellPrice=" + sellPrice +
+                '}';
+    }
 }

@@ -1,6 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config;
 
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
+import org.spongepowered.configurate.ConfigurateException;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -19,7 +20,11 @@ public class CardsConfig{
 			plugin.debug(file.getName());
 			if(file.getName().endsWith(".yml")) {
 				plugin.debug("Added: "+file.getName());
-				cardConfigs.add(new SimpleCardsConfig(plugin, file.getName()));
+				try {
+					cardConfigs.add(new SimpleCardsConfig(plugin, file.getName()));
+				}catch (ConfigurateException e) {
+					plugin.getLogger().severe(e.getMessage());
+				}
 			}
 		}
 	}
@@ -30,7 +35,11 @@ public class CardsConfig{
 	}
 
 	private static void createDefaultCardConfig(final TradingCards plugin) {
-		new SimpleCardsConfig(plugin, "cards/cards.yml").saveDefaultConfig();
+		try {
+			new SimpleCardsConfig(plugin, "cards.yml").saveDefaultConfig();
+		} catch (ConfigurateException e) {
+			plugin.getLogger().severe(e.getMessage());
+		}
 	}
 	public List<SimpleCardsConfig> getCardConfigs() {
 		return cardConfigs;

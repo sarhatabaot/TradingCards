@@ -3,16 +3,19 @@ package net.tinetwork.tradingcards.tradingcardsplugin;
 import co.aikar.commands.BukkitCommandManager;
 import com.google.common.collect.ImmutableList;
 import net.milkbowl.vault.economy.Economy;
-import net.sarhatabaot.configloader.ConfigLoader;
 import net.tinetwork.tradingcards.api.TradingCardsPlugin;
 import net.tinetwork.tradingcards.api.manager.PackManager;
+import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.CardsCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.DeckCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.CardsConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.DeckConfig;
-import net.tinetwork.tradingcards.tradingcardsplugin.config.MessagesConfig;
-import net.tinetwork.tradingcards.tradingcardsplugin.config.TradingCardsConfig;
+import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.ChancesConfig;
+import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.GeneralConfig;
+import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.MessagesConfig;
+import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.PacksConfig;
+import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.RaritiesConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.listeners.DeckListener;
 import net.tinetwork.tradingcards.tradingcardsplugin.listeners.DropListener;
 import net.tinetwork.tradingcards.tradingcardsplugin.listeners.MobSpawnListener;
@@ -24,18 +27,14 @@ import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.whitelist.PlayerBlacklist;
 import net.tinetwork.tradingcards.tradingcardsplugin.whitelist.WorldBlacklist;
-import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.scheduler.BukkitScheduler;
-import org.jetbrains.annotations.NotNull;
+import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.serialize.SerializationException;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 
@@ -50,10 +49,14 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private ImmutableList<EntityType> bossMobs;
 
     /* Configs */
-    private TradingCardsConfig mainConfig;
     private DeckConfig deckConfig;
-    private MessagesConfig messagesConfig;
     private CardsConfig cardsConfig;
+
+    private GeneralConfig generalConfig;
+    private RaritiesConfig raritiesConfig;
+    private ChancesConfig chancesConfig;
+    private PacksConfig packsConfig;
+    private MessagesConfig messagesConfig;
 
     /* Managers */
     private TradingCardManager cardManager;
@@ -92,9 +95,29 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
         hookVault();
 
-        if (this.getMainConfig().scheduleCards) {
+        if (this.getGeneralConfig().scheduleCards()) {
             this.startTimer();
         }
+    }
+
+    public GeneralConfig getGeneralConfig() {
+        return generalConfig;
+    }
+
+    public RaritiesConfig getRaritiesConfig() {
+        return raritiesConfig;
+    }
+
+    public ChancesConfig getChancesConfig() {
+        return chancesConfig;
+    }
+
+    public MessagesConfig getMessagesConfig() {
+        return messagesConfig;
+    }
+
+    public PacksConfig getPacksConfig() {
+        return packsConfig;
     }
 
     private void initUtils() {
@@ -103,21 +126,27 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     }
 
     private void initBlacklist() {
-        this.playerBlacklist = new PlayerBlacklist(this);
-        this.worldBlacklist = new WorldBlacklist(this);
+        try {
+            this.playerBlacklist = new PlayerBlacklist(this);
+            this.worldBlacklist = new WorldBlacklist(this);
+        } catch (ConfigurateException e){
+            getLogger().severe(e.getMessage());
+        }
     }
 
     private void initConfigs() {
-        saveDefaultConfig();
-        mainConfig = new TradingCardsConfig(this);
-        messagesConfig = new MessagesConfig(this);
-        ConfigLoader.load(mainConfig);
-        ConfigLoader.loadAndSave(messagesConfig);
+        try {
+            this.generalConfig = new GeneralConfig(this);
+            this.raritiesConfig = new RaritiesConfig(this);
+            this.chancesConfig = new ChancesConfig(this);
+            this.messagesConfig = new MessagesConfig(this);
+            this.packsConfig = new PacksConfig(this);
+            this.deckConfig = new DeckConfig(this);
+        } catch (ConfigurateException e) {
+            getLogger().severe(e.getMessage());
+        }
 
-        deckConfig = new DeckConfig(this);
         cardsConfig = new CardsConfig(this);
-
-        deckConfig.saveDefaultConfig();
     }
 
     private void initManagers() {
@@ -128,13 +157,13 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
     private void initCommands() {
         var commandManager = new BukkitCommandManager(this);
-        commandManager.registerCommand(new CardsCommand(this,playerBlacklist));
+        commandManager.registerCommand(new CardsCommand(this, playerBlacklist));
         commandManager.registerCommand(new DeckCommand(this));
         commandManager.getCommandCompletions().registerCompletion("rarities", c -> cardManager.getRarityNames());
         commandManager.getCommandCompletions().registerCompletion("active-rarities", c -> cardManager.getActiveRarityNames());
         commandManager.getCommandCompletions().registerCompletion("cards", c -> cardManager.getRarityCardList(c.getContextValueByName(String.class, "rarity")));
         commandManager.getCommandCompletions().registerCompletion("active-cards", c -> cardManager.getActiveRarityCardList(c.getContextValueByName(String.class, "rarity")));
-        commandManager.getCommandCompletions().registerCompletion("packs",c -> packManager.packs().keySet());
+        commandManager.getCommandCompletions().registerCompletion("packs", c -> packManager.packs().keySet());
         commandManager.enableUnstableAPI("help");
         commandManager.enableUnstableAPI("brigadier");
     }
@@ -156,7 +185,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     @Override
     public void onDisable() {
         econ = null;
-        this.getServer().getPluginManager().removePermission("cards.rarity");
     }
 
 
@@ -184,14 +212,11 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
     public CardsConfig getCardsConfig() {
         return cardsConfig;
-   }
-
-    public TradingCardsConfig getMainConfig() {
-        return mainConfig;
     }
 
+
     private void hookVault() {
-        if (this.getConfig().getBoolean("PluginSupport.Vault.Vault-Enabled")) {
+        if (this.generalConfig.vaultEnabled()) {
             if (this.getServer().getPluginManager().getPlugin("Vault") != null) {
                 this.setupEconomy();
                 getLogger().info("Vault hook successful!");
@@ -214,7 +239,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
     private void initListeners() {
         var pm = Bukkit.getPluginManager();
-        pm.addPermission(new Permission("cards.rarity"));
         pm.registerEvents(new DropListener(this, cardManager), this);
         pm.registerEvents(new PackListener(this), this);
         pm.registerEvents(new MobSpawnListener(this), this);
@@ -253,10 +277,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         return econ != null;
     }
 
-    public MessagesConfig getMessagesConfig() {
-        return messagesConfig;
-    }
-
     public boolean isMobHostile(EntityType e) {
         return this.hostileMobs.contains(e);
     }
@@ -274,7 +294,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     }
 
 
-
     @Deprecated
     public boolean hasCard(Player player, String card, String rarity) {
         return getDeckConfig().containsCard(player.getUniqueId(), card, rarity);
@@ -287,33 +306,22 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
     @Deprecated
     public String isRarityAndFormat(String input) {
-        String output = input.substring(0, 1).toUpperCase() + input.substring(1);
-        if (this.getConfig().contains("Rarities." + input.replace("_", " "))) {
-            return input.replace("_", " ");
-        } else if (this.getConfig().contains("Rarities." + input.replace("_", " ").toUpperCase())) {
-            return input.replace("_", " ").toUpperCase();
-        } else if (this.getConfig().contains("Rarities." + input.replace("_", " ").toLowerCase())) {
-            return input.replace("_", " ").toLowerCase();
-        } else if (this.getConfig().contains("Rarities." + output.replace("_", " "))) {
-            return output.replace("_", " ");
-        }
-
-        return this.getConfig().contains("Rarities." + this.capitaliseUnderscores(input)) ? output.replace("_", " ") : "None";
+        return isRarity(input);
     }
 
-    public String capitaliseUnderscores(String input) {
-        String[] strArray = input.split("_");
-        String[] finalArray = new String[strArray.length];
-        StringBuilder finalized = new StringBuilder();
+    public String isRarity(String input) {
+        try {
+            Rarity rarity = getRaritiesConfig().getRarity(input);
+            if (getRaritiesConfig().getRarity(input) != null) {
+                return rarity.getName().replace("_"," ").toLowerCase();
+            }
 
-        for (int i = 0; i < strArray.length; ++i) {
-            finalArray[i] = strArray[i].toLowerCase().substring(0, 1).toUpperCase() + strArray[i].substring(1);
-            finalized.append(finalArray[i]);
-            finalized.append("_");
+        } catch (SerializationException e){
+            getLogger().severe(e.getMessage());
         }
-
-        return finalized.substring(0, finalized.length() - 1);
+        return "none;";
     }
+
 
     @Override
     public boolean isMob(String input) {
@@ -329,40 +337,25 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     public boolean isMob(EntityType type) {
         return this.hostileMobs.contains(type) || this.neutralMobs.contains(type) || this.passiveMobs.contains(type) || this.bossMobs.contains(type);
     }
-    
-    public List<String> wrapString(@NotNull String s) {
-        String parsedString = ChatColor.stripColor(s);
-        String addedString = WordUtils.wrap(parsedString, this.getConfig().getInt("General.Info-Line-Length", 25), "\n", true);
-        String[] splitString = addedString.split("\n");
-        List<String> finalArray = new ArrayList<>();
-
-        for (String ss : splitString) {
-            debug(ChatColor.getLastColors(ss));
-            finalArray.add(this.cMsg("&f &7- &f" + ss));
-        }
-
-        return finalArray;
-    }
 
     @Override
     public void debug(final String message) {
-        if (getMainConfig().debugMode) {
+        if (getGeneralConfig().debugMode()) {
             getLogger().info("DEBUG " + message);
         }
     }
 
     public String getPrefixedMessage(final String message) {
-        return cMsg(messagesConfig.prefix + "&r " + message);
+        return ChatUtil.color(messagesConfig.prefix() + "&r " + message);
     }
 
     public void reloadAllConfig() {
-        ConfigLoader.loadAndSave(mainConfig);
         this.deckConfig.reloadConfig();
-        ConfigLoader.loadAndSave(messagesConfig);
-    }
-
-    public String cMsg(String message) {
-        return ChatColor.translateAlternateColorCodes('&', message);
+        this.packsConfig.reloadConfig();
+        this.generalConfig.reloadConfig();
+        this.messagesConfig.reloadConfig();
+        this.raritiesConfig.reloadConfig();
+        this.chancesConfig.reloadConfig();
     }
 
     public void startTimer() {
@@ -372,14 +365,14 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
             debug("Successfully cancelled task " + this.taskId);
         }
 
-        int hours = Math.max(getMainConfig().scheduleCardTimeInHours, 1);
+        int hours = Math.max(getGeneralConfig().scheduleCardTimeInHours(), 1);
 
         Bukkit.broadcastMessage(getPrefixedTimerMessage(hours));
         this.taskId = new CardSchedulerRunnable(this).runTaskTimer(this, ((long) hours * 20 * 60 * 60), ((long) hours * 20 * 60 * 60)).getTaskId();
     }
 
     private String getPrefixedTimerMessage(int hours) {
-        return getPrefixedMessage(messagesConfig.timerMessage.replace("%hour%", String.valueOf(hours)));
+        return getPrefixedMessage(messagesConfig.timerMessage().replace("%hour%", String.valueOf(hours)));
     }
 
     public Random getRandom() {

@@ -1,0 +1,4 @@
+whitelist-mode: false
+worlds:
+  # don't want cards dropping in certain worlds? add it here!
+  - Creative

@@ -14,7 +14,7 @@ public class MobSpawnListener extends SimpleListener{
 	@EventHandler
 	public void onMobSpawn(CreatureSpawnEvent e) {
 		if (!(e.getEntity() instanceof Player) && e.getSpawnReason() == CreatureSpawnEvent.SpawnReason.SPAWNER && plugin.getConfig().getBoolean("General.Spawner-Block")) {
-			e.getEntity().setCustomName(plugin.getConfig().getString("General.Spawner-Mob-Name"));
+			e.getEntity().setCustomName(plugin.getGeneralConfig().spawnerMobName());
 			debug("Spawner mob renamed.");
 			e.getEntity().setRemoveWhenFarAway(true);
 		}

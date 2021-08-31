@@ -2,6 +2,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin;
 
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingCardManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
+import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -21,11 +22,11 @@ public class CardSchedulerRunnable extends BukkitRunnable {
     public void run() {
         plugin.debug(getClass().getSimpleName() + " task running");
         //check this before the task is registered.
-        if (!plugin.getConfig().getBoolean("General.Schedule-Cards"))
+        if (!plugin.getGeneralConfig().scheduleCards())
             return;
 
-        if (plugin.getConfig().getBoolean("General.Schedule-Cards-Natural")) {
-            String mob = plugin.getConfig().getString("General.Schedule-Card-Mob");
+        if (plugin.getGeneralConfig().scheduleCardsNatural()) {
+            String mob = plugin.getGeneralConfig().scheduleCardMob();
             if (plugin.isMob(mob.toUpperCase())) {
                 CardUtil.giveawayNatural(EntityType.valueOf(mob.toUpperCase()), null);
                 return;
@@ -40,7 +41,7 @@ public class CardSchedulerRunnable extends BukkitRunnable {
         if (rarity.isEmpty())
             return;
 
-        Bukkit.broadcastMessage(plugin.cMsg(plugin.getMessagesConfig().prefix + " " + plugin.getMessagesConfig().scheduledGiveaway));
+        Bukkit.broadcastMessage(ChatUtil.color(plugin.getMessagesConfig().prefix() + " " + plugin.getMessagesConfig().scheduledGiveaway()));
         for (final Player p : Bukkit.getOnlinePlayers()) {
             CardUtil.dropItem(p, cardManager.getRandomCard(rarity, false).build());
         }
@@ -49,7 +50,7 @@ public class CardSchedulerRunnable extends BukkitRunnable {
 
     private String getRarity() {
         for (final String key : plugin.getCardManager().getRarityNames()) {
-            if (key.equalsIgnoreCase(plugin.getMainConfig().scheduleCardRarity)) {
+            if (key.equalsIgnoreCase(plugin.getGeneralConfig().scheduleCardRarity())) {
                return key;
             }
         }

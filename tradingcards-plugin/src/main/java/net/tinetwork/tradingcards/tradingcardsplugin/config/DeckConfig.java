@@ -1,77 +1,92 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config;
 
+import net.tinetwork.tradingcards.api.model.deck.DeckEntry;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfig;
+import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigurate;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
+import java.io.File;
 import java.util.List;
 import java.util.UUID;
 
-public class DeckConfig extends SimpleConfig {
-	private static final String INVENTORY_PATH = "Decks.Inventories.";
-	public DeckConfig(final TradingCards plugin) {
-		super(plugin, "decks.yml");
-	}
 
-	public boolean containsPlayer(final UUID uuid) {
-		return getConfig().contains(INVENTORY_PATH +uuid.toString());
-	}
+public class DeckConfig extends SimpleConfigurate {
+    private static final String INVENTORY_PATH = "decks.inventories.";
+    private ConfigurationNode inventoriesNode;
 
-	@Nullable
-	public ConfigurationSection getAllDecks(final UUID uuid) {
-		if(containsPlayer(uuid))
-			return getConfig().getConfigurationSection(INVENTORY_PATH +uuid.toString());
-		return null;
-	}
+    public DeckConfig(final TradingCards plugin) throws ConfigurateException {
+        super(plugin, "data" + File.separator, "decks.yml", "data");
+    }
 
-	@Nullable
-	public List<String> getDeck(final UUID uuid, String deckNumber){
-		if(containsDeck(uuid,deckNumber))
-			return getAllDecks(uuid).getStringList(String.valueOf(deckNumber));
-		return null;
-	}
+    public boolean containsPlayer(final UUID uuid) {
+        return !inventoriesNode.node(uuid.toString()).empty();
+    }
 
-	public boolean containsDeck(final UUID uuid,String deckNumber) {
-		if(containsPlayer(uuid))
-			return getAllDecks(uuid).contains(String.valueOf(deckNumber));
-		return false;
-	}
+    @Nullable
+    public ConfigurationSection getAllDecks(final UUID uuid) {
+        if (containsPlayer(uuid))
+            return getConfig().getConfigurationSection(INVENTORY_PATH + uuid);
+        return null;
+    }
 
+    @Override
+    protected void preLoaderBuild() {
+        //No custom type serializer to register
+    }
 
-	public boolean containsDeck(final UUID uuid,int deckNumber) {
-		return containsDeck(uuid,String.valueOf(deckNumber));
-	}
+    @Nullable
+    public List<String> getDeck(final UUID uuid, String deckNumber) {
+        try {
+            if (containsDeck(uuid, deckNumber))
+                return inventoriesNode.node(uuid).node(deckNumber).getList(String.class);
+        } catch (SerializationException e) {
+            return null;
+        }
+        return null;
+    }
 
-	public boolean containsCard(final UUID uuid,final String card, final String rarity){
-		if(getAllDecks(uuid) == null || getAllDecks(uuid).getValues(false).isEmpty())
-			return false;
-		for(String deckNumber : getAllDecks(uuid).getValues(false).keySet()){
-			for(String cardString: getDeck(uuid,deckNumber)) {
-				String[] splitCardString = cardString.split(",");
-				String rarityName = splitCardString[0];
-				String cardName = splitCardString[1];
-				String shiny = splitCardString[2];
-				if(rarity.equalsIgnoreCase(rarityName) && card.equalsIgnoreCase(cardName) && shiny.equalsIgnoreCase("no"))
-					return true;
-			}
-		}
-		return false;
-	}
+    public boolean containsDeck(final UUID uuid, String deckNumber) {
+        if (containsPlayer(uuid))
+            return !inventoriesNode.node(uuid).node(deckNumber).empty();
+        return false;
+    }
 
-	public boolean containsShinyCard(final UUID uuid,final String card, final String rarity) {
-		if(getAllDecks(uuid) == null || getAllDecks(uuid).getValues(false).isEmpty())
-			return false;
-		for(String deckNumber : getAllDecks(uuid).getValues(false).keySet()){
-			for(String cardString: getDeck(uuid,deckNumber)) {
-				String[] splitCardString = cardString.split(",");
-				String rarityName = splitCardString[0];
-				String cardName = splitCardString[1];
-				String shinyName = splitCardString[2];
-				if(rarity.equalsIgnoreCase(rarityName) && card.equalsIgnoreCase(cardName) && shinyName.equalsIgnoreCase("yes"))
-					return true;
-			}
-		}
-		return false;
-	}
+    @Override
+    protected void initValues() throws ConfigurateException {
+        this.inventoriesNode = rootNode.node("decks", "inventories");
+    }
+
+    public boolean containsDeck(final UUID uuid, int deckNumber) {
+        return containsDeck(uuid, String.valueOf(deckNumber));
+    }
+
+    public boolean containsCard(final UUID uuid, final String card, final String rarity) {
+        if (getAllDecks(uuid) == null || getAllDecks(uuid).getValues(false).isEmpty())
+            return false;
+        for (String deckNumber : getAllDecks(uuid).getValues(false).keySet()) {
+            for (String cardString : getDeck(uuid, deckNumber)) {
+                DeckEntry deckEntry = DeckEntry.fromString(cardString);
+                if (deckEntry.getRarityId().equalsIgnoreCase(rarity) && deckEntry.getCardId().equalsIgnoreCase(cardString) && !deckEntry.isShiny())
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean containsShinyCard(final UUID uuid, final String card, final String rarity) {
+        if (getAllDecks(uuid) == null || getAllDecks(uuid).getValues(false).isEmpty())
+            return false;
+        for (String deckNumber : getAllDecks(uuid).getValues(false).keySet()) {
+            for (String cardString : getDeck(uuid, deckNumber)) {
+                DeckEntry deckEntry = DeckEntry.fromString(cardString);
+                if (deckEntry.getRarityId().equalsIgnoreCase(rarity) && deckEntry.getCardId().equalsIgnoreCase(card) && deckEntry.isShiny())
+                    return true;
+            }
+        }
+        return false;
+    }
 }
