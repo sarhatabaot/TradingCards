@@ -23,7 +23,10 @@ public class PlayerBlacklist extends SimpleConfigurate implements Blacklist<Play
 
     public PlayerBlacklist(TradingCards plugin) throws ConfigurateException {
         super(plugin, "lists"+ File.separator, "player-blacklist.yml", "lists");
-        saveDefaultConfig();
+    }
+
+    @Override
+    protected void initValues() throws ConfigurateException {
         loadPlayers();
         setWhitelistMode();
     }

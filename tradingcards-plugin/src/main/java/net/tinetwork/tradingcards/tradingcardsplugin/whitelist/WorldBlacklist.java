@@ -18,19 +18,19 @@ import java.util.List;
 public class WorldBlacklist extends SimpleConfigurate implements Blacklist<World> {
     private static final String LISTED_WORLDS_NAME = "worlds";
     private static final String WHITELIST_MODE_NAME = "whitelist-mode";
-    private final ConfigurationNode worldNode;
+    private ConfigurationNode worldNode;
     private List<String> listedWorlds;
     private WhitelistMode whitelistMode;
 
+    @Override
+    protected void initValues() throws ConfigurateException {
+        this.worldNode = rootNode.node(LISTED_WORLDS_NAME);
+        loadWorlds();
+        setWhitelistMode();
+    }
 
     public WorldBlacklist(TradingCards plugin) throws ConfigurateException {
         super(plugin, "lists"+ File.separator, "world-blacklist.yml", "lists");
-        saveDefaultConfig();
-
-        this.worldNode = rootNode.node(LISTED_WORLDS_NAME);
-
-        loadWorlds();
-        setWhitelistMode();
     }
 
     @Override
