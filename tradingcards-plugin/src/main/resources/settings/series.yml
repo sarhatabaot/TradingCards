@@ -1,0 +1,22 @@
+# Unless specified otherwise, the default color is taken from general.yml
+# You can add a default-color line to change the style.
+default:
+  display-name: "Default"
+  # Mode: active, disabled, scheduled
+  # Active drops from killing mobs
+  # Disabled does not drop from killing mobs, can still get it from /cards give
+  # Schedules Active between set dates
+  mode: active
+  # Not relevant unless mode is set to scheduled
+  schedule:
+    # Yearly, monthly, weekly, daily
+    # Time is optional unless it's daily
+    # date: scheduled on specific dates: year/month/day/time
+    # Yearly: repeats every year, between specific month/day/time dates
+    # monthly: repeats every month on specific days/times, if a date isn't available in the month the closest one is chosen
+    # weekly: repeats every week on specified days/time
+    # daily: repeats every day on specific times
+    type: date
+    # only relevant for date/yearly
+    active-from:
+    active-until:

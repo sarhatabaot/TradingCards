@@ -1,7 +1,10 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.listeners;
 
+import net.tinetwork.tradingcards.api.card.Card;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
+import net.tinetwork.tradingcards.tradingcardsplugin.card.NullCard;
+import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingCardManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.whitelist.PlayerBlacklist;
@@ -68,20 +71,22 @@ public class DropListener extends SimpleListener {
         if (!this.worldBlacklist.isAllowed(world)) return;
         if (isSpawnerMob(killedEntity)) return;
         //Get card rarity
-        debug("EntityType="+killedEntity.getType());
-        debug("MobType="+CardUtil.getMobType(killedEntity.getType()));
+        debug("EntityType=" + killedEntity.getType());
+        debug("MobType=" + CardUtil.getMobType(killedEntity.getType()));
 
         String rarityName = cardManager.getRandomRarity(CardUtil.getMobType(killedEntity.getType()));
         if (rarityName.equals("None"))
             return;
 
         //Generate the card
-        ItemStack randomCard = plugin.getCardManager().getRandomActiveCard(rarityName, false).build();
-
+        TradingCard randomCard = plugin.getCardManager().getRandomActiveCard(rarityName, false);
+        if (randomCard instanceof NullCard) {
+            return;
+        }
         debug("Successfully generated card.");
 
         //Add the card to the killedEntity drops
-        e.getDrops().add(randomCard);
+        e.getDrops().add(randomCard.build());
     }
 
     private String getRarityKey(Player player) {
@@ -91,7 +96,7 @@ public class DropListener extends SimpleListener {
 
 
         for (final Rarity rarity : rarities) {
-            if(!cardManager.getCard(player.getName(),rarity.getName(),false).getCardName().equals("nullCard")) {
+            if (!cardManager.getCard(player.getName(), rarity.getName(), false).getCardName().equals("nullCard")) {
                 debug(rarity.getName());
                 return rarity.getName();
             }

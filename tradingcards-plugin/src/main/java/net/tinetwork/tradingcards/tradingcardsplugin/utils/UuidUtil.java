@@ -11,9 +11,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.UUID;
 
-/**
- * @author sarhatabaot
- */
 public class UuidUtil {
 	public static @NotNull UUID getPlayerUuid(final String name) {
 		Gson gson = new Gson();
