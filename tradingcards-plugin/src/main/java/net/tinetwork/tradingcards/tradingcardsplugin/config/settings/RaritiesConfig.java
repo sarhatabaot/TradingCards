@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 public class RaritiesConfig extends SimpleConfigurate {
-    private final List<Rarity> rarities = new ArrayList<>();
+    private List<Rarity> rarities;
     private ConfigurationNode raritiesNode;
 
     public RaritiesConfig(TradingCards plugin) throws ConfigurateException {
@@ -26,6 +26,7 @@ public class RaritiesConfig extends SimpleConfigurate {
     @Override
     protected void initValues() throws ConfigurateException {
         this.raritiesNode = rootNode.node("rarities");
+        this.rarities = new ArrayList<>();
         loadRarities();
     }
 

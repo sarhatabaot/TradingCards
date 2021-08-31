@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 public class PacksConfig extends SimpleConfigurate {
-    private final List<String> packs = new ArrayList<>();
+    private List<String> packs;
     public PacksConfig(TradingCards plugin) throws ConfigurateException {
         super(plugin, "settings"+ File.separator,"packs.yml", "settings");
 
@@ -38,6 +38,7 @@ public class PacksConfig extends SimpleConfigurate {
 
     @Override
     protected void initValues() throws ConfigurateException {
+        this.packs = new ArrayList<>();
         for(Map.Entry<Object, ? extends ConfigurationNode> nodeEntry: rootNode.childrenMap().entrySet()) {
             final String name = nodeEntry.getValue().key().toString();
             packs.add(name);
