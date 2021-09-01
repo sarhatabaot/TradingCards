@@ -50,7 +50,7 @@ public class RaritiesConfig extends SimpleConfigurate {
                 plugin.debug("Couldn't add="+rarityKey);
             }
         }
-        plugin.debug("Total="+rarities.size());
+        plugin.debug("Total Rarities="+rarities.size());
     }
 
     public List<Rarity> rarities() {

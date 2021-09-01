@@ -35,6 +35,22 @@ public class Series {
         return false;
     }
 
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public String getDisplayColor() {
+        return displayColor;
+    }
+
+    public Schedule getSchedule() {
+        return schedule;
+    }
+
+    public String getName() {
+        return name;
+    }
+
     public Mode getMode() {
         return mode;
     }

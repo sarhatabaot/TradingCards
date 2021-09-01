@@ -20,3 +20,9 @@ default:
     # only relevant for date/yearly
     active-from:
     active-until:
+    # Yearly
+    # date-date every year.
+    # Monthly
+    # day of the month, with time every day
+    # Weekly, day of the week, with time every day
+    # daily, time of the day
