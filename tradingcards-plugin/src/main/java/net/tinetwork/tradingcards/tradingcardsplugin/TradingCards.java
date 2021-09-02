@@ -1,6 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin;
 
 import co.aikar.commands.BukkitCommandManager;
+import co.aikar.commands.PaperCommandManager;
 import com.google.common.collect.ImmutableList;
 import net.milkbowl.vault.economy.Economy;
 import net.tinetwork.tradingcards.api.TradingCardsPlugin;
@@ -156,7 +157,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     }
 
     private void initCommands() {
-        var commandManager = new BukkitCommandManager(this);
+        var commandManager = new PaperCommandManager(this);
         commandManager.registerCommand(new CardsCommand(this, playerBlacklist));
         commandManager.registerCommand(new DeckCommand(this));
         commandManager.getCommandCompletions().registerCompletion("rarities", c -> cardManager.getRarityNames());
