@@ -6,17 +6,15 @@ import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.Map;
 
-public abstract class PackManager {
-    public abstract Map<String,ItemStack> packs();
+public interface PackManager {
+    Map<String,ItemStack> packs();
 
-    public ItemStack getPackItem(String name) {
-        return packs().get(name);
-    }
+    ItemStack getPackItem(String name);
 
-    public abstract ItemStack generatePack(String name) throws SerializationException;
+    ItemStack generatePack(String name) throws SerializationException;
 
-    public abstract boolean isPack(final ItemStack item);
+    boolean isPack(final ItemStack item);
 
-    public abstract Pack getPack(final String id);
+    Pack getPack(final String id);
 
 }

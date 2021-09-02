@@ -3,7 +3,7 @@ package net.tinetwork.tradingcards.api.model.schedule;
 
 import java.time.LocalDate;
 
-public class DateSchedule extends Schedule{
+public class DateSchedule extends Schedule {
     private LocalDate start;
     private LocalDate end;
 
@@ -18,5 +18,14 @@ public class DateSchedule extends Schedule{
     @Override
     public boolean isActive() {
         return false;
+    }
+
+
+    @Override
+    public String toString() {
+        return "DateSchedule{" +
+                "start=" + start +
+                ", end=" + end +
+                ", isActive=" + isActive() + " }";
     }
 }

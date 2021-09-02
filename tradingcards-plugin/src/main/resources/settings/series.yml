@@ -6,7 +6,7 @@ default:
   # Active drops from killing mobs
   # Disabled does not drop from killing mobs, can still get it from /cards give
   # Schedules Active between set dates
-  mode: active
+  mode: ACTIVE
   # Not relevant unless mode is set to scheduled
   schedule:
     # Yearly, monthly, weekly, daily
@@ -16,7 +16,7 @@ default:
     # monthly: repeats every month on specific days/times, if a date isn't available in the month the closest one is chosen
     # weekly: repeats every week on specified days/time
     # daily: repeats every day on specific times
-    type: date
+    type: DATE
     # only relevant for date/yearly
     active-from:
     active-until:

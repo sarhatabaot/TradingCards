@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class BoosterPackManager extends PackManager {
+public class BoosterPackManager implements PackManager {
     private final ItemStack blankPack;
     private final PacksConfig packsConfig;
     private final TradingCards plugin;
@@ -89,6 +89,11 @@ public class BoosterPackManager extends PackManager {
 
     public boolean isPack(final ItemStack item) {
         return new NBTItem(item).getBoolean("pack");
+    }
+
+    @Override
+    public ItemStack getPackItem(final String name) {
+        return packs.get(name).clone();
     }
 
     @Override

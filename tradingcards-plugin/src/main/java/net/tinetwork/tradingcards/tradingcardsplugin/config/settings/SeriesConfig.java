@@ -2,8 +2,10 @@ package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
 
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
+import net.tinetwork.tradingcards.api.model.schedule.DateSchedule;
 import net.tinetwork.tradingcards.api.model.schedule.Mode;
 import net.tinetwork.tradingcards.api.model.schedule.Schedule;
+import net.tinetwork.tradingcards.api.model.schedule.ScheduleType;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigurate;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -14,6 +16,8 @@ import org.spongepowered.configurate.serialize.TypeSerializer;
 
 import java.io.File;
 import java.lang.reflect.Type;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -54,30 +58,45 @@ public class SeriesConfig extends SimpleConfigurate {
     @Override
     protected void preLoaderBuild() {
         loaderBuilder.defaultOptions(opts -> opts.serializers(builder ->
-                builder.registerExact(ScheduleSerializer.TYPE, ScheduleSerializer.INSTANCE)
+                builder.registerExact(DateScheduleSerializer.TYPE, DateScheduleSerializer.INSTANCE)
                         .registerExact(SeriesSerializer.TYPE, SeriesSerializer.INSTANCE)));
     }
 
-    public static final class ScheduleSerializer implements TypeSerializer<Schedule> {
-        public static final ScheduleSerializer INSTANCE = new ScheduleSerializer();
-        public static final Class<Schedule> TYPE = Schedule.class;
 
+    public static final class DateScheduleSerializer implements TypeSerializer<DateSchedule> {
+        public static final DateScheduleSerializer INSTANCE = new DateScheduleSerializer();
+        public static final Class<DateSchedule> TYPE = DateSchedule.class;
+
+        //This should be changed for an abstract configuration, something that is mostly consistent
+        //across all types.
+        private static final String ACTIVE_FROM = "active-from";
+        private static final String ACTIVE_UNTIL = "active-until";
+        private  DateScheduleSerializer(){
+
+        }
         @Override
-        public Schedule deserialize(final Type type, final ConfigurationNode node) throws SerializationException {
-            return null;
+        public DateSchedule deserialize(final Type type, final ConfigurationNode node) throws SerializationException {
+            final LocalDate activeFromDate = LocalDate.parse(node.node(ACTIVE_FROM).getString());
+            final LocalDate activeUntilDate = LocalDate.parse(node.node(ACTIVE_UNTIL).getString());
+
+            return new DateSchedule(activeFromDate,activeUntilDate);
         }
 
         @Override
-        public void serialize(final Type type, @Nullable final Schedule obj, final ConfigurationNode node) throws SerializationException {
+        public void serialize(final Type type, @Nullable final DateSchedule obj, final ConfigurationNode node) throws SerializationException {
 
         }
     }
+
     public static final class SeriesSerializer implements TypeSerializer<Series> {
         public static final SeriesSerializer INSTANCE = new SeriesSerializer();
         public static final Class<Series> TYPE = Series.class;
 
         private static final String DISPLAY_NAME = "display-name";
         private static final String MODE = "mode";
+        private static final String SCHEDULE = "schedule";
+
+        private static final String SCHEDULE_TYPE = "type";
 
         private SeriesSerializer() {
 
@@ -85,7 +104,19 @@ public class SeriesConfig extends SimpleConfigurate {
 
         @Override
         public Series deserialize(final Type type, final ConfigurationNode node) throws SerializationException {
-            return null;
+            final String displayName = node.node(DISPLAY_NAME).getString();
+            final String modeString = node.node(MODE).getString();
+
+            final Mode mode = Mode.getMode(modeString);
+
+            final ScheduleType scheduleType = ScheduleType.valueOf(node.node(SCHEDULE).node(SCHEDULE_TYPE).getString());
+            Schedule schedule = null;
+
+            if(scheduleType == ScheduleType.DATE) {
+                schedule = node.node(SCHEDULE).get(Schedule.class);
+            }
+
+            return new Series(node.key().toString(),mode,displayName,schedule);
         }
 
         @Override

@@ -10,15 +10,14 @@ public class Series {
     private String name;
     private Mode mode;
     private String displayName;
-    private String displayColor;
 
     private Schedule schedule;
 
-    public Series(final String name, final Mode mode, final String displayName, final String displayColor, final LocalDate activeFrom, final LocalDate activeUntil) {
+    public Series(final String name, final Mode mode, final String displayName, final Schedule schedule) {
         this.name = name;
         this.mode = mode;
         this.displayName = displayName;
-        this.displayColor = displayColor;
+        this.schedule = schedule;
     }
 
     public boolean isActive() {
@@ -38,11 +37,7 @@ public class Series {
     public String getDisplayName() {
         return displayName;
     }
-
-    public String getDisplayColor() {
-        return displayColor;
-    }
-
+    
     public Schedule getSchedule() {
         return schedule;
     }
