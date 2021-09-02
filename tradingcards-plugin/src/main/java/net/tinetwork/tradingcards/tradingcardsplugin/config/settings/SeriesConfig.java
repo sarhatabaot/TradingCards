@@ -1,6 +1,5 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
 
-import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.api.model.schedule.DateSchedule;
 import net.tinetwork.tradingcards.api.model.schedule.Mode;
@@ -17,7 +16,6 @@ import org.spongepowered.configurate.serialize.TypeSerializer;
 import java.io.File;
 import java.lang.reflect.Type;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -84,7 +82,7 @@ public class SeriesConfig extends SimpleConfigurate {
 
         @Override
         public void serialize(final Type type, @Nullable final DateSchedule obj, final ConfigurationNode node) throws SerializationException {
-
+            //
         }
     }
 
@@ -121,7 +119,7 @@ public class SeriesConfig extends SimpleConfigurate {
 
         @Override
         public void serialize(final Type type, @Nullable final Series obj, final ConfigurationNode node) throws SerializationException {
-
+            //
         }
     }
 }

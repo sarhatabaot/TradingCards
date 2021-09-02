@@ -128,7 +128,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
     @Override
     public TradingCard getRandomActiveCard(final String rarity, final boolean forcedShiny) {
         if (activeCards.keySet().isEmpty()) {
-            plugin.getLogger().warning("There are no cards in the active series. Not dropping anything.");
+            plugin.debug("There are no cards in the active series. Not dropping anything.");
             return new NullCard();
         }
         List<String> cardNames = getActiveRarityCardList(rarity);
