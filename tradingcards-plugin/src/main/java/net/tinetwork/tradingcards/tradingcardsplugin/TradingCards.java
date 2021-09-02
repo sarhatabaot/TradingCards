@@ -294,22 +294,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         return this.bossMobs.contains(e);
     }
 
-
-    @Deprecated
-    public boolean hasCard(Player player, String card, String rarity) {
-        return getDeckConfig().containsCard(player.getUniqueId(), card, rarity);
-    }
-
-    @Deprecated
-    public boolean hasShiny(Player p, String card, String rarity) {
-        return getDeckConfig().containsShinyCard(p.getUniqueId(), card, rarity);
-    }
-
-    @Deprecated
-    public String isRarityAndFormat(String input) {
-        return isRarity(input);
-    }
-
     public String isRarity(String input) {
         try {
             Rarity rarity = getRaritiesConfig().getRarity(input);
