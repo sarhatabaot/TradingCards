@@ -43,6 +43,9 @@ public class CardUtil {
 	private static final String PLACEHOLDER_SELL_PRICE = "%SELL_PRICE%";
 	private static final  String PLACEHOLDER_SHINY_PREFIX = "%SHINY_PREFIX";
 
+	private CardUtil() {
+		throw new UnsupportedOperationException();
+	}
 	public static void init(final TradingCards plugin) {
 		CardUtil.plugin = plugin;
 		CardUtil.cardManager = plugin.getCardManager();
