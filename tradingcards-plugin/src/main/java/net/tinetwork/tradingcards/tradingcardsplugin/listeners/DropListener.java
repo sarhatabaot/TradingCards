@@ -70,8 +70,8 @@ public class DropListener extends SimpleListener {
         if (!this.worldBlacklist.isAllowed(world)) return;
         if (isSpawnerMob(killedEntity)) return;
         //Get card rarity
-        debug("EntityType="+killedEntity.getType());
-        debug("MobType="+CardUtil.getMobType(killedEntity.getType()));
+        debug("EntityType=" + killedEntity.getType());
+        debug("MobType=" + CardUtil.getMobType(killedEntity.getType()));
 
         String rarityName = cardManager.getRandomRarity(CardUtil.getMobType(killedEntity.getType()));
         if (rarityName.equals("None"))
@@ -95,7 +95,7 @@ public class DropListener extends SimpleListener {
 
 
         for (final Rarity rarity : rarities) {
-            if(!cardManager.getCard(player.getName(),rarity.getName(),false).getCardName().equals("nullCard")) {
+            if (!cardManager.getCard(player.getName(), rarity.getName(), false).getCardName().equals("nullCard")) {
                 debug(rarity.getName());
                 return rarity.getName();
             }

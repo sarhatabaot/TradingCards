@@ -13,7 +13,9 @@ import java.util.List;
 
 public class ChatUtil {
 	private static TradingCards plugin;
-
+	private ChatUtil() {
+		throw new UnsupportedOperationException();
+	}
 	public static void init(final TradingCards plugin){
 		ChatUtil.plugin = plugin;
 	}

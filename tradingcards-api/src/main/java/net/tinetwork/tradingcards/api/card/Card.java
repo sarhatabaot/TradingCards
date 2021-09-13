@@ -1,15 +1,17 @@
 package net.tinetwork.tradingcards.api.card;
 
 import de.tr7zw.nbtapi.NBTItem;
+import net.tinetwork.tradingcards.api.model.Rarity;
+import net.tinetwork.tradingcards.api.model.Series;
 import org.bukkit.inventory.ItemStack;
 
 public abstract class Card<T> {
     private final String cardName;
     private String displayName;
-    private String rarity;
+    private Rarity rarity;
     private boolean isShiny = false;
     private boolean isPlayerCard = false;
-    private String series;
+    private Series series;
     private String about;
     private String type;
     private String info;
@@ -40,7 +42,7 @@ public abstract class Card<T> {
 
     public String getDisplayName() {
         if(displayName == null || displayName.isEmpty())
-            return cardName;
+            return cardName.replace("_"," ");
         return displayName;
     }
 
@@ -55,7 +57,7 @@ public abstract class Card<T> {
     }
 
 
-    public Card<T> series(String name) {
+    public Card<T> series(Series name) {
         this.series = name;
         return this;
     }
@@ -86,7 +88,7 @@ public abstract class Card<T> {
         return this;
     }
 
-    public Card<T>  rarity(String rarity) {
+    public Card<T>  rarity(Rarity rarity) {
         this.rarity = rarity;
         return this;
     }
@@ -100,7 +102,7 @@ public abstract class Card<T> {
         return cardName;
     }
 
-    public String getRarity() {
+    public Rarity getRarity() {
         return rarity;
     }
 
@@ -112,7 +114,7 @@ public abstract class Card<T> {
         return isPlayerCard;
     }
 
-    public String getSeries() {
+    public Series getSeries() {
         return series;
     }
 
@@ -141,10 +143,10 @@ public abstract class Card<T> {
     public NBTItem buildNBTItem() {
         NBTItem nbtItem = new NBTItem(buildItem());
         nbtItem.setString("name",cardName);
-        nbtItem.setString("rarity",rarity);
+        nbtItem.setString("rarity",rarity.getName());
         nbtItem.setBoolean("isCard", true);
         nbtItem.setBoolean("isShiny",isShiny);
-        nbtItem.setString("series",series);
+        nbtItem.setString("series",series.getName());
         nbtItem.setInteger("CustomModelData", customModelNbt);
         this.nbtItem = nbtItem;
         return nbtItem;
@@ -168,10 +170,10 @@ public abstract class Card<T> {
         return "Card{" +
                 "cardName='" + cardName + '\'' +
                 ", displayName='" + displayName + '\'' +
-                ", rarity='" + rarity + '\'' +
+                ", rarity='" + rarity.toString() + '\'' +
                 ", isShiny=" + isShiny +
                 ", isPlayerCard=" + isPlayerCard +
-                ", series='" + series + '\'' +
+                ", series='" + series.toString() + '\'' +
                 ", about='" + about + '\'' +
                 ", type='" + type + '\'' +
                 ", info='" + info + '\'' +

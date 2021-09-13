@@ -43,6 +43,9 @@ public class CardUtil {
 	private static final String PLACEHOLDER_SELL_PRICE = "%SELL_PRICE%";
 	private static final  String PLACEHOLDER_SHINY_PREFIX = "%SHINY_PREFIX";
 
+	private CardUtil() {
+		throw new UnsupportedOperationException();
+	}
 	public static void init(final TradingCards plugin) {
 		CardUtil.plugin = plugin;
 		CardUtil.cardManager = plugin.getCardManager();
@@ -182,13 +185,7 @@ public class CardUtil {
 		final String[] cardFormat = new String[]{PLACEHOLDER_PREFIX, PLACEHOLDER_COLOR, PLACEHOLDER_NAME, PLACEHOLDER_BUY_PRICE, PLACEHOLDER_SELL_PRICE,"_"};
 		final String[] playerCardFormat = new String[]{PLACEHOLDER_PREFIX, PLACEHOLDER_COLOR, PLACEHOLDER_NAME, PLACEHOLDER_BUY_PRICE, PLACEHOLDER_SELL_PRICE};
 
-		Rarity rarity;
-		try {
-			rarity = plugin.getRaritiesConfig().getRarity(card.getRarity());
-		} catch (SerializationException e){
-			plugin.getLogger().severe(e.getMessage());
-			return null;
-		}
+		Rarity rarity = card.getRarity();
 		final String shinyTitle = plugin.getGeneralConfig().displayShinyTitle();
 		final String title = plugin.getGeneralConfig().displayTitle();
 		final String shinyPrefix = plugin.getGeneralConfig().shinyName();
@@ -230,7 +227,7 @@ public class CardUtil {
 			lore.add(aboutFormat + about);
 		}
 
-		final String rarityName = rarity.replace('_', ' ');
+		final String rarityName = ChatUtil.color(rarity.replace('_', ' '));
 		if (isShiny) {
 			lore.add(rarityFormat + plugin.getGeneralConfig().shinyName() + " " + rarityName);
 		} else {

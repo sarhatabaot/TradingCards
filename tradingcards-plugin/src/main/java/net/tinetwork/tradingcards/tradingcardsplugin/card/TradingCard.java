@@ -1,6 +1,8 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.card;
 
 import net.tinetwork.tradingcards.api.card.Card;
+import net.tinetwork.tradingcards.api.model.Rarity;
+import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -23,7 +25,7 @@ public class TradingCard extends Card<TradingCard> {
         ItemStack card = CardUtil.BLANK_CARD;
         ItemMeta cardMeta = card.getItemMeta();
         cardMeta.setDisplayName(CardUtil.formatDisplayName(this));
-        cardMeta.setLore(CardUtil.formatLore(getInfo(),getAbout(),getRarity(),isShiny(),getType(),getSeries()));
+        cardMeta.setLore(CardUtil.formatLore(getInfo(),getAbout(),getRarity().getDisplayName(),isShiny(),getType(),getSeries().getDisplayName()));
         if (isShiny()) {
             cardMeta.addEnchant(Enchantment.ARROW_INFINITE, 1, false);
         }

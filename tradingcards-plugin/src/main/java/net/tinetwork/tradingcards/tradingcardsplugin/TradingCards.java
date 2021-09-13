@@ -1,6 +1,6 @@
 package net.tinetwork.tradingcards.tradingcardsplugin;
 
-import co.aikar.commands.BukkitCommandManager;
+import co.aikar.commands.PaperCommandManager;
 import com.google.common.collect.ImmutableList;
 import net.milkbowl.vault.economy.Economy;
 import net.tinetwork.tradingcards.api.TradingCardsPlugin;
@@ -11,11 +11,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.commands.CardsCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.DeckCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.CardsConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.DeckConfig;
-import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.ChancesConfig;
-import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.GeneralConfig;
-import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.MessagesConfig;
-import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.PacksConfig;
-import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.RaritiesConfig;
+import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.*;
 import net.tinetwork.tradingcards.tradingcardsplugin.listeners.DeckListener;
 import net.tinetwork.tradingcards.tradingcardsplugin.listeners.DropListener;
 import net.tinetwork.tradingcards.tradingcardsplugin.listeners.MobSpawnListener;
@@ -29,9 +25,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.whitelist.PlayerBlacklist;
 import net.tinetwork.tradingcards.tradingcardsplugin.whitelist.WorldBlacklist;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
-import org.bukkit.scheduler.BukkitScheduler;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.serialize.SerializationException;
 
@@ -40,7 +34,6 @@ import java.util.Random;
 
 public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private final Random random = new Random();
-    private int taskId;
 
     /* Mobs */
     private ImmutableList<EntityType> hostileMobs;
@@ -57,6 +50,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private ChancesConfig chancesConfig;
     private PacksConfig packsConfig;
     private MessagesConfig messagesConfig;
+    private SeriesConfig seriesConfig;
 
     /* Managers */
     private TradingCardManager cardManager;
@@ -94,10 +88,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         initCommands();
 
         hookVault();
-
-        if (this.getGeneralConfig().scheduleCards()) {
-            this.startTimer();
-        }
     }
 
     public GeneralConfig getGeneralConfig() {
@@ -118,6 +108,10 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
     public PacksConfig getPacksConfig() {
         return packsConfig;
+    }
+
+    public SeriesConfig getSeriesConfig() {
+        return seriesConfig;
     }
 
     private void initUtils() {
@@ -142,6 +136,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
             this.messagesConfig = new MessagesConfig(this);
             this.packsConfig = new PacksConfig(this);
             this.deckConfig = new DeckConfig(this);
+            this.seriesConfig = new SeriesConfig(this);
         } catch (ConfigurateException e) {
             getLogger().severe(e.getMessage());
         }
@@ -156,7 +151,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     }
 
     private void initCommands() {
-        var commandManager = new BukkitCommandManager(this);
+        var commandManager = new PaperCommandManager(this);
         commandManager.registerCommand(new CardsCommand(this, playerBlacklist));
         commandManager.registerCommand(new DeckCommand(this));
         commandManager.getCommandCompletions().registerCompletion("rarities", c -> cardManager.getRarityNames());
@@ -293,22 +288,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         return this.bossMobs.contains(e);
     }
 
-
-    @Deprecated
-    public boolean hasCard(Player player, String card, String rarity) {
-        return getDeckConfig().containsCard(player.getUniqueId(), card, rarity);
-    }
-
-    @Deprecated
-    public boolean hasShiny(Player p, String card, String rarity) {
-        return getDeckConfig().containsShinyCard(p.getUniqueId(), card, rarity);
-    }
-
-    @Deprecated
-    public String isRarityAndFormat(String input) {
-        return isRarity(input);
-    }
-
     public String isRarity(String input) {
         try {
             Rarity rarity = getRaritiesConfig().getRarity(input);
@@ -346,7 +325,11 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     }
 
     public String getPrefixedMessage(final String message) {
-        return ChatUtil.color(messagesConfig.prefix() + "&r " + message);
+        return ChatUtil.color(prefixed(message));
+    }
+
+    public String prefixed(final String message) {
+        return messagesConfig.prefix() + message;
     }
 
     public void reloadAllConfig() {
@@ -358,22 +341,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         this.chancesConfig.reloadConfig();
     }
 
-    public void startTimer() {
-        BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
-        if (scheduler.isQueued(this.taskId) || scheduler.isCurrentlyRunning(this.taskId)) {
-            scheduler.cancelTask(this.taskId);
-            debug("Successfully cancelled task " + this.taskId);
-        }
-
-        int hours = Math.max(getGeneralConfig().scheduleCardTimeInHours(), 1);
-
-        Bukkit.broadcastMessage(getPrefixedTimerMessage(hours));
-        this.taskId = new CardSchedulerRunnable(this).runTaskTimer(this, ((long) hours * 20 * 60 * 60), ((long) hours * 20 * 60 * 60)).getTaskId();
-    }
-
-    private String getPrefixedTimerMessage(int hours) {
-        return getPrefixedMessage(messagesConfig.timerMessage().replace("%hour%", String.valueOf(hours)));
-    }
 
     public Random getRandom() {
         return random;

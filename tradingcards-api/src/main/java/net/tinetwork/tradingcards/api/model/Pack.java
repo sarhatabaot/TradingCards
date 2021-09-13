@@ -3,8 +3,11 @@ package net.tinetwork.tradingcards.api.model;
 import java.util.List;
 
 public record Pack(List<PackEntry> packEntryList,
-                   String series, double price, String permissions) {
+                   String displayName, String series, double price, String permissions) {
 
+    public String getDisplayName() {
+        return displayName;
+    }
 
     public String getSeries() {
         return series;

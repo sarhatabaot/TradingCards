@@ -8,6 +8,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
@@ -42,6 +43,8 @@ public class PackListener extends SimpleListener {
 
         Player player = event.getPlayer();
         final ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
+        if(itemInMainHand.getType() == Material.AIR)
+            return;
         if (!plugin.getPackManager().isPack(itemInMainHand)) {
             return;
         }
@@ -52,7 +55,7 @@ public class PackListener extends SimpleListener {
             return;
         }
         if (player.getGameMode() == GameMode.CREATIVE) {
-            player.sendMessage(ChatUtil.color(plugin.getMessagesConfig().prefix() + " " + plugin.getMessagesConfig().noCreative()));
+            ChatUtil.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().noCreative()));
             return;
         }
         NBTItem nbtPackItem = new NBTItem(itemInMainHand);
@@ -76,9 +79,9 @@ public class PackListener extends SimpleListener {
             return;
         for (var i = 0; i < amount; i++) {
             if (series.equalsIgnoreCase("active"))
-                CardUtil.dropItem(player, plugin.getCardManager().getRandomCard(WordUtils.capitalizeFully(rarity), false).build());
-            else
                 CardUtil.dropItem(player, plugin.getCardManager().getRandomActiveCard(WordUtils.capitalizeFully(rarity), false).build());
+            else //todo, get a card from a specific series or all cards
+                CardUtil.dropItem(player, plugin.getCardManager().getRandomCard(WordUtils.capitalizeFully(rarity), false).build());
         }
     }
 
