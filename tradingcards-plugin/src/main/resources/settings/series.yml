@@ -2,11 +2,18 @@
 # You can add a default-color line to change the style.
 default:
   display-name: "Default"
-  # Mode: active, disabled, scheduled
+  # Mode: ACTIVE, DISABLED, SCHEDULED
   # Active drops from killing mobs
   # Disabled does not drop from killing mobs, can still get it from /cards give
-  # Schedules Active between set dates
+  # Scheduled Active between set dates
   mode: ACTIVE
+scheduled:
+  display-name: "Scheduled"
+  # Mode: ACTIVE, DISABLED, SCHEDULED
+  # Active drops from killing mobs
+  # Disabled does not drop from killing mobs, can still get it from /cards give
+  # Scheduled Active between set dates
+  mode: SCHEDULED
   # Not relevant unless mode is set to scheduled
   schedule:
     # Yearly, monthly, weekly, daily
@@ -18,8 +25,8 @@ default:
     # daily: repeats every day on specific times
     type: DATE
     # only relevant for date/yearly
-    active-from:
-    active-until:
+    active-from: 2021-10-1
+    active-until: 2021-11-1
     # Yearly
     # date-date every year.
     # Monthly

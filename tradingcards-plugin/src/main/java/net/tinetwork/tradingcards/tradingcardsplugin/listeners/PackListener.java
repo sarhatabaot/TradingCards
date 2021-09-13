@@ -8,6 +8,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
@@ -42,6 +43,8 @@ public class PackListener extends SimpleListener {
 
         Player player = event.getPlayer();
         final ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
+        if(itemInMainHand.getType() == Material.AIR)
+            return;
         if (!plugin.getPackManager().isPack(itemInMainHand)) {
             return;
         }

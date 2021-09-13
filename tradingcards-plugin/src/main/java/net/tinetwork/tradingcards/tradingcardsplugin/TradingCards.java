@@ -12,11 +12,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.commands.CardsCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.DeckCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.CardsConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.DeckConfig;
-import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.ChancesConfig;
-import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.GeneralConfig;
-import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.MessagesConfig;
-import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.PacksConfig;
-import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.RaritiesConfig;
+import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.*;
 import net.tinetwork.tradingcards.tradingcardsplugin.listeners.DeckListener;
 import net.tinetwork.tradingcards.tradingcardsplugin.listeners.DropListener;
 import net.tinetwork.tradingcards.tradingcardsplugin.listeners.MobSpawnListener;
@@ -58,6 +54,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private ChancesConfig chancesConfig;
     private PacksConfig packsConfig;
     private MessagesConfig messagesConfig;
+    private SeriesConfig seriesConfig;
 
     /* Managers */
     private TradingCardManager cardManager;
@@ -121,6 +118,10 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         return packsConfig;
     }
 
+    public SeriesConfig getSeriesConfig() {
+        return seriesConfig;
+    }
+
     private void initUtils() {
         ChatUtil.init(this);
         CardUtil.init(this);
@@ -143,6 +144,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
             this.messagesConfig = new MessagesConfig(this);
             this.packsConfig = new PacksConfig(this);
             this.deckConfig = new DeckConfig(this);
+            this.seriesConfig = new SeriesConfig(this);
         } catch (ConfigurateException e) {
             getLogger().severe(e.getMessage());
         }

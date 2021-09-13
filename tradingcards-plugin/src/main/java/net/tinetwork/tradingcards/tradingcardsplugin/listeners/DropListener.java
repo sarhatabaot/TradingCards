@@ -1,6 +1,5 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.listeners;
 
-import net.tinetwork.tradingcards.api.card.Card;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.NullCard;

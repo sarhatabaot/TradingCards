@@ -17,6 +17,7 @@ import java.io.File;
 import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,7 +25,7 @@ import java.util.Map;
  * @author sarhatabaot
  */
 public class SeriesConfig extends SimpleConfigurate {
-    private List<Series> series;
+    private Map<String,Series> series;
 
     public SeriesConfig(final TradingCards plugin) throws ConfigurateException {
         super(plugin, "settings"+ File.separator, "series.yml", "settings");
@@ -32,11 +33,11 @@ public class SeriesConfig extends SimpleConfigurate {
 
     @Override
     protected void initValues() throws ConfigurateException {
-        this.series = new ArrayList<>();
+        this.series = new HashMap<>();
         for(Map.Entry<Object, ? extends ConfigurationNode> nodeEntry: rootNode.childrenMap().entrySet()) {
             final String seriesKey = nodeEntry.getValue().key().toString();
             try {
-                series.add(getSeries(seriesKey));
+                series.put(seriesKey,getSeries(seriesKey));
             } catch (SerializationException e){
                 plugin.getLogger().severe(e.getMessage());
                 plugin.debug("Couldn't add="+seriesKey);
@@ -49,7 +50,7 @@ public class SeriesConfig extends SimpleConfigurate {
         return rootNode.node(key).get(Series.class);
     }
 
-    public List<Series> series() {
+    public Map<String,Series> series() {
         return this.series;
     }
 
