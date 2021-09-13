@@ -333,7 +333,11 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     }
 
     public String getPrefixedMessage(final String message) {
-        return ChatUtil.color(messagesConfig.prefix() + "&r " + message);
+        return ChatUtil.color(prefixed(message));
+    }
+
+    public String prefixed(final String message) {
+        return messagesConfig.prefix() + message;
     }
 
     public void reloadAllConfig() {
