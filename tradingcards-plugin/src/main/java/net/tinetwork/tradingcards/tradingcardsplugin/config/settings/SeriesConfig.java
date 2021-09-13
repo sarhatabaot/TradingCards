@@ -8,6 +8,7 @@ import net.tinetwork.tradingcards.api.model.schedule.ScheduleType;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigurate;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.slf4j.LoggerFactory;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
@@ -107,13 +108,18 @@ public class SeriesConfig extends SimpleConfigurate {
             final String modeString = node.node(MODE).getString();
 
             final Mode mode = Mode.getMode(modeString);
-
-            final ScheduleType scheduleType = ScheduleType.valueOf(node.node(SCHEDULE).node(SCHEDULE_TYPE).getString());
             Schedule schedule = null;
+            ScheduleType scheduleType = null;
+
+            if(mode == Mode.SCHEDULED) {
+                scheduleType = ScheduleType.valueOf(node.node(SCHEDULE).node(SCHEDULE_TYPE).getString());
+            }
+
 
             if(scheduleType == ScheduleType.DATE) {
                 schedule = node.node(SCHEDULE).get(Schedule.class);
             }
+
 
             return new Series(node.key().toString(),mode,displayName,schedule);
         }

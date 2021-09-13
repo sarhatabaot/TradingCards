@@ -67,9 +67,6 @@ public class CardsCommand extends BaseCommand {
         ChatUtil.sendMessage(sender, String.format(format, plugin.getMessagesConfig().prefix(), plugin.getMessagesConfig().reload()));
         plugin.reloadAllConfig();
         plugin.reloadManagers();
-        if (plugin.getGeneralConfig().scheduleCards()) {
-            plugin.startTimer();
-        }
     }
 
 

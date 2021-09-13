@@ -15,6 +15,7 @@ import org.apache.commons.lang.StringUtils;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.LoggerFactory;
 import org.spongepowered.configurate.ConfigurationNode;
 
 import java.util.ArrayList;
@@ -78,11 +79,12 @@ public class TradingCardManager implements CardManager<TradingCard> {
                     final String cardName = nodeEntry.getValue().key().toString();
                     Card<TradingCard> card = cards.get(rarity.getName() + "." + cardName);
                     //A card should only be created if the series exists, checking here for now TODO
+                    plugin.debug(card.toString());
                     if (!plugin.getSeriesConfig().series().containsKey(card.getSeries().toLowerCase())) {
                         plugin.debug("This series does not exist, make sure it is in series.yml" + card.getSeries());
                         continue;
                     }
-                    //This only loads on statup, that means that it doesn't update. But only on restarts TODO
+                    //This only loads on startup, that means that it doesn't update. But only on restarts TODO
                     if(plugin.getSeriesConfig().series().get(card.getSeries()).isActive()) {
                         activeRarityCardList.get(rarity.getName()).add(cardName);
                         activeCards.put(rarity + "." + cardName, cards.get(rarity.getName() + "." + cardName));

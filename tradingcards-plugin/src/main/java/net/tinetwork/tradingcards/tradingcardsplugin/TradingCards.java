@@ -342,10 +342,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     }
 
 
-    private String getPrefixedTimerMessage(int hours) {
-        return getPrefixedMessage(messagesConfig.timerMessage().replace("%hour%", String.valueOf(hours)));
-    }
-
     public Random getRandom() {
         return random;
     }

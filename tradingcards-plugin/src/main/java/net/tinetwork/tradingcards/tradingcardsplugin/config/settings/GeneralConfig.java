@@ -30,12 +30,6 @@ public class GeneralConfig extends SimpleConfigurate {
     private Material packMaterial;
     private String packPrefix;
 
-    //Schedule
-    private boolean scheduleCards;
-    private boolean scheduleCardsNatural;
-    private String scheduleCardMob;
-    private String scheduleCardRarity;
-    private int scheduleCardTimeInHours;
 
     //Player
     private String playerOpRarity;
@@ -111,13 +105,6 @@ public class GeneralConfig extends SimpleConfigurate {
         //Packs
         this.packMaterial = rootNode.node("booster-pack-material").get(Material.class, Material.BOOK);
         this.packPrefix = rootNode.node("booster-pack-prefix").getString("&7[&fPack&7]&f ");
-
-        //Schedule
-        this.scheduleCards = rootNode.node("schedule-cards").getBoolean(false);
-        this.scheduleCardsNatural = rootNode.node("schedule-cards-natural").getBoolean(false);
-        this.scheduleCardMob = rootNode.node("schedule-card-mob").getString("ZOMBIE");
-        this.scheduleCardRarity = rootNode.node("schedule-card-rarity").getString("Common");
-        this.scheduleCardTimeInHours = rootNode.node("schedule-card-time-in-hours").getInt(1);
 
         //Player Drops
         this.playerOpRarity = rootNode.node("player-op-rarity").getString("Legendary");
@@ -204,26 +191,6 @@ public class GeneralConfig extends SimpleConfigurate {
 
     public boolean dropDeckItems() {
         return dropDeckItems;
-    }
-
-    public boolean scheduleCards() {
-        return scheduleCards;
-    }
-
-    public boolean scheduleCardsNatural() {
-        return scheduleCardsNatural;
-    }
-
-    public String scheduleCardMob() {
-        return scheduleCardMob;
-    }
-
-    public String scheduleCardRarity() {
-        return scheduleCardRarity;
-    }
-
-    public int scheduleCardTimeInHours() {
-        return scheduleCardTimeInHours;
     }
 
     public String playerOpRarity() {
