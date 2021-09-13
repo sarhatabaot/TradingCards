@@ -78,10 +78,10 @@ public class PackListener extends SimpleListener {
         if (amount <= 0)
             return;
         for (var i = 0; i < amount; i++) {
-            if (series.equalsIgnoreCase("active")) //todo
-                CardUtil.dropItem(player, plugin.getCardManager().getRandomCard(WordUtils.capitalizeFully(rarity), false).build());
-            else
+            if (series.equalsIgnoreCase("active"))
                 CardUtil.dropItem(player, plugin.getCardManager().getRandomActiveCard(WordUtils.capitalizeFully(rarity), false).build());
+            else //todo, get a card from a specific series or all cards
+                CardUtil.dropItem(player, plugin.getCardManager().getRandomCard(WordUtils.capitalizeFully(rarity), false).build());
         }
     }
 

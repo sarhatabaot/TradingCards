@@ -4,6 +4,7 @@ import de.tr7zw.nbtapi.NBTItem;
 import net.kyori.adventure.text.Component;
 import net.tinetwork.tradingcards.api.manager.PackManager;
 import net.tinetwork.tradingcards.api.model.Pack;
+import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.PacksConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
@@ -60,27 +61,25 @@ public class BoosterPackManager implements PackManager {
 
         ItemStack itemPack = blankPack.clone();
         ItemMeta itemPackMeta = itemPack.getItemMeta();
-
-        itemPackMeta.setDisplayName(ChatUtil.color(Component.text(plugin.getGeneralConfig().packPrefix())
-                .append(Component.text(plugin.getGeneralConfig().colorPackName()))
-                .append(Component.text(name.replace("_", " ")))));
+        itemPackMeta.setDisplayName(ChatUtil.color(plugin.getGeneralConfig().packPrefix()
+                        + plugin.getGeneralConfig().colorPackName())
+                        + pack.getDisplayName().replace("_", " "));
         List<String> lore = new ArrayList<>();
 
         for(Pack.PackEntry entry: pack.getPackEntryList()) {
-            lore.add(ChatUtil.color(Component.text(plugin.getGeneralConfig().colorPackNormal())
-                    .append(Component.text(entry.getAmount()))
-                    .append(Component.text(" "))
-                    .append(Component.text(plugin.getGeneralConfig().colorPackLore()))
-                    .append(Component.text(entry.getRarityId()))
-                    )
-            );
+            final Rarity rarity = plugin.getRaritiesConfig().getRarity(entry.getRarityId());
+            lore.add(ChatUtil.color(plugin.getGeneralConfig().colorPackNormal()
+                    +entry.getAmount()
+                    +" "
+                    +plugin.getGeneralConfig().colorPackLore()
+                    +rarity.getDisplayName()));
         }
         itemPackMeta.setLore(lore);
 
-        itemPack.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+
         itemPack.setItemMeta(itemPackMeta);
         itemPack.addUnsafeEnchantment(Enchantment.ARROW_INFINITE, 10);
-
+        itemPack.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         NBTItem nbtItem = new NBTItem(itemPack);
         nbtItem.setString("packId", name);
         nbtItem.setBoolean("pack", true);

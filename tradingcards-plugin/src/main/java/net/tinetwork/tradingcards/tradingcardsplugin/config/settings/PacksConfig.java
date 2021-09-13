@@ -1,6 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
 
 import net.tinetwork.tradingcards.api.model.Pack;
+import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigurate;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -32,6 +33,7 @@ public class PacksConfig extends SimpleConfigurate {
 
     @Override
     protected void preLoaderBuild() {
+        PackSerializer.init(plugin);
         loaderBuilder.defaultOptions(opts -> opts.serializers(builder ->
                 builder.registerExact(Pack.class, PackSerializer.INSTANCE)));
     }
@@ -46,12 +48,17 @@ public class PacksConfig extends SimpleConfigurate {
     }
 
     public static class PackSerializer implements TypeSerializer<Pack> {
+        private static TradingCards plugin;
         public static final PackSerializer INSTANCE = new PackSerializer();
         private static final String CONTENT = "content";
         private static final String SERIES = "series";
         private static final String PRICE = "prices";
         private static final String PERMISSION = "permission";
+        private static final String DISPLAY_NAME = "display-name";
 
+        public static void init(TradingCards plugin) {
+            PackSerializer.plugin =plugin;
+        }
         private PackSerializer() {
         }
 
@@ -61,6 +68,7 @@ public class PacksConfig extends SimpleConfigurate {
             final ConfigurationNode seriesNode = node.node(SERIES);
             final ConfigurationNode priceNode = node.node(PRICE);
             final ConfigurationNode permissionsNode = node.node(PERMISSION);
+            final ConfigurationNode displayNameNode = node.node(DISPLAY_NAME);
 
             final List<String> contentStringList = contentNode.getList(String.class);
             final List<Pack.PackEntry> packEntryList = new ArrayList<>();
@@ -70,8 +78,9 @@ public class PacksConfig extends SimpleConfigurate {
             final String series = seriesNode.getString();
             final double price = priceNode.getDouble(0.0D);
             final String permissions = permissionsNode.getString();
+            final String displayName = displayNameNode.getString();
 
-            return new Pack(packEntryList,series,price,permissions);
+            return new Pack(packEntryList,displayName, series,price,permissions);
         }
 
         //Only implemented this since it's required. We don't actually use this feature yet.

@@ -1,4 +1,6 @@
+# series: ACTIVE or name of series
 starter-pack:
+  display-name: "Starter Pack"
   content:
     - "common:9"
     - "rare:1"
@@ -6,6 +8,7 @@ starter-pack:
   price: 100.00
   permission: "cards.packs.starter-pack"
 advanced-pack:
+  display-name: "Advanced Pack"
   content:
     - "common:12"
     - "uncommon:6"
@@ -14,6 +17,7 @@ advanced-pack:
   price: 150.00
   permission: "card.packs.advanced-pack"
 expert-pack:
+  display-name: "Expert Pack"
   content:
     - "uncommon:6"
     - "rare:4"
@@ -22,6 +26,7 @@ expert-pack:
   price: 250.00
   permission: "cards.packs.expert-pack"
 ultimate-pack:
+  display-name: "Ultimate Pack"
   content:
     - "rare:5"
     - "legendary:1"

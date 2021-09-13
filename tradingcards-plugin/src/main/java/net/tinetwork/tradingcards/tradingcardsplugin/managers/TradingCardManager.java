@@ -144,6 +144,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
 
     @Override
     public TradingCard getRandomCard(final String rarity, final boolean forcedShiny) {
+        plugin.debug("getRandomCard(),rarity="+rarity);
         var cindex = plugin.getRandom().nextInt(getRarityCardList(rarity).size());
         String randomCardName = getRarityCardList(rarity).get(cindex);
         return getCard(randomCardName, rarity, forcedShiny);
