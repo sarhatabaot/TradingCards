@@ -72,19 +72,6 @@ deck-prefix: "&7[&fDeck&7]&f "
 drop-deck-items: true
 
 # ##############################
-# Default Scheduler Settings
-# ##############################
-# Should a random card be given out every so often to all players online?
-schedule-cards: false
-# Should the cards scheduled be 'natural', as in, the same chance as if a mob dropped the card, or a single rarity?
-schedule-cards-natural: false
-# If schedule-cards-natural is true, what mob should we use for the giveaway? Zombie will drop the hostile mob chances, Wither boss chances etc.
-schedule-card-mob: ZOMBIE
-# If schedule-cards-natural is false, what should the giveaway rarity be?
-schedule-card-rarity: Common
-schedule-card-time-in-hours: 1
-
-# ##############################
 # Default Player Drop Settings
 # ##############################
 player-op-rarity: Legendary

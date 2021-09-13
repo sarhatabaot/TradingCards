@@ -55,7 +55,7 @@ public class PackListener extends SimpleListener {
             return;
         }
         if (player.getGameMode() == GameMode.CREATIVE) {
-            player.sendMessage(ChatUtil.color(plugin.getMessagesConfig().prefix() + " " + plugin.getMessagesConfig().noCreative()));
+            ChatUtil.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().noCreative()));
             return;
         }
         NBTItem nbtPackItem = new NBTItem(itemInMainHand);
@@ -78,7 +78,7 @@ public class PackListener extends SimpleListener {
         if (amount <= 0)
             return;
         for (var i = 0; i < amount; i++) {
-            if (series.equalsIgnoreCase("active"))
+            if (series.equalsIgnoreCase("active")) //todo
                 CardUtil.dropItem(player, plugin.getCardManager().getRandomCard(WordUtils.capitalizeFully(rarity), false).build());
             else
                 CardUtil.dropItem(player, plugin.getCardManager().getRandomActiveCard(WordUtils.capitalizeFully(rarity), false).build());

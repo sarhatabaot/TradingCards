@@ -144,7 +144,6 @@ public class MessagesConfig extends SimpleConfigurate {
     protected void preLoaderBuild() {
         //No custom type serializer to register
     }
-
     public String packSection() {
         return packSection;
     }
