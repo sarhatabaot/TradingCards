@@ -1,6 +1,6 @@
 prefix: '&7[&fCards&7]&7'
-reload: 'successfully reloaded config!'
-no-card: 'no such card exists! make sure to use the exact card name!'
+reload: 'Successfully reloaded config!'
+no-card: 'No such card exists! make sure to use the exact card name!'
 no-player: 'that player does not exist!'
 no-cmd: 'invalid command!'
 no-entity: 'that entity/mob does not exist!'

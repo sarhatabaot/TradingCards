@@ -80,12 +80,12 @@ public class TradingCardManager implements CardManager<TradingCard> {
                     Card<TradingCard> card = cards.get(rarity.getName() + "." + cardName);
                     //A card should only be created if the series exists, checking here for now TODO
                     plugin.debug(card.toString());
-                    if (!plugin.getSeriesConfig().series().containsKey(card.getSeries().toLowerCase())) {
+                    if (!plugin.getSeriesConfig().series().containsKey(card.getSeries().getName().toLowerCase())) {
                         plugin.debug("This series does not exist, make sure it is in series.yml" + card.getSeries());
                         continue;
                     }
                     //This only loads on startup, that means that it doesn't update. But only on restarts TODO
-                    if(plugin.getSeriesConfig().series().get(card.getSeries()).isActive()) {
+                    if(card.getSeries().isActive()) {
                         activeRarityCardList.get(rarity.getName()).add(cardName);
                         activeCards.put(rarity + "." + cardName, cards.get(rarity.getName() + "." + cardName));
                     }

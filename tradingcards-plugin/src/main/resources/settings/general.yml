@@ -30,8 +30,8 @@ display:
   # %colour% (rarity colour)
   # %name% (card name)
   # %cost% (card buy-price)
-  title: "%PREFIX%%COLOUR%%NAME%"
-  shiny-title: "%PREFIX%%COLOUR%%SHINYPREFIX% %NAME%"
+  title: "%PREFIX%%COLOR%%NAME%"
+  shiny-title: "%PREFIX%%COLOR%%SHINYPREFIX% %NAME%"
   series: "Series"
   type: "Type"
   info: "Info"

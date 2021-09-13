@@ -1,5 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config;
 
+import net.tinetwork.tradingcards.api.model.Rarity;
+import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.NullCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
@@ -25,6 +27,7 @@ public class SimpleCardsConfig extends SimpleConfigurate {
 
     @Override
     protected void preLoaderBuild() {
+        CardSerializer.init(plugin);
         loaderBuilder.defaultOptions(opts -> opts.serializers(builder ->
                 builder.registerExact(TradingCard.class, CardSerializer.INSTANCE))).build();
     }
@@ -46,6 +49,7 @@ public class SimpleCardsConfig extends SimpleConfigurate {
     }
 
     public static class CardSerializer implements TypeSerializer<TradingCard> {
+        private static TradingCards plugin;
         public static CardSerializer INSTANCE = new CardSerializer();
         private static final String DISPLAY_NAME = "display-name";
         private static final String SERIES = "series";
@@ -57,17 +61,19 @@ public class SimpleCardsConfig extends SimpleConfigurate {
         private static final String SELL_PRICE = "sell-price";
         private static final String CUSTOM_MODEL_DATA = "custom-model-data";
 
+        public static void init(TradingCards plugin) {
+            CardSerializer.plugin = plugin;
+        }
 
         private CardSerializer() {
-
         }
 
         @Override
         public TradingCard deserialize(Type type, ConfigurationNode node) throws SerializationException {
             final String id = node.key().toString();
-            final String rarity = node.parent().key().toString();
+            final String rarityId = node.parent().key().toString();
             final String displayName = node.node(DISPLAY_NAME).getString();
-            final String series = node.node(SERIES).getString();
+            final String seriesId = node.node(SERIES).getString();
             final String cardType = node.node(TYPE).getString();
             final boolean hasShiny  = node.node(HAS_SHINY).getBoolean();
             final String info = node.node(INFO).getString();
@@ -76,6 +82,8 @@ public class SimpleCardsConfig extends SimpleConfigurate {
             final double sellPrice = node.node(SELL_PRICE).getDouble(0.0D);
             final int customModelData = node.node(CUSTOM_MODEL_DATA).getInt(0);
 
+            final Rarity rarity = plugin.getRaritiesConfig().getRarity(rarityId);
+            final Series series = plugin.getSeriesConfig().series().get(seriesId);
             TradingCard card = new TradingCard(id);
             return card.rarity(rarity)
                     .displayName(displayName)

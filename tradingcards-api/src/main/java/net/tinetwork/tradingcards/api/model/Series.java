@@ -49,4 +49,14 @@ public class Series {
     public Mode getMode() {
         return mode;
     }
+
+    @Override
+    public String toString() {
+        return "Series{" +
+                "name='" + name + '\'' +
+                ", mode=" + mode +
+                ", displayName='" + displayName + '\'' +
+                ", schedule=" + schedule +
+                '}';
+    }
 }
