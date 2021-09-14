@@ -118,13 +118,13 @@ public class CardsCommand extends BaseCommand {
         }
 
 
-        @Subcommand("boosterpack|pack")
+        @Subcommand("pack")
         @Description("Gives a pack to a player.")
         @CommandCompletion("@players @packs")
         @CommandPermission(Permissions.GIVE_PACK)
-        public void onGiveBoosterPack(final CommandSender sender, final Player player, final String boosterpack) {
+        public void onGiveBoosterPack(final CommandSender sender, final Player player, final String pack) {
             ChatUtil.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().boosterPackMsg()));
-            CardUtil.dropItem(player, plugin.getPackManager().getPackItem(boosterpack));
+            CardUtil.dropItem(player, plugin.getPackManager().getPackItem(pack));
         }
 
         @Subcommand("random entity")

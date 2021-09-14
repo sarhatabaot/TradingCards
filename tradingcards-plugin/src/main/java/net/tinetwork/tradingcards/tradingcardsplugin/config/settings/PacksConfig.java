@@ -33,7 +33,6 @@ public class PacksConfig extends SimpleConfigurate {
 
     @Override
     protected void preLoaderBuild() {
-        PackSerializer.init(plugin);
         loaderBuilder.defaultOptions(opts -> opts.serializers(builder ->
                 builder.registerExact(Pack.class, PackSerializer.INSTANCE)));
     }
@@ -48,7 +47,6 @@ public class PacksConfig extends SimpleConfigurate {
     }
 
     public static class PackSerializer implements TypeSerializer<Pack> {
-        private static TradingCards plugin;
         public static final PackSerializer INSTANCE = new PackSerializer();
         private static final String CONTENT = "content";
         private static final String SERIES = "series";
@@ -56,9 +54,6 @@ public class PacksConfig extends SimpleConfigurate {
         private static final String PERMISSION = "permission";
         private static final String DISPLAY_NAME = "display-name";
 
-        public static void init(TradingCards plugin) {
-            PackSerializer.plugin =plugin;
-        }
         private PackSerializer() {
         }
 
