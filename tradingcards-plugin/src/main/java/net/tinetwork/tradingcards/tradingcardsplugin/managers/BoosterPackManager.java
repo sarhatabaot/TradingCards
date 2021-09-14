@@ -14,7 +14,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.spongepowered.configurate.serialize.SerializationException;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -96,7 +95,6 @@ public class BoosterPackManager implements PackManager {
     }
 
     @Override
-    @Nullable
     public Pack getPack(String id) {
         try {
             return plugin.getPacksConfig().getPack(id);
