@@ -172,7 +172,7 @@ public class CardUtil {
         }
 
         for (final Player p : Bukkit.getOnlinePlayers()) {
-            String rare = cardManager.getRandomRarity(mob, true);
+            String rare = cardManager.getRandomRarity(CardUtil.getMobType(mob), true);
             plugin.debug("onCommand.rare: " + rare);
             CardUtil.dropItem(p, cardManager.getRandomCard(rare, false).build());
         }
