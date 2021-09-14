@@ -17,7 +17,8 @@ public class DateSchedule extends Schedule {
 
     @Override
     public boolean isActive() {
-        return false;
+        LocalDate now = LocalDate.now();
+        return !now.isBefore(end) && !now.isAfter(end);
     }
 
 

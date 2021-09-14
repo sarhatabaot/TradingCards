@@ -4,8 +4,6 @@ package net.tinetwork.tradingcards.api.model;
 import net.tinetwork.tradingcards.api.model.schedule.Mode;
 import net.tinetwork.tradingcards.api.model.schedule.Schedule;
 
-import java.time.LocalDate;
-
 public class Series {
     private String name;
     private Mode mode;
