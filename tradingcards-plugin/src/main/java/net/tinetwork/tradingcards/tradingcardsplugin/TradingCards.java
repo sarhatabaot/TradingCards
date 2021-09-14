@@ -171,7 +171,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
     public void reloadManagers() {
         disableManagers();
-        this.cardManager = new TradingCardManager(this);
+        this.cardManager.initValues();
         this.packManager = new BoosterPackManager(this);
         this.deckManager = new TradingDeckManager(this);
     }

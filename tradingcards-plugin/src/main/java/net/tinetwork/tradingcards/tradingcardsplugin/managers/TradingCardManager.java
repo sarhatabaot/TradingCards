@@ -25,16 +25,25 @@ import java.util.TreeSet;
 public class TradingCardManager implements CardManager<TradingCard> {
     private final TradingCards plugin;
     public static final NullCard NULL_CARD = new NullCard();
-    private final Map<String, Card<TradingCard>> cards = new HashMap<>();
-    private final Map<String, Card<TradingCard>> activeCards = new HashMap<>();
+    private Map<String, Card<TradingCard>> cards;
+    private Map<String, Card<TradingCard>> activeCards;
 
     //This stores the cards from a single rarity, over multiple files
-    private static final Map<String, List<String>> rarityCardList = new HashMap<>();
-    private static final Map<String, List<String>> activeRarityCardList = new HashMap<>();
+    private Map<String, List<String>> rarityCardList;
+    private Map<String, List<String>> activeRarityCardList;
 
 
     public TradingCardManager(final TradingCards plugin) {
         this.plugin = plugin;
+        initValues();
+    }
+
+
+    private String cardKey(String rarity, String cardName) {
+        return rarity + "." + cardName;
+    }
+
+    public void initValues() {
         loadAllCards();
         loadActiveCards();
         plugin.getLogger().info(String.format("Loaded %d cards.", cards.size()));
@@ -43,11 +52,12 @@ public class TradingCardManager implements CardManager<TradingCard> {
         plugin.debug(StringUtils.join(cards.keySet(), ","));
     }
 
-
     /**
      * Pre-loads all existing cards.
      */
     private void loadAllCards() {
+        this.cards = new HashMap<>();
+        this.rarityCardList = new HashMap<>();
         var cardConfigs = plugin.getCardsConfig().getCardConfigs();
         for (SimpleCardsConfig simpleCardsConfig : cardConfigs) {
             for (final Rarity rarity : plugin.getRaritiesConfig().rarities()) {
@@ -57,7 +67,9 @@ public class TradingCardManager implements CardManager<TradingCard> {
 
                 for (Map.Entry<Object, ? extends ConfigurationNode> nodeEntry : cardNodes) {
                     final String cardName = nodeEntry.getValue().key().toString();
-                    cards.put(rarity.getName() + "." + cardName, generateCard(simpleCardsConfig, cardName, rarity.getName(), false));
+                    final String cardKey = cardKey(rarity.getName(), cardName);
+                    plugin.debug("CardKey="+cardKey);
+                    cards.put(cardKey, generateCard(simpleCardsConfig, cardName, rarity.getName(), false));
                     rarityCardList.get(rarity.getName()).add(cardName);
                 }
             }
@@ -65,6 +77,8 @@ public class TradingCardManager implements CardManager<TradingCard> {
     }
 
     private void loadActiveCards() {
+        this.activeCards = new HashMap<>();
+        this.activeRarityCardList = new HashMap<>();
         var cardConfigs = plugin.getCardsConfig().getCardConfigs();
         for (SimpleCardsConfig simpleCardsConfig : cardConfigs) {
             for (final Rarity rarity : plugin.getRaritiesConfig().rarities()) {
@@ -74,7 +88,9 @@ public class TradingCardManager implements CardManager<TradingCard> {
 
                 for (Map.Entry<Object, ? extends ConfigurationNode> nodeEntry : cardNodes) {
                     final String cardName = nodeEntry.getValue().key().toString();
-                    Card<TradingCard> card = cards.get(rarity.getName() + "." + cardName);
+                    final String cardKey = cardKey(rarity.getName(), cardName);
+                    plugin.debug("CardKey=" + cardKey);
+                    Card<TradingCard> card = cards.get(cardKey);
                     //A card should only be created if the series exists, checking here for now TODO
                     plugin.debug(card.toString());
                     if (!plugin.getSeriesConfig().series().containsKey(card.getSeries().getName().toLowerCase())) {
@@ -82,9 +98,9 @@ public class TradingCardManager implements CardManager<TradingCard> {
                         continue;
                     }
                     //This only loads on startup, that means that it doesn't update. But only on restarts TODO
-                    if(card.getSeries().isActive()) {
+                    if (card.getSeries().isActive()) {
                         activeRarityCardList.get(rarity.getName()).add(cardName);
-                        activeCards.put(rarity + "." + cardName, cards.get(rarity.getName() + "." + cardName));
+                        activeCards.put(cardKey, cards.get(cardKey));
                     }
 
                 }
@@ -141,7 +157,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
 
     @Override
     public TradingCard getRandomCard(final String rarity, final boolean forcedShiny) {
-        plugin.debug("getRandomCard(),rarity="+rarity);
+        plugin.debug("getRandomCard(),rarity=" + rarity);
         var cindex = plugin.getRandom().nextInt(getRarityCardList(rarity).size());
         String randomCardName = getRarityCardList(rarity).get(cindex);
         return getCard(randomCardName, rarity, forcedShiny);
@@ -166,6 +182,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
         cardItem.setAmount(num);
         return cardItem;
     }
+
     private int getGeneralMobChance(MobType mobType) {
         return switch (mobType) {
             case BOSS -> plugin.getChancesConfig().bossChance();
@@ -174,15 +191,17 @@ public class TradingCardManager implements CardManager<TradingCard> {
             case PASSIVE -> plugin.getChancesConfig().passiveChance();
         };
     }
+
     public String getRandomRarity(MobType mobType, boolean alwaysDrop) {
         int randomDropChance = plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1;
-        int randomRarityChance =  plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1;
-
-        plugin.debug("DropChance="+randomDropChance);
-        plugin.debug("RarityChance="+randomRarityChance);
+        plugin.debug("DropChance=" + randomDropChance);
+        plugin.debug("AlwaysDrop=" + alwaysDrop);
         if (!alwaysDrop && randomDropChance > getGeneralMobChance(mobType)) {
             return "None";
         }
+
+        int randomRarityChance = plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1;
+        plugin.debug("RarityChance=" + randomRarityChance);
 
         TreeSet<String> rarityKeys = new TreeSet<>(plugin.getCardManager().getRarityNames());
         for (String rarity : rarityKeys.descendingSet()) {
