@@ -13,6 +13,8 @@ import java.util.List;
 public class GeneralConfig extends SimpleConfigurate {
     private boolean debugMode;
 
+    private boolean useDefaultCardsFile;
+
     //Cards
     private Material cardMaterial;
     private String cardPrefix;
@@ -87,6 +89,8 @@ public class GeneralConfig extends SimpleConfigurate {
     @Override
     protected void initValues() throws ConfigurateException {
         this.debugMode = rootNode.node("debug-mode").getBoolean(false);
+
+        this.useDefaultCardsFile = rootNode.node("use-default-cards-file").getBoolean(true);
 
         //Cards
         this.cardMaterial= rootNode.node("card-material").get(Material.class, Material.PAPER);
@@ -371,5 +375,9 @@ public class GeneralConfig extends SimpleConfigurate {
 
     public String displayAbout() {
         return displayAbout;
+    }
+
+    public boolean useDefaultCardsFile(){
+        return useDefaultCardsFile;
     }
 }

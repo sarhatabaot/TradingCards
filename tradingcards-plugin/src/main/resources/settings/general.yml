@@ -2,6 +2,11 @@
 debug-mode: false
 
 # ##############################
+# Default Configs
+# ##############################
+use-default-cards-file: true
+
+# ##############################
 # Default Formatting Settings
 # ##############################
 colors:
