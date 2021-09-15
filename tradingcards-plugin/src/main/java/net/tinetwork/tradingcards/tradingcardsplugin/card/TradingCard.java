@@ -20,7 +20,7 @@ public class TradingCard extends Card<TradingCard> {
 
     @Override
     public ItemStack buildItem() {
-        ItemStack card = CardUtil.BLANK_CARD;
+        ItemStack card = CardUtil.BLANK_CARD.clone();
         ItemMeta cardMeta = card.getItemMeta();
         cardMeta.setDisplayName(CardUtil.formatDisplayName(this));
         cardMeta.setLore(CardUtil.formatLore(getInfo(),getAbout(),getRarity().getDisplayName(),isShiny(),getType(),getSeries().getDisplayName()));
