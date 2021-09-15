@@ -26,7 +26,6 @@ public class RaritiesConfig extends SimpleConfigurate {
     @Override
     protected void initValues() throws ConfigurateException {
         this.raritiesNode = rootNode.node("rarities");
-        this.rarities = new ArrayList<>();
         loadRarities();
     }
 
@@ -41,6 +40,7 @@ public class RaritiesConfig extends SimpleConfigurate {
     }
 
     private void loadRarities()  {
+        this.rarities = new ArrayList<>();
         for(Map.Entry<Object, ? extends ConfigurationNode> nodeEntry: raritiesNode.childrenMap().entrySet()) {
             final String rarityKey = nodeEntry.getValue().key().toString();
             try {
