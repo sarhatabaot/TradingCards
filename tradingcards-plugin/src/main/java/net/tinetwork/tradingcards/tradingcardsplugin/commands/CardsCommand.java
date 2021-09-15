@@ -5,12 +5,11 @@ import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.tinetwork.tradingcards.api.addons.TradingCardsAddon;
-import net.tinetwork.tradingcards.api.model.MobType;
 import net.tinetwork.tradingcards.api.model.Pack;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.tradingcardsplugin.Permissions;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.tradingcardsplugin.card.NullCard;
+import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingCardManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingDeckManager;
@@ -67,8 +66,7 @@ public class CardsCommand extends BaseCommand {
     public void onReload(final CommandSender sender) {
         final String format = "%s %s";
         ChatUtil.sendMessage(sender, String.format(format, plugin.getMessagesConfig().prefix(), plugin.getMessagesConfig().reload()));
-        plugin.reloadAllConfig();
-        plugin.reloadManagers();
+        plugin.reloadPlugin();
     }
 
 
@@ -101,7 +99,7 @@ public class CardsCommand extends BaseCommand {
         @Description("Gives a card.")
         public void onGiveCard(final Player player, final String rarity, final String cardName) {
             TradingCard card = cardManager.getCard(cardName,rarity,false);
-            if(card instanceof NullCard) {
+            if(card instanceof EmptyCard) {
                 ChatUtil.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().noCard()));
                 return;
             }
@@ -115,7 +113,7 @@ public class CardsCommand extends BaseCommand {
         @Description("Gives a shiny card.")
         public void onGiveShinyCard(final Player player, final String rarity, final String cardName) {
             TradingCard card = cardManager.getCard(cardName,rarity,true);
-            if(card instanceof NullCard) {
+            if(card instanceof EmptyCard) {
                 ChatUtil.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().noCard()));
                 return;
             }
