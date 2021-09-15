@@ -49,6 +49,7 @@ public class MessagesConfig extends SimpleConfigurate {
     private String noVault;
     private String deckCreativeError;
     private String giveDeck;
+    private String giveCard;
     private String alreadyHaveDeck;
     private String maxDecks;
     private String createNoName;
@@ -100,6 +101,7 @@ public class MessagesConfig extends SimpleConfigurate {
         this.giveawayNaturalNoPlayer = rootNode.node("giveaway-natural-no-player").getString();
         this.giveRandomCard = rootNode.node("give-random-card").getString();
         this.giveRandomCardMsg = rootNode.node("give-random-card-msg").getString();
+        this.giveCard = rootNode.node("give-card").getString();
         this.boosterPackMsg = rootNode.node("booster-pack-msg").getString();
         this.openBoosterPack = rootNode.node("open-booster-pack").getString();
         this.listError = rootNode.node("list-error").getString();
@@ -386,5 +388,9 @@ public class MessagesConfig extends SimpleConfigurate {
 
     public String rewardDisabled() {
         return rewardDisabled;
+    }
+
+    public String giveCard(){
+        return giveCard;
     }
 }

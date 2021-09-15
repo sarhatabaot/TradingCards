@@ -21,6 +21,7 @@ giveaway-natural-neutral-no-player: 'everyone''s received a random neutral mob c
 giveaway-natural-no-player: 'everyone''s received a random card!'
 give-random-card: 'you have been given a random card!'
 give-random-card-msg: 'you have given %player% a random card!'
+give-card: 'You have given %player% card: %card%'
 give-booster-pack-help: 'gives a specified booster pack.'
 booster-pack-msg: 'you have been given a booster pack!'
 open-booster-pack: 'you opened a booster pack!'

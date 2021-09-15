@@ -104,6 +104,9 @@ public class CardsCommand extends BaseCommand {
                 return;
             }
 
+            ChatUtil.sendPrefixedMessage(player,plugin.getMessagesConfig().giveCard()
+                    .replace("%player%",player.getName())
+                    .replace("%card%", rarity+ " "+cardName));
             player.getInventory().addItem(card.build());
         }
 
