@@ -332,13 +332,24 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         return messagesConfig.prefix() + message;
     }
 
-    public void reloadAllConfig() {
+    private void reloadLists() {
+        worldBlacklist.reloadConfig();
+        playerBlacklist.reloadConfig();
+    }
+
+    private void reloadAllConfig() {
         this.deckConfig.reloadConfig();
         this.packsConfig.reloadConfig();
         this.generalConfig.reloadConfig();
         this.messagesConfig.reloadConfig();
         this.raritiesConfig.reloadConfig();
         this.chancesConfig.reloadConfig();
+    }
+
+    public void reloadPlugin() {
+        reloadAllConfig();
+        reloadManagers();
+        reloadLists();
     }
 
 

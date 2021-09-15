@@ -7,7 +7,7 @@ import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.chance.Chance;
 import net.tinetwork.tradingcards.api.model.chance.EmptyChance;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.tradingcardsplugin.card.NullCard;
+import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.SimpleCardsConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
@@ -24,7 +24,7 @@ import java.util.TreeSet;
 
 public class TradingCardManager implements CardManager<TradingCard> {
     private final TradingCards plugin;
-    public static final NullCard NULL_CARD = new NullCard();
+    public static final EmptyCard NULL_CARD = new EmptyCard();
     private Map<String, Card<TradingCard>> cards;
     private Map<String, Card<TradingCard>> activeCards;
 
@@ -142,15 +142,15 @@ public class TradingCardManager implements CardManager<TradingCard> {
 
     @Override
     public TradingCard getCard(final String cardName, final String rarity, final boolean forcedShiny) {
-        if (cards.containsKey(rarity + "." + cardName))
-            return (TradingCard) cards.get(rarity + "." + cardName).isShiny(forcedShiny);
-        return new NullCard();
+        if (cards.containsKey(cardKey(rarity,cardName)))
+            return cards.get(cardKey(rarity,cardName)).isShiny(forcedShiny).get();
+        return new EmptyCard();
     }
 
     @Override
     public TradingCard getActiveCard(final String cardName, final String rarity, final boolean forcedShiny) {
         if (activeCards.containsKey(rarity + "." + cardName))
-            return (TradingCard) activeCards.get(rarity + "." + cardName);
+            return activeCards.get(rarity + "." + cardName).get();
         //fallthrough
         return getCard(cardName, rarity, forcedShiny);
     }
@@ -167,7 +167,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
     public TradingCard getRandomActiveCard(final String rarity, final boolean forcedShiny) {
         if (activeCards.keySet().isEmpty()) {
             plugin.debug("There are no cards in the active series. Not dropping anything.");
-            return new NullCard();
+            return new EmptyCard();
         }
         List<String> cardNames = getActiveRarityCardList(rarity);
         var cardIndex = plugin.getRandom().nextInt(cardNames.size());
@@ -177,7 +177,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
 
     @Override
     public ItemStack getCardItem(String cardName, String rarity, int num) {
-        TradingCard card = (TradingCard) cards.get(rarity + "." + cardName);
+        TradingCard card = cards.get(cardKey(rarity,cardName)).get();
         ItemStack cardItem = card.build();
         cardItem.setAmount(num);
         return cardItem;
