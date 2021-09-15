@@ -31,6 +31,7 @@ import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.List;
+import java.util.StringJoiner;
 
 @CommandAlias("cards")
 public class CardsCommand extends BaseCommand {
@@ -140,7 +141,7 @@ public class CardsCommand extends BaseCommand {
         public void onGiveRandomCard(final CommandSender sender, final Player player, final EntityType entityType) {
             try {
                 String rare = cardManager.getRandomRarity(CardUtil.getMobType(entityType), true);
-                plugin.debug("onCommand.rare: " + rare);
+                plugin.debug("Rarity: " + rare);
                 ChatUtil.sendPrefixedMessage(sender, plugin.getMessagesConfig().giveRandomCardMsg().replace("%player%", player.getName()));
                 CardUtil.dropItem(player, plugin.getCardManager().getRandomCard(rare, false).build());
             } catch (IllegalArgumentException exception) {
@@ -154,7 +155,7 @@ public class CardsCommand extends BaseCommand {
         @CommandPermission(Permissions.GIVE_RANDOM_RARITY)
         public void onGiveRandomCard(final CommandSender sender, final Player player, final String rarity) {
             try {
-                plugin.debug("onCommand.rare: " + rarity);
+                plugin.debug("Rarity: " + rarity);
                 ChatUtil.sendPrefixedMessage(sender, plugin.getMessagesConfig().giveRandomCardMsg().replace("%player%", player.getName()));
                 CardUtil.dropItem(player, plugin.getCardManager().getRandomCard(rarity, false).build());
             } catch (IllegalArgumentException exception) {
