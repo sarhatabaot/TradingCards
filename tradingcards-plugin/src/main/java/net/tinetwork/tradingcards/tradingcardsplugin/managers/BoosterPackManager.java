@@ -20,19 +20,24 @@ import java.util.Map;
 
 public class BoosterPackManager implements PackManager {
     private final ItemStack blankPack;
-    private final PacksConfig packsConfig;
     private final TradingCards plugin;
-    private final Map<String, ItemStack> packs = new HashMap<>();
+
+    private PacksConfig packsConfig;
+    private Map<String, ItemStack> packs;
 
     public BoosterPackManager(TradingCards plugin) {
         this.plugin = plugin;
-        this.packsConfig = plugin.getPacksConfig();
         this.blankPack = new ItemStack(plugin.getGeneralConfig().packMaterial());
+        initValues();
+    }
+
+    public void initValues() {
+        this.packsConfig = plugin.getPacksConfig();
+        this.packs = new HashMap<>();
         loadPacks();
     }
 
     private void loadPacks() {
-
         for (String packName : plugin.getPacksConfig().getPacks()) {
             loadPack(packName);
         }

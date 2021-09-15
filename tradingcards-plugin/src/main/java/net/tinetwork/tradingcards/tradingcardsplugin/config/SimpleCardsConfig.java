@@ -36,7 +36,6 @@ public class SimpleCardsConfig extends SimpleConfigurate {
     @Override
     protected void initValues() throws ConfigurateException {
         this.cardsNode = rootNode.node("cards");
-        plugin.debug("Loaded: "+fileName);
     }
 
     public TradingCard getCard(final String rarity, final String name) {

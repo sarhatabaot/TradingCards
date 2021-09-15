@@ -132,16 +132,16 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         try {
             this.generalConfig = new GeneralConfig(this);
             this.raritiesConfig = new RaritiesConfig(this);
+            this.seriesConfig = new SeriesConfig(this);
             this.chancesConfig = new ChancesConfig(this);
             this.messagesConfig = new MessagesConfig(this);
             this.packsConfig = new PacksConfig(this);
             this.deckConfig = new DeckConfig(this);
-            this.seriesConfig = new SeriesConfig(this);
         } catch (ConfigurateException e) {
             getLogger().severe(e.getMessage());
         }
 
-        cardsConfig = new CardsConfig(this);
+        this.cardsConfig = new CardsConfig(this);
     }
 
     private void initManagers() {
@@ -163,16 +163,9 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         commandManager.enableUnstableAPI("brigadier");
     }
 
-    public void disableManagers() {
-        this.cardManager = null;
-        this.packManager = null;
-        this.deckManager = null;
-    }
-
     public void reloadManagers() {
-        disableManagers();
         this.cardManager.initValues();
-        this.packManager = new BoosterPackManager(this);
+        this.packManager.initValues();
         this.deckManager = new TradingDeckManager(this);
     }
 
@@ -234,7 +227,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
     private void initListeners() {
         var pm = Bukkit.getPluginManager();
-        pm.registerEvents(new DropListener(this, cardManager), this);
+        pm.registerEvents(new DropListener(this), this);
         pm.registerEvents(new PackListener(this), this);
         pm.registerEvents(new MobSpawnListener(this), this);
         pm.registerEvents(new DeckListener(this), this);
@@ -337,17 +330,21 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         playerBlacklist.reloadConfig();
     }
 
-    private void reloadAllConfig() {
-        this.deckConfig.reloadConfig();
-        this.packsConfig.reloadConfig();
+    private void reloadAllConfigs() {
         this.generalConfig.reloadConfig();
-        this.messagesConfig.reloadConfig();
         this.raritiesConfig.reloadConfig();
         this.chancesConfig.reloadConfig();
+        this.seriesConfig.reloadConfig();
+        this.packsConfig.reloadConfig();
+
+        this.cardsConfig.initValues();
+        this.deckConfig.reloadConfig();
+
+        this.messagesConfig.reloadConfig();
     }
 
     public void reloadPlugin() {
-        reloadAllConfig();
+        reloadAllConfigs();
         reloadManagers();
         reloadLists();
     }
