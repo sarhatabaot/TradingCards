@@ -14,7 +14,6 @@ import net.tinetwork.tradingcards.tradingcardsplugin.config.DeckConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.*;
 import net.tinetwork.tradingcards.tradingcardsplugin.listeners.DeckListener;
 import net.tinetwork.tradingcards.tradingcardsplugin.listeners.DropListener;
-import net.tinetwork.tradingcards.tradingcardsplugin.listeners.MobSpawnListener;
 import net.tinetwork.tradingcards.tradingcardsplugin.listeners.PackListener;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.BoosterPackManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingCardManager;
@@ -229,7 +228,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         var pm = Bukkit.getPluginManager();
         pm.registerEvents(new DropListener(this), this);
         pm.registerEvents(new PackListener(this), this);
-        pm.registerEvents(new MobSpawnListener(this), this);
         pm.registerEvents(new DeckListener(this), this);
     }
 
