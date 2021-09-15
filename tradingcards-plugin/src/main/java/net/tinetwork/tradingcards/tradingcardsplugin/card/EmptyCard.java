@@ -6,15 +6,15 @@ import org.bukkit.inventory.ItemStack;
 /**
  * @author sarhatabaot
  */
-public class NullCard extends TradingCard {
+public class EmptyCard extends TradingCard {
     public static final ItemStack AIR = new ItemStack(Material.AIR);
 
-    public NullCard() {
+    public EmptyCard() {
         super("nullCard");
     }
 
     @Override
-    public NullCard get() {
+    public EmptyCard get() {
         return this;
     }
 
