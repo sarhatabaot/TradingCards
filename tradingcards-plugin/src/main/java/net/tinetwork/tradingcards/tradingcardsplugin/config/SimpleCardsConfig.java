@@ -3,7 +3,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.config;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.tradingcardsplugin.card.NullCard;
+import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigurate;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -44,7 +44,7 @@ public class SimpleCardsConfig extends SimpleConfigurate {
             return cardsNode.node(rarity, name).get(TradingCard.class);
         } catch (SerializationException e) {
             plugin.getLogger().severe(e.getMessage());
-            return new NullCard();
+            return new EmptyCard();
         }
     }
 
