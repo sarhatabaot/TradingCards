@@ -2,7 +2,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.listeners;
 
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.tradingcardsplugin.card.NullCard;
+import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingCardManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
@@ -79,7 +79,7 @@ public class DropListener extends SimpleListener {
 
         //Generate the card
         TradingCard randomCard = plugin.getCardManager().getRandomActiveCard(rarityName, false);
-        if (randomCard instanceof NullCard) {
+        if (randomCard instanceof EmptyCard) {
             return;
         }
         debug("Successfully generated card.");
@@ -101,7 +101,7 @@ public class DropListener extends SimpleListener {
             }
         }
 
-        plugin.getLogger().info("rarityKey is null");
+        plugin.debug("rarityKey is null");
         return null;
     }
 
