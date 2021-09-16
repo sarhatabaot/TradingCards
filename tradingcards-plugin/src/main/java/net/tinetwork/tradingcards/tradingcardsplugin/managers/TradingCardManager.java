@@ -22,6 +22,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import static net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil.cardKey;
+
 public class TradingCardManager implements CardManager<TradingCard> {
     private final TradingCards plugin;
     public static final EmptyCard NULL_CARD = new EmptyCard();
@@ -38,10 +40,6 @@ public class TradingCardManager implements CardManager<TradingCard> {
         initValues();
     }
 
-
-    private String cardKey(String rarity, String cardName) {
-        return rarity + "." + cardName;
-    }
 
     public void initValues() {
         loadAllCards();

@@ -238,4 +238,10 @@ public class CardUtil {
         return lore;
     }
 
+
+
+    public static String cardKey(String rarity, String cardName) {
+        return rarity + "." + cardName;
+    }
+
 }
