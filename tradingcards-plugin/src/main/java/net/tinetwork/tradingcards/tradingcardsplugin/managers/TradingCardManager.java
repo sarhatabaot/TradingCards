@@ -229,7 +229,9 @@ public class TradingCardManager implements CardManager<TradingCard> {
         if (forcedShiny)
             return true;
         int shinyRandom = plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1;
-        return shinyRandom <= plugin.getChancesConfig().shinyVersionChance();
+        boolean isShiny = shinyRandom <= plugin.getChancesConfig().shinyVersionChance();
+        plugin.debug("Shiny="+isShiny+", Value="+shinyRandom+", ShinyChance="+plugin.getChancesConfig().shinyVersionChance());
+        return isShiny;
     }
 
 }
