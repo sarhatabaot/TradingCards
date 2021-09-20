@@ -47,7 +47,7 @@ public class TradingDeckManager implements DeckManager {
 
 
 	private List<ItemStack> loadCardsFromFile(final UUID uuid, final int deckNum) {
-		List<String> contents = plugin.getDeckConfig().getConfig().getStringList("Decks.Inventories." + uuid.toString() + "." + deckNum);
+		List<String> contents = plugin.getDeckConfig().getConfig().getStringList("decks.inventories." + uuid.toString() + "." + deckNum);
 		List<ItemStack> cards = new ArrayList<>();
 		ItemStack card = null;
 		boolean isNull = false;
