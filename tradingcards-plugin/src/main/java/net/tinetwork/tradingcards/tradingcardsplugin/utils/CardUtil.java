@@ -63,12 +63,16 @@ public class CardUtil {
      * @param item   Item
      */
     public static void dropItem(final Player player, final ItemStack item) {
+        NBTItem nbtItem = new NBTItem(item);
+        final String debugItem = "name:" +nbtItem.getString("name") + " rarity:"+nbtItem.getString("rarity");
         if (player.getInventory().firstEmpty() != -1) {
             player.getInventory().addItem(item);
+            plugin.debug("Added item "+debugItem+" to "+ player.getName());
         } else {
-            World curWorld4 = player.getWorld();
+            World playerWorld = player.getWorld();
             if (player.getGameMode() == GameMode.SURVIVAL) {
-                curWorld4.dropItem(player.getLocation(), item);
+                playerWorld.dropItem(player.getLocation(), item);
+                plugin.debug("Dropped item "+debugItem+" @ "+ player.getLocation());
             }
         }
     }
@@ -125,8 +129,10 @@ public class CardUtil {
 
 
     public static boolean isCard(final ItemStack itemStack) {
-        if (!isCardMaterial(itemStack.getType()))
+        if (!isCardMaterial(itemStack.getType())) {
+            plugin.debug("Wrong type:"+itemStack.getType()+" expected:"+plugin.getGeneralConfig().cardMaterial());
             return false;
+        }
 
         NBTItem nbtItem = new NBTItem(itemStack);
         return nbtItem.getBoolean("isCard");

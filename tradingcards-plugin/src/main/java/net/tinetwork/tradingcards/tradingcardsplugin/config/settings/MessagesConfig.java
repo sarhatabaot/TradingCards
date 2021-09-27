@@ -71,6 +71,8 @@ public class MessagesConfig extends SimpleConfigurate {
     private String sectionFormatComplete;
     private String packSection;
 
+    private String deckInventoryTitle;
+
 
     public MessagesConfig(TradingCards plugin) throws ConfigurateException {
         super(plugin, "settings" + File.separator, "messages.yml", "settings");
@@ -140,6 +142,8 @@ public class MessagesConfig extends SimpleConfigurate {
         this.sectionFormatComplete = rootNode.node("section-format-complete").getString();
         this.packSection = rootNode.node("pack-section").getString();
         this.sectionFormatPlayer = rootNode.node("section-format-player").getString();
+
+        this.deckInventoryTitle = rootNode.node("deck-inventory-title").getString();
     }
 
     @Override
@@ -392,5 +396,9 @@ public class MessagesConfig extends SimpleConfigurate {
 
     public String giveCard(){
         return giveCard;
+    }
+
+    public String deckInventoryTitle(){
+        return deckInventoryTitle;
     }
 }

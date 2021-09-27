@@ -2,9 +2,15 @@ package net.tinetwork.tradingcards.tradingcardsplugin.managers;
 
 
 import de.tr7zw.nbtapi.NBTItem;
+import net.tinetwork.tradingcards.api.manager.CardManager;
+import net.tinetwork.tradingcards.api.model.deck.Deck;
+import net.tinetwork.tradingcards.api.model.deck.DeckEntry;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.api.manager.DeckManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
+import net.tinetwork.tradingcards.tradingcardsplugin.config.DeckConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
+import net.tinetwork.tradingcards.tradingcardsplugin.utils.UuidUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -14,6 +20,8 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
+import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.ConfigurationNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,11 +30,12 @@ import java.util.UUID;
 public class TradingDeckManager implements DeckManager {
 	private final TradingCards plugin;
 	private final TradingCardManager cardManager;
-
+	private final DeckConfig deckConfig;
 
 	public TradingDeckManager(final TradingCards plugin) {
 		this.plugin = plugin;
 		this.cardManager = plugin.getCardManager();
+		this.deckConfig = plugin.getDeckConfig();
 	}
 
 	public void openDeck(Player p, int deckNum) {
@@ -37,7 +46,7 @@ public class TradingDeckManager implements DeckManager {
 
 	private Inventory generateDeckInventory(final Player player, final int deckNum) {
 		List<ItemStack> cards = loadCardsFromFile(player.getUniqueId(), deckNum);
-		Inventory inv = Bukkit.createInventory(null, getDeckSize(), ChatUtil.color("&c" + player.getName() + "'s Deck #" + deckNum));
+		Inventory inv = Bukkit.createInventory(null, getDeckSize(), ChatUtil.color(plugin.getMessagesConfig().deckInventoryTitle().replace("%player%",player.getName()).replace("%deck_num%",String.valueOf(deckNum))));
 		for (ItemStack cardItem : cards) {
 			inv.addItem(cardItem);
 			plugin.debug("Item=" + cardItem.getType() + ",amount=" + cardItem.getAmount() + ", added to inventory");
@@ -45,8 +54,30 @@ public class TradingDeckManager implements DeckManager {
 		return inv;
 	}
 
-
 	private List<ItemStack> loadCardsFromFile(final UUID uuid, final int deckNum) {
+		final List<ItemStack> cards = new ArrayList<>();
+		try {
+			Deck deck = deckConfig.getDeck(uuid, deckNum);
+			if(deck == null){
+				deck = new Deck(uuid,deckNum,new ArrayList<>());
+			}
+			for (DeckEntry deckEntry : deck.getDeckEntries()) {
+				plugin.debug(deckEntry.toString());
+				ItemStack cardItem = cardManager.getCard(deckEntry.getCardId(),
+						deckEntry.getRarityId(),
+						deckEntry.isShiny()).build();
+				cardItem.setAmount(deckEntry.getAmount());
+				cards.add(cardItem);
+			}
+		} catch (ConfigurateException e){
+			plugin.getLogger().warning(e.getMessage());
+		}
+
+		return cards;
+	}
+
+	@Deprecated
+	private List<ItemStack> loadItemCardsFromFile(final UUID uuid, final int deckNum) {
 		List<String> contents = plugin.getDeckConfig().getConfig().getStringList("decks.inventories." + uuid.toString() + "." + deckNum);
 		List<ItemStack> cards = new ArrayList<>();
 		ItemStack card = null;
@@ -109,6 +140,7 @@ public class TradingDeckManager implements DeckManager {
 	public ItemStack createDeck(@NotNull final Player player, final int num) {
 		NBTItem nbtItem = new NBTItem(createDeckItem(player, num));
 		nbtItem.setBoolean("isDeck", true);
+		nbtItem.setInteger("deckNumber",num);
 		return nbtItem.getItem();
 	}
 
@@ -119,6 +151,15 @@ public class TradingDeckManager implements DeckManager {
 	@Override
 	public boolean isDeck(final ItemStack item) {
 		return isDeckMaterial(item.getType()) && hasEnchantments(item) && new NBTItem(item).getBoolean("isDeck");
+	}
+
+	public int getDeckNumber(final ItemStack item) {
+		NBTItem nbtItem = new NBTItem(item);
+		if(nbtItem.hasKey("deckNumber"))
+			return nbtItem.getInteger("deckNumber");
+
+		String[] nameSplit = item.getItemMeta().getDisplayName().split("#");
+		return Integer.parseInt(nameSplit[1]);
 	}
 
 	private static boolean hasEnchantments(final ItemStack item) {

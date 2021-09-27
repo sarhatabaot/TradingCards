@@ -434,7 +434,7 @@ public class CardsCommand extends BaseCommand {
     }
 
 
-    private boolean hasVault(final Player player) {
+    private boolean hasVault(final CommandSender player) {
         if (!plugin.isHasVault()) {
             ChatUtil.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().noVault()));
             return false;

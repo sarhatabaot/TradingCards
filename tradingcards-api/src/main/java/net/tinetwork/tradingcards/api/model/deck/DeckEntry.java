@@ -24,7 +24,15 @@ public record DeckEntry(String rarityId, String cardId, int amount, boolean isSh
         final String rarity = split[0];
         final String card = split[1];
         final int amount = Integer.parseInt(split[2]);
-        final boolean isShiny = Boolean.parseBoolean(split[3]);
+        final boolean isShiny = parseShinyString(split[3]);
         return new DeckEntry(rarity, card, amount, isShiny);
+    }
+
+    private static boolean parseShinyString(final String string) {
+        if("no".equalsIgnoreCase(string))
+            return false;
+        if("yes".equalsIgnoreCase(string))
+            return true;
+        return Boolean.parseBoolean(string);
     }
 }

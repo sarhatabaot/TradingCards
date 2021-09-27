@@ -5,12 +5,12 @@ import java.util.*;
 public class Deck {
     private final UUID playerUuid;
     private final int number;
-    private final Map<Integer,DeckEntry> deckEntries;
+    private final List<DeckEntry> deckEntries;
 
-    public Deck(UUID playerUuid, int number) {
+    public Deck(UUID playerUuid, int number, List<DeckEntry> deckEntries) {
         this.playerUuid = playerUuid;
         this.number = number;
-        this.deckEntries = new HashMap<>();
+        this.deckEntries = deckEntries;
     }
 
     public UUID getPlayerUuid() {
@@ -21,11 +21,11 @@ public class Deck {
         return number;
     }
 
-    public Map<Integer,DeckEntry> getDeckEntries() {
+    public List<DeckEntry> getDeckEntries() {
         return deckEntries;
     }
 
-    public DeckEntry getEntry(int num) {
+    public DeckEntry getEntryList(int num) {
         return deckEntries.get(num);
     }
 }

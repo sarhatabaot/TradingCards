@@ -3,6 +3,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.core;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,7 +21,7 @@ public class SimpleConfigFile {
 	protected final File folder;
 
 	protected File file;
-	private FileConfiguration config;
+	protected FileConfiguration config;
 
 	public SimpleConfigFile(final TradingCards plugin,final String resourcePath, final String fileName, final String folder) {
 		this.plugin = plugin;
@@ -86,7 +87,7 @@ public class SimpleConfigFile {
 		}
 	}
 
-
+	@NotNull
 	public FileConfiguration getConfig(){
 		if(config==null){
 			reloadConfig();

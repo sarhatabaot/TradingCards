@@ -1,7 +1,9 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.listeners;
 
-import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
+import de.tr7zw.nbtapi.NBTItem;
+import net.tinetwork.tradingcards.api.model.deck.DeckEntry;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
+import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.UuidUtil;
 import org.apache.commons.lang.StringUtils;
@@ -50,10 +52,7 @@ public class DeckListener extends SimpleListener {
 			return;
 		}
 
-
-		String name = player.getInventory().getItemInMainHand().getItemMeta().getDisplayName();
-		String[] nameSplit = name.split("#");
-		int num = Integer.parseInt(nameSplit[1]);
+		int num = plugin.getDeckManager().getDeckNumber(player.getInventory().getItemInMainHand());
 		plugin.getDeckManager().openDeck(player, num);
 	}
 
@@ -65,19 +64,17 @@ public class DeckListener extends SimpleListener {
 			return;
 		}
 
-		debug("Deck closed");
+
 
 		int deckNum = Integer.parseInt(viewTitle.split("#")[1]);
-		String playerName = ChatColor.stripColor(viewTitle.split("'")[0]);
-		debug("Deck num: " + deckNum+",PlayerName: " + playerName+",DeckNumber:  "+ deckNum);
-
+		String playerName = ChatColor.stripColor(viewTitle.split("'")[0]).trim();
+		debug("deck: " + deckNum+",player: " + playerName);
 
 		UUID id = UuidUtil.getPlayerUuid(playerName);
-		List<String> serialized = new ArrayList<>();
-
+		List<DeckEntry> serializedEntries = new ArrayList<>();
 		for (ItemStack it : e.getInventory().getContents()) {
 			if (it == null || !it.getItemMeta().hasLore())
-				continue;
+				continue; //if item is null for some reason.
 
 			if (!CardUtil.isCard(it) && plugin.getGeneralConfig().dropDeckItems()) {
 				Player player = Bukkit.getPlayer(id);
@@ -85,17 +82,25 @@ public class DeckListener extends SimpleListener {
 				continue;
 			}
 
-			String serializedString = formatSerializedString(it);
-			serialized.add(serializedString);
-			debug("Added " + serializedString + " to deck file.");
+			DeckEntry entry = formatEntryString(it);
+			serializedEntries.add(entry);
+			debug("Added " + entry + " to deck file.");
 		}
-
-		plugin.getDeckConfig().getConfig().set("decks.inventories." + id + "." + deckNum, serialized);
-		plugin.getDeckConfig().saveConfig();
+		plugin.getDeckConfig().saveEntries(id,deckNum,serializedEntries);
+		debug("Deck closed");
+		//plugin.getDeckConfig().getConfig().set("decks.inventories." + playerName + "." + deckNum, serialized);
+		//plugin.getDeckConfig().saveConfig();
 	}
 
 
 
+	private DeckEntry formatEntryString(final ItemStack itemStack) {
+		NBTItem nbtItem = new NBTItem(itemStack);
+		final String cardId = nbtItem.getString("name");
+		final String rarity = nbtItem.getString("rarity");
+		final boolean shiny = nbtItem.getBoolean("isShiny");
+		return new DeckEntry(rarity,cardId,itemStack.getAmount(),shiny);
+	}
 
 	private String formatSerializedString(ItemStack itemStack) {
 		List<String> lore = itemStack.getItemMeta().getLore();

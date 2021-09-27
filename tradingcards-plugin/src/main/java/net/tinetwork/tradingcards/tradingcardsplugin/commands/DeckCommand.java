@@ -13,7 +13,7 @@ import org.apache.commons.lang.Validate;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
-@CommandAlias("deck|decks")
+@CommandAlias("deck")
 public class DeckCommand extends BaseCommand {
 	private final TradingCards plugin;
 
@@ -25,7 +25,7 @@ public class DeckCommand extends BaseCommand {
 	@Default
 	@CommandPermission(Permissions.USE_DECK)
 	@Description("Get a deck item. Or opens a deck.")
-	public void onGetDeck(final Player player, final int deckNumber) {
+	public void onGetDeck(final Player player, int deckNumber) {
 		Validate.notNull(player, "Cannot run this command from console, or there was a problem getting the player object.");
 
 		if (!player.hasPermission("cards.decks." + deckNumber)) {

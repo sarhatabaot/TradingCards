@@ -75,3 +75,4 @@ section-format: '&6--- %s &7(&c%d&f/&a%d&7)&6 ---'
 section-format-player: '&e&l------- &7(&6&l%s''s Collection&7)&e&l -------'
 section-format-complete: '&6--- %s &7(%sComplete&7)&6 ---'
 pack-section: '&6--- Packs ---'
+deck-inventory-title: "&c%player%'s Deck #%deck_num%"
