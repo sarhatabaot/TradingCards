@@ -87,9 +87,8 @@ public class DeckListener extends SimpleListener {
 			debug("Added " + entry + " to deck file.");
 		}
 		plugin.getDeckConfig().saveEntries(id,deckNum,serializedEntries);
+		plugin.getDeckConfig().reloadConfig();
 		debug("Deck closed");
-		//plugin.getDeckConfig().getConfig().set("decks.inventories." + playerName + "." + deckNum, serialized);
-		//plugin.getDeckConfig().saveConfig();
 	}
 
 
@@ -102,6 +101,7 @@ public class DeckListener extends SimpleListener {
 		return new DeckEntry(rarity,cardId,itemStack.getAmount(),shiny);
 	}
 
+	@Deprecated
 	private String formatSerializedString(ItemStack itemStack) {
 		List<String> lore = itemStack.getItemMeta().getLore();
 		String rarity = CardUtil.getRarityName(ChatColor.stripColor(lore.get(lore.size() - 1)));

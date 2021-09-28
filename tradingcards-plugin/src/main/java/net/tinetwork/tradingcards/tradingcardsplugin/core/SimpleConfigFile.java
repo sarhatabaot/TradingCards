@@ -79,7 +79,7 @@ public class SimpleConfigFile {
 		if(!file.exists()) {
 			config = YamlConfiguration.loadConfiguration(file);
 			Reader defConfigStream;
-			defConfigStream = new InputStreamReader(plugin.getResource(fileName), StandardCharsets.UTF_8);
+			defConfigStream = new InputStreamReader(plugin.getResource(resourcePath + fileName), StandardCharsets.UTF_8);
 			if (defConfigStream != null) {
 				YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
 				config.setDefaults(defConfig);

@@ -1,16 +1,11 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.managers;
 
-
 import de.tr7zw.nbtapi.NBTItem;
-import net.tinetwork.tradingcards.api.manager.CardManager;
-import net.tinetwork.tradingcards.api.model.deck.Deck;
+import net.tinetwork.tradingcards.api.manager.DeckManager;
 import net.tinetwork.tradingcards.api.model.deck.DeckEntry;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.api.manager.DeckManager;
-import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.DeckConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
-import net.tinetwork.tradingcards.tradingcardsplugin.utils.UuidUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -20,174 +15,125 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
-import org.spongepowered.configurate.ConfigurateException;
-import org.spongepowered.configurate.ConfigurationNode;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class TradingDeckManager implements DeckManager {
-	private final TradingCards plugin;
-	private final TradingCardManager cardManager;
-	private final DeckConfig deckConfig;
+    private final TradingCards plugin;
+    private final TradingCardManager cardManager;
+    private final DeckConfig deckConfig;
 
-	public TradingDeckManager(final TradingCards plugin) {
-		this.plugin = plugin;
-		this.cardManager = plugin.getCardManager();
-		this.deckConfig = plugin.getDeckConfig();
-	}
+    public TradingDeckManager(final TradingCards plugin) {
+        this.plugin = plugin;
+        this.cardManager = plugin.getCardManager();
+        this.deckConfig = plugin.getDeckConfig();
+    }
 
-	public void openDeck(Player p, int deckNum) {
-		String uuidString = p.getUniqueId().toString();
-		plugin.debug("Deck UUID: " + uuidString);
-		p.openInventory(generateDeckInventory(p, deckNum));
-	}
+    public void openDeck(Player p, int deckNum) {
+        String uuidString = p.getUniqueId().toString();
+        plugin.debug("Deck UUID: " + uuidString);
+        p.openInventory(generateDeckInventory(p, deckNum));
+    }
 
-	private Inventory generateDeckInventory(final Player player, final int deckNum) {
-		List<ItemStack> cards = loadCardsFromFile(player.getUniqueId(), deckNum);
-		Inventory inv = Bukkit.createInventory(null, getDeckSize(), ChatUtil.color(plugin.getMessagesConfig().deckInventoryTitle().replace("%player%",player.getName()).replace("%deck_num%",String.valueOf(deckNum))));
-		for (ItemStack cardItem : cards) {
-			inv.addItem(cardItem);
-			plugin.debug("Item=" + cardItem.getType() + ",amount=" + cardItem.getAmount() + ", added to inventory");
-		}
-		return inv;
-	}
+    private Inventory generateDeckInventory(final Player player, final int deckNum) {
+        List<ItemStack> cards = loadCardsFromFile(player.getUniqueId(), deckNum);
+        Inventory inv = Bukkit.createInventory(null, getDeckSize(), ChatUtil.color(plugin.getMessagesConfig().deckInventoryTitle().replace("%player%", player.getName()).replace("%deck_num%", String.valueOf(deckNum))));
+        for (ItemStack cardItem : cards) {
+            inv.addItem(cardItem);
+            plugin.debug("Item=" + cardItem.getType() + ",amount=" + cardItem.getAmount() + ", added to inventory");
+        }
+        return inv;
+    }
 
-	private List<ItemStack> loadCardsFromFile(final UUID uuid, final int deckNum) {
-		final List<ItemStack> cards = new ArrayList<>();
-		try {
-			Deck deck = deckConfig.getDeck(uuid, deckNum);
-			if(deck == null){
-				deck = new Deck(uuid,deckNum,new ArrayList<>());
-			}
-			for (DeckEntry deckEntry : deck.getDeckEntries()) {
-				plugin.debug(deckEntry.toString());
-				ItemStack cardItem = cardManager.getCard(deckEntry.getCardId(),
-						deckEntry.getRarityId(),
-						deckEntry.isShiny()).build();
-				cardItem.setAmount(deckEntry.getAmount());
-				cards.add(cardItem);
-			}
-		} catch (ConfigurateException e){
-			plugin.getLogger().warning(e.getMessage());
-		}
+    private List<ItemStack> loadCardsFromFile(final UUID uuid, final int deckNum) {
+        final List<ItemStack> cards = new ArrayList<>();
 
-		return cards;
-	}
+        List<DeckEntry> deckEntries = DeckConfig.convertToDeckEntries(deckConfig.getDeckEntries(uuid, String.valueOf(deckNum)));
+        for (DeckEntry deckEntry : deckEntries) {
+            plugin.debug(deckEntry.toString());
+            ItemStack cardItem = cardManager.getCard(deckEntry.getCardId(),
+                    deckEntry.getRarityId(),
+                    deckEntry.isShiny()).build();
+            cardItem.setAmount(deckEntry.getAmount());
+            cards.add(cardItem);
+        }
+        return cards;
+    }
 
-	@Deprecated
-	private List<ItemStack> loadItemCardsFromFile(final UUID uuid, final int deckNum) {
-		List<String> contents = plugin.getDeckConfig().getConfig().getStringList("decks.inventories." + uuid.toString() + "." + deckNum);
-		List<ItemStack> cards = new ArrayList<>();
-		ItemStack card = null;
-		boolean isNull = false;
-		for (final String s : contents) {
-			plugin.debug("Deck file content: " + s);
+    private int getDeckSize() {
+        if (plugin.getGeneralConfig().useLargeDecks())
+            return 54;
+        return 27;
+    }
 
-			String[] splitContents = s.split(",");
-			final String rarity = splitContents[0];
-			String cardName = splitContents[1];
-			final int amount = Integer.parseInt(splitContents[2]);
-			final String isShiny = splitContents[3];
-			if (cardName == null) {
-				cardName = "None";
-			}
-			if (rarity.isEmpty() || "BLANK".equalsIgnoreCase(rarity) || "None".equalsIgnoreCase(rarity))
-				isNull = true;
+    @NotNull
+    @Override
+    public ItemStack createDeckItem(@NotNull final Player p, final int num) {
+        ItemStack deck = plugin.getGeneralConfig().blankDeck();
+        ItemMeta deckMeta = deck.getItemMeta();
+        deckMeta.setDisplayName(ChatUtil.color(plugin.getGeneralConfig().deckPrefix() + p.getName() + "'s Deck #" + num));
 
-			if (isShiny.equalsIgnoreCase("yes")) {
-				card = cardManager.getCard(cardName, rarity, true).build();
-				card.setAmount(amount);
-			} else if (!isNull) {
-				card = cardManager.getCardItem(cardName, rarity, amount);
-			}
+        deckMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        deck.setItemMeta(deckMeta);
+        deck.addUnsafeEnchantment(Enchantment.DURABILITY, 10);
+        return deck;
+    }
 
-			if (isNull) {
-				plugin.getLogger().warning("A null card has been found in a deck. It was truncated for safety.");
-			} else {
-				card.setAmount(amount);
-				cards.add(card);
-			}
+    @NotNull
+    @Override
+    public ItemStack createDeck(@NotNull final Player player, final int num) {
+        NBTItem nbtItem = new NBTItem(createDeckItem(player, num));
+        nbtItem.setBoolean("isDeck", true);
+        nbtItem.setInteger("deckNumber", num);
+        return nbtItem.getItem();
+    }
 
-			isNull = false;
-		}
-		return cards;
-	}
+    public boolean isDeckMaterial(final Material material) {
+        return material == plugin.getGeneralConfig().deckMaterial();
+    }
 
+    @Override
+    public boolean isDeck(final ItemStack item) {
+        return isDeckMaterial(item.getType()) && hasEnchantments(item) && new NBTItem(item).getBoolean("isDeck");
+    }
 
-	private int getDeckSize() {
-		if (plugin.getGeneralConfig().useLargeDecks())
-			return 54;
-		return 27;
-	}
+    public int getDeckNumber(final ItemStack item) {
+        NBTItem nbtItem = new NBTItem(item);
+        if (nbtItem.hasKey("deckNumber"))
+            return nbtItem.getInteger("deckNumber");
 
-	@NotNull
-	@Override
-	public ItemStack createDeckItem(@NotNull final Player p, final int num) {
-		ItemStack deck = plugin.getGeneralConfig().blankDeck();
-		ItemMeta deckMeta = deck.getItemMeta();
-		deckMeta.setDisplayName(ChatUtil.color(plugin.getGeneralConfig().deckPrefix() + p.getName() + "'s Deck #" + num));
+        String[] nameSplit = item.getItemMeta().getDisplayName().split("#");
+        return Integer.parseInt(nameSplit[1]);
+    }
 
-		deckMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-		deck.setItemMeta(deckMeta);
-		deck.addUnsafeEnchantment(Enchantment.DURABILITY, 10);
-		return deck;
-	}
+    private static boolean hasEnchantments(final ItemStack item) {
+        return item.containsEnchantment(Enchantment.DURABILITY) && item.getEnchantmentLevel(Enchantment.DURABILITY) == 10;
+    }
 
-	@NotNull
-	@Override
-	public ItemStack createDeck(@NotNull final Player player, final int num) {
-		NBTItem nbtItem = new NBTItem(createDeckItem(player, num));
-		nbtItem.setBoolean("isDeck", true);
-		nbtItem.setInteger("deckNumber",num);
-		return nbtItem.getItem();
-	}
+    @Override
+    public boolean hasDeck(@NotNull final Player p, final int num) {
+        for (final ItemStack itemStack : p.getInventory()) {
+            if (itemStack != null && isDeck(itemStack)) {
+                String name = itemStack.getItemMeta().getDisplayName();
+                String[] splitName = name.split("#");
+                if (num == Integer.parseInt(splitName[1])) {
+                    return true;
+                }
+            }
+        }
 
-	public boolean isDeckMaterial(final Material material) {
-		return material == plugin.getGeneralConfig().deckMaterial();
-	}
+        return false;
+    }
 
-	@Override
-	public boolean isDeck(final ItemStack item) {
-		return isDeckMaterial(item.getType()) && hasEnchantments(item) && new NBTItem(item).getBoolean("isDeck");
-	}
+    @Override
+    public boolean hasCard(Player player, String card, String rarity) {
+        return plugin.getDeckConfig().containsCard(player.getUniqueId(), card, rarity);
+    }
 
-	public int getDeckNumber(final ItemStack item) {
-		NBTItem nbtItem = new NBTItem(item);
-		if(nbtItem.hasKey("deckNumber"))
-			return nbtItem.getInteger("deckNumber");
-
-		String[] nameSplit = item.getItemMeta().getDisplayName().split("#");
-		return Integer.parseInt(nameSplit[1]);
-	}
-
-	private static boolean hasEnchantments(final ItemStack item) {
-		return item.containsEnchantment(Enchantment.DURABILITY) && item.getEnchantmentLevel(Enchantment.DURABILITY) == 10;
-	}
-
-	@Override
-	public boolean hasDeck(@NotNull final Player p, final int num) {
-		for (final ItemStack itemStack : p.getInventory()) {
-			if (itemStack != null && isDeck(itemStack)) {
-				String name = itemStack.getItemMeta().getDisplayName();
-				String[] splitName = name.split("#");
-				if (num == Integer.parseInt(splitName[1])) {
-					return true;
-				}
-			}
-		}
-
-		return false;
-	}
-
-	@Override
-	public boolean hasCard(Player player, String card, String rarity) {
-		return plugin.getDeckConfig().containsCard(player.getUniqueId(), card, rarity);
-	}
-
-	@Override
-	public boolean hasShiny(Player player, String card, String rarity) {
-		return  plugin.getDeckConfig().containsShinyCard(player.getUniqueId(), card, rarity);
-	}
+    @Override
+    public boolean hasShiny(Player player, String card, String rarity) {
+        return plugin.getDeckConfig().containsShinyCard(player.getUniqueId(), card, rarity);
+    }
 }
