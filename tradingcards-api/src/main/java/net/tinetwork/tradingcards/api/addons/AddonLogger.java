@@ -4,9 +4,9 @@ import net.tinetwork.tradingcards.api.TradingCardsPlugin;
 
 public class AddonLogger {
 	private final String addonName;
-	private final TradingCardsPlugin tradingCards;
+	private final TradingCardsPlugin<?> tradingCards;
 
-	public AddonLogger(final String addonName, final TradingCardsPlugin tradingCards) {
+	public AddonLogger(final String addonName, final TradingCardsPlugin<?> tradingCards) {
 		this.addonName = addonName;
 		this.tradingCards = tradingCards;
 	}

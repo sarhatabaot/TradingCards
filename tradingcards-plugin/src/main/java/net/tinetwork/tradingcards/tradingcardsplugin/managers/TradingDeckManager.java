@@ -113,14 +113,10 @@ public class TradingDeckManager implements DeckManager {
     }
 
     @Override
-    public boolean hasDeck(@NotNull final Player p, final int num) {
-        for (final ItemStack itemStack : p.getInventory()) {
-            if (itemStack != null && isDeck(itemStack)) {
-                String name = itemStack.getItemMeta().getDisplayName();
-                String[] splitName = name.split("#");
-                if (num == Integer.parseInt(splitName[1])) {
-                    return true;
-                }
+    public boolean hasDeck(@NotNull final Player player, final int num) {
+        for (final ItemStack itemStack : player.getInventory()) {
+            if (isDeck(itemStack) && num == getDeckNumber(itemStack)) {
+                return true;
             }
         }
 

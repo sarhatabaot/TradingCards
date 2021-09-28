@@ -11,12 +11,9 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
-import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
-import org.spongepowered.configurate.serialize.TypeSerializer;
 
 import java.io.File;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -31,6 +28,14 @@ public class DeckConfig extends SimpleConfigurate {
         super(plugin, "data" + File.separator, "decks.yml", "data");
     }
 
+
+
+    @Override
+    protected void initValues() throws ConfigurateException {
+        this.inventoriesNode = rootNode.node("decks", "inventories");
+        loadYamlConfiguration();
+    }
+
     private void loadYamlConfiguration() {
         if (file == null) {
             file = new File(folder, fileName);
@@ -41,12 +46,6 @@ public class DeckConfig extends SimpleConfigurate {
 
     public boolean containsPlayer(final UUID uuid) {
         return !inventoriesNode.node(uuid.toString()).empty();
-    }
-
-    @Override
-    protected void initValues() throws ConfigurateException {
-        this.inventoriesNode = rootNode.node("decks", "inventories");
-        loadYamlConfiguration();
     }
 
     @Nullable

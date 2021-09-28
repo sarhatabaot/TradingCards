@@ -53,7 +53,6 @@ public class Chance {
             case NEUTRAL -> this.getNeutral();
             case PASSIVE-> this.getPassive();
             case BOSS -> this.getBoss();
-            default -> 0;
         };
     }
 
