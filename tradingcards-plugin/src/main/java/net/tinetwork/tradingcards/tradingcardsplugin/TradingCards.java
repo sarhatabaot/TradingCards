@@ -11,7 +11,12 @@ import net.tinetwork.tradingcards.tradingcardsplugin.commands.CardsCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.DeckCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.CardsConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.DeckConfig;
-import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.*;
+import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.ChancesConfig;
+import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.GeneralConfig;
+import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.MessagesConfig;
+import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.PacksConfig;
+import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.RaritiesConfig;
+import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.SeriesConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.listeners.DeckListener;
 import net.tinetwork.tradingcards.tradingcardsplugin.listeners.DropListener;
 import net.tinetwork.tradingcards.tradingcardsplugin.listeners.PackListener;
@@ -23,14 +28,14 @@ import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.whitelist.PlayerBlacklist;
 import net.tinetwork.tradingcards.tradingcardsplugin.whitelist.WorldBlacklist;
 import org.bukkit.Bukkit;
-import org.bukkit.Warning;
 import org.bukkit.entity.EntityType;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredServiceProvider;
-import org.jetbrains.annotations.TestOnly;
-import org.jetbrains.annotations.VisibleForTesting;
+import org.bukkit.plugin.java.JavaPluginLoader;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.serialize.SerializationException;
 
+import java.io.File;
 import java.util.Random;
 
 
@@ -68,6 +73,13 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private PlayerBlacklist playerBlacklist;
     private WorldBlacklist worldBlacklist;
 
+    public TradingCards() {
+        super();
+    }
+
+    protected TradingCards(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
+        super(loader, description, dataFolder, file);
+    }
 
     @Override
     public TradingDeckManager getDeckManager() {
