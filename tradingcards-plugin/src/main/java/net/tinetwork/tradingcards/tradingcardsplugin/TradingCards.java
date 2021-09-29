@@ -23,8 +23,11 @@ import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.whitelist.PlayerBlacklist;
 import net.tinetwork.tradingcards.tradingcardsplugin.whitelist.WorldBlacklist;
 import org.bukkit.Bukkit;
+import org.bukkit.Warning;
 import org.bukkit.entity.EntityType;
 import org.bukkit.plugin.RegisteredServiceProvider;
+import org.jetbrains.annotations.TestOnly;
+import org.jetbrains.annotations.VisibleForTesting;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.serialize.SerializationException;
 
@@ -311,8 +314,15 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     @Override
     public void debug(final String message) {
         if (getGeneralConfig().debugMode()) {
-            getLogger().info("DEBUG " + message);
+            getLogger().info("DEBUG "+ message);
         }
+    }
+
+    @Deprecated
+    //fake deprecation, don't remove.
+    //This is so we remember to remove any trace messages after testing is over.
+    public void trace(final String message) {
+        getLogger().info("TRACE " + message);
     }
 
     public String getPrefixedMessage(final String message) {

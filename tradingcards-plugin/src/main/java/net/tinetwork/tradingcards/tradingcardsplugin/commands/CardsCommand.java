@@ -131,7 +131,7 @@ public class CardsCommand extends BaseCommand {
         @CommandPermission(Permissions.GIVE_PACK)
         public void onGiveBoosterPack(final CommandSender sender,@Single final String playerName, @Single final String pack) {
             Player player = Bukkit.getPlayerExact(playerName);
-            if(player == null) {
+            if(isOnline(player)) {
                 ChatUtil.sendPrefixedMessage(sender, "This player is not online. Or doesn't exist.");
                 return;
             }
@@ -142,10 +142,20 @@ public class CardsCommand extends BaseCommand {
             ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().boosterPackMsg());
         }
 
+        private boolean isOnline(final Player player) {
+            return player == null;
+        }
+
         @Subcommand("random entity")
         @Description("Gives a random card to a player.")
         @CommandPermission(Permissions.GIVE_RANDOM_ENTITY)
-        public void onGiveRandomCard(final CommandSender sender, final Player player, final EntityType entityType) {
+        public void onGiveRandomCard(final CommandSender sender,@Single final String playerName, final EntityType entityType) {
+            Player player = Bukkit.getPlayerExact(playerName);
+            if(isOnline(player)) {
+                ChatUtil.sendPrefixedMessage(sender, "This player is not online. Or doesn't exist.");
+                return;
+            }
+
             try {
                 String rare = cardManager.getRandomRarity(CardUtil.getMobType(entityType), true);
                 plugin.debug("Rarity: " + rare);
@@ -160,7 +170,13 @@ public class CardsCommand extends BaseCommand {
         @Description("Gives a random card to a player. Specify rarity.")
         @CommandCompletion("@players @rarities")
         @CommandPermission(Permissions.GIVE_RANDOM_RARITY)
-        public void onGiveRandomCard(final CommandSender sender, final Player player,@Single final String rarity) {
+        public void onGiveRandomCard(final CommandSender sender,@Single final String playerName,@Single final String rarity) {
+            Player player = Bukkit.getPlayerExact(playerName);
+            if(isOnline(player)) {
+                ChatUtil.sendPrefixedMessage(sender, "This player is not online. Or doesn't exist.");
+                return;
+            }
+
             try {
                 plugin.debug("Rarity: " + rarity);
                 ChatUtil.sendPrefixedMessage(sender, plugin.getMessagesConfig().giveRandomCardMsg().replace("%player%", player.getName()));
@@ -255,14 +271,19 @@ public class CardsCommand extends BaseCommand {
         @Default
         @CommandCompletion("@rarities")
         public void onList(final CommandSender sender,@Single @Optional final String rarity) {
-            onListPlayer(sender, (Player) sender, rarity);
+            onListPlayer(sender, sender.getName(), rarity);
         }
 
         @Subcommand("player")
         @CommandPermission(Permissions.LIST_PLAYER)
         @CommandCompletion("@players @rarities")
         @Description("Lists all cards by a player.")
-        public void onListPlayer(final CommandSender sender, final Player target,@Single @Optional final String rarity) {
+        public void onListPlayer(final CommandSender sender,@Single final String playerName,@Single @Optional final String rarity) {
+            Player target = Bukkit.getPlayerExact(playerName);
+            if(target == null) {
+                ChatUtil.sendPrefixedMessage(sender, "This player is not online. Or doesn't exist.");
+                return;
+            }
             if (rarity == null || plugin.isRarity(rarity).equalsIgnoreCase("None")) {
                 final String sectionFormat = String.format(plugin.getMessagesConfig().sectionFormatPlayer(), target.getName());
                 ChatUtil.sendMessage(sender, String.format(sectionFormat, target.getName()));

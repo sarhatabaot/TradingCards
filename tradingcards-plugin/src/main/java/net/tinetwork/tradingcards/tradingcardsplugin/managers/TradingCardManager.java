@@ -4,6 +4,7 @@ import net.tinetwork.tradingcards.api.card.Card;
 import net.tinetwork.tradingcards.api.manager.CardManager;
 import net.tinetwork.tradingcards.api.model.MobType;
 import net.tinetwork.tradingcards.api.model.Rarity;
+import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.api.model.chance.Chance;
 import net.tinetwork.tradingcards.api.model.chance.EmptyChance;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
@@ -27,9 +28,14 @@ import static net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil.cardK
 public class TradingCardManager implements CardManager<TradingCard> {
     private final TradingCards plugin;
     public static final EmptyCard NULL_CARD = new EmptyCard();
-    
+
+    //CardKey,Card<TradingCard>
     private Map<String, Card<TradingCard>> cards;
+    //TODO, should instead contain an id instead of the whole object.
     private Map<String, Card<TradingCard>> activeCards;
+
+    //Contains all cards from a specific series, regardless of rarity
+    private Map<String, List<String>> seriesCards;
 
     //This stores the cards from a single rarity, over multiple files
     private Map<String, List<String>> rarityCardList;
@@ -45,10 +51,15 @@ public class TradingCardManager implements CardManager<TradingCard> {
     public void initValues() {
         loadAllCards();
         loadActiveCards();
+        cacheSeriesCards();
         plugin.getLogger().info(String.format("Loaded %d cards.", cards.size()));
         plugin.getLogger().info(String.format("Loaded %d rarities", rarityCardList.keySet().size()));
         plugin.debug(StringUtils.join(rarityCardList.keySet(), ","));
         plugin.debug(StringUtils.join(cards.keySet(), ","));
+    }
+
+    public Map<String, List<String>> getSeriesCards() {
+        return seriesCards;
     }
 
     /**
@@ -71,6 +82,18 @@ public class TradingCardManager implements CardManager<TradingCard> {
                     cards.put(cardKey, generateCard(simpleCardsConfig, cardName, rarity.getName(), false));
                     rarityCardList.get(rarity.getName()).add(cardName);
                 }
+            }
+        }
+    }
+
+    //Caches a list of cards in their series.
+    private void cacheSeriesCards() {
+        this.seriesCards = new HashMap<>();
+        for(String series: plugin.getSeriesConfig().series().keySet()) {
+            seriesCards.put(series, new ArrayList<>());
+            for (Map.Entry<String, Card<TradingCard>> entry : cards.entrySet()) {
+                if(entry.getValue().getSeries().getName().equals(series))
+                    seriesCards.get(series).add(entry.getValue().getCardName());
             }
         }
     }
@@ -162,6 +185,20 @@ public class TradingCardManager implements CardManager<TradingCard> {
         return getCard(randomCardName, rarity, forcedShiny);
     }
 
+    //TODO Reallly inefficient
+    public TradingCard getRandomCard(final String rarity, final String series, final boolean forcedShiny) {
+        List<String> raritySeries = new ArrayList<>();
+        for(String cardKey: getRarityCardList(rarity)) {
+            TradingCard tradingCard = getCard(cardKey,rarity,forcedShiny);
+            if(tradingCard.getSeries().getName().equals(series)) {
+                raritySeries.add(tradingCard.getCardName());
+            }
+        }
+        var cindex = plugin.getRandom().nextInt(raritySeries.size());
+        String randomCardName = raritySeries.get(cindex);
+        return getCard(randomCardName, rarity, forcedShiny);
+    }
+
     @Override
     public TradingCard getRandomActiveCard(final String rarity, final boolean forcedShiny) {
         if (activeCards.keySet().isEmpty()) {
@@ -193,8 +230,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
 
     public String getRandomRarity(MobType mobType, boolean alwaysDrop) {
         int randomDropChance = plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1;
-        plugin.debug("DropChance=" + randomDropChance);
-        plugin.debug("AlwaysDrop=" + alwaysDrop);
+        plugin.debug("DropChance=" + randomDropChance +" AlwaysDrop=" + alwaysDrop);
         if (!alwaysDrop && randomDropChance > getGeneralMobChance(mobType)) {
             return "None";
         }
