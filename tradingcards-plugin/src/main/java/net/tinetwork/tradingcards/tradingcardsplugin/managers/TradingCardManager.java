@@ -27,6 +27,7 @@ import static net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil.cardK
 public class TradingCardManager implements CardManager<TradingCard> {
     private final TradingCards plugin;
     public static final EmptyCard NULL_CARD = new EmptyCard();
+    
     private Map<String, Card<TradingCard>> cards;
     private Map<String, Card<TradingCard>> activeCards;
 
