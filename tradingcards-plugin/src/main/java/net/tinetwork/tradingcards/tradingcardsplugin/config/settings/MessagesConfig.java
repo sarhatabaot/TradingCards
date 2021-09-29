@@ -50,6 +50,7 @@ public class MessagesConfig extends SimpleConfigurate {
     private String deckCreativeError;
     private String giveDeck;
     private String giveCard;
+    private String givePack;
     private String alreadyHaveDeck;
     private String maxDecks;
     private String createNoName;
@@ -144,6 +145,7 @@ public class MessagesConfig extends SimpleConfigurate {
         this.sectionFormatPlayer = rootNode.node("section-format-player").getString();
 
         this.deckInventoryTitle = rootNode.node("deck-inventory-title").getString();
+        this.givePack = rootNode.node("give-booster-pack-msg").getString();
     }
 
     @Override
@@ -400,5 +402,9 @@ public class MessagesConfig extends SimpleConfigurate {
 
     public String deckInventoryTitle(){
         return deckInventoryTitle;
+    }
+
+    public String givePack() {
+        return givePack;
     }
 }
