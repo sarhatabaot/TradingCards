@@ -14,7 +14,7 @@ public abstract class TradingCardsPlugin<T> extends JavaPlugin {
      * Send a debug message in the log.
      * @param message Message to send.
      */
-    public abstract void debug(String message);
+    public abstract void debug(Class<?> clazz, String message);
 
     /**
      *

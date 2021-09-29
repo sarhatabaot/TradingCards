@@ -65,12 +65,12 @@ public class CardUtil {
         final String debugItem = "name:" +nbtItem.getString("name") + " rarity:"+nbtItem.getString("rarity");
         if (player.getInventory().firstEmpty() != -1) {
             player.getInventory().addItem(item);
-            plugin.debug("Added item "+debugItem+" to "+ player.getName());
+            plugin.debug(CardUtil.class,"Added item "+debugItem+" to "+ player.getName());
         } else {
             World playerWorld = player.getWorld();
             if (player.getGameMode() == GameMode.SURVIVAL) {
                 playerWorld.dropItem(player.getLocation(), item);
-                plugin.debug("Dropped item "+debugItem+" @ "+ player.getLocation());
+                plugin.debug(CardUtil.class,"Dropped item "+debugItem+" @ "+ player.getLocation());
             }
         }
     }
@@ -128,7 +128,7 @@ public class CardUtil {
 
     public static boolean isCard(final ItemStack itemStack) {
         if (!isCardMaterial(itemStack.getType())) {
-            plugin.debug("Wrong type:"+itemStack.getType()+" expected:"+plugin.getGeneralConfig().cardMaterial());
+            plugin.debug(CardUtil.class,"Wrong type:"+itemStack.getType()+" expected:"+plugin.getGeneralConfig().cardMaterial());
             return false;
         }
 
@@ -177,7 +177,7 @@ public class CardUtil {
 
         for (final Player p : Bukkit.getOnlinePlayers()) {
             String rare = cardManager.getRandomRarity(CardUtil.getMobType(mob), true);
-            plugin.debug("onCommand.rare: " + rare);
+            plugin.debug(CardUtil.class,"onCommand.rare: " + rare);
             CardUtil.dropItem(p, cardManager.getRandomCard(rare, false).build());
         }
 

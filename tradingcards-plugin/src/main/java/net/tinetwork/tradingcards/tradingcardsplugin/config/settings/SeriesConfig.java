@@ -38,10 +38,10 @@ public class SeriesConfig extends SimpleConfigurate {
                 series.put(seriesKey,getSeries(seriesKey));
             } catch (SerializationException e){
                 plugin.getLogger().severe(e.getMessage());
-                plugin.debug("Couldn't add="+seriesKey);
+                plugin.debug(SeriesConfig.class,"Couldn't add="+seriesKey);
             }
         }
-        plugin.debug("Total Series="+series.size());
+        plugin.debug(SeriesConfig.class,"Total Series="+series.size());
     }
 
     private Series getSeries(final String key) throws SerializationException {

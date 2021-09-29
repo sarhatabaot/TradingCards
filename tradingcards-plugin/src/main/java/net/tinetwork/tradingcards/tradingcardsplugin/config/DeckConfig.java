@@ -82,14 +82,14 @@ public class DeckConfig extends SimpleConfigurate {
 
     public void saveEntries(final UUID uuid, final int deckNumber, final List<DeckEntry> entries) {
         List<String> stringEntries = getStringListFromEntries(entries);
-        plugin.debug(stringEntries.toString());
+        plugin.debug(getClass(),stringEntries.toString());
         plugin.getDeckConfig().getConfig().set(INVENTORY_PATH + uuid + "." + deckNumber, stringEntries);
         plugin.getDeckConfig().saveConfig();
     }
 
     public boolean containsDeck(final UUID uuid, String deckNumber) {
         boolean containsDeck = !inventoriesNode.node(uuid).node(deckNumber).isNull();
-        plugin.debug("Deck "+deckNumber+" for "+uuid+":"+containsDeck);
+        plugin.debug(getClass(),"Deck "+deckNumber+" for "+uuid+":"+containsDeck);
         return containsDeck;
     }
 
@@ -98,7 +98,7 @@ public class DeckConfig extends SimpleConfigurate {
         for (DeckEntry entry : entries) {
             stringList.add(entry.toString());
         }
-        plugin.debug("EntryList Size " + stringList.size());
+        plugin.debug(DeckConfig.class,"EntryList Size " + stringList.size());
         return stringList;
     }
 

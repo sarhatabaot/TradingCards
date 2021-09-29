@@ -103,7 +103,7 @@ public class DropListener extends SimpleListener {
             }
         }
 
-        plugin.debug("rarityKey is null");
+        debug("rarityKey is null");
         return null;
     }
 }

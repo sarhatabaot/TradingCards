@@ -312,9 +312,9 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     }
 
     @Override
-    public void debug(final String message) {
+    public void debug(final Class<?> className, final String message) {
         if (getGeneralConfig().debugMode()) {
-            getLogger().info("DEBUG "+ message);
+            getLogger().info("DEBUG "+className.getSimpleName() + " "+ message);
         }
     }
 

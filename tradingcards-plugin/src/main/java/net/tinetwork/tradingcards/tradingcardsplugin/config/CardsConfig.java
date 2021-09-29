@@ -32,11 +32,11 @@ public class CardsConfig {
         }
 
         for (File file : cardsFolder.listFiles()) {
-            plugin.debug("File name: " + file.getName());
+            plugin.debug(CardsConfig.class,"File name: " + file.getName());
             if (file.getName().endsWith(".yml")) {
                 try {
                     cardConfigs.add(new SimpleCardsConfig(plugin, file.getName()));
-                    plugin.debug("Added: " + file.getName());
+                    plugin.debug(CardsConfig.class,"Added: " + file.getName());
                 } catch (ConfigurateException e) {
                     plugin.getLogger().severe(e.getMessage());
                 }

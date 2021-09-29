@@ -24,6 +24,6 @@ public class AddonLogger {
 	}
 
 	public void debug(String message){
-		tradingCards.debug(addonName +" "+message);
+		tradingCards.debug(AddonLogger.class, addonName+" "+message);
 	}
 }

@@ -4,7 +4,6 @@ import net.tinetwork.tradingcards.api.card.Card;
 import net.tinetwork.tradingcards.api.manager.CardManager;
 import net.tinetwork.tradingcards.api.model.MobType;
 import net.tinetwork.tradingcards.api.model.Rarity;
-import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.api.model.chance.Chance;
 import net.tinetwork.tradingcards.api.model.chance.EmptyChance;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
@@ -54,8 +53,8 @@ public class TradingCardManager implements CardManager<TradingCard> {
         cacheSeriesCards();
         plugin.getLogger().info(String.format("Loaded %d cards.", cards.size()));
         plugin.getLogger().info(String.format("Loaded %d rarities", rarityCardList.keySet().size()));
-        plugin.debug(StringUtils.join(rarityCardList.keySet(), ","));
-        plugin.debug(StringUtils.join(cards.keySet(), ","));
+        plugin.debug(TradingCardManager.class,StringUtils.join(rarityCardList.keySet(), ","));
+        plugin.debug(TradingCardManager.class,StringUtils.join(cards.keySet(), ","));
     }
 
     public Map<String, List<String>> getSeriesCards() {
@@ -78,7 +77,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
                 for (Map.Entry<Object, ? extends ConfigurationNode> nodeEntry : cardNodes) {
                     final String cardName = nodeEntry.getValue().key().toString();
                     final String cardKey = cardKey(rarity.getName(), cardName);
-                    plugin.debug("CardKey="+cardKey);
+                    plugin.debug(TradingCardManager.class,"CardKey="+cardKey);
                     cards.put(cardKey, generateCard(simpleCardsConfig, cardName, rarity.getName(), false));
                     rarityCardList.get(rarity.getName()).add(cardName);
                 }
@@ -111,12 +110,12 @@ public class TradingCardManager implements CardManager<TradingCard> {
                 for (Map.Entry<Object, ? extends ConfigurationNode> nodeEntry : cardNodes) {
                     final String cardName = nodeEntry.getValue().key().toString();
                     final String cardKey = cardKey(rarity.getName(), cardName);
-                    plugin.debug("CardKey=" + cardKey);
+                    plugin.debug(TradingCardManager.class,"CardKey=" + cardKey);
                     Card<TradingCard> card = cards.get(cardKey);
                     //A card should only be created if the series exists, checking here for now TODO
-                    plugin.debug(card.toString());
+                    plugin.debug(TradingCardManager.class,card.toString());
                     if (!plugin.getSeriesConfig().series().containsKey(card.getSeries().getName().toLowerCase())) {
-                        plugin.debug("This series does not exist, make sure it is in series.yml" + card.getSeries());
+                        plugin.debug(TradingCardManager.class,"This series does not exist, make sure it is in series.yml" + card.getSeries());
                         continue;
                     }
                     //This only loads on startup, that means that it doesn't update. But only on restarts TODO
@@ -179,7 +178,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
 
     @Override
     public TradingCard getRandomCard(final String rarity, final boolean forcedShiny) {
-        plugin.debug("getRandomCard(),rarity=" + rarity);
+        plugin.debug(TradingCardManager.class,"getRandomCard(),rarity=" + rarity);
         var cindex = plugin.getRandom().nextInt(getRarityCardList(rarity).size());
         String randomCardName = getRarityCardList(rarity).get(cindex);
         return getCard(randomCardName, rarity, forcedShiny);
@@ -202,7 +201,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
     @Override
     public TradingCard getRandomActiveCard(final String rarity, final boolean forcedShiny) {
         if (activeCards.keySet().isEmpty()) {
-            plugin.debug("There are no cards in the active series. Not dropping anything.");
+            plugin.debug(TradingCardManager.class,"There are no cards in the active series. Not dropping anything.");
             return new EmptyCard();
         }
         List<String> cardNames = getActiveRarityCardList(rarity);
@@ -230,17 +229,17 @@ public class TradingCardManager implements CardManager<TradingCard> {
 
     public String getRandomRarity(MobType mobType, boolean alwaysDrop) {
         int randomDropChance = plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1;
-        plugin.debug("DropChance=" + randomDropChance +" AlwaysDrop=" + alwaysDrop);
+        plugin.debug(TradingCardManager.class,"DropChance=" + randomDropChance +" AlwaysDrop=" + alwaysDrop);
         if (!alwaysDrop && randomDropChance > getGeneralMobChance(mobType)) {
             return "None";
         }
 
         int randomRarityChance = plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1;
-        plugin.debug("RarityChance=" + randomRarityChance);
+        plugin.debug(TradingCardManager.class,"RarityChance=" + randomRarityChance);
 
         TreeSet<String> rarityKeys = new TreeSet<>(plugin.getCardManager().getRarityNames());
         for (String rarity : rarityKeys.descendingSet()) {
-            plugin.debug("Rarity=" + rarity);
+            plugin.debug(TradingCardManager.class,"Rarity=" + rarity);
             Chance chance = plugin.getChancesConfig().getChance(rarity);
             if (chance instanceof EmptyChance)
                 return "None";
@@ -267,7 +266,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
             return true;
         int shinyRandom = plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1;
         boolean isShiny = shinyRandom <= plugin.getChancesConfig().shinyVersionChance();
-        plugin.debug("Shiny="+isShiny+", Value="+shinyRandom+", ShinyChance="+plugin.getChancesConfig().shinyVersionChance());
+        plugin.debug(TradingCardManager.class,"Shiny="+isShiny+", Value="+shinyRandom+", ShinyChance="+plugin.getChancesConfig().shinyVersionChance());
         return isShiny;
     }
 

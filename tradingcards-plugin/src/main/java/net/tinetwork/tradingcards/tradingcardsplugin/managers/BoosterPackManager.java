@@ -42,9 +42,9 @@ public class BoosterPackManager implements PackManager {
             loadPack(packName);
         }
         plugin.getLogger().info("Loaded " + packs.size() + " packs.");
-        plugin.debug(packs.keySet().toString());
+        plugin.debug(BoosterPackManager.class,packs.keySet().toString());
         for(ItemStack itemStack: packs.values()) {
-            plugin.debug(itemStack.toString());
+            plugin.debug(BoosterPackManager.class,itemStack.toString());
         }
     }
 
@@ -56,7 +56,7 @@ public class BoosterPackManager implements PackManager {
     private void loadPack(final String packName) {
         try {
             packs.put(packName, generatePack(packName));
-            plugin.debug("Loaded pack: " + packName);
+            plugin.debug(BoosterPackManager.class,"Loaded pack: " + packName);
         } catch (SerializationException e) {
             plugin.getLogger().severe(e.getMessage());
         }

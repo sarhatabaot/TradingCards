@@ -42,7 +42,6 @@ public class ChatUtil {
 		List<String> finalArray = new ArrayList<>();
 
 		for (String ss : splitString) {
-			plugin.debug(ChatColor.getLastColors(ss));
 			finalArray.add(ChatUtil.color("&f &7- &f" + ss));
 		}
 

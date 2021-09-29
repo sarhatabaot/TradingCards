@@ -2,6 +2,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
 
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
+import net.tinetwork.tradingcards.tradingcardsplugin.config.CardsConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigurate;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
@@ -47,10 +48,10 @@ public class RaritiesConfig extends SimpleConfigurate {
                 rarities.add(getRarity(rarityKey));
             } catch (SerializationException e){
                 plugin.getLogger().severe(e.getMessage());
-                plugin.debug("Couldn't add="+rarityKey);
+                plugin.debug(RaritiesConfig.class,"Couldn't add="+rarityKey);
             }
         }
-        plugin.debug("Total Rarities="+rarities.size());
+        plugin.debug(RaritiesConfig.class,"Total Rarities="+rarities.size());
     }
 
     public List<Rarity> rarities() {

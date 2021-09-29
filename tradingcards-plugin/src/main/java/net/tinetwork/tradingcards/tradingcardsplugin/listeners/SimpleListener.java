@@ -17,7 +17,7 @@ public abstract class SimpleListener implements Listener {
 	}
 
 	protected void debug(final String message) {
-		plugin.debug(getClass().getSimpleName()+" "+message);
+		plugin.debug(getClass(),message);
 	}
 
 	protected void info(final String message) {

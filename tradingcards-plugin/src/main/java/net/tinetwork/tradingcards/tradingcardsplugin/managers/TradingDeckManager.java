@@ -33,7 +33,7 @@ public class TradingDeckManager implements DeckManager {
 
     public void openDeck(Player p, int deckNum) {
         String uuidString = p.getUniqueId().toString();
-        plugin.debug("Deck UUID: " + uuidString);
+        plugin.debug(TradingDeckManager.class,"Deck UUID: " + uuidString);
         p.openInventory(generateDeckInventory(p, deckNum));
     }
 
@@ -42,7 +42,7 @@ public class TradingDeckManager implements DeckManager {
         Inventory inv = Bukkit.createInventory(null, getDeckSize(), ChatUtil.color(plugin.getMessagesConfig().deckInventoryTitle().replace("%player%", player.getName()).replace("%deck_num%", String.valueOf(deckNum))));
         for (ItemStack cardItem : cards) {
             inv.addItem(cardItem);
-            plugin.debug("Item=" + cardItem.getType() + ",amount=" + cardItem.getAmount() + ", added to inventory");
+            plugin.debug(TradingDeckManager.class,"Item=" + cardItem.getType() + ",amount=" + cardItem.getAmount() + ", added to inventory");
         }
         return inv;
     }
@@ -52,7 +52,7 @@ public class TradingDeckManager implements DeckManager {
 
         List<DeckEntry> deckEntries = DeckConfig.convertToDeckEntries(deckConfig.getDeckEntries(uuid, String.valueOf(deckNum)));
         for (DeckEntry deckEntry : deckEntries) {
-            plugin.debug(deckEntry.toString());
+            plugin.debug(getClass(),deckEntry.toString());
             ItemStack cardItem = cardManager.getCard(deckEntry.getCardId(),
                     deckEntry.getRarityId(),
                     deckEntry.isShiny()).build();
