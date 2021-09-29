@@ -3,15 +3,12 @@ package net.tinetwork.tradingcards.api.model;
 import java.util.List;
 
 public record Pack(List<PackEntry> packEntryList,
-                   String displayName, String series, double price, String permissions) {
+                   String displayName, double price, String permissions) {
 
     public String getDisplayName() {
         return displayName;
     }
 
-    public String getSeries() {
-        return series;
-    }
 
     public double getPrice() {
         return price;
@@ -25,7 +22,7 @@ public record Pack(List<PackEntry> packEntryList,
         return packEntryList;
     }
 
-    public record PackEntry(String rarityId, int amount) {
+    public record PackEntry(String rarityId, int amount, String seriesId) {
 
         public String getRarityId() {
             return rarityId;
@@ -35,16 +32,24 @@ public record Pack(List<PackEntry> packEntryList,
             return amount;
         }
 
+        public String getSeries() {
+            return seriesId;
+        }
+
         @Override
         public String toString() {
-            return rarityId + ":" + amount;
+            return rarityId + ":" + amount
+                    + ((seriesId != null) ? ":" + seriesId : "");
         }
 
         public static PackEntry fromString(final String string) {
             final String[] split = string.split(":");
             final String rarityId = split[0];
             final int amount = Integer.parseInt(split[1]);
-            return new PackEntry(rarityId, amount);
+            String seriesId = null;
+            if(split.length > 2)
+                seriesId = split[2];
+            return new PackEntry(rarityId, amount, seriesId);
         }
     }
 

@@ -2,34 +2,30 @@
 starter-pack:
   display-name: "Starter Pack"
   content:
-    - "common:9"
-    - "rare:1"
-  series: "active"
+    - "common:9:default"
+    - "rare:1:default"
   price: 100.00
   permission: "cards.packs.starter-pack"
 advanced-pack:
   display-name: "Advanced Pack"
   content:
-    - "common:12"
-    - "uncommon:6"
-    - "rare:2"
-  series: "active"
+    - "common:12:default"
+    - "uncommon:6:default"
+    - "rare:2:default"
   price: 150.00
   permission: "card.packs.advanced-pack"
 expert-pack:
   display-name: "Expert Pack"
   content:
-    - "uncommon:6"
-    - "rare:4"
-    - "very-rare:2"
-  series: "active"
+    - "uncommon:6:default"
+    - "rare:4:default"
+    - "very-rare:2:default"
   price: 250.00
   permission: "cards.packs.expert-pack"
 ultimate-pack:
   display-name: "Ultimate Pack"
   content:
-    - "rare:5"
-    - "legendary:1"
-  series: "active"
+    - "rare:5:default"
+    - "legendary:1:default"
   price: 500.00
   permission: "cards.packs.ultimate-pack"

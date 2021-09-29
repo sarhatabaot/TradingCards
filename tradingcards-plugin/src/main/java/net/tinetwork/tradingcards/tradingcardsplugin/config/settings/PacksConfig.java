@@ -59,7 +59,6 @@ public class PacksConfig extends SimpleConfigurate {
         @Override
         public Pack deserialize(Type type, ConfigurationNode node) throws SerializationException {
             final ConfigurationNode contentNode = node.node(CONTENT);
-            final ConfigurationNode seriesNode = node.node(SERIES);
             final ConfigurationNode priceNode = node.node(PRICE);
             final ConfigurationNode permissionsNode = node.node(PERMISSION);
             final ConfigurationNode displayNameNode = node.node(DISPLAY_NAME);
@@ -69,12 +68,11 @@ public class PacksConfig extends SimpleConfigurate {
             for(String entry: contentStringList) {
                 packEntryList.add(Pack.PackEntry.fromString(entry));
             }
-            final String series = seriesNode.getString();
             final double price = priceNode.getDouble(0.0D);
             final String permissions = permissionsNode.getString();
             final String displayName = displayNameNode.getString();
 
-            return new Pack(packEntryList,displayName, series,price,permissions);
+            return new Pack(packEntryList,displayName, price,permissions);
         }
 
         //Only implemented this since it's required. We don't actually use this feature yet.
@@ -86,7 +84,6 @@ public class PacksConfig extends SimpleConfigurate {
             }
 
             target.node(CONTENT).set(pack.getPackEntryList());
-            target.node(SERIES).set(pack.getSeries());
             target.node(PRICE).set(pack.getPrice());
             target.node(PERMISSION).set(pack.getPermissions());
         }

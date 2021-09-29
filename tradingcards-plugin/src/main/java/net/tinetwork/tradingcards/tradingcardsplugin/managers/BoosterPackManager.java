@@ -42,6 +42,10 @@ public class BoosterPackManager implements PackManager {
             loadPack(packName);
         }
         plugin.getLogger().info("Loaded " + packs.size() + " packs.");
+        plugin.debug(packs.keySet().toString());
+        for(ItemStack itemStack: packs.values()) {
+            plugin.debug(itemStack.toString());
+        }
     }
 
     @Override
@@ -95,6 +99,7 @@ public class BoosterPackManager implements PackManager {
 
     @Override
     public ItemStack getPackItem(final String name) {
+        plugin.debug("Pack contain "+name+ " pack?" + packs.containsKey(name));
         return packs.get(name).clone();
     }
 
