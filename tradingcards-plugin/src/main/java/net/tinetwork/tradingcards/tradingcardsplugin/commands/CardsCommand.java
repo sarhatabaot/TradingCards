@@ -97,7 +97,7 @@ public class CardsCommand extends BaseCommand {
         @CommandPermission(Permissions.GIVE_CARD)
         @CommandCompletion("@rarities @cards")
         @Description("Gives a card.")
-        public void onGiveCard(final Player player, final String rarity, final String cardName) {
+        public void onGiveCard(final Player player,@Single final String rarity, @Single final String cardName) {
             TradingCard card = cardManager.getCard(cardName,rarity,false);
             if(card instanceof EmptyCard) {
                 ChatUtil.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().noCard()));
@@ -114,7 +114,7 @@ public class CardsCommand extends BaseCommand {
         @CommandPermission(Permissions.GIVE_CARD_SHINY)
         @CommandCompletion("@rarities @cards")
         @Description("Gives a shiny card.")
-        public void onGiveShinyCard(final Player player, final String rarity, final String cardName) {
+        public void onGiveShinyCard(final Player player,@Single final String rarity,@Single final String cardName) {
             TradingCard card = cardManager.getCard(cardName,rarity,true);
             if(card instanceof EmptyCard) {
                 ChatUtil.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().noCard()));
@@ -129,9 +129,17 @@ public class CardsCommand extends BaseCommand {
         @Description("Gives a pack to a player.")
         @CommandCompletion("@players @packs")
         @CommandPermission(Permissions.GIVE_PACK)
-        public void onGiveBoosterPack(final CommandSender sender, final Player player, final String pack) {
-            ChatUtil.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().boosterPackMsg()));
+        public void onGiveBoosterPack(final CommandSender sender,@Single final String playerName, @Single final String pack) {
+            Player player = Bukkit.getPlayerExact(playerName);
+            if(player == null) {
+                ChatUtil.sendPrefixedMessage(sender, "This player is not online. Or doesn't exist.");
+                return;
+            }
+
             CardUtil.dropItem(player, plugin.getPackManager().getPackItem(pack));
+
+            ChatUtil.sendPrefixedMessage(sender,plugin.getMessagesConfig().givePack().replace("%player%",player.getName()).replace("%pack%",pack));
+            ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().boosterPackMsg());
         }
 
         @Subcommand("random entity")
@@ -152,7 +160,7 @@ public class CardsCommand extends BaseCommand {
         @Description("Gives a random card to a player. Specify rarity.")
         @CommandCompletion("@players @rarities")
         @CommandPermission(Permissions.GIVE_RANDOM_RARITY)
-        public void onGiveRandomCard(final CommandSender sender, final Player player, final String rarity) {
+        public void onGiveRandomCard(final CommandSender sender, final Player player,@Single final String rarity) {
             try {
                 plugin.debug("Rarity: " + rarity);
                 ChatUtil.sendPrefixedMessage(sender, plugin.getMessagesConfig().giveRandomCardMsg().replace("%player%", player.getName()));
@@ -246,7 +254,7 @@ public class CardsCommand extends BaseCommand {
     public class ListSubCommand extends BaseCommand {
         @Default
         @CommandCompletion("@rarities")
-        public void onList(final CommandSender sender, @Optional final String rarity) {
+        public void onList(final CommandSender sender,@Single @Optional final String rarity) {
             onListPlayer(sender, (Player) sender, rarity);
         }
 
@@ -254,7 +262,7 @@ public class CardsCommand extends BaseCommand {
         @CommandPermission(Permissions.LIST_PLAYER)
         @CommandCompletion("@players @rarities")
         @Description("Lists all cards by a player.")
-        public void onListPlayer(final CommandSender sender, final Player target, @Optional final String rarity) {
+        public void onListPlayer(final CommandSender sender, final Player target,@Single @Optional final String rarity) {
             if (rarity == null || plugin.isRarity(rarity).equalsIgnoreCase("None")) {
                 final String sectionFormat = String.format(plugin.getMessagesConfig().sectionFormatPlayer(), target.getName());
                 ChatUtil.sendMessage(sender, String.format(sectionFormat, target.getName()));
