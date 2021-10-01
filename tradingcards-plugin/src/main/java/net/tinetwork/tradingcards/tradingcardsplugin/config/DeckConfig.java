@@ -83,7 +83,7 @@ public class DeckConfig extends SimpleConfigurate {
     public void saveEntries(final UUID uuid, final int deckNumber, final List<DeckEntry> entries) {
         List<String> stringEntries = getStringListFromEntries(entries);
         plugin.debug(getClass(),stringEntries.toString());
-        plugin.getDeckConfig().getConfig().set(INVENTORY_PATH + uuid + "." + deckNumber, stringEntries);
+        plugin.getDeckConfig().getConfig().set(INVENTORY_PATH + uuid.toString() + "." + deckNumber, stringEntries);
         plugin.getDeckConfig().saveConfig();
     }
 

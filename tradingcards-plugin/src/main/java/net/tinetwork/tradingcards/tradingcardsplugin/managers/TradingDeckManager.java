@@ -4,6 +4,8 @@ import de.tr7zw.nbtapi.NBTItem;
 import net.tinetwork.tradingcards.api.manager.DeckManager;
 import net.tinetwork.tradingcards.api.model.deck.DeckEntry;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
+import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
+import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.DeckConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import org.bukkit.Bukkit;
@@ -53,9 +55,14 @@ public class TradingDeckManager implements DeckManager {
         List<DeckEntry> deckEntries = DeckConfig.convertToDeckEntries(deckConfig.getDeckEntries(uuid, String.valueOf(deckNum)));
         for (DeckEntry deckEntry : deckEntries) {
             plugin.debug(getClass(),deckEntry.toString());
-            ItemStack cardItem = cardManager.getCard(deckEntry.getCardId(),
+            TradingCard card = cardManager.getCard(deckEntry.getCardId(),
                     deckEntry.getRarityId(),
-                    deckEntry.isShiny()).build();
+                    deckEntry.isShiny());
+            if(card instanceof EmptyCard) {
+                plugin.debug(getClass(),"Card is not in a cards file, skipping.");
+                continue;
+            }
+            ItemStack cardItem = card.build();
             cardItem.setAmount(deckEntry.getAmount());
             cards.add(cardItem);
         }
