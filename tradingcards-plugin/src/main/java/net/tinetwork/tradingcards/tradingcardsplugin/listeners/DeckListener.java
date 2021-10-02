@@ -3,11 +3,10 @@ package net.tinetwork.tradingcards.tradingcardsplugin.listeners;
 import de.tr7zw.nbtapi.NBTItem;
 import net.tinetwork.tradingcards.api.model.deck.DeckEntry;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
+import net.tinetwork.tradingcards.tradingcardsplugin.config.DeckConfig;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingDeckManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
-import net.tinetwork.tradingcards.tradingcardsplugin.utils.UuidUtil;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,12 +17,18 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
+import java.util.Objects;
 
 public class DeckListener extends SimpleListener {
+    private final TradingDeckManager deckManager;
+    private final DeckConfig deckConfig;
+
     public DeckListener(final TradingCards plugin) {
         super(plugin);
+        this.deckManager = plugin.getDeckManager();
+        this.deckConfig = plugin.getDeckConfig();
     }
 
     @EventHandler
@@ -49,40 +54,51 @@ public class DeckListener extends SimpleListener {
             return;
         }
 
-        int num = plugin.getDeckManager().getDeckNumber(player.getInventory().getItemInMainHand());
-        plugin.getDeckManager().openDeck(player, num);
+        int num = deckManager.getDeckNumber(player.getInventory().getItemInMainHand());
+        deckManager.openDeck(player, num);
     }
 
 
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent e) {
-        String viewTitle = e.getView().getTitle();
-        if (!viewTitle.contains("s Deck #")) {
+        if(!deckManager.containsViewer(e.getPlayer().getUniqueId())) {
+            plugin.debug(getClass(),"Not our gui, ignoring.");
             return;
         }
 
-        int deckNum = Integer.parseInt(viewTitle.split("#")[1]);
-        String playerName = ChatColor.stripColor(viewTitle.split("'")[0]).trim();
-        debug("deck: " + deckNum + ",player: " + playerName);
+//        String viewTitle = e.getView().getTitle();
+//        if (!viewTitle.contains("s Deck #")) {
+//            return;
+//        }
+//
+//        int deckNum = Integer.parseInt(viewTitle.split("#")[1]);
+//        String playerName = ChatColor.stripColor(viewTitle.split("'")[0]).trim();
+        if(!(e.getPlayer() instanceof final Player player)) {
+            plugin.debug(getClass(),"Not a player entity, ignoring.");
+            return;
+        }
+        int deckNum = deckManager.getViewerDeckNum(player.getUniqueId());
+        debug("deck: " + deckNum + ",player: " + player.getName());
 
-        UUID id = UuidUtil.getPlayerUuid(playerName);
         List<DeckEntry> serializedEntries = new ArrayList<>();
-        for (ItemStack it : e.getInventory().getContents()) {
-            if (it == null || !it.getItemMeta().hasLore())
-                continue; //if item is null for some reason.
+        final List<ItemStack> inventoryContents = Arrays.stream(e.getInventory().getContents())
+                .filter(Objects::nonNull)
+                .toList();
 
-            if (!CardUtil.isCard(it) && plugin.getGeneralConfig().dropDeckItems()) {
-                Player player = Bukkit.getPlayer(id);
-                CardUtil.dropItem(player, it);
+        for(ItemStack item: inventoryContents) {
+            if (!CardUtil.isCard(item) && plugin.getGeneralConfig().dropDeckItems()) {
+                CardUtil.dropItem(player, item);
                 continue;
             }
 
-            DeckEntry entry = formatEntryString(it);
+            DeckEntry entry = formatEntryString(item);
             serializedEntries.add(entry);
             debug("Added " + entry + " to deck file.");
         }
-        plugin.getDeckConfig().saveEntries(id, deckNum, serializedEntries);
-        plugin.getDeckConfig().reloadConfig();
+
+        deckConfig.saveEntries(player.getUniqueId(), deckNum, serializedEntries);
+        deckConfig.reloadConfig();
+        deckManager.closeDeckViewer(e.getPlayer().getUniqueId());
         debug("Deck closed");
     }
 

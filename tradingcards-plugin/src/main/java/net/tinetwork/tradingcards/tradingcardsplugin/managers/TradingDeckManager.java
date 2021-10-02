@@ -19,24 +19,48 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class TradingDeckManager implements DeckManager {
     private final TradingCards plugin;
     private final TradingCardManager cardManager;
     private final DeckConfig deckConfig;
+    private final Map<UUID,Integer> playerDeckViewingMap;
 
     public TradingDeckManager(final TradingCards plugin) {
         this.plugin = plugin;
         this.cardManager = plugin.getCardManager();
         this.deckConfig = plugin.getDeckConfig();
+        this.playerDeckViewingMap = new HashMap<>();
     }
 
     public void openDeck(Player p, int deckNum) {
         String uuidString = p.getUniqueId().toString();
+        openDeckViewer(p.getUniqueId(),deckNum);
         plugin.debug(TradingDeckManager.class,"Deck UUID: " + uuidString);
         p.openInventory(generateDeckInventory(p, deckNum));
+    }
+
+    public void openDeckViewer(UUID uuid, int num) {
+        plugin.debug(getClass(),"Added uuid "+uuid+" deck #"+num+" to deck viewer map.");
+        this.playerDeckViewingMap.put(uuid,num);
+    }
+
+
+    public void closeDeckViewer(UUID uuid) {
+        plugin.debug(getClass(),"Removed uuid "+uuid+" from deck viewer map.");
+        this.playerDeckViewingMap.remove(uuid);
+    }
+
+    public int getViewerDeckNum(UUID uuid) {
+        return this.playerDeckViewingMap.get(uuid);
+    }
+
+    public boolean containsViewer(UUID uuid) {
+        return this.playerDeckViewingMap.containsKey(uuid);
     }
 
     private Inventory generateDeckInventory(final Player player, final int deckNum) {
