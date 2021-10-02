@@ -31,7 +31,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
     //CardKey,Card<TradingCard>
     private Map<String, Card<TradingCard>> cards;
     //TODO, should instead contain an id instead of the whole object.
-    private Map<String, Card<TradingCard>> activeCards;
+    private List<String> activeCards;
 
     //Contains all cards from a specific series, regardless of rarity
     private Map<String, List<String>> seriesCards;
@@ -78,7 +78,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
                     final String cardName = nodeEntry.getValue().key().toString();
                     final String cardKey = cardKey(rarity.getName(), cardName);
                     plugin.debug(TradingCardManager.class,"CardKey="+cardKey);
-                    cards.put(cardKey, generateCard(simpleCardsConfig, cardName, rarity.getName(), false));
+                    cards.put(cardKey, generateCard(simpleCardsConfig, cardName, rarity.getName()));
                     rarityCardList.get(rarity.getName()).add(cardName);
                 }
             }
@@ -98,7 +98,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
     }
 
     private void loadActiveCards() {
-        this.activeCards = new HashMap<>();
+        this.activeCards = new ArrayList<>();
         this.activeRarityCardList = new HashMap<>();
         var cardConfigs = plugin.getCardsConfig().getCardConfigs();
         for (SimpleCardsConfig simpleCardsConfig : cardConfigs) {
@@ -121,7 +121,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
                     //This only loads on startup, that means that it doesn't update. But only on restarts TODO
                     if (card.getSeries().isActive()) {
                         activeRarityCardList.get(rarity.getName()).add(cardName);
-                        activeCards.put(cardKey, cards.get(cardKey));
+                        activeCards.add(cardKey);
                     }
 
                 }
@@ -157,21 +157,28 @@ public class TradingCardManager implements CardManager<TradingCard> {
 
 
     @Override
-    public Map<String, Card<TradingCard>> getActiveCards() {
+    public List<String> getActiveCards() {
         return activeCards;
     }
 
     @Override
     public TradingCard getCard(final String cardName, final String rarity, final boolean forcedShiny) {
-        if (cards.containsKey(cardKey(rarity,cardName)))
-            return cards.get(cardKey(rarity,cardName)).isShiny(forcedShiny).get();
+        if (cards.containsKey(cardKey(rarity,cardName))) {
+            TradingCard card = cards.get(cardKey(rarity, cardName)).get();
+            card.isShiny(forcedShiny);
+            return card;
+        }
         return new EmptyCard();
     }
 
     @Override
     public TradingCard getActiveCard(final String cardName, final String rarity, final boolean forcedShiny) {
-        if (activeCards.containsKey(rarity + "." + cardName))
-            return activeCards.get(rarity + "." + cardName).get();
+        final String cardKey = cardKey(rarity,cardName);
+        if (activeCards.contains(cardKey)) {
+            TradingCard card = cards.get(cardKey(rarity, cardName)).get();
+            card.isShiny(forcedShiny);
+            return card;
+        }
         //fallthrough
         return getCard(cardName, rarity, forcedShiny);
     }
@@ -200,7 +207,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
 
     @Override
     public TradingCard getRandomActiveCard(final String rarity, final boolean forcedShiny) {
-        if (activeCards.keySet().isEmpty()) {
+        if (activeCards.isEmpty()) {
             plugin.debug(TradingCardManager.class,"There are no cards in the active series. Not dropping anything.");
             return new EmptyCard();
         }
@@ -229,8 +236,9 @@ public class TradingCardManager implements CardManager<TradingCard> {
 
     public String getRandomRarity(MobType mobType, boolean alwaysDrop) {
         int randomDropChance = plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1;
-        plugin.debug(TradingCardManager.class,"DropChance=" + randomDropChance +" AlwaysDrop=" + alwaysDrop);
-        if (!alwaysDrop && randomDropChance > getGeneralMobChance(mobType)) {
+        int mobDropChance = getGeneralMobChance(mobType);
+        plugin.debug(TradingCardManager.class,"DropChance=" + randomDropChance +" AlwaysDrop=" + alwaysDrop +" MobType="+mobType.toString()+" MobDropChance="+mobDropChance);
+        if (!alwaysDrop && randomDropChance > mobDropChance) {
             return "None";
         }
 
@@ -239,7 +247,6 @@ public class TradingCardManager implements CardManager<TradingCard> {
 
         TreeSet<String> rarityKeys = new TreeSet<>(plugin.getCardManager().getRarityNames());
         for (String rarity : rarityKeys.descendingSet()) {
-            plugin.debug(TradingCardManager.class,"Rarity=" + rarity);
             Chance chance = plugin.getChancesConfig().getChance(rarity);
             if (chance instanceof EmptyChance)
                 return "None";
@@ -252,22 +259,13 @@ public class TradingCardManager implements CardManager<TradingCard> {
     }
 
 
-    public TradingCard generateCard(final SimpleCardsConfig simpleCardsConfig, final String cardId, final String rarityId, boolean forcedShiny) {
+    public TradingCard generateCard(final SimpleCardsConfig simpleCardsConfig, final String cardId, final String rarityId) {
         if ("none".equalsIgnoreCase(rarityId)) {
             return NULL_CARD;
         }
 
-        return simpleCardsConfig.getCard(rarityId, cardId)
-                .isShiny(calculateIfShiny(forcedShiny)).get();
+        return simpleCardsConfig.getCard(rarityId, cardId).get();
     }
 
-    private boolean calculateIfShiny(boolean forcedShiny) {
-        if (forcedShiny)
-            return true;
-        int shinyRandom = plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1;
-        boolean isShiny = shinyRandom <= plugin.getChancesConfig().shinyVersionChance();
-        plugin.debug(TradingCardManager.class,"Shiny="+isShiny+", Value="+shinyRandom+", ShinyChance="+plugin.getChancesConfig().shinyVersionChance());
-        return isShiny;
-    }
 
 }

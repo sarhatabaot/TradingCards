@@ -20,7 +20,7 @@ public interface CardManager<T> {
      *
      * @return
      */
-    Map<String, Card<T>> getActiveCards();
+    List<String> getActiveCards();
 
     /**
      *

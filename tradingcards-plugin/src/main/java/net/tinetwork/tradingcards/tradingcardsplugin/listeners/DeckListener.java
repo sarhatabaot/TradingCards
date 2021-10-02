@@ -66,17 +66,11 @@ public class DeckListener extends SimpleListener {
             return;
         }
 
-//        String viewTitle = e.getView().getTitle();
-//        if (!viewTitle.contains("s Deck #")) {
-//            return;
-//        }
-//
-//        int deckNum = Integer.parseInt(viewTitle.split("#")[1]);
-//        String playerName = ChatColor.stripColor(viewTitle.split("'")[0]).trim();
         if(!(e.getPlayer() instanceof final Player player)) {
             plugin.debug(getClass(),"Not a player entity, ignoring.");
             return;
         }
+
         int deckNum = deckManager.getViewerDeckNum(player.getUniqueId());
         debug("deck: " + deckNum + ",player: " + player.getName());
 

@@ -1,6 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.utils;
 
 import de.tr7zw.nbtapi.NBTItem;
+import net.tinetwork.tradingcards.api.card.Card;
 import net.tinetwork.tradingcards.api.model.MobType;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
@@ -39,6 +40,7 @@ public class CardUtil {
     private static final String PLACEHOLDER_BUY_PRICE = "%BUY_PRICE%";
     private static final String PLACEHOLDER_SELL_PRICE = "%SELL_PRICE%";
     private static final String PLACEHOLDER_SHINY_PREFIX = "%SHINY_PREFIX%";
+    private static final String PLACEHOLDER_SHINY_PREFIX_ALT = "%SHINYPREFIX%";
 
     private CardUtil() {
         throw new UnsupportedOperationException();
@@ -199,11 +201,13 @@ public class CardUtil {
         final String buyPrice = String.valueOf(card.getBuyPrice());
         final String sellPrice = String.valueOf(card.getSellPrice());
 
+
+
         if (card.isShiny() && shinyPrefix != null) {
             if (card.isPlayerCard()) {
-                return ChatUtil.color(StringUtils.replaceEach(shinyTitle, shinyPlayerCardFormat, new String[]{prefix, rarityColour, card.getDisplayName(), buyPrice, sellPrice, shinyPrefix}));
+                return ChatUtil.color(StringUtils.replaceEach(shinyTitle.replace(PLACEHOLDER_SHINY_PREFIX_ALT,PLACEHOLDER_SHINY_PREFIX), shinyPlayerCardFormat, new String[]{prefix, rarityColour, card.getDisplayName(), buyPrice, sellPrice, shinyPrefix}));
             }
-            return ChatUtil.color(StringUtils.replaceEach(shinyTitle, shinyCardFormat, new String[]{prefix, rarityColour, card.getDisplayName(), buyPrice, sellPrice, shinyPrefix, " "}));
+            return ChatUtil.color(StringUtils.replaceEach(shinyTitle.replace(PLACEHOLDER_SHINY_PREFIX_ALT,PLACEHOLDER_SHINY_PREFIX), shinyCardFormat, new String[]{prefix, rarityColour, card.getDisplayName(), buyPrice, sellPrice, shinyPrefix, " "}));
         }
         if (card.isPlayerCard()) {
             return ChatUtil.color(StringUtils.replaceEach(title, playerCardFormat, new String[]{prefix, rarityColour, card.getDisplayName(), buyPrice, sellPrice}));
@@ -211,13 +215,14 @@ public class CardUtil {
         return ChatUtil.color(StringUtils.replaceEach(title, cardFormat, new String[]{prefix, rarityColour, card.getDisplayName(), buyPrice, sellPrice, " "}));
     }
 
+
     public static List<String> formatLore(final String info, final String about, final String rarity, final boolean isShiny, final String type, final String series) {
         List<String> lore = new ArrayList<>();
         final String typeFormat = ChatUtil.color(plugin.getGeneralConfig().colorType() + plugin.getGeneralConfig().displayType() + ": &f" + type);
         final String infoFormat = ChatUtil.color(plugin.getGeneralConfig().colorInfo() + plugin.getGeneralConfig().displayInfo() + ": &f");
         final String seriesFormat = ChatUtil.color(plugin.getGeneralConfig().colorSeries() + plugin.getGeneralConfig().displaySeries() + ": &f" + series);
         final String aboutFormat = ChatUtil.color(plugin.getGeneralConfig().colorAbout() + plugin.getGeneralConfig().displayAbout() + ": &f");
-        final String rarityFormat = ChatUtil.color(plugin.getGeneralConfig().colorRarity() + ChatColor.BOLD);
+        final String rarityFormat = ChatUtil.color(plugin.getGeneralConfig().colorRarity());
 
         lore.add(typeFormat);
         if (!"None".equalsIgnoreCase(info) && !info.isEmpty()) {
@@ -234,9 +239,9 @@ public class CardUtil {
 
         final String rarityName = ChatUtil.color(rarity.replace('_', ' '));
         if (isShiny) {
-            lore.add(rarityFormat + plugin.getGeneralConfig().shinyName() + " " + rarityName);
+            lore.add(ChatUtil.color(rarityFormat + plugin.getGeneralConfig().shinyName() + " " + rarityName));
         } else {
-            lore.add(rarityFormat + rarityName);
+            lore.add(ChatUtil.color(rarityFormat + rarityName));
         }
 
         return lore;
@@ -248,4 +253,12 @@ public class CardUtil {
         return rarity + "." + cardName;
     }
 
+    public static boolean calculateIfShiny(boolean forcedShiny) {
+        if (forcedShiny)
+            return true;
+        int shinyRandom = plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1;
+        boolean isShiny = shinyRandom <= plugin.getChancesConfig().shinyVersionChance();
+        plugin.debug(TradingCardManager.class,"Shiny="+isShiny+", Value="+shinyRandom+", ShinyChance="+plugin.getChancesConfig().shinyVersionChance());
+        return isShiny;
+    }
 }

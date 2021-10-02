@@ -53,6 +53,7 @@ public class SimpleCardsConfig extends SimpleConfigurate {
         private static final String DISPLAY_NAME = "display-name";
         private static final String SERIES = "series";
         private static final String TYPE = "type";
+        //TODO, confusing, does a card have a shiny version, or is it shiny?
         private static final String HAS_SHINY = "has-shiny-version";
         private static final String INFO = "info";
         private static final String ABOUT = "about";
@@ -88,7 +89,7 @@ public class SimpleCardsConfig extends SimpleConfigurate {
                     .displayName(displayName)
                     .series(series)
                     .type(cardType)
-                    .isShiny(hasShiny)
+                    .hasShiny(hasShiny)
                     .info(info)
                     .about(about)
                     .buyPrice(buyPrice)
@@ -106,7 +107,7 @@ public class SimpleCardsConfig extends SimpleConfigurate {
             target.node(DISPLAY_NAME).set(card.getDisplayName());
             target.node(SERIES).set(card.getSeries());
             target.node(TYPE).set(card.getType());
-            target.node(HAS_SHINY).set(card.isShiny());
+            target.node(HAS_SHINY).set(card.hasShiny());
             target.node(INFO).set(card.getInfo());
             target.node(ABOUT).set(card.getAbout());
             target.node(BUY_PRICE).set(card.getBuyPrice());
