@@ -9,6 +9,7 @@ public abstract class Card<T> {
     private final String cardName;
     private String displayName;
     private Rarity rarity;
+    private boolean hasShiny = false;
     private boolean isShiny = false;
     private boolean isPlayerCard = false;
     private Series series;
@@ -32,6 +33,11 @@ public abstract class Card<T> {
      */
     public Card<T> isShiny(boolean isShiny) {
         this.isShiny = isShiny;
+        return this;
+    }
+
+    public Card<T> hasShiny(boolean hasShiny) {
+        this.hasShiny = hasShiny;
         return this;
     }
 
@@ -110,6 +116,10 @@ public abstract class Card<T> {
         return isShiny;
     }
 
+    public boolean hasShiny() {
+        return hasShiny;
+    }
+
     public boolean isPlayerCard() {
         return isPlayerCard;
     }
@@ -162,7 +172,7 @@ public abstract class Card<T> {
     public ItemStack build() {
         if(nbtItem == null)
             nbtItem = buildNBTItem();
-        return nbtItem.getItem();
+        return nbtItem.getItem().clone();
     }
 
     @Override
@@ -171,6 +181,7 @@ public abstract class Card<T> {
                 "cardName='" + cardName + '\'' +
                 ", displayName='" + displayName + '\'' +
                 ", rarity='" + rarity.toString() + '\'' +
+                ", hasShiny=" + hasShiny +
                 ", isShiny=" + isShiny +
                 ", isPlayerCard=" + isPlayerCard +
                 ", series='" + series.toString() + '\'' +
