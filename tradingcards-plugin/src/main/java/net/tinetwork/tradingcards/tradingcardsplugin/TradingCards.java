@@ -27,6 +27,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.whitelist.PlayerBlacklist;
 import net.tinetwork.tradingcards.tradingcardsplugin.whitelist.WorldBlacklist;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -102,6 +103,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         initCommands();
 
         hookVault();
+        new Metrics(this, 12940);
     }
 
     public GeneralConfig getGeneralConfig() {
