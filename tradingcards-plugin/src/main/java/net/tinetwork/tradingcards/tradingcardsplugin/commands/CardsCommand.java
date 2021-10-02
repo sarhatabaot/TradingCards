@@ -89,10 +89,10 @@ public class CardsCommand extends BaseCommand {
     @Description("Toggles card drops from mobs.")
     public void onToggle(final Player player) {
         if (playerBlacklist.isAllowed(player)) {
-            playerBlacklist.remove(player);
+            playerBlacklist.add(player);
             ChatUtil.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().toggleDisabled()));
         } else {
-            playerBlacklist.add(player);
+            playerBlacklist.remove(player);
             ChatUtil.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().toggleEnabled()));
         }
     }
