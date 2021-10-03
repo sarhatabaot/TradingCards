@@ -174,10 +174,10 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     }
 
     private void initManagers() {
+        this.dropTypeManager = new DropTypeManager(this);
         this.cardManager = new TradingCardManager(this);
         this.packManager = new BoosterPackManager(this);
         this.deckManager = new TradingDeckManager(this);
-        this.dropTypeManager = new DropTypeManager(this);
     }
 
     private void initCommands() {

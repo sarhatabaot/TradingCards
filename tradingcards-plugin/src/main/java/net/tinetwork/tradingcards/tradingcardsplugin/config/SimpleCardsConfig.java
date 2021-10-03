@@ -1,5 +1,6 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config;
 
+import net.tinetwork.tradingcards.api.exceptions.UnsupportedDropTypeException;
 import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
@@ -7,6 +8,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigurate;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.DropTypeManager;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
@@ -22,8 +24,9 @@ import java.util.Map;
  */
 public class SimpleCardsConfig extends SimpleConfigurate {
     private ConfigurationNode cardsNode;
+
     public SimpleCardsConfig(final TradingCards plugin, final String fileName) throws ConfigurateException {
-        super(plugin, "cards"+File.separator, fileName, "cards");
+        super(plugin, "cards" + File.separator, fileName, "cards");
     }
 
     @Override
@@ -75,11 +78,18 @@ public class SimpleCardsConfig extends SimpleConfigurate {
             final String rarityId = node.parent().key().toString();
             final String displayName = node.node(DISPLAY_NAME).getString();
             final String seriesId = node.node(SERIES).getString();
-            final DropType cardType = plugin.getDropTypeManager().getType(node.node(TYPE).getString());
-            final boolean hasShiny  = node.node(HAS_SHINY).getBoolean();
+            DropType cardType;
+            try {
+                cardType = plugin.getDropTypeManager().getType(node.node(TYPE).getString());
+            } catch (UnsupportedDropTypeException e) {
+                plugin.getLogger().warning("Could not get the type for " + id + " reason: " + e.getMessage());
+                plugin.getLogger().warning("Defaulting to passive.");
+                cardType = DropTypeManager.PASSIVE;
+            }
+            final boolean hasShiny = node.node(HAS_SHINY).getBoolean();
             final String info = node.node(INFO).getString();
             final String about = node.node(ABOUT).getString();
-            final double buyPrice  = node.node(BUY_PRICE).getDouble(0.0D);
+            final double buyPrice = node.node(BUY_PRICE).getDouble(0.0D);
             final double sellPrice = node.node(SELL_PRICE).getDouble(0.0D);
             final int customModelData = node.node(CUSTOM_MODEL_DATA).getInt(0);
 
@@ -100,7 +110,7 @@ public class SimpleCardsConfig extends SimpleConfigurate {
 
         @Override
         public void serialize(Type type, @Nullable TradingCard card, ConfigurationNode target) throws SerializationException {
-            if(card == null) {
+            if (card == null) {
                 target.raw(null);
                 return;
             }

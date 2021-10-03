@@ -1,6 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.managers;
 
 
+import net.tinetwork.tradingcards.api.exceptions.UnsupportedDropTypeException;
 import net.tinetwork.tradingcards.api.manager.TypeManager;
 import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
@@ -23,8 +24,18 @@ public class DropTypeManager implements TypeManager {
     }
 
     @Override
-    public DropType getType(final String type) {
-        return mobTypes.get(type);
+    public DropType getType(final String type) throws UnsupportedDropTypeException {
+        DropType dropType = mobTypes.get(type);
+        if(dropType == null) {
+            return switch (type.toLowerCase()) {
+                case "boss" -> BOSS;
+                case "hostile" -> HOSTILE;
+                case "neutral" -> NEUTRAL;
+                case "passive" -> PASSIVE;
+                default -> throw new UnsupportedDropTypeException();
+            };
+        }
+        return dropType;
     }
 
     @Override
@@ -39,4 +50,6 @@ public class DropTypeManager implements TypeManager {
     public Map<String, DropType> getTypes() {
         return mobTypes;
     }
+
+
 }

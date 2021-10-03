@@ -65,7 +65,7 @@ public class DropTypesConfig extends SimpleConfigurate {
         }
         @Override
         public DropType deserialize(final Type type, final ConfigurationNode node) throws SerializationException {
-            final String id = node.parent().key().toString();
+            final String id = node.key().toString();
             final String displayName = node.node(DISPLAY_NAME).getString();
             final String dropType = node.node(DROP_TYPE).getString();
             return new DropType(id,displayName,dropType);
