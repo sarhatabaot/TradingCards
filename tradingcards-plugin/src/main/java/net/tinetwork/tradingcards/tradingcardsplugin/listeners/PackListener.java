@@ -4,6 +4,7 @@ import de.tr7zw.nbtapi.NBTItem;
 import net.tinetwork.tradingcards.api.model.Pack;
 import net.tinetwork.tradingcards.tradingcardsplugin.Permissions;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
+import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import org.apache.commons.lang.WordUtils;
@@ -78,11 +79,11 @@ public class PackListener extends SimpleListener {
         if (amount <= 0)
             return;
         for (var i = 0; i < amount; i++) {
-            if(series == null) {
-                CardUtil.dropItem(player, plugin.getCardManager().getRandomCard(rarity, false).build());
-            } else {
-                CardUtil.dropItem(player, plugin.getCardManager().getRandomCard(rarity,series, false).build());
+            TradingCard randomCard = plugin.getCardManager().getRandomCard(rarity,series, false);
+            if(randomCard.hasShiny() && CardUtil.calculateIfShiny(false)) {
+                randomCard.isShiny(true);
             }
+            CardUtil.dropItem(player, randomCard.build());
         }
     }
 

@@ -191,8 +191,11 @@ public class TradingCardManager implements CardManager<TradingCard> {
         return getCard(randomCardName, rarity, forcedShiny);
     }
 
-    //TODO Reallly inefficient
+
     public TradingCard getRandomCard(final String rarity, final String series, final boolean forcedShiny) {
+        if(series == null)
+            return getRandomCard(rarity,forcedShiny);
+        //TODO Reallly inefficient
         List<String> raritySeries = new ArrayList<>();
         for(String cardKey: getRarityCardList(rarity)) {
             TradingCard tradingCard = getCard(cardKey,rarity,forcedShiny);
