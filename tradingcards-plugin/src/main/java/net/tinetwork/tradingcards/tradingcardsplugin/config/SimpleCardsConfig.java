@@ -80,10 +80,14 @@ public class SimpleCardsConfig extends SimpleConfigurate {
             final String rarityId = node.parent().key().toString();
             final String displayName = node.node(DISPLAY_NAME).getString();
             final String seriesId = node.node(SERIES).getString();
-            Material material = Material.matchMaterial(node.node(MATERIAL).getString());
-            if(material == null) {
+            final String materialName = node.node(MATERIAL).getString();
+            Material material;
+            if(materialName == null) {
                 material = plugin.getGeneralConfig().cardMaterial();
+            } else {
+                material = Material.matchMaterial(materialName);
             }
+
             DropType cardType;
             try {
                 cardType = plugin.getDropTypeManager().getType(node.node(TYPE).getString());
