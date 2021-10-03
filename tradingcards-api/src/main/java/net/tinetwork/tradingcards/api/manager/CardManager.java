@@ -1,7 +1,7 @@
 package net.tinetwork.tradingcards.api.manager;
 
 import net.tinetwork.tradingcards.api.card.Card;
-import net.tinetwork.tradingcards.api.model.MobType;
+import net.tinetwork.tradingcards.api.model.DropType;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
@@ -67,11 +67,11 @@ public interface CardManager<T> {
 
     /**
      *
-     * @param mobType
+     * @param dropType
      * @param alwaysDrop
      * @return
      */
-    String getRandomRarity(final MobType mobType, boolean alwaysDrop);
+    String getRandomRarity(final DropType dropType, boolean alwaysDrop);
 
     /**
      * @param rarity Rarity

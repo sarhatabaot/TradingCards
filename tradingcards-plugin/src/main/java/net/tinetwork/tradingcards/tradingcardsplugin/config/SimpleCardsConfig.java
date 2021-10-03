@@ -1,5 +1,6 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config;
 
+import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
@@ -74,7 +75,7 @@ public class SimpleCardsConfig extends SimpleConfigurate {
             final String rarityId = node.parent().key().toString();
             final String displayName = node.node(DISPLAY_NAME).getString();
             final String seriesId = node.node(SERIES).getString();
-            final String cardType = node.node(TYPE).getString();
+            final DropType cardType = plugin.getDropTypeManager().getType(node.node(TYPE).getString());
             final boolean hasShiny  = node.node(HAS_SHINY).getBoolean();
             final String info = node.node(INFO).getString();
             final String about = node.node(ABOUT).getString();

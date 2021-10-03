@@ -1,11 +1,11 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.utils;
 
 import de.tr7zw.nbtapi.NBTItem;
-import net.tinetwork.tradingcards.api.card.Card;
-import net.tinetwork.tradingcards.api.model.MobType;
+import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.DropTypeManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingCardManager;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
@@ -94,17 +94,17 @@ public class CardUtil {
     }
 
     @NotNull
-    public static MobType getMobType(EntityType e) {
+    public static DropType getMobType(EntityType e) {
         if (plugin.isMobHostile(e)) {
-            return MobType.HOSTILE;
+            return DropTypeManager.HOSTILE;
         }
         if (plugin.isMobNeutral(e)) {
-            return MobType.NEUTRAL;
+            return DropTypeManager.NEUTRAL;
         }
         if (plugin.isMobPassive(e)) {
-            return MobType.PASSIVE;
+            return DropTypeManager.PASSIVE;
         }
-        return MobType.BOSS;
+        return DropTypeManager.BOSS;
     }
 
 

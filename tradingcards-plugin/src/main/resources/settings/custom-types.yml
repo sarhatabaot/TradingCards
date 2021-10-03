@@ -1,0 +1,4 @@
+# You can set custom types for drops here.
+ranks:
+  display-name: "&fRanks"
+  drop-type: hostile

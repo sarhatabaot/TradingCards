@@ -2,7 +2,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.managers;
 
 import net.tinetwork.tradingcards.api.card.Card;
 import net.tinetwork.tradingcards.api.manager.CardManager;
-import net.tinetwork.tradingcards.api.model.MobType;
+import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.chance.Chance;
 import net.tinetwork.tradingcards.api.model.chance.EmptyChance;
@@ -225,19 +225,20 @@ public class TradingCardManager implements CardManager<TradingCard> {
         return cardItem;
     }
 
-    private int getGeneralMobChance(MobType mobType) {
-        return switch (mobType) {
-            case BOSS -> plugin.getChancesConfig().bossChance();
-            case HOSTILE -> plugin.getChancesConfig().hostileChance();
-            case NEUTRAL -> plugin.getChancesConfig().neutralChance();
-            case PASSIVE -> plugin.getChancesConfig().passiveChance();
+    private int getGeneralMobChance(DropType dropType) {
+        return switch (dropType.getType()) {
+            case "boss" -> plugin.getChancesConfig().bossChance();
+            case "hostile" -> plugin.getChancesConfig().hostileChance();
+            case "neutral" -> plugin.getChancesConfig().neutralChance();
+            case "passive" -> plugin.getChancesConfig().passiveChance();
+            default -> 0;
         };
     }
 
-    public String getRandomRarity(MobType mobType, boolean alwaysDrop) {
+    public String getRandomRarity(DropType dropType, boolean alwaysDrop) {
         int randomDropChance = plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1;
-        int mobDropChance = getGeneralMobChance(mobType);
-        plugin.debug(TradingCardManager.class,"DropChance=" + randomDropChance +" AlwaysDrop=" + alwaysDrop +" MobType="+mobType.toString()+" MobDropChance="+mobDropChance);
+        int mobDropChance = getGeneralMobChance(dropType);
+        plugin.debug(TradingCardManager.class,"DropChance=" + randomDropChance +" AlwaysDrop=" + alwaysDrop +" MobType="+ dropType.toString()+" MobDropChance="+mobDropChance);
         if (!alwaysDrop && randomDropChance > mobDropChance) {
             return "None";
         }
@@ -251,7 +252,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
             if (chance instanceof EmptyChance)
                 return "None";
 
-            int chanceInt = chance.getFromMobType(mobType);
+            int chanceInt = chance.getFromMobType(dropType);
             if (randomRarityChance < chanceInt)
                 return rarity;
         }

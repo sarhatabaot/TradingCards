@@ -1,6 +1,6 @@
 package net.tinetwork.tradingcards.api.model.chance;
 
-import net.tinetwork.tradingcards.api.model.MobType;
+import net.tinetwork.tradingcards.api.model.DropType;
 
 public class Chance {
     private final String id;
@@ -47,12 +47,13 @@ public class Chance {
         };
     }
 
-    public int getFromMobType(final MobType mobType) {
-        return switch (mobType) {
-            case HOSTILE -> this.getHostile();
-            case NEUTRAL -> this.getNeutral();
-            case PASSIVE-> this.getPassive();
-            case BOSS -> this.getBoss();
+    public int getFromMobType(final DropType dropType) {
+        return switch (dropType.getType()) {
+            case "hostile" -> this.getHostile();
+            case "neutral" -> this.getNeutral();
+            case "passive"-> this.getPassive();
+            case "boss" -> this.getBoss();
+            default -> 0;
         };
     }
 

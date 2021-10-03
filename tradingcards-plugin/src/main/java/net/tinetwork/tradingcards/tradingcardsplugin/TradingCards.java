@@ -12,6 +12,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.commands.DeckCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.CardsConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.DeckConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.ChancesConfig;
+import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.DropTypesConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.GeneralConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.MessagesConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.PacksConfig;
@@ -21,6 +22,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.listeners.DeckListener;
 import net.tinetwork.tradingcards.tradingcardsplugin.listeners.DropListener;
 import net.tinetwork.tradingcards.tradingcardsplugin.listeners.PackListener;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.BoosterPackManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.DropTypeManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingCardManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingDeckManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
@@ -59,11 +61,13 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private PacksConfig packsConfig;
     private MessagesConfig messagesConfig;
     private SeriesConfig seriesConfig;
+    private DropTypesConfig dropTypesConfig;
 
     /* Managers */
     private TradingCardManager cardManager;
     private BoosterPackManager packManager;
     private TradingDeckManager deckManager;
+    private DropTypeManager dropTypeManager;
 
     /* Hooks */
     private boolean hasVault;
@@ -130,6 +134,14 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         return seriesConfig;
     }
 
+    public DropTypesConfig getDropTypesConfig() {
+        return dropTypesConfig;
+    }
+
+    public DropTypeManager getDropTypeManager() {
+        return dropTypeManager;
+    }
+
     private void initUtils() {
         ChatUtil.init(this);
         CardUtil.init(this);
@@ -153,6 +165,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
             this.messagesConfig = new MessagesConfig(this);
             this.packsConfig = new PacksConfig(this);
             this.deckConfig = new DeckConfig(this);
+            this.dropTypesConfig = new DropTypesConfig(this);
         } catch (ConfigurateException e) {
             getLogger().severe(e.getMessage());
         }
@@ -164,6 +177,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         this.cardManager = new TradingCardManager(this);
         this.packManager = new BoosterPackManager(this);
         this.deckManager = new TradingDeckManager(this);
+        this.dropTypeManager = new DropTypeManager(this);
     }
 
     private void initCommands() {

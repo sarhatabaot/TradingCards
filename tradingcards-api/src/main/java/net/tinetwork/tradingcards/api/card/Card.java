@@ -1,20 +1,25 @@
 package net.tinetwork.tradingcards.api.card;
 
 import de.tr7zw.nbtapi.NBTItem;
+import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
 import org.bukkit.inventory.ItemStack;
 
 public abstract class Card<T> {
     private final String cardName;
-    private String displayName;
+
     private Rarity rarity;
-    private boolean hasShiny = false;
-    private boolean isShiny = false;
-    private boolean isPlayerCard = false;
+    private DropType type;
     private Series series;
+
+    private boolean hasShiny = false;
+
+    //CardMeta
+    private boolean isPlayerCard = false;
+    private boolean isShiny = false;
     private String about;
-    private String type;
+    private String displayName;
     private String info;
     private int customModelNbt;
     private double buyPrice;
@@ -73,8 +78,8 @@ public abstract class Card<T> {
         return this;
     }
 
-    public Card<T>  type(String name) {
-        this.type = name;
+    public Card<T>  type(DropType dropType) {
+        this.type = dropType;
         return this;
     }
 
@@ -132,7 +137,7 @@ public abstract class Card<T> {
         return about;
     }
 
-    public String getType() {
+    public DropType getType() {
         return type;
     }
 
@@ -186,7 +191,7 @@ public abstract class Card<T> {
                 ", isPlayerCard=" + isPlayerCard +
                 ", series='" + series.toString() + '\'' +
                 ", about='" + about + '\'' +
-                ", type='" + type + '\'' +
+                ", type='" + type.toString() + '\'' +
                 ", info='" + info + '\'' +
                 ", customModelNbt=" + customModelNbt +
                 ", buyPrice=" + buyPrice +
