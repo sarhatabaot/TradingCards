@@ -9,6 +9,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigurate;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.DropTypeManager;
+import org.bukkit.Material;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
@@ -64,6 +65,7 @@ public class SimpleCardsConfig extends SimpleConfigurate {
         private static final String BUY_PRICE = "buy-price";
         private static final String SELL_PRICE = "sell-price";
         private static final String CUSTOM_MODEL_DATA = "custom-model-data";
+        private static final String MATERIAL = "material";
 
         public static void init(TradingCards plugin) {
             CardSerializer.plugin = plugin;
@@ -78,6 +80,10 @@ public class SimpleCardsConfig extends SimpleConfigurate {
             final String rarityId = node.parent().key().toString();
             final String displayName = node.node(DISPLAY_NAME).getString();
             final String seriesId = node.node(SERIES).getString();
+            Material material = Material.matchMaterial(node.node(MATERIAL).getString());
+            if(material == null) {
+                material = plugin.getGeneralConfig().cardMaterial();
+            }
             DropType cardType;
             try {
                 cardType = plugin.getDropTypeManager().getType(node.node(TYPE).getString());
@@ -96,7 +102,8 @@ public class SimpleCardsConfig extends SimpleConfigurate {
             final Rarity rarity = plugin.getRaritiesConfig().getRarity(rarityId);
             final Series series = plugin.getSeriesConfig().series().get(seriesId);
             TradingCard card = new TradingCard(id);
-            return card.rarity(rarity)
+            return card.material(material)
+                    .rarity(rarity)
                     .displayName(displayName)
                     .series(series)
                     .type(cardType)

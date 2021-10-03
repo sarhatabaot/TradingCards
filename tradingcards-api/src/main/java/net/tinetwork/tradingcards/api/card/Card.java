@@ -4,11 +4,13 @@ import de.tr7zw.nbtapi.NBTItem;
 import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 public abstract class Card<T> {
     private final String cardName;
 
+    private Material material;
     private Rarity rarity;
     private DropType type;
     private Series series;
@@ -64,6 +66,11 @@ public abstract class Card<T> {
      */
     public Card<T> customModelNbt(final int data) {
         this.customModelNbt = data;
+        return this;
+    }
+
+    public Card<T> material(final Material material) {
+        this.material = material;
         return this;
     }
 
@@ -153,6 +160,10 @@ public abstract class Card<T> {
         return sellPrice;
     }
 
+    public Material getMaterial() {
+        return material;
+    }
+
     public abstract T get();
 
     public NBTItem buildNBTItem() {
@@ -186,6 +197,7 @@ public abstract class Card<T> {
                 "cardName='" + cardName + '\'' +
                 ", displayName='" + displayName + '\'' +
                 ", rarity='" + rarity.toString() + '\'' +
+                ", material='" + material.name() +
                 ", hasShiny=" + hasShiny +
                 ", isShiny=" + isShiny +
                 ", isPlayerCard=" + isPlayerCard +
