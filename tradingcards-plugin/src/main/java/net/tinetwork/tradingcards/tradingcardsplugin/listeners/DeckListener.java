@@ -16,10 +16,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class DeckListener extends SimpleListener {
     private final TradingDeckManager deckManager;
@@ -61,8 +58,9 @@ public class DeckListener extends SimpleListener {
 
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent e) {
+        final UUID uuid = e.getPlayer().getUniqueId();
         if(!deckManager.containsViewer(e.getPlayer().getUniqueId())) {
-            plugin.debug(getClass(),"Not our gui, ignoring.");
+            plugin.debug(getClass(),"Not our gui, ignoring. UUID: "+uuid);
             return;
         }
 

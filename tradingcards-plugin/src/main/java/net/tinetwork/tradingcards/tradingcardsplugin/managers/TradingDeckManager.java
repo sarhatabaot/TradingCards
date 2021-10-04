@@ -37,11 +37,11 @@ public class TradingDeckManager implements DeckManager {
         this.playerDeckViewingMap = new HashMap<>();
     }
 
-    public void openDeck(Player p, int deckNum) {
-        String uuidString = p.getUniqueId().toString();
-        openDeckViewer(p.getUniqueId(),deckNum);
+    public void openDeck(Player player, int deckNum) {
+        String uuidString = player.getUniqueId().toString();
+        openDeckViewer(player.getUniqueId(),deckNum);
         plugin.debug(TradingDeckManager.class,"Deck UUID: " + uuidString);
-        p.openInventory(generateDeckInventory(p, deckNum));
+        player.openInventory(generateDeckInventory(player, deckNum));
     }
 
     public void openDeckViewer(UUID uuid, int num) {

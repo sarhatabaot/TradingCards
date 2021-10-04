@@ -84,8 +84,8 @@ public class RaritiesConfig extends SimpleConfigurate {
             final ConfigurationNode displayNameNode = nonVirtualNode(node, DISPLAY_NAME);
             final ConfigurationNode defaultColorNode = nonVirtualNode(node, DEFAULT_COLOR);
             final ConfigurationNode rewardsNode = nonVirtualNode(node, REWARDS);
-            final ConfigurationNode buyNode = nonVirtualNode(node,BUY_PRICE);
-            final ConfigurationNode sellNode = nonVirtualNode(node, SELL_PRICE);
+            final ConfigurationNode buyNode = node.node(BUY_PRICE);
+            final ConfigurationNode sellNode = node.node(SELL_PRICE);
 
             final String name = nameNode.getString();
             final String displayName = displayNameNode.getString();
