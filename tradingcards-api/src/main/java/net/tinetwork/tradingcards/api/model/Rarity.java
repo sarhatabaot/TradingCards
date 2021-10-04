@@ -3,7 +3,7 @@ package net.tinetwork.tradingcards.api.model;
 import java.util.List;
 
 public record Rarity(String name, String displayName, String defaultColor,
-                     List<String> rewards) {
+                     double buyPrice, double sellPrice, List<String> rewards) {
 
     public String getName() {
         return name;
@@ -20,6 +20,7 @@ public record Rarity(String name, String displayName, String defaultColor,
     public List<String> getRewards() {
         return rewards;
     }
+
 
     @Override
     public String toString() {

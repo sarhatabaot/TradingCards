@@ -80,30 +80,17 @@ public class SimpleCardsConfig extends SimpleConfigurate {
             final String rarityId = node.parent().key().toString();
             final String displayName = node.node(DISPLAY_NAME).getString();
             final String seriesId = node.node(SERIES).getString();
-            final String materialName = node.node(MATERIAL).getString();
-            Material material;
-            if(materialName == null) {
-                material = plugin.getGeneralConfig().cardMaterial();
-            } else {
-                material = Material.matchMaterial(materialName);
-            }
-
-            DropType cardType;
-            try {
-                cardType = plugin.getDropTypeManager().getType(node.node(TYPE).getString());
-            } catch (UnsupportedDropTypeException e) {
-                plugin.getLogger().warning("Could not get the type for " + id + " reason: " + e.getMessage());
-                plugin.getLogger().warning("Defaulting to passive.");
-                cardType = DropTypeManager.PASSIVE;
-            }
+            final Material material = getMaterial(node.node(MATERIAL).getString());
+            final DropType cardType = getDropType(node, id);
             final boolean hasShiny = node.node(HAS_SHINY).getBoolean();
             final String info = node.node(INFO).getString();
             final String about = node.node(ABOUT).getString();
-            final double buyPrice = node.node(BUY_PRICE).getDouble(0.0D);
-            final double sellPrice = node.node(SELL_PRICE).getDouble(0.0D);
             final int customModelData = node.node(CUSTOM_MODEL_DATA).getInt(0);
 
             final Rarity rarity = plugin.getRaritiesConfig().getRarity(rarityId);
+            final double buyPrice = getBuyPrice(node, rarity);
+            final double sellPrice = getSellPrice(node, rarity);
+
             final Series series = plugin.getSeriesConfig().series().get(seriesId);
             TradingCard card = new TradingCard(id);
             return card.material(material)
@@ -117,6 +104,40 @@ public class SimpleCardsConfig extends SimpleConfigurate {
                     .buyPrice(buyPrice)
                     .sellPrice(sellPrice)
                     .customModelNbt(customModelData).get();
+        }
+
+        private double getBuyPrice(ConfigurationNode node, Rarity rarity) {
+            if(node.node(BUY_PRICE).isNull()) {
+                return rarity.buyPrice();
+            } else {
+                return node.node(BUY_PRICE).getDouble(0.0D);
+            }
+        }
+
+        private double getSellPrice(ConfigurationNode node, Rarity rarity){
+            if(node.node(SELL_PRICE).isNull()) {
+                return rarity.sellPrice();
+            } else {
+                return node.node(SELL_PRICE).getDouble(0.0D);
+            }
+        }
+
+        private Material getMaterial(final String materialName){
+            if(materialName == null) {
+                return plugin.getGeneralConfig().cardMaterial();
+            } else {
+                return Material.matchMaterial(materialName);
+            }
+        }
+
+        private DropType getDropType(final ConfigurationNode node, final String id){
+            try {
+                return plugin.getDropTypeManager().getType(node.node(TYPE).getString());
+            } catch (UnsupportedDropTypeException e) {
+                plugin.getLogger().warning("Could not get the type for " + id + " reason: " + e.getMessage());
+                plugin.getLogger().warning("Defaulting to passive.");
+                return DropTypeManager.PASSIVE;
+            }
         }
 
         @Override

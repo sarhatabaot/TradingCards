@@ -65,6 +65,8 @@ public class RaritiesConfig extends SimpleConfigurate {
         private static final String DISPLAY_NAME = "display-name";
         private static final String DEFAULT_COLOR = "default-color";
         private static final String REWARDS = "rewards";
+        private static final String BUY_PRICE = "buy-price";
+        private static final String SELL_PRICE = "sell-price";
 
         private RaritySerializer() {
         }
@@ -82,13 +84,17 @@ public class RaritiesConfig extends SimpleConfigurate {
             final ConfigurationNode displayNameNode = nonVirtualNode(node, DISPLAY_NAME);
             final ConfigurationNode defaultColorNode = nonVirtualNode(node, DEFAULT_COLOR);
             final ConfigurationNode rewardsNode = nonVirtualNode(node, REWARDS);
+            final ConfigurationNode buyNode = nonVirtualNode(node,BUY_PRICE);
+            final ConfigurationNode sellNode = nonVirtualNode(node, SELL_PRICE);
 
             final String name = nameNode.getString();
             final String displayName = displayNameNode.getString();
             final String defaultColor = defaultColorNode.getString();
             final List<String> rewards = rewardsNode.getList(String.class);
+            final double buyPrice = buyNode.getDouble(0.0D);
+            final double sellPrice = sellNode.getDouble(0.0D);
 
-            return new Rarity(name,displayName,defaultColor,rewards);
+            return new Rarity(name,displayName,defaultColor,buyPrice,sellPrice,rewards);
         }
 
         //Only implemented this since it's required. We don't actually use this feature yet.

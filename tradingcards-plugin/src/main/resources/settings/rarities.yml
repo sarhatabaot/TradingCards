@@ -10,6 +10,8 @@ rarities:
     name: "common"
     display-name: "&7Common"
     default-color: "&7"
+    buy-price: 100.0
+    sell-price: 50.0
     rewards:
       - "eco give %player% 100"
   uncommon:

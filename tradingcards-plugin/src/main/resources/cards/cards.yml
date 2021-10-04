@@ -7,6 +7,7 @@ cards:
       has-shiny-version: true
       info: 'none'
       # if vault is enabled, how much this card is worth. set to 0 to not allow buying.
+      # Unless specified we will use the prices from rarities.
       buy-price: 100.0
       sell-price: 50.0
     skeleton:
