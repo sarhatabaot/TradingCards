@@ -29,8 +29,6 @@ public class DeckConfig extends SimpleConfigurate {
         super(plugin, "data" + File.separator, "decks.yml", "data");
     }
 
-
-
     @Override
     protected void initValues() throws ConfigurateException {
         this.inventoriesNode = rootNode.node("decks", "inventories");

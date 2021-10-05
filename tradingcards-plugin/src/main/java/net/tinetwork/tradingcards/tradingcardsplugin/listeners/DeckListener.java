@@ -43,7 +43,6 @@ public class DeckListener extends SimpleListener {
             return;
         }
 
-
         Player player = event.getPlayer();
         final ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
         if (!plugin.getDeckManager().isDeck(itemInMainHand))
@@ -61,7 +60,7 @@ public class DeckListener extends SimpleListener {
 
 
     @EventHandler
-    public void onInventoryClose(@NotNull DeckCloseEvent e) {
+    public void onDeckClose(@NotNull DeckCloseEvent e) {
         final Player player = (Player) e.getPlayer();
         final int deckNum = e.getDeckNumber();
 
