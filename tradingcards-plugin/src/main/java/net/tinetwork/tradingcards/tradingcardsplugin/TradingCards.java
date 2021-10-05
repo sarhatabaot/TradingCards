@@ -35,6 +35,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPluginLoader;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.serialize.SerializationException;
 
@@ -325,7 +326,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
 
     @Override
-    public boolean isMob(String input) {
+    public boolean isMob(@NotNull String input) {
         try {
             EntityType type = EntityType.valueOf(input.toUpperCase());
             return isMob(type);

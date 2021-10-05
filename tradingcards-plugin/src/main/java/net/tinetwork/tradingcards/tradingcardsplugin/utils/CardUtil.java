@@ -46,13 +46,13 @@ public class CardUtil {
         throw new UnsupportedOperationException();
     }
 
-    public static void init(final TradingCards plugin) {
+    public static void init(final @NotNull TradingCards plugin) {
         CardUtil.plugin = plugin;
         CardUtil.cardManager = plugin.getCardManager();
         CardUtil.BLANK_CARD = plugin.getGeneralConfig().blankCard();
     }
 
-    public static String getRarityName(@NotNull final String rarity) {
+    public static @NotNull String getRarityName(@NotNull final String rarity) {
         return rarity.replace(stripAllColor(plugin.getGeneralConfig().shinyName()), "").trim();
     }
 
@@ -62,7 +62,7 @@ public class CardUtil {
      * @param player Player
      * @param item   Item
      */
-    public static void dropItem(final Player player, final ItemStack item) {
+    public static void dropItem(final @NotNull Player player, final ItemStack item) {
         NBTItem nbtItem = new NBTItem(item);
         final String debugItem = "name:" +nbtItem.getString("name") + " rarity:"+nbtItem.getString("rarity");
         if (player.getInventory().firstEmpty() != -1) {
@@ -129,10 +129,10 @@ public class CardUtil {
 
 
     public static boolean isCard(final ItemStack itemStack) {
-        if (!isCardMaterial(itemStack.getType())) {
-            plugin.debug(CardUtil.class,"Wrong type:"+itemStack.getType()+" expected:"+plugin.getGeneralConfig().cardMaterial());
-            return false;
-        }
+        //if (!isCardMaterial(itemStack.getType())) {
+        //    plugin.debug(CardUtil.class,"Wrong type:"+itemStack.getType()+" expected:"+plugin.getGeneralConfig().cardMaterial());
+        //    return false;
+        //}
 
         NBTItem nbtItem = new NBTItem(itemStack);
         return nbtItem.getBoolean("isCard");
@@ -185,7 +185,7 @@ public class CardUtil {
 
     }
 
-    public static String formatDisplayName(final TradingCard card) {
+    public static @NotNull String formatDisplayName(final @NotNull TradingCard card) {
         final String[] shinyPlayerCardFormat = new String[]{PLACEHOLDER_PREFIX, PLACEHOLDER_COLOR, PLACEHOLDER_NAME, PLACEHOLDER_BUY_PRICE, PLACEHOLDER_SELL_PRICE, PLACEHOLDER_SHINY_PREFIX};
         final String[] shinyCardFormat = new String[]{PLACEHOLDER_PREFIX, PLACEHOLDER_COLOR, PLACEHOLDER_NAME, PLACEHOLDER_BUY_PRICE, PLACEHOLDER_SELL_PRICE, PLACEHOLDER_SHINY_PREFIX, "_"};
 
@@ -216,7 +216,7 @@ public class CardUtil {
     }
 
 
-    public static List<String> formatLore(final String info, final String about, final String rarity, final boolean isShiny, final String type, final String series) {
+    public static @NotNull List<String> formatLore(final String info, final String about, final String rarity, final boolean isShiny, final String type, final String series) {
         List<String> lore = new ArrayList<>();
         final String typeFormat = ChatUtil.color(plugin.getGeneralConfig().colorType() + plugin.getGeneralConfig().displayType() + ": &f" + type);
         final String infoFormat = ChatUtil.color(plugin.getGeneralConfig().colorInfo() + plugin.getGeneralConfig().displayInfo() + ": &f");
@@ -249,7 +249,8 @@ public class CardUtil {
 
 
 
-    public static String cardKey(String rarity, String cardName) {
+    @Contract(pure = true)
+    public static @NotNull String cardKey(String rarity, String cardName) {
         return rarity + "." + cardName;
     }
 

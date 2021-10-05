@@ -1,6 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.managers;
 
 import de.tr7zw.nbtapi.NBTItem;
+import net.tinetwork.tradingcards.api.events.DeckOpenEvent;
 import net.tinetwork.tradingcards.api.manager.DeckManager;
 import net.tinetwork.tradingcards.api.model.deck.DeckEntry;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
@@ -13,6 +14,7 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -30,18 +32,20 @@ public class TradingDeckManager implements DeckManager {
     private final DeckConfig deckConfig;
     private final Map<UUID,Integer> playerDeckViewingMap;
 
-    public TradingDeckManager(final TradingCards plugin) {
+    public TradingDeckManager(final @NotNull TradingCards plugin) {
         this.plugin = plugin;
         this.cardManager = plugin.getCardManager();
         this.deckConfig = plugin.getDeckConfig();
         this.playerDeckViewingMap = new HashMap<>();
     }
 
-    public void openDeck(Player player, int deckNum) {
-        String uuidString = player.getUniqueId().toString();
+
+    public void openDeck(@NotNull Player player, int deckNum) {
         openDeckViewer(player.getUniqueId(),deckNum);
-        plugin.debug(TradingDeckManager.class,"Deck UUID: " + uuidString);
-        player.openInventory(generateDeckInventory(player, deckNum));
+        plugin.debug(TradingDeckManager.class,"Deck UUID: " + player.getUniqueId());
+
+        final InventoryView deckView = player.openInventory(generateDeckInventory(player, deckNum));
+        Bukkit.getPluginManager().callEvent(new DeckOpenEvent(deckView,deckNum));
     }
 
     public void openDeckViewer(UUID uuid, int num) {
@@ -63,9 +67,9 @@ public class TradingDeckManager implements DeckManager {
         return this.playerDeckViewingMap.containsKey(uuid);
     }
 
-    private Inventory generateDeckInventory(final Player player, final int deckNum) {
+    private @NotNull Inventory generateDeckInventory(final @NotNull Player player, final int deckNum) {
         List<ItemStack> cards = loadCardsFromFile(player.getUniqueId(), deckNum);
-        Inventory inv = Bukkit.createInventory(null, getDeckSize(), ChatUtil.color(plugin.getMessagesConfig().deckInventoryTitle().replace("%player%", player.getName()).replace("%deck_num%", String.valueOf(deckNum))));
+        Inventory inv = Bukkit.createInventory(player.getPlayer(), getDeckSize(), ChatUtil.color(plugin.getMessagesConfig().deckInventoryTitle().replace("%player%", player.getName()).replace("%deck_num%", String.valueOf(deckNum))));
         for (ItemStack cardItem : cards) {
             inv.addItem(cardItem);
             plugin.debug(TradingDeckManager.class,"Item=" + cardItem.getType() + ",amount=" + cardItem.getAmount() + ", added to inventory");
@@ -73,7 +77,7 @@ public class TradingDeckManager implements DeckManager {
         return inv;
     }
 
-    private List<ItemStack> loadCardsFromFile(final UUID uuid, final int deckNum) {
+    private @NotNull List<ItemStack> loadCardsFromFile(final UUID uuid, final int deckNum) {
         final List<ItemStack> cards = new ArrayList<>();
 
         List<DeckEntry> deckEntries = DeckConfig.convertToDeckEntries(deckConfig.getDeckEntries(uuid, String.valueOf(deckNum)));
@@ -126,7 +130,7 @@ public class TradingDeckManager implements DeckManager {
     }
 
     @Override
-    public boolean isDeck(final ItemStack item) {
+    public boolean isDeck(final @NotNull ItemStack item) {
         return isDeckMaterial(item.getType()) && hasEnchantments(item) && new NBTItem(item).getBoolean("isDeck");
     }
 
@@ -139,7 +143,7 @@ public class TradingDeckManager implements DeckManager {
         return Integer.parseInt(nameSplit[1]);
     }
 
-    private static boolean hasEnchantments(final ItemStack item) {
+    private static boolean hasEnchantments(final @NotNull ItemStack item) {
         return item.containsEnchantment(Enchantment.DURABILITY) && item.getEnchantmentLevel(Enchantment.DURABILITY) == 10;
     }
 
@@ -155,12 +159,12 @@ public class TradingDeckManager implements DeckManager {
     }
 
     @Override
-    public boolean hasCard(Player player, String card, String rarity) {
+    public boolean hasCard(@NotNull Player player, String card, String rarity) {
         return plugin.getDeckConfig().containsCard(player.getUniqueId(), card, rarity);
     }
 
     @Override
-    public boolean hasShiny(Player player, String card, String rarity) {
+    public boolean hasShiny(@NotNull Player player, String card, String rarity) {
         return plugin.getDeckConfig().containsShinyCard(player.getUniqueId(), card, rarity);
     }
 }

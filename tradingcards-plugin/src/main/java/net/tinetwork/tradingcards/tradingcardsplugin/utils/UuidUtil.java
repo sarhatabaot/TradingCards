@@ -13,7 +13,7 @@ import java.util.UUID;
 
 public class UuidUtil {
 	public static UUID nil = UUID.fromString("00000000-0000-0000-0000-000000000000");
-	public static @NotNull UUID getPlayerUuid(final String name) {
+	public static @NotNull UUID getPlayerUuid(final @NotNull String name) {
 		Gson gson = new Gson();
 		URL playerdbApi;
 		URLConnection urlConnection = null;

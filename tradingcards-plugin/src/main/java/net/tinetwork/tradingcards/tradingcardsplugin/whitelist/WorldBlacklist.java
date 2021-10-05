@@ -5,6 +5,7 @@ import net.tinetwork.tradingcards.api.blacklist.WhitelistMode;
 import net.tinetwork.tradingcards.api.blacklist.Blacklist;
 import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigurate;
 import org.bukkit.World;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
@@ -51,7 +52,7 @@ public class WorldBlacklist extends SimpleConfigurate implements Blacklist<World
     }
 
     @Override
-    public boolean isAllowed(World w) {
+    public boolean isAllowed(@NotNull World w) {
         boolean isOnList = listedWorlds.contains(w.getName());
 
         //If you're not on the blacklist, you're allowed
@@ -67,7 +68,7 @@ public class WorldBlacklist extends SimpleConfigurate implements Blacklist<World
     }
 
     @Override
-    public void add(World w) {
+    public void add(@NotNull World w) {
         listedWorlds.add(w.getName());
         try {
             worldNode.set(null);
@@ -79,7 +80,7 @@ public class WorldBlacklist extends SimpleConfigurate implements Blacklist<World
     }
 
     @Override
-    public void remove(World w) {
+    public void remove(@NotNull World w) {
         listedWorlds.remove(w.getName());
         try {
             worldNode.set(null);

@@ -6,6 +6,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -24,18 +25,19 @@ public class ChatUtil {
 		sendMessage(toWhom, plugin.getPrefixedMessage(message));
 	}
 
-	public static void sendMessage(final CommandSender toWhom, final String message) {
+	public static void sendMessage(final @NotNull CommandSender toWhom, final String message) {
 		toWhom.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
 	}
 
-	public static String color(Component component) {
+	public static @NotNull String color(Component component) {
 		return LegacyComponentSerializer.builder().character('&').build().serialize(component);
 	}
 
-	public static String color(String text) {
+	@Contract("_ -> new")
+	public static @NotNull String color(String text) {
 		return ChatColor.translateAlternateColorCodes('&',text);
 	}
-	public static List<String> wrapString(@NotNull String s) {
+	public static @NotNull List<String> wrapString(@NotNull String s) {
 		String parsedString = ChatColor.stripColor(s);
 		String addedString = WordUtils.wrap(parsedString, plugin.getGeneralConfig().infoLineLength(), "\n", true);
 		String[] splitString = addedString.split("\n");
@@ -47,7 +49,7 @@ public class ChatUtil {
 
 		return finalArray;
 	}
-	public static void sendMessage(final CommandSender target, final Component text) {
+	public static void sendMessage(final @NotNull CommandSender target, final Component text) {
 		target.sendMessage(color(text));
 	}
 }

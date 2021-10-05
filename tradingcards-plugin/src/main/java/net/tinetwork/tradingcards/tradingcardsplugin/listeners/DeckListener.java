@@ -1,6 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.listeners;
 
 import de.tr7zw.nbtapi.NBTItem;
+import net.tinetwork.tradingcards.api.events.DeckCloseEvent;
 import net.tinetwork.tradingcards.api.model.deck.DeckEntry;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.DeckConfig;
@@ -12,9 +13,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -29,7 +33,7 @@ public class DeckListener extends SimpleListener {
     }
 
     @EventHandler
-    public void onDeckOpen(final PlayerInteractEvent event) {
+    public void onItemDeck(final @NotNull PlayerInteractEvent event) {
         if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
             return;
         }
@@ -57,20 +61,9 @@ public class DeckListener extends SimpleListener {
 
 
     @EventHandler
-    public void onInventoryClose(InventoryCloseEvent e) {
-        final UUID uuid = e.getPlayer().getUniqueId();
-        if(!deckManager.containsViewer(e.getPlayer().getUniqueId())) {
-            plugin.debug(getClass(),"Not our gui, ignoring. UUID: "+uuid);
-            return;
-        }
-
-        if(!(e.getPlayer() instanceof final Player player)) {
-            plugin.debug(getClass(),"Not a player entity, ignoring.");
-            return;
-        }
-
-        int deckNum = deckManager.getViewerDeckNum(player.getUniqueId());
-        debug("deck: " + deckNum + ",player: " + player.getName());
+    public void onInventoryClose(@NotNull DeckCloseEvent e) {
+        final Player player = (Player) e.getPlayer();
+        final int deckNum = e.getDeckNumber();
 
         List<DeckEntry> serializedEntries = new ArrayList<>();
         final List<ItemStack> inventoryContents = Arrays.stream(e.getInventory().getContents())
@@ -94,7 +87,7 @@ public class DeckListener extends SimpleListener {
         debug("Deck closed");
     }
 
-    private DeckEntry formatEntryString(final ItemStack itemStack) {
+    private @NotNull DeckEntry formatEntryString(final ItemStack itemStack) {
         NBTItem nbtItem = new NBTItem(itemStack);
         final String cardId = nbtItem.getString("name");
         final String rarity = nbtItem.getString("rarity");

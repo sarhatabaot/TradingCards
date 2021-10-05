@@ -6,6 +6,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigurate;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.serialize.SerializationException;
 
@@ -65,7 +66,7 @@ public class PlayerBlacklist extends SimpleConfigurate implements Blacklist<Play
     }
 
     @Override
-    public boolean isAllowed(Player p) {
+    public boolean isAllowed(@NotNull Player p) {
         boolean isOnList = listedPlayers.contains(p.getName());
 
         //If you're not on the blacklist, you're allowed
@@ -82,13 +83,13 @@ public class PlayerBlacklist extends SimpleConfigurate implements Blacklist<Play
     }
 
     @Override
-    public void add(Player p) {
+    public void add(@NotNull Player p) {
         listedPlayers.add(p.getName());
         getConfig().set(LISTED_PLAYERS_NAME, listedPlayers);
     }
 
     @Override
-    public void remove(Player p) {
+    public void remove(@NotNull Player p) {
         listedPlayers.remove(p.getName());
         getConfig().set(LISTED_PLAYERS_NAME, listedPlayers);
     }
