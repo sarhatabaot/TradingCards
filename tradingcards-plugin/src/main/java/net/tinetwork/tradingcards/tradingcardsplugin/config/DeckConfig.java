@@ -8,6 +8,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.config.deck.DeckSerializer;
 import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigurate;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
@@ -44,7 +45,7 @@ public class DeckConfig extends SimpleConfigurate {
         this.config = YamlConfiguration.loadConfiguration(file);
     }
 
-    public boolean containsPlayer(final UUID uuid) {
+    public boolean containsPlayer(final @NotNull UUID uuid) {
         return !inventoriesNode.node(uuid.toString()).empty();
     }
 
@@ -63,7 +64,7 @@ public class DeckConfig extends SimpleConfigurate {
                         .registerExact(DeckEntry.class, DeckEntrySerializer.INSTANCE)));
     }
 
-    public List<String> getDeckEntries(final UUID uuid, final String deckNumber) {
+    public List<String> getDeckEntries(final @NotNull UUID uuid, final String deckNumber) {
         try {
             return inventoriesNode.node(uuid.toString()).node(deckNumber).getList(String.class);
         } catch (SerializationException e) {
@@ -72,7 +73,7 @@ public class DeckConfig extends SimpleConfigurate {
         return Collections.emptyList();
     }
 
-    public static List<DeckEntry> convertToDeckEntries(final List<String> list) {
+    public static @NotNull List<DeckEntry> convertToDeckEntries(final @NotNull List<String> list) {
         List<DeckEntry> entries = new ArrayList<>();
         for(String entry: list) {
             entries.add(DeckEntry.fromString(entry));
@@ -80,7 +81,7 @@ public class DeckConfig extends SimpleConfigurate {
         return entries;
     }
 
-    public void saveEntries(final UUID uuid, final int deckNumber, final List<DeckEntry> entries) {
+    public void saveEntries(final @NotNull UUID uuid, final int deckNumber, final List<DeckEntry> entries) {
         List<String> stringEntries = getStringListFromEntries(entries);
         plugin.debug(getClass(),stringEntries.toString());
         plugin.getDeckConfig().getConfig().set(INVENTORY_PATH + uuid.toString() + "." + deckNumber, stringEntries);
@@ -93,7 +94,7 @@ public class DeckConfig extends SimpleConfigurate {
         return containsDeck;
     }
 
-    private List<String> getStringListFromEntries(final List<DeckEntry> entries) {
+    private @NotNull List<String> getStringListFromEntries(final @NotNull List<DeckEntry> entries) {
         List<String> stringList = new ArrayList<>();
         for (DeckEntry entry : entries) {
             stringList.add(entry.toString());

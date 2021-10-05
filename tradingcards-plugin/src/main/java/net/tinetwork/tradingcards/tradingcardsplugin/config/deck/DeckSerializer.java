@@ -2,6 +2,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.config.deck;
 
 import net.tinetwork.tradingcards.api.model.deck.Deck;
 import net.tinetwork.tradingcards.api.model.deck.DeckEntry;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
@@ -23,7 +24,7 @@ public class DeckSerializer implements TypeSerializer<Deck> {
 
     //uuid is known and deck number is known
     @Override
-    public Deck deserialize(final Type type, final ConfigurationNode node) throws SerializationException {
+    public Deck deserialize(final Type type, final @NotNull ConfigurationNode node) throws SerializationException {
         final List<String> content = node.getList(String.class);
 
         final int deckNumber = Integer.parseInt(node.key().toString());

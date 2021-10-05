@@ -11,6 +11,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigurate;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.DropTypeManager;
 import org.bukkit.Material;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
@@ -75,7 +76,7 @@ public class SimpleCardsConfig extends SimpleConfigurate {
         }
 
         @Override
-        public TradingCard deserialize(Type type, ConfigurationNode node) throws SerializationException {
+        public TradingCard deserialize(Type type, @NotNull ConfigurationNode node) throws SerializationException {
             final String id = node.key().toString();
             final String rarityId = node.parent().key().toString();
             final String displayName = node.node(DISPLAY_NAME).getString();
@@ -106,7 +107,7 @@ public class SimpleCardsConfig extends SimpleConfigurate {
                     .customModelNbt(customModelData).get();
         }
 
-        private double getBuyPrice(ConfigurationNode node, Rarity rarity) {
+        private double getBuyPrice(@NotNull ConfigurationNode node, Rarity rarity) {
             if(node.node(BUY_PRICE).isNull()) {
                 return rarity.buyPrice();
             } else {
@@ -114,7 +115,7 @@ public class SimpleCardsConfig extends SimpleConfigurate {
             }
         }
 
-        private double getSellPrice(ConfigurationNode node, Rarity rarity){
+        private double getSellPrice(@NotNull ConfigurationNode node, Rarity rarity){
             if(node.node(SELL_PRICE).isNull()) {
                 return rarity.sellPrice();
             } else {
@@ -130,7 +131,7 @@ public class SimpleCardsConfig extends SimpleConfigurate {
             }
         }
 
-        private DropType getDropType(final ConfigurationNode node, final String id){
+        private DropType getDropType(final @NotNull ConfigurationNode node, final String id){
             try {
                 return plugin.getDropTypeManager().getType(node.node(TYPE).getString());
             } catch (UnsupportedDropTypeException e) {

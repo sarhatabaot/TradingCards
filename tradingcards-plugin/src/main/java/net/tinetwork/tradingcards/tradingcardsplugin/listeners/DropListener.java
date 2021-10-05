@@ -15,6 +15,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -61,7 +63,7 @@ public class DropListener extends SimpleListener {
     }
 
     @EventHandler
-    public void onEntityDeath(EntityDeathEvent e) {
+    public void onEntityDeath(@NotNull EntityDeathEvent e) {
         final LivingEntity killedEntity = e.getEntity();
         final Player killer = killedEntity.getKiller();
         final World world = killedEntity.getWorld();
@@ -93,7 +95,7 @@ public class DropListener extends SimpleListener {
     }
 
     //Gets the rarity key for the appropriate player card.
-    private String getRarityKey(Player player) {
+    private @Nullable String getRarityKey(Player player) {
         List<Rarity> rarities = plugin.getRaritiesConfig().rarities();
         if (rarities == null)
             return null;

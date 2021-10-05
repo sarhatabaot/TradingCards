@@ -23,14 +23,14 @@ public class SimpleConfigFile {
 	protected File file;
 	protected FileConfiguration config;
 
-	public SimpleConfigFile(final TradingCards plugin,final String resourcePath, final String fileName, final String folder) {
+	public SimpleConfigFile(final @NotNull TradingCards plugin, final String resourcePath, final String fileName, final String folder) {
 		this.plugin = plugin;
 		this.fileName = fileName;
 		this.resourcePath = resourcePath;
 		this.folder = new File(plugin.getDataFolder().getPath()+File.separator+folder);
 	}
 
-	public SimpleConfigFile(final TradingCards plugin, final String fileName) {
+	public SimpleConfigFile(final @NotNull TradingCards plugin, final String fileName) {
 		this.plugin = plugin;
 		this.fileName = fileName;
 		this.folder = plugin.getDataFolder();

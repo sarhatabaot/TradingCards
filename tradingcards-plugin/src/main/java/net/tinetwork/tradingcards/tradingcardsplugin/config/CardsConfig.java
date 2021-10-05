@@ -1,6 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config;
 
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurateException;
 
 import java.io.File;
@@ -44,7 +45,7 @@ public class CardsConfig {
         }
     }
 
-    private void createCardsFolder(final TradingCards plugin) {
+    private void createCardsFolder(final @NotNull TradingCards plugin) {
         final File cardsFolder = new File(plugin.getDataFolder() + File.separator + "cards");
         if (!cardsFolder.exists())
             cardsFolder.mkdir();

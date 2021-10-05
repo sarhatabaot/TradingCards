@@ -13,6 +13,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.config.SimpleCardsConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurationNode;
 
 import java.util.ArrayList;
@@ -228,7 +229,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
         return cardItem;
     }
 
-    private int getGeneralMobChance(DropType dropType) {
+    private int getGeneralMobChance(@NotNull DropType dropType) {
         return switch (dropType.getType()) {
             case "boss" -> plugin.getChancesConfig().bossChance();
             case "hostile" -> plugin.getChancesConfig().hostileChance();

@@ -2,6 +2,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.listeners;
 
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import org.bukkit.event.Listener;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.logging.Logger;
 
@@ -9,7 +10,7 @@ public abstract class SimpleListener implements Listener {
 	protected final TradingCards plugin;
 	private final Logger logger;
 
-	public SimpleListener(final TradingCards plugin) {
+	public SimpleListener(final @NotNull TradingCards plugin) {
 		this.plugin = plugin;
 		this.logger = plugin.getLogger();
 
