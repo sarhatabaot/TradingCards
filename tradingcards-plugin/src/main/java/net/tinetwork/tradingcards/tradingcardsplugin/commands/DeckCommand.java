@@ -33,11 +33,7 @@ public class DeckCommand extends BaseCommand {
 		}
 
 		if (plugin.getGeneralConfig().useDeckItem()) {
-			if (!plugin.getDeckManager().hasDeck(player, deckNumber)) {
-				CardUtil.dropItem(player, plugin.getDeckManager().createDeck(player, deckNumber));
-			} else {
-				ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().alreadyHaveDeck());
-			}
+			dropDeckItem(player,deckNumber);
 			return;
 		}
 
@@ -51,5 +47,13 @@ public class DeckCommand extends BaseCommand {
 		}
 
 		plugin.getDeckManager().openDeck(player, deckNumber);
+	}
+
+	private void dropDeckItem(final Player player, int deckNumber){
+		if (!plugin.getDeckManager().hasDeck(player, deckNumber)) {
+			CardUtil.dropItem(player, plugin.getDeckManager().createDeck(player, deckNumber));
+		} else {
+			ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().alreadyHaveDeck());
+		}
 	}
 }
