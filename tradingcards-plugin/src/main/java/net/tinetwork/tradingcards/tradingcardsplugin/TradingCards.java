@@ -18,6 +18,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.MessagesCon
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.PacksConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.RaritiesConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.SeriesConfig;
+import net.tinetwork.tradingcards.tradingcardsplugin.events.DeckEventListener;
 import net.tinetwork.tradingcards.tradingcardsplugin.listeners.DeckListener;
 import net.tinetwork.tradingcards.tradingcardsplugin.listeners.DropListener;
 import net.tinetwork.tradingcards.tradingcardsplugin.listeners.PackListener;
@@ -258,6 +259,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
     private void initListeners() {
         var pm = Bukkit.getPluginManager();
+        pm.registerEvents(new DeckEventListener(this), this);
         pm.registerEvents(new DropListener(this), this);
         pm.registerEvents(new PackListener(this), this);
         pm.registerEvents(new DeckListener(this), this);

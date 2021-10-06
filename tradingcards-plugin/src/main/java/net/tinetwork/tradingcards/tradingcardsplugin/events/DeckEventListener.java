@@ -1,6 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.events;
 
 import net.tinetwork.tradingcards.api.events.DeckCloseEvent;
+import net.tinetwork.tradingcards.api.events.DeckItemInteractEvent;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.listeners.SimpleListener;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingDeckManager;
@@ -50,23 +51,24 @@ public class DeckEventListener extends SimpleListener {
             return;
         }
 
-        int num = deckManager.getDeckNumber(player.getInventory().getItemInMainHand());
-        deckManager.openDeck(player, num);
+        int deckNumber = deckManager.getDeckNumber(player.getInventory().getItemInMainHand());
+        Bukkit.getPluginManager().callEvent(new DeckItemInteractEvent(event.getPlayer(), event.getAction(), event.getItem(), event.getClickedBlock(), event.getBlockFace(), deckNumber));
     }
 
     @EventHandler
     public void onInventoryClose(@NotNull InventoryCloseEvent event) {
-        if(event.getInventory().getType() != InventoryType.CHEST)
+        if (event.getInventory().getType() != InventoryType.CHEST) {
+            plugin.trace("Not a chest=" + event.getInventory().getType());
             return;
-
+        }
         final UUID uuid = event.getPlayer().getUniqueId();
-        if(!deckManager.containsViewer(event.getPlayer().getUniqueId())) {
-            plugin.debug(getClass(),"Not our gui, ignoring. UUID: "+uuid);
+        if (!deckManager.containsViewer(event.getPlayer().getUniqueId())) {
+            plugin.debug(getClass(), "Not our gui, ignoring. UUID: " + uuid);
             return;
         }
 
-        if(!(event.getPlayer() instanceof final Player player)) {
-            plugin.debug(getClass(),"Not a player entity, ignoring.");
+        if (!(event.getPlayer() instanceof final Player player)) {
+            plugin.debug(getClass(), "Not a player entity, ignoring.");
             return;
         }
 

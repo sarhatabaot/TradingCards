@@ -8,7 +8,9 @@ import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.DeckConfig;
+import net.tinetwork.tradingcards.api.events.DeckLoadEvent;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
+import net.tinetwork.tradingcards.api.utils.NbtUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -41,20 +43,25 @@ public class TradingDeckManager implements DeckManager {
 
 
     public void openDeck(@NotNull Player player, int deckNum) {
-        openDeckViewer(player.getUniqueId(),deckNum);
         plugin.debug(TradingDeckManager.class,"Deck UUID: " + player.getUniqueId());
 
-        final InventoryView deckView = player.openInventory(generateDeckInventory(player, deckNum));
+        addDeckViewer(player.getUniqueId(),deckNum);
+
+        Inventory deckInventory = generateDeckInventory(player,deckNum);
+        DeckLoadEvent deckLoadEvent = new DeckLoadEvent(deckInventory,deckNum);
+        Bukkit.getPluginManager().callEvent(deckLoadEvent);
+
+        final InventoryView deckView = player.openInventory(deckLoadEvent.getInventory());
         Bukkit.getPluginManager().callEvent(new DeckOpenEvent(deckView,deckNum));
     }
 
-    public void openDeckViewer(UUID uuid, int num) {
+    public void addDeckViewer(UUID uuid, int num) {
         plugin.debug(getClass(),"Added uuid "+uuid+" deck #"+num+" to deck viewer map.");
         this.playerDeckViewingMap.put(uuid,num);
     }
 
 
-    public void closeDeckViewer(UUID uuid) {
+    public void removeDeckViewer(UUID uuid) {
         plugin.debug(getClass(),"Removed uuid "+uuid+" from deck viewer map.");
         this.playerDeckViewingMap.remove(uuid);
     }
@@ -109,7 +116,6 @@ public class TradingDeckManager implements DeckManager {
         ItemStack deck = plugin.getGeneralConfig().blankDeck();
         ItemMeta deckMeta = deck.getItemMeta();
         deckMeta.setDisplayName(ChatUtil.color(plugin.getGeneralConfig().deckPrefix() + p.getName() + "'s Deck #" + num));
-
         deckMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         deck.setItemMeta(deckMeta);
         deck.addUnsafeEnchantment(Enchantment.DURABILITY, 10);
@@ -120,8 +126,8 @@ public class TradingDeckManager implements DeckManager {
     @Override
     public ItemStack createDeck(@NotNull final Player player, final int num) {
         NBTItem nbtItem = new NBTItem(createDeckItem(player, num));
-        nbtItem.setBoolean("isDeck", true);
-        nbtItem.setInteger("deckNumber", num);
+        nbtItem.setBoolean(NbtUtils.NBT_IS_DECK, true);
+        nbtItem.setInteger(NbtUtils.NBT_DECK_NUMBER, num);
         return nbtItem.getItem();
     }
 
@@ -131,13 +137,13 @@ public class TradingDeckManager implements DeckManager {
 
     @Override
     public boolean isDeck(final @NotNull ItemStack item) {
-        return isDeckMaterial(item.getType()) && hasEnchantments(item) && new NBTItem(item).getBoolean("isDeck");
+        return isDeckMaterial(item.getType()) && hasEnchantments(item) && new NBTItem(item).getBoolean(NbtUtils.NBT_IS_DECK);
     }
 
     public int getDeckNumber(final ItemStack item) {
         NBTItem nbtItem = new NBTItem(item);
-        if (nbtItem.hasKey("deckNumber"))
-            return nbtItem.getInteger("deckNumber");
+        if (nbtItem.hasKey(NbtUtils.NBT_DECK_NUMBER))
+            return nbtItem.getInteger(NbtUtils.NBT_DECK_NUMBER);
 
         String[] nameSplit = item.getItemMeta().getDisplayName().split("#");
         return Integer.parseInt(nameSplit[1]);

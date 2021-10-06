@@ -3,6 +3,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.utils;
 import de.tr7zw.nbtapi.NBTItem;
 import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.api.model.Rarity;
+import net.tinetwork.tradingcards.api.utils.NbtUtils;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.DropTypeManager;
@@ -64,7 +65,7 @@ public class CardUtil {
      */
     public static void dropItem(final @NotNull Player player, final ItemStack item) {
         NBTItem nbtItem = new NBTItem(item);
-        final String debugItem = "name:" +nbtItem.getString("name") + " rarity:"+nbtItem.getString("rarity");
+        final String debugItem = "name:" +nbtItem.getString(NbtUtils.NBT_CARD_NAME) + " rarity:"+nbtItem.getString(NbtUtils.NBT_RARITY);
         if (player.getInventory().firstEmpty() != -1) {
             player.getInventory().addItem(item);
             plugin.debug(CardUtil.class,"Added item "+debugItem+" to "+ player.getName());
@@ -135,7 +136,7 @@ public class CardUtil {
         //}
 
         NBTItem nbtItem = new NBTItem(itemStack);
-        return nbtItem.getBoolean("isCard");
+        return nbtItem.getBoolean(NbtUtils.NBT_IS_CARD);
     }
 
     private static boolean isCardMaterial(final Material material) {
