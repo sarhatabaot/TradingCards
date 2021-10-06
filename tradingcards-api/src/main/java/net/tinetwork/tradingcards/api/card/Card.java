@@ -4,6 +4,7 @@ import de.tr7zw.nbtapi.NBTItem;
 import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
+import net.tinetwork.tradingcards.api.utils.NbtUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -18,19 +19,13 @@ public abstract class Card<T> {
     private boolean hasShiny = false;
 
     //CardMeta
-    private boolean isPlayerCard = false;
-    private boolean isShiny = false;
-    private String about;
-    private String displayName;
-    private String info;
-    private int customModelNbt;
-    private double buyPrice;
-    private double sellPrice;
+    private final CardMeta cardMeta;
 
     private NBTItem nbtItem;
 
     public Card(final String cardName) {
         this.cardName = cardName;
+        this.cardMeta = new CardMeta();
     }
 
     /**
@@ -39,7 +34,7 @@ public abstract class Card<T> {
      * @return
      */
     public Card<T> isShiny(boolean isShiny) {
-        this.isShiny = isShiny;
+        this.cardMeta.setShiny(isShiny);
         return this;
     }
 
@@ -49,14 +44,14 @@ public abstract class Card<T> {
     }
 
     public Card<T> displayName(String displayName) {
-        this.displayName = displayName;
+        this.cardMeta.setDisplayName(displayName);
         return this;
     }
 
     public String getDisplayName() {
-        if(displayName == null || displayName.isEmpty())
+        if(this.cardMeta.getDisplayName() == null || this.cardMeta.getDisplayName().isEmpty())
             return cardName.replace("_"," ");
-        return displayName;
+        return this.cardMeta.getDisplayName();
     }
 
     /**
@@ -65,7 +60,7 @@ public abstract class Card<T> {
      * @return Builder
      */
     public Card<T> customModelNbt(final int data) {
-        this.customModelNbt = data;
+        this.cardMeta.setCustomModelNbt(data);
         return this;
     }
 
@@ -80,8 +75,8 @@ public abstract class Card<T> {
         return this;
     }
 
-    public Card<T>  about(String name) {
-        this.about = name;
+    public Card<T>  about(String about) {
+        this.cardMeta.setAbout(about);
         return this;
     }
 
@@ -90,19 +85,19 @@ public abstract class Card<T> {
         return this;
     }
 
-    public Card<T>  info(String name) {
-        this.info = name;
+    public Card<T>  info(String info) {
+        this.cardMeta.setInfo(info);
         return this;
     }
 
 
     public Card<T>  buyPrice(double buyPrice) {
-        this.buyPrice = buyPrice;
+        this.cardMeta.setBuyPrice(buyPrice);
         return this;
     }
 
     public Card<T>  sellPrice(double sellPrice) {
-        this.sellPrice = sellPrice;
+        this.cardMeta.setSellPrice(sellPrice);
         return this;
     }
 
@@ -112,7 +107,7 @@ public abstract class Card<T> {
     }
 
     public Card<T>  isPlayerCard(boolean isPlayerCard) {
-        this.isPlayerCard = isPlayerCard;
+        this.cardMeta.setPlayerCard(isPlayerCard);
         return this;
     }
 
@@ -125,7 +120,7 @@ public abstract class Card<T> {
     }
 
     public boolean isShiny() {
-        return isShiny;
+        return this.cardMeta.isShiny();
     }
 
     public boolean hasShiny() {
@@ -133,7 +128,7 @@ public abstract class Card<T> {
     }
 
     public boolean isPlayerCard() {
-        return isPlayerCard;
+        return this.cardMeta.isPlayerCard();
     }
 
     public Series getSeries() {
@@ -141,7 +136,7 @@ public abstract class Card<T> {
     }
 
     public String getAbout() {
-        return about;
+        return this.cardMeta.getAbout();
     }
 
     public DropType getType() {
@@ -149,15 +144,15 @@ public abstract class Card<T> {
     }
 
     public String getInfo() {
-        return info;
+        return this.cardMeta.getInfo();
     }
 
     public double getBuyPrice() {
-        return buyPrice;
+        return this.cardMeta.getBuyPrice();
     }
 
     public double getSellPrice() {
-        return sellPrice;
+        return this.cardMeta.getSellPrice();
     }
 
     public Material getMaterial() {
@@ -168,18 +163,18 @@ public abstract class Card<T> {
 
     public NBTItem buildNBTItem() {
         NBTItem nbtItem = new NBTItem(buildItem());
-        nbtItem.setString("name",cardName);
-        nbtItem.setString("rarity",rarity.getName());
-        nbtItem.setBoolean("isCard", true);
-        nbtItem.setBoolean("isShiny",isShiny);
-        nbtItem.setString("series",series.getName());
-        nbtItem.setInteger("CustomModelData", customModelNbt);
+        nbtItem.setString(NbtUtils.NBT_CARD_NAME,cardName);
+        nbtItem.setString(NbtUtils.NBT_RARITY,rarity.getName());
+        nbtItem.setBoolean(NbtUtils.NBT_IS_CARD, true);
+        nbtItem.setBoolean(NbtUtils.NBT_CARD_SHINY, this.cardMeta.isShiny());
+        nbtItem.setString(NbtUtils.NBT_CARD_SERIES,series.getName());
+        nbtItem.setInteger(NbtUtils.NBT_CARD_CUSTOM_MODEL, this.cardMeta.getCustomModelNbt());
         this.nbtItem = nbtItem;
         return nbtItem;
     }
 
     public int getCustomModelNbt() {
-        return customModelNbt;
+        return this.cardMeta.getCustomModelNbt();
     }
 
     public abstract ItemStack buildItem();
@@ -195,21 +190,13 @@ public abstract class Card<T> {
     public String toString() {
         return "Card{" +
                 "cardName='" + cardName + '\'' +
-                ", displayName='" + displayName + '\'' +
-                ", rarity='" + rarity.toString() + '\'' +
-                ", material='" + material.name() +
+                ", material=" + material +
+                ", rarity=" + rarity +
+                ", type=" + type +
+                ", series=" + series +
                 ", hasShiny=" + hasShiny +
-                ", isShiny=" + isShiny +
-                ", isPlayerCard=" + isPlayerCard +
-                ", series='" + series.toString() + '\'' +
-                ", about='" + about + '\'' +
-                ", type='" + type.toString() + '\'' +
-                ", info='" + info + '\'' +
-                ", customModelNbt=" + customModelNbt +
-                ", buyPrice=" + buyPrice +
-                ", sellPrice=" + sellPrice +
+                ", cardMeta=" + cardMeta +
+                ", nbtItem=" + nbtItem +
                 '}';
     }
-
-
 }
