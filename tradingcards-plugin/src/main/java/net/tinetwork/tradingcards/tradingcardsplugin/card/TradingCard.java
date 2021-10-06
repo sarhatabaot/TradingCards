@@ -28,8 +28,7 @@ public class TradingCard extends Card<TradingCard> {
         if (isShiny()) {
             cardMeta.addEnchant(Enchantment.ARROW_INFINITE, 1, false);
         }
-
-        cardMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        card.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         card.setItemMeta(cardMeta);
 
         return card;
