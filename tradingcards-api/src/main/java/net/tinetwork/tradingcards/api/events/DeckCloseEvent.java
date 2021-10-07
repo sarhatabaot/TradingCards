@@ -14,11 +14,6 @@ public class DeckCloseEvent extends InventoryCloseEvent {
         this.deckNumber = deckNumber;
     }
 
-    public DeckCloseEvent(@NotNull InventoryView transaction, @NotNull Reason reason, int deckNumber) {
-        super(transaction, reason);
-        this.deckNumber = deckNumber;
-    }
-
     public int getDeckNumber() {
         return deckNumber;
     }
