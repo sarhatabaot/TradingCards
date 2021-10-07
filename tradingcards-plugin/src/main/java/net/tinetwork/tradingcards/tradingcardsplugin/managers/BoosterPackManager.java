@@ -84,9 +84,10 @@ public class BoosterPackManager implements PackManager {
         itemPackMeta.setLore(lore);
 
 
-        itemPack.setItemMeta(itemPackMeta);
+
         itemPack.addUnsafeEnchantment(Enchantment.ARROW_INFINITE, 10);
-        itemPack.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        itemPackMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        itemPack.setItemMeta(itemPackMeta);
         NBTItem nbtItem = new NBTItem(itemPack);
         nbtItem.setString("packId", name);
         nbtItem.setBoolean("pack", true);

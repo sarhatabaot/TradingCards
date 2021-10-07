@@ -75,6 +75,6 @@ public class DeckEventListener extends SimpleListener {
         int deckNum = deckManager.getViewerDeckNum(player.getUniqueId());
         debug("deck: " + deckNum + ",player: " + player.getName());
 
-        Bukkit.getPluginManager().callEvent(new DeckCloseEvent(event.getView(), event.getReason(), deckNum));
+        Bukkit.getPluginManager().callEvent(new DeckCloseEvent(event.getView(),deckNum));
     }
 }
