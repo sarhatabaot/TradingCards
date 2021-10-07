@@ -219,10 +219,10 @@ public class CardUtil {
 
     public static @NotNull List<String> formatLore(final String info, final String about, final String rarity, final boolean isShiny, final String type, final String series) {
         List<String> lore = new ArrayList<>();
-        final String typeFormat = ChatUtil.color(plugin.getGeneralConfig().colorType() + plugin.getGeneralConfig().displayType() + ": &f" + type);
-        final String infoFormat = ChatUtil.color(plugin.getGeneralConfig().colorInfo() + plugin.getGeneralConfig().displayInfo() + ": &f");
-        final String seriesFormat = ChatUtil.color(plugin.getGeneralConfig().colorSeries() + plugin.getGeneralConfig().displaySeries() + ": &f" + series);
-        final String aboutFormat = ChatUtil.color(plugin.getGeneralConfig().colorAbout() + plugin.getGeneralConfig().displayAbout() + ": &f");
+        final String typeFormat = ChatUtil.color(plugin.getGeneralConfig().colorType() + plugin.getGeneralConfig().displayType() + type);
+        final String infoFormat = ChatUtil.color(plugin.getGeneralConfig().colorInfo() + plugin.getGeneralConfig().displayInfo());
+        final String seriesFormat = ChatUtil.color(plugin.getGeneralConfig().colorSeries() + plugin.getGeneralConfig().displaySeries() + series);
+        final String aboutFormat = ChatUtil.color(plugin.getGeneralConfig().colorAbout() + plugin.getGeneralConfig().displayAbout());
         final String rarityFormat = ChatUtil.color(plugin.getGeneralConfig().colorRarity());
 
         lore.add(typeFormat);

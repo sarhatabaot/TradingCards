@@ -37,10 +37,10 @@ display:
   # %cost% (card buy-price)
   title: "%PREFIX%%COLOR%%NAME%"
   shiny-title: "%PREFIX%%COLOR%%SHINY_PREFIX% %NAME%"
-  series: "Series"
-  type: "Type"
-  info: "Info"
-  about: "About"
+  series: "Series&f: "
+  type: "Type&f: "
+  info: "Info&f: "
+  about: "About&f: "
 
 # ##############################
 # Default Card Settings
