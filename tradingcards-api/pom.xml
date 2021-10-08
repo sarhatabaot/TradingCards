@@ -44,7 +44,6 @@
     </repositories>
 
     <dependencies>
-
         <dependency>
             <groupId>de.tr7zw</groupId>
             <artifactId>item-nbt-api-plugin</artifactId>
