@@ -1,12 +1,13 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
 
+import net.tinetwork.tradingcards.api.config.settiings.SeriesConfigurate;
 import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.api.model.schedule.DateSchedule;
 import net.tinetwork.tradingcards.api.model.schedule.Mode;
 import net.tinetwork.tradingcards.api.model.schedule.Schedule;
 import net.tinetwork.tradingcards.api.model.schedule.ScheduleType;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigurate;
+import net.tinetwork.tradingcards.api.config.SimpleConfigurate;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
@@ -22,7 +23,7 @@ import java.util.Map;
 /**
  * @author sarhatabaot
  */
-public class SeriesConfig extends SimpleConfigurate {
+public class SeriesConfig extends SeriesConfigurate {
     private Map<String,Series> series;
 
     public SeriesConfig(final TradingCards plugin) throws ConfigurateException {

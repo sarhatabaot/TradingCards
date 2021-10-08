@@ -1,6 +1,6 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config.deck;
 
-import net.tinetwork.tradingcards.api.model.deck.DeckEntry;
+import net.tinetwork.tradingcards.api.model.deck.StorageEntry;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
@@ -11,7 +11,7 @@ import java.lang.reflect.Type;
 /**
  * @author sarhatabaot
  */
-public class DeckEntrySerializer implements TypeSerializer<DeckEntry> {
+public class DeckEntrySerializer implements TypeSerializer<StorageEntry> {
     public static final DeckEntrySerializer INSTANCE = new DeckEntrySerializer();
 
     private DeckEntrySerializer (){
@@ -19,13 +19,13 @@ public class DeckEntrySerializer implements TypeSerializer<DeckEntry> {
 
 
     @Override
-    public DeckEntry deserialize(final Type type, final @NotNull ConfigurationNode node) throws SerializationException {
+    public StorageEntry deserialize(final Type type, final @NotNull ConfigurationNode node) throws SerializationException {
         final String content = node.getString();
-        return DeckEntry.fromString(content);
+        return StorageEntry.fromString(content);
     }
 
     @Override
-    public void serialize(final Type type, @org.checkerframework.checker.nullness.qual.Nullable final DeckEntry obj, final ConfigurationNode node) throws SerializationException {
+    public void serialize(final Type type, @org.checkerframework.checker.nullness.qual.Nullable final StorageEntry obj, final ConfigurationNode node) throws SerializationException {
 
     }
 }

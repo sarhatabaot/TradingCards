@@ -1,7 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
 
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigurate;
+import net.tinetwork.tradingcards.api.config.SimpleConfigurate;
 import org.spongepowered.configurate.ConfigurateException;
 
 import java.io.File;

@@ -3,7 +3,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.managers;
 import de.tr7zw.nbtapi.NBTItem;
 import net.tinetwork.tradingcards.api.events.DeckOpenEvent;
 import net.tinetwork.tradingcards.api.manager.DeckManager;
-import net.tinetwork.tradingcards.api.model.deck.DeckEntry;
+import net.tinetwork.tradingcards.api.model.deck.StorageEntry;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
@@ -87,8 +87,8 @@ public class TradingDeckManager implements DeckManager {
     private @NotNull List<ItemStack> loadCardsFromFile(final UUID uuid, final int deckNum) {
         final List<ItemStack> cards = new ArrayList<>();
 
-        List<DeckEntry> deckEntries = DeckConfig.convertToDeckEntries(deckConfig.getDeckEntries(uuid, String.valueOf(deckNum)));
-        for (DeckEntry deckEntry : deckEntries) {
+        List<StorageEntry> deckEntries = DeckConfig.convertToDeckEntries(deckConfig.getDeckEntries(uuid, String.valueOf(deckNum)));
+        for (StorageEntry deckEntry : deckEntries) {
             plugin.debug(getClass(),deckEntry.toString());
             TradingCard card = cardManager.getCard(deckEntry.getCardId(),
                     deckEntry.getRarityId(),

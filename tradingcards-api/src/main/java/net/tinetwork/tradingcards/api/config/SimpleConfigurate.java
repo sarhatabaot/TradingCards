@@ -1,6 +1,7 @@
-package net.tinetwork.tradingcards.tradingcardsplugin.core;
+package net.tinetwork.tradingcards.api.config;
 
-import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
+import net.tinetwork.tradingcards.api.TradingCardsPlugin;
+import net.tinetwork.tradingcards.api.card.Card;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
@@ -13,7 +14,7 @@ public abstract class SimpleConfigurate extends SimpleConfigFile{
     protected final YamlConfigurationLoader loader;
     protected CommentedConfigurationNode rootNode;
 
-    public SimpleConfigurate(TradingCards plugin, final String resourcePath, String fileName, String folder) throws ConfigurateException {
+    public SimpleConfigurate(TradingCardsPlugin<? extends Card<?>> plugin, final String resourcePath, String fileName, String folder) throws ConfigurateException {
         super(plugin, resourcePath,fileName, folder);
         preLoaderBuild();
         this.loader = loaderBuilder.build();

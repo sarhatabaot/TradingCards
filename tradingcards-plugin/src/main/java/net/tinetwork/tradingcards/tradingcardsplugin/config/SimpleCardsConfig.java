@@ -1,5 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config;
 
+import net.tinetwork.tradingcards.api.TradingCardsPlugin;
+import net.tinetwork.tradingcards.api.card.Card;
 import net.tinetwork.tradingcards.api.exceptions.UnsupportedDropTypeException;
 import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.api.model.Rarity;
@@ -7,7 +9,7 @@ import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
-import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigurate;
+import net.tinetwork.tradingcards.api.config.SimpleConfigurate;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.DropTypeManager;
 import org.bukkit.Material;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -54,7 +56,7 @@ public class SimpleCardsConfig extends SimpleConfigurate {
     }
 
     public static class CardSerializer implements TypeSerializer<TradingCard> {
-        private static TradingCards plugin;
+        private static TradingCardsPlugin<? extends Card> plugin;
         public static CardSerializer INSTANCE = new CardSerializer();
         private static final String DISPLAY_NAME = "display-name";
         private static final String SERIES = "series";
@@ -68,7 +70,7 @@ public class SimpleCardsConfig extends SimpleConfigurate {
         private static final String CUSTOM_MODEL_DATA = "custom-model-data";
         private static final String MATERIAL = "material";
 
-        public static void init(TradingCards plugin) {
+        public static void init(TradingCardsPlugin<? extends Card> plugin) {
             CardSerializer.plugin = plugin;
         }
 

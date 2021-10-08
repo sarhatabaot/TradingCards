@@ -5,9 +5,9 @@ import java.util.*;
 public class Deck {
     private final UUID playerUuid;
     private final int number;
-    private final List<DeckEntry> deckEntries;
+    private final List<StorageEntry> deckEntries;
 
-    public Deck(UUID playerUuid, int number, List<DeckEntry> deckEntries) {
+    public Deck(UUID playerUuid, int number, List<StorageEntry> deckEntries) {
         this.playerUuid = playerUuid;
         this.number = number;
         this.deckEntries = deckEntries;
@@ -21,11 +21,11 @@ public class Deck {
         return number;
     }
 
-    public List<DeckEntry> getDeckEntries() {
+    public List<StorageEntry> getDeckEntries() {
         return deckEntries;
     }
 
-    public DeckEntry getEntryList(int num) {
+    public StorageEntry getEntryList(int num) {
         return deckEntries.get(num);
     }
 }

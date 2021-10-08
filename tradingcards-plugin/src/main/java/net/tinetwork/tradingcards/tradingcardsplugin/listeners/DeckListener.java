@@ -3,7 +3,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.listeners;
 import de.tr7zw.nbtapi.NBTItem;
 import net.tinetwork.tradingcards.api.events.DeckCloseEvent;
 import net.tinetwork.tradingcards.api.events.DeckItemInteractEvent;
-import net.tinetwork.tradingcards.api.model.deck.DeckEntry;
+import net.tinetwork.tradingcards.api.model.deck.StorageEntry;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.DeckConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingDeckManager;
@@ -39,7 +39,7 @@ public class DeckListener extends SimpleListener {
         final Player player = (Player) e.getPlayer();
         final int deckNum = e.getDeckNumber();
 
-        List<DeckEntry> serializedEntries = new ArrayList<>();
+        List<StorageEntry> serializedEntries = new ArrayList<>();
         final List<ItemStack> inventoryContents = Arrays.stream(e.getInventory().getContents())
                 .filter(Objects::nonNull)
                 .toList();
@@ -50,7 +50,7 @@ public class DeckListener extends SimpleListener {
                 continue;
             }
 
-            DeckEntry entry = formatEntryString(item);
+            StorageEntry entry = formatEntryString(item);
             serializedEntries.add(entry);
             debug("Added " + entry + " to deck file.");
         }
@@ -61,11 +61,11 @@ public class DeckListener extends SimpleListener {
         debug("Deck closed");
     }
 
-    private @NotNull DeckEntry formatEntryString(final ItemStack itemStack) {
+    private @NotNull StorageEntry formatEntryString(final ItemStack itemStack) {
         NBTItem nbtItem = new NBTItem(itemStack);
         final String cardId = nbtItem.getString(NbtUtils.NBT_CARD_NAME);
         final String rarity = nbtItem.getString(NbtUtils.NBT_RARITY);
         final boolean shiny = nbtItem.getBoolean(NbtUtils.NBT_CARD_SHINY);
-        return new DeckEntry(rarity, cardId, itemStack.getAmount(), shiny);
+        return new StorageEntry(rarity, cardId, itemStack.getAmount(), shiny);
     }
 }

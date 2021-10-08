@@ -1,11 +1,11 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config;
 
 import net.tinetwork.tradingcards.api.model.deck.Deck;
-import net.tinetwork.tradingcards.api.model.deck.DeckEntry;
+import net.tinetwork.tradingcards.api.model.deck.StorageEntry;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.deck.DeckEntrySerializer;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.deck.DeckSerializer;
-import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigurate;
+import net.tinetwork.tradingcards.api.config.SimpleConfigurate;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -59,7 +59,7 @@ public class DeckConfig extends SimpleConfigurate {
     protected void preLoaderBuild() {
         loaderBuilder.defaultOptions(opts -> opts.serializers(builder ->
                 builder.registerExact(Deck.class, DeckSerializer.INSTANCE)
-                        .registerExact(DeckEntry.class, DeckEntrySerializer.INSTANCE)));
+                        .registerExact(StorageEntry.class, DeckEntrySerializer.INSTANCE)));
     }
 
     public List<String> getDeckEntries(final @NotNull UUID uuid, final String deckNumber) {
@@ -71,15 +71,15 @@ public class DeckConfig extends SimpleConfigurate {
         return Collections.emptyList();
     }
 
-    public static @NotNull List<DeckEntry> convertToDeckEntries(final @NotNull List<String> list) {
-        List<DeckEntry> entries = new ArrayList<>();
+    public static @NotNull List<StorageEntry> convertToDeckEntries(final @NotNull List<String> list) {
+        List<StorageEntry> entries = new ArrayList<>();
         for(String entry: list) {
-            entries.add(DeckEntry.fromString(entry));
+            entries.add(StorageEntry.fromString(entry));
         }
         return entries;
     }
 
-    public void saveEntries(final @NotNull UUID uuid, final int deckNumber, final List<DeckEntry> entries) {
+    public void saveEntries(final @NotNull UUID uuid, final int deckNumber, final List<StorageEntry> entries) {
         List<String> stringEntries = getStringListFromEntries(entries);
         plugin.debug(getClass(),stringEntries.toString());
         plugin.getDeckConfig().getConfig().set(INVENTORY_PATH + uuid.toString() + "." + deckNumber, stringEntries);
@@ -92,9 +92,9 @@ public class DeckConfig extends SimpleConfigurate {
         return containsDeck;
     }
 
-    private @NotNull List<String> getStringListFromEntries(final @NotNull List<DeckEntry> entries) {
+    private @NotNull List<String> getStringListFromEntries(final @NotNull List<StorageEntry> entries) {
         List<String> stringList = new ArrayList<>();
-        for (DeckEntry entry : entries) {
+        for (StorageEntry entry : entries) {
             stringList.add(entry.toString());
         }
         plugin.debug(DeckConfig.class,"EntryList Size " + stringList.size());
@@ -107,7 +107,7 @@ public class DeckConfig extends SimpleConfigurate {
             return false;
         for (String deckNumber : getAllDecks(uuid).getValues(false).keySet()) {
             for (String cardString : getDeckEntries(uuid, deckNumber)) {
-                DeckEntry deckEntry = DeckEntry.fromString(cardString);
+                StorageEntry deckEntry = StorageEntry.fromString(cardString);
                 if (deckEntry.getRarityId().equalsIgnoreCase(rarity) && deckEntry.getCardId().equalsIgnoreCase(cardString) && !deckEntry.isShiny())
                     return true;
             }
@@ -121,7 +121,7 @@ public class DeckConfig extends SimpleConfigurate {
             return false;
         for (String deckNumber : getAllDecks(uuid).getValues(false).keySet()) {
             for (String cardString : getDeckEntries(uuid, deckNumber)) {
-                DeckEntry deckEntry = DeckEntry.fromString(cardString);
+                StorageEntry deckEntry = StorageEntry.fromString(cardString);
                 if (deckEntry.getRarityId().equalsIgnoreCase(rarity) && deckEntry.getCardId().equalsIgnoreCase(card) && deckEntry.isShiny())
                     return true;
             }

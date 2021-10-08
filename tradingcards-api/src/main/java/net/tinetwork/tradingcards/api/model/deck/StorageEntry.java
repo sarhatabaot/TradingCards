@@ -1,6 +1,6 @@
 package net.tinetwork.tradingcards.api.model.deck;
 
-public record DeckEntry(String rarityId, String cardId, int amount, boolean isShiny) {
+public record StorageEntry(String rarityId, String cardId, int amount, boolean isShiny) {
 
     public String getRarityId() {
         return rarityId;
@@ -19,13 +19,13 @@ public record DeckEntry(String rarityId, String cardId, int amount, boolean isSh
         return rarityId + "," + cardId + "," + amount + "," + isShiny;
     }
 
-    public static DeckEntry fromString(final String string) {
+    public static StorageEntry fromString(final String string) {
         String[] split = string.split(",");
         final String rarity = split[0];
         final String card = split[1];
         final int amount = Integer.parseInt(split[2]);
         final boolean isShiny = parseShinyString(split[3]);
-        return new DeckEntry(rarity, card, amount, isShiny);
+        return new StorageEntry(rarity, card, amount, isShiny);
     }
 
     private static boolean parseShinyString(final String string) {

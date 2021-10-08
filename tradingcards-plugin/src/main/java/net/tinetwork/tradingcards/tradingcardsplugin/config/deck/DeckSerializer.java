@@ -1,7 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config.deck;
 
 import net.tinetwork.tradingcards.api.model.deck.Deck;
-import net.tinetwork.tradingcards.api.model.deck.DeckEntry;
+import net.tinetwork.tradingcards.api.model.deck.StorageEntry;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
@@ -30,10 +30,10 @@ public class DeckSerializer implements TypeSerializer<Deck> {
         final int deckNumber = Integer.parseInt(node.key().toString());
         final UUID playerUuid = UUID.fromString(node.parent().key().toString());
 
-        List<DeckEntry> deckEntries = new ArrayList<>();
+        List<StorageEntry> deckEntries = new ArrayList<>();
         if (content != null) {
             for (String deckEntryString : content) {
-                deckEntries.add(DeckEntry.fromString(deckEntryString));
+                deckEntries.add(StorageEntry.fromString(deckEntryString));
             }
         }
         return new Deck(playerUuid, deckNumber, deckEntries);
@@ -44,7 +44,7 @@ public class DeckSerializer implements TypeSerializer<Deck> {
         //We should actually implement this here? TODO
         final List<String> deckEntriesStrings = new ArrayList<>();
         if (obj.getDeckEntries() != null) {
-            for (DeckEntry entry : obj.getDeckEntries())
+            for (StorageEntry entry : obj.getDeckEntries())
                 deckEntriesStrings.add(entry.toString());
         }
         node.setList(String.class, deckEntriesStrings);

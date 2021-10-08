@@ -1,9 +1,14 @@
 package net.tinetwork.tradingcards.api;
 
 import net.tinetwork.tradingcards.api.blacklist.Blacklist;
+import net.tinetwork.tradingcards.api.config.SimpleConfigurate;
+import net.tinetwork.tradingcards.api.config.settiings.GeneralConfigurate;
+import net.tinetwork.tradingcards.api.config.settiings.RarityConfigurate;
+import net.tinetwork.tradingcards.api.config.settiings.SeriesConfigurate;
 import net.tinetwork.tradingcards.api.manager.CardManager;
 import net.tinetwork.tradingcards.api.manager.DeckManager;
 import net.tinetwork.tradingcards.api.manager.PackManager;
+import net.tinetwork.tradingcards.api.manager.TypeManager;
 import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -81,4 +86,14 @@ public abstract class TradingCardsPlugin<T> extends JavaPlugin {
      * @return
      */
     public abstract TradingCardsPlugin<T> get();
+
+    public abstract SimpleConfigurate getDeckConfig();
+
+    public abstract GeneralConfigurate getGeneralConfig();
+
+    public abstract RarityConfigurate getRaritiesConfig();
+
+    public abstract SeriesConfigurate getSeriesConfig();
+
+    public abstract TypeManager getDropTypeManager();
 }

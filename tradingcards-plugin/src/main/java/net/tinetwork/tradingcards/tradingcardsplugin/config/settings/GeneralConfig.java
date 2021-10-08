@@ -1,7 +1,8 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
 
+import net.tinetwork.tradingcards.api.config.settiings.GeneralConfigurate;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigurate;
+import net.tinetwork.tradingcards.api.config.SimpleConfigurate;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.spongepowered.configurate.ConfigurateException;
@@ -10,7 +11,7 @@ import org.spongepowered.configurate.ConfigurationNode;
 import java.io.File;
 import java.util.List;
 
-public class GeneralConfig extends SimpleConfigurate {
+public class GeneralConfig extends GeneralConfigurate {
     private boolean debugMode;
 
     private boolean useDefaultCardsFile;
@@ -169,19 +170,19 @@ public class GeneralConfig extends SimpleConfigurate {
 
     public ItemStack blankCard() {
         if(blankCard == null)
-            this.blankCard = new ItemStack(plugin.getGeneralConfig().cardMaterial());
+            this.blankCard = new ItemStack(cardMaterial());
         return blankCard;
     }
 
     public ItemStack blankBoosterPack() {
         if(blankBoosterPack == null)
-            this.blankBoosterPack = new ItemStack(new ItemStack(plugin.getGeneralConfig().packMaterial()));
+            this.blankBoosterPack = new ItemStack(new ItemStack(packMaterial()));
         return blankBoosterPack;
     }
 
     public ItemStack blankDeck() {
         if(blankDeck == null)
-            this.blankDeck = new ItemStack(plugin.getGeneralConfig().deckMaterial());
+            this.blankDeck = new ItemStack(deckMaterial());
         return blankDeck;
     }
 

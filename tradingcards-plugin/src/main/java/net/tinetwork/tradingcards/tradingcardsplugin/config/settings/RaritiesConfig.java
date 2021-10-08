@@ -1,9 +1,9 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
 
+import net.tinetwork.tradingcards.api.config.settiings.RarityConfigurate;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.tradingcardsplugin.config.CardsConfig;
-import net.tinetwork.tradingcards.tradingcardsplugin.core.SimpleConfigurate;
+import net.tinetwork.tradingcards.api.config.SimpleConfigurate;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public class RaritiesConfig extends SimpleConfigurate {
+public class RaritiesConfig extends RarityConfigurate{
     private List<Rarity> rarities;
     private ConfigurationNode raritiesNode;
 
