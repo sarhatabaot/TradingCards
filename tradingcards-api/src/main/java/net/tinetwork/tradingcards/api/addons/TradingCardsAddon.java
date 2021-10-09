@@ -21,5 +21,9 @@ public interface TradingCardsAddon {
 	 */
 	AddonLogger getAddonLogger();
 
+	/**
+	 * This will execute when we reload the TradingCards main plugin.
+	 */
+	void onReload();
 
 }
