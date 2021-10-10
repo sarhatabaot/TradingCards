@@ -1,11 +1,11 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config;
 
+import net.tinetwork.tradingcards.api.config.SimpleConfigurate;
 import net.tinetwork.tradingcards.api.model.deck.Deck;
 import net.tinetwork.tradingcards.api.model.deck.StorageEntry;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.deck.DeckEntrySerializer;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.deck.DeckSerializer;
-import net.tinetwork.tradingcards.api.config.SimpleConfigurate;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;

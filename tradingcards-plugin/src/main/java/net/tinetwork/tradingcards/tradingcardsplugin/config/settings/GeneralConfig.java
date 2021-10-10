@@ -1,8 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
 
-import net.tinetwork.tradingcards.api.config.settiings.GeneralConfigurate;
+import net.tinetwork.tradingcards.api.config.settings.GeneralConfigurate;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.api.config.SimpleConfigurate;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.spongepowered.configurate.ConfigurateException;

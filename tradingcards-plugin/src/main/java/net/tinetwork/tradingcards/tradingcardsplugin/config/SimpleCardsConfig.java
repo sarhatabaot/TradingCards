@@ -2,6 +2,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.config;
 
 import net.tinetwork.tradingcards.api.TradingCardsPlugin;
 import net.tinetwork.tradingcards.api.card.Card;
+import net.tinetwork.tradingcards.api.config.SimpleConfigurate;
 import net.tinetwork.tradingcards.api.exceptions.UnsupportedDropTypeException;
 import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.api.model.Rarity;
@@ -9,7 +10,6 @@ import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
-import net.tinetwork.tradingcards.api.config.SimpleConfigurate;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.DropTypeManager;
 import org.bukkit.Material;
 import org.checkerframework.checker.nullness.qual.Nullable;

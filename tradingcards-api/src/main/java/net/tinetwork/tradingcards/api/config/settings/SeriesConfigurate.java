@@ -1,4 +1,4 @@
-package net.tinetwork.tradingcards.api.config.settiings;
+package net.tinetwork.tradingcards.api.config.settings;
 
 import net.tinetwork.tradingcards.api.TradingCardsPlugin;
 import net.tinetwork.tradingcards.api.card.Card;

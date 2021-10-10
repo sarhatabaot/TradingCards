@@ -4,6 +4,7 @@ import net.tinetwork.tradingcards.api.TradingCardsPlugin;
 import net.tinetwork.tradingcards.api.card.Card;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -17,14 +18,14 @@ import java.nio.charset.StandardCharsets;
  */
 public class SimpleConfigFile {
 	private String resourcePath = "";
-	protected final TradingCardsPlugin<? extends Card<?>> plugin;
+	protected final TradingCardsPlugin<? extends Card<?>>  plugin;
 	protected final String fileName;
 	protected final File folder;
 
 	protected File file;
 	protected FileConfiguration config;
 
-	public SimpleConfigFile(final @NotNull TradingCardsPlugin<? extends Card<?>> plugin, final String resourcePath, final String fileName, final String folder) {
+	public SimpleConfigFile(final @NotNull TradingCardsPlugin<? extends Card<?>>  plugin, final String resourcePath, final String fileName, final String folder) {
 		this.plugin = plugin;
 		this.fileName = fileName;
 		this.resourcePath = resourcePath;

@@ -1,21 +1,23 @@
-package net.tinetwork.tradingcards.api.config;
+package net.tinetwork.tradingcards.api.addons;
 
 import net.tinetwork.tradingcards.api.TradingCardsPlugin;
 import net.tinetwork.tradingcards.api.card.Card;
-import net.tinetwork.tradingcards.api.config.SimpleConfigFile;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.nio.file.Paths;
 
-public abstract class SimpleConfigurate extends SimpleConfigFile {
+/**
+ * @author sarhatabaot
+ */
+public abstract class AddonConfigurate extends AddonConfigFile {
     protected final YamlConfigurationLoader.Builder loaderBuilder = YamlConfigurationLoader.builder().
             path(Paths.get(folder+"/"+fileName));
     protected final YamlConfigurationLoader loader;
     protected CommentedConfigurationNode rootNode;
 
-    public SimpleConfigurate(TradingCardsPlugin<? extends Card<?>> plugin, final String resourcePath, String fileName, String folder) throws ConfigurateException {
+    public AddonConfigurate(TradingCardsAddon plugin, final String resourcePath, String fileName, String folder) throws ConfigurateException {
         super(plugin, resourcePath,fileName, folder);
         preLoaderBuild();
         this.loader = loaderBuilder.build();
@@ -35,7 +37,7 @@ public abstract class SimpleConfigurate extends SimpleConfigFile {
             this.rootNode = loader.load();
             initValues();
         } catch (ConfigurateException e) {
-            plugin.getLogger().severe(e.getMessage());
+            addon.getAddonLogger().severe(e.getMessage());
         }
     }
 }
