@@ -5,6 +5,8 @@ import net.tinetwork.tradingcards.api.exceptions.UnsupportedDropTypeException;
 import net.tinetwork.tradingcards.api.manager.TypeManager;
 import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
+import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
+import org.bukkit.entity.EntityType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -51,5 +53,8 @@ public class DropTypeManager implements TypeManager {
         return mobTypes;
     }
 
-
+    @Override
+    public DropType getMobType(final EntityType type) {
+        return CardUtil.getMobType(type);
+    }
 }
