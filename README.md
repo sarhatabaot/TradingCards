@@ -26,8 +26,6 @@ An updated version of TradingCards with improvements and new features.
 ## Addons:
 This version of Trading Cards doesn't support MythicMobs, MobArena & Towny out of the box. 
 For support, you need to install additional addons:
-*  [TCTowny](https://github.com/TreasureIslandMC/TCTowny)
-*  [TCMythicMobs](https://github.com/TreasureIslandMC/TCMythicMobs)
-*  [TCMobArena](https://github.com/TreasureIslandMC/TCMobArena)
+[Addons](https://github.com/sarhatabaot/TradingCards/wiki/Tradingcards-Addons)
 
 These are normal plugins, to install just place in your plugins folder.
