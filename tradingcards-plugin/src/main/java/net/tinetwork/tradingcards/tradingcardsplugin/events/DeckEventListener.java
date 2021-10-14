@@ -58,7 +58,6 @@ public class DeckEventListener extends SimpleListener {
     @EventHandler
     public void onInventoryClose(@NotNull InventoryCloseEvent event) {
         if (event.getInventory().getType() != InventoryType.CHEST) {
-            plugin.trace("Not a chest=" + event.getInventory().getType());
             return;
         }
         final UUID uuid = event.getPlayer().getUniqueId();
