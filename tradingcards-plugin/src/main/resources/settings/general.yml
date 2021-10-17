@@ -10,24 +10,34 @@ use-default-cards-file: true
 # Default Formatting Settings
 # ##############################
 colors:
-  # Colours for various settings of the card.
-  series: "&a"
-  type: "&b"
-  info: "&e"
-  about: "&c"
-  rarity: "&6"
+  series:
+    default:
+    # Colours for various settings of the card.
+      series: "&a"
+      type: "&b"
+      info: "&e"
+      about: "&c"
+      rarity: "&6"
+    halloween:
+      series: "&a"
+      type: "&b"
+      info: "&e"
+      about: "&c"
+      rarity: "&6"
   # Booster pack colourings.
-  booster-pack-name: "&a"
-  booster-pack-lore: "&7"
-  booster-pack-normal-cards: "&e"
-  booster-pack-special-cards: "&6"
-  booster-pack-extra-cards: "&9"
-  # What colour should /cards list give to cards owned in decks?
-  list-have-card: "&a"
-  # What colour should /cards list give to shiny cards owned in decks?
-  list-have-shiny-card: "&e&l"
-  # What colour should /cards list give to rarities that have been fully collected?
-  list-rarity-complete: "&e"
+  packs:
+    booster-pack-name: "&a"
+    booster-pack-lore: "&7"
+    booster-pack-normal-cards: "&e"
+    booster-pack-special-cards: "&6"
+    booster-pack-extra-cards: "&9"
+  lists:
+    # What colour should /cards list give to cards owned in decks?
+    list-have-card: "&a"
+    # What colour should /cards list give to shiny cards owned in decks?
+    list-have-shiny-card: "&e&l"
+    # What colour should /cards list give to rarities that have been fully collected?
+    list-rarity-complete: "&e"
 
 display:
   # title placeholders:

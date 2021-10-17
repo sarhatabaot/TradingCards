@@ -2,6 +2,7 @@ package net.tinetwork.tradingcards.api.config.settings;
 
 import net.tinetwork.tradingcards.api.TradingCardsPlugin;
 import net.tinetwork.tradingcards.api.card.Card;
+import net.tinetwork.tradingcards.api.config.ColorSeries;
 import net.tinetwork.tradingcards.api.config.SimpleConfigurate;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -77,25 +78,13 @@ public abstract class GeneralConfigurate extends SimpleConfigurate {
 
     public abstract Material packMaterial();
 
-    public abstract String getColorSeries();
-
-    public abstract String colorType();
-
-    public abstract String colorInfo();
-
-    public abstract String colorAbout();
-
-    public abstract String colorRarity();
+    public abstract ColorSeries getColorSeries(final String series);
 
     public abstract String colorPackName();
 
     public abstract String colorPackLore();
 
     public abstract String colorPackNormal();
-
-    public abstract String colorPackSpecial();
-
-    public abstract String colorPackExtra();
 
     public abstract String colorListHaveCard();
 
@@ -105,7 +94,6 @@ public abstract class GeneralConfigurate extends SimpleConfigurate {
 
     public abstract String packPrefix();
 
-    public abstract String colorSeries();
 
     public abstract String displayTitle();
 

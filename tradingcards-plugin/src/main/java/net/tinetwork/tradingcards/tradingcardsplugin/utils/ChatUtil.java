@@ -37,6 +37,7 @@ public class ChatUtil {
 	public static @NotNull String color(String text) {
 		return ChatColor.translateAlternateColorCodes('&',text);
 	}
+	//TODO, WRAPPED String
 	public static @NotNull List<String> wrapString(@NotNull String s) {
 		String parsedString = ChatColor.stripColor(s);
 		String addedString = WordUtils.wrap(parsedString, plugin.getGeneralConfig().infoLineLength(), "\n", true);

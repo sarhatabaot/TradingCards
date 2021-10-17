@@ -219,11 +219,11 @@ public class CardUtil {
 
     public static @NotNull List<String> formatLore(final String info, final String about, final String rarity, final boolean isShiny, final String type, final String series) {
         List<String> lore = new ArrayList<>();
-        final String typeFormat = ChatUtil.color(plugin.getGeneralConfig().colorType() + plugin.getGeneralConfig().displayType() + type);
-        final String infoFormat = ChatUtil.color(plugin.getGeneralConfig().colorInfo() + plugin.getGeneralConfig().displayInfo());
-        final String seriesFormat = ChatUtil.color(plugin.getGeneralConfig().colorSeries() + plugin.getGeneralConfig().displaySeries() + series);
-        final String aboutFormat = ChatUtil.color(plugin.getGeneralConfig().colorAbout() + plugin.getGeneralConfig().displayAbout());
-        final String rarityFormat = ChatUtil.color(plugin.getGeneralConfig().colorRarity());
+        final String typeFormat = ChatUtil.color(plugin.getGeneralConfig().getColorSeries(series).getType() + plugin.getGeneralConfig().displayType() + type);
+        final String infoFormat = ChatUtil.color(plugin.getGeneralConfig().getColorSeries(series).getInfo() + plugin.getGeneralConfig().displayInfo());
+        final String seriesFormat = ChatUtil.color(plugin.getGeneralConfig().getColorSeries(series).getSeries() + plugin.getGeneralConfig().displaySeries() + series);
+        final String aboutFormat = ChatUtil.color(plugin.getGeneralConfig().getColorSeries(series).getAbout() + plugin.getGeneralConfig().displayAbout());
+        final String rarityFormat = ChatUtil.color(plugin.getGeneralConfig().getColorSeries(series).getRarity());
 
         lore.add(typeFormat);
         if (!"None".equalsIgnoreCase(info) && !info.isEmpty()) {
