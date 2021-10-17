@@ -170,9 +170,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.seeseemelk</groupId>
-            <artifactId>MockBukkit-v1.17</artifactId>
-            <version>1.10.1</version>
+            <groupId>com.github.sarhatabaot</groupId>
+            <artifactId>MockBukkitPaper</artifactId>
+            <version>8a39cb9aca</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
