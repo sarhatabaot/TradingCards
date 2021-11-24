@@ -83,13 +83,13 @@ public class MessagesConfig extends SimpleConfigurate {
     protected void initValues() throws ConfigurateException {
         this.prefix = rootNode.node("prefix").getString("Cards > ");
         this.reload = rootNode.node("reload").getString("Reloaded config.");
-        this.noCard = rootNode.node("no-card").getString();
-        this.noPlayer = rootNode.node("no-player").getString();
-        this.noCmd = rootNode.node("no-cmd").getString();
-        this.noEntity = rootNode.node("no-entity").getString();
-        this.noCreative = rootNode.node("no-creative").getString();
-        this.noRarity = rootNode.node("no-rarity").getString();
-        this.noBoosterPack = rootNode.node("no-booster-pack").getString();
+        this.noCard = rootNode.node("no-card").getString("No such card exists! make sure to use the exact card name!");
+        this.noPlayer = rootNode.node("no-player").getString("That player does not exist!");
+        this.noCmd = rootNode.node("no-cmd").getString("Invalid command!");
+        this.noEntity = rootNode.node("no-entity").getString("that entity/mob does not exist!");
+        this.noCreative = rootNode.node("no-creative").getString("you cannot open booster packs in creative!");
+        this.noRarity = rootNode.node("no-rarity").getString("that rarity does not exist!");
+        this.noBoosterPack = rootNode.node("no-booster-pack").getString("that booster pack does not exist!");
         this.scheduledGiveaway = rootNode.node("scheduled-giveaway").getString();
         this.giveaway = rootNode.node("giveaway").getString();
         this.giveawayNatural = rootNode.node("giveaway-natural").getString();

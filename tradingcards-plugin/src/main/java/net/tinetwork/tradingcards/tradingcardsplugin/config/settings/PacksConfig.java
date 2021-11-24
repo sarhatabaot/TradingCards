@@ -48,7 +48,6 @@ public class PacksConfig extends SimpleConfigurate {
     public static class PackSerializer implements TypeSerializer<Pack> {
         public static final PackSerializer INSTANCE = new PackSerializer();
         private static final String CONTENT = "content";
-        private static final String SERIES = "series";
         private static final String PRICE = "prices";
         private static final String PERMISSION = "permission";
         private static final String DISPLAY_NAME = "display-name";
@@ -70,9 +69,18 @@ public class PacksConfig extends SimpleConfigurate {
             }
             final double price = priceNode.getDouble(0.0D);
             final String permissions = permissionsNode.getString();
-            final String displayName = displayNameNode.getString();
+            final String displayName = getDisplayName(displayNameNode.getString(),node);
 
             return new Pack(packEntryList,displayName, price,permissions);
+        }
+
+        private String getDisplayName(final String displayName, final ConfigurationNode node) {
+            if(displayName == null) {
+                final String nodeKey = node.key().toString();
+                return nodeKey.replace("_"," ");
+            }
+
+            return displayName;
         }
 
         //Only implemented this since it's required. We don't actually use this feature yet.
