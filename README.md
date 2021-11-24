@@ -5,6 +5,8 @@
 Paper plugin for Trading Cards.
 An updated version of TradingCards with improvements and new features.
 
+## [Coming from version 5.0.+? See how to migrate here.](https://github.com/sarhatabaot/TradingCards/wiki/Installing-TradingCards#migrating)
+
 ## New Features:
 * Java 16 - 1.17+
 * Custom Drop types
