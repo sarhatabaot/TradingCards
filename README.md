@@ -1,6 +1,7 @@
 # Trading Cards 
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/c30caf827f974fa39296203413f86b05)](https://www.codacy.com/gh/TreasureIslandMC/XenTradingCards/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=TreasureIslandMC/XenTradingCards&amp;utm_campaign=Badge_Grade)
 [![Java CI with Maven](https://github.com/TreasureIslandMC/TradingCards/actions/workflows/maven.yml/badge.svg)](https://github.com/TreasureIslandMC/TradingCards/actions/workflows/maven.yml)
+[![](https://img.shields.io/discord/881610309637398538?color=%235865F2&label=support&logo=Discord&logoColor=white&style=for-the-badge)](https://discord.gg/4v9gsBCgg8)
 
 Paper plugin for Trading Cards.
 An updated version of TradingCards with improvements and new features.
