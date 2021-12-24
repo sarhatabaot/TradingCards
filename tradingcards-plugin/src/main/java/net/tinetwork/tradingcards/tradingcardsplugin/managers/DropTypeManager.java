@@ -17,6 +17,7 @@ public class DropTypeManager implements TypeManager {
     public static final DropType NEUTRAL = new DropType("neutral", "Neutral", "neutral");
     public static final DropType PASSIVE = new DropType("passive", "Passive", "passive");
     public static final DropType BOSS = new DropType("boss", "Boss", "boss");
+    public static final DropType ALL = new DropType("all","All","all");
 
     private Map<String, DropType> mobTypes;
 
@@ -34,6 +35,7 @@ public class DropTypeManager implements TypeManager {
                 case "hostile" -> HOSTILE;
                 case "neutral" -> NEUTRAL;
                 case "passive" -> PASSIVE;
+                case "all" -> ALL;
                 default -> throw new UnsupportedDropTypeException();
             };
         }

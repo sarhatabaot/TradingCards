@@ -14,7 +14,6 @@
         <version>5.4.7-SNAPSHOT</version>
     </parent>
 
-
     <pluginRepositories>
         <pluginRepository>
             <id>maven-snapshots</id>

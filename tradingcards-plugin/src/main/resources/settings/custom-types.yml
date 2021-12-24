@@ -1,4 +1,5 @@
 # You can set custom types for drops here.
+# Available types: passive, hostile, neutral, boss, all
 ranks:
   display-name: "&fRanks"
   drop-type: hostile

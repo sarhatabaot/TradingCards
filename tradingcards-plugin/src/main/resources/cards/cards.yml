@@ -13,280 +13,280 @@ cards:
     skeleton:
       display-name: 'Skeleton'
       series: 'default'
-      type: 'Monster'
+      type: 'hostile'
       has-shiny-version: true
       info: 'none'
     creeper:
       display-name: 'Creeper'
       series: 'default'
-      type: 'Monster'
+      type: 'hostile'
       has-shiny-version: true
       info: 'none'
     spider:
       display-name:
       series: 'default'
-      type: 'Monster'
+      type: 'hostile'
       has-shiny-version: true
       info: 'none'
     enderman:
       display-name:
       series: 'default'
-      type: 'Monster'
+      type: 'hostile'
       has-shiny-version: true
       info: 'none'
     pig:
       display-name:
       series: 'default'
-      type: 'Animal'
+      type: 'neutral'
       has-shiny-version: true
       info: 'none'
     cow:
       display-name:
       series: 'default'
-      type: 'Animal'
+      type: 'neutral'
       has-shiny-version: true
       info: 'none'
     sheep:
       display-name:
       series: 'default'
-      type: 'Animal'
+      type: 'neutral'
       has-shiny-version: true
       info: 'none'
     chicken:
       display-name:
       series: 'default'
-      type: 'Animal'
+      type: 'neutral'
       has-shiny-version: true
       info: 'none'
     horse:
       display-name:
       series: 'default'
-      type: 'Animal'
+      type: 'neutral'
       has-shiny-version: true
       info: 'none'
     donkey:
       display-name:
       series: 'default'
-      type: 'Animal'
+      type: 'neutral'
       has-shiny-version: true
       info: 'none'
     mule:
       display-name:
       series: 'default'
-      type: 'Animal'
+      type: 'neutral'
       has-shiny-version: true
       info: 'none'
     squid:
       display-name:
       series: 'default'
-      type: 'Animal'
+      type: 'neutral'
       has-shiny-version: true
       info: 'none'
     villager:
       display-name:
       series: 'default'
-      type: 'Animal'
+      type: 'neutral'
       has-shiny-version: true
       info: 'none'
     bat:
       display-name:
       series: 'default'
-      type: 'Animal'
+      type: 'neutral'
       has-shiny-version: true
       info: 'none'
     rabbit:
       display-name:
       series: 'default'
-      type: 'Animal'
+      type: 'neutral'
       has-shiny-version: true
       info: 'none'
   uncommon:
     blaze:
       display-name:
       series: 'default'
-      type: 'Monster'
+      type: 'hostile'
       has-shiny-version: true
       info: 'none'
     magma_cube:
       display-name:
       series: 'default'
-      type: 'Monster'
+      type: 'hostile'
       has-shiny-version: true
       info: 'none'
     ghast:
       display-name:
       series: 'default'
-      type: 'Monster'
+      type: 'hostile'
       has-shiny-version: true
       info: 'none'
     witch:
       display-name:
       series: 'default'
-      type: 'Monster'
+      type: 'hostile'
       has-shiny-version: true
       info: 'none'
     zombie_pigman:
       display-name:
       series: 'default'
-      type: 'Monster'
+      type: 'hostile'
       has-shiny-version: true
       info: 'none'
     cave_spider:
       display-name:
       series: 'default'
-      type: 'Monster'
+      type: 'hostile'
       has-shiny-version: true
       info: 'none'
     wolf:
       display-name:
       series: 'default'
-      type: 'Animal'
+      type: 'neutral'
       has-shiny-version: true
       info: 'none'
     ocelot:
       display-name:
       series: 'default'
-      type: 'Animal'
+      type: 'neutral'
       has-shiny-version: true
       info: 'none'
     polar_bear:
       display-name:
       series: 'default'
-      type: 'Animal'
+      type: 'neutral'
       has-shiny-version: true
       info: 'none'
     stray_skeleton:
       display-name:
       series: 'default'
-      type: 'Monster'
+      type: 'hostile'
       has-shiny-version: true
       info: 'none'
     silverfish:
       display-name:
       series: 'default'
-      type: 'Monster'
+      type: 'hostile'
       has-shiny-version: true
       info: 'none'
     skeleton_horseman:
       display-name:
       series: 'default'
-      type: 'Monster'
+      type: 'hostile'
       has-shiny-version: true
       info: 'none'
     husk:
       display-name:
       series: 'default'
-      type: 'Monster'
+      type: 'hostile'
       has-shiny-version: true
       info: 'none'
     zombie_villager:
       display-name:
       series: 'default'
-      type: 'Monster'
+      type: 'hostile'
       has-shiny-version: true
       info: 'none'
   rare:
     guardian:
       display-name:
       series: 'default'
-      type: 'Monster'
+      type: 'hostile'
       has-shiny-version: true
       info: 'none'
     slime:
       display-name:
       series: 'default'
-      type: 'Monster'
+      type: 'hostile'
       has-shiny-version: true
       info: 'none'
     wither_skeleton:
       display-name:
       series: 'default'
-      type: 'Monster'
+      type: 'hostile'
       has-shiny-version: true
       info: 'none'
     spider_jockey:
       display-name:
       series: 'default'
-      type: 'Monster'
+      type: 'hostile'
       has-shiny-version: true
       info: 'none'
     endermite:
       display-name:
       series: 'default'
-      type: 'Monster'
+      type: 'hostile'
       has-shiny-version: true
       info: 'none'
     mushroom_cow:
       display-name:
       series: 'default'
-      type: 'Animal'
+      type: 'neutral'
       has-shiny-version: true
       info: 'none'
     chicken_jockey:
       display-name:
       series: 'default'
-      type: 'Animal'
+      type: 'neutral'
       has-shiny-version: true
       info: 'none'
     snow_golem:
       display-name:
       series: 'default'
-      type: 'Monster'
+      type: 'hostile'
       has-shiny-version: true
       info: 'none'
     iron_golem:
       display-name:
       series: 'default'
-      type: 'Monster'
+      type: 'hostile'
       has-shiny-version: true
       info: 'none'
     shulker:
       display-name: 'Shulker'
       series: 'default'
-      type: 'Monster'
+      type: 'hostile'
       has-shiny-version: true
       info: 'none'
   very-rare:
     killer_bunny:
       display-name: 'Killer Bunny'
       series: 'default'
-      type: 'Monster'
+      type: 'hostile'
       has-shiny-version: true
       info: 'none'
     skeleton_horse:
       display-name: 'Skeleton Horse'
       series: 'default'
-      type: 'Monster'
+      type: 'hostile'
       has-shiny-version: true
       info: 'none'
     zombie_horse:
       display-name: 'Zombie Horse'
       series: 'default'
-      type: 'Monster'
+      type: 'hostile'
       has-shiny-version: true
       info: 'none'
   legendary:
     ender_dragon:
       display-name: 'Ender Dragon'
       series: 'default'
-      type: 'Boss'
+      type: 'boss'
       has-shiny-version: true
       info: 'none'
     wither:
       display-name: 'Wither'
       series: 'default'
-      type: 'Boss'
+      type: 'boss'
       has-shiny-version: true
       info: 'none'
     elder_guardian:
       display-name: 'Elder Guardian'
       series: 'default'
-      type: 'Boss'
+      type: 'boss'
       has-shiny-version: true
       info: 'none'
     giant:
       display-name: 'Giant'
       series: 'default'
-      type: 'Boss'
+      type: 'boss'
       has-shiny-version: true
       info: 'none'
