@@ -153,7 +153,7 @@
         <dependency>
             <groupId>com.github.tr7zw</groupId>
             <artifactId>Item-NBT-API</artifactId>
-            <version>e0c060a982</version>
+            <version>2.9.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
