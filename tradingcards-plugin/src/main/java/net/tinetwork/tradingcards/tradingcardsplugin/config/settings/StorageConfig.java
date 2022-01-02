@@ -41,4 +41,24 @@ public class StorageConfig extends SimpleConfigurate {
     public StorageType getType() {
         return type;
     }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public String getPort() {
+        return port;
+    }
+
+    public String getDatabase() {
+        return database;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
 }
