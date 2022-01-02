@@ -37,7 +37,7 @@ public class TradingDeckManager implements DeckManager {
     public TradingDeckManager(final @NotNull TradingCards plugin) {
         this.plugin = plugin;
         this.cardManager = plugin.getCardManager();
-        this.deckConfig = plugin.getDeckConfig();
+        this.deckConfig=  plugin.getDeckStorage();
         this.playerDeckViewingMap = new HashMap<>();
     }
 
@@ -166,11 +166,11 @@ public class TradingDeckManager implements DeckManager {
 
     @Override
     public boolean hasCard(@NotNull Player player, String card, String rarity) {
-        return plugin.getDeckConfig().containsCard(player.getUniqueId(), card, rarity);
+        return plugin.getDeckStorage().containsCard(player.getUniqueId(), card, rarity);
     }
 
     @Override
     public boolean hasShiny(@NotNull Player player, String card, String rarity) {
-        return plugin.getDeckConfig().containsShinyCard(player.getUniqueId(), card, rarity);
+        return plugin.getDeckStorage().containsShinyCard(player.getUniqueId(), card, rarity);
     }
 }

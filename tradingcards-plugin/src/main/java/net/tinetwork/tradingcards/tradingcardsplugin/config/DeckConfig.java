@@ -12,15 +12,21 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
-
+@Deprecated
+/**
+ * Should be implemented via Storage.
+ * This is not a config class but rather a data file.
+ */
 public class DeckConfig extends SimpleConfigurate {
     private static final String INVENTORY_PATH = "decks.inventories.";
     private CommentedConfigurationNode inventoriesNode;
@@ -45,6 +51,24 @@ public class DeckConfig extends SimpleConfigurate {
 
     public boolean containsPlayer(final @NotNull UUID uuid) {
         return !inventoriesNode.node(uuid.toString()).empty();
+    }
+
+    public Deck getDeck(final UUID playerUuid, final int deckNumber) throws SerializationException {
+        return inventoriesNode.node(playerUuid).node(deckNumber).get(Deck.class);
+    }
+
+    public List<Deck> getPlayerDecks(final UUID playerUuid) {
+        List<Deck> decks = new ArrayList<>();
+        for(Map.Entry<Object, ? extends ConfigurationNode> nodeEntry: inventoriesNode.node(playerUuid).childrenMap().entrySet()) {
+            final int deckNumber = Integer.parseInt(nodeEntry.getKey().toString());
+            try {
+                final Deck deck = getDeck(playerUuid, deckNumber);
+                decks.add(deck);
+            } catch (SerializationException e){
+                //skip and move on, log an error
+            }
+        }
+        return decks;
     }
 
     @Nullable
@@ -82,8 +106,12 @@ public class DeckConfig extends SimpleConfigurate {
     public void saveEntries(final @NotNull UUID uuid, final int deckNumber, final List<StorageEntry> entries) {
         List<String> stringEntries = getStringListFromEntries(entries);
         plugin.debug(getClass(),stringEntries.toString());
-        plugin.getDeckConfig().getConfig().set(INVENTORY_PATH + uuid.toString() + "." + deckNumber, stringEntries);
-        plugin.getDeckConfig().saveConfig();
+        getConfig().set(INVENTORY_PATH + uuid + "." + deckNumber, stringEntries);
+        saveConfig();
+    }
+
+    public void saveEntries(final @NotNull UUID uuid, final int deckNumber,final Deck deck) {
+        saveEntries(uuid,deckNumber,deck.getDeckEntries());
     }
 
     public boolean containsDeck(final UUID uuid, String deckNumber) {

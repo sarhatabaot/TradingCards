@@ -23,7 +23,7 @@ public class DeckListener extends SimpleListener {
     public DeckListener(final TradingCards plugin) {
         super(plugin);
         this.deckManager = plugin.getDeckManager();
-        this.deckConfig = plugin.getDeckConfig();
+        this.deckConfig = plugin.getDeckStorage();
     }
 
     @EventHandler

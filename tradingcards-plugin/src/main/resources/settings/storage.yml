@@ -1,0 +1,15 @@
+# Available options: YAML, MYSQL
+storage-type: YAML
+
+data:
+  # Address and port for the database.
+  address: localhost
+  port: 3306
+
+  # The name of the database to store TradingCards deck data in.
+  # - This must be created already.
+  database: tradingcards
+
+  # Credentials for the database.
+  username: root
+  password: ''

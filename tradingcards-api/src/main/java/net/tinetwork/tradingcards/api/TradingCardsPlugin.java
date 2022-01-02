@@ -87,8 +87,6 @@ public abstract class TradingCardsPlugin<T> extends JavaPlugin {
      */
     public abstract TradingCardsPlugin<T> get();
 
-    public abstract SimpleConfigurate getDeckConfig();
-
     public abstract GeneralConfigurate getGeneralConfig();
 
     public abstract RarityConfigurate getRaritiesConfig();

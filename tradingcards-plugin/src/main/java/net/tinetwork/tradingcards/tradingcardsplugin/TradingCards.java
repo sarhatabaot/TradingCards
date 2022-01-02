@@ -18,6 +18,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.MessagesCon
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.PacksConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.RaritiesConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.SeriesConfig;
+import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.StorageConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.events.DeckEventListener;
 import net.tinetwork.tradingcards.tradingcardsplugin.listeners.DeckListener;
 import net.tinetwork.tradingcards.tradingcardsplugin.listeners.DropListener;
@@ -26,6 +27,10 @@ import net.tinetwork.tradingcards.tradingcardsplugin.managers.BoosterPackManager
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.DropTypeManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingCardManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingDeckManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.StorageType;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local.YamlStorage;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.MySqlStorage;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.whitelist.PlayerBlacklist;
@@ -54,7 +59,8 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private ImmutableList<EntityType> bossMobs;
 
     /* Configs */
-    private DeckConfig deckConfig;
+    private StorageConfig storageConfig;
+    private Storage deckStorage;
     private CardsConfig cardsConfig;
 
     private GeneralConfig generalConfig;
@@ -166,13 +172,27 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
             this.chancesConfig = new ChancesConfig(this);
             this.messagesConfig = new MessagesConfig(this);
             this.packsConfig = new PacksConfig(this);
-            this.deckConfig = new DeckConfig(this);
+            this.storageConfig = new StorageConfig(this);
+            this.deckStorage = initStorage();
             this.dropTypesConfig = new DropTypesConfig(this);
         } catch (ConfigurateException e) {
             getLogger().severe(e.getMessage());
         }
 
         this.cardsConfig = new CardsConfig(this);
+    }
+
+    private Storage initStorage() throws ConfigurateException {
+        StorageType storageType = storageConfig.getType();
+        switch (storageType){
+            case MYSQL -> {
+                return new MySqlStorage();
+            }
+            case YAML -> {
+                return new YamlStorage(new DeckConfig(this));
+            }
+        }
+        return new YamlStorage(new DeckConfig(this));
     }
 
     private void initManagers() {
@@ -226,8 +246,8 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         return econ;
     }
 
-    public DeckConfig getDeckConfig() {
-        return deckConfig;
+    public Storage getDeckStorage() {
+        return deckStorage;
     }
 
     public CardsConfig getCardsConfig() {
@@ -377,7 +397,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         this.packsConfig.reloadConfig();
 
         this.cardsConfig.initValues();
-        this.deckConfig.reloadConfig();
+        //this.deckStorage.reloadConfig();
 
         this.messagesConfig.reloadConfig();
     }
