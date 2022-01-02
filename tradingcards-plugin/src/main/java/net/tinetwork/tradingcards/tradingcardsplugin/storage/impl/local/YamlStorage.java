@@ -16,7 +16,7 @@ import java.util.UUID;
  */
 public class YamlStorage implements Storage {
     private final Logger logger = LoggerFactory.getLogger(YamlStorage.class);
-    private DeckConfig deckConfig;
+    private final DeckConfig deckConfig;
 
     public YamlStorage(final DeckConfig deckConfig) {
         this.deckConfig = deckConfig;
@@ -45,5 +45,16 @@ public class YamlStorage implements Storage {
     @Override
     public void save(final UUID playerUuid, final int deckNumber, final Deck deck) {
         deckConfig.saveEntries(playerUuid,deckNumber,deck);
+        deckConfig.reloadConfig();
+    }
+
+    @Override
+    public boolean hasCard(final UUID playerUuid, final String card, final String rarity) {
+        return deckConfig.containsCard(playerUuid,card,rarity);
+    }
+
+    @Override
+    public boolean hasShinyCard(final UUID playerUuid, final String card, final String rarity) {
+        return deckConfig.containsShinyCard(playerUuid,card,rarity);
     }
 }

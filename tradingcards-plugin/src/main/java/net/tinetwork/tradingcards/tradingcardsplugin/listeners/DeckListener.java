@@ -3,10 +3,11 @@ package net.tinetwork.tradingcards.tradingcardsplugin.listeners;
 import de.tr7zw.nbtapi.NBTItem;
 import net.tinetwork.tradingcards.api.events.DeckCloseEvent;
 import net.tinetwork.tradingcards.api.events.DeckItemInteractEvent;
+import net.tinetwork.tradingcards.api.model.deck.Deck;
 import net.tinetwork.tradingcards.api.model.deck.StorageEntry;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.tradingcardsplugin.config.DeckConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingDeckManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.api.utils.NbtUtils;
 import org.bukkit.entity.Player;
@@ -18,12 +19,12 @@ import java.util.*;
 
 public class DeckListener extends SimpleListener {
     private final TradingDeckManager deckManager;
-    private final DeckConfig deckConfig;
+    private final Storage deckStorage;
 
     public DeckListener(final TradingCards plugin) {
         super(plugin);
         this.deckManager = plugin.getDeckManager();
-        this.deckConfig = plugin.getDeckStorage();
+        this.deckStorage = plugin.getDeckStorage();
     }
 
     @EventHandler
@@ -54,9 +55,8 @@ public class DeckListener extends SimpleListener {
             serializedEntries.add(entry);
             debug("Added " + entry + " to deck file.");
         }
-
-        deckConfig.saveEntries(player.getUniqueId(), deckNum, serializedEntries);
-        deckConfig.reloadConfig();
+        final Deck deck = new Deck(player.getUniqueId(),deckNum,serializedEntries);
+        deckStorage.save(player.getUniqueId(), deckNum, deck);
         deckManager.removeDeckViewer(e.getPlayer().getUniqueId());
         debug("Deck closed");
     }

@@ -7,8 +7,8 @@ import net.tinetwork.tradingcards.api.model.deck.StorageEntry;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
-import net.tinetwork.tradingcards.tradingcardsplugin.config.DeckConfig;
 import net.tinetwork.tradingcards.api.events.DeckLoadEvent;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import net.tinetwork.tradingcards.api.utils.NbtUtils;
 import org.bukkit.Bukkit;
@@ -31,13 +31,14 @@ import java.util.UUID;
 public class TradingDeckManager implements DeckManager {
     private final TradingCards plugin;
     private final TradingCardManager cardManager;
-    private final DeckConfig deckConfig;
+    private final Storage deckStorage;
+    //private final DeckConfig deckConfig;
     private final Map<UUID,Integer> playerDeckViewingMap;
 
     public TradingDeckManager(final @NotNull TradingCards plugin) {
         this.plugin = plugin;
         this.cardManager = plugin.getCardManager();
-        this.deckConfig=  plugin.getDeckStorage();
+        this.deckStorage =  plugin.getDeckStorage();
         this.playerDeckViewingMap = new HashMap<>();
     }
 
@@ -87,7 +88,8 @@ public class TradingDeckManager implements DeckManager {
     private @NotNull List<ItemStack> loadCardsFromFile(final UUID uuid, final int deckNum) {
         final List<ItemStack> cards = new ArrayList<>();
 
-        List<StorageEntry> deckEntries = DeckConfig.convertToDeckEntries(deckConfig.getDeckEntries(uuid, String.valueOf(deckNum)));
+        //List<StorageEntry> deckEntries = DeckConfig.convertToDeckEntries(deckConfig.getDeckEntries(uuid, String.valueOf(deckNum)));
+        List<StorageEntry> deckEntries = deckStorage.getDeck(uuid,deckNum).getDeckEntries();
         for (StorageEntry deckEntry : deckEntries) {
             plugin.debug(getClass(),deckEntry.toString());
             TradingCard card = cardManager.getCard(deckEntry.getCardId(),
@@ -115,6 +117,7 @@ public class TradingDeckManager implements DeckManager {
     public ItemStack createDeckItem(@NotNull final Player p, final int num) {
         ItemStack deck = plugin.getGeneralConfig().blankDeck();
         ItemMeta deckMeta = deck.getItemMeta();
+        //probably best to have this set somewhere
         deckMeta.setDisplayName(ChatUtil.color(plugin.getGeneralConfig().deckPrefix() + p.getName() + "'s Deck #" + num));
         deckMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         deck.setItemMeta(deckMeta);
@@ -166,11 +169,11 @@ public class TradingDeckManager implements DeckManager {
 
     @Override
     public boolean hasCard(@NotNull Player player, String card, String rarity) {
-        return plugin.getDeckStorage().containsCard(player.getUniqueId(), card, rarity);
+        return plugin.getDeckStorage().hasCard(player.getUniqueId(), card, rarity);
     }
 
     @Override
     public boolean hasShiny(@NotNull Player player, String card, String rarity) {
-        return plugin.getDeckStorage().containsShinyCard(player.getUniqueId(), card, rarity);
+        return plugin.getDeckStorage().hasShinyCard(player.getUniqueId(), card, rarity);
     }
 }

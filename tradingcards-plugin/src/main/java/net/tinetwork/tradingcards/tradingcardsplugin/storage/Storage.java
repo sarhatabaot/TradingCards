@@ -33,6 +33,10 @@ public interface Storage {
      */
     void save(UUID playerUuid, int deckNumber, Deck deck);
 
+    boolean hasCard(UUID playerUuid, String card, String rarity);
+
+    boolean hasShinyCard(UUID playerUuid, String card, String rarity);
+
     /**
      * Returns the storage type used.
      * @return StorageType
