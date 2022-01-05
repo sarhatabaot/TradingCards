@@ -8,8 +8,10 @@ data:
 
   # The name of the database to store TradingCards deck data in.
   # - This must be created already.
-  database: tradingcards
+  database: minecraft
 
   # Credentials for the database.
   username: root
   password: ''
+
+  table-prefix: 'tradingcards_'
