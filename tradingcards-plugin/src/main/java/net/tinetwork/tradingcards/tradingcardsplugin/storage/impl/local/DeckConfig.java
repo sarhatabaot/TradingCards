@@ -1,4 +1,4 @@
-package net.tinetwork.tradingcards.tradingcardsplugin.config;
+package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local;
 
 import net.tinetwork.tradingcards.api.config.SimpleConfigurate;
 import net.tinetwork.tradingcards.api.model.deck.Deck;
@@ -22,11 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-@Deprecated
-/**
- * Should be implemented via Storage.
- * This is not a config class but rather a data file.
- */
 public class DeckConfig extends SimpleConfigurate {
     private static final String INVENTORY_PATH = "decks.inventories.";
     private CommentedConfigurationNode inventoriesNode;
@@ -72,7 +67,6 @@ public class DeckConfig extends SimpleConfigurate {
     }
 
     @Nullable
-    @Deprecated
     public ConfigurationSection getAllDecks(final UUID uuid) {
         if (containsPlayer(uuid))
             return getConfig().getConfigurationSection(INVENTORY_PATH + uuid);
@@ -129,7 +123,6 @@ public class DeckConfig extends SimpleConfigurate {
         return stringList;
     }
 
-    @Deprecated
     public boolean containsCard(final UUID uuid, final String card, final String rarity) {
         if (getAllDecks(uuid) == null || getAllDecks(uuid).getValues(false).isEmpty())
             return false;
@@ -143,7 +136,6 @@ public class DeckConfig extends SimpleConfigurate {
         return false;
     }
 
-    @Deprecated
     public boolean containsShinyCard(final UUID uuid, final String card, final String rarity) {
         if (getAllDecks(uuid) == null || getAllDecks(uuid).getValues(false).isEmpty())
             return false;
