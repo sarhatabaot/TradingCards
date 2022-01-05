@@ -10,7 +10,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.CardsCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.DeckCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.CardsConfig;
-import net.tinetwork.tradingcards.tradingcardsplugin.config.DeckConfig;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local.DeckConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.ChancesConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.DropTypesConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.GeneralConfig;
@@ -30,7 +30,8 @@ import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingDeckManager
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.StorageType;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local.YamlStorage;
-import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.MySqlStorage;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.SqlStorage;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.sql.MySqlConnectionFactory;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.whitelist.PlayerBlacklist;
@@ -183,10 +184,12 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     }
 
     private Storage initStorage() throws ConfigurateException {
-        StorageType storageType = storageConfig.getType();
+        StorageType storageType = this.storageConfig.getType();
         switch (storageType){
             case MYSQL -> {
-                return new MySqlStorage();
+                return new SqlStorage(this,
+                        this.storageConfig.getTablePrefix(),
+                        new MySqlConnectionFactory(this.storageConfig));
             }
             case YAML -> {
                 return new YamlStorage(new DeckConfig(this));
@@ -246,7 +249,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         return econ;
     }
 
-    public Storage getDeckStorage() {
+    public Storage getStorage() {
         return deckStorage;
     }
 
