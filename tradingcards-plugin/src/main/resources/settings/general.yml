@@ -130,5 +130,6 @@ info-line-length: 25
 
 # Only drop cards from a certain series.
 # You can still get other series with /cards give
-active-series:
-  - '2021'
+# Unused, use series.yml
+# active-series:
+#  - '2021'
