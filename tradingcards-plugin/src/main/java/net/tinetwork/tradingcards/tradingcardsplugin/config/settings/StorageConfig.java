@@ -23,6 +23,8 @@ public class StorageConfig extends SimpleConfigurate {
     private String username;
     private String password; //this should not be accessible anywhere except when the db initializes.
 
+    private String tablePrefix;
+
 
     public StorageConfig(final TradingCardsPlugin<? extends Card<?>> plugin) throws ConfigurateException {
         super(plugin, "settings" + File.separator + "storage.yml", "storage.yml", "settings");
@@ -60,5 +62,9 @@ public class StorageConfig extends SimpleConfigurate {
 
     public String getPassword() {
         return password;
+    }
+
+    public String getTablePrefix() {
+        return tablePrefix;
     }
 }
