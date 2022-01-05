@@ -33,8 +33,26 @@ public interface Storage {
      */
     void save(UUID playerUuid, int deckNumber, Deck deck);
 
+    void add(UUID playerUuid, int deckNumber, String cardId, String rarityId, int amount, boolean isShiny, int slot);
+
+    void remove(UUID playerUuid, int deckNumber, String cardId, String rarityId, int amount, boolean isShiny, int slot);
+
+    /**
+     *
+     * @param playerUuid
+     * @param card
+     * @param rarity
+     * @return
+     */
     boolean hasCard(UUID playerUuid, String card, String rarity);
 
+    /**
+     *
+     * @param playerUuid
+     * @param card
+     * @param rarity
+     * @return
+     */
     boolean hasShinyCard(UUID playerUuid, String card, String rarity);
 
     /**
@@ -42,4 +60,8 @@ public interface Storage {
      * @return StorageType
      */
     StorageType getType();
+
+    default String getPrefix() {
+        return "decks";
+    }
 }
