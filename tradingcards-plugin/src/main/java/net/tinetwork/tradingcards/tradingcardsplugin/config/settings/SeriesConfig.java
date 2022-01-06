@@ -1,5 +1,6 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
 
+import net.tinetwork.tradingcards.api.config.ColorSeries;
 import net.tinetwork.tradingcards.api.config.settings.SeriesConfigurate;
 import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.api.model.schedule.DateSchedule;
@@ -23,7 +24,9 @@ import java.util.Map;
  * @author sarhatabaot
  */
 public class SeriesConfig extends SeriesConfigurate {
-    private Map<String,Series> series;
+    private Map<String,Series> seriesMap;
+    private Map<String,ColorSeries> seriesColors;
+    private final ColorSeries defaultColors = new ColorSeries("&a", "&b","&e","&c","&6");
 
     public SeriesConfig(final TradingCards plugin) throws ConfigurateException {
         super(plugin, "settings"+ File.separator, "series.yml", "settings");
@@ -31,17 +34,41 @@ public class SeriesConfig extends SeriesConfigurate {
 
     @Override
     protected void initValues() throws ConfigurateException {
-        this.series = new HashMap<>();
+        this.seriesMap = new HashMap<>();
+        loadSeries();
+        loadSeriesColors();
+    }
+    private void loadSeriesColors() {
+        this.seriesColors = new HashMap<>();
+        for(String seriesId: this.seriesMap.keySet()) {
+            final ConfigurationNode seriesNode = rootNode.node(seriesId);
+            try {
+                ColorSeries colorSeries = seriesNode.node("colors").get(ColorSeries.class,defaultColors);
+                seriesColors.put(seriesId,colorSeries);
+                plugin.debug(SeriesConfig.class,"Added "+colorSeries.toString());
+            } catch (SerializationException|NullPointerException e){
+                plugin.getLogger().severe(e.getMessage());
+                plugin.debug(GeneralConfig.class,"Couldn't add="+seriesId);
+            }
+        }
+        for(Map.Entry<String,ColorSeries> entry: seriesColors.entrySet()) {
+            plugin.debug(SeriesConfig.class,entry.getKey()+":"+entry.getValue().toString());
+        }
+    }
+    private void loadSeries() {
         for(Map.Entry<Object, ? extends ConfigurationNode> nodeEntry: rootNode.childrenMap().entrySet()) {
             final String seriesKey = nodeEntry.getValue().key().toString();
             try {
-                series.put(seriesKey,getSeries(seriesKey));
+                final Series series = getSeries(seriesKey);
+                seriesMap.put(seriesKey,series);
+                plugin.debug(SeriesConfig.class,"Added "+series.toString());
             } catch (SerializationException e){
                 plugin.getLogger().severe(e.getMessage());
                 plugin.debug(SeriesConfig.class,"Couldn't add="+seriesKey);
             }
         }
-        plugin.debug(SeriesConfig.class,"Total Series="+series.size());
+        plugin.debug(SeriesConfig.class,"Total Series="+ seriesMap.size());
+
     }
 
     private Series getSeries(final String key) throws SerializationException {
@@ -49,14 +76,20 @@ public class SeriesConfig extends SeriesConfigurate {
     }
 
     public Map<String,Series> series() {
-        return this.series;
+        return this.seriesMap;
+    }
+
+    public ColorSeries getColorSeries(final String key) {
+        plugin.debug(SeriesConfig.class,"SeriesKey="+key);
+        return this.seriesColors.get(key);
     }
 
     @Override
     protected void preLoaderBuild() {
         loaderBuilder.defaultOptions(opts -> opts.serializers(builder ->
                 builder.registerExact(DateScheduleSerializer.TYPE, DateScheduleSerializer.INSTANCE)
-                        .registerExact(SeriesSerializer.TYPE, SeriesSerializer.INSTANCE)));
+                        .registerExact(SeriesSerializer.TYPE, SeriesSerializer.INSTANCE)
+                        .registerExact(ColorSeriesSerializer.TYPE,ColorSeriesSerializer.INSTANCE)));
     }
 
 
@@ -126,4 +159,31 @@ public class SeriesConfig extends SeriesConfigurate {
             //
         }
     }
+
+
+    public static class ColorSeriesSerializer implements TypeSerializer<ColorSeries> {
+        public static final ColorSeriesSerializer INSTANCE = new ColorSeriesSerializer();
+        public static final Class<ColorSeries> TYPE = ColorSeries.class;
+        private static final String SERIES = "series";
+        private static final String TYPE_PATH = "type";
+        private static final String INFO = "info";
+        private static final String ABOUT = "about";
+        private static final String RARITY = "rarity";
+
+        @Override
+        public ColorSeries deserialize(final Type type, final ConfigurationNode node) throws SerializationException {
+            final String typeFormat = node.node(TYPE_PATH).getString();
+            final String info = node.node(INFO).getString();
+            final String about = node.node(ABOUT).getString();
+            final String rarity = node.node(RARITY).getString();
+            final String series = node.node(SERIES).getString();
+            return new ColorSeries(series,typeFormat,info,about,rarity);
+        }
+
+        @Override
+        public void serialize(final Type type, final ColorSeries obj, final ConfigurationNode node) throws SerializationException {
+            //not using this.
+        }
+    }
+
 }

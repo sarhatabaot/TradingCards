@@ -3,6 +3,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.utils;
 import de.tr7zw.nbtapi.NBTItem;
 import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.api.model.Rarity;
+import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.api.utils.NbtUtils;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
@@ -217,13 +218,13 @@ public class CardUtil {
     }
 
 
-    public static @NotNull List<String> formatLore(final String info, final String about, final String rarity, final boolean isShiny, final String type, final String series) {
+    public static @NotNull List<String> formatLore(final String info, final String about, final String rarity, final boolean isShiny, final String type, final Series series) {
         List<String> lore = new ArrayList<>();
-        final String typeFormat = ChatUtil.color(plugin.getGeneralConfig().getColorSeries(series).getType() + plugin.getGeneralConfig().displayType() + type);
-        final String infoFormat = ChatUtil.color(plugin.getGeneralConfig().getColorSeries(series).getInfo() + plugin.getGeneralConfig().displayInfo());
-        final String seriesFormat = ChatUtil.color(plugin.getGeneralConfig().getColorSeries(series).getSeries() + plugin.getGeneralConfig().displaySeries() + series);
-        final String aboutFormat = ChatUtil.color(plugin.getGeneralConfig().getColorSeries(series).getAbout() + plugin.getGeneralConfig().displayAbout());
-        final String rarityFormat = ChatUtil.color(plugin.getGeneralConfig().getColorSeries(series).getRarity());
+        final String typeFormat = ChatUtil.color(plugin.getSeriesConfig().getColorSeries(series.getName()).getType() + plugin.getGeneralConfig().displayType() + type);
+        final String infoFormat = ChatUtil.color(plugin.getSeriesConfig().getColorSeries(series.getName()).getInfo() + plugin.getGeneralConfig().displayInfo());
+        final String seriesFormat = ChatUtil.color(plugin.getSeriesConfig().getColorSeries(series.getName()).getSeries() + plugin.getGeneralConfig().displaySeries() + series.getDisplayName());
+        final String aboutFormat = ChatUtil.color(plugin.getSeriesConfig().getColorSeries(series.getName()).getAbout() + plugin.getGeneralConfig().displayAbout());
+        final String rarityFormat = ChatUtil.color(plugin.getSeriesConfig().getColorSeries(series.getName()).getRarity());
 
         lore.add(typeFormat);
         if (!"None".equalsIgnoreCase(info) && !info.isEmpty()) {

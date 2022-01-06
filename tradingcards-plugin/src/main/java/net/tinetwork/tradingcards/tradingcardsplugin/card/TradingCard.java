@@ -23,7 +23,7 @@ public class TradingCard extends Card<TradingCard> {
         ItemStack card = new ItemStack(getMaterial());
         ItemMeta cardMeta = card.getItemMeta();
         cardMeta.setDisplayName(CardUtil.formatDisplayName(this));
-        cardMeta.setLore(CardUtil.formatLore(getInfo(),getAbout(),getRarity().getDisplayName(),isShiny(),getType().getDisplayName(),getSeries().getDisplayName()));
+        cardMeta.setLore(CardUtil.formatLore(getInfo(),getAbout(),getRarity().getDisplayName(),isShiny(),getType().getDisplayName(),getSeries()));
         if (isShiny()) {
             cardMeta.addEnchant(Enchantment.ARROW_INFINITE, 1, false);
         }

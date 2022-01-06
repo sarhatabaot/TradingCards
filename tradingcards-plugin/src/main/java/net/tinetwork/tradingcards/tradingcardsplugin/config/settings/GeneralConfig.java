@@ -61,13 +61,6 @@ public class GeneralConfig extends GeneralConfigurate {
     private String spawnerMobName;
     private int infoLineLength;
 
-    //Colors
-    private Map<String,ColorSeries> colorSeriesMap;
-//    private String colorSeries;
-//    private String colorType;
-//    private String colorInfo;
-//    private String colorAbout;
-//    private String colorRarity;
     private String colorPackName;
     private String colorPackLore;
     private String colorPackNormal;
@@ -140,8 +133,6 @@ public class GeneralConfig extends GeneralConfigurate {
         this.infoLineLength = rootNode.node("info-line-length").getInt(25);
 
         final ConfigurationNode colorNode = rootNode.node("colors");
-        final ConfigurationNode colorSeriesNode = colorNode.node("series");
-        this.colorSeriesMap = loadColorSeries(colorSeriesNode);
         //Colors
         //this.colorSeries = colorNode.node("series").getString();
         //this.colorType = colorNode.node("type").getString();
@@ -177,23 +168,7 @@ public class GeneralConfig extends GeneralConfigurate {
 
     @Override
     protected void preLoaderBuild() {
-        loaderBuilder.defaultOptions(opts -> opts.serializers(builder -> builder.registerExact(ColorSeriesSerializer.TYPE,ColorSeriesSerializer.INSTANCE)));
-    }
-
-
-    //TODO #57 https://github.com/sarhatabaot/TradingCards/issues/57
-    private Map<String,ColorSeries> loadColorSeries(final ConfigurationNode node) {
-        final Map<String,ColorSeries> seriesMap = new HashMap<>();
-        for(Map.Entry<Object, ? extends ConfigurationNode> nodeEntry: node.childrenMap().entrySet()) {
-            final String colorSeriesKey = nodeEntry.getValue().key().toString();
-            try {
-                seriesMap.put(colorSeriesKey,node.get(ColorSeries.class));
-            } catch (SerializationException e){
-                plugin.getLogger().severe(e.getMessage());
-                plugin.debug(GeneralConfig.class,"Couldn't add="+colorSeriesKey);
-            }
-        }
-        return seriesMap;
+        //nothing to add
     }
 
     public ItemStack blankCard() {
@@ -408,36 +383,5 @@ public class GeneralConfig extends GeneralConfigurate {
 
     public boolean useDefaultCardsFile(){
         return useDefaultCardsFile;
-    }
-
-    public ColorSeries getColorSeries(final String series) {
-        return colorSeriesMap.get(series);
-    }
-
-
-    public static  class ColorSeriesSerializer implements TypeSerializer<ColorSeries> {
-        public static final ColorSeriesSerializer INSTANCE = new ColorSeriesSerializer();
-        public static final Class<ColorSeries> TYPE = ColorSeries.class;
-        private static final String SERIES = "series";
-        private static final String TYPE_PATH = "type";
-        private static final String INFO = "info";
-        private static final String ABOUT = "about";
-        private static final String RARITY = "rarity";
-
-        @Override
-        public ColorSeries deserialize(final Type type, final ConfigurationNode node) throws SerializationException {
-            final String id = node.parent().key().toString();
-            final String typeFormat = node.node(TYPE_PATH).getString();
-            final String info = node.node(INFO).getString();
-            final String about = node.node(ABOUT).getString();
-            final String rarity = node.node(RARITY).getString();
-            final String series = node.node(SERIES).getString();
-            return new ColorSeries(id,series,typeFormat,info,about,rarity);
-        }
-
-        @Override
-        public void serialize(final Type type, final ColorSeries obj, final ConfigurationNode node) throws SerializationException {
-            //not using this.
-        }
     }
 }
