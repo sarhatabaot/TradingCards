@@ -2,11 +2,26 @@
 # You can add a default-color line to change the style.
 default:
   display-name: "Default"
-  # Mode: ACTIVE, DISABLED, SCHEDULED
+  # Mode: ACTIVE, DISABLED, (SCHEDULED - not implemented yet)
   # Active drops from killing mobs
   # Disabled does not drop from killing mobs, can still get it from /cards give
   # Scheduled Active between set dates
   mode: ACTIVE
+  colors:
+    series: "&a"
+    type: "&b"
+    info: "&e"
+    about: "&c"
+    rarity: "&6"
+halloween:
+  display-name: "Halloween"
+  mode: DISABLED
+  colors:
+    series: "&a"
+    type: "&b"
+    info: "&e"
+    about: "&c"
+    rarity: "&6"
 scheduled:
   display-name: "Scheduled"
   # Mode: ACTIVE, DISABLED, SCHEDULED

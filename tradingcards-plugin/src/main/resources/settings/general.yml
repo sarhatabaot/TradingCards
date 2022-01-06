@@ -10,20 +10,7 @@ use-default-cards-file: true
 # Default Formatting Settings
 # ##############################
 colors:
-  series:
-    default:
-    # Colours for various settings of the card.
-      series: "&a"
-      type: "&b"
-      info: "&e"
-      about: "&c"
-      rarity: "&6"
-    halloween:
-      series: "&a"
-      type: "&b"
-      info: "&e"
-      about: "&c"
-      rarity: "&6"
+  # Series Colors have moved to the series.yml file!
   # Booster pack colourings.
   packs:
     booster-pack-name: "&a"
