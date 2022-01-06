@@ -1,15 +1,13 @@
 package net.tinetwork.tradingcards.api.config;
 
 public class ColorSeries {
-    private final String id;
-    private String series;
-    private String type;
-    private String info;
-    private String about;
-    private String rarity;
+    private final String series;
+    private final String type;
+    private final String info;
+    private final String about;
+    private final String rarity;
 
-    public ColorSeries(final String id, final String series, final String type, final String info, final String about, final String rarity) {
-        this.id = id;
+    public ColorSeries(final String series, final String type, final String info, final String about, final String rarity) {
         this.series = series;
         this.type = type;
         this.info = info;
@@ -37,7 +35,14 @@ public class ColorSeries {
         return rarity;
     }
 
-    public String getId() {
-        return id;
+    @Override
+    public String toString() {
+        return "ColorSeries{" +
+                "series='" + series + '\'' +
+                ", type='" + type + '\'' +
+                ", info='" + info + '\'' +
+                ", about='" + about + '\'' +
+                ", rarity='" + rarity + '\'' +
+                '}';
     }
 }
