@@ -77,8 +77,6 @@ public abstract class GeneralConfigurate extends SimpleConfigurate {
 
     public abstract Material packMaterial();
 
-    public abstract ColorSeries getColorSeries(final String series);
-
     public abstract String colorPackName();
 
     public abstract String colorPackLore();
