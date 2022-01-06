@@ -1,7 +1,7 @@
 package net.tinetwork.tradingcards.api.model.schedule;
 
 public abstract class Schedule {
-    private ScheduleType type;
+    private final ScheduleType type;
 
     public Schedule(final ScheduleType type) {
         this.type = type;

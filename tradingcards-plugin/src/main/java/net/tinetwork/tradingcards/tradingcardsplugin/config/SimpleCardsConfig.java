@@ -55,7 +55,9 @@ public class SimpleCardsConfig extends SimpleConfigurate {
         }
     }
 
+
     public static class CardSerializer implements TypeSerializer<TradingCard> {
+        @SuppressWarnings("rawtypes")
         private static TradingCardsPlugin<? extends Card> plugin;
         public static CardSerializer INSTANCE = new CardSerializer();
         private static final String DISPLAY_NAME = "display-name";
@@ -70,6 +72,7 @@ public class SimpleCardsConfig extends SimpleConfigurate {
         private static final String CUSTOM_MODEL_DATA = "custom-model-data";
         private static final String MATERIAL = "material";
 
+        @SuppressWarnings("rawtypes")
         public static void init(TradingCardsPlugin<? extends Card> plugin) {
             CardSerializer.plugin = plugin;
         }

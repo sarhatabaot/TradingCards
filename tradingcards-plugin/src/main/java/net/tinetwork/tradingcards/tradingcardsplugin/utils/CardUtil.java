@@ -131,11 +131,6 @@ public class CardUtil {
 
 
     public static boolean isCard(final ItemStack itemStack) {
-        //if (!isCardMaterial(itemStack.getType())) {
-        //    plugin.debug(CardUtil.class,"Wrong type:"+itemStack.getType()+" expected:"+plugin.getGeneralConfig().cardMaterial());
-        //    return false;
-        //}
-
         NBTItem nbtItem = new NBTItem(itemStack);
         return nbtItem.getBoolean(NbtUtils.NBT_IS_CARD);
     }
