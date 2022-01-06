@@ -82,7 +82,7 @@ player-type: "Player"
 player-has-shiny-version: true
 # Should the player drop their own card if they're killed in PvP?
 player-drops-card: true
-# Percent of the time where the player drops the card, if the above is true.
+# Percent of the time when the player drops the card, if the above is true.
 player-drops-card-rarity: 1000000
 
 # ##############################

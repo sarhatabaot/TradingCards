@@ -1,20 +1,14 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
 
-import net.tinetwork.tradingcards.api.config.ColorSeries;
 import net.tinetwork.tradingcards.api.config.settings.GeneralConfigurate;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
-import org.spongepowered.configurate.serialize.SerializationException;
-import org.spongepowered.configurate.serialize.TypeSerializer;
 
 import java.io.File;
-import java.lang.reflect.Type;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class GeneralConfig extends GeneralConfigurate {
     private boolean debugMode;
@@ -297,26 +291,6 @@ public class GeneralConfig extends GeneralConfigurate {
         return packMaterial;
     }
 
-//    public String getColorSeries() {
-//        return colorSeries;
-//    }
-//
-//    public String colorType() {
-//        return colorType;
-//    }
-//
-//    public String colorInfo() {
-//        return colorInfo;
-//    }
-//
-//    public String colorAbout() {
-//        return colorAbout;
-//    }
-//
-//    public String colorRarity() {
-//        return colorRarity;
-//    }
-
     public String colorPackName() {
         return colorPackName;
     }
@@ -352,10 +326,6 @@ public class GeneralConfig extends GeneralConfigurate {
     public String packPrefix() {
         return packPrefix;
     }
-
-//    public String colorSeries() {
-//        return colorSeries;
-//    }
 
     public String displayTitle() {
         return displayTitle;

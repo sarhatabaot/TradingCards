@@ -4,8 +4,8 @@ package net.tinetwork.tradingcards.api.model.schedule;
 import java.time.LocalDate;
 
 public class DateSchedule extends Schedule {
-    private LocalDate start;
-    private LocalDate end;
+    private final LocalDate start;
+    private final LocalDate end;
 
 
     public DateSchedule(final LocalDate start, final LocalDate end) {

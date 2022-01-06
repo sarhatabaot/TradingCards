@@ -1,7 +1,6 @@
 package net.tinetwork.tradingcards.api;
 
 import net.tinetwork.tradingcards.api.blacklist.Blacklist;
-import net.tinetwork.tradingcards.api.config.SimpleConfigurate;
 import net.tinetwork.tradingcards.api.config.settings.GeneralConfigurate;
 import net.tinetwork.tradingcards.api.config.settings.RarityConfigurate;
 import net.tinetwork.tradingcards.api.config.settings.SeriesConfigurate;

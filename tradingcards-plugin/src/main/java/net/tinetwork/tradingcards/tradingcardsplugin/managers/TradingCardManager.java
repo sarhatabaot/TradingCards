@@ -242,7 +242,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
     public String getRandomRarity(DropType dropType, boolean alwaysDrop) {
         int randomDropChance = plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1;
         int mobDropChance = getGeneralMobChance(dropType);
-        plugin.debug(TradingCardManager.class,"DropChance=" + randomDropChance +" AlwaysDrop=" + alwaysDrop +" MobType="+ dropType.toString()+" MobDropChance="+mobDropChance);
+        plugin.debug(TradingCardManager.class,"DropChance=" + randomDropChance +" AlwaysDrop=" + alwaysDrop +" MobType="+ dropType +" MobDropChance="+mobDropChance);
         if (!alwaysDrop && randomDropChance > mobDropChance) {
             return "None";
         }

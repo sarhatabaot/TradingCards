@@ -31,7 +31,6 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.serialize.SerializationException;
 
-import java.lang.annotation.Inherited;
 import java.util.List;
 
 

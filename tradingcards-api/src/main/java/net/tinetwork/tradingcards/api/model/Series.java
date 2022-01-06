@@ -5,11 +5,11 @@ import net.tinetwork.tradingcards.api.model.schedule.Mode;
 import net.tinetwork.tradingcards.api.model.schedule.Schedule;
 
 public class Series {
-    private String name;
-    private Mode mode;
-    private String displayName;
+    private final String name;
+    private final Mode mode;
+    private final String displayName;
 
-    private Schedule schedule;
+    private final Schedule schedule;
 
     public Series(final String name, final Mode mode, final String displayName, final Schedule schedule) {
         this.name = name;

@@ -1,7 +1,5 @@
 package net.tinetwork.tradingcards.api.addons;
 
-import net.tinetwork.tradingcards.api.TradingCardsPlugin;
-import net.tinetwork.tradingcards.api.card.Card;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;

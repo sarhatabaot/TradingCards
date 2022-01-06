@@ -2,7 +2,6 @@ package net.tinetwork.tradingcards.api.config.settings;
 
 import net.tinetwork.tradingcards.api.TradingCardsPlugin;
 import net.tinetwork.tradingcards.api.card.Card;
-import net.tinetwork.tradingcards.api.config.ColorSeries;
 import net.tinetwork.tradingcards.api.config.SimpleConfigurate;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
