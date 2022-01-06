@@ -1,10 +1,10 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
 
-import net.tinetwork.tradingcards.api.TradingCardsPlugin;
-import net.tinetwork.tradingcards.api.card.Card;
 import net.tinetwork.tradingcards.api.config.SimpleConfigurate;
+import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.StorageType;
 import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.ConfigurationNode;
 
 import java.io.File;
 
@@ -26,13 +26,21 @@ public class StorageConfig extends SimpleConfigurate {
     private String tablePrefix;
 
 
-    public StorageConfig(final TradingCardsPlugin<? extends Card<?>> plugin) throws ConfigurateException {
-        super(plugin, "settings" + File.separator + "storage.yml", "storage.yml", "settings");
+    public StorageConfig(final TradingCards plugin) throws ConfigurateException {
+        super(plugin, "settings" + File.separator, "storage.yml", "settings");
     }
 
     @Override
     protected void initValues() throws ConfigurateException {
+        this.type = StorageType.valueOf(rootNode.node("storage-type").getString("YAML"));
 
+        final ConfigurationNode dataNode = rootNode.node("database");
+        this.address = dataNode.node("address").getString("localhost");
+        this.port = dataNode.node("port").getString("3306");
+        this.database = dataNode.node("database").getString("minecraft");
+        this.username = dataNode.node("username").getString("username");
+        this.password = dataNode.node("password").getString();
+        this.tablePrefix = dataNode.node("table-prefix").getString("tradingcards_");
     }
 
     @Override

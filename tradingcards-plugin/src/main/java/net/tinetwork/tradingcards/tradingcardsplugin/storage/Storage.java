@@ -1,6 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.storage;
 
 import net.tinetwork.tradingcards.api.model.deck.Deck;
+import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 
 import java.util.List;
 import java.util.UUID;
@@ -33,9 +34,9 @@ public interface Storage {
      */
     void save(UUID playerUuid, int deckNumber, Deck deck);
 
-    void add(UUID playerUuid, int deckNumber, String cardId, String rarityId, int amount, boolean isShiny, int slot);
+    //void add(UUID playerUuid, int deckNumber, String cardId, String rarityId, int amount, boolean isShiny, int slot);
 
-    void remove(UUID playerUuid, int deckNumber, String cardId, String rarityId, int amount, boolean isShiny, int slot);
+    //void remove(UUID playerUuid, int deckNumber, String cardId, String rarityId, int amount, boolean isShiny, int slot);
 
     /**
      *
@@ -64,4 +65,6 @@ public interface Storage {
     default String getPrefix() {
         return "decks";
     }
+
+    void init(TradingCards plugin);
 }

@@ -1,6 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.sql;
 
 import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.StorageConfig;
 
@@ -8,6 +9,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 public abstract class HikariConnectionFactory implements ConnectionFactory{
     private final StorageConfig storageConfig;
+    private HikariDataSource dataSource;
 
     public HikariConnectionFactory(final StorageConfig storageConfig) {
         this.storageConfig = storageConfig;
@@ -30,6 +32,9 @@ public abstract class HikariConnectionFactory implements ConnectionFactory{
         config.setPoolName("tradingcards-hikari");
 
         configureDatabase(config,storageConfig.getAddress(),storageConfig.getPort(),storageConfig.getDatabase(),storageConfig.getUsername(),storageConfig.getPassword());
+        config.setInitializationFailTimeout(-1);
+
+        this.dataSource = new HikariDataSource(config);
 
         postInitialize();
     }
@@ -43,12 +48,23 @@ public abstract class HikariConnectionFactory implements ConnectionFactory{
 
     @Override
     public void shutdown() throws Exception {
-
+        if (this.dataSource != null) {
+            this.dataSource.close();
+        }
     }
 
     @Override
     public Connection getConnection() throws SQLException {
-        return null;
+        if (this.dataSource == null) {
+            throw new SQLException("Unable to get a connection from the pool. (datasource is null)");
+        }
+
+        Connection connection = this.dataSource.getConnection();
+        if (connection == null) {
+            throw new SQLException("Unable to get a connection from the pool. (getConnection returned null)");
+        }
+
+        return connection;
     }
 
 

@@ -18,7 +18,6 @@ public abstract class GeneralConfigurate extends SimpleConfigurate {
         super(plugin, resourcePath, fileName, folder);
     }
 
-
     public abstract ItemStack blankCard();
 
     public abstract ItemStack blankBoosterPack();

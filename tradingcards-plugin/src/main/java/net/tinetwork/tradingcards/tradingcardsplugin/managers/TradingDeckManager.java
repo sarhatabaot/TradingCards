@@ -31,14 +31,13 @@ import java.util.UUID;
 public class TradingDeckManager implements DeckManager {
     private final TradingCards plugin;
     private final TradingCardManager cardManager;
-    private final Storage deckStorage;
-    //private final DeckConfig deckConfig;
+    private final Storage storage;
     private final Map<UUID,Integer> playerDeckViewingMap;
 
     public TradingDeckManager(final @NotNull TradingCards plugin) {
         this.plugin = plugin;
         this.cardManager = plugin.getCardManager();
-        this.deckStorage =  plugin.getStorage();
+        this.storage =  plugin.getStorage();
         this.playerDeckViewingMap = new HashMap<>();
     }
 
@@ -88,8 +87,7 @@ public class TradingDeckManager implements DeckManager {
     private @NotNull List<ItemStack> loadCardsFromFile(final UUID uuid, final int deckNum) {
         final List<ItemStack> cards = new ArrayList<>();
 
-        //List<StorageEntry> deckEntries = DeckConfig.convertToDeckEntries(deckConfig.getDeckEntries(uuid, String.valueOf(deckNum)));
-        List<StorageEntry> deckEntries = deckStorage.getDeck(uuid,deckNum).getDeckEntries();
+        List<StorageEntry> deckEntries = storage.getDeck(uuid,deckNum).getDeckEntries();
         for (StorageEntry deckEntry : deckEntries) {
             plugin.debug(getClass(),deckEntry.toString());
             TradingCard card = cardManager.getCard(deckEntry.getCardId(),
@@ -114,11 +112,11 @@ public class TradingDeckManager implements DeckManager {
 
     @NotNull
     @Override
-    public ItemStack createDeckItem(@NotNull final Player p, final int num) {
+    public ItemStack createDeckItem(@NotNull final Player player, final int num) {
         ItemStack deck = plugin.getGeneralConfig().blankDeck();
         ItemMeta deckMeta = deck.getItemMeta();
         //probably best to have this set somewhere
-        deckMeta.setDisplayName(ChatUtil.color(plugin.getGeneralConfig().deckPrefix() + p.getName() + "'s Deck #" + num));
+        deckMeta.setDisplayName(ChatUtil.color(plugin.getGeneralConfig().deckPrefix() + player.getName() + "'s Deck #" + num));
         deckMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         deck.setItemMeta(deckMeta);
         deck.addUnsafeEnchantment(Enchantment.DURABILITY, 10);
@@ -163,17 +161,16 @@ public class TradingDeckManager implements DeckManager {
                 return true;
             }
         }
-
         return false;
     }
 
     @Override
     public boolean hasCard(@NotNull Player player, String card, String rarity) {
-        return plugin.getStorage().hasCard(player.getUniqueId(), card, rarity);
+        return storage.hasCard(player.getUniqueId(), card, rarity);
     }
 
     @Override
     public boolean hasShiny(@NotNull Player player, String card, String rarity) {
-        return plugin.getStorage().hasShinyCard(player.getUniqueId(), card, rarity);
+        return storage.hasShinyCard(player.getUniqueId(), card, rarity);
     }
 }

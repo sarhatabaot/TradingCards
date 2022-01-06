@@ -41,10 +41,20 @@ public class SqlStorage implements Storage {
     private final StatementProcessor statementProcessor;
 
 
+    @Override
+    public void init(final TradingCards plugin) {
+        connectionFactory.init(plugin);
+    }
+
     public SqlStorage(final TradingCards plugin, final String tablePrefix, final ConnectionFactory connectionFactory) {
         this.plugin = plugin;
         this.connectionFactory = connectionFactory;
         this.statementProcessor = new StatementProcessor(tablePrefix);
+        try {
+            applySchema();
+        } catch (SQLException|IOException e){
+            plugin.getLogger().severe(e.getMessage());
+        }
     }
 
     @Override
@@ -145,7 +155,7 @@ public class SqlStorage implements Storage {
         return StorageType.MYSQL;
     }
 
-    @Override
+
     public void add(final UUID playerUuid, final int deckNumber, final String cardId, final String rarityId, final int amount, final boolean isShiny, final int slot) {
         try (Connection connection = connectionFactory.getConnection()) {
             ImmutableMap<String, String> values = statementProcessor.generateValuesMap(playerUuid, deckNumber, cardId, rarityId, amount, isShiny, slot);
@@ -159,7 +169,6 @@ public class SqlStorage implements Storage {
         }
     }
 
-    @Override
     public void remove(final UUID playerUuid, final int deckNumber, final String cardId, final String rarityId, final int amount, final boolean isShiny, final int slot) {
         try (Connection connection = connectionFactory.getConnection()) {
             ImmutableMap<String, String> values = statementProcessor.generateValuesMap(playerUuid, deckNumber, cardId, rarityId, amount, isShiny, slot);

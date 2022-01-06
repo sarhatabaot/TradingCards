@@ -1,7 +1,7 @@
 # Available options: YAML, MYSQL
 storage-type: YAML
 
-data:
+database:
   # Address and port for the database.
   address: localhost
   port: 3306

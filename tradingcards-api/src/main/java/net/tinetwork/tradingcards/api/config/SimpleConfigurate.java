@@ -23,6 +23,7 @@ public abstract class SimpleConfigurate extends SimpleConfigFile {
 
         this.saveDefaultConfig();
         initValues();
+        plugin.getLogger().info("Loading "+fileName);
     }
 
     protected abstract void initValues() throws ConfigurateException;

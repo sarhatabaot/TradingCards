@@ -1,6 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local;
 
 import net.tinetwork.tradingcards.api.model.deck.Deck;
+import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.StorageType;
 import org.slf4j.Logger;
@@ -29,6 +30,11 @@ public class YamlStorage implements Storage {
     @Override
     public List<Deck> getPlayerDecks(final UUID playerUuid) {
         return deckConfig.getPlayerDecks(playerUuid);
+    }
+
+    @Override
+    public void init(final TradingCards plugin) {
+        //nothing to init here
     }
 
     @Override

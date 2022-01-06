@@ -105,11 +105,20 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         return this;
     }
 
+
     @Override
     public void onEnable() {
         cacheMobs();
         initConfigs();
+
+        try {
+            this.deckStorage = initStorage();
+        } catch (ConfigurateException e) {
+            e.printStackTrace();
+        }
+        this.deckStorage.init(this);
         initBlacklist();
+
         initManagers();
         initListeners();
         initUtils();
@@ -174,7 +183,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
             this.messagesConfig = new MessagesConfig(this);
             this.packsConfig = new PacksConfig(this);
             this.storageConfig = new StorageConfig(this);
-            this.deckStorage = initStorage();
             this.dropTypesConfig = new DropTypesConfig(this);
         } catch (ConfigurateException e) {
             getLogger().severe(e.getMessage());
@@ -185,6 +193,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
     private Storage initStorage() throws ConfigurateException {
         StorageType storageType = this.storageConfig.getType();
+        getLogger().info("Using storage "+storageType.name());
         switch (storageType){
             case MYSQL -> {
                 return new SqlStorage(this,
@@ -372,13 +381,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         }
     }
 
-    @Deprecated
-    //fake deprecation, don't remove.
-    //This is so we remember to remove any trace messages after testing is over.
-    public void trace(final String message) {
-        getLogger().info("TRACE " + message);
-    }
-
     public String getPrefixedMessage(final String message) {
         return ChatUtil.color(prefixed(message));
     }
@@ -393,6 +395,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     }
 
     private void reloadAllConfigs() {
+        this.messagesConfig.reloadConfig();
         this.generalConfig.reloadConfig();
         this.raritiesConfig.reloadConfig();
         this.chancesConfig.reloadConfig();
@@ -400,9 +403,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         this.packsConfig.reloadConfig();
 
         this.cardsConfig.initValues();
-        //this.deckStorage.reloadConfig();
-
-        this.messagesConfig.reloadConfig();
+        this.storageConfig.reloadConfig();
     }
 
     public void reloadPlugin() {

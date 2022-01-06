@@ -180,6 +180,8 @@ public class GeneralConfig extends GeneralConfigurate {
         loaderBuilder.defaultOptions(opts -> opts.serializers(builder -> builder.registerExact(ColorSeriesSerializer.TYPE,ColorSeriesSerializer.INSTANCE)));
     }
 
+
+    //TODO #57 https://github.com/sarhatabaot/TradingCards/issues/57
     private Map<String,ColorSeries> loadColorSeries(final ConfigurationNode node) {
         final Map<String,ColorSeries> seriesMap = new HashMap<>();
         for(Map.Entry<Object, ? extends ConfigurationNode> nodeEntry: node.childrenMap().entrySet()) {

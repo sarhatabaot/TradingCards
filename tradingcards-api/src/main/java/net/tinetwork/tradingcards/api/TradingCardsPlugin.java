@@ -36,54 +36,54 @@ public abstract class TradingCardsPlugin<T> extends JavaPlugin {
 
     /**
      *
-     * @param string
-     * @return
+     * @param string type
+     * @return If the type is a mob
      */
     public abstract boolean isMob(String string);
 
 
     /**
      *
-     * @param type
-     * @return
+     * @param type Type
+     * @return If the type is a mob
      */
     public abstract boolean isMob(EntityType type);
 
     /**
      *
-     * @return
+     * @return Get the card manager
      */
     public abstract CardManager<T> getCardManager();
 
     /**
      *
-     * @return
+     * @return Get the pack manager
      */
     public abstract PackManager getPackManager();
 
     /**
      *
-     * @return
+     * @return Get the deck manager
      */
     public abstract DeckManager getDeckManager();
 
     /**
      *
-     * @return
+     * @return Player blacklist
      */
     public abstract Blacklist<Player> getPlayerBlacklist();
 
 
     /**
      *
-     * @return
+     * @return The world blacklist
      */
     public abstract Blacklist<World> getWorldBlacklist();
 
 
     /**
      *
-     * @return
+     * @return Get the plugin instance.
      */
     public abstract TradingCardsPlugin<T> get();
 
