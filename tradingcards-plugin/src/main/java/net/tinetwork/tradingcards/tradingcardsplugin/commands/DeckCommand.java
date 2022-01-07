@@ -21,7 +21,6 @@ public class DeckCommand extends BaseCommand {
 		this.plugin = plugin;
 	}
 
-
 	@Default
 	@CommandPermission(Permissions.USE_DECK)
 	@Description("Get a deck item. Or opens a deck.")

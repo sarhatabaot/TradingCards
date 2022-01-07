@@ -10,6 +10,7 @@ cards:
       # Unless specified we will use the prices from rarities.
       buy-price: 100.0
       sell-price: 50.0
+      Custom-Model-Data: 3200001
     skeleton:
       display-name: 'Skeleton'
       series: 'default'

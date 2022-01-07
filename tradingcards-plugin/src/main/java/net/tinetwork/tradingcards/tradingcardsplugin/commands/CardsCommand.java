@@ -195,10 +195,6 @@ public class CardsCommand extends BaseCommand {
         }
     }
 
-
-
-
-
     @Subcommand("list")
     @CommandPermission(Permissions.LIST)
     @Description("Lists all cards by rarities")

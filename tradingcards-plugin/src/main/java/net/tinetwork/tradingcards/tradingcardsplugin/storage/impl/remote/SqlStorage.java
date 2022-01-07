@@ -44,17 +44,17 @@ public class SqlStorage implements Storage {
     @Override
     public void init(final TradingCards plugin) {
         connectionFactory.init(plugin);
+        try {
+            applySchema();
+        } catch (SQLException|IOException e){
+            plugin.getLogger().severe(e.getMessage());
+        }
     }
 
     public SqlStorage(final TradingCards plugin, final String tablePrefix, final ConnectionFactory connectionFactory) {
         this.plugin = plugin;
         this.connectionFactory = connectionFactory;
         this.statementProcessor = new StatementProcessor(tablePrefix);
-        try {
-            applySchema();
-        } catch (SQLException|IOException e){
-            plugin.getLogger().severe(e.getMessage());
-        }
     }
 
     @Override
@@ -200,6 +200,8 @@ public class SqlStorage implements Storage {
                     .map(this.statementProcessor::applyPrefix)
                     .collect(Collectors.toList());
         }
+
+        statements.forEach(s->plugin.debug(SqlStorage.class,s));
 
         try (Connection connection = this.connectionFactory.getConnection()) {
             boolean utf8mb4Unsupported = false;
