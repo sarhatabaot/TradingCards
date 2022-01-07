@@ -7,6 +7,10 @@ import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.StorageConf
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
 public abstract class HikariConnectionFactory implements ConnectionFactory{
     private final StorageConfig storageConfig;
     private HikariDataSource dataSource;
@@ -34,8 +38,12 @@ public abstract class HikariConnectionFactory implements ConnectionFactory{
         configureDatabase(config,storageConfig.getAddress(),storageConfig.getPort(),storageConfig.getDatabase(),storageConfig.getUsername(),storageConfig.getPassword());
         config.setInitializationFailTimeout(-1);
 
-        this.dataSource = new HikariDataSource(config);
+        Map<String,String> properties = new HashMap<>();
 
+        overrideProperties(properties);
+        setProperties(config,properties);
+
+        this.dataSource = new HikariDataSource(config);
         postInitialize();
     }
 
@@ -44,6 +52,18 @@ public abstract class HikariConnectionFactory implements ConnectionFactory{
      */
     protected void postInitialize() {
 
+    }
+
+    //LP
+    protected void overrideProperties(Map<String,String> properties) {
+        properties.putIfAbsent("socketTimeout", String.valueOf(TimeUnit.SECONDS.toMillis(30)));
+    }
+
+    //LP
+    protected void setProperties(HikariConfig config, Map<String, String> properties) {
+        for (Map.Entry<String, String> property : properties.entrySet()) {
+            config.addDataSourceProperty(property.getKey(), property.getValue());
+        }
     }
 
     @Override
