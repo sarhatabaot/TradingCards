@@ -1,293 +1,613 @@
-cards:
-  common:
-    zombie:
-      display-name: 'Zombie'
-      series: 'default'
-      type: 'Monster'
-      has-shiny-version: true
-      info: 'none'
-      # if vault is enabled, how much this card is worth. set to 0 to not allow buying.
-      # Unless specified we will use the prices from rarities.
-      buy-price: 100.0
-      sell-price: 50.0
-      Custom-Model-Data: 3200001
-    skeleton:
-      display-name: 'Skeleton'
-      series: 'default'
-      type: 'hostile'
-      has-shiny-version: true
-      info: 'none'
-    creeper:
-      display-name: 'Creeper'
-      series: 'default'
-      type: 'hostile'
-      has-shiny-version: true
-      info: 'none'
-    spider:
-      display-name:
-      series: 'default'
-      type: 'hostile'
-      has-shiny-version: true
-      info: 'none'
-    enderman:
-      display-name:
-      series: 'default'
-      type: 'hostile'
-      has-shiny-version: true
-      info: 'none'
-    pig:
-      display-name:
-      series: 'default'
-      type: 'neutral'
-      has-shiny-version: true
-      info: 'none'
-    cow:
-      display-name:
-      series: 'default'
-      type: 'neutral'
-      has-shiny-version: true
-      info: 'none'
-    sheep:
-      display-name:
-      series: 'default'
-      type: 'neutral'
-      has-shiny-version: true
-      info: 'none'
-    chicken:
-      display-name:
-      series: 'default'
-      type: 'neutral'
-      has-shiny-version: true
-      info: 'none'
-    horse:
-      display-name:
-      series: 'default'
-      type: 'neutral'
-      has-shiny-version: true
-      info: 'none'
-    donkey:
-      display-name:
-      series: 'default'
-      type: 'neutral'
-      has-shiny-version: true
-      info: 'none'
-    mule:
-      display-name:
-      series: 'default'
-      type: 'neutral'
-      has-shiny-version: true
-      info: 'none'
-    squid:
-      display-name:
-      series: 'default'
-      type: 'neutral'
-      has-shiny-version: true
-      info: 'none'
-    villager:
-      display-name:
-      series: 'default'
-      type: 'neutral'
-      has-shiny-version: true
-      info: 'none'
-    bat:
-      display-name:
-      series: 'default'
-      type: 'neutral'
-      has-shiny-version: true
-      info: 'none'
-    rabbit:
-      display-name:
-      series: 'default'
-      type: 'neutral'
-      has-shiny-version: true
-      info: 'none'
-  uncommon:
-    blaze:
-      display-name:
-      series: 'default'
-      type: 'hostile'
-      has-shiny-version: true
-      info: 'none'
-    magma_cube:
-      display-name:
-      series: 'default'
-      type: 'hostile'
-      has-shiny-version: true
-      info: 'none'
-    ghast:
-      display-name:
-      series: 'default'
-      type: 'hostile'
-      has-shiny-version: true
-      info: 'none'
-    witch:
-      display-name:
-      series: 'default'
-      type: 'hostile'
-      has-shiny-version: true
-      info: 'none'
-    zombie_pigman:
-      display-name:
-      series: 'default'
-      type: 'hostile'
-      has-shiny-version: true
-      info: 'none'
-    cave_spider:
-      display-name:
-      series: 'default'
-      type: 'hostile'
-      has-shiny-version: true
-      info: 'none'
-    wolf:
-      display-name:
-      series: 'default'
-      type: 'neutral'
-      has-shiny-version: true
-      info: 'none'
-    ocelot:
-      display-name:
-      series: 'default'
-      type: 'neutral'
-      has-shiny-version: true
-      info: 'none'
-    polar_bear:
-      display-name:
-      series: 'default'
-      type: 'neutral'
-      has-shiny-version: true
-      info: 'none'
-    stray_skeleton:
-      display-name:
-      series: 'default'
-      type: 'hostile'
-      has-shiny-version: true
-      info: 'none'
-    silverfish:
-      display-name:
-      series: 'default'
-      type: 'hostile'
-      has-shiny-version: true
-      info: 'none'
-    skeleton_horseman:
-      display-name:
-      series: 'default'
-      type: 'hostile'
-      has-shiny-version: true
-      info: 'none'
-    husk:
-      display-name:
-      series: 'default'
-      type: 'hostile'
-      has-shiny-version: true
-      info: 'none'
-    zombie_villager:
-      display-name:
-      series: 'default'
-      type: 'hostile'
-      has-shiny-version: true
-      info: 'none'
-  rare:
-    guardian:
-      display-name:
-      series: 'default'
-      type: 'hostile'
-      has-shiny-version: true
-      info: 'none'
-    slime:
-      display-name:
-      series: 'default'
-      type: 'hostile'
-      has-shiny-version: true
-      info: 'none'
-    wither_skeleton:
-      display-name:
-      series: 'default'
-      type: 'hostile'
-      has-shiny-version: true
-      info: 'none'
-    spider_jockey:
-      display-name:
-      series: 'default'
-      type: 'hostile'
-      has-shiny-version: true
-      info: 'none'
-    endermite:
-      display-name:
-      series: 'default'
-      type: 'hostile'
-      has-shiny-version: true
-      info: 'none'
-    mushroom_cow:
-      display-name:
-      series: 'default'
-      type: 'neutral'
-      has-shiny-version: true
-      info: 'none'
-    chicken_jockey:
-      display-name:
-      series: 'default'
-      type: 'neutral'
-      has-shiny-version: true
-      info: 'none'
-    snow_golem:
-      display-name:
-      series: 'default'
-      type: 'hostile'
-      has-shiny-version: true
-      info: 'none'
-    iron_golem:
-      display-name:
-      series: 'default'
-      type: 'hostile'
-      has-shiny-version: true
-      info: 'none'
-    shulker:
-      display-name: 'Shulker'
-      series: 'default'
-      type: 'hostile'
-      has-shiny-version: true
-      info: 'none'
-  very-rare:
-    killer_bunny:
-      display-name: 'Killer Bunny'
-      series: 'default'
-      type: 'hostile'
-      has-shiny-version: true
-      info: 'none'
-    skeleton_horse:
-      display-name: 'Skeleton Horse'
-      series: 'default'
-      type: 'hostile'
-      has-shiny-version: true
-      info: 'none'
-    zombie_horse:
-      display-name: 'Zombie Horse'
-      series: 'default'
-      type: 'hostile'
-      has-shiny-version: true
-      info: 'none'
-  legendary:
-    ender_dragon:
-      display-name: 'Ender Dragon'
-      series: 'default'
-      type: 'boss'
-      has-shiny-version: true
-      info: 'none'
-    wither:
-      display-name: 'Wither'
-      series: 'default'
-      type: 'boss'
-      has-shiny-version: true
-      info: 'none'
-    elder_guardian:
-      display-name: 'Elder Guardian'
-      series: 'default'
-      type: 'boss'
-      has-shiny-version: true
-      info: 'none'
-    giant:
-      display-name: 'Giant'
-      series: 'default'
-      type: 'boss'
-      has-shiny-version: true
-      info: 'none'
+common:
+  bat:
+    Custom-Model-Data: 3200006
+    display-name: "Bat"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: passive
+  cat_all_black:
+    Custom-Model-Data: 3200008
+    display-name: "Black Cat"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: passive
+  cat_british_shorthair:
+    Custom-Model-Data: 3200010
+    display-name: "British Shorthair Cat"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: passive
+  cat_calico:
+    Custom-Model-Data: 3200011
+    display-name: "Calico Cat"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: passive
+  cat_jellie:
+    Custom-Model-Data: 3200012
+    display-name: "Jellie"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: passive
+  cat_persian:
+    Custom-Model-Data: 3200014
+    display-name: "Persian Cat"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: passive
+  cat_ragdoll:
+    Custom-Model-Data: 3200015
+    display-name: "Ragdoll Cat"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: passive
+  cat_red:
+    Custom-Model-Data: 3200016
+    display-name: "Red Cat"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: passive
+  cat_siamese:
+    Custom-Model-Data: 3200017
+    display-name: "Siamese Cat"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: passive
+  cat_tabby:
+    Custom-Model-Data: 3200018
+    display-name: "Tabby Cat"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: passive
+  cat_tuxedo:
+    Custom-Model-Data: 3200009
+    display-name: "Tuxedo Cat"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: passive
+  cat_white:
+    Custom-Model-Data: 3200019
+    display-name: "White Cat"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: passive
+  chicken:
+    Custom-Model-Data: 3200021
+    display-name: "Chicken"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: passive
+  cow:
+    Custom-Model-Data: 3200023
+    display-name: "Cow"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: passive
+  creeper:
+    Custom-Model-Data: 3200024
+    display-name: "Creeper"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: hostile
+  donkey:
+    Custom-Model-Data: 3200025
+    display-name: "Donkey"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: passive
+  drowned:
+    Custom-Model-Data: 3200027
+    display-name: "Drowned"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: hostile
+  enderman:
+    Custom-Model-Data: 3200028
+    display-name: "Enderman"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: hostile
+  fox_brown:
+    Custom-Model-Data: 3200030
+    display-name: "Brown Fox"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: passive
+  fox_snow:
+    Custom-Model-Data: 3200031
+    display-name: "Snow Fox"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: passive
+  horse_black:
+    Custom-Model-Data: 3200037
+    display-name: "Black Horse"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: passive
+  horse_brown:
+    Custom-Model-Data: 3200038
+    display-name: "Brown Horse"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: passive
+  horse_chestnut:
+    Custom-Model-Data: 3200039
+    display-name: "Chestnut Horse"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: passive
+  llama_brown:
+    Custom-Model-Data: 3200044
+    display-name: "Brown Llama"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: neutral
+  llama_creamy:
+    Custom-Model-Data: 3200045
+    display-name: "Creamy Llama"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: neutral
+  llama_gray:
+    Custom-Model-Data: 3200046
+    display-name: "Gray Llama"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: neutral
+  llama_white:
+    Custom-Model-Data: 3200047
+    display-name: "White Llama"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: neutral
+  mule:
+    Custom-Model-Data: 3200052
+    display-name: "Mule"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: passive
+  pig:
+    Custom-Model-Data: 3200053
+    display-name: "Pig"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: passive
+  rabbit_black:
+    Custom-Model-Data: 3200059
+    display-name: "Black Rabbit"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: passive
+  rabbit_brown:
+    Custom-Model-Data: 3200060
+    display-name: "Brown Rabbit"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: passive
+  rabbit_gold:
+    Custom-Model-Data: 3200061
+    display-name: "Gold Rabbit"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: passive
+  rabbit_salt:
+    Custom-Model-Data: 3200063
+    display-name: "Salt Rabbit"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: passive
+  rabbit_splotched:
+    Custom-Model-Data: 3200064
+    display-name: "White Splotched Rabbit"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: passive
+  rabbit_toast:
+    Custom-Model-Data: 3200065
+    display-name: "Toast"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: passive
+  rabbit_white:
+    Custom-Model-Data: 3200066
+    display-name: "White Rabbit"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: passive
+  sheep:
+    Custom-Model-Data: 3200067
+    display-name: "Sheep"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: passive
+  skeleton:
+    Custom-Model-Data: 3200070
+    display-name: "Skeleton"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: 'hostile '
+  spider:
+    Custom-Model-Data: 3200074
+    display-name: "Spider"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: hostile
+  squid:
+    Custom-Model-Data: 3200076
+    display-name: "Squid"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: passive
+  villager:
+    Custom-Model-Data: 3200079
+    display-name: "Villager"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: passive
+  zombie:
+    Custom-Model-Data: 3200084
+    display-name: "Zombie"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: hostile
+uncommon:
+  bee:
+    Custom-Model-Data: 3200086
+    display-name: "Bee"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: neutral
+  blaze:
+    Custom-Model-Data: 3200007
+    display-name: "Blaze"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: hostile
+  cat_ocelot:
+    Custom-Model-Data: 3200013
+    display-name: "Ocelot"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: passive
+  cave_spider:
+    Custom-Model-Data: 3200020
+    display-name: "Cave Spider"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: hostile
+  dolphin:
+    Custom-Model-Data: 3200087
+    display-name: "Dolphin"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: neutral
+  ghast:
+    Custom-Model-Data: 3200032
+    display-name: "Ghast"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: hostile
+  husk:
+    Custom-Model-Data: 3200042
+    display-name: "Husk"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: hostile
+  magma_cube:
+    Custom-Model-Data: 3200049
+    display-name: "Magma Cube"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: hostile
+  piglin:
+    Custom-Model-Data: 3200054
+    display-name: "Piglin"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: hostile
+  piglin_brute:
+    Custom-Model-Data: 3200055
+    display-name: "Piglin Brute"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: hostile
+  piglin_zombified:
+    Custom-Model-Data: 3200056
+    display-name: "Zombified Piglin"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: neutral
+  polar_bear:
+    Custom-Model-Data: 3200057
+    display-name: "Polar Bear"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: neutral
+  silverfish:
+    Custom-Model-Data: 3200069
+    display-name: "Silverfish"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: hostile
+  skeleton_horseman:
+    Custom-Model-Data: 3200071
+    display-name: "Skeleton Horseman"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: hostile
+  stray:
+    Custom-Model-Data: 3200077
+    display-name: "Stray"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: hostile
+  strider:
+    Custom-Model-Data: 3200078
+    display-name: "Strider"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: passive
+  witch:
+    Custom-Model-Data: 3200080
+    display-name: "Witch"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: hostile
+  wolf:
+    Custom-Model-Data: 3200083
+    display-name: "Wolf"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: neutral
+  zombie_villager:
+    Custom-Model-Data: 3200085
+    display-name: "Zombie Villager"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: hostile
+rare:
+  Pufferfish:
+    Custom-Model-Data: 3200058
+    display-name: "Pufferfish"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: passive
+  chicken_jockey:
+    Custom-Model-Data: 3200022
+    display-name: "Chicken Jockey"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: hostile
+  endermite:
+    Custom-Model-Data: 3200029
+    display-name: "Endermite"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: hostile
+  glow_squid:
+    Custom-Model-Data: 3200034
+    display-name: "Glow Squid"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: passive
+  guardian:
+    Custom-Model-Data: 3200035
+    display-name: "Guardian"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: hostile
+  iron_golem:
+    Custom-Model-Data: 3200043
+    display-name: "Iron Golem"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: neutral
+  llama_trader:
+    Custom-Model-Data: 3200048
+    display-name: "Trader Llama"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: neutral
+  mooshroom:
+    Custom-Model-Data: 3200050
+    display-name: "Red Mooshroom"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: passive
+  shulker:
+    Custom-Model-Data: 3200068
+    display-name: "Skulker"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: hostile
+  slime:
+    Custom-Model-Data: 3200072
+    display-name: "Slime"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: hostile
+  snow_golem:
+    Custom-Model-Data: 3200073
+    display-name: "Snow Golem"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: neutral
+  spider_jockey:
+    Custom-Model-Data: 3200075
+    display-name: "Spider Jockey"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: ' '
+  wither_skeleton:
+    display-name: "Wither Skeleton"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: hostile
+very-rare:
+  axolotl_cyan:
+    Custom-Model-Data: 3200002
+    display-name: "Cyan Axolotl"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: neutral
+  axolotl_gold:
+    Custom-Model-Data: 3200003
+    display-name: "Gold Axolotl"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: neutral
+  axolotl_luecistic:
+    Custom-Model-Data: 3200004
+    display-name: "Luecistic Axolotl"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: neutral
+  axolotl_wild:
+    Custom-Model-Data: 3200005
+    display-name: "Wild Axolotl"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: neutral
+  horse_skeleton:
+    Custom-Model-Data: 3200040
+    display-name: "Skeleton Horse"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: passive
+  horse_zombie:
+    Custom-Model-Data: 3200041
+    display-name: "Zombie Horse"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: passive
+  rabbit_killer:
+    Custom-Model-Data: 3200062
+    display-name: "Killer Rabbit"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: hostile
+legendary:
+  axolotl_blue:
+    Custom-Model-Data: 3200001
+    display-name: "Blue Axolotl"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: neutral
+  ender_dragon:
+    Custom-Model-Data: 3200026
+    display-name: "Ender Dragon"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: boss
+  giant:
+    Custom-Model-Data: 3200033
+    display-name: "Giant Zombie"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: boss
+  guardian_elder:
+    Custom-Model-Data: 3200036
+    display-name: "Elder Guardian"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: boss
+  mooshroom_brown:
+    Custom-Model-Data: 3200051
+    display-name: "Brown Mooshroom"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: passive
+  wither:
+    Custom-Model-Data: 3200081
+    display-name: "Wither"
+    has-shiny-version: true
+    info: none
+    series: default
+    type: boss
