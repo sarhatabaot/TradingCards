@@ -198,7 +198,7 @@ public class SqlStorage implements Storage {
 
             statements = SchemaReader.getStatements(is).stream()
                     .map(this.statementProcessor::applyPrefix)
-                    .collect(Collectors.toList());
+                    .toList();
         }
 
         statements.forEach(s->plugin.debug(SqlStorage.class,s));
