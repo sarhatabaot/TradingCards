@@ -3,10 +3,12 @@ package net.tinetwork.tradingcards.tradingcardsplugin.commands;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
+import de.tr7zw.nbtapi.NBTItem;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.tinetwork.tradingcards.api.addons.TradingCardsAddon;
 import net.tinetwork.tradingcards.api.model.Pack;
 import net.tinetwork.tradingcards.api.model.Rarity;
+import net.tinetwork.tradingcards.api.utils.NbtUtils;
 import net.tinetwork.tradingcards.tradingcardsplugin.Permissions;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
@@ -43,6 +45,7 @@ public class CardsCommand extends BaseCommand {
     private final MessagesConfig messagesConfig;
 
     private static final String PLAYER_NOT_ONLINE = "This player is not online. Or doesn't exist.";
+    private static final String CANNOT_SELL_CARD = "Cannot sell this card.";
 
     public CardsCommand(final TradingCards plugin, final PlayerBlacklist playerBlacklist) {
         this.plugin = plugin;
@@ -410,39 +413,34 @@ public class CardsCommand extends BaseCommand {
             if (!hasVault(player))
                 return;
 
-            if (player.getInventory().getItemInMainHand().getType() != plugin.getGeneralConfig().cardMaterial()) {
+            final NBTItem nbtItem = new NBTItem(player.getInventory().getItemInMainHand());
+            if(!nbtItem.getBoolean(NbtUtils.NBT_IS_CARD)){
                 ChatUtil.sendPrefixedMessage(player, messagesConfig.notACard());
                 return;
             }
 
             final ItemStack itemInHand = player.getInventory().getItemInMainHand();
             final int itemInHandSlot = player.getInventory().getHeldItemSlot();
-            final String[] splitName = ChatColor.stripColor(itemInHand.getItemMeta().getDisplayName()).split(" ");
-            final String card = (splitName.length > 1) ? splitName[1] : splitName[0];
-            debug(card);
-            List<String> lore = itemInHand.getItemMeta().getLore();
-            Validate.notNull(lore, "Lore cannot be null.");
-            String rarity = ChatColor.stripColor(lore.get(lore.size() - 1));
-            debug(rarity);
+            final String cardId = nbtItem.getString(NbtUtils.NBT_CARD_NAME);
+            final String rarityId = nbtItem.getString(NbtUtils.NBT_RARITY);
+            debug("Card name="+cardId+", Card rarity="+rarityId);
 
-            if (cardManager.getCard(rarity, card, false).getSellPrice() == 0.0D) {
-                if (card.contains(plugin.getGeneralConfig().shinyName()))
-                    ChatUtil.sendPrefixedMessage(player, "Cannot sell shiny card.");
-                ChatUtil.sendPrefixedMessage(player, "Cannot sell this card.");
+            final TradingCard tradingCard = cardManager.getCard(cardId,rarityId,false);
+            if(tradingCard.isShiny()) {
+                ChatUtil.sendPrefixedMessage(player, "Cannot sell shiny card.");
                 return;
             }
 
-            final double sellPrice = cardManager.getCard(rarity, card, false).getSellPrice();
-            if (sellPrice == 0) {
-                ChatUtil.sendPrefixedMessage(player, "Cannot sell this card.");
+            if(tradingCard.getSellPrice() == 0.00D) {
+                ChatUtil.sendPrefixedMessage(player, CANNOT_SELL_CARD);
                 return;
             }
 
             PlayerInventory inventory = player.getInventory();
-            double sellAmount = sellPrice * itemInHand.getAmount();
+            double sellAmount = tradingCard.getSellPrice() * itemInHand.getAmount();
             EconomyResponse economyResponse = plugin.getEcon().depositPlayer(player, sellAmount);
             if (economyResponse.transactionSuccess()) {
-                ChatUtil.sendPrefixedMessage(player, String.format("You have sold %dx%s for %.2f", itemInHand.getAmount(), (rarity + " " + card), sellAmount));
+                ChatUtil.sendPrefixedMessage(player, String.format("You have sold %dx%s for %.2f", itemInHand.getAmount(), (rarityId + " " + cardId), sellAmount));
                 inventory.setItem(itemInHandSlot, null);
             }
         }
