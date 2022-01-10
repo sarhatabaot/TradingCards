@@ -386,7 +386,7 @@ public class CardsCommand extends BaseCommand {
         double buyPrice = cardManager.getCard(rarity, cardName2, false).getBuyPrice();
         double sellPrice = cardManager.getCard(rarity, cardName2, false).getSellPrice();
         String buyMessage = (buyPrice > 0.0D) ? messagesConfig.canBuy().replace("%buyAmount%", String.valueOf(buyPrice)) : plugin.getMessagesConfig().canNotBuy();
-        String sellMessage = (buyPrice > 0.0D) ? messagesConfig.canSell().replace("%sellAmount%", String.valueOf(sellPrice)) : plugin.getMessagesConfig().canNotSell();
+        String sellMessage = (sellPrice > 0.0D) ? messagesConfig.canSell().replace("%sellAmount%", String.valueOf(sellPrice)) : plugin.getMessagesConfig().canNotSell();
         debug("buy=" + buyPrice + "|sell=" + sellPrice);
         ChatUtil.sendPrefixedMessage(player, buyMessage);
         ChatUtil.sendPrefixedMessage(player, sellMessage);
