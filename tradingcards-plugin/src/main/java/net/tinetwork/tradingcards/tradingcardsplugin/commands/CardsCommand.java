@@ -33,7 +33,6 @@ import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.List;
 
-
 @CommandAlias("cards")
 public class CardsCommand extends BaseCommand {
     private final TradingCards plugin;
@@ -43,9 +42,7 @@ public class CardsCommand extends BaseCommand {
 
     private final MessagesConfig messagesConfig;
 
-    private void debug(final String message){
-        plugin.debug(getClass(),message);
-    }
+    private static final String PLAYER_NOT_ONLINE = "This player is not online. Or doesn't exist.";
 
     public CardsCommand(final TradingCards plugin, final PlayerBlacklist playerBlacklist) {
         this.plugin = plugin;
@@ -55,6 +52,9 @@ public class CardsCommand extends BaseCommand {
         this.messagesConfig = plugin.getMessagesConfig();
     }
 
+    private void debug(final String message){
+        plugin.debug(getClass(),message);
+    }
     @CatchUnknown
     @HelpCommand
     public void onHelp(final CommandSender sender, CommandHelp help) {
@@ -71,7 +71,7 @@ public class CardsCommand extends BaseCommand {
 
     @Subcommand("reload")
     @CommandPermission(Permissions.RELOAD)
-    @Description("Reloads all the configs & restart the timer.")
+    @Description("Reloads all the configs.")
     public void onReload(final CommandSender sender) {
         ChatUtil.sendPrefixedMessage(sender, messagesConfig.reload());
         plugin.reloadPlugin();
@@ -140,7 +140,7 @@ public class CardsCommand extends BaseCommand {
         public void onGiveBoosterPack(final CommandSender sender,@Single final String playerName, @Single final String pack) {
             Player player = Bukkit.getPlayerExact(playerName);
             if(isOnline(player)) {
-                ChatUtil.sendPrefixedMessage(sender, "This player is not online. Or doesn't exist.");
+                ChatUtil.sendPrefixedMessage(sender, PLAYER_NOT_ONLINE);
                 return;
             }
 
@@ -160,7 +160,7 @@ public class CardsCommand extends BaseCommand {
         public void onGiveRandomCard(final CommandSender sender,@Single final String playerName, final EntityType entityType) {
             Player player = Bukkit.getPlayerExact(playerName);
             if(isOnline(player)) {
-                ChatUtil.sendPrefixedMessage(sender, "This player is not online. Or doesn't exist.");
+                ChatUtil.sendPrefixedMessage(sender, PLAYER_NOT_ONLINE);
                 return;
             }
 
@@ -181,7 +181,7 @@ public class CardsCommand extends BaseCommand {
         public void onGiveRandomCard(final CommandSender sender,@Single final String playerName,@Single final String rarity) {
             Player player = Bukkit.getPlayerExact(playerName);
             if(isOnline(player)) {
-                ChatUtil.sendPrefixedMessage(sender, "This player is not online. Or doesn't exist.");
+                ChatUtil.sendPrefixedMessage(sender, PLAYER_NOT_ONLINE);
                 return;
             }
 
@@ -212,7 +212,7 @@ public class CardsCommand extends BaseCommand {
         public void onListPlayer(final CommandSender sender,@Single final String playerName,@Single @Optional final String rarity) {
             Player target = Bukkit.getPlayerExact(playerName);
             if(target == null) {
-                ChatUtil.sendPrefixedMessage(sender, "This player is not online. Or doesn't exist.");
+                ChatUtil.sendPrefixedMessage(sender, PLAYER_NOT_ONLINE);
                 return;
             }
             if (rarity == null || plugin.isRarity(rarity).equalsIgnoreCase("none")) {
@@ -241,16 +241,16 @@ public class CardsCommand extends BaseCommand {
         @CommandPermission(Permissions.LIST_PACK)
         @Description("Lists all packs.")
         public void onListPack(final CommandSender sender) {
-            int k = 0;
+            int lineNumber = 0;
             ChatUtil.sendMessage(sender, plugin.getMessagesConfig().packSection());
 
             for (String packName : plugin.getPackManager().packs().keySet()) {
                 Pack pack = plugin.getPackManager().getPack(packName);
-                ++k;
+                ++lineNumber;
                 if (canBuyPack(packName)) {
-                    ChatUtil.sendMessage(sender, "&6" + k + ") &e" + pack.getDisplayName() + " &7(&aPrice: " + pack.getPrice() + "&7)");
+                    ChatUtil.sendMessage(sender, "&6" + lineNumber + ") &e" + pack.getDisplayName() + " &7(&aPrice: " + pack.getPrice() + "&7)");
                 } else {
-                    ChatUtil.sendMessage(sender, "&6" + k + ") &e" + pack.getDisplayName());
+                    ChatUtil.sendMessage(sender, "&6" + lineNumber + ") &e" + pack.getDisplayName());
                 }
                 final String packEntries = StringUtils.join(pack.getPackEntryList(), " ");
                 ChatUtil.sendMessage(sender, "  &7- &f&o" + packEntries);
