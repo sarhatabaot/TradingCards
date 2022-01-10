@@ -187,8 +187,8 @@ public class TradingCardManager implements CardManager<TradingCard> {
     @Override
     public TradingCard getRandomCard(final String rarity, final boolean forcedShiny) {
         plugin.debug(TradingCardManager.class,"getRandomCard(),rarity=" + rarity);
-        var cindex = plugin.getRandom().nextInt(getRarityCardList(rarity).size());
-        String randomCardName = getRarityCardList(rarity).get(cindex);
+        var cardIndex = plugin.getRandom().nextInt(getRarityCardList(rarity).size());
+        String randomCardName = getRarityCardList(rarity).get(cardIndex);
         return getCard(randomCardName, rarity, forcedShiny);
     }
 
@@ -215,6 +215,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
             plugin.debug(TradingCardManager.class,"There are no cards in the active series. Not dropping anything.");
             return new EmptyCard();
         }
+
         List<String> cardNames = getActiveRarityCardList(rarity);
         var cardIndex = plugin.getRandom().nextInt(cardNames.size());
         String randomCardName = cardNames.get(cardIndex);
