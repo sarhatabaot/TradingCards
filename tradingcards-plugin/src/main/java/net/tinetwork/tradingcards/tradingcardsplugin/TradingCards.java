@@ -232,12 +232,10 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         this.deckManager = new TradingDeckManager(this);
     }
 
-
     @Override
     public void onDisable() {
         econ = null;
     }
-
 
     @Override
     public TradingCardManager getCardManager() {
