@@ -431,7 +431,7 @@ public class CardsCommand extends BaseCommand {
                 return;
             }
 
-            if(tradingCard.getSellPrice() == 0.00D) {
+            if(tradingCard.getSellPrice() <= 0.00D) {
                 ChatUtil.sendPrefixedMessage(player, CANNOT_SELL_CARD);
                 return;
             }
