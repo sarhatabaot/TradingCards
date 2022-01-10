@@ -5,5 +5,6 @@ package net.tinetwork.tradingcards.tradingcardsplugin.storage;
  */
 public enum StorageType {
     YAML,
-    MYSQL
+    MYSQL,
+    MARIADB
 }
