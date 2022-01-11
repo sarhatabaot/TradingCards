@@ -150,10 +150,6 @@ public class TradingDeckManager implements DeckManager {
         return Integer.parseInt(nameSplit[1]);
     }
 
-    private static boolean hasEnchantments(final @NotNull ItemStack item) {
-        return item.containsEnchantment(Enchantment.DURABILITY) && item.getEnchantmentLevel(Enchantment.DURABILITY) == 10;
-    }
-
     @Override
     public boolean hasDeck(@NotNull final Player player, final int num) {
         for (final ItemStack itemStack : player.getInventory()) {
