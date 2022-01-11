@@ -138,7 +138,7 @@ public class TradingDeckManager implements DeckManager {
 
     @Override
     public boolean isDeck(final @NotNull ItemStack item) {
-        return isDeckMaterial(item.getType()) && hasEnchantments(item) && new NBTItem(item).getBoolean(NbtUtils.NBT_IS_DECK);
+        return new NBTItem(item).getBoolean(NbtUtils.NBT_IS_DECK);
     }
 
     public int getDeckNumber(final ItemStack item) {
@@ -157,6 +157,8 @@ public class TradingDeckManager implements DeckManager {
     @Override
     public boolean hasDeck(@NotNull final Player player, final int num) {
         for (final ItemStack itemStack : player.getInventory()) {
+            if(itemStack == null)
+                continue;
             if (isDeck(itemStack) && num == getDeckNumber(itemStack)) {
                 return true;
             }
