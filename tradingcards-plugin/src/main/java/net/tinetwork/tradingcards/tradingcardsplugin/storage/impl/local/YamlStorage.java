@@ -1,6 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local;
 
 import net.tinetwork.tradingcards.api.model.deck.Deck;
+import net.tinetwork.tradingcards.api.model.deck.StorageEntry;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.StorageType;
@@ -8,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.configurate.serialize.SerializationException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,12 +41,9 @@ public class YamlStorage implements Storage {
 
     @Override
     public Deck getDeck(final UUID playerUuid, final int deckNumber) {
-        try {
-            return deckConfig.getDeck(playerUuid, deckNumber);
-        } catch (SerializationException e) {
-            logger.warn(e.getMessage());
-            return null;
-        }
+        final List<String> deckEntries = deckConfig.getDeckEntries(playerUuid, String.valueOf(deckNumber));
+        final List<StorageEntry> storageEntries = DeckConfig.convertToDeckEntries(deckEntries);
+        return new Deck(playerUuid,deckNumber,storageEntries);
     }
 
     @Override
@@ -62,4 +61,5 @@ public class YamlStorage implements Storage {
     public boolean hasShinyCard(final UUID playerUuid, final String card, final String rarity) {
         return deckConfig.containsShinyCard(playerUuid,card,rarity);
     }
+
 }
