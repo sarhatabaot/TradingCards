@@ -3,6 +3,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.managers;
 import de.tr7zw.nbtapi.NBTItem;
 import net.tinetwork.tradingcards.api.events.DeckOpenEvent;
 import net.tinetwork.tradingcards.api.manager.DeckManager;
+import net.tinetwork.tradingcards.api.model.deck.Deck;
 import net.tinetwork.tradingcards.api.model.deck.StorageEntry;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
@@ -23,9 +24,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 public class TradingDeckManager implements DeckManager {
@@ -86,8 +89,13 @@ public class TradingDeckManager implements DeckManager {
 
     private @NotNull List<ItemStack> loadCardsFromFile(final UUID uuid, final int deckNum) {
         final List<ItemStack> cards = new ArrayList<>();
+        plugin.debug(TradingDeckManager.class,"uuid="+uuid+",deckNum="+deckNum);
+        final Deck deck = storage.getDeck(uuid,deckNum);
 
-        List<StorageEntry> deckEntries = storage.getDeck(uuid,deckNum).getDeckEntries();
+        List<StorageEntry> deckEntries = deck.getDeckEntries();
+        if(deckEntries == null)
+            return cards;
+
         for (StorageEntry deckEntry : deckEntries) {
             plugin.debug(getClass(),deckEntry.toString());
             TradingCard card = cardManager.getCard(deckEntry.getCardId(),
@@ -125,7 +133,7 @@ public class TradingDeckManager implements DeckManager {
 
     @NotNull
     @Override
-    public ItemStack createDeck(@NotNull final Player player, final int num) {
+    public ItemStack getNbtItem(@NotNull final Player player, final int num) {
         NBTItem nbtItem = new NBTItem(createDeckItem(player, num));
         nbtItem.setBoolean(NbtUtils.NBT_IS_DECK, true);
         nbtItem.setInteger(NbtUtils.NBT_DECK_NUMBER, num);
@@ -151,10 +159,12 @@ public class TradingDeckManager implements DeckManager {
     }
 
     @Override
-    public boolean hasDeck(@NotNull final Player player, final int num) {
-        for (final ItemStack itemStack : player.getInventory()) {
-            if(itemStack == null)
-                continue;
+    public boolean hasDeckItem(@NotNull final Player player, final int num) {
+        final List<ItemStack> inventoryContents = Arrays.stream(player.getInventory().getContents())
+                .filter(Objects::nonNull)
+                .toList();
+
+        for (final ItemStack itemStack : inventoryContents) {
             if (isDeck(itemStack) && num == getDeckNumber(itemStack)) {
                 return true;
             }
@@ -170,5 +180,9 @@ public class TradingDeckManager implements DeckManager {
     @Override
     public boolean hasShiny(@NotNull Player player, String card, String rarity) {
         return storage.hasShinyCard(player.getUniqueId(), card, rarity);
+    }
+
+    public void createNewDeckInFile(final UUID uuid, final int num) {
+        storage.save(uuid,num,new Deck(uuid,num, new ArrayList<>()));
     }
 }
