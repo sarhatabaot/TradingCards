@@ -1,14 +1,18 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote;
 
 import com.google.common.collect.ImmutableMap;
+import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 public class StatementProcessor {
+    private final Logger logger = LoggerFactory.getLogger(StatementProcessor.class);
     private final String tablePrefix;
 
     public StatementProcessor(final String tablePrefix) {
@@ -52,24 +56,28 @@ public class StatementProcessor {
 
     private String where(final String statement, Map<String, String> whereValues) {
         final String extractedWhereStatement = extractWhereStatement(statement);
-        return replaceWhereStatement(extractedWhereStatement, whereValues);
+        logger.info("extractedWhereStatement="+extractedWhereStatement);
+        return statement.replace(extractedWhereStatement,replaceWhereStatement(extractedWhereStatement,whereValues));
     }
 
     public String apply(final String statement,@Nullable Map<String, String> values,@Nullable Map<String, String> whereValues) {
+        logger.info("base statement="+statement);
         String finalStatement = applyPrefix(statement);
+        logger.info("prefixed statement="+finalStatement);
         if (statement.contains("VALUES") && values != null) {
-            finalStatement = values(statement,values);
+            finalStatement = values(finalStatement,values);
         }
         if (statement.contains("WHERE") && whereValues != null) {
-            finalStatement = where(statement,whereValues);
+            finalStatement = where(finalStatement,whereValues);
         }
-
+        logger.info("final statement="+finalStatement);
+        finalStatement = finalStatement.replace(";","");
         return finalStatement;
     }
 
     private String extractWhereStatement(final String statement) {
         if (StringUtils.substringBetween(statement, "WHERE", "LIMIT") == null)
-            return StringUtils.substringBetween(statement, "WHERE");
+            return StringUtils.substringBetween(statement, "WHERE",";");
         return StringUtils.substringBetween(statement, "WHERE", "LIMIT");
     }
 
@@ -86,7 +94,6 @@ public class StatementProcessor {
         String newValue = toReplace.replace("?", value);
         return base.replace(toReplace, newValue);
     }
-
 
     public ImmutableMap<String,String> generateValuesMap(final UUID playerUuid, final int deckNumber, final String cardId, final String rarityId, final int amount, final Boolean isShiny, final Integer slot) {
         ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();

@@ -23,19 +23,18 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * @author sarhatabaot
  */
 public class SqlStorage implements Storage {
-    private static String DECKS_SELECT_ALL_BY_UUID = "SELECT * FROM '{prefix}decks' WHERE uuid=?";
-    private static String DECKS_SELECT_BY_DECK_NUMBER = "SELECT * FROM '{prefix}decks' WHERE uuid=? deck_number=?";
-    private static String DECKS_SELECT_BY_CARD_AND_RARITY = "SELECT * FROM '{prefix}decks' WHERE uuid=? card_id=? rarity_id=?";
-    private static String DECKS_SELECT_BY_CARD_AND_RARITY_SHINY = "SELECT * FROM '{prefix}decks' WHERE uuid=? card_id=? rarity_id=? is_shiny=true";
-    private static String DECKS_INSERT_CARD = "INSERT INTO '{prefix}decks' (uuid, deck_number, card_id, rarity_id, amount, is_shiny, slot) VALUES (?,?,?,?,?,?,?) WHERE uuid=? deck_number=?";
-    private static String DECKS_UPDATE_CARD = "UPDATE '{prefix}decks' (uuid, deck_number, card_id, rarity_id, amount, is_shiny) VALUES (?,?,?,?,?,?,?) WHERE uuid=? deck_number=? slot=?";
-    private static String DECKS_REMOVE_CARD = "DELETE FROM '{prefix}decks' WHERE uuid=? deck_number=? card_id=? rarity_id=? is_shiny=? slot=?";
+    private static String DECKS_SELECT_ALL_BY_UUID = "SELECT * FROM {prefix}decks WHERE uuid=?;";
+    private static String DECKS_SELECT_BY_DECK_NUMBER = "SELECT * FROM {prefix}decks WHERE uuid=? AND deck_number=?;";
+    private static String DECKS_SELECT_BY_CARD_AND_RARITY = "SELECT * FROM {prefix}decks WHERE uuid=? AND card_id=? AND rarity_id=?;";
+    private static String DECKS_SELECT_BY_CARD_AND_RARITY_SHINY = "SELECT * FROM {prefix}decks WHERE uuid=? AND card_id=? AND rarity_id=? AND is_shiny=true;";
+    private static String DECKS_INSERT_CARD = "INSERT INTO {prefix}decks (uuid, deck_number, card_id, rarity_id, amount, is_shiny, slot) VALUES (?,?,?,?,?,?,?) WHERE uuid=? AND deck_number=?;";
+    private static String DECKS_UPDATE_CARD = "UPDATE {prefix}decks (uuid, deck_number, card_id, rarity_id, amount, is_shiny) VALUES (?,?,?,?,?,?,?) WHERE uuid=? AND deck_number=? AND slot=?;";
+    private static String DECKS_REMOVE_CARD = "DELETE FROM {prefix}decks WHERE uuid=? AND deck_number=? AND card_id=? AND rarity_id=? AND is_shiny=? AND slot=?;";
     private final TradingCards plugin;
     private final ConnectionFactory connectionFactory;
     private final StatementProcessor statementProcessor;
