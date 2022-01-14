@@ -5,6 +5,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.UUID;
+
 /**
  * @author sarhatabaot
  */
@@ -32,7 +34,7 @@ public interface DeckManager {
      * @return
      */
     @NotNull
-    ItemStack createDeck(@NotNull final Player player, final int num);
+    ItemStack getNbtItem(@NotNull final Player player, final int num);
 
     /**
      *
@@ -54,7 +56,7 @@ public interface DeckManager {
      * @param num
      * @return
      */
-    boolean hasDeck(@NotNull final Player p, final int num);
+    boolean hasDeckItem(@NotNull final Player p, final int num);
 
     /**
      *
@@ -73,4 +75,6 @@ public interface DeckManager {
      * @return
      */
     boolean hasShiny(final Player player,final  String card,final  String rarity);
+
+    void createNewDeckInFile(final UUID uuid, final int num);
 }
