@@ -1,4 +1,4 @@
--- TradingCards MySql Schema
+-- TradingCards MariaSql Schema
 
 CREATE TABLE `{prefix}decks` (
     `id`            INT AUTO_INCREMENT NOT NULL,
