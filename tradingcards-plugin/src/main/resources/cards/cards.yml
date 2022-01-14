@@ -512,7 +512,7 @@ cards:
       has-shiny-version: true
       info: none
       series: default
-      type: ' '
+      type: hostile
     wither_skeleton:
       display-name: "Wither Skeleton"
       has-shiny-version: true

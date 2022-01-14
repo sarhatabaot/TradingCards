@@ -7,6 +7,7 @@ import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Description;
 import net.tinetwork.tradingcards.tradingcardsplugin.Permissions;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingDeckManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import org.apache.commons.lang.Validate;
@@ -16,9 +17,11 @@ import org.bukkit.entity.Player;
 @CommandAlias("deck")
 public class DeckCommand extends BaseCommand {
 	private final TradingCards plugin;
+	private final TradingDeckManager deckManager;
 
 	public DeckCommand(final TradingCards plugin) {
 		this.plugin = plugin;
+		this.deckManager = plugin.getDeckManager();
 	}
 
 	@Default
@@ -39,19 +42,19 @@ public class DeckCommand extends BaseCommand {
 
 		if (player.getGameMode() == GameMode.CREATIVE) {
 			if (plugin.getGeneralConfig().deckInCreative()) {
-				plugin.getDeckManager().openDeck(player, deckNumber);
+				deckManager.openDeck(player, deckNumber);
 				return;
 			}
 			ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().deckCreativeError());
 			return;
 		}
 
-		plugin.getDeckManager().openDeck(player, deckNumber);
+		deckManager.openDeck(player, deckNumber);
 	}
 
 	private void dropDeckItem(final Player player, int deckNumber){
-		if (!plugin.getDeckManager().hasDeck(player, deckNumber)) {
-			CardUtil.dropItem(player, plugin.getDeckManager().createDeck(player, deckNumber));
+		if (!deckManager.hasDeckItem(player, deckNumber)) {
+			CardUtil.dropItem(player, deckManager.getNbtItem(player, deckNumber));
 		} else {
 			ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().alreadyHaveDeck());
 		}

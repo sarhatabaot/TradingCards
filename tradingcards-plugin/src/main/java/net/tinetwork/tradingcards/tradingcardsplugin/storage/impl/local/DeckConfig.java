@@ -48,20 +48,21 @@ public class DeckConfig extends SimpleConfigurate {
         return !inventoriesNode.node(uuid.toString()).empty();
     }
 
-    public Deck getDeck(final UUID playerUuid, final int deckNumber) throws SerializationException {
-        return inventoriesNode.node(playerUuid).node(deckNumber).get(Deck.class);
+    public Deck getDeck(final UUID playerUuid, final int deckNumber) {
+        try {
+            return inventoriesNode.node(playerUuid.toString()).node(deckNumber).get(Deck.class);
+        } catch (SerializationException e) {
+            e.printStackTrace();
+        }
+        return new Deck(playerUuid, deckNumber, new ArrayList<>());
     }
 
     public List<Deck> getPlayerDecks(final UUID playerUuid) {
         List<Deck> decks = new ArrayList<>();
-        for(Map.Entry<Object, ? extends ConfigurationNode> nodeEntry: inventoriesNode.node(playerUuid).childrenMap().entrySet()) {
+        for (Map.Entry<Object, ? extends ConfigurationNode> nodeEntry : inventoriesNode.node(playerUuid.toString()).childrenMap().entrySet()) {
             final int deckNumber = Integer.parseInt(nodeEntry.getKey().toString());
-            try {
-                final Deck deck = getDeck(playerUuid, deckNumber);
-                decks.add(deck);
-            } catch (SerializationException e){
-                //skip and move on, log an error
-            }
+            final Deck deck = getDeck(playerUuid, deckNumber);
+            decks.add(deck);
         }
         return decks;
     }
@@ -91,7 +92,7 @@ public class DeckConfig extends SimpleConfigurate {
 
     public static @NotNull List<StorageEntry> convertToDeckEntries(final @NotNull List<String> list) {
         List<StorageEntry> entries = new ArrayList<>();
-        for(String entry: list) {
+        for (String entry : list) {
             entries.add(StorageEntry.fromString(entry));
         }
         return entries;
@@ -99,18 +100,18 @@ public class DeckConfig extends SimpleConfigurate {
 
     public void saveEntries(final @NotNull UUID uuid, final int deckNumber, final List<StorageEntry> entries) {
         List<String> stringEntries = getStringListFromEntries(entries);
-        plugin.debug(getClass(),stringEntries.toString());
+        plugin.debug(getClass(), stringEntries.toString());
         getConfig().set(INVENTORY_PATH + uuid + "." + deckNumber, stringEntries);
         saveConfig();
     }
 
-    public void saveEntries(final @NotNull UUID uuid, final int deckNumber,final Deck deck) {
-        saveEntries(uuid,deckNumber,deck.getDeckEntries());
+    public void saveEntries(final @NotNull UUID uuid, final int deckNumber, final Deck deck) {
+        saveEntries(uuid, deckNumber, deck.getDeckEntries());
     }
 
     public boolean containsDeck(final UUID uuid, String deckNumber) {
         boolean containsDeck = !inventoriesNode.node(uuid).node(deckNumber).isNull();
-        plugin.debug(getClass(),"Deck "+deckNumber+" for "+uuid+":"+containsDeck);
+        plugin.debug(getClass(), "Deck " + deckNumber + " for " + uuid + ":" + containsDeck);
         return containsDeck;
     }
 
@@ -119,7 +120,7 @@ public class DeckConfig extends SimpleConfigurate {
         for (StorageEntry entry : entries) {
             stringList.add(entry.toString());
         }
-        plugin.debug(DeckConfig.class,"EntryList Size " + stringList.size());
+        plugin.debug(DeckConfig.class, "EntryList Size " + stringList.size());
         return stringList;
     }
 
@@ -148,6 +149,5 @@ public class DeckConfig extends SimpleConfigurate {
         }
         return false;
     }
-
 
 }

@@ -131,7 +131,11 @@ public class CardUtil {
 
 
     public static boolean isCard(final ItemStack itemStack) {
-        NBTItem nbtItem = new NBTItem(itemStack);
+        final NBTItem nbtItem = new NBTItem(itemStack);
+        return isCard(nbtItem);
+    }
+
+    public static boolean isCard(final NBTItem nbtItem) {
         return nbtItem.getBoolean(NbtUtils.NBT_IS_CARD);
     }
 

@@ -225,7 +225,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         commandManager.registerCommand(new CardsCommand(this, playerBlacklist));
         commandManager.registerCommand(new DeckCommand(this));
         commandManager.getCommandCompletions().registerCompletion("rarities", c -> cardManager.getRarityNames());
-        commandManager.getCommandCompletions().registerCompletion("active-rarities", c -> cardManager.getActiveRarityNames());
         commandManager.getCommandCompletions().registerCompletion("cards", c -> cardManager.getRarityCardList(c.getContextValueByName(String.class, "rarity")));
         commandManager.getCommandCompletions().registerCompletion("active-cards", c -> cardManager.getActiveRarityCardList(c.getContextValueByName(String.class, "rarity")));
         commandManager.getCommandCompletions().registerCompletion("packs", c -> packManager.packs().keySet());
@@ -239,12 +238,10 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         this.deckManager = new TradingDeckManager(this);
     }
 
-
     @Override
     public void onDisable() {
         econ = null;
     }
-
 
     @Override
     public TradingCardManager getCardManager() {
