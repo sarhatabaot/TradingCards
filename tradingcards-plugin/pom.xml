@@ -13,7 +13,9 @@
         <artifactId>tradingcards-parent</artifactId>
         <version>5.5.0-SNAPSHOT</version>
     </parent>
-
+    <properties>
+        <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
+    </properties>
     <pluginRepositories>
         <pluginRepository>
             <id>maven-snapshots</id>
@@ -46,11 +48,11 @@
             <url>https://repo.codemc.org/repository/maven-public/</url>
             <layout>default</layout>
         </repository>
-
     </repositories>
 
     <build>
         <defaultGoal>clean package</defaultGoal>
+        <finalName>TradingCards-${project.version}-${maven.build.timestamp}</finalName>
         <plugins>
             <plugin>
                 <version>3.8.1</version>
@@ -177,7 +179,7 @@
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
-            <version>5.0.0</version>
+            <version>5.0.1</version>
             <scope>compile</scope>
         </dependency>
 
