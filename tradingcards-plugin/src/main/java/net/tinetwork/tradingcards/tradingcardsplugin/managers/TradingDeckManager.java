@@ -146,6 +146,8 @@ public class TradingDeckManager implements DeckManager {
 
     @Override
     public boolean isDeck(final @NotNull ItemStack item) {
+        if(item.getType() == Material.AIR)
+            return false;
         return new NBTItem(item).getBoolean(NbtUtils.NBT_IS_DECK);
     }
 
