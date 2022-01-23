@@ -60,7 +60,7 @@ public class SqlStorage implements Storage {
     public List<Deck> getPlayerDecks(final UUID playerUuid) {
         try (Connection connection = connectionFactory.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(DECKS_SELECT_ALL_BY_UUID, null,
-                    Map.of("uuid", playerUuid.toString())))) {
+                    Map.of("uuid", wrap(playerUuid.toString()))))) {
                 try (ResultSet resultSet = statement.executeQuery()) {
                     List<Deck> decks = new ArrayList<>();
                     while(resultSet.next()) {
@@ -79,20 +79,28 @@ public class SqlStorage implements Storage {
     public Deck getDeck(final UUID playerUuid, final int deckNumber) {
         try (Connection connection = connectionFactory.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(DECKS_SELECT_BY_DECK_NUMBER, null,
-                    Map.of("uuid", playerUuid.toString(),
+                    Map.of("uuid", wrap(playerUuid.toString()),
                             "deck_number", String.valueOf(deckNumber))))) {
                 try (ResultSet resultSet = statement.executeQuery()) {
-                    return getDeckFromResultSet(resultSet);
+                    if(resultSet.next()) {
+                        return getDeckFromResultSet(resultSet);
+                    }
+                    if(resultSet.wasNull()) {
+                        this.plugin.debug(getClass(),"Could not find a deck for uuid="+ playerUuid +",decknumber="+deckNumber);
+                        return new Deck(playerUuid,deckNumber,new ArrayList<>());
+                    }
                 }
             }
         } catch (SQLException e) {
             this.plugin.getLogger().severe(e.getMessage());
+            return null;
         }
+        this.plugin.getLogger().severe("Returning a null deck.");
         return null;
     }
 
     private Deck getDeckFromResultSet(ResultSet resultSet) throws SQLException {
-        final String playerUuid = resultSet.getString("uuid");
+        final String playerUuid = unwrap(resultSet.getString("uuid"));
         final int deckNumber = resultSet.getInt("deck_number");
         List<StorageEntry> entries = new ArrayList<>();
         while(resultSet.next()) {
@@ -114,39 +122,45 @@ public class SqlStorage implements Storage {
     public boolean hasCard(final UUID playerUuid, final String card, final String rarity) {
         try (Connection connection = connectionFactory.getConnection()) {
             try(PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(DECKS_SELECT_BY_CARD_AND_RARITY,null,
-                    Map.of("uuid",playerUuid.toString(),
+                    Map.of("uuid",wrap(playerUuid.toString()),
                             "card_id",card,
                             "rarity_id",rarity)))){
                 try (ResultSet resultSet = statement.executeQuery()) {
                     //try and access a result, if it doesn't exist, return false.
-                    String cardId = resultSet.getString("card_id"); //todo
-                    plugin.debug(SqlStorage.class,cardId);
-                    return !resultSet.wasNull();
+                    if(resultSet.next()) {
+                        String cardId = resultSet.getString("card_id"); //todo
+                        plugin.debug(SqlStorage.class, cardId);
+                        return !resultSet.wasNull();
+                    }
                 }
             }
         }catch (SQLException e){
             return false;
         }
+        return false;
     }
 
     @Override
     public boolean hasShinyCard(final UUID playerUuid, final String card, final String rarity) {
         try (Connection connection = connectionFactory.getConnection()) {
             try(PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(DECKS_SELECT_BY_CARD_AND_RARITY_SHINY,null,
-                    Map.of("uuid",playerUuid.toString(),
+                    Map.of("uuid",wrap(playerUuid.toString()),
                             "card_id",card,
                             "rarity_id",rarity,
                             "is_shiny", String.valueOf(true))))){
                 try (ResultSet resultSet = statement.executeQuery()) {
-                    //try and access a result, if it doesn't exist, return false.
-                    String cardId = resultSet.getString("card_id"); //todo
-                    plugin.debug(SqlStorage.class,cardId);
-                    return !resultSet.wasNull();
+                    if(resultSet.next()) {
+                        //try and access a result, if it doesn't exist, return false.
+                        String cardId = resultSet.getString("card_id"); //todo
+                        plugin.debug(SqlStorage.class, cardId);
+                        return !resultSet.wasNull();
+                    }
                 }
             }
         }catch (SQLException e){
             return false;
         }
+        return false;
     }
 
     @Override
@@ -159,7 +173,7 @@ public class SqlStorage implements Storage {
         try (Connection connection = connectionFactory.getConnection()) {
             ImmutableMap<String, String> values = statementProcessor.generateValuesMap(playerUuid, deckNumber, cardId, rarityId, amount, isShiny, slot);
             try (PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(DECKS_INSERT_CARD, values,
-                    Map.of("uuid", playerUuid.toString(),
+                    Map.of("uuid", wrap(playerUuid.toString()),
                             "deck_number", String.valueOf(deckNumber))))) {
                 statement.execute();
             }
@@ -172,7 +186,7 @@ public class SqlStorage implements Storage {
         try (Connection connection = connectionFactory.getConnection()) {
             ImmutableMap<String, String> values = statementProcessor.generateValuesMap(playerUuid, deckNumber, cardId, rarityId, amount, isShiny, slot);
             try (PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(DECKS_REMOVE_CARD, values,
-                    Map.of("uuid", playerUuid.toString(),
+                    Map.of("uuid", wrap(playerUuid.toString()),
                             "deck_number", String.valueOf(deckNumber),
                             "card_id", cardId,
                             "rarity_id", rarityId,
@@ -232,6 +246,15 @@ public class SqlStorage implements Storage {
                 }
             }
         }
+    }
+
+
+    private String wrap(final String string) {
+        return "'"+string+"'";
+    }
+
+    private String unwrap(final String string) {
+        return string.replace("'","");
     }
 
 }

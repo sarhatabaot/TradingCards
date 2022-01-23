@@ -78,7 +78,7 @@ public class TradingDeckManager implements DeckManager {
     }
 
     private @NotNull Inventory generateDeckInventory(final @NotNull Player player, final int deckNum) {
-        List<ItemStack> cards = loadCardsFromFile(player.getUniqueId(), deckNum);
+        List<ItemStack> cards = loadCardsFromStorage(player.getUniqueId(), deckNum);
         Inventory inv = Bukkit.createInventory(player.getPlayer(), getDeckSize(), ChatUtil.color(plugin.getMessagesConfig().deckInventoryTitle().replace("%player%", player.getName()).replace("%deck_num%", String.valueOf(deckNum))));
         for (ItemStack cardItem : cards) {
             inv.addItem(cardItem);
@@ -87,7 +87,7 @@ public class TradingDeckManager implements DeckManager {
         return inv;
     }
 
-    private @NotNull List<ItemStack> loadCardsFromFile(final UUID uuid, final int deckNum) {
+    private @NotNull List<ItemStack> loadCardsFromStorage(final UUID uuid, final int deckNum) {
         final List<ItemStack> cards = new ArrayList<>();
         plugin.debug(TradingDeckManager.class,"uuid="+uuid+",deckNum="+deckNum);
         final Deck deck = storage.getDeck(uuid,deckNum);
