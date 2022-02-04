@@ -1,6 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.managers;
 
 import de.tr7zw.nbtapi.NBTItem;
+import net.tinetwork.tradingcards.api.events.DeckCloseEvent;
 import net.tinetwork.tradingcards.api.events.DeckOpenEvent;
 import net.tinetwork.tradingcards.api.manager.DeckManager;
 import net.tinetwork.tradingcards.api.model.deck.Deck;
@@ -56,6 +57,12 @@ public class TradingDeckManager implements DeckManager {
 
         final InventoryView deckView = player.openInventory(deckLoadEvent.getInventory());
         Bukkit.getPluginManager().callEvent(new DeckOpenEvent(deckView,deckNum));
+    }
+
+    public void closeAllOpenViews() {
+        for(Map.Entry<UUID,Integer> entry: this.playerDeckViewingMap.entrySet()) {
+            Bukkit.getPluginManager().callEvent(new DeckCloseEvent(Bukkit.getPlayer(entry.getKey()).getOpenInventory(),entry.getValue()));
+        }
     }
 
     public void addDeckViewer(UUID uuid, int num) {
