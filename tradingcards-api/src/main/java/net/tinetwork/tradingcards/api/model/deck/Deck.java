@@ -28,4 +28,26 @@ public class Deck {
     public StorageEntry getEntryList(int num) {
         return deckEntries.get(num);
     }
+
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final Deck deck = (Deck) o;
+        return number == deck.number && Objects.equals(playerUuid, deck.playerUuid) && Objects.equals(deckEntries, deck.deckEntries);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(playerUuid, number, deckEntries);
+    }
+
+    public boolean containsCard(final String cardId, final String rarityId) {
+        for(StorageEntry entry: deckEntries) {
+            if(entry.getCardId().equals(cardId) && entry.getRarityId().equals(rarityId))
+                return true;
+        }
+        return false;
+    }
 }
