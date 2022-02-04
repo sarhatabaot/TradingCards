@@ -72,7 +72,7 @@ public class SqlStorage implements Storage {
     public SqlStorage(final TradingCards plugin, final String tablePrefix, final ConnectionFactory connectionFactory) {
         this.plugin = plugin;
         this.connectionFactory = connectionFactory;
-        this.statementProcessor = new StatementProcessor(tablePrefix);
+        this.statementProcessor = new StatementProcessor(tablePrefix, plugin);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote;
 
 import com.google.common.collect.ImmutableMap;
+import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -12,11 +13,12 @@ import java.util.Map;
 import java.util.UUID;
 
 public class StatementProcessor {
-    private final Logger logger = LoggerFactory.getLogger(StatementProcessor.class);
+    private final TradingCards plugin;
     private final String tablePrefix;
 
-    public StatementProcessor(final String tablePrefix) {
+    public StatementProcessor(final String tablePrefix, final TradingCards plugin) {
         this.tablePrefix = tablePrefix;
+        this.plugin = plugin;
     }
 
     public String applyPrefix(final String statement) {
@@ -31,7 +33,7 @@ public class StatementProcessor {
 
     private String values(final String statement, Map<String,String> values) {
         final String orderValues = StringUtils.substringBetween(statement, "decks (", ") VALUES");
-        logger.info(orderValues);
+        plugin.debug(StatementProcessor.class,orderValues);
         Map<String, Integer> statementOrder = getColumnOrder(orderValues);
         final String valuesArguments = getValuesArguments(statement);
         String[] order = orderValues.split(", ");
@@ -60,20 +62,20 @@ public class StatementProcessor {
     }
     private String set(final String statement, Map<String,String> setValues) {
         final String extractedSetStatement = extractSetStatement(statement);
-        logger.info(extractedSetStatement);
+        plugin.debug(StatementProcessor.class,extractedSetStatement);
         return statement.replace(extractedSetStatement,replaceWhereStatement(extractedSetStatement,setValues));
     }
 
     private String where(final String statement, Map<String, String> whereValues) {
         final String extractedWhereStatement = extractWhereStatement(statement);
-        logger.info("extractedWhereStatement="+extractedWhereStatement);
+        plugin.debug(StatementProcessor.class,"extractedWhereStatement="+extractedWhereStatement);
         return statement.replace(extractedWhereStatement,replaceWhereStatement(extractedWhereStatement,whereValues));
     }
 
     public String apply(final String statement,@Nullable Map<String, String> values,@Nullable Map<String, String> whereValues, @Nullable Map<String,String> setValues) {
-        logger.info("base statement="+statement);
+        plugin.debug(StatementProcessor.class,"base statement="+statement);
         String finalStatement = applyPrefix(statement);
-        logger.info("prefixed statement="+finalStatement);
+        plugin.debug(StatementProcessor.class,"prefixed statement="+finalStatement);
         if (statement.contains("VALUES") && values != null) {
             finalStatement = values(finalStatement,values);
         }
@@ -83,22 +85,22 @@ public class StatementProcessor {
         if(statement.contains("SET") && setValues != null) {
             finalStatement = set(finalStatement,setValues);
         }
-        logger.info("final statement="+finalStatement);
+        plugin.debug(StatementProcessor.class,"final statement="+finalStatement);
         return finalStatement;
     }
 
 
     public String apply(final String statement,@Nullable Map<String, String> values,@Nullable Map<String, String> whereValues) {
-        logger.info("base statement="+statement);
+        plugin.debug(StatementProcessor.class,"base statement="+statement);
         String finalStatement = applyPrefix(statement);
-        logger.info("prefixed statement="+finalStatement);
+        plugin.debug(StatementProcessor.class,"prefixed statement="+finalStatement);
         if (statement.contains("VALUES") && values != null) {
             finalStatement = values(finalStatement,values);
         }
         if (statement.contains("WHERE") && whereValues != null) {
             finalStatement = where(finalStatement,whereValues);
         }
-        logger.info("final statement="+finalStatement);
+        plugin.debug(StatementProcessor.class,"final statement="+finalStatement);
         return finalStatement;
     }
     private String extractSetStatement(final String statement) {
