@@ -4,6 +4,11 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
 import de.tr7zw.nbtapi.NBTItem;
+import net.lingala.zip4j.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
+import net.lingala.zip4j.model.ExcludeFileFilter;
+import net.lingala.zip4j.model.ZipParameters;
+import net.lingala.zip4j.progress.ProgressMonitor;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.tinetwork.tradingcards.api.addons.TradingCardsAddon;
 import net.tinetwork.tradingcards.api.model.Pack;
@@ -39,7 +44,10 @@ import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.serialize.SerializationException;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -518,6 +526,49 @@ public class CardsCommand extends BaseCommand {
     @Subcommand("debug")
     @CommandPermission("cards.admin.debug")
     public class DebugCommands extends BaseCommand {
+
+        public class ZipBukkitRunnable extends BukkitRunnable {
+            private final CommandSender sender;
+
+            public ZipBukkitRunnable(final CommandSender sender) {
+                this.sender = sender;
+            }
+
+            @Override
+            public void run() {
+                final String pluginFolder = plugin.getDataFolder().getPath();
+                final String cardsFolder = pluginFolder + File.separator + "cards";
+                final String dataFolder = pluginFolder + File.separator + "data";
+                final String listsFolder = pluginFolder + File.separator + "lists";
+                final File settingsFolder = new File(pluginFolder + File.separator + "settings");
+                ExcludeFileFilter excludeFileFilter = file -> file.getName().contains("storage.yml");
+                ZipParameters zipParameters = new ZipParameters();
+                zipParameters.setExcludeFileFilter(excludeFileFilter);
+                try (ZipFile zipFile = new ZipFile(pluginFolder + File.separator +"debug.zip")) {
+                    zipFile.addFolder(new File(cardsFolder));
+                    zipFile.addFolder(new File(dataFolder));
+                    zipFile.addFolder(new File(listsFolder));
+                    zipFile.addFolder(settingsFolder, zipParameters);
+                    if (zipFile.getProgressMonitor().getResult().equals(ProgressMonitor.Result.SUCCESS)) {
+                        sender.sendMessage("Added all settings files to debug.zip.");
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+
+        @Subcommand("zip")
+        @CommandPermission(Permissions.ADMIN_DEBUG_SHOW_CACHE)
+        @Description("Creates a zip of all settings.")
+        public void onZip(final CommandSender sender) {
+            sender.sendMessage("Backing the settings folder to debug.zip");
+            sender.sendMessage("This does not backup storage.yml.");
+
+            new ZipBukkitRunnable(sender).runTask(plugin);
+        }
+
         @Subcommand("showcache all")
         @CommandPermission(Permissions.ADMIN_DEBUG_SHOW_CACHE)
         @Description("Shows the card cache")
@@ -637,8 +688,8 @@ public class CardsCommand extends BaseCommand {
 
                     for (Map.Entry<UUID, List<Deck>> entry : yamlDecks.entrySet()) {
                         final UUID playerUuid = entry.getKey();
-                        sender.sendMessage(ChatUtil.color("&2Started conversion for "+playerUuid));
-                        for (Deck deck: entry.getValue()) {
+                        sender.sendMessage(ChatUtil.color("&2Started conversion for " + playerUuid));
+                        for (Deck deck : entry.getValue()) {
                             plugin.getStorage().save(playerUuid, deck.getNumber(), deck);
                         }
                         sender.sendMessage(ChatUtil.color("&2Finished conversion for " + playerUuid + ", converted " + entry.getValue().size() + " decks."));
