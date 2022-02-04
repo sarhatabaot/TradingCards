@@ -62,12 +62,12 @@ public class DeckEventListener extends SimpleListener {
         }
         final UUID uuid = event.getPlayer().getUniqueId();
         if (!deckManager.containsViewer(event.getPlayer().getUniqueId())) {
-            plugin.debug(getClass(), "Not our gui, ignoring. UUID: " + uuid);
+            debug("Not our gui, ignoring. UUID: " + uuid);
             return;
         }
 
         if (!(event.getPlayer() instanceof final Player player)) {
-            plugin.debug(getClass(), "Not a player entity, ignoring.");
+            debug("Not a player entity, ignoring.");
             return;
         }
 
