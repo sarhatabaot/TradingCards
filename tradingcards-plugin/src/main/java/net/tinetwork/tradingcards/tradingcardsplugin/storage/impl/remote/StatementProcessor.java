@@ -1,8 +1,8 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote;
 
 import com.google.common.collect.ImmutableMap;
-import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import org.apache.commons.lang.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,12 +23,17 @@ public class StatementProcessor {
         return statement.replace("{prefix}", tablePrefix);
     }
 
+    private String getValuesArguments(final String statement) {
+        if(statement.contains("WHERE"))
+            return StringUtils.substringBetween(statement, "VALUES", "WHERE");
+        return StringUtils.substringBetween(statement,"VALUES",";");
+    }
 
     private String values(final String statement, Map<String,String> values) {
-        final String orderValues = StringUtils.substringBetween(statement, "' (", ") VALUES");
+        final String orderValues = StringUtils.substringBetween(statement, "decks (", ") VALUES");
+        logger.info(orderValues);
         Map<String, Integer> statementOrder = getColumnOrder(orderValues);
-
-        final String valuesArguments = StringUtils.substringBetween(statement, "VALUES", "WHERE");
+        final String valuesArguments = getValuesArguments(statement);
         String[] order = orderValues.split(", ");
         for(Map.Entry<String,String> entry: values.entrySet()){
             final String key = entry.getKey();
@@ -44,21 +49,44 @@ public class StatementProcessor {
         return statement.replace(valuesArguments, newValues);
     }
 
+    @NotNull
     private Map<String, Integer> getColumnOrder(final String orderValues) {
         final Map<String, Integer> orderMap = new HashMap<>();
         final String[] order = orderValues.split(", ");
-        for (int i = 0; i < order.length - 1; i++) {
+        for (int i = 0; i < order.length; i++) {
             orderMap.put(order[i], i);
         }
         return orderMap;
     }
-
+    private String set(final String statement, Map<String,String> setValues) {
+        final String extractedSetStatement = extractSetStatement(statement);
+        logger.info(extractedSetStatement);
+        return statement.replace(extractedSetStatement,replaceWhereStatement(extractedSetStatement,setValues));
+    }
 
     private String where(final String statement, Map<String, String> whereValues) {
         final String extractedWhereStatement = extractWhereStatement(statement);
         logger.info("extractedWhereStatement="+extractedWhereStatement);
         return statement.replace(extractedWhereStatement,replaceWhereStatement(extractedWhereStatement,whereValues));
     }
+
+    public String apply(final String statement,@Nullable Map<String, String> values,@Nullable Map<String, String> whereValues, @Nullable Map<String,String> setValues) {
+        logger.info("base statement="+statement);
+        String finalStatement = applyPrefix(statement);
+        logger.info("prefixed statement="+finalStatement);
+        if (statement.contains("VALUES") && values != null) {
+            finalStatement = values(finalStatement,values);
+        }
+        if (statement.contains("WHERE") && whereValues != null) {
+            finalStatement = where(finalStatement,whereValues);
+        }
+        if(statement.contains("SET") && setValues != null) {
+            finalStatement = set(finalStatement,setValues);
+        }
+        logger.info("final statement="+finalStatement);
+        return finalStatement;
+    }
+
 
     public String apply(final String statement,@Nullable Map<String, String> values,@Nullable Map<String, String> whereValues) {
         logger.info("base statement="+statement);
@@ -71,10 +99,13 @@ public class StatementProcessor {
             finalStatement = where(finalStatement,whereValues);
         }
         logger.info("final statement="+finalStatement);
-        finalStatement = finalStatement.replace(";","");
         return finalStatement;
     }
-
+    private String extractSetStatement(final String statement) {
+        if (StringUtils.substringBetween(statement, "SET", "WHERE") == null)
+            return StringUtils.substringBetween(statement, "SET",";");
+        return StringUtils.substringBetween(statement, "SET", "WHERE");
+    }
     private String extractWhereStatement(final String statement) {
         if (StringUtils.substringBetween(statement, "WHERE", "LIMIT") == null)
             return StringUtils.substringBetween(statement, "WHERE",";");
@@ -95,19 +126,19 @@ public class StatementProcessor {
         return base.replace(toReplace, newValue);
     }
 
-    public ImmutableMap<String,String> generateValuesMap(final UUID playerUuid, final int deckNumber, final String cardId, final String rarityId, final int amount, final Boolean isShiny, final Integer slot) {
+    public ImmutableMap<String,String> generateValuesMap(final UUID playerUuid, final int deckNumber, final String cardId, final String rarityId, final int amount, final Boolean isShiny) {
         ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
         if(playerUuid != null) {
-            builder.put("uuid",playerUuid.toString());
+            builder.put("uuid",wrap(playerUuid.toString()));
         }
         if(deckNumber != 0) {
             builder.put("deck_number",String.valueOf(deckNumber));
         }
         if(cardId != null) {
-            builder.put("card_id",cardId);
+            builder.put("card_id",wrap(cardId));
         }
         if(rarityId != null){
-            builder.put("rarity_id",rarityId);
+            builder.put("rarity_id",wrap(rarityId));
         }
         if(amount != 0){
             builder.put("amount",String.valueOf(amount));
@@ -116,12 +147,15 @@ public class StatementProcessor {
             builder.put("is_shiny",isShiny.toString());
         }
 
-        if(slot != null){
-            builder.put("slot",slot.toString());
-        }
-
         return builder.build();
     }
 
+    //TODO Should look into which statements need this exactly, and just apply it there. Instead of dynamically adding it.
+    public String wrap(final String string) {
+        return "'" + string + "'";
+    }
 
+    public String unwrap(final String string) {
+        return string.replace("'", "");
+    }
 }
