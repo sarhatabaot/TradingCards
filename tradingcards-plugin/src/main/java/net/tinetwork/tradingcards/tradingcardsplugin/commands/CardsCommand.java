@@ -566,7 +566,7 @@ public class CardsCommand extends BaseCommand {
         }
 
         @Subcommand("zip")
-        @CommandPermission(Permissions.ADMIN_DEBUG_SHOW_CACHE)
+        @CommandPermission(Permissions.ADMIN_DEBUG_ZIP)
         @Description("Creates a zip of all settings.")
         public void onZip(final CommandSender sender) {
             sender.sendMessage("Backing the settings folder to debug.zip");
