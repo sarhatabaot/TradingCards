@@ -115,9 +115,3 @@ spawner-block: true
 spawner-mob-name: 'Spawned Mob'
 # How 'long' should each line of the card's info be?
 info-line-length: 25
-
-# Only drop cards from a certain series.
-# You can still get other series with /cards give
-# Unused, use series.yml
-# active-series:
-#  - '2021'
