@@ -122,38 +122,46 @@ public class CardsCommand extends BaseCommand {
     @Subcommand("give")
     @CommandPermission(Permissions.GIVE)
     public class GiveCommands extends BaseCommand {
+
         @Subcommand("card")
         @CommandPermission(Permissions.GIVE_CARD)
-        @CommandCompletion("@rarities @cards")
         @Description("Gives a card.")
-        public void onGiveCard(final Player player, @Single final String rarity, @Single final String cardName) {
-            TradingCard card = cardManager.getCard(cardName, rarity, false);
-            if (card instanceof EmptyCard) {
-                ChatUtil.sendPrefixedMessage(player, messagesConfig.noCard());
-                return;
+        public class CardSubCommand extends BaseCommand {
+            @Default
+            @Description("Gives yourself a card.")
+            public void onDefault(final Player player, @Single final String rarity, @Single final String cardName) {
+                   onPlayer(player,player,rarity,cardName,false);
             }
 
-            ChatUtil.sendPrefixedMessage(player, messagesConfig.giveCard()
-                    .replace("%player%", player.getName())
-                    .replace("%card%", rarity + " " + cardName));
-            player.getInventory().addItem(card.build());
-        }
+            @Subcommand("player")
+            @CommandPermission(Permissions.GIVE_CARD_PLAYER)
+            @CommandCompletion("@players @rarities @cards")
+            public void onPlayer(final CommandSender sender, @Single final Player target, @Single final String rarity,@Single final String cardName, @Single final boolean shiny) {
+                TradingCard card = cardManager.getCard(cardName, rarity, shiny);
+                if(shiny && !card.hasShiny()) {
+                    ChatUtil.sendPrefixedMessage(sender,"This card does not have a shiny version.");
+                    return;
+                }
 
-        @Subcommand("card shiny")
-        @CommandPermission(Permissions.GIVE_CARD_SHINY)
-        @CommandCompletion("@rarities @cards")
-        @Description("Gives a shiny card.")
-        public void onGiveShinyCard(final Player player, @Single final String rarity, @Single final String cardName) {
-            TradingCard card = cardManager.getCard(cardName, rarity, true);
-            if (card instanceof EmptyCard) {
-                ChatUtil.sendPrefixedMessage(player, messagesConfig.noCard());
-                return;
+                if (card instanceof EmptyCard) {
+                    ChatUtil.sendPrefixedMessage(sender, messagesConfig.noCard());
+                    return;
+                }
+                ChatUtil.sendPrefixedMessage(target, messagesConfig.giveCard()
+                        .replace("%player%", target.getName())
+                        .replace("%card%", rarity + " " + cardName));
+                target.getInventory().addItem(card.build());
             }
 
-            player.getInventory().addItem(card.build());
+            @Subcommand("shiny")
+            @CommandPermission(Permissions.GIVE_CARD_SHINY)
+            @CommandCompletion("@rarities @cards")
+            @Description("Gives a shiny card.")
+            public void onShiny(final Player player, @Single final String rarity, @Single final String cardName) {
+                onPlayer(player,player,rarity,cardName,true);
+            }
         }
-
-
+        
         @Subcommand("pack")
         @Description("Gives a pack to a player.")
         @CommandCompletion("@players @packs")
@@ -456,11 +464,9 @@ public class CardsCommand extends BaseCommand {
         }
     }
 
-
     @Subcommand("buy")
     @CommandPermission(Permissions.BUY)
     public class BuySubCommand extends BaseCommand {
-
         @Subcommand("pack")
         @CommandPermission(Permissions.BUY_PACK)
         @CommandCompletion("@packs")

@@ -166,7 +166,8 @@ public class TradingCardManager implements CardManager<TradingCard> {
     public TradingCard getCard(final String cardName, final String rarity, final boolean forcedShiny) {
         if (cards.containsKey(cardKey(rarity,cardName))) {
             TradingCard card = cards.get(cardKey(rarity, cardName)).get();
-            card.isShiny(forcedShiny);
+            if(card.hasShiny())
+                card.isShiny(forcedShiny);
             return card;
         }
         return new EmptyCard();

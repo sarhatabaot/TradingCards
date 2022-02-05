@@ -10,6 +10,7 @@ public class Permissions {
     public static final String GIVE = "cards.give";
     public static final String GIVE_CARD = "cards.give.card";
     public static final String GIVE_CARD_SHINY = "cards.give.card.shiny";
+    public static final String GIVE_CARD_PLAYER = "cards.give.card.player";
     public static final String GIVE_PACK = "cards.give.pack";
     public static final String GIVE_RANDOM_ENTITY = "cards.give.random.entity";
     public static final String GIVE_RANDOM_RARITY = "cards.give.random.entity";
