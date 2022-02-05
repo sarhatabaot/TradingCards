@@ -62,9 +62,10 @@ booster-pack-prefix: "&7[&fPack&7]&f "
 # ##############################
 # Should we be allowed to use decks in creative?
 decks-in-creative: false
-# Should we get a deck item or simply open the deck straight away with /cards getdeck #?
+# Should we get a deck item or simply open the deck straight away with /deck #?
 use-deck-item: true
 # Should we have 27 slots in the deck, or 54 (double chest)?
+# default 27
 use-large-decks: false
 # What material decks should be. Make it something that can't be placed.
 deck-material: BOOK

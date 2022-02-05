@@ -161,7 +161,7 @@ public class CardsCommand extends BaseCommand {
                 onPlayer(player,player,rarity,cardName,true);
             }
         }
-        
+
         @Subcommand("pack")
         @Description("Gives a pack to a player.")
         @CommandCompletion("@players @packs")
