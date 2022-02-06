@@ -142,7 +142,7 @@ public class DeckConfig extends SimpleConfigurate {
         for (String deckNumber : getAllDecks(uuid).getValues(false).keySet()) {
             for (String cardString : getDeckEntries(uuid, deckNumber)) {
                 StorageEntry deckEntry = StorageEntry.fromString(cardString);
-                if (deckEntry.getRarityId().equalsIgnoreCase(rarity) && deckEntry.getCardId().equalsIgnoreCase(cardString) && !deckEntry.isShiny())
+                if (deckEntry.getRarityId().equalsIgnoreCase(rarity) && deckEntry.getCardId().equalsIgnoreCase(card) && !deckEntry.isShiny())
                     return true;
             }
         }
