@@ -7,6 +7,7 @@ import net.tinetwork.tradingcards.api.config.settings.SeriesConfigurate;
 import net.tinetwork.tradingcards.api.manager.CardManager;
 import net.tinetwork.tradingcards.api.manager.DeckManager;
 import net.tinetwork.tradingcards.api.manager.PackManager;
+import net.tinetwork.tradingcards.api.manager.RarityManager;
 import net.tinetwork.tradingcards.api.manager.TypeManager;
 import org.bukkit.World;
 import org.bukkit.entity.EntityType;
@@ -93,4 +94,6 @@ public abstract class TradingCardsPlugin<T> extends JavaPlugin {
     public abstract SeriesConfigurate getSeriesConfig();
 
     public abstract TypeManager getDropTypeManager();
+
+    public abstract RarityManager getRarityManager();
 }
