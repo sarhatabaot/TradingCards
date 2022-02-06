@@ -32,4 +32,7 @@ public class Permissions {
     public static final String BUY_PACK = "cards.buy.pack";
     public static final String BUY_CARD = "cards.buy.card";
 
+    private Permissions () {
+        throw new UnsupportedOperationException();
+    }
 }
