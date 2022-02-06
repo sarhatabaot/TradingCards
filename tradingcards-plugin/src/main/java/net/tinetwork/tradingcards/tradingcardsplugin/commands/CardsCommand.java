@@ -5,7 +5,6 @@ import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
 import de.tr7zw.nbtapi.NBTItem;
 import net.lingala.zip4j.ZipFile;
-import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.model.ExcludeFileFilter;
 import net.lingala.zip4j.model.ZipParameters;
 import net.lingala.zip4j.progress.ProgressMonitor;
@@ -48,7 +47,6 @@ import org.spongepowered.configurate.serialize.SerializationException;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -317,7 +315,6 @@ public class CardsCommand extends BaseCommand {
                     }
                     stringBuilder.append(card.getDisplayName()).append("&7and more!");
                 } else {
-
                     String colour = plugin.getGeneralConfig().colorListHaveCard();
                     if (deckManager.hasShiny(target, cardId, rarity)) {
                         ++cardCounter;

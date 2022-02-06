@@ -10,7 +10,6 @@ import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.CardsCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.DeckCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.CardsConfig;
-import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local.DeckConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.ChancesConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.DropTypesConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.GeneralConfig;
@@ -29,6 +28,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingCardManager
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingDeckManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.StorageType;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local.DeckConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local.YamlStorage;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.SqlStorage;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.sql.MariaDbConnectionFactory;
@@ -50,7 +50,6 @@ import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.io.File;
 import java.util.Random;
-import java.util.logging.Level;
 
 
 public class TradingCards extends TradingCardsPlugin<TradingCard> {
