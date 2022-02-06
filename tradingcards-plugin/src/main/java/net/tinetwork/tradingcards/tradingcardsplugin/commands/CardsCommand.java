@@ -4,10 +4,16 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
 import de.tr7zw.nbtapi.NBTItem;
+import net.lingala.zip4j.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
+import net.lingala.zip4j.model.ExcludeFileFilter;
+import net.lingala.zip4j.model.ZipParameters;
+import net.lingala.zip4j.progress.ProgressMonitor;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.tinetwork.tradingcards.api.addons.TradingCardsAddon;
 import net.tinetwork.tradingcards.api.model.Pack;
 import net.tinetwork.tradingcards.api.model.Rarity;
+import net.tinetwork.tradingcards.api.model.deck.Deck;
 import net.tinetwork.tradingcards.api.utils.NbtUtils;
 import net.tinetwork.tradingcards.tradingcardsplugin.Permissions;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
@@ -16,6 +22,9 @@ import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.MessagesConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingCardManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingDeckManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.StorageType;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local.DeckConfig;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local.YamlStorage;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.whitelist.PlayerBlacklist;
@@ -30,10 +39,18 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
+import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.serialize.SerializationException;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @CommandAlias("cards")
 public class CardsCommand extends BaseCommand {
@@ -55,9 +72,10 @@ public class CardsCommand extends BaseCommand {
         this.messagesConfig = plugin.getMessagesConfig();
     }
 
-    private void debug(final String message){
-        plugin.debug(getClass(),message);
+    private void debug(final String message) {
+        plugin.debug(getClass(), message);
     }
+
     @CatchUnknown
     @HelpCommand
     public void onHelp(final CommandSender sender, CommandHelp help) {
@@ -104,52 +122,60 @@ public class CardsCommand extends BaseCommand {
     @Subcommand("give")
     @CommandPermission(Permissions.GIVE)
     public class GiveCommands extends BaseCommand {
+
         @Subcommand("card")
         @CommandPermission(Permissions.GIVE_CARD)
-        @CommandCompletion("@rarities @cards")
         @Description("Gives a card.")
-        public void onGiveCard(final Player player,@Single final String rarity, @Single final String cardName) {
-            TradingCard card = cardManager.getCard(cardName,rarity,false);
-            if(card instanceof EmptyCard) {
-                ChatUtil.sendPrefixedMessage(player, messagesConfig.noCard());
-                return;
+        public class CardSubCommand extends BaseCommand {
+            @Default
+            @Description("Gives yourself a card.")
+            public void onDefault(final Player player, @Single final String rarity, @Single final String cardName) {
+                   onPlayer(player,player,rarity,cardName,false);
             }
 
-            ChatUtil.sendPrefixedMessage(player,messagesConfig.giveCard()
-                    .replace("%player%",player.getName())
-                    .replace("%card%", rarity+ " "+cardName));
-            player.getInventory().addItem(card.build());
-        }
+            @Subcommand("player")
+            @CommandPermission(Permissions.GIVE_CARD_PLAYER)
+            @CommandCompletion("@players @rarities @cards")
+            public void onPlayer(final CommandSender sender, @Single final Player target, @Single final String rarity,@Single final String cardName, @Single final boolean shiny) {
+                TradingCard card = cardManager.getCard(cardName, rarity, shiny);
+                if(shiny && !card.hasShiny()) {
+                    ChatUtil.sendPrefixedMessage(sender,"This card does not have a shiny version.");
+                    return;
+                }
 
-        @Subcommand("card shiny")
-        @CommandPermission(Permissions.GIVE_CARD_SHINY)
-        @CommandCompletion("@rarities @cards")
-        @Description("Gives a shiny card.")
-        public void onGiveShinyCard(final Player player,@Single final String rarity,@Single final String cardName) {
-            TradingCard card = cardManager.getCard(cardName,rarity,true);
-            if(card instanceof EmptyCard) {
-                ChatUtil.sendPrefixedMessage(player, messagesConfig.noCard());
-                return;
+                if (card instanceof EmptyCard) {
+                    ChatUtil.sendPrefixedMessage(sender, messagesConfig.noCard());
+                    return;
+                }
+                ChatUtil.sendPrefixedMessage(target, messagesConfig.giveCard()
+                        .replace("%player%", target.getName())
+                        .replace("%card%", rarity + " " + cardName));
+                target.getInventory().addItem(card.build());
             }
 
-            player.getInventory().addItem(card.build());
+            @Subcommand("shiny")
+            @CommandPermission(Permissions.GIVE_CARD_SHINY)
+            @CommandCompletion("@rarities @cards")
+            @Description("Gives a shiny card.")
+            public void onShiny(final Player player, @Single final String rarity, @Single final String cardName) {
+                onPlayer(player,player,rarity,cardName,true);
+            }
         }
-
 
         @Subcommand("pack")
         @Description("Gives a pack to a player.")
         @CommandCompletion("@players @packs")
         @CommandPermission(Permissions.GIVE_PACK)
-        public void onGiveBoosterPack(final CommandSender sender,@Single final String playerName, @Single final String pack) {
+        public void onGiveBoosterPack(final CommandSender sender, @Single final String playerName, @Single final String pack) {
             Player player = Bukkit.getPlayerExact(playerName);
-            if(isOnline(player)) {
+            if (isOnline(player)) {
                 ChatUtil.sendPrefixedMessage(sender, PLAYER_NOT_ONLINE);
                 return;
             }
 
             CardUtil.dropItem(player, plugin.getPackManager().getPackItem(pack));
 
-            ChatUtil.sendPrefixedMessage(sender,plugin.getMessagesConfig().givePack().replace("%player%",player.getName()).replace("%pack%",pack));
+            ChatUtil.sendPrefixedMessage(sender, plugin.getMessagesConfig().givePack().replace("%player%", player.getName()).replace("%pack%", pack));
             ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().boosterPackMsg());
         }
 
@@ -160,16 +186,16 @@ public class CardsCommand extends BaseCommand {
         @Subcommand("random entity")
         @Description("Gives a random card to a player.")
         @CommandPermission(Permissions.GIVE_RANDOM_ENTITY)
-        public void onGiveRandomCard(final CommandSender sender,@Single final String playerName, final EntityType entityType) {
+        public void onGiveRandomCard(final CommandSender sender, @Single final String playerName, final EntityType entityType) {
             Player player = Bukkit.getPlayerExact(playerName);
-            if(isOnline(player)) {
+            if (isOnline(player)) {
                 ChatUtil.sendPrefixedMessage(sender, PLAYER_NOT_ONLINE);
                 return;
             }
 
             try {
                 String rare = cardManager.getRandomRarity(CardUtil.getMobType(entityType), true);
-                plugin.debug(getClass(),"Rarity: " + rare);
+                plugin.debug(getClass(), "Rarity: " + rare);
                 ChatUtil.sendPrefixedMessage(sender, plugin.getMessagesConfig().giveRandomCardMsg().replace("%player%", player.getName()));
                 CardUtil.dropItem(player, plugin.getCardManager().getRandomCard(rare, false).build());
             } catch (IllegalArgumentException exception) {
@@ -181,9 +207,9 @@ public class CardsCommand extends BaseCommand {
         @Description("Gives a random card to a player. Specify rarity.")
         @CommandCompletion("@players @rarities")
         @CommandPermission(Permissions.GIVE_RANDOM_RARITY)
-        public void onGiveRandomCard(final CommandSender sender,@Single final String playerName,@Single final String rarity) {
+        public void onGiveRandomCard(final CommandSender sender, @Single final String playerName, @Single final String rarity) {
             Player player = Bukkit.getPlayerExact(playerName);
-            if(isOnline(player)) {
+            if (isOnline(player)) {
                 ChatUtil.sendPrefixedMessage(sender, PLAYER_NOT_ONLINE);
                 return;
             }
@@ -204,7 +230,7 @@ public class CardsCommand extends BaseCommand {
     public class ListSubCommand extends BaseCommand {
         @Default
         @CommandCompletion("@rarities")
-        public void onList(final CommandSender sender,@Single @Optional final String rarity) {
+        public void onList(final CommandSender sender, @Single @Optional final String rarity) {
             onListPlayer(sender, sender.getName(), rarity);
         }
 
@@ -212,9 +238,9 @@ public class CardsCommand extends BaseCommand {
         @CommandPermission(Permissions.LIST_PLAYER)
         @CommandCompletion("@players @rarities")
         @Description("Lists all cards by a player.")
-        public void onListPlayer(final CommandSender sender,@Single final String playerName,@Single @Optional final String rarity) {
+        public void onListPlayer(final CommandSender sender, @Single final String playerName, @Single @Optional final String rarity) {
             Player target = Bukkit.getPlayerExact(playerName);
-            if(target == null) {
+            if (target == null) {
                 ChatUtil.sendPrefixedMessage(sender, PLAYER_NOT_ONLINE);
                 return;
             }
@@ -374,7 +400,7 @@ public class CardsCommand extends BaseCommand {
 
         final String cardId = nbtItem.getString(NbtUtils.NBT_CARD_NAME);
         final String rarityId = nbtItem.getString(NbtUtils.NBT_RARITY);
-        debug("Card name="+cardId+", Card rarity="+rarityId);
+        debug("Card name=" + cardId + ", Card rarity=" + rarityId);
 
         final TradingCard tradingCard = cardManager.getCard(cardId, rarityId, false);
         final double buyPrice = tradingCard.getBuyPrice();
@@ -406,7 +432,7 @@ public class CardsCommand extends BaseCommand {
                 return;
 
             final NBTItem nbtItem = new NBTItem(player.getInventory().getItemInMainHand());
-            if(!CardUtil.isCard(nbtItem)){
+            if (!CardUtil.isCard(nbtItem)) {
                 ChatUtil.sendPrefixedMessage(player, messagesConfig.notACard());
                 return;
             }
@@ -415,15 +441,15 @@ public class CardsCommand extends BaseCommand {
             final int itemInHandSlot = player.getInventory().getHeldItemSlot();
             final String cardId = nbtItem.getString(NbtUtils.NBT_CARD_NAME);
             final String rarityId = nbtItem.getString(NbtUtils.NBT_RARITY);
-            debug("Card name="+cardId+", Card rarity="+rarityId);
+            debug("Card name=" + cardId + ", Card rarity=" + rarityId);
 
-            final TradingCard tradingCard = cardManager.getCard(cardId,rarityId,false);
-            if(tradingCard.isShiny()) {
+            final TradingCard tradingCard = cardManager.getCard(cardId, rarityId, false);
+            if (tradingCard.isShiny()) {
                 ChatUtil.sendPrefixedMessage(player, "Cannot sell shiny card.");
                 return;
             }
 
-            if(tradingCard.getSellPrice() <= 0.00D) {
+            if (tradingCard.getSellPrice() <= 0.00D) {
                 ChatUtil.sendPrefixedMessage(player, CANNOT_SELL_CARD);
                 return;
             }
@@ -438,11 +464,9 @@ public class CardsCommand extends BaseCommand {
         }
     }
 
-
     @Subcommand("buy")
     @CommandPermission(Permissions.BUY)
     public class BuySubCommand extends BaseCommand {
-
         @Subcommand("pack")
         @CommandPermission(Permissions.BUY_PACK)
         @CommandCompletion("@packs")
@@ -489,7 +513,7 @@ public class CardsCommand extends BaseCommand {
                 return;
             }
 
-            final TradingCard tradingCard = cardManager.getCard(card,rarity,false);
+            final TradingCard tradingCard = cardManager.getCard(card, rarity, false);
             double buyPrice = tradingCard.getBuyPrice();
 
             EconomyResponse economyResponse = plugin.getEcon().withdrawPlayer(player, buyPrice);
@@ -508,6 +532,49 @@ public class CardsCommand extends BaseCommand {
     @Subcommand("debug")
     @CommandPermission("cards.admin.debug")
     public class DebugCommands extends BaseCommand {
+
+        public class ZipBukkitRunnable extends BukkitRunnable {
+            private final CommandSender sender;
+
+            public ZipBukkitRunnable(final CommandSender sender) {
+                this.sender = sender;
+            }
+
+            @Override
+            public void run() {
+                final String pluginFolder = plugin.getDataFolder().getPath();
+                final String cardsFolder = pluginFolder + File.separator + "cards";
+                final String dataFolder = pluginFolder + File.separator + "data";
+                final String listsFolder = pluginFolder + File.separator + "lists";
+                final File settingsFolder = new File(pluginFolder + File.separator + "settings");
+                ExcludeFileFilter excludeFileFilter = file -> file.getName().contains("storage.yml");
+                ZipParameters zipParameters = new ZipParameters();
+                zipParameters.setExcludeFileFilter(excludeFileFilter);
+                try (ZipFile zipFile = new ZipFile(pluginFolder + File.separator +"debug.zip")) {
+                    zipFile.addFolder(new File(cardsFolder));
+                    zipFile.addFolder(new File(dataFolder));
+                    zipFile.addFolder(new File(listsFolder));
+                    zipFile.addFolder(settingsFolder, zipParameters);
+                    if (zipFile.getProgressMonitor().getResult().equals(ProgressMonitor.Result.SUCCESS)) {
+                        sender.sendMessage("Added all settings files to debug.zip.");
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+
+        @Subcommand("zip")
+        @CommandPermission(Permissions.ADMIN_DEBUG_ZIP)
+        @Description("Creates a zip of all settings.")
+        public void onZip(final CommandSender sender) {
+            sender.sendMessage("Backing the settings folder to debug.zip");
+            sender.sendMessage("This does not backup storage.yml.");
+
+            new ZipBukkitRunnable(sender).runTask(plugin);
+        }
+
         @Subcommand("showcache all")
         @CommandPermission(Permissions.ADMIN_DEBUG_SHOW_CACHE)
         @Description("Shows the card cache")
@@ -550,7 +617,7 @@ public class CardsCommand extends BaseCommand {
         @CommandPermission(Permissions.ADMIN_DEBUG_PACKS)
         @Description("Show all available packs.")
         public void onPack(final CommandSender sender) {
-            sender.sendMessage(StringUtils.join(plugin.getPacksConfig().getPacks(),","));
+            sender.sendMessage(StringUtils.join(plugin.getPacksConfig().getPacks(), ","));
         }
 
         @Subcommand("rarities")
@@ -575,6 +642,81 @@ public class CardsCommand extends BaseCommand {
             sender.sendMessage(String.format("Card %s.%s does not exist", rarity, card));
         }
     }
+
+    @Subcommand("migrate")
+    @CommandPermission(Permissions.ADMIN_MIGRATE)
+    @Description("Migrates from yaml to another storage type.")
+    public class MigrateSubCommand extends BaseCommand {
+
+
+        @Default
+        public void onMigrateInfo(final CommandSender sender) {
+            if (plugin.getStorage().getType() == StorageType.YAML) {
+                sender.sendMessage(ChatUtil.color("&4Cannot convert from YAML to YAML."));
+                sender.sendMessage(ChatUtil.color("&4Please change your storage type to MYSQL or MARIADB & restart your server."));
+                return;
+            }
+
+            sender.sendMessage(ChatUtil.color("&cAre you sure you want to migrate? This action is irreversible."));
+            sender.sendMessage(ChatUtil.color("&cMake sure you have made a backup of your decks.yml before continuing."));
+            sender.sendMessage(ChatUtil.color("&cIf you want to convert from YAML to " + plugin.getStorage().getType().name()));
+            sender.sendMessage(ChatUtil.color("&cPlease type /cards migrate confirm"));
+        }
+
+
+        @Subcommand("confirm")
+        public void onMigrateConfirm(final CommandSender sender) {
+            sender.sendMessage(ChatUtil.color("&2Started migration from YAML to " + plugin.getStorage().getType().name()));
+            sender.sendMessage(ChatUtil.color("&2This may take a while..."));
+            new MigratorBukkitRunnable(sender).runTask(plugin);
+        }
+
+        public class MigratorBukkitRunnable extends BukkitRunnable {
+            private final CommandSender sender;
+
+            public MigratorBukkitRunnable(final CommandSender sender) {
+                this.sender = sender;
+            }
+
+            @Override
+            public void run() {
+                long startTime = System.nanoTime();
+                try {
+                    YamlStorage yamlStorage = new YamlStorage(new DeckConfig(plugin));
+                    yamlStorage.init(plugin);
+                    Map<UUID, List<Deck>> yamlDecks = yamlStorage.getAllDecks();
+                    sender.sendMessage("Found " + yamlDecks.size() + " players.");
+
+                    int totalDecks = yamlDecks.values().stream()
+                            .mapToInt(Collection::size)
+                            .sum();
+                    sender.sendMessage("Total " + totalDecks + " decks.");
+
+                    for (Map.Entry<UUID, List<Deck>> entry : yamlDecks.entrySet()) {
+                        final UUID playerUuid = entry.getKey();
+                        sender.sendMessage(ChatUtil.color("&2Started conversion for " + playerUuid));
+                        for (Deck deck : entry.getValue()) {
+                            plugin.getStorage().save(playerUuid, deck.getNumber(), deck);
+                        }
+                        sender.sendMessage(ChatUtil.color("&2Finished conversion for " + playerUuid + ", converted " + entry.getValue().size() + " decks."));
+                    }
+                    long endTime = System.nanoTime();
+                    sender.sendMessage(ChatUtil.color("&2Finished conversion of " + totalDecks + " decks."));
+                    long duration = (endTime - startTime) / 1000000;
+                    sender.sendMessage(ChatUtil.color("&aTook a total of " + duration + "ms"));
+
+                } catch (ConfigurateException e) {
+                    sender.sendMessage("There was a problem accessing the yaml data. Check your console for more info.");
+                    plugin.getLogger().severe(e.getMessage());
+                } catch (Exception e) {
+                    sender.sendMessage("There was an error. Check your console for more info.");
+                    plugin.getLogger().severe(e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
 }
 
 

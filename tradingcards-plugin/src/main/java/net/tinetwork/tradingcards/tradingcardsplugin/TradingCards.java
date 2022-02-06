@@ -31,6 +31,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.StorageType;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local.YamlStorage;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.SqlStorage;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.sql.MariaDbConnectionFactory;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.sql.MySqlConnectionFactory;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
@@ -195,6 +196,11 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         StorageType storageType = this.storageConfig.getType();
         getLogger().info("Using storage "+storageType.name());
         switch (storageType){
+            case MARIADB -> {
+                return new SqlStorage(this,
+                        this.storageConfig.getTablePrefix(),
+                        new MariaDbConnectionFactory(this.storageConfig));
+            }
             case MYSQL -> {
                 return new SqlStorage(this,
                         this.storageConfig.getTablePrefix(),
@@ -216,12 +222,12 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
     private void initCommands() {
         var commandManager = new PaperCommandManager(this);
-        commandManager.registerCommand(new CardsCommand(this, playerBlacklist));
-        commandManager.registerCommand(new DeckCommand(this));
         commandManager.getCommandCompletions().registerCompletion("rarities", c -> cardManager.getRarityNames());
         commandManager.getCommandCompletions().registerCompletion("cards", c -> cardManager.getRarityCardList(c.getContextValueByName(String.class, "rarity")));
         commandManager.getCommandCompletions().registerCompletion("active-cards", c -> cardManager.getActiveRarityCardList(c.getContextValueByName(String.class, "rarity")));
         commandManager.getCommandCompletions().registerCompletion("packs", c -> packManager.packs().keySet());
+        commandManager.registerCommand(new CardsCommand(this, playerBlacklist));
+        commandManager.registerCommand(new DeckCommand(this));
         commandManager.enableUnstableAPI("help");
         commandManager.enableUnstableAPI("brigadier");
     }
@@ -235,6 +241,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     @Override
     public void onDisable() {
         econ = null;
+        deckManager.closeAllOpenViews();
     }
 
     @Override
@@ -413,5 +420,8 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     public Random getRandom() {
         return random;
     }
+
+
+
 
 }

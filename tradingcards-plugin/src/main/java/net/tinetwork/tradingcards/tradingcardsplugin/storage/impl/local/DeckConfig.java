@@ -18,6 +18,7 @@ import org.spongepowered.configurate.serialize.SerializationException;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -61,10 +62,20 @@ public class DeckConfig extends SimpleConfigurate {
         List<Deck> decks = new ArrayList<>();
         for (Map.Entry<Object, ? extends ConfigurationNode> nodeEntry : inventoriesNode.node(playerUuid.toString()).childrenMap().entrySet()) {
             final int deckNumber = Integer.parseInt(nodeEntry.getKey().toString());
-            final Deck deck = getDeck(playerUuid, deckNumber);
+            final List<StorageEntry> deckEntries = convertToDeckEntries(getDeckEntries(playerUuid, String.valueOf(deckNumber)));
+            final Deck deck = new Deck(playerUuid,deckNumber,deckEntries);
             decks.add(deck);
         }
         return decks;
+    }
+
+    public Map<UUID,List<Deck>> getAllDecks() {
+        Map<UUID,List<Deck>> playerDeckMap = new HashMap<>();
+        for(Map.Entry<Object, ? extends ConfigurationNode> nodeEntry:inventoriesNode.childrenMap().entrySet()) {
+            final UUID playerUuid = UUID.fromString(nodeEntry.getKey().toString());
+            playerDeckMap.put(playerUuid,getPlayerDecks(playerUuid));
+        }
+        return playerDeckMap;
     }
 
     @Nullable

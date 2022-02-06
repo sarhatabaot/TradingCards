@@ -34,10 +34,6 @@ public interface Storage {
      */
     void save(UUID playerUuid, int deckNumber, Deck deck);
 
-    //void add(UUID playerUuid, int deckNumber, String cardId, String rarityId, int amount, boolean isShiny, int slot);
-
-    //void remove(UUID playerUuid, int deckNumber, String cardId, String rarityId, int amount, boolean isShiny, int slot);
-
     /**
      *
      * @param playerUuid

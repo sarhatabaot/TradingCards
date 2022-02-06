@@ -10,6 +10,7 @@ public class Permissions {
     public static final String GIVE = "cards.give";
     public static final String GIVE_CARD = "cards.give.card";
     public static final String GIVE_CARD_SHINY = "cards.give.card.shiny";
+    public static final String GIVE_CARD_PLAYER = "cards.give.card.player";
     public static final String GIVE_PACK = "cards.give.pack";
     public static final String GIVE_RANDOM_ENTITY = "cards.give.random.entity";
     public static final String GIVE_RANDOM_RARITY = "cards.give.random.entity";
@@ -18,6 +19,8 @@ public class Permissions {
     public static final String ADMIN_DEBUG_PACKS = "cards.admin.debug.packs";
     public static final String ADMIN_DEBUG_RARITIES = "cards.admin.debug.rarities";
     public static final String ADMIN_DEBUG_EXISTS = "cards.admin.debug.exists";
+    public static final String ADMIN_DEBUG_ZIP = "cards.admin.debug.zip";
+    public static final String ADMIN_MIGRATE = "cards.admin.migrate";
     public static final String LIST = "cards.list";
     public static final String LIST_PLAYER = "cards.list.player";
     public static final String LIST_PACK = "cards.list.pack";

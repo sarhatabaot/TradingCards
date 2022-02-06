@@ -179,7 +179,12 @@ public abstract class Card<T> {
 
     public abstract ItemStack buildItem();
 
-
+    /**
+     * Builds the item, if there
+     * is not NBT Item, it builds that too
+     * and then return the completed item
+     * @return Card ItemStack
+     */
     public ItemStack build() {
         if(nbtItem == null)
             nbtItem = buildNBTItem();

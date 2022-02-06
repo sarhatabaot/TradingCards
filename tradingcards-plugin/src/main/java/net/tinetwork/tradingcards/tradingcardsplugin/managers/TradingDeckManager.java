@@ -1,6 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.managers;
 
 import de.tr7zw.nbtapi.NBTItem;
+import net.tinetwork.tradingcards.api.events.DeckCloseEvent;
 import net.tinetwork.tradingcards.api.events.DeckOpenEvent;
 import net.tinetwork.tradingcards.api.manager.DeckManager;
 import net.tinetwork.tradingcards.api.model.deck.Deck;
@@ -58,6 +59,12 @@ public class TradingDeckManager implements DeckManager {
         Bukkit.getPluginManager().callEvent(new DeckOpenEvent(deckView,deckNum));
     }
 
+    public void closeAllOpenViews() {
+        for(Map.Entry<UUID,Integer> entry: this.playerDeckViewingMap.entrySet()) {
+            Bukkit.getPluginManager().callEvent(new DeckCloseEvent(Bukkit.getPlayer(entry.getKey()).getOpenInventory(),entry.getValue()));
+        }
+    }
+
     public void addDeckViewer(UUID uuid, int num) {
         plugin.debug(getClass(),"Added uuid "+uuid+" deck #"+num+" to deck viewer map.");
         this.playerDeckViewingMap.put(uuid,num);
@@ -78,7 +85,7 @@ public class TradingDeckManager implements DeckManager {
     }
 
     private @NotNull Inventory generateDeckInventory(final @NotNull Player player, final int deckNum) {
-        List<ItemStack> cards = loadCardsFromFile(player.getUniqueId(), deckNum);
+        List<ItemStack> cards = loadCardsFromStorage(player.getUniqueId(), deckNum);
         Inventory inv = Bukkit.createInventory(player.getPlayer(), getDeckSize(), ChatUtil.color(plugin.getMessagesConfig().deckInventoryTitle().replace("%player%", player.getName()).replace("%deck_num%", String.valueOf(deckNum))));
         for (ItemStack cardItem : cards) {
             inv.addItem(cardItem);
@@ -87,7 +94,7 @@ public class TradingDeckManager implements DeckManager {
         return inv;
     }
 
-    private @NotNull List<ItemStack> loadCardsFromFile(final UUID uuid, final int deckNum) {
+    private @NotNull List<ItemStack> loadCardsFromStorage(final UUID uuid, final int deckNum) {
         final List<ItemStack> cards = new ArrayList<>();
         plugin.debug(TradingDeckManager.class,"uuid="+uuid+",deckNum="+deckNum);
         final Deck deck = storage.getDeck(uuid,deckNum);
@@ -113,9 +120,11 @@ public class TradingDeckManager implements DeckManager {
     }
 
     private int getDeckSize() {
-        if (plugin.getGeneralConfig().useLargeDecks())
-            return 54;
-        return 27;
+        int deckRows = plugin.getGeneralConfig().deckRows();
+        if(deckRows > 6 || deckRows < 1) {
+            deckRows = 3;
+        }
+        return deckRows * 9;
     }
 
     @NotNull
@@ -146,6 +155,8 @@ public class TradingDeckManager implements DeckManager {
 
     @Override
     public boolean isDeck(final @NotNull ItemStack item) {
+        if(item.getType() == Material.AIR)
+            return false;
         return new NBTItem(item).getBoolean(NbtUtils.NBT_IS_DECK);
     }
 

@@ -1,5 +1,7 @@
 package net.tinetwork.tradingcards.api.model.deck;
 
+import java.util.Objects;
+
 public record StorageEntry(String rarityId, String cardId, int amount, boolean isShiny) {
 
     public String getRarityId() {
@@ -34,5 +36,18 @@ public record StorageEntry(String rarityId, String cardId, int amount, boolean i
         if("yes".equalsIgnoreCase(string))
             return true;
         return Boolean.parseBoolean(string);
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final StorageEntry that = (StorageEntry) o;
+        return amount == that.amount && isShiny == that.isShiny && Objects.equals(rarityId, that.rarityId) && Objects.equals(cardId, that.cardId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(rarityId, cardId, amount, isShiny);
     }
 }

@@ -4,3 +4,5 @@ version: ${project.version}
 softdepend: [Vault]
 authors: [Xenoyia, sarhatabaot, TreasureIslandMC]
 api-version: "1.17"
+libraries:
+  - org.mariadb.jdbc:mariadb-java-client:2.7.4

@@ -5,19 +5,15 @@ import net.tinetwork.tradingcards.api.model.deck.StorageEntry;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.StorageType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.spongepowered.configurate.serialize.SerializationException;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
  * @author sarhatabaot
  */
 public class YamlStorage implements Storage {
-    private final Logger logger = LoggerFactory.getLogger(YamlStorage.class);
     private final DeckConfig deckConfig;
 
     public YamlStorage(final DeckConfig deckConfig) {
@@ -60,6 +56,10 @@ public class YamlStorage implements Storage {
     @Override
     public boolean hasShinyCard(final UUID playerUuid, final String card, final String rarity) {
         return deckConfig.containsShinyCard(playerUuid,card,rarity);
+    }
+
+    public Map<UUID,List<Deck>> getAllDecks() {
+        return deckConfig.getAllDecks();
     }
 
 }
