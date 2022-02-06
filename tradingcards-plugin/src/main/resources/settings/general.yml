@@ -67,12 +67,16 @@ use-deck-item: true
 # Should we have 27 slots in the deck, or 54 (double chest)?
 # default 27
 use-large-decks: false
+# Allows you to modify the deck size.
+# Replaces use-large-decks
+deck-rows: 3
 # What material decks should be. Make it something that can't be placed.
 deck-material: BOOK
 # The prefix of the booster pack.
 deck-prefix: "&7[&fDeck&7]&f "
 # Should we drop items in decks that aren't cards? (if false, it will delete the item)
 drop-deck-items: true
+
 
 # ##############################
 # Default Player Drop Settings

@@ -120,9 +120,11 @@ public class TradingDeckManager implements DeckManager {
     }
 
     private int getDeckSize() {
-        if (plugin.getGeneralConfig().useLargeDecks())
-            return 54;
-        return 27;
+        int deckRows = plugin.getGeneralConfig().deckRows();
+        if(deckRows > 6 || deckRows < 1) {
+            deckRows = 3;
+        }
+        return deckRows * 9;
     }
 
     @NotNull

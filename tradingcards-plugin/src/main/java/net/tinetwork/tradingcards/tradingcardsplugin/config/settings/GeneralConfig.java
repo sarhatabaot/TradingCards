@@ -8,7 +8,6 @@ import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 
 import java.io.File;
-import java.util.List;
 
 public class GeneralConfig extends GeneralConfigurate {
     private boolean debugMode;
@@ -27,6 +26,7 @@ public class GeneralConfig extends GeneralConfigurate {
     private Material deckMaterial;
     private String deckPrefix;
     private boolean dropDeckItems;
+    private int deckRows;
 
     //Packs
     private Material packMaterial;
@@ -75,7 +75,6 @@ public class GeneralConfig extends GeneralConfigurate {
     private ItemStack blankBoosterPack;
     private ItemStack blankDeck;
 
-    private List<String> activeSeries;
     public GeneralConfig(TradingCards plugin) throws ConfigurateException {
         super(plugin, "settings" + File.separator,"general.yml", "settings");
     }
@@ -96,6 +95,8 @@ public class GeneralConfig extends GeneralConfigurate {
         this.useDeckItem = rootNode.node("use-deck-item").getBoolean(true);
         //We should change this to deck size, or num of rows in deck
         this.useLargeDecks = rootNode.node("use-large-decks").getBoolean(false);
+        this.deckRows = rootNode.node("deck-rows").getInt(3);
+
         this.deckMaterial = rootNode.node("deck-material").get(Material.class, Material.BOOK);
         this.deckPrefix = rootNode.node("deck-prefix").getString("&7[&fDeck&7]&f ");
         this.dropDeckItems = rootNode.node("drop-deck-items").getBoolean(true);
@@ -128,11 +129,6 @@ public class GeneralConfig extends GeneralConfigurate {
 
         final ConfigurationNode colorNode = rootNode.node("colors");
         //Colors
-        //this.colorSeries = colorNode.node("series").getString();
-        //this.colorType = colorNode.node("type").getString();
-        //this.colorInfo = colorNode.node("info").getString();
-        //this.colorAbout = colorNode.node("about").getString();
-        //this.colorRarity = colorNode.node("rarity").getString();
         //colors-packs
         final ConfigurationNode colorPacksNode = colorNode.node("packs");
         this.colorPackName = colorPacksNode.node("booster-pack-name").getString();
@@ -154,9 +150,6 @@ public class GeneralConfig extends GeneralConfigurate {
         this.displayType = displayNode.node("type").getString();
         this.displayInfo = displayNode.node("info").getString();
         this.displayAbout = displayNode.node("about").getString();
-
-        //Series
-        this.activeSeries = rootNode.node("active-series").getList(String.class, List.of("2021"));
     }
 
 
@@ -255,10 +248,6 @@ public class GeneralConfig extends GeneralConfigurate {
         return infoLineLength;
     }
 
-    public List<String> activeSeries() {
-        return activeSeries;
-    }
-
     public boolean deckInCreative() {
         return deckInCreative;
     }
@@ -353,5 +342,9 @@ public class GeneralConfig extends GeneralConfigurate {
 
     public boolean useDefaultCardsFile(){
         return useDefaultCardsFile;
+    }
+
+    public int deckRows() {
+        return deckRows;
     }
 }
