@@ -27,6 +27,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local.DeckConf
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local.YamlStorage;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
+import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
 import net.tinetwork.tradingcards.tradingcardsplugin.whitelist.PlayerBlacklist;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
@@ -559,7 +560,7 @@ public class CardsCommand extends BaseCommand {
                         sender.sendMessage("Added all settings files to debug.zip.");
                     }
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Util.logWarningException(e);
                 }
 
             }
@@ -707,11 +708,10 @@ public class CardsCommand extends BaseCommand {
 
                 } catch (ConfigurateException e) {
                     sender.sendMessage("There was a problem accessing the yaml data. Check your console for more info.");
-                    plugin.getLogger().severe(e.getMessage());
+                    Util.logSevereException(e);
                 } catch (Exception e) {
                     sender.sendMessage("There was an error. Check your console for more info.");
-                    plugin.getLogger().severe(e.getMessage());
-                    e.printStackTrace();
+                    Util.logSevereException(e);
                 }
             }
         }

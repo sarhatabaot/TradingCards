@@ -35,6 +35,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.sql.Mar
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.sql.MySqlConnectionFactory;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
+import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
 import net.tinetwork.tradingcards.tradingcardsplugin.whitelist.PlayerBlacklist;
 import net.tinetwork.tradingcards.tradingcardsplugin.whitelist.WorldBlacklist;
 import org.bstats.bukkit.Metrics;
@@ -49,6 +50,7 @@ import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.io.File;
 import java.util.Random;
+import java.util.logging.Level;
 
 
 public class TradingCards extends TradingCardsPlugin<TradingCard> {
@@ -109,13 +111,15 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
     @Override
     public void onEnable() {
+        Util.init(getLogger());
+
         cacheMobs();
         initConfigs();
 
         try {
             this.deckStorage = initStorage();
         } catch (ConfigurateException e) {
-            e.printStackTrace();
+            Util.logSevereException(e);
         }
         this.deckStorage.init(this);
         initBlacklist();

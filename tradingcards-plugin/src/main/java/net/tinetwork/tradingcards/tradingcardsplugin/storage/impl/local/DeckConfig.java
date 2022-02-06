@@ -6,6 +6,7 @@ import net.tinetwork.tradingcards.api.model.deck.StorageEntry;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.deck.DeckEntrySerializer;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.deck.DeckSerializer;
+import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -53,7 +54,7 @@ public class DeckConfig extends SimpleConfigurate {
         try {
             return inventoriesNode.node(playerUuid.toString()).node(deckNumber).get(Deck.class);
         } catch (SerializationException e) {
-            e.printStackTrace();
+            Util.logWarningException(e);
         }
         return new Deck(playerUuid, deckNumber, new ArrayList<>());
     }
