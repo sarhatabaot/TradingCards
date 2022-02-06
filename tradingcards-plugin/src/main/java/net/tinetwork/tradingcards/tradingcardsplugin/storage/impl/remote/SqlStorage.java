@@ -1,6 +1,8 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote;
 
 import com.google.common.collect.ImmutableMap;
+import net.tinetwork.tradingcards.api.model.Rarity;
+import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.api.model.deck.Deck;
 import net.tinetwork.tradingcards.api.model.deck.StorageEntry;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
@@ -8,6 +10,8 @@ import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.StorageType;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.sql.ConnectionFactory;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.sql.SchemaReader;
+import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -61,6 +65,24 @@ public class SqlStorage implements Storage {
     private static final String COLUMN_DECK_NUMBER = "deck_number";
     private static final String COLUMN_AMOUNT = "amount";
     private static final String COLUMN_IS_SHINY = "is_shiny";
+
+    private static final String COLUMN_DISPLAY_COLOR  = "display_name";
+    private static final String COLUMN_DISPLAY_NAME = "display_color";
+    private static final String COLUMN_BUY_PRICE = "buy_price";
+    private static final String COLUMN_SELL_PRICE = "sell_price";
+
+    private static final String COLUMN_COMMAND = "command";
+    private static final String COLUMN_ORDER_NUMBER = "order_number";
+
+    private static final String RARITY_GET_BY_ID =
+            "SELECT * FROM {prefix}rarities " +
+                    "WHERE rarity_id=?;";
+
+    private static final String REWARDS_GET_BY_ID =
+            "SELECT * FROM {prefix}rewards " +
+                    "WHERE rarity_id=?" +
+                    "ORDER BY order_number;";
+
     private final TradingCards plugin;
     private final ConnectionFactory connectionFactory;
     private final StatementProcessor statementProcessor;
@@ -150,6 +172,63 @@ public class SqlStorage implements Storage {
                 return o1.getRarityId().compareTo(o2.getRarityId());
             return o1.getCardId().compareTo(o2.getCardId());
         }
+    }
+
+    @Override
+    public @Nullable Rarity getRarityById(final String rarityId) {
+        try (Connection connection = connectionFactory.getConnection()) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(statementProcessor.apply(RARITY_GET_BY_ID,null,
+                    Map.of(COLUMN_RARITY_ID,rarityId)))) {
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    if(resultSet.next()) {
+                        final String displayName = resultSet.getString(COLUMN_DISPLAY_NAME);
+                        final String defaultColor = resultSet.getString(COLUMN_DISPLAY_COLOR);
+                        final List<String> rewards = getRewards(rarityId);
+                        final double buyPrice = resultSet.getDouble(COLUMN_BUY_PRICE);
+                        final double sellPrice = resultSet.getDouble(COLUMN_SELL_PRICE);
+                        return new Rarity(rarityId,displayName,defaultColor,buyPrice,sellPrice,rewards);
+                    }
+                    if (resultSet.getFetchSize() == 0 || resultSet.wasNull()) {
+                        this.plugin.getLogger().info("No such rarity "+rarityId);
+                        return null;
+                    }
+                }
+            }
+        } catch (SQLException e) {
+
+        }
+        return null;
+    }
+
+    @Override
+    public List<String> getRewards(final String rarityId) {
+        try(Connection connection = connectionFactory.getConnection()){
+            try (PreparedStatement preparedStatement = connection.prepareStatement(statementProcessor.apply(REWARDS_GET_BY_ID,null,
+                    Map.of(COLUMN_RARITY_ID,rarityId)))) {
+                try (ResultSet resultSet = preparedStatement.executeQuery()){
+                    List<String> rewards = new ArrayList<>();
+                    while(resultSet.next()) {
+                        final String command = resultSet.getString(COLUMN_COMMAND);
+                        rewards.add(command);
+                    }
+
+                    if (resultSet.getFetchSize() == 0 || resultSet.wasNull()) {
+                        this.plugin.getLogger().info("No such rarity "+rarityId);
+                        return Collections.emptyList();
+                    }
+
+                    return rewards;
+                }
+            }
+        } catch (SQLException e) {
+            Util.logSevereException(e);
+        }
+        return Collections.emptyList();
+    }
+
+    @Override
+    public Series getSeries(final String seriesId) {
+        return null;
     }
 
     @Override

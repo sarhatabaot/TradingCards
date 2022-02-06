@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableList;
 import net.milkbowl.vault.economy.Economy;
 import net.tinetwork.tradingcards.api.TradingCardsPlugin;
 import net.tinetwork.tradingcards.api.manager.PackManager;
+import net.tinetwork.tradingcards.api.manager.RarityManager;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.CardsCommand;
@@ -24,6 +25,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.listeners.DropListener;
 import net.tinetwork.tradingcards.tradingcardsplugin.listeners.PackListener;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.BoosterPackManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.DropTypeManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingRarityManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingCardManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingDeckManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
@@ -79,6 +81,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private BoosterPackManager packManager;
     private TradingDeckManager deckManager;
     private DropTypeManager dropTypeManager;
+    private TradingRarityManager rarityManager;
 
     /* Hooks */
     private boolean hasVault;
@@ -164,6 +167,11 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         return dropTypeManager;
     }
 
+    @Override
+    public RarityManager getRarityManager() {
+        return this.rarityManager;
+    }
+
     private void initUtils() {
         ChatUtil.init(this);
         CardUtil.init(this);
@@ -204,16 +212,18 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
                         this.storageConfig.getTablePrefix(),
                         new MariaDbConnectionFactory(this.storageConfig));
             }
+
             case MYSQL -> {
                 return new SqlStorage(this,
                         this.storageConfig.getTablePrefix(),
                         new MySqlConnectionFactory(this.storageConfig));
             }
-            case YAML -> {
-                return new YamlStorage(new DeckConfig(this));
+            //YAML is the default
+            default -> {
+                return new YamlStorage(new DeckConfig(this), new RaritiesConfig(this));
             }
+
         }
-        return new YamlStorage(new DeckConfig(this));
     }
 
     private void initManagers() {
@@ -221,6 +231,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         this.cardManager = new TradingCardManager(this);
         this.packManager = new BoosterPackManager(this);
         this.deckManager = new TradingDeckManager(this);
+        this.rarityManager = new TradingRarityManager(this);
     }
 
     private void initCommands() {

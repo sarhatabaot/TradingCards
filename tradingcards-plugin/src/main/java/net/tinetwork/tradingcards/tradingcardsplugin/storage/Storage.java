@@ -1,7 +1,10 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.storage;
 
+import net.tinetwork.tradingcards.api.model.Rarity;
+import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.api.model.deck.Deck;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.UUID;
@@ -63,4 +66,11 @@ public interface Storage {
     }
 
     void init(TradingCards plugin);
+
+    @Nullable
+    Rarity getRarityById(final String rarityId);
+
+    List<String> getRewards(final String rarityId);
+
+    Series getSeries(final String seriesId);
 }
