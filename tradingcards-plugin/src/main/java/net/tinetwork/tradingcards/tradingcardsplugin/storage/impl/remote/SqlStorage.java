@@ -29,31 +29,38 @@ import java.util.UUID;
  * @author sarhatabaot
  */
 public class SqlStorage implements Storage {
-    private static String DECKS_SELECT_ALL_BY_UUID =
+    private static final String DECKS_SELECT_ALL_BY_UUID =
             "SELECT * FROM {prefix}decks " +
                     "WHERE uuid=?;";
-    private static String DECKS_SELECT_BY_DECK_NUMBER =
+    private static final String DECKS_SELECT_BY_DECK_NUMBER =
             "SELECT * FROM {prefix}decks " +
                     "WHERE uuid=? AND deck_number=?;";
-    private static String DECKS_SELECT_BY_CARD_AND_RARITY =
+    private static final String DECKS_SELECT_BY_CARD_AND_RARITY =
             "SELECT * FROM {prefix}decks " +
                     "WHERE uuid=? AND card_id=? AND rarity_id=?;";
-    private static String DECKS_SELECT_BY_CARD_AND_RARITY_SHINY =
+    private static final String DECKS_SELECT_BY_CARD_AND_RARITY_SHINY =
             "SELECT * FROM {prefix}decks " +
                     "WHERE uuid=? AND card_id=? AND rarity_id=? AND is_shiny=true;";
-    private static String DECKS_SELECT_BY_CARD_AND_RARITY_AND_DECK =
+    private static final String DECKS_SELECT_BY_CARD_AND_RARITY_AND_DECK =
             "SELECT * FROM {prefix}decks " +
                     "WHERE uuid=? AND card_id=? AND rarity_id=? AND deck_number=?;";
-    private static String DECKS_INSERT_CARD =
+    private static final String DECKS_INSERT_CARD =
             "INSERT INTO {prefix}decks (uuid, deck_number, card_id, rarity_id, amount, is_shiny) " +
                     "VALUES (?,?,?,?,?,?);";
-    private static String DECKS_UPDATE_CARD =
+    private static final String DECKS_UPDATE_CARD =
             "UPDATE {prefix}decks " +
                     "SET uuid=?, deck_number=?, card_id=?, rarity_id=?, amount=?, is_shiny=? " +
                     "WHERE uuid=? AND deck_number=? AND card_id=? AND rarity_id=?;";
-    private static String DECKS_REMOVE_CARD =
+    private static final String DECKS_REMOVE_CARD =
             "DELETE FROM {prefix}decks " +
                     "WHERE uuid=? AND deck_number=? AND card_id=? AND rarity_id=?;";
+
+    private static final String COLUMN_UUID = "uuid";
+    private static final String COLUMN_CARD_ID = "card_id";
+    private static final String COLUMN_RARITY_ID = "rarity_id";
+    private static final String COLUMN_DECK_NUMBER = "deck_number";
+    private static final String COLUMN_AMOUNT = "amount";
+    private static final String COLUMN_IS_SHINY = "is_shiny";
     private final TradingCards plugin;
     private final ConnectionFactory connectionFactory;
     private final StatementProcessor statementProcessor;
@@ -79,7 +86,7 @@ public class SqlStorage implements Storage {
     public List<Deck> getPlayerDecks(final UUID playerUuid) {
         try (Connection connection = connectionFactory.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(DECKS_SELECT_ALL_BY_UUID, null,
-                    Map.of("uuid", statementProcessor.wrap(playerUuid.toString()))))) {
+                    Map.of(COLUMN_UUID, statementProcessor.wrap(playerUuid.toString()))))) {
                 try (ResultSet resultSet = statement.executeQuery()) {
                     List<Deck> decks = new ArrayList<>();
                     while (resultSet.next()) {
@@ -98,8 +105,8 @@ public class SqlStorage implements Storage {
     public Deck getDeck(final UUID playerUuid, final int deckNumber) {
         try (Connection connection = connectionFactory.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(DECKS_SELECT_BY_DECK_NUMBER, null,
-                    Map.of("uuid", statementProcessor.wrap(playerUuid.toString()),
-                            "deck_number", String.valueOf(deckNumber))))) {
+                    Map.of(COLUMN_UUID, statementProcessor.wrap(playerUuid.toString()),
+                            COLUMN_DECK_NUMBER, String.valueOf(deckNumber))))) {
                 try (ResultSet resultSet = statement.executeQuery()) {
                     if (resultSet.next()) {
                         return getDeckFromResultSet(resultSet);
@@ -119,14 +126,14 @@ public class SqlStorage implements Storage {
     }
 
     private Deck getDeckFromResultSet(ResultSet resultSet) throws SQLException {
-        final String playerUuid = statementProcessor.unwrap(resultSet.getString("uuid"));
-        final int deckNumber = resultSet.getInt("deck_number");
+        final String playerUuid = statementProcessor.unwrap(resultSet.getString(COLUMN_UUID));
+        final int deckNumber = resultSet.getInt(COLUMN_DECK_NUMBER);
         List<StorageEntry> entries = new ArrayList<>();
         do {
-            final String rarityId = resultSet.getString("rarity_id");
-            final String cardId = resultSet.getString("card_id");
-            final boolean isShiny = resultSet.getBoolean("is_shiny");
-            final int amount = resultSet.getInt("amount");
+            final String rarityId = resultSet.getString(COLUMN_RARITY_ID);
+            final String cardId = resultSet.getString(COLUMN_CARD_ID);
+            final boolean isShiny = resultSet.getBoolean(COLUMN_IS_SHINY);
+            final int amount = resultSet.getInt(COLUMN_AMOUNT);
             entries.add(new StorageEntry(rarityId, cardId, amount, isShiny));
         } while (resultSet.next());
         return new Deck(UUID.fromString(playerUuid), deckNumber, entries);
@@ -209,16 +216,16 @@ public class SqlStorage implements Storage {
         try (Connection connection = connectionFactory.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(DECKS_UPDATE_CARD,
                     null,
-                    Map.of("uuid", statementProcessor.wrap(playerUuid.toString()),
-                            "deck_number", String.valueOf(deckNumber),
-                            "card_id", statementProcessor.wrap(storageEntry.getCardId()),
-                            "rarity_id", statementProcessor.wrap(storageEntry.getRarityId())),
-                    Map.of("uuid", statementProcessor.wrap(playerUuid.toString()),
-                            "deck_number", String.valueOf(deckNumber),
-                            "card_id", statementProcessor.wrap(storageEntry.getCardId()),
-                            "rarity_id", statementProcessor.wrap(storageEntry.getRarityId()),
-                            "amount", String.valueOf(storageEntry.getAmount()),
-                            "is_shiny", String.valueOf(storageEntry.isShiny()))))) {
+                    Map.of(COLUMN_UUID, statementProcessor.wrap(playerUuid.toString()),
+                            COLUMN_DECK_NUMBER, String.valueOf(deckNumber),
+                            COLUMN_CARD_ID, statementProcessor.wrap(storageEntry.getCardId()),
+                            COLUMN_RARITY_ID, statementProcessor.wrap(storageEntry.getRarityId())),
+                    Map.of(COLUMN_UUID, statementProcessor.wrap(playerUuid.toString()),
+                            COLUMN_DECK_NUMBER, String.valueOf(deckNumber),
+                            COLUMN_CARD_ID, statementProcessor.wrap(storageEntry.getCardId()),
+                            COLUMN_RARITY_ID, statementProcessor.wrap(storageEntry.getRarityId()),
+                            COLUMN_AMOUNT, String.valueOf(storageEntry.getAmount()),
+                            COLUMN_IS_SHINY, String.valueOf(storageEntry.isShiny()))))) {
                 statement.executeUpdate();
             }
         } catch (SQLException e) {
@@ -226,46 +233,18 @@ public class SqlStorage implements Storage {
         }
     }
 
-    //Returns true if the entry equals to the database entry
-    private boolean matchesEntryToDatabase(final UUID playerUuid, final int deckNumber, final StorageEntry entry) {
-        try (Connection connection = connectionFactory.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(DECKS_SELECT_BY_CARD_AND_RARITY_AND_DECK, null,
-                    Map.of("uuid", statementProcessor.wrap(playerUuid.toString()),
-                            "card_id", entry.getCardId(),
-                            "rarity_id", entry.getRarityId(),
-                            "deck_number", String.valueOf(deckNumber))))) {
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    if (resultSet.next()) {
-                        final String cardId = resultSet.getString("card_id");
-                        final String rarityId = resultSet.getString("rarity_id");
-                        final int amount = resultSet.getInt("amount");
-                        final boolean isShiny = resultSet.getBoolean("is_shiny");
-                        StorageEntry databaseEntry = new StorageEntry(rarityId, cardId, amount, isShiny);
-                        return entry.equals(databaseEntry);
-                    }
-                    if (resultSet.getFetchSize() == 0 || resultSet.wasNull()) {
-                        return false;
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            return false;
-        }
-        return false;
-    }
-
     @Override
     public boolean hasCard(final UUID playerUuid, final String card, final String rarity) {
         try (Connection connection = connectionFactory.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(DECKS_SELECT_BY_CARD_AND_RARITY, null,
-                    Map.of("uuid", statementProcessor.wrap(playerUuid.toString()),
-                            "card_id", statementProcessor.wrap(card),
-                            "rarity_id", statementProcessor.wrap(rarity))))) {
+                    Map.of(COLUMN_UUID, statementProcessor.wrap(playerUuid.toString()),
+                            COLUMN_CARD_ID, statementProcessor.wrap(card),
+                            COLUMN_RARITY_ID, statementProcessor.wrap(rarity))))) {
                 try (ResultSet resultSet = statement.executeQuery()) {
                     //try and access a result, if it doesn't exist, return false.
                     if (resultSet.next()) {
-                        String cardId = resultSet.getString("card_id");
-                        String rarityId = resultSet.getString("rarity_id");
+                        String cardId = resultSet.getString(COLUMN_CARD_ID);
+                        String rarityId = resultSet.getString(COLUMN_RARITY_ID);
                         plugin.debug(SqlStorage.class, cardId);
                         return card.equals(cardId) && rarity.equals(rarityId);
                     }
@@ -284,14 +263,14 @@ public class SqlStorage implements Storage {
     public boolean hasShinyCard(final UUID playerUuid, final String card, final String rarity) {
         try (Connection connection = connectionFactory.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(DECKS_SELECT_BY_CARD_AND_RARITY_SHINY, null,
-                    Map.of("uuid", statementProcessor.wrap(playerUuid.toString()),
-                            "card_id", statementProcessor.wrap(card),
-                            "rarity_id", statementProcessor.wrap(rarity),
-                            "is_shiny", String.valueOf(true))))) {
+                    Map.of(COLUMN_UUID, statementProcessor.wrap(playerUuid.toString()),
+                            COLUMN_CARD_ID, statementProcessor.wrap(card),
+                            COLUMN_RARITY_ID, statementProcessor.wrap(rarity),
+                            COLUMN_IS_SHINY, String.valueOf(true))))) {
                 try (ResultSet resultSet = statement.executeQuery()) {
                     if (resultSet.next()) {
                         //try and access a result, if it doesn't exist, return false.
-                        String cardId = resultSet.getString("card_id"); //todo
+                        String cardId = resultSet.getString(COLUMN_CARD_ID); //todo
                         plugin.debug(SqlStorage.class, cardId);
                         return !resultSet.wasNull();
                     }
@@ -316,8 +295,7 @@ public class SqlStorage implements Storage {
         final boolean isShiny = entry.isShiny();
         ImmutableMap<String, String> values = statementProcessor.generateValuesMap(playerUuid, deckNumber, cardId, rarityId, amount, isShiny);
         try (Connection connection = connectionFactory.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(DECKS_INSERT_CARD, values, null
-                    /*Map.of("uuid", wrap(playerUuid.toString()), "deck_number", String.valueOf(deckNumber))*/))) {
+            try (PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(DECKS_INSERT_CARD, values, null))) {
                 statement.executeUpdate();
             }
         } catch (SQLException e) {
@@ -329,12 +307,12 @@ public class SqlStorage implements Storage {
         try (Connection connection = connectionFactory.getConnection()) {
             ImmutableMap<String, String> values = statementProcessor.generateValuesMap(playerUuid, deckNumber, entry.getCardId(), entry.getRarityId(), entry.getAmount(), entry.isShiny());
             try (PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(DECKS_REMOVE_CARD, values,
-                    Map.of("uuid", statementProcessor.wrap(playerUuid.toString()),
-                            "deck_number", String.valueOf(deckNumber),
-                            "card_id", statementProcessor.wrap(entry.getCardId()),
-                            "rarity_id", statementProcessor.wrap(entry.getRarityId()),
-                            "amount", String.valueOf(entry.getAmount()),
-                            "is_shiny", String.valueOf(entry.isShiny()))))) {
+                    Map.of(COLUMN_UUID, statementProcessor.wrap(playerUuid.toString()),
+                            COLUMN_DECK_NUMBER, String.valueOf(deckNumber),
+                            COLUMN_CARD_ID, statementProcessor.wrap(entry.getCardId()),
+                            COLUMN_RARITY_ID, statementProcessor.wrap(entry.getRarityId()),
+                            COLUMN_AMOUNT, String.valueOf(entry.getAmount()),
+                            COLUMN_IS_SHINY, String.valueOf(entry.isShiny()))))) {
                 statement.execute();
             }
         } catch (SQLException e) {
