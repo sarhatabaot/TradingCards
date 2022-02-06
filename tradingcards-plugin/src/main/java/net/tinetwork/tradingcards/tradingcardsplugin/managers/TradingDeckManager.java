@@ -189,7 +189,7 @@ public class TradingDeckManager implements DeckManager {
     }
 
     @Override
-    public boolean hasShiny(@NotNull Player player, String card, String rarity) {
+    public boolean hasShinyCard(@NotNull Player player, String card, String rarity) {
         return storage.hasShinyCard(player.getUniqueId(), card, rarity);
     }
 
