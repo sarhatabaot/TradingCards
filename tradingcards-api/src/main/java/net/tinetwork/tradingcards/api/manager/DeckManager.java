@@ -74,7 +74,7 @@ public interface DeckManager {
      * @param rarity
      * @return
      */
-    boolean hasShiny(final Player player,final  String card,final  String rarity);
+    boolean hasShinyCard(final Player player, final  String card, final  String rarity);
 
     void createNewDeckInFile(final UUID uuid, final int num);
 }
