@@ -12,6 +12,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import org.apache.commons.lang.Validate;
 import org.bukkit.GameMode;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 @CommandAlias("deck")
@@ -40,11 +41,7 @@ public class DeckCommand extends BaseCommand {
 			return;
 		}
 
-		if (player.getGameMode() == GameMode.CREATIVE) {
-			if (plugin.getGeneralConfig().deckInCreative()) {
-				deckManager.openDeck(player, deckNumber);
-				return;
-			}
+		if(!plugin.getGeneralConfig().deckInCreative() && player.getGameMode() == GameMode.CREATIVE) {
 			ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().deckCreativeError());
 			return;
 		}
