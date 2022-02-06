@@ -29,7 +29,6 @@ import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
 import net.tinetwork.tradingcards.tradingcardsplugin.whitelist.PlayerBlacklist;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -129,16 +128,16 @@ public class CardsCommand extends BaseCommand {
             @Default
             @Description("Gives yourself a card.")
             public void onDefault(final Player player, @Single final String rarity, @Single final String cardName) {
-                   onPlayer(player,player,rarity,cardName,false);
+                onPlayer(player, player.getName(), rarity, cardName, false);
             }
 
             @Subcommand("player")
             @CommandPermission(Permissions.GIVE_CARD_PLAYER)
             @CommandCompletion("@players @rarities @cards")
-            public void onPlayer(final CommandSender sender, @Single final Player target, @Single final String rarity,@Single final String cardName, @Single final boolean shiny) {
+            public void onPlayer(final CommandSender sender, @Single final String playerName, @Single final String rarity, @Single final String cardName, @Single final boolean shiny) {
                 TradingCard card = cardManager.getCard(cardName, rarity, shiny);
-                if(shiny && !card.hasShiny()) {
-                    ChatUtil.sendPrefixedMessage(sender,"This card does not have a shiny version.");
+                if (shiny && !card.hasShiny()) {
+                    ChatUtil.sendPrefixedMessage(sender, "This card does not have a shiny version.");
                     return;
                 }
 
@@ -146,9 +145,18 @@ public class CardsCommand extends BaseCommand {
                     ChatUtil.sendPrefixedMessage(sender, messagesConfig.noCard());
                     return;
                 }
+
+                Player target = Bukkit.getPlayerExact(playerName);
+                if (isOnline(target)) {
+                    ChatUtil.sendPrefixedMessage(sender, PLAYER_NOT_ONLINE);
+                    return;
+                }
+
+
                 ChatUtil.sendPrefixedMessage(target, messagesConfig.giveCard()
                         .replace("%player%", target.getName())
                         .replace("%card%", rarity + " " + cardName));
+
                 target.getInventory().addItem(card.build());
             }
 
@@ -157,7 +165,7 @@ public class CardsCommand extends BaseCommand {
             @CommandCompletion("@rarities @cards")
             @Description("Gives a shiny card.")
             public void onShiny(final Player player, @Single final String rarity, @Single final String cardName) {
-                onPlayer(player,player,rarity,cardName,true);
+                onPlayer(player, player.getName(), rarity, cardName, true);
             }
         }
 
@@ -289,12 +297,39 @@ public class CardsCommand extends BaseCommand {
             return plugin.getCardManager().getCard(id, rarity, false);
         }
 
-        private void listRarity(final CommandSender sender, final Player target, final String rarity) {
+        private String generateRarityCardList(final Player target, final String rarity) {
             final StringBuilder stringBuilder = new StringBuilder();
-            Rarity rarityObject;
             debug(rarity);
+            for (String cardId : plugin.getCardManager().getRarityCardList(rarity)) {
+                debug("rarityId=" + rarity + ",cardId=" + cardId);
+                TradingCard card = getCard(cardId, rarity);
+                debug(card.toString());
+
+                final String color = plugin.getGeneralConfig().colorListHaveCard();
+                final String shinyColor = plugin.getGeneralConfig().colorListHaveCardShiny();
+
+                if (deckManager.hasShinyCard(target, cardId, rarity)) {
+                    stringBuilder.append(shinyColor)
+                            .append(card.getDisplayName().replace("_", " "))
+                            .append("&f, ");
+                } else if (deckManager.hasCard(target, cardId, rarity)) {
+                    stringBuilder.append(color)
+                            .append(card.getDisplayName().replace("_", " "))
+                            .append("&f, ");
+                } else {
+                    stringBuilder.append("&7")
+                            .append(card.getDisplayName().replace("_", " "))
+                            .append("&f, ");
+                }
+            }
+            return stringBuilder.toString();
+        }
+
+        private void listRarity(final CommandSender sender, final Player target, final String rarityId) {
+            final Rarity rarityObject;
+            debug(rarityId);
             try {
-                rarityObject = plugin.getRaritiesConfig().getRarity(rarity);
+                rarityObject = plugin.getRaritiesConfig().getRarity(rarityId);
             } catch (SerializationException e) {
                 plugin.getLogger().severe(e.getMessage());
                 return;
@@ -303,40 +338,42 @@ public class CardsCommand extends BaseCommand {
             final String sectionFormat = messagesConfig.sectionFormat();
             final String sectionFormatComplete = messagesConfig.sectionFormatComplete();
 
-            int cardCounter = 0;
-            for (String cardId : plugin.getCardManager().getRarityCardList(rarity)) {
-                debug("rarityId=" + rarity + ",cardId=" + cardId);
-                TradingCard card = getCard(cardId, rarity);
-                debug(card.toString());
+            int cardCounter = countPlayerCardsInRarity(target,rarityId);
 
-                if (cardCounter > 32) {
-                    if (deckManager.hasCard(target, cardId, rarity)) {
-                        ++cardCounter;
-                    }
-                    stringBuilder.append(card.getDisplayName()).append("&7and more!");
-                } else {
-                    String colour = plugin.getGeneralConfig().colorListHaveCard();
-                    if (deckManager.hasShiny(target, cardId, rarity)) {
-                        ++cardCounter;
-                        colour = plugin.getGeneralConfig().colorListHaveCardShiny();
-                        stringBuilder.append(colour).append(card.getDisplayName().replace("_", " ")).append("&f, ");
-                    } else if (deckManager.hasCard(target, cardId, rarity) && !deckManager.hasShiny(target, cardId, rarity)) {
-                        ++cardCounter;
-                        stringBuilder.append(colour).append(card.getDisplayName().replace("_", " ")).append("&f, ");
-                    } else {
-                        stringBuilder.append("&7").append(card.getDisplayName().replace("_", " ")).append("&f, ");
-                    }
-                }
-            }
             //send title
-            if (cardCounter == plugin.getCardManager().getRarityCardList(rarity).size()) {
+            if (cardCounter == plugin.getCardManager().getRarityCardList(rarityId).size()) {
                 ChatUtil.sendMessage(sender, String.format(sectionFormatComplete, rarityObject.getDisplayName(), plugin.getGeneralConfig().colorRarityCompleted()));
             } else {
-                ChatUtil.sendMessage(sender, String.format(sectionFormat, rarityObject.getDisplayName(), cardCounter, plugin.getCardManager().getRarityCardList(rarity).size()));
+                ChatUtil.sendMessage(sender, String.format(sectionFormat, rarityObject.getDisplayName(), cardCounter, plugin.getCardManager().getRarityCardList(rarityId).size()));
             }
 
-            ChatUtil.sendMessage(sender, stringBuilder.toString());
+            //send actual message
+            final String rarityCardList = generateRarityCardList(target, rarityId);
+            ChatUtil.sendMessage(sender, rarityCardList);
         }
+    }
+
+    //Counts the total amount of cards a player has from a rarity
+    private int countPlayerCardsInRarity(final Player player, final String rarity) {
+        final List<String> rarityCardList = plugin.getCardManager().getRarityCardList(rarity);
+        int cardCounter = 0;
+        for (String cardId : rarityCardList) {
+            if (deckManager.hasCard(player, cardId, rarity)) {
+                cardCounter++;
+            }
+        }
+        return cardCounter;
+    }
+
+    private int countShinyPlayerCardsInRarity(final Player player, final String rarity) {
+        final List<String> rarityCardList = plugin.getCardManager().getRarityCardList(rarity);
+        int cardCounter = 0;
+        for (String cardId : rarityCardList) {
+            if (deckManager.hasShinyCard(player, cardId, rarity)) {
+                cardCounter++;
+            }
+        }
+        return cardCounter;
     }
 
     private String getFormattedRarity(final String rarity) {
@@ -548,7 +585,7 @@ public class CardsCommand extends BaseCommand {
                 ExcludeFileFilter excludeFileFilter = file -> file.getName().contains("storage.yml");
                 ZipParameters zipParameters = new ZipParameters();
                 zipParameters.setExcludeFileFilter(excludeFileFilter);
-                try (ZipFile zipFile = new ZipFile(pluginFolder + File.separator +"debug.zip")) {
+                try (ZipFile zipFile = new ZipFile(pluginFolder + File.separator + "debug.zip")) {
                     zipFile.addFolder(new File(cardsFolder));
                     zipFile.addFolder(new File(dataFolder));
                     zipFile.addFolder(new File(listsFolder));
