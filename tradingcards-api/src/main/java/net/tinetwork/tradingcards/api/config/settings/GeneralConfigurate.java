@@ -59,8 +59,6 @@ public abstract class GeneralConfigurate extends SimpleConfigurate {
 
     public abstract int infoLineLength();
 
-    public abstract List<String> activeSeries();
-
     public abstract boolean deckInCreative();
 
     public abstract boolean useDeckItem();
