@@ -19,6 +19,8 @@ import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.MessagesConfig;
+import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.RaritiesConfig;
+import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.SeriesConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingCardManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingDeckManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.StorageType;
@@ -62,7 +64,7 @@ public class CardsCommand extends BaseCommand {
     private static final String PLAYER_NOT_ONLINE = "This player is not online. Or doesn't exist.";
     private static final String CANNOT_SELL_CARD = "Cannot sell this card.";
 
-    public CardsCommand(final TradingCards plugin, final PlayerBlacklist playerBlacklist) {
+    public CardsCommand(final @NotNull TradingCards plugin, final PlayerBlacklist playerBlacklist) {
         this.plugin = plugin;
         this.playerBlacklist = playerBlacklist;
         this.cardManager = plugin.getCardManager();
@@ -76,7 +78,7 @@ public class CardsCommand extends BaseCommand {
 
     @CatchUnknown
     @HelpCommand
-    public void onHelp(final CommandSender sender, CommandHelp help) {
+    public void onHelp(CommandHelp help) {
         help.showHelp();
     }
 
@@ -297,7 +299,7 @@ public class CardsCommand extends BaseCommand {
             return plugin.getCardManager().getCard(id, rarity, false);
         }
 
-        private String generateRarityCardList(final Player target, final String rarityId) {
+        private @NotNull String generateRarityCardList(final Player target, final String rarityId) {
             final StringBuilder stringBuilder = new StringBuilder();
             String prefix = "";
             for (String cardId : plugin.getCardManager().getRarityCardList(rarityId)) {
@@ -391,12 +393,10 @@ public class CardsCommand extends BaseCommand {
     @Description("Give away a random card by rarity to the server.")
     @CommandCompletion("@rarities")
     public void onGiveawayRarity(final CommandSender sender, final String rarity) {
-        //TODO Probably should check another way if there is a rarity
-        if (getFormattedRarity(rarity).equals("")) {
+        if(plugin.getRarityManager().getRarity(rarity) == null) {
             ChatUtil.sendPrefixedMessage(sender, messagesConfig.noRarity());
             return;
         }
-
 
         Bukkit.broadcastMessage(plugin.getPrefixedMessage(messagesConfig.giveaway().replace("%player%", sender.getName()).replace("%rarity%", getFormattedRarity(rarity))));
         for (final Player p5 : Bukkit.getOnlinePlayers()) {
@@ -408,12 +408,6 @@ public class CardsCommand extends BaseCommand {
     @CommandPermission(Permissions.GIVEAWAY_ENTITY)
     @Description("Give away a random card by entity to the server.")
     public void onGiveawayMob(final CommandSender sender, final String entity) {
-        //TODO, this can't be right. Probable bug. We're trying to get a rarity from an entity.
-        if (getFormattedRarity(entity).equals("")) {
-            ChatUtil.sendPrefixedMessage(sender, plugin.getMessagesConfig().noRarity());
-            return;
-        }
-
         if (plugin.isMob(entity)) {
             if (sender instanceof ConsoleCommandSender) {
                 CardUtil.giveawayNatural(EntityType.valueOf(entity.toUpperCase()), null);
@@ -606,7 +600,7 @@ public class CardsCommand extends BaseCommand {
         @Subcommand("zip")
         @CommandPermission(Permissions.ADMIN_DEBUG_ZIP)
         @Description("Creates a zip of all settings.")
-        public void onZip(final CommandSender sender) {
+        public void onZip(final @NotNull CommandSender sender) {
             sender.sendMessage("Backing the settings folder to debug.zip");
             sender.sendMessage("This does not backup storage.yml.");
 
@@ -616,14 +610,14 @@ public class CardsCommand extends BaseCommand {
         @Subcommand("showcache all")
         @CommandPermission(Permissions.ADMIN_DEBUG_SHOW_CACHE)
         @Description("Shows the card cache")
-        public void showCacheAll(final CommandSender sender) {
+        public void showCacheAll(final @NotNull CommandSender sender) {
             sender.sendMessage(StringUtils.join(cardManager.getCards().keySet(), ","));
         }
 
         @Subcommand("showcache active")
         @CommandPermission(Permissions.ADMIN_DEBUG_SHOW_CACHE)
         @Description("Shows the card cache")
-        public void showCacheActive(final CommandSender sender) {
+        public void showCacheActive(final @NotNull CommandSender sender) {
             sender.sendMessage(StringUtils.join(cardManager.getActiveCards(), ","));
         }
 
@@ -720,7 +714,7 @@ public class CardsCommand extends BaseCommand {
             public void run() {
                 long startTime = System.nanoTime();
                 try {
-                    YamlStorage yamlStorage = new YamlStorage(new DeckConfig(plugin));
+                    YamlStorage yamlStorage = new YamlStorage(new DeckConfig(plugin), new RaritiesConfig(plugin), new SeriesConfig(plugin));
                     yamlStorage.init(plugin);
                     Map<UUID, List<Deck>> yamlDecks = yamlStorage.getAllDecks();
                     sender.sendMessage("Found " + yamlDecks.size() + " players.");
