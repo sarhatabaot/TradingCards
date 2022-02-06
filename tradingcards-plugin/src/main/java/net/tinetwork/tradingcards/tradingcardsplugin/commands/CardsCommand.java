@@ -299,6 +299,7 @@ public class CardsCommand extends BaseCommand {
 
         private String generateRarityCardList(final Player target, final String rarity) {
             final StringBuilder stringBuilder = new StringBuilder();
+            String prefix = "";
             debug(rarity);
             for (String cardId : plugin.getCardManager().getRarityCardList(rarity)) {
                 debug("rarityId=" + rarity + ",cardId=" + cardId);
@@ -308,20 +309,20 @@ public class CardsCommand extends BaseCommand {
                 final String color = plugin.getGeneralConfig().colorListHaveCard();
                 final String shinyColor = plugin.getGeneralConfig().colorListHaveCardShiny();
 
+                stringBuilder.append(prefix);
                 if (deckManager.hasShinyCard(target, cardId, rarity)) {
                     stringBuilder.append(shinyColor)
-                            .append(card.getDisplayName().replace("_", " "))
-                            .append("&f, ");
+                            .append(card.getDisplayName().replace("_", " "));
                 } else if (deckManager.hasCard(target, cardId, rarity)) {
                     stringBuilder.append(color)
-                            .append(card.getDisplayName().replace("_", " "))
-                            .append("&f, ");
+                            .append(card.getDisplayName().replace("_", " "));
                 } else {
                     stringBuilder.append("&7")
-                            .append(card.getDisplayName().replace("_", " "))
-                            .append("&f, ");
+                            .append(card.getDisplayName().replace("_", " "));
                 }
+                prefix = "&f, ";
             }
+
             return stringBuilder.toString();
         }
 

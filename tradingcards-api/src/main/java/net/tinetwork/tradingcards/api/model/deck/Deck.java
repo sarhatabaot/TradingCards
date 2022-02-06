@@ -1,7 +1,5 @@
 package net.tinetwork.tradingcards.api.model.deck;
 
-import net.tinetwork.tradingcards.api.card.Card;
-
 import java.util.*;
 
 public class Deck {
