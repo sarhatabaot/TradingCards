@@ -297,23 +297,22 @@ public class CardsCommand extends BaseCommand {
             return plugin.getCardManager().getCard(id, rarity, false);
         }
 
-        private String generateRarityCardList(final Player target, final String rarity) {
+        private String generateRarityCardList(final Player target, final String rarityId) {
             final StringBuilder stringBuilder = new StringBuilder();
             String prefix = "";
-            debug(rarity);
-            for (String cardId : plugin.getCardManager().getRarityCardList(rarity)) {
-                debug("rarityId=" + rarity + ",cardId=" + cardId);
-                TradingCard card = getCard(cardId, rarity);
+            for (String cardId : plugin.getCardManager().getRarityCardList(rarityId)) {
+                debug("rarityId=" + rarityId + ",cardId=" + cardId);
+                TradingCard card = getCard(cardId, rarityId);
                 debug(card.toString());
 
                 final String color = plugin.getGeneralConfig().colorListHaveCard();
                 final String shinyColor = plugin.getGeneralConfig().colorListHaveCardShiny();
 
                 stringBuilder.append(prefix);
-                if (deckManager.hasShinyCard(target, cardId, rarity)) {
+                if (deckManager.hasShinyCard(target, cardId, rarityId)) {
                     stringBuilder.append(shinyColor)
                             .append(card.getDisplayName().replace("_", " "));
-                } else if (deckManager.hasCard(target, cardId, rarity)) {
+                } else if (deckManager.hasCard(target, cardId, rarityId)) {
                     stringBuilder.append(color)
                             .append(card.getDisplayName().replace("_", " "));
                 } else {
@@ -352,30 +351,31 @@ public class CardsCommand extends BaseCommand {
             final String rarityCardList = generateRarityCardList(target, rarityId);
             ChatUtil.sendMessage(sender, rarityCardList);
         }
+
+        //Counts the total amount of cards a player has from a rarity
+        private int countPlayerCardsInRarity(final Player player, final String rarity) {
+            final List<String> rarityCardList = plugin.getCardManager().getRarityCardList(rarity);
+            int cardCounter = 0;
+            for (String cardId : rarityCardList) {
+                if (deckManager.hasCard(player, cardId, rarity)) {
+                    cardCounter++;
+                }
+            }
+            return cardCounter;
+        }
+
+        private int countShinyPlayerCardsInRarity(final Player player, final String rarity) {
+            final List<String> rarityCardList = plugin.getCardManager().getRarityCardList(rarity);
+            int cardCounter = 0;
+            for (String cardId : rarityCardList) {
+                if (deckManager.hasShinyCard(player, cardId, rarity)) {
+                    cardCounter++;
+                }
+            }
+            return cardCounter;
+        }
     }
 
-    //Counts the total amount of cards a player has from a rarity
-    private int countPlayerCardsInRarity(final Player player, final String rarity) {
-        final List<String> rarityCardList = plugin.getCardManager().getRarityCardList(rarity);
-        int cardCounter = 0;
-        for (String cardId : rarityCardList) {
-            if (deckManager.hasCard(player, cardId, rarity)) {
-                cardCounter++;
-            }
-        }
-        return cardCounter;
-    }
-
-    private int countShinyPlayerCardsInRarity(final Player player, final String rarity) {
-        final List<String> rarityCardList = plugin.getCardManager().getRarityCardList(rarity);
-        int cardCounter = 0;
-        for (String cardId : rarityCardList) {
-            if (deckManager.hasShinyCard(player, cardId, rarity)) {
-                cardCounter++;
-            }
-        }
-        return cardCounter;
-    }
 
     private String getFormattedRarity(final String rarity) {
         for (final Rarity rarityKey : plugin.getRaritiesConfig().rarities()) {
@@ -391,6 +391,7 @@ public class CardsCommand extends BaseCommand {
     @Description("Give away a random card by rarity to the server.")
     @CommandCompletion("@rarities")
     public void onGiveawayRarity(final CommandSender sender, final String rarity) {
+        //TODO Probably should check another way if there is a rarity
         if (getFormattedRarity(rarity).equals("")) {
             ChatUtil.sendPrefixedMessage(sender, messagesConfig.noRarity());
             return;
@@ -407,6 +408,7 @@ public class CardsCommand extends BaseCommand {
     @CommandPermission(Permissions.GIVEAWAY_ENTITY)
     @Description("Give away a random card by entity to the server.")
     public void onGiveawayMob(final CommandSender sender, final String entity) {
+        //TODO, this can't be right. Probable bug. We're trying to get a rarity from an entity.
         if (getFormattedRarity(entity).equals("")) {
             ChatUtil.sendPrefixedMessage(sender, plugin.getMessagesConfig().noRarity());
             return;
