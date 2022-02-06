@@ -69,7 +69,7 @@ use-deck-item: true
 use-large-decks: false
 # Allows you to modify the deck size.
 # Replaces use-large-decks
-deck-rows: 3
+deck-rows: 6
 # What material decks should be. Make it something that can't be placed.
 deck-material: BOOK
 # The prefix of the booster pack.
