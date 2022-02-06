@@ -136,27 +136,31 @@ public class DeckConfig extends SimpleConfigurate {
         return stringList;
     }
 
+    //Returns true if the deck contains this card, regardless if it's shiny or not
     public boolean containsCard(final UUID uuid, final String card, final String rarity) {
-        if (getAllDecks(uuid) == null || getAllDecks(uuid).getValues(false).isEmpty())
+        List<Deck> playerDeckList = getPlayerDecks(uuid);
+        if(playerDeckList.isEmpty())
             return false;
-        for (String deckNumber : getAllDecks(uuid).getValues(false).keySet()) {
-            for (String cardString : getDeckEntries(uuid, deckNumber)) {
-                StorageEntry deckEntry = StorageEntry.fromString(cardString);
-                if (deckEntry.getRarityId().equalsIgnoreCase(rarity) && deckEntry.getCardId().equalsIgnoreCase(card) && !deckEntry.isShiny())
-                    return true;
+
+        for(Deck deck: playerDeckList) {
+            if(deck.containsCard(card,rarity)) {
+                return true;
             }
         }
         return false;
     }
 
     public boolean containsShinyCard(final UUID uuid, final String card, final String rarity) {
-        if (getAllDecks(uuid) == null || getAllDecks(uuid).getValues(false).isEmpty())
+        List<Deck> playerDeckList = getPlayerDecks(uuid);
+        if(playerDeckList.isEmpty())
             return false;
-        for (String deckNumber : getAllDecks(uuid).getValues(false).keySet()) {
-            for (String cardString : getDeckEntries(uuid, deckNumber)) {
-                StorageEntry deckEntry = StorageEntry.fromString(cardString);
-                if (deckEntry.getRarityId().equalsIgnoreCase(rarity) && deckEntry.getCardId().equalsIgnoreCase(card) && deckEntry.isShiny())
-                    return true;
+
+        for(Deck deck: playerDeckList) {
+            if(deck.containsCard(card,rarity)) {
+                final StorageEntry cardEntry = deck.getCardEntry(card,rarity);
+                if(cardEntry != null) {
+                    return cardEntry.isShiny();
+                }
             }
         }
         return false;

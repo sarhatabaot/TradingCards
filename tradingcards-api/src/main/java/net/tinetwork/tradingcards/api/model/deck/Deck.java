@@ -1,5 +1,7 @@
 package net.tinetwork.tradingcards.api.model.deck;
 
+import net.tinetwork.tradingcards.api.card.Card;
+
 import java.util.*;
 
 public class Deck {
@@ -49,5 +51,13 @@ public class Deck {
                 return true;
         }
         return false;
+    }
+
+    public StorageEntry getCardEntry(final String cardId,final String rarityId) {
+        for(StorageEntry entry: deckEntries) {
+            if(entry.getCardId().equals(cardId) && entry.getRarityId().equals(rarityId))
+                return entry;
+        }
+        return null;
     }
 }
