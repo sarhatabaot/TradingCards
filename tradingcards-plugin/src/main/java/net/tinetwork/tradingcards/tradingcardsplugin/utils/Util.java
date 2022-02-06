@@ -9,6 +9,10 @@ import java.util.logging.Logger;
 public class Util {
     private static Logger logger;
 
+    private Util() {
+        throw new UnsupportedOperationException();
+    }
+
     public static void init(final Logger logger) {
         Util.logger = logger;
     }
