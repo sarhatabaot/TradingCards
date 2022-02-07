@@ -177,12 +177,11 @@ public class TradingCardManager implements CardManager<TradingCard> {
     public TradingCard getActiveCard(final String cardName, final String rarity, final boolean forcedShiny) {
         final String cardKey = cardKey(rarity,cardName);
         if (activeCards.contains(cardKey)) {
-            TradingCard card = cards.get(cardKey(rarity, cardName)).get();
-            card.isShiny(forcedShiny);
-            return card;
+            return getCard(cardName,rarity,forcedShiny);
         }
         //fallthrough
-        return getCard(cardName, rarity, forcedShiny);
+        //if it doesn't contain this card for some reason
+        return new EmptyCard();
     }
 
     @Override
