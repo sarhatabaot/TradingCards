@@ -1,6 +1,6 @@
 -- TradingCards MySql Schema
 
-CREATE TABLE IF NOT EXISTS`{prefix}decks` (
+CREATE TABLE IF NOT EXISTS `{prefix}decks` (
     id             INT AUTO_INCREMENT NOT NULL,
     uuid           VARCHAR(36)        NOT NULL,
     deck_number    INT                NOT NULL,
