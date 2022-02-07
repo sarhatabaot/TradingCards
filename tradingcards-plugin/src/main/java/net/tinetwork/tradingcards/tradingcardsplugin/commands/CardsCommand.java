@@ -157,7 +157,7 @@ public class CardsCommand extends BaseCommand {
                         .replace("%player%", target.getName())
                         .replace("%card%", rarity + " " + cardName));
 
-                target.getInventory().addItem(card.build());
+                target.getInventory().addItem(card.build(false));
             }
 
             @Subcommand("shiny")
@@ -204,7 +204,7 @@ public class CardsCommand extends BaseCommand {
                 String rare = cardManager.getRandomRarity(CardUtil.getMobType(entityType), true);
                 plugin.debug(getClass(), "Rarity: " + rare);
                 ChatUtil.sendPrefixedMessage(sender, plugin.getMessagesConfig().giveRandomCardMsg().replace("%player%", player.getName()));
-                CardUtil.dropItem(player, plugin.getCardManager().getRandomCard(rare, false).build());
+                CardUtil.dropItem(player, plugin.getCardManager().getRandomCard(rare).build(false));
             } catch (IllegalArgumentException exception) {
                 ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().noEntity());
             }
@@ -224,7 +224,7 @@ public class CardsCommand extends BaseCommand {
             try {
                 debug("Rarity: " + rarity);
                 ChatUtil.sendPrefixedMessage(sender, plugin.getMessagesConfig().giveRandomCardMsg().replace("%player%", player.getName()));
-                CardUtil.dropItem(player, plugin.getCardManager().getRandomCard(rarity, false).build());
+                CardUtil.dropItem(player, plugin.getCardManager().getRandomCard(rarity).build(false));
             } catch (IllegalArgumentException exception) {
                 ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().noEntity());
             }
@@ -259,6 +259,12 @@ public class CardsCommand extends BaseCommand {
                 }
                 return;
             }
+
+            if(!plugin.getRaritiesConfig().containsRarity(rarity)) {
+                ChatUtil.sendMessage(sender,messagesConfig.noRarity());
+                return;
+            }
+
             listRarity(sender, target, rarity);
         }
 
@@ -400,7 +406,7 @@ public class CardsCommand extends BaseCommand {
 
         Bukkit.broadcastMessage(plugin.getPrefixedMessage(messagesConfig.giveaway().replace("%player%", sender.getName()).replace("%rarity%", getFormattedRarity(rarity))));
         for (final Player p5 : Bukkit.getOnlinePlayers()) {
-            CardUtil.dropItem(p5, cardManager.getRandomCard(rarity, false).build());
+            CardUtil.dropItem(p5, cardManager.getRandomCard(rarity).build(false));
         }
     }
 
@@ -559,7 +565,7 @@ public class CardsCommand extends BaseCommand {
                 if (plugin.getGeneralConfig().closedEconomy()) {
                     plugin.getEcon().bankDeposit(plugin.getGeneralConfig().serverAccount(), buyPrice);
                 }
-                CardUtil.dropItem(player, tradingCard.build());
+                CardUtil.dropItem(player, tradingCard.build(false));
                 ChatUtil.sendPrefixedMessage(player, messagesConfig.boughtCard().replace("%amount%", String.valueOf(buyPrice)));
                 return;
             }
