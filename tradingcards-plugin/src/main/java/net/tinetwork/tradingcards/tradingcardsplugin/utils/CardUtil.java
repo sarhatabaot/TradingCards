@@ -54,10 +54,6 @@ public class CardUtil {
         CardUtil.BLANK_CARD = plugin.getGeneralConfig().blankCard();
     }
 
-    public static @NotNull String getRarityName(@NotNull final String rarity) {
-        return rarity.replace(stripAllColor(plugin.getGeneralConfig().shinyName()), "").trim();
-    }
-
     /**
      * Drops an item at the player's location.
      *
@@ -79,22 +75,6 @@ public class CardUtil {
         }
     }
 
-    /**
-     * Strips the given message of all color codes
-     *
-     * @param input String to strip of color
-     * @return A copy of the input string, without any coloring
-     */
-    @Contract("!null -> !null; null -> null")
-    @Nullable
-    public static String stripAllColor(@Nullable final String input) {
-        if (input == null) {
-            return null;
-        }
-
-        return ChatColor.stripColor(STRIP_COLOR_PATTERN.matcher(input).replaceAll(""));
-    }
-
     @NotNull
     public static DropType getMobType(EntityType e) {
         if (plugin.isMobHostile(e)) {
@@ -108,28 +88,7 @@ public class CardUtil {
         }
         return DropTypeManager.BOSS;
     }
-
-
-    /**
-     * Returns the rarity that should drop.
-     *
-     * @param e
-     * @param alwaysDrop
-     * @return String Rarity that should drop
-     */
-    @NotNull
-    public static String calculateRarity(EntityType e, boolean alwaysDrop) {
-        int randomChance = plugin.getRandom().nextInt(RANDOM_MAX) + 1;
-        for (Rarity rarity : plugin.getRaritiesConfig().rarities()) {
-            var chance = plugin.getChancesConfig().getChance(rarity.getName()).getFromMobType(CardUtil.getMobType(e));
-            if (alwaysDrop || randomChance < chance)
-                return rarity.getName();
-        }
-
-        return "None";
-    }
-
-
+    
     public static boolean isCard(final ItemStack itemStack) {
         final NBTItem nbtItem = new NBTItem(itemStack);
         return isCard(nbtItem);
@@ -137,10 +96,6 @@ public class CardUtil {
 
     public static boolean isCard(final NBTItem nbtItem) {
         return nbtItem.getBoolean(NbtUtils.NBT_IS_CARD);
-    }
-
-    private static boolean isCardMaterial(final Material material) {
-        return material == plugin.getGeneralConfig().cardMaterial();
     }
 
     private static void broadcastPrefixedMessage(final String message) {
@@ -181,7 +136,7 @@ public class CardUtil {
         for (final Player p : Bukkit.getOnlinePlayers()) {
             String rare = cardManager.getRandomRarity(CardUtil.getMobType(mob), true);
             plugin.debug(CardUtil.class,"onCommand.rare: " + rare);
-            CardUtil.dropItem(p, cardManager.getRandomCard(rare, false).build());
+            CardUtil.dropItem(p, cardManager.getRandomCard(rare).build(false));
         }
 
     }
