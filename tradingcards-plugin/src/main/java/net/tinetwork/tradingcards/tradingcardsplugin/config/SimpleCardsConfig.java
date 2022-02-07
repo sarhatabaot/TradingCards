@@ -11,6 +11,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.DropTypeManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
 import org.bukkit.Material;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
@@ -50,7 +51,7 @@ public class SimpleCardsConfig extends SimpleConfigurate {
         try {
             return cardsNode.node(rarity, name).get(TradingCard.class);
         } catch (SerializationException e) {
-            plugin.getLogger().severe(e.getMessage());
+            Util.logSevereException(e);
             return new EmptyCard();
         }
     }

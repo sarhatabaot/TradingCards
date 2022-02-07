@@ -88,7 +88,7 @@ public class CardUtil {
         }
         return DropTypeManager.BOSS;
     }
-    
+
     public static boolean isCard(final ItemStack itemStack) {
         final NBTItem nbtItem = new NBTItem(itemStack);
         return isCard(nbtItem);
