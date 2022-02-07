@@ -8,7 +8,7 @@ import net.tinetwork.tradingcards.api.utils.NbtUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-public abstract class Card<T> {
+public abstract class Card<T>{
     private final String cardName;
 
     private Material material;
@@ -26,6 +26,16 @@ public abstract class Card<T> {
     public Card(final String cardName) {
         this.cardName = cardName;
         this.cardMeta = new CardMeta();
+    }
+
+    public Card(final Card card) {
+        this.cardName = card.getCardName();
+        this.material = card.getMaterial();
+        this.type = card.getType();
+        this.series = card.getSeries();
+        this.hasShiny = card.hasShiny();
+
+        this.cardMeta = card.getCardMeta();
     }
 
     /**
@@ -171,6 +181,10 @@ public abstract class Card<T> {
         nbtItem.setInteger(NbtUtils.NBT_CARD_CUSTOM_MODEL, this.cardMeta.getCustomModelNbt());
         this.nbtItem = nbtItem;
         return nbtItem;
+    }
+
+    protected CardMeta getCardMeta() {
+        return cardMeta;
     }
 
     public int getCustomModelNbt() {

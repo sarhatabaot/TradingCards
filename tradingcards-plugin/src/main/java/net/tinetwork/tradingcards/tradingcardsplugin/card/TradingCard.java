@@ -13,6 +13,10 @@ public class TradingCard extends Card<TradingCard> {
         super(cardName);
     }
 
+    public TradingCard(final TradingCard card) {
+        super(card);
+    }
+
     @Override
     public TradingCard get() {
         return this;
@@ -32,8 +36,5 @@ public class TradingCard extends Card<TradingCard> {
 
         return card;
     }
-
-
-
 
 }
