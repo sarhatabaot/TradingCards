@@ -1,0 +1,86 @@
+name: Bug Report
+about: Report a bug with TradingCards.
+labels: 'bug'
+
+body:
+- type: markdown
+  attributes:
+    value: |
+      ## TradingCards Bug Tracker
+      If you need any help to identify the problem, visit our [Discord server](https://discord.gg/4v9gsBCgg8).
+      <br /><strong><i>Fields marked with an asterisk (*) are required.</i></strong>
+      <br />
+      
+- id: description
+  type: textarea
+  validations:
+    required: true
+  attributes:
+    label: 'Description'
+    description: |
+      A clear and detailed description of what went wrong.
+    placeholder: |
+      When doing [...] I experienced [...], I am pretty sure this is not intended and should be fixed.
+
+- id: reproduction-steps
+  type: textarea
+  validations:
+    required: true
+  attributes:
+    label: 'Steps to reproduce'
+    description: |
+      Tell us the exact steps to reproduce this issue.
+    placeholder: |
+      1. Do [...]
+      2. Then do [...]
+      3. Now [...] happens
+
+- id: expected-behaviour
+  type: textarea
+  validations:
+    required: true
+  attributes:
+    label: 'Description'
+    description: |
+      A clear and concise description of what you expected to happen.
+    placeholder: |
+      I expected [...] to happen.
+      
+- id: screenshots
+  type: textarea
+  attributes:
+    label: 'Screenshots'
+    description: |
+      Any screenshots or videos.
+    placeholder: |
+      Drag and drop an image or video onto this field to upload it.
+
+- id: server-log
+  type: input
+  attributes:
+    label: '📜 Server Log'
+    description: |
+      Take a look at your Server Log and upload any error messages from TradingCards to a pasting site (e.g. https://pastebin.com/).
+      If you are unsure about it, post your full log.
+    placeholder: https://pastebin.com/...
+    
+- id: server-software
+  type: textarea
+  validations:
+    required: true
+  attributes:
+    label: '💻 Server Software'
+    description: 'Please select the software your Server is running on'
+  placeholder: Purpur version git-Purpur-1489 
+
+- id: minecraft-version
+  type: dropdown
+  validations:
+    required: true
+  attributes:
+    label: 'Minecraft Version'
+    description: 'Please select the Minecraft version of the server'
+    options:
+      - 1.18.x
+      - 1.17.x
+      - (Older versions are not supported)
