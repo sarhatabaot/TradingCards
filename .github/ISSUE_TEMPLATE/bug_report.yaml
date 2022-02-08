@@ -1,6 +1,6 @@
 name: Bug Report
-about: Report a bug with TradingCards.
-labels: 'bug'
+description: Report a bug with TradingCards.
+labels: ['bug']
 
 body:
   - type: markdown
@@ -71,7 +71,7 @@ body:
     attributes:
       label: '💻 Server Software'
       description: 'Please select the software your Server is running on'
-    placeholder: Purpur version git-Purpur-1489
+      placeholder: Purpur version git-Purpur-1489
 
   - id: minecraft-version
     type: dropdown
