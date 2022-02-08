@@ -37,4 +37,5 @@ public class TradingCard extends Card<TradingCard> {
         return card;
     }
 
+
 }

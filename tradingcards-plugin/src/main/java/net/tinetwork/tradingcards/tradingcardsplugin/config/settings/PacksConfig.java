@@ -19,7 +19,6 @@ public class PacksConfig extends SimpleConfigurate {
     private List<String> packs;
     public PacksConfig(TradingCards plugin) throws ConfigurateException {
         super(plugin, "settings"+ File.separator,"packs.yml", "settings");
-
     }
 
     public Pack getPack(final String name) throws SerializationException {

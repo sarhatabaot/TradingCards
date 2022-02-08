@@ -21,8 +21,6 @@ public abstract class Card<T>{
     //CardMeta
     private final CardMeta cardMeta;
 
-    private NBTItem nbtItem;
-
     public Card(final String cardName) {
         this.cardName = cardName;
         this.cardMeta = new CardMeta();
@@ -43,6 +41,8 @@ public abstract class Card<T>{
      * @param isShiny
      * @return
      */
+    // A Card object cannot be shiny. It can have a "shiny" version. But that's purely a cosmetic/nbt.
+    // Since this is a generated type.
     public Card<T> isShiny(boolean isShiny) {
         this.cardMeta.setShiny(isShiny);
         return this;
@@ -172,14 +172,17 @@ public abstract class Card<T>{
     public abstract T get();
 
     public NBTItem buildNBTItem() {
+        return buildNBTItem(this.cardMeta.isShiny());
+    }
+
+    public NBTItem buildNBTItem(boolean shiny) {
         NBTItem nbtItem = new NBTItem(buildItem());
         nbtItem.setString(NbtUtils.NBT_CARD_NAME,cardName);
         nbtItem.setString(NbtUtils.NBT_RARITY,rarity.getName());
         nbtItem.setBoolean(NbtUtils.NBT_IS_CARD, true);
-        nbtItem.setBoolean(NbtUtils.NBT_CARD_SHINY, this.cardMeta.isShiny());
+        nbtItem.setBoolean(NbtUtils.NBT_CARD_SHINY, shiny);
         nbtItem.setString(NbtUtils.NBT_CARD_SERIES,series.getName());
         nbtItem.setInteger(NbtUtils.NBT_CARD_CUSTOM_MODEL, this.cardMeta.getCustomModelNbt());
-        this.nbtItem = nbtItem;
         return nbtItem;
     }
 
@@ -193,15 +196,8 @@ public abstract class Card<T>{
 
     public abstract ItemStack buildItem();
 
-    /**
-     * Builds the item, if there
-     * is not NBT Item, it builds that too
-     * and then return the completed item
-     * @return Card ItemStack
-     */
-    public ItemStack build() {
-        if(nbtItem == null)
-            nbtItem = buildNBTItem();
+    public ItemStack build(boolean shiny) {
+        NBTItem nbtItem = buildNBTItem(shiny);
         return nbtItem.getItem().clone();
     }
 
@@ -215,7 +211,6 @@ public abstract class Card<T>{
                 ", series=" + series +
                 ", hasShiny=" + hasShiny +
                 ", cardMeta=" + cardMeta +
-                ", nbtItem=" + nbtItem +
                 '}';
     }
 }
