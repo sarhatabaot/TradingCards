@@ -53,7 +53,8 @@ public class DeckListener extends SimpleListener {
 
             StorageEntry entry = formatEntryString(item);
             serializedEntries.add(entry);
-            debug("Added " + entry + " to deck file.");
+            debug(entry.toString());
+            debug("Added " + entry + " to serialized list.");
         }
         final Deck deck = new Deck(player.getUniqueId(),deckNum,serializedEntries);
         deckStorage.save(player.getUniqueId(), deckNum, deck);

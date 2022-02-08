@@ -51,6 +51,22 @@ public class Deck {
         return false;
     }
 
+    public boolean containsCard(final String cardId, final String rarityId,final boolean shiny) {
+        for(StorageEntry entry: deckEntries) {
+            if(entry.getCardId().equals(cardId) && entry.getRarityId().equals(rarityId) && entry.isShiny() == shiny)
+                return true;
+        }
+        return false;
+    }
+
+    public boolean containsCard(final StorageEntry deckEntry) {
+        for(StorageEntry entry: deckEntries) {
+            if(entry.equals(deckEntry))
+                return true;
+        }
+        return false;
+    }
+
     public StorageEntry getCardEntry(final String cardId,final String rarityId) {
         for(StorageEntry entry: deckEntries) {
             if(entry.getCardId().equals(cardId) && entry.getRarityId().equals(rarityId))

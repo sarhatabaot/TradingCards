@@ -141,7 +141,7 @@ public class CardUtil {
 
     }
 
-    public static @NotNull String formatDisplayName(final @NotNull TradingCard card) {
+    public static @NotNull String formatDisplayName(final @NotNull TradingCard card, boolean shiny) {
         final String[] shinyPlayerCardFormat = new String[]{PLACEHOLDER_PREFIX, PLACEHOLDER_COLOR, PLACEHOLDER_NAME, PLACEHOLDER_BUY_PRICE, PLACEHOLDER_SELL_PRICE, PLACEHOLDER_SHINY_PREFIX};
         final String[] shinyCardFormat = new String[]{PLACEHOLDER_PREFIX, PLACEHOLDER_COLOR, PLACEHOLDER_NAME, PLACEHOLDER_BUY_PRICE, PLACEHOLDER_SELL_PRICE, PLACEHOLDER_SHINY_PREFIX, "_"};
 
@@ -157,9 +157,7 @@ public class CardUtil {
         final String buyPrice = String.valueOf(card.getBuyPrice());
         final String sellPrice = String.valueOf(card.getSellPrice());
 
-
-
-        if (card.isShiny() && shinyPrefix != null) {
+        if (shiny && shinyPrefix != null) {
             if (card.isPlayerCard()) {
                 return ChatUtil.color(StringUtils.replaceEach(shinyTitle.replace(PLACEHOLDER_SHINY_PREFIX_ALT,PLACEHOLDER_SHINY_PREFIX), shinyPlayerCardFormat, new String[]{prefix, rarityColour, card.getDisplayName(), buyPrice, sellPrice, shinyPrefix}));
             }

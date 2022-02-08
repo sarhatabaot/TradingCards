@@ -50,7 +50,7 @@ public class SqlStorage implements Storage {
     private static final String DECKS_UPDATE_CARD =
             "UPDATE {prefix}decks " +
                     "SET uuid=?, deck_number=?, card_id=?, rarity_id=?, amount=?, is_shiny=? " +
-                    "WHERE uuid=? AND deck_number=? AND card_id=? AND rarity_id=?;";
+                    "WHERE uuid=? AND deck_number=? AND card_id=? AND rarity_id=? AND is_shiny=?;";
     private static final String DECKS_REMOVE_CARD =
             "DELETE FROM {prefix}decks " +
                     "WHERE uuid=? AND deck_number=? AND card_id=? AND rarity_id=?;";
@@ -174,7 +174,8 @@ public class SqlStorage implements Storage {
         List<StorageEntry> cardsToRemove = new ArrayList<>();
 
         for (StorageEntry deckEntry : deckEntries) {
-            boolean cardExistsInDatabase = dbDeck.containsCard(deckEntry.getCardId(), deckEntry.getRarityId());
+            boolean cardExistsInDatabase = dbDeck.containsCard(deckEntry.getCardId(), deckEntry.getRarityId(),deckEntry.isShiny());
+            //if it exists, but the entry is 64, add a new line?
             if (cardExistsInDatabase) {
                 if (!dbDeckEntries.contains(deckEntry)) {
                     cardsToUpdate.add(deckEntry);
@@ -219,7 +220,8 @@ public class SqlStorage implements Storage {
                     Map.of(COLUMN_UUID, statementProcessor.wrap(playerUuid.toString()),
                             COLUMN_DECK_NUMBER, String.valueOf(deckNumber),
                             COLUMN_CARD_ID, statementProcessor.wrap(storageEntry.getCardId()),
-                            COLUMN_RARITY_ID, statementProcessor.wrap(storageEntry.getRarityId())),
+                            COLUMN_RARITY_ID, statementProcessor.wrap(storageEntry.getRarityId()),
+                            COLUMN_IS_SHINY, String.valueOf(storageEntry.isShiny())),
                     Map.of(COLUMN_UUID, statementProcessor.wrap(playerUuid.toString()),
                             COLUMN_DECK_NUMBER, String.valueOf(deckNumber),
                             COLUMN_CARD_ID, statementProcessor.wrap(storageEntry.getCardId()),
@@ -227,6 +229,7 @@ public class SqlStorage implements Storage {
                             COLUMN_AMOUNT, String.valueOf(storageEntry.getAmount()),
                             COLUMN_IS_SHINY, String.valueOf(storageEntry.isShiny()))))) {
                 statement.executeUpdate();
+                plugin.debug(SqlStorage.class,"(UPDATE) "+ storageEntry);
             }
         } catch (SQLException e) {
             plugin.getLogger().severe(e.getMessage());
@@ -297,6 +300,7 @@ public class SqlStorage implements Storage {
         try (Connection connection = connectionFactory.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(DECKS_INSERT_CARD, values, null))) {
                 statement.executeUpdate();
+                plugin.debug(SqlStorage.class,"(ADD) "+ entry);
             }
         } catch (SQLException e) {
             plugin.getLogger().severe(e.getMessage());
@@ -314,6 +318,7 @@ public class SqlStorage implements Storage {
                             COLUMN_AMOUNT, String.valueOf(entry.getAmount()),
                             COLUMN_IS_SHINY, String.valueOf(entry.isShiny()))))) {
                 statement.execute();
+                plugin.debug(SqlStorage.class,"(REMOVE) "+ entry);
             }
         } catch (SQLException e) {
             plugin.getLogger().severe(e.getMessage());

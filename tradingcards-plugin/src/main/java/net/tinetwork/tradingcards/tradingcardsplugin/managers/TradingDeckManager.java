@@ -88,8 +88,9 @@ public class TradingDeckManager implements DeckManager {
         List<ItemStack> cards = loadCardsFromStorage(player.getUniqueId(), deckNum);
         Inventory inv = Bukkit.createInventory(player.getPlayer(), getDeckSize(), ChatUtil.color(plugin.getMessagesConfig().deckInventoryTitle().replace("%player%", player.getName()).replace("%deck_num%", String.valueOf(deckNum))));
         for (ItemStack cardItem : cards) {
+            NBTItem nbtItem = new NBTItem(cardItem);
             inv.addItem(cardItem);
-            plugin.debug(TradingDeckManager.class,"Item=" + cardItem.getType() + ",amount=" + cardItem.getAmount() + ", added to inventory");
+            plugin.debug(TradingDeckManager.class,"Item=" + cardItem.getType() + ",amount=" + cardItem.getAmount() + ", added to inventory. NBT="+ nbtItem);
         }
         return inv;
     }

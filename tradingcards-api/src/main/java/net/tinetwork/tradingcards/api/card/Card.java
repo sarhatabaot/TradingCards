@@ -176,7 +176,7 @@ public abstract class Card<T>{
     }
 
     public NBTItem buildNBTItem(boolean shiny) {
-        NBTItem nbtItem = new NBTItem(buildItem());
+        NBTItem nbtItem = new NBTItem(buildItem(shiny));
         nbtItem.setString(NbtUtils.NBT_CARD_NAME,cardName);
         nbtItem.setString(NbtUtils.NBT_RARITY,rarity.getName());
         nbtItem.setBoolean(NbtUtils.NBT_IS_CARD, true);
@@ -194,7 +194,7 @@ public abstract class Card<T>{
         return this.cardMeta.getCustomModelNbt();
     }
 
-    public abstract ItemStack buildItem();
+    public abstract ItemStack buildItem(boolean shiny);
 
     public ItemStack build(boolean shiny) {
         NBTItem nbtItem = buildNBTItem(shiny);

@@ -157,7 +157,7 @@ public class CardsCommand extends BaseCommand {
                         .replace("%player%", target.getName())
                         .replace("%card%", rarity + " " + cardName));
 
-                target.getInventory().addItem(card.build(false));
+                target.getInventory().addItem(card.build(shiny));
             }
 
             @Subcommand("shiny")
