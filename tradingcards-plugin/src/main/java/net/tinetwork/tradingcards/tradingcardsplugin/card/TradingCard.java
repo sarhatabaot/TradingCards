@@ -13,18 +13,22 @@ public class TradingCard extends Card<TradingCard> {
         super(cardName);
     }
 
+    public TradingCard(final TradingCard card) {
+        super(card);
+    }
+
     @Override
     public TradingCard get() {
         return this;
     }
 
     @Override
-    public ItemStack buildItem() {
+    public ItemStack buildItem(final boolean shiny) {
         ItemStack card = new ItemStack(getMaterial());
         ItemMeta cardMeta = card.getItemMeta();
-        cardMeta.setDisplayName(CardUtil.formatDisplayName(this));
-        cardMeta.setLore(CardUtil.formatLore(getInfo(),getAbout(),getRarity().getDisplayName(),isShiny(),getType().getDisplayName(),getSeries()));
-        if (isShiny()) {
+        cardMeta.setDisplayName(CardUtil.formatDisplayName(this, shiny));
+        cardMeta.setLore(CardUtil.formatLore(getInfo(),getAbout(),getRarity().getDisplayName(),shiny,getType().getDisplayName(),getSeries()));
+        if (shiny) {
             cardMeta.addEnchant(Enchantment.ARROW_INFINITE, 1, false);
         }
         cardMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
@@ -32,8 +36,4 @@ public class TradingCard extends Card<TradingCard> {
 
         return card;
     }
-
-
-
-
 }

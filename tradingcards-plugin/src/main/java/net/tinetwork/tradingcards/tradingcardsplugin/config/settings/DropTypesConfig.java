@@ -3,6 +3,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
 import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.api.config.SimpleConfigurate;
+import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
@@ -33,7 +34,7 @@ public class DropTypesConfig extends SimpleConfigurate {
             try {
                 dropTypes.add(getDropType(dropTypeKey));
             } catch (SerializationException e){
-                plugin.getLogger().severe(e.getMessage());
+                Util.logSevereException(e);
                 plugin.debug(DropTypesConfig.class,"Couldn't add="+dropTypeKey);
             }
         }

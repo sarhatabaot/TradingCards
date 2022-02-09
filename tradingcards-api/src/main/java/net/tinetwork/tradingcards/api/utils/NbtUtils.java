@@ -1,5 +1,9 @@
 package net.tinetwork.tradingcards.api.utils;
 
+import de.tr7zw.nbtapi.NBTItem;
+
+import java.util.Objects;
+
 /**
  * @author sarhatabaot
  */
@@ -16,4 +20,12 @@ public class NbtUtils {
     public static final String NBT_CARD_SHINY = "shiny";
     public static final String NBT_CARD_SERIES = "series";
     public static final String NBT_CARD_CUSTOM_MODEL = "CustomModelData";
+
+
+    public static boolean isCardSimilar(final NBTItem item1, final NBTItem item2) {
+        return Objects.equals(item1.getBoolean(NBT_CARD_SHINY), item2.getBoolean(NBT_CARD_SHINY)) &&
+                item1.getString(NBT_CARD_NAME).equals(item2.getString(NBT_CARD_NAME)) &&
+                item1.getString(NBT_RARITY).equals(item2.getString(NBT_RARITY)) &&
+                item1.getString(NBT_CARD_SERIES).equals(item2.getString(NBT_CARD_SERIES));
+    }
 }

@@ -30,6 +30,12 @@ scheduled:
   # Scheduled Active between set dates
   mode: SCHEDULED
   # Not relevant unless mode is set to scheduled
+  colors:
+    series: "&a"
+    type: "&b"
+    info: "&e"
+    about: "&c"
+    rarity: "&6"
   schedule:
     # Yearly, monthly, weekly, daily
     # Time is optional unless it's daily

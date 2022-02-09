@@ -1,6 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config;
 
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
+import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurateException;
 
@@ -55,7 +56,7 @@ public class CardsConfig {
         try {
             new SimpleCardsConfig(plugin, "cards.yml").saveDefaultConfig();
         } catch (ConfigurateException e) {
-            plugin.getLogger().severe(e.getMessage());
+            Util.logSevereException(e);
         }
     }
 

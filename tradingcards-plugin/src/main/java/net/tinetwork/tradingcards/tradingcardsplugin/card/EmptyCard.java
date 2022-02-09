@@ -19,7 +19,7 @@ public class EmptyCard extends TradingCard {
     }
 
     @Override
-    public ItemStack buildItem() {
+    public ItemStack buildItem(boolean shiny) {
         return AIR;
     }
 

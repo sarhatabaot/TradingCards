@@ -39,7 +39,7 @@ public interface CardManager<T> {
      * @return
      */
     Card<T> getActiveCard(final String cardName, final String rarity, final boolean forcedShiny);
-
+    Card<T> getActiveCard(final String cardName, final String rarity);
     /**
      *
      * @param rarity
@@ -47,6 +47,7 @@ public interface CardManager<T> {
      * @return
      */
     Card<T> getRandomCard(final String rarity, final boolean forcedShiny);
+    Card<T> getRandomCard(final String rarity);
 
     /**
      *
@@ -56,14 +57,8 @@ public interface CardManager<T> {
      */
     Card<T> getRandomActiveCard(final String rarity, final boolean forcedShiny);
 
-    /**
-     *
-     * @param cardName
-     * @param rarity
-     * @param num
-     * @return
-     */
-    ItemStack getCardItem(final String cardName, final String rarity, int num);
+    Card<T> getRandomActiveCard(final String rarity);
+
 
     /**
      *

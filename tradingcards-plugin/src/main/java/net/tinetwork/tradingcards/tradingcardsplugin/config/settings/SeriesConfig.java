@@ -8,6 +8,7 @@ import net.tinetwork.tradingcards.api.model.schedule.Mode;
 import net.tinetwork.tradingcards.api.model.schedule.Schedule;
 import net.tinetwork.tradingcards.api.model.schedule.ScheduleType;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
+import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
@@ -47,8 +48,8 @@ public class SeriesConfig extends SeriesConfigurate {
                 seriesColors.put(seriesId,colorSeries);
                 plugin.debug(SeriesConfig.class,"Added "+colorSeries.toString());
             } catch (SerializationException|NullPointerException e){
-                plugin.getLogger().severe(e.getMessage());
-                plugin.debug(GeneralConfig.class,"Couldn't add="+seriesId);
+                plugin.getLogger().info("Couldn't add="+seriesId);
+                Util.logSevereException(e);
             }
         }
         for(Map.Entry<String,ColorSeries> entry: seriesColors.entrySet()) {
@@ -63,7 +64,7 @@ public class SeriesConfig extends SeriesConfigurate {
                 seriesMap.put(seriesKey,series);
                 plugin.debug(SeriesConfig.class,"Added "+series.toString());
             } catch (SerializationException e){
-                plugin.getLogger().severe(e.getMessage());
+                Util.logSevereException(e);
                 plugin.debug(SeriesConfig.class,"Couldn't add="+seriesKey);
             }
         }

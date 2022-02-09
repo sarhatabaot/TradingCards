@@ -88,8 +88,9 @@ public class TradingDeckManager implements DeckManager {
         List<ItemStack> cards = loadCardsFromStorage(player.getUniqueId(), deckNum);
         Inventory inv = Bukkit.createInventory(player.getPlayer(), getDeckSize(), ChatUtil.color(plugin.getMessagesConfig().deckInventoryTitle().replace("%player%", player.getName()).replace("%deck_num%", String.valueOf(deckNum))));
         for (ItemStack cardItem : cards) {
+            NBTItem nbtItem = new NBTItem(cardItem);
             inv.addItem(cardItem);
-            plugin.debug(TradingDeckManager.class,"Item=" + cardItem.getType() + ",amount=" + cardItem.getAmount() + ", added to inventory");
+            plugin.debug(TradingDeckManager.class,"Item=" + cardItem.getType() + ",amount=" + cardItem.getAmount() + ", added to inventory. NBT="+ nbtItem);
         }
         return inv;
     }
@@ -106,13 +107,12 @@ public class TradingDeckManager implements DeckManager {
         for (StorageEntry deckEntry : deckEntries) {
             plugin.debug(getClass(),deckEntry.toString());
             TradingCard card = cardManager.getCard(deckEntry.getCardId(),
-                    deckEntry.getRarityId(),
-                    deckEntry.isShiny());
+                    deckEntry.getRarityId());
             if(card instanceof EmptyCard) {
                 plugin.debug(getClass(),"Card is not in a cards file, skipping.");
                 continue;
             }
-            ItemStack cardItem = card.build();
+            ItemStack cardItem = card.build(deckEntry.isShiny());
             cardItem.setAmount(deckEntry.getAmount());
             cards.add(cardItem);
         }

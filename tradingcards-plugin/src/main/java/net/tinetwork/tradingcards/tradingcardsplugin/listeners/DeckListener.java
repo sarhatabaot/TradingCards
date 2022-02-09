@@ -16,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class DeckListener extends SimpleListener {
     private final TradingDeckManager deckManager;
@@ -52,13 +53,28 @@ public class DeckListener extends SimpleListener {
             }
 
             StorageEntry entry = formatEntryString(item);
-            serializedEntries.add(entry);
-            debug("Added " + entry + " to deck file.");
+            if(!updateSimilarEntry(serializedEntries,entry))
+                serializedEntries.add(entry);
+            debug(entry.toString());
+            debug("Added " + entry + " to serialized list.");
         }
+
         final Deck deck = new Deck(player.getUniqueId(),deckNum,serializedEntries);
         deckStorage.save(player.getUniqueId(), deckNum, deck);
         deckManager.removeDeckViewer(e.getPlayer().getUniqueId());
         debug("Deck closed");
+    }
+
+    private boolean updateSimilarEntry(final List<StorageEntry> entries, final StorageEntry entryToCompare) {
+        boolean wasChanged = false;
+        for(StorageEntry storageEntry: entries) {
+            if(storageEntry.isSimilar(entryToCompare)) {
+                storageEntry.setAmount(storageEntry.getAmount() + entryToCompare.getAmount());
+                wasChanged = true;
+            }
+        }
+
+        return wasChanged;
     }
 
     private @NotNull StorageEntry formatEntryString(final ItemStack itemStack) {

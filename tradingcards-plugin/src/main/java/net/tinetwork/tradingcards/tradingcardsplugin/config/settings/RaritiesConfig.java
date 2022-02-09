@@ -39,6 +39,10 @@ public class RaritiesConfig extends RarityConfigurate{
         return raritiesNode.node(id).get(Rarity.class);
     }
 
+    public boolean containsRarity(final String id) {
+        return raritiesNode.hasChild(id);
+    }
+
     private void loadRarities()  {
         this.rarities = new ArrayList<>();
         for(Map.Entry<Object, ? extends ConfigurationNode> nodeEntry: raritiesNode.childrenMap().entrySet()) {

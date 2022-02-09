@@ -26,6 +26,10 @@ An updated version of TradingCards with improvements and new features.
 * Better pack format. [Old format](https://github.com/sarhatabaot/TradingCards/blob/f24613e8c6238413f89085b9d5030afb7acb3afa/tradingcards-plugin/src/main/resources/settings/packs.yml), [New Format](https://github.com/sarhatabaot/TradingCards/blob/master/tradingcards-plugin/src/main/resources/settings/packs.yml)
 * Cached cards
 
+### Unimplemented:
+* Rewards from completed rarities
+* "SCHEDULED" series mode
+
 ## Addons:
 This version of Trading Cards doesn't support MythicMobs, MobArena & Towny out of the box. 
 For support, you need to install additional addons:

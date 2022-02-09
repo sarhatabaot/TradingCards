@@ -95,7 +95,7 @@ public class GeneralConfig extends GeneralConfigurate {
         this.useDeckItem = rootNode.node("use-deck-item").getBoolean(true);
         //We should change this to deck size, or num of rows in deck
         this.useLargeDecks = rootNode.node("use-large-decks").getBoolean(false);
-        this.deckRows = rootNode.node("deck-rows").getInt(3);
+        this.deckRows = rootNode.node("deck-rows").getInt(6);
 
         this.deckMaterial = rootNode.node("deck-material").get(Material.class, Material.BOOK);
         this.deckPrefix = rootNode.node("deck-prefix").getString("&7[&fDeck&7]&f ");
