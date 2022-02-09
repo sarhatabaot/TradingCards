@@ -3,7 +3,7 @@
 [![Java CI with Maven](https://github.com/TreasureIslandMC/TradingCards/actions/workflows/maven.yml/badge.svg)](https://github.com/TreasureIslandMC/TradingCards/actions/workflows/maven.yml)
 [![](https://img.shields.io/discord/881610309637398538?color=%235865F2&label=support&logo=Discord&logoColor=white&style=for-the-badge)](https://discord.gg/4v9gsBCgg8)
 
-Paper plugin for Trading Cards.
+Spigot plugin for Trading Cards.
 An updated version of TradingCards with improvements and new features.
 
 ## [Coming from version 5.0.+? See how to migrate here.](https://github.com/sarhatabaot/TradingCards/wiki/Installing-TradingCards#migrating)
