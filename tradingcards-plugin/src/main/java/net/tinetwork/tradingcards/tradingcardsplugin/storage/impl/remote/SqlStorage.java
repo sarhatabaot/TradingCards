@@ -53,7 +53,7 @@ public class SqlStorage implements Storage {
                     "WHERE uuid=? AND deck_number=? AND card_id=? AND rarity_id=? AND is_shiny=?;";
     private static final String DECKS_REMOVE_CARD =
             "DELETE FROM {prefix}decks " +
-                    "WHERE uuid=? AND deck_number=? AND card_id=? AND rarity_id=?;";
+                    "WHERE uuid=? AND deck_number=? AND card_id=? AND rarity_id=? AND is_shiny=?;";
 
     private static final String COLUMN_UUID = "uuid";
     private static final String COLUMN_CARD_ID = "card_id";
@@ -188,7 +188,7 @@ public class SqlStorage implements Storage {
         }
 
         for (StorageEntry dbDeckEntry : dbDeckEntries) {
-            boolean cardExistsInDeck = deck.containsCard(dbDeckEntry.getCardId(), dbDeckEntry.getRarityId());
+            boolean cardExistsInDeck = deck.containsCard(dbDeckEntry.getCardId(), dbDeckEntry.getRarityId(), dbDeckEntry.isShiny());
             if (!cardExistsInDeck) {
                 cardsToRemove.add(dbDeckEntry);
             }
