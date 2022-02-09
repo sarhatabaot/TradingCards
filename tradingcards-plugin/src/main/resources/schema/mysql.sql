@@ -8,7 +8,9 @@ CREATE TABLE IF NOT EXISTS `{prefix}decks` (
     rarity_id      VARCHAR(200)       NOT NULL,
     amount         INT                NOT NULL,
     is_shiny       BOOL               NOT NULL,
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    FOREIGN KEY (rarity_id) REFERENCES `{prefix}rarities`(rarity_id),
+    FOREIGN KEY (card_id) REFERENCES `{prefix}cards`(card_id)
 ) DEFAULT CHARSET = utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `{prefix}rarities` (
