@@ -1,5 +1,11 @@
 # Trading Cards 
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/c30caf827f974fa39296203413f86b05)](https://www.codacy.com/gh/TreasureIslandMC/XenTradingCards/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=TreasureIslandMC/XenTradingCards&amp;utm_campaign=Badge_Grade)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=TreasureIslandMC_TradingCards&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=TreasureIslandMC_TradingCards)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=TreasureIslandMC_TradingCards&metric=bugs)](https://sonarcloud.io/summary/new_code?id=TreasureIslandMC_TradingCards)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=TreasureIslandMC_TradingCards&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=TreasureIslandMC_TradingCards)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=TreasureIslandMC_TradingCards&metric=coverage)](https://sonarcloud.io/summary/new_code?id=TreasureIslandMC_TradingCards)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=TreasureIslandMC_TradingCards&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=TreasureIslandMC_TradingCards)
+
+
 [![Java CI with Maven](https://github.com/TreasureIslandMC/TradingCards/actions/workflows/maven.yml/badge.svg)](https://github.com/TreasureIslandMC/TradingCards/actions/workflows/maven.yml)
 [![](https://img.shields.io/discord/881610309637398538?color=%235865F2&label=support&logo=Discord&logoColor=white&style=for-the-badge)](https://discord.gg/4v9gsBCgg8)
 
