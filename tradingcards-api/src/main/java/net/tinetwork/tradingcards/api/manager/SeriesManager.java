@@ -1,5 +1,6 @@
 package net.tinetwork.tradingcards.api.manager;
 
+import net.tinetwork.tradingcards.api.config.ColorSeries;
 import net.tinetwork.tradingcards.api.model.Series;
 
 /**
@@ -7,4 +8,5 @@ import net.tinetwork.tradingcards.api.model.Series;
  */
 public interface SeriesManager {
     Series getSeries(final String seriesId);
+    ColorSeries getColorSeries(final String seriesId);
 }
