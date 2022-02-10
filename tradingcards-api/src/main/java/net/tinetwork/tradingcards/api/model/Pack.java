@@ -2,13 +2,12 @@ package net.tinetwork.tradingcards.api.model;
 
 import java.util.List;
 
-public record Pack(List<PackEntry> packEntryList,
+public record Pack(String id, List<PackEntry> packEntryList,
                    String displayName, double price, String permissions) {
 
     public String getDisplayName() {
         return displayName;
     }
-
 
     public double getPrice() {
         return price;

@@ -4,10 +4,11 @@ import net.tinetwork.tradingcards.api.model.Pack;
 import org.bukkit.inventory.ItemStack;
 import org.spongepowered.configurate.serialize.SerializationException;
 
+import java.util.List;
 import java.util.Map;
 
 public interface PackManager {
-    Map<String,ItemStack> packs();
+    Map<String,ItemStack> getCachedPacksItemstacks();
 
     ItemStack getPackItem(String name);
 
@@ -16,5 +17,7 @@ public interface PackManager {
     boolean isPack(final ItemStack item);
 
     Pack getPack(final String id);
+
+    List<Pack> getPacks();
 
 }
