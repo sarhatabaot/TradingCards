@@ -19,10 +19,10 @@ import java.util.Set;
 /**
  * @author sarhatabaot
  */
-public class DropTypesConfig extends SimpleConfigurate {
+public class CustomTypesConfig extends SimpleConfigurate {
     private Set<DropType> dropTypes;
 
-    public DropTypesConfig(final TradingCards plugin) throws ConfigurateException {
+    public CustomTypesConfig(final TradingCards plugin) throws ConfigurateException {
         super(plugin, "settings"+ File.separator, "custom-types.yml", "settings");
     }
 
@@ -35,10 +35,10 @@ public class DropTypesConfig extends SimpleConfigurate {
                 dropTypes.add(getDropType(dropTypeKey));
             } catch (SerializationException e){
                 Util.logSevereException(e);
-                plugin.debug(DropTypesConfig.class,"Couldn't add="+dropTypeKey);
+                plugin.debug(CustomTypesConfig.class,"Couldn't add="+dropTypeKey);
             }
         }
-        plugin.debug(DropTypesConfig.class,"Total Rarities="+dropTypes.size());
+        plugin.debug(CustomTypesConfig.class,"Total Rarities="+dropTypes.size());
     }
 
     public Set<DropType> getDropTypes() {
