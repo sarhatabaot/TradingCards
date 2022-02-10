@@ -94,11 +94,11 @@ public class SimpleCardsConfig extends SimpleConfigurate {
             final String about = node.node(ABOUT).getString();
             final int customModelData = node.node(CUSTOM_MODEL_DATA).getInt(0);
 
-            final Rarity rarity = plugin.getRaritiesConfig().getRarity(rarityId);
+            final Rarity rarity = plugin.getRarityManager().getRarity(rarityId);
             final double buyPrice = getBuyPrice(node, rarity);
             final double sellPrice = getSellPrice(node, rarity);
 
-            final Series series = plugin.getSeriesConfig().series().get(seriesId);
+            final Series series = plugin.getSeriesManager().getSeries(seriesId);
             TradingCard card = new TradingCard(id);
             return card.material(material)
                     .rarity(rarity)
