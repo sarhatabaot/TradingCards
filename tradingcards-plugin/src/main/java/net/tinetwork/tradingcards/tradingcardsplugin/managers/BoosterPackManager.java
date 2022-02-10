@@ -5,7 +5,6 @@ import net.tinetwork.tradingcards.api.manager.PackManager;
 import net.tinetwork.tradingcards.api.model.Pack;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.PacksConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -23,8 +22,7 @@ public class BoosterPackManager implements PackManager {
     private final ItemStack blankPack;
     private final TradingCards plugin;
 
-    private PacksConfig packsConfig;
-    private Map<String, ItemStack> packs;
+    private Map<String, ItemStack> packsItemStackCache;
 
     public BoosterPackManager(@NotNull TradingCards plugin) {
         this.plugin = plugin;
@@ -33,30 +31,29 @@ public class BoosterPackManager implements PackManager {
     }
 
     public void initValues() {
-        this.packsConfig = plugin.getPacksConfig();
-        this.packs = new HashMap<>();
+        this.packsItemStackCache = new HashMap<>();
         loadPacks();
     }
 
     private void loadPacks() {
-        for (String packName : plugin.getPacksConfig().getPacks()) {
-            loadPack(packName);
+        for (Pack pack : plugin.getStorage().getPacks()) {
+            loadPack(pack.id());
         }
-        plugin.getLogger().info("Loaded " + packs.size() + " packs.");
-        plugin.debug(BoosterPackManager.class,packs.keySet().toString());
-        for(ItemStack itemStack: packs.values()) {
+        plugin.getLogger().info("Loaded " + packsItemStackCache.size() + " packs.");
+        plugin.debug(BoosterPackManager.class, packsItemStackCache.keySet().toString());
+        for(ItemStack itemStack: packsItemStackCache.values()) {
             plugin.debug(BoosterPackManager.class,itemStack.toString());
         }
     }
 
     @Override
-    public Map<String, ItemStack> packs() {
-        return packs;
+    public Map<String, ItemStack> getCachedPacksItemstacks() {
+        return packsItemStackCache;
     }
 
     private void loadPack(final String packName) {
         try {
-            packs.put(packName, generatePack(packName));
+            packsItemStackCache.put(packName, generatePack(packName));
             plugin.debug(BoosterPackManager.class,"Loaded pack: " + packName);
         } catch (SerializationException e) {
             plugin.getLogger().severe(e.getMessage());
@@ -65,7 +62,7 @@ public class BoosterPackManager implements PackManager {
 
     @Override
     public ItemStack generatePack(final String name) throws SerializationException {
-        final Pack pack = packsConfig.getPack(name);
+        final Pack pack = plugin.getStorage().getPack(name);
 
         ItemStack itemPack = blankPack.clone();
         ItemMeta itemPackMeta = itemPack.getItemMeta();
@@ -75,7 +72,7 @@ public class BoosterPackManager implements PackManager {
         List<String> lore = new ArrayList<>();
 
         for(Pack.PackEntry entry: pack.getPackEntryList()) {
-            final Rarity rarity = plugin.getRaritiesConfig().getRarity(entry.getRarityId());
+            final Rarity rarity = plugin.getRarityManager().getRarity(entry.getRarityId());
             lore.add(ChatUtil.color(plugin.getGeneralConfig().colorPackNormal()
                     +entry.getAmount()
                     +" "
@@ -101,17 +98,16 @@ public class BoosterPackManager implements PackManager {
 
     @Override
     public ItemStack getPackItem(final String name) {
-        return packs.get(name).clone();
+        return packsItemStackCache.get(name).clone();
     }
 
     @Override
-    public Pack getPack(String id) {
-        try {
-            return plugin.getPacksConfig().getPack(id);
-        } catch (SerializationException e) {
-            plugin.getLogger().severe(e.getMessage());
-            return null;
-        }
+    public Pack getPack(final String packId) {
+        return plugin.getStorage().getPack(packId);
     }
 
+    @Override
+    public List<Pack> getPacks() {
+        return plugin.getStorage().getPacks();
+    }
 }

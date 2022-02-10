@@ -23,4 +23,10 @@ public class TradingRarityManager implements RarityManager {
     public List<Rarity> getRarities() {
         return plugin.getStorage().getRarities();
     }
+
+    @Override
+    public boolean containsRarity(final String rarityId) {
+        //todo although this can be done, we could check if it exists first
+        return getRarity(rarityId) == null;
+    }
 }

@@ -45,7 +45,7 @@ public class DropTypeManager implements TypeManager {
     @Override
     public void loadTypes() {
         this.mobTypes = new HashMap<>();
-        for(DropType dropType: plugin.getDropTypesConfig().getDropTypes()) {
+        for(DropType dropType: plugin.getStorage().getDropTypes()) {
             mobTypes.put(dropType.getId(),dropType);
         }
     }

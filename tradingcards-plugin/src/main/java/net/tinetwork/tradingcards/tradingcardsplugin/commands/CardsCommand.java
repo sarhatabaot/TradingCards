@@ -19,12 +19,9 @@ import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.MessagesConfig;
-import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.RaritiesConfig;
-import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.SeriesConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingCardManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingDeckManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.StorageType;
-import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local.DeckConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local.YamlStorage;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
@@ -43,7 +40,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurateException;
-import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.io.File;
 import java.io.IOException;
@@ -253,17 +249,17 @@ public class CardsCommand extends BaseCommand {
                 ChatUtil.sendPrefixedMessage(sender, PLAYER_NOT_ONLINE);
                 return;
             }
-            if (rarity == null || plugin.isRarity(rarity).equalsIgnoreCase("none")) {
+            if (rarity == null) {
                 final String sectionFormat = String.format(messagesConfig.sectionFormatPlayer(), target.getName());
                 ChatUtil.sendMessage(sender, String.format(sectionFormat, target.getName()));
-                for (Rarity rarityKey : plugin.getRaritiesConfig().rarities()) {
+                for (Rarity rarityKey : plugin.getRarityManager().getRarities()) {
                     listRarity(sender, target, rarityKey.getName());
                 }
                 return;
             }
 
-            if(!plugin.getRaritiesConfig().containsRarity(rarity)) {
-                ChatUtil.sendMessage(sender,messagesConfig.noRarity());
+            if (!plugin.getRarityManager().containsRarity(rarity)) {
+                ChatUtil.sendMessage(sender, messagesConfig.noRarity());
                 return;
             }
 
@@ -271,14 +267,8 @@ public class CardsCommand extends BaseCommand {
         }
 
         private boolean canBuyPack(final String name) {
-            try {
-                Pack pack = plugin.getPacksConfig().getPack(name);
-                return plugin.getGeneralConfig().vaultEnabled() && pack.getPrice() > 0.0D;
-            } catch (SerializationException e) {
-                plugin.getLogger().severe(e.getMessage());
-                return false;
-            }
-
+            Pack pack = plugin.getPackManager().getPack(name);
+            return plugin.getGeneralConfig().vaultEnabled() && pack.getPrice() > 0.0D;
         }
 
         @Subcommand("pack")
@@ -288,7 +278,7 @@ public class CardsCommand extends BaseCommand {
             int lineNumber = 0;
             ChatUtil.sendMessage(sender, plugin.getMessagesConfig().packSection());
 
-            for (String packName : plugin.getPackManager().packs().keySet()) {
+            for (String packName : plugin.getPackManager().getCachedPacksItemstacks().keySet()) {
                 Pack pack = plugin.getPackManager().getPack(packName);
                 ++lineNumber;
                 if (canBuyPack(packName)) {
@@ -334,19 +324,13 @@ public class CardsCommand extends BaseCommand {
         }
 
         private void listRarity(final CommandSender sender, final Player target, final String rarityId) {
-            final Rarity rarityObject;
             debug(rarityId);
-            try {
-                rarityObject = plugin.getRaritiesConfig().getRarity(rarityId);
-            } catch (SerializationException e) {
-                plugin.getLogger().severe(e.getMessage());
-                return;
-            }
+            final Rarity rarityObject = plugin.getRarityManager().getRarity(rarityId);
 
             final String sectionFormat = messagesConfig.sectionFormat();
             final String sectionFormatComplete = messagesConfig.sectionFormatComplete();
 
-            int cardCounter = countPlayerCardsInRarity(target,rarityId);
+            int cardCounter = countPlayerCardsInRarity(target, rarityId);
 
             //send title
             if (cardCounter == plugin.getCardManager().getRarityCardList(rarityId).size()) {
@@ -386,7 +370,7 @@ public class CardsCommand extends BaseCommand {
 
 
     private String getFormattedRarity(final String rarity) {
-        for (final Rarity rarityKey : plugin.getRaritiesConfig().rarities()) {
+        for (final Rarity rarityKey : plugin.getRarityManager().getRarities()) {
             if (rarityKey.getName().equalsIgnoreCase(rarity.replace("_", " "))) {
                 return rarityKey.getName();
             }
@@ -399,7 +383,7 @@ public class CardsCommand extends BaseCommand {
     @Description("Give away a random card by rarity to the server.")
     @CommandCompletion("@rarities")
     public void onGiveawayRarity(final CommandSender sender, final String rarity) {
-        if(plugin.getRarityManager().getRarity(rarity) == null) {
+        if (plugin.getRarityManager().getRarity(rarity) == null) {
             ChatUtil.sendPrefixedMessage(sender, messagesConfig.noRarity());
             return;
         }
@@ -655,7 +639,7 @@ public class CardsCommand extends BaseCommand {
         @CommandPermission(Permissions.ADMIN_DEBUG_PACKS)
         @Description("Show all available packs.")
         public void onPack(final CommandSender sender) {
-            sender.sendMessage(StringUtils.join(plugin.getPacksConfig().getPacks(), ","));
+            sender.sendMessage(StringUtils.join(plugin.getPackManager().getPacks(), ","));
         }
 
         @Subcommand("rarities")
@@ -663,7 +647,7 @@ public class CardsCommand extends BaseCommand {
         @Description("Shows available rarities.")
         public void onRarities(final CommandSender sender) {
             StringBuilder sb = new StringBuilder();
-            for (Rarity rarity : plugin.getRaritiesConfig().rarities()) {
+            for (Rarity rarity : plugin.getRarityManager().getRarities()) {
                 sb.append(rarity.getName()).append(", ");
             }
             sender.sendMessage(sb.toString());

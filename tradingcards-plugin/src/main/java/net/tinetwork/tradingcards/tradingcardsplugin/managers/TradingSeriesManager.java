@@ -5,6 +5,9 @@ import net.tinetwork.tradingcards.api.manager.SeriesManager;
 import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 
+import java.util.Collection;
+import java.util.List;
+
 /**
  * @author sarhatabaot
  */
@@ -23,5 +26,10 @@ public class TradingSeriesManager implements SeriesManager {
     @Override
     public ColorSeries getColorSeries(final String seriesId) {
         return plugin.getStorage().getColorSeries(seriesId);
+    }
+
+    @Override
+    public Collection<Series> getAllSeries() {
+        return plugin.getStorage().getAllSeries();
     }
 }

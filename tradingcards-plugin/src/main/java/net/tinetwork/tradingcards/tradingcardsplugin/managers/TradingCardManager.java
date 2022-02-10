@@ -4,6 +4,7 @@ import net.tinetwork.tradingcards.api.card.Card;
 import net.tinetwork.tradingcards.api.manager.CardManager;
 import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.api.model.Rarity;
+import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.api.model.chance.Chance;
 import net.tinetwork.tradingcards.api.model.chance.EmptyChance;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
@@ -12,7 +13,6 @@ import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.SimpleCardsConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import org.apache.commons.lang.StringUtils;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurationNode;
 
@@ -30,7 +30,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
     public static final EmptyCard NULL_CARD = new EmptyCard();
 
     //CardKey,Card<TradingCard>
-    private Map<String, Card<TradingCard>> cards;
+    private Map<String, TradingCard> cards;
     //TODO, should instead contain an id instead of the whole object.
     private List<String> activeCards;
 
@@ -65,45 +65,49 @@ public class TradingCardManager implements CardManager<TradingCard> {
     /**
      * Pre-loads all existing cards.
      */
+    //TODO should be done in specific storage impl
     private void loadAllCards() {
-        this.cards = new HashMap<>();
+        this.cards = plugin.getStorage().getCards();
         this.rarityCardList = new HashMap<>();
-        var cardConfigs = plugin.getCardsConfig().getCardConfigs();
-        for (SimpleCardsConfig simpleCardsConfig : cardConfigs) {
-            for (final Rarity rarity : plugin.getRaritiesConfig().rarities()) {
-                rarityCardList.put(rarity.getName(), new ArrayList<>());
-
-                var cardNodes = simpleCardsConfig.getCards(rarity.getName()).entrySet();
-
-                for (Map.Entry<Object, ? extends ConfigurationNode> nodeEntry : cardNodes) {
-                    final String cardName = nodeEntry.getValue().key().toString();
-                    final String cardKey = cardKey(rarity.getName(), cardName);
-                    plugin.debug(TradingCardManager.class,"CardKey="+cardKey);
-                    cards.put(cardKey, generateCard(simpleCardsConfig, cardName, rarity.getName()));
-                    rarityCardList.get(rarity.getName()).add(cardName);
-                }
+        initRarityCardList();
+        loadRarityCardList();
+    }
+    //todo - we may want to do this via storage as well
+    private void initRarityCardList() {
+        for(final Rarity rarity: plugin.getRarityManager().getRarities()) {
+            rarityCardList.putIfAbsent(rarity.getName(),new ArrayList<>());
+        }
+    }
+    //todo - we may want to do this via storage as well
+    private void loadRarityCardList() {
+        for (Map.Entry<String,Card> entry: cards.entrySet()) {
+            if(!(entry.getValue() instanceof TradingCard card)) {
+                continue;
             }
+            final Rarity cardRarity = card.getRarity();
+            rarityCardList.get(cardRarity.getName()).add(card.getCardName());
         }
     }
 
     //Caches a list of cards in their series.
+    //TODO should be done in specific storage impl
     private void cacheSeriesCards() {
         this.seriesCards = new HashMap<>();
-        for(String series: plugin.getSeriesConfig().series().keySet()) {
-            seriesCards.put(series, new ArrayList<>());
-            for (Map.Entry<String, Card<TradingCard>> entry : cards.entrySet()) {
-                if(entry.getValue().getSeries().getName().equals(series))
-                    seriesCards.get(series).add(entry.getValue().getCardName());
+        for(Series series: plugin.getSeriesManager().getAllSeries()) {
+            seriesCards.put(series.getName(), new ArrayList<>());
+            for (Map.Entry<String, Card> entry : cards.entrySet()) {
+                if(entry.getValue().getSeries().getName().equals(series.getName()))
+                    seriesCards.get(series.getName()).add(entry.getValue().getCardName());
             }
         }
     }
-
+    //TODO should be done in specific storage impl
     private void loadActiveCards() {
         this.activeCards = new ArrayList<>();
         this.activeRarityCardList = new HashMap<>();
         var cardConfigs = plugin.getCardsConfig().getCardConfigs();
         for (SimpleCardsConfig simpleCardsConfig : cardConfigs) {
-            for (final Rarity rarity : plugin.getRaritiesConfig().rarities()) {
+            for (final Rarity rarity : plugin.getRarityManager().getRarities()) {
                 activeRarityCardList.put(rarity.getName(), new ArrayList<>());
 
                 var cardNodes = simpleCardsConfig.getCards(rarity.getName()).entrySet();
@@ -115,10 +119,11 @@ public class TradingCardManager implements CardManager<TradingCard> {
                     Card<TradingCard> card = cards.get(cardKey);
                     //A card should only be created if the series exists, checking here for now TODO
                     plugin.debug(TradingCardManager.class,card.toString());
-                    if (!plugin.getSeriesConfig().series().containsKey(card.getSeries().getName().toLowerCase())) {
+                    if(plugin.getSeriesManager().getSeries(card.getSeries().getName().toLowerCase()) == null) {
                         plugin.debug(TradingCardManager.class,"This series does not exist, make sure it is in series.yml" + card.getSeries());
                         continue;
                     }
+
                     //This only loads on startup, that means that it doesn't update. But only on restarts TODO
                     if (card.getSeries().isActive()) {
                         activeRarityCardList.get(rarity.getName()).add(cardName);
