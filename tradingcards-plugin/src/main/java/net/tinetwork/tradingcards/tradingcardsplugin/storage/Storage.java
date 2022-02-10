@@ -1,13 +1,19 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.storage;
 
+import net.tinetwork.tradingcards.api.card.Card;
 import net.tinetwork.tradingcards.api.config.ColorSeries;
+import net.tinetwork.tradingcards.api.model.DropType;
+import net.tinetwork.tradingcards.api.model.Pack;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.api.model.deck.Deck;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -62,10 +68,6 @@ public interface Storage {
      */
     StorageType getType();
 
-    default String getPrefix() {
-        return "decks";
-    }
-
     void init(TradingCards plugin);
 
     @Nullable
@@ -75,6 +77,11 @@ public interface Storage {
 
     Series getSeries(final String seriesId);
     ColorSeries getColorSeries(final String seriesId);
+    Collection<Series> getAllSeries();
+    Map<String, ? extends Card> getCards();
+    Pack getPack(final String packsId);
+    List<Pack> getPacks();
+    Set<DropType> getDropTypes();
 
     /**
      * Only for flatfile storage types,
