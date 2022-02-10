@@ -5,6 +5,8 @@ import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+
 public class TradingRarityManager implements RarityManager {
     private final TradingCards plugin;
 
@@ -15,5 +17,10 @@ public class TradingRarityManager implements RarityManager {
     @Nullable
     public Rarity getRarity(final String id) {
         return plugin.getStorage().getRarityById(id);
+    }
+
+    @Override
+    public List<Rarity> getRarities() {
+        return plugin.getStorage().getRarities();
     }
 }
