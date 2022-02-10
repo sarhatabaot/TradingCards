@@ -108,4 +108,13 @@ public class YamlStorage implements Storage {
     public Series getSeries(final String seriesId) {
         return seriesConfig.series().get(seriesId);
     }
+
+    @Override
+    public void reload() {
+        this.raritiesConfig.reloadConfig();
+        this.seriesConfig.reloadConfig();
+        this.customTypesConfig.reloadConfig();
+        this.cardsConfig.initValues();
+        this.packsConfig.reloadConfig();
+    }
 }

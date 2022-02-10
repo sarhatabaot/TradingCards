@@ -1,5 +1,6 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.storage;
 
+import net.tinetwork.tradingcards.api.config.ColorSeries;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.api.model.deck.Deck;
@@ -69,8 +70,15 @@ public interface Storage {
 
     @Nullable
     Rarity getRarityById(final String rarityId);
-
+    List<Rarity> getRarities();
     List<String> getRewards(final String rarityId);
 
     Series getSeries(final String seriesId);
+    ColorSeries getColorSeries(final String seriesId);
+
+    /**
+     * Only for flatfile storage types,
+     * Just YAML for now.
+     */
+    void reload();
 }

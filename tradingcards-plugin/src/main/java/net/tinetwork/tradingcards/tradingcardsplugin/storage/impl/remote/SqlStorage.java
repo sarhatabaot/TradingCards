@@ -453,5 +453,8 @@ public class SqlStorage implements Storage {
         }
     }
 
-
+    @Override
+    public void reload() {
+        //nothing to do here.
+    }
 }

@@ -12,7 +12,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.commands.CardsCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.DeckCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.CardsConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.ChancesConfig;
-import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.DropTypesConfig;
+import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.CustomTypesConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.GeneralConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.MessagesConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.PacksConfig;
@@ -28,9 +28,9 @@ import net.tinetwork.tradingcards.tradingcardsplugin.managers.DropTypeManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingRarityManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingCardManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingDeckManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingSeriesManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.StorageType;
-import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local.DeckConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local.YamlStorage;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.SqlStorage;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.sql.MariaDbConnectionFactory;
@@ -64,17 +64,13 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private ImmutableList<EntityType> bossMobs;
 
     /* Configs */
-    private StorageConfig storageConfig;
-    private Storage deckStorage;
-    private CardsConfig cardsConfig;
+    private Storage storage;
 
+    /* Local Settings */
+    private StorageConfig storageConfig;
     private GeneralConfig generalConfig;
-    private RaritiesConfig raritiesConfig;
-    private ChancesConfig chancesConfig;
-    private PacksConfig packsConfig;
     private MessagesConfig messagesConfig;
-    private SeriesConfig seriesConfig;
-    private DropTypesConfig dropTypesConfig;
+    private ChancesConfig chancesConfig;
 
     /* Managers */
     private TradingCardManager cardManager;
@@ -82,6 +78,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private TradingDeckManager deckManager;
     private DropTypeManager dropTypeManager;
     private TradingRarityManager rarityManager;
+    private TradingSeriesManager seriesManager;
 
     /* Hooks */
     private boolean hasVault;
@@ -119,11 +116,11 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         initConfigs();
 
         try {
-            this.deckStorage = initStorage();
+            this.storage = initStorage();
         } catch (ConfigurateException e) {
             Util.logSevereException(e);
         }
-        this.deckStorage.init(this);
+        this.storage.init(this);
         initBlacklist();
 
         initManagers();
@@ -139,28 +136,12 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         return generalConfig;
     }
 
-    public RaritiesConfig getRaritiesConfig() {
-        return raritiesConfig;
-    }
-
     public ChancesConfig getChancesConfig() {
         return chancesConfig;
     }
 
     public MessagesConfig getMessagesConfig() {
         return messagesConfig;
-    }
-
-    public PacksConfig getPacksConfig() {
-        return packsConfig;
-    }
-
-    public SeriesConfig getSeriesConfig() {
-        return seriesConfig;
-    }
-
-    public DropTypesConfig getDropTypesConfig() {
-        return dropTypesConfig;
     }
 
     public DropTypeManager getDropTypeManager() {
@@ -189,18 +170,12 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private void initConfigs() {
         try {
             this.generalConfig = new GeneralConfig(this);
-            this.raritiesConfig = new RaritiesConfig(this);
-            this.seriesConfig = new SeriesConfig(this);
             this.chancesConfig = new ChancesConfig(this);
             this.messagesConfig = new MessagesConfig(this);
-            this.packsConfig = new PacksConfig(this);
             this.storageConfig = new StorageConfig(this);
-            this.dropTypesConfig = new DropTypesConfig(this);
         } catch (ConfigurateException e) {
             getLogger().severe(e.getMessage());
         }
-
-        this.cardsConfig = new CardsConfig(this);
     }
 
     private Storage initStorage() throws ConfigurateException {
@@ -215,12 +190,14 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
             case MYSQL -> {
                 return new SqlStorage(this,
-                        this.storageConfig.getTablePrefix(),
-                        new MySqlConnectionFactory(this.storageConfig));
+                            this.storageConfig.getTablePrefix(),
+                            new MySqlConnectionFactory(this.storageConfig));
+
+
             }
             //YAML is the default
             default -> {
-                return new YamlStorage(new DeckConfig(this), new RaritiesConfig(this));
+                return new YamlStorage(this);
             }
 
         }
@@ -277,13 +254,8 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     }
 
     public Storage getStorage() {
-        return deckStorage;
+        return storage;
     }
-
-    public CardsConfig getCardsConfig() {
-        return cardsConfig;
-    }
-
 
     private void hookVault() {
         if (this.generalConfig.vaultEnabled()) {
@@ -363,18 +335,19 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         return this.bossMobs.contains(e);
     }
 
-    public String isRarity(String input) {
-        try {
-            Rarity rarity = getRaritiesConfig().getRarity(input);
-            if (getRaritiesConfig().getRarity(input) != null) {
-                return rarity.getName().replace("_"," ").toLowerCase();
-            }
-
-        } catch (SerializationException e){
-            getLogger().severe(e.getMessage());
-        }
-        return "none;";
-    }
+//TODO What is this
+//    public String isRarity(String input) {
+//        try {
+//            Rarity rarity = getRaritiesConfig().getRarity(input);
+//            if (getRaritiesConfig().getRarity(input) != null) {
+//                return rarity.getName().replace("_"," ").toLowerCase();
+//            }
+//
+//        } catch (SerializationException e){
+//            getLogger().severe(e.getMessage());
+//        }
+//        return "none;";
+//    }
 
 
     @Override
@@ -415,13 +388,10 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private void reloadAllConfigs() {
         this.messagesConfig.reloadConfig();
         this.generalConfig.reloadConfig();
-        this.raritiesConfig.reloadConfig();
-        this.chancesConfig.reloadConfig();
-        this.seriesConfig.reloadConfig();
-        this.packsConfig.reloadConfig();
-
-        this.cardsConfig.initValues();
         this.storageConfig.reloadConfig();
+
+        this.storage.reload();
+        this.chancesConfig.reloadConfig();
     }
 
     public void reloadPlugin() {
@@ -435,7 +405,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         return random;
     }
 
-
-
-
+    public TradingSeriesManager getSeriesManager() {
+        return seriesManager;
+    }
 }
