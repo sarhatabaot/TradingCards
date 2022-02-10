@@ -5,14 +5,17 @@ import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.api.model.deck.Deck;
 import net.tinetwork.tradingcards.api.model.deck.StorageEntry;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
+import net.tinetwork.tradingcards.tradingcardsplugin.config.CardsConfig;
+import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.CustomTypesConfig;
+import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.PacksConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.RaritiesConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.SeriesConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.StorageType;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.serialize.SerializationException;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -21,14 +24,21 @@ import java.util.UUID;
  * @author sarhatabaot
  */
 public class YamlStorage implements Storage {
+    private final CardsConfig cardsConfig;
     private final DeckConfig deckConfig;
     private final RaritiesConfig raritiesConfig;
     private final SeriesConfig seriesConfig;
+    private final PacksConfig packsConfig;
+    private final CustomTypesConfig customTypesConfig;
 
-    public YamlStorage(final DeckConfig deckConfig, final RaritiesConfig raritiesConfig, final SeriesConfig seriesConfig) {
-        this.deckConfig = deckConfig;
-        this.raritiesConfig = raritiesConfig;
-        this.seriesConfig = seriesConfig;
+    public YamlStorage(final TradingCards plugin) throws ConfigurateException {
+        this.deckConfig = new DeckConfig(plugin);
+
+        this.packsConfig = new PacksConfig(plugin);
+        this.raritiesConfig = new RaritiesConfig(plugin);
+        this.seriesConfig = new SeriesConfig(plugin);
+        this.customTypesConfig = new CustomTypesConfig(plugin);
+        this.cardsConfig = new CardsConfig(plugin);
     }
 
     @Override

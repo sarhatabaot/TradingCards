@@ -720,7 +720,7 @@ public class CardsCommand extends BaseCommand {
             public void run() {
                 long startTime = System.nanoTime();
                 try {
-                    YamlStorage yamlStorage = new YamlStorage(new DeckConfig(plugin), new RaritiesConfig(plugin), new SeriesConfig(plugin));
+                    YamlStorage yamlStorage = new YamlStorage(plugin);
                     yamlStorage.init(plugin);
                     Map<UUID, List<Deck>> yamlDecks = yamlStorage.getAllDecks();
                     sender.sendMessage("Found " + yamlDecks.size() + " players.");
