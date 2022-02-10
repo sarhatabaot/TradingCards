@@ -32,7 +32,6 @@ public class CardUtil {
     private static TradingCards plugin;
     private static TradingCardManager cardManager;
     private static final char ALT_COLOR_CHAR = '&';
-    private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)" + ALT_COLOR_CHAR + "[0-9A-FK-ORX]");
     public static final int RANDOM_MAX = 100000;
     public static ItemStack BLANK_CARD;
 
@@ -172,11 +171,11 @@ public class CardUtil {
 
     public static @NotNull List<String> formatLore(final String info, final String about, final String rarity, final boolean isShiny, final String type, final Series series) {
         List<String> lore = new ArrayList<>();
-        final String typeFormat = ChatUtil.color(plugin.getSeriesConfig().getColorSeries(series.getName()).getType() + plugin.getGeneralConfig().displayType() + type);
-        final String infoFormat = ChatUtil.color(plugin.getSeriesConfig().getColorSeries(series.getName()).getInfo() + plugin.getGeneralConfig().displayInfo());
-        final String seriesFormat = ChatUtil.color(plugin.getSeriesConfig().getColorSeries(series.getName()).getSeries() + plugin.getGeneralConfig().displaySeries() + series.getDisplayName());
-        final String aboutFormat = ChatUtil.color(plugin.getSeriesConfig().getColorSeries(series.getName()).getAbout() + plugin.getGeneralConfig().displayAbout());
-        final String rarityFormat = ChatUtil.color(plugin.getSeriesConfig().getColorSeries(series.getName()).getRarity());
+        final String typeFormat = ChatUtil.color(plugin.getSeriesManager().getColorSeries(series.getName()).getType() + plugin.getGeneralConfig().displayType() + type);
+        final String infoFormat = ChatUtil.color(plugin.getSeriesManager().getColorSeries(series.getName()).getInfo() + plugin.getGeneralConfig().displayInfo());
+        final String seriesFormat = ChatUtil.color(plugin.getSeriesManager().getColorSeries(series.getName()).getSeries() + plugin.getGeneralConfig().displaySeries() + series.getDisplayName());
+        final String aboutFormat = ChatUtil.color(plugin.getSeriesManager().getColorSeries(series.getName()).getAbout() + plugin.getGeneralConfig().displayAbout());
+        final String rarityFormat = ChatUtil.color(plugin.getSeriesManager().getColorSeries(series.getName()).getRarity());
 
         lore.add(typeFormat);
         if (!"None".equalsIgnoreCase(info) && !info.isEmpty()) {
