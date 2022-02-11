@@ -40,7 +40,7 @@ public interface Storage<T extends Card<T>> {
      * @param deckNumber Deck number, must be larger than 1
      * @param deck Corresponding deck object.
      */
-    void save(UUID playerUuid, int deckNumber, Deck deck);
+    void saveDeck(UUID playerUuid, int deckNumber, Deck deck);
 
     /**
      *
@@ -110,16 +110,53 @@ public interface Storage<T extends Card<T>> {
      */
     Collection<Series> getAllSeries();
 
+    /**
+     * @return Returns a set of all "active" series.
+     */
+    Set<Series> getActiveSeries();
+
     /* TODO
      * @return Returns a <CardsKey, Card> map CardsKey should only be for yaml
      * This should be used only in yaml storage, and via getCard();
      */
+    @Deprecated
     Map<String, T> getCardsMap();
 
     /**
      * @return A list of all cards.
      */
     List<T> getCards();
+
+    /**
+     * @param rarityId The rarity id.
+     * @return A list of all cards in a rarity.
+     */
+    List<T> getCardsInRarity(final String rarityId);
+
+    /**
+     * @param seriesId The series id.
+     * @return A list of all cards in a series.
+     */
+    List<T> getCardsInSeries(final String seriesId);
+
+    /**
+     * @return A list of all active cards.
+     */
+    List<T> getActiveCards();
+
+    /**
+     * @param cardId The card id.
+     * @param rarityId The rarity id.
+     * @return Returns a card.
+     */
+    Card<T> getCard(final String cardId, final String rarityId);
+
+    /**
+     * @param cardId The card id.
+     * @param rarityId The rarity id.
+     * @return Returns an active card.
+     */
+    Card<T> getActiveCard(final String cardId, final String rarityId);
 
     /**
      * @param packsId The pack id.
