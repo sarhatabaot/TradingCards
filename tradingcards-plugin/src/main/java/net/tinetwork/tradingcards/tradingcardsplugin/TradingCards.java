@@ -246,7 +246,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         return econ;
     }
 
-    public Storage getStorage() {
+    public Storage<TradingCard> getStorage() {
         return storage;
     }
 
