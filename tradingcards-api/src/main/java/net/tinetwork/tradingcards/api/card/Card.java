@@ -26,12 +26,13 @@ public abstract class Card<T>{
         this.cardMeta = new CardMeta();
     }
 
-    public Card(final Card card) {
+    public Card(final Card<T> card) {
         this.cardName = card.getCardName();
         this.material = card.getMaterial();
         this.type = card.getType();
         this.series = card.getSeries();
         this.hasShiny = card.hasShiny();
+        this.rarity = card.getRarity();
 
         this.cardMeta = card.getCardMeta();
     }
