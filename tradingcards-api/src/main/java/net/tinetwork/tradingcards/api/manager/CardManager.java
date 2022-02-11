@@ -13,10 +13,9 @@ public interface CardManager<T> {
      *
      * @return
      */
-    Map<String, Card<T>> getCards();
+    Map<String, T> getCards();
 
     /**
-     *
      *
      * @return
      */
