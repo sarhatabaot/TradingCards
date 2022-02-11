@@ -75,7 +75,8 @@ CREATE TABLE IF NOT EXISTS `{prefix}packs_content` (
 ) DEFAULT CHARSET = utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `{prefix}cards` (
-    card_id             VARCHAR(200)        NOT NULL,
+    `id`                INT                 NOT NULL,
+    card_id             VARCHAR(200)        NOT NULL, -- This is not the key, since we can have duplicates.
     display_name        TINYTEXT,
     rarity_id           VARCHAR(200)        NOT NULL, -- foreign key from rarities
     has_shiny           BOOL                NOT NULL,
@@ -84,7 +85,7 @@ CREATE TABLE IF NOT EXISTS `{prefix}cards` (
     custom_model_data   INT,
     buy_price           DOUBLE,
     sell_price          DOUBLE,
-    PRIMARY KEY (card_id),
+    PRIMARY KEY (`id`),
     FOREIGN KEY (rarity_id) REFERENCES `{prefix}rarities`(rarity_id),
     FOREIGN KEY (series_id) REFERENCES `{prefix}series`(series_id)
 ) DEFAULT CHARSET = utf8mb4;
