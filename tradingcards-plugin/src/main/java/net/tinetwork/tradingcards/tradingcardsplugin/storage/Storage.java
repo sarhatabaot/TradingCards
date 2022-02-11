@@ -22,14 +22,12 @@ import java.util.UUID;
 public interface Storage<T extends Card<T>> {
 
     /**
-     *
      * @param playerUuid Player UUID
      * @return a List of decks the player has.
      */
     List<Deck> getPlayerDecks(UUID playerUuid);
 
     /**
-     *
      * @param playerUuid Player UUID
      * @param deckNumber Deck number, must be larger than 1
      * @return Return a corresponding deck object
@@ -76,9 +74,23 @@ public interface Storage<T extends Card<T>> {
      */
     void init(TradingCards plugin);
 
+    /**
+     * Get the rarity object by the id.
+     * @param rarityId The rarity id.
+     * @return Returns a null if it doesn't exist.
+     */
     @Nullable
     Rarity getRarityById(final String rarityId);
+
+    /**
+     * @return Returns a list of all rarities.
+     */
     List<Rarity> getRarities();
+
+    /**
+     * @param rarityId The rarity id. As defined in rarities.
+     * @return A list of rewards associated with rarityId
+     */
     List<String> getRewards(final String rarityId);
 
     /**
@@ -86,12 +98,44 @@ public interface Storage<T extends Card<T>> {
      * @return Returns a series object.
      */
     Series getSeries(final String seriesId);
+
+    /**
+     * @param seriesId Series id.
+     * @return Returns a color series.
+     */
     ColorSeries getColorSeries(final String seriesId);
+
+    /**
+     * @return Returns a collection of all series
+     */
     Collection<Series> getAllSeries();
+
+    /* TODO
+     * @return Returns a <CardsKey, Card> map CardsKey should only be for yaml
+     * This should be used only in yaml storage, and via getCard();
+     */
     Map<String, T> getCardsMap();
+
+    /**
+     * @return A list of all cards.
+     */
     List<T> getCards();
+
+    /**
+     * @param packsId The pack id.
+     * @return Returns the pack. Will return null if it doesn't exist.
+     */
+    @Nullable
     Pack getPack(final String packsId);
+
+    /**
+     * @return Returns a list of all packs.
+     */
     List<Pack> getPacks();
+
+    /**
+     * @return Returns a set of all drop types.
+     */
     Set<DropType> getDropTypes();
 
     /**
