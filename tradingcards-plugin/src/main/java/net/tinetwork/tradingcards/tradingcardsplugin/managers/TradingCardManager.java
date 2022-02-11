@@ -67,7 +67,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
      */
     //TODO should be done in specific storage impl
     private void loadAllCards() {
-        this.cards = plugin.getStorage().getCards();
+        this.cards = plugin.getStorage().getCardsMap();
         this.rarityCardList = new HashMap<>();
         initRarityCardList();
         loadRarityCardList();
@@ -80,10 +80,8 @@ public class TradingCardManager implements CardManager<TradingCard> {
     }
     //todo - we may want to do this via storage as well
     private void loadRarityCardList() {
-        for (Map.Entry<String,Card> entry: cards.entrySet()) {
-            if(!(entry.getValue() instanceof TradingCard card)) {
-                continue;
-            }
+        for (Map.Entry<String,TradingCard> entry: cards.entrySet()) {
+            TradingCard card = entry.getValue();
             final Rarity cardRarity = card.getRarity();
             rarityCardList.get(cardRarity.getName()).add(card.getCardName());
         }
@@ -95,13 +93,14 @@ public class TradingCardManager implements CardManager<TradingCard> {
         this.seriesCards = new HashMap<>();
         for(Series series: plugin.getSeriesManager().getAllSeries()) {
             seriesCards.put(series.getName(), new ArrayList<>());
-            for (Map.Entry<String, Card> entry : cards.entrySet()) {
+            for (Map.Entry<String, TradingCard> entry : cards.entrySet()) {
                 if(entry.getValue().getSeries().getName().equals(series.getName()))
                     seriesCards.get(series.getName()).add(entry.getValue().getCardName());
             }
         }
     }
     //TODO should be done in specific storage impl
+    // This can be done in SQL fairly easily..
     private void loadActiveCards() {
         this.activeCards = new ArrayList<>();
         this.activeRarityCardList = new HashMap<>();
