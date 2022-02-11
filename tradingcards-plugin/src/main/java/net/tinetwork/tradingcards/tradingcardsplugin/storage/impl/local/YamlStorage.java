@@ -28,6 +28,7 @@ import org.spongepowered.configurate.serialize.SerializationException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -48,6 +49,8 @@ public class YamlStorage implements Storage<TradingCard> {
     private final TradingCards plugin;
 
     private final Map<String, TradingCard> cards;
+    private final Map<String, List<TradingCard>> rarityCardList;
+    private final Set<Series> activeSeries;
 
     public YamlStorage(final TradingCards plugin) throws ConfigurateException {
         this.plugin = plugin;
@@ -61,6 +64,8 @@ public class YamlStorage implements Storage<TradingCard> {
         this.cardsConfig = new CardsConfig(plugin);
 
         this.cards = new HashMap<>();
+        this.activeSeries = new HashSet<>();
+        this.rarityCardList = new HashMap<>();
     }
 
     @Override
@@ -76,6 +81,8 @@ public class YamlStorage implements Storage<TradingCard> {
     @Override
     public void init(final TradingCards plugin) {
         loadCards();
+        loadActiveSeries();
+        loadRarityCards();
     }
 
     @Override
@@ -86,7 +93,7 @@ public class YamlStorage implements Storage<TradingCard> {
     }
 
     @Override
-    public void save(final UUID playerUuid, final int deckNumber, final Deck deck) {
+    public void saveDeck(final UUID playerUuid, final int deckNumber, final Deck deck) {
         deckConfig.saveEntries(playerUuid,deckNumber,deck);
         deckConfig.reloadConfig();
     }
@@ -206,5 +213,52 @@ public class YamlStorage implements Storage<TradingCard> {
                 }
             }
         }
+    }
+
+    private void loadActiveSeries() {
+        for(Series series: getAllSeries()) {
+            if(series.isActive()) {
+                activeSeries.add(series);
+            }
+        }
+    }
+
+    private void loadRarityCards() {
+        for(Map.Entry<String,TradingCard> entry: cards.entrySet()) {
+            final TradingCard card = entry.getValue();
+            final Rarity rarity = card.getRarity();
+            rarityCardList.putIfAbsent(rarity.getName(),new ArrayList<>());
+            rarityCardList.get(rarity.getName()).add(card);
+        }
+    }
+
+    @Override
+    public Set<Series> getActiveSeries() {
+        return activeSeries;
+    }
+
+    @Override
+    public List<TradingCard> getCardsInRarity(final String rarityId) {
+        return rarityCardList.get(rarityId);
+    }
+
+    @Override
+    public List<TradingCard> getCardsInSeries(final String seriesId) {
+        return null;
+    }
+
+    @Override
+    public List<TradingCard> getActiveCards() {
+        return null;
+    }
+
+    @Override
+    public Card<TradingCard> getCard(final String cardId, final String rarityId) {
+        return null;
+    }
+
+    @Override
+    public Card<TradingCard> getActiveCard(final String cardId, final String rarityId) {
+        return null;
     }
 }
