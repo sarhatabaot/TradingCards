@@ -196,7 +196,7 @@ public class SqlStorage implements Storage<TradingCard> {
                 }
             }
         } catch (SQLException e) {
-
+            Util.logSevereException(e);
         }
         return null;
     }
@@ -233,7 +233,7 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
     @Override
-    public void save(final UUID playerUuid, final int deckNumber, final Deck deck) {
+    public void saveDeck(final UUID playerUuid, final int deckNumber, final Deck deck) {
         //Get current Deck. Compare which cards don't exist anymore.
         //Get a list of cards to remove, if any exist.
         Deck dbDeck = getDeck(playerUuid, deckNumber);
