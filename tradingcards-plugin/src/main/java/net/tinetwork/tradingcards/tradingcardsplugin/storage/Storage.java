@@ -19,7 +19,7 @@ import java.util.UUID;
 /**
  * @author sarhatabaot
  */
-public interface Storage {
+public interface Storage<T extends Card<T>> {
 
     /**
      *
@@ -46,19 +46,19 @@ public interface Storage {
 
     /**
      *
-     * @param playerUuid
-     * @param card
-     * @param rarity
-     * @return
+     * @param playerUuid Player UUID
+     * @param card The card id
+     * @param rarity The rarity id
+     * @return Returns if the player has this card in a deck. Will return true if the card is shiny.
      */
     boolean hasCard(UUID playerUuid, String card, String rarity);
 
     /**
      *
-     * @param playerUuid
-     * @param card
-     * @param rarity
-     * @return
+     * @param playerUuid Player UUID
+     * @param card The card id
+     * @param rarity The rarity id
+     * @return Returns if the player has this shiny card in a deck.
      */
     boolean hasShinyCard(UUID playerUuid, String card, String rarity);
 
@@ -68,6 +68,12 @@ public interface Storage {
      */
     StorageType getType();
 
+
+    /**
+     * Initializes this storage type.
+     * Usually, caches the lists.
+     * @param plugin The plugin.
+     */
     void init(TradingCards plugin);
 
     @Nullable
@@ -75,10 +81,15 @@ public interface Storage {
     List<Rarity> getRarities();
     List<String> getRewards(final String rarityId);
 
+    /**
+     * @param seriesId Series id.
+     * @return Returns a series object.
+     */
     Series getSeries(final String seriesId);
     ColorSeries getColorSeries(final String seriesId);
     Collection<Series> getAllSeries();
-    Map<String, ? extends Card> getCards();
+    Map<String, T> getCardsMap();
+    List<T> getCards();
     Pack getPack(final String packsId);
     List<Pack> getPacks();
     Set<DropType> getDropTypes();
