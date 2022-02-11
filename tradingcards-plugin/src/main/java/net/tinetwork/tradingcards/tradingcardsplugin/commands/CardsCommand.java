@@ -670,7 +670,6 @@ public class CardsCommand extends BaseCommand {
     @Description("Migrates from yaml to another storage type.")
     public class MigrateSubCommand extends BaseCommand {
 
-
         @Default
         public void onMigrateInfo(final CommandSender sender) {
             if (plugin.getStorage().getType() == StorageType.YAML) {
@@ -718,7 +717,7 @@ public class CardsCommand extends BaseCommand {
                         final UUID playerUuid = entry.getKey();
                         sender.sendMessage(ChatUtil.color("&2Started conversion for " + playerUuid));
                         for (Deck deck : entry.getValue()) {
-                            plugin.getStorage().save(playerUuid, deck.getNumber(), deck);
+                            plugin.getStorage().saveDeck(playerUuid, deck.getNumber(), deck);
                         }
                         sender.sendMessage(ChatUtil.color("&2Finished conversion for " + playerUuid + ", converted " + entry.getValue().size() + " decks."));
                     }

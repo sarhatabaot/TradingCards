@@ -156,7 +156,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
 
 
     @Override
-    public Map<String, Card<TradingCard>> getCards() {
+    public Map<String, TradingCard> getCards() {
         return cards;
     }
 

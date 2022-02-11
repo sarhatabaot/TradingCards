@@ -194,6 +194,6 @@ public class TradingDeckManager implements DeckManager {
     }
 
     public void createNewDeckInFile(final UUID uuid, final int num) {
-        storage.save(uuid,num,new Deck(uuid,num, new ArrayList<>()));
+        storage.saveDeck(uuid,num,new Deck(uuid,num, new ArrayList<>()));
     }
 }

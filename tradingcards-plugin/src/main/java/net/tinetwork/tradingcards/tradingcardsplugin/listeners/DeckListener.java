@@ -16,7 +16,6 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class DeckListener extends SimpleListener {
     private final TradingDeckManager deckManager;
@@ -60,7 +59,7 @@ public class DeckListener extends SimpleListener {
         }
 
         final Deck deck = new Deck(player.getUniqueId(),deckNum,serializedEntries);
-        deckStorage.save(player.getUniqueId(), deckNum, deck);
+        deckStorage.saveDeck(player.getUniqueId(), deckNum, deck);
         deckManager.removeDeckViewer(e.getPlayer().getUniqueId());
         debug("Deck closed");
     }
