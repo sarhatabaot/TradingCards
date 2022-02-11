@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public interface CardManager<T> {
+public interface CardManager<T extends Card<T>> {
     /**
      *
      * @return
@@ -28,7 +28,7 @@ public interface CardManager<T> {
      * @param forcedShiny
      * @return
      */
-    Card<T> getCard(final String cardName, final String rarity, final boolean forcedShiny);
+    T getCard(final String cardName, final String rarity, final boolean forcedShiny);
 
     /**
      *
@@ -37,16 +37,16 @@ public interface CardManager<T> {
      * @param forcedShiny
      * @return
      */
-    Card<T> getActiveCard(final String cardName, final String rarity, final boolean forcedShiny);
-    Card<T> getActiveCard(final String cardName, final String rarity);
+    T getActiveCard(final String cardName, final String rarity, final boolean forcedShiny);
+    T getActiveCard(final String cardName, final String rarity);
     /**
      *
      * @param rarity
      * @param forcedShiny
      * @return
      */
-    Card<T> getRandomCard(final String rarity, final boolean forcedShiny);
-    Card<T> getRandomCard(final String rarity);
+    T getRandomCard(final String rarity, final boolean forcedShiny);
+    T getRandomCard(final String rarity);
 
     /**
      *
@@ -54,9 +54,9 @@ public interface CardManager<T> {
      * @param forcedShiny
      * @return
      */
-    Card<T> getRandomActiveCard(final String rarity, final boolean forcedShiny);
+    T getRandomActiveCard(final String rarity, final boolean forcedShiny);
 
-    Card<T> getRandomActiveCard(final String rarity);
+    T getRandomActiveCard(final String rarity);
 
 
     /**
@@ -71,7 +71,7 @@ public interface CardManager<T> {
      * @param rarity Rarity
      * @return returns a list of card names from rarity.
      */
-    List<String> getRarityCardList(final String rarity);
+    List<T> getRarityCardList(final String rarity);
 
     /**
      * @param rarity Rarity
