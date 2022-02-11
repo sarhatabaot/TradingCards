@@ -2,7 +2,6 @@ package net.tinetwork.tradingcards.api.manager;
 
 import net.tinetwork.tradingcards.api.card.Card;
 import net.tinetwork.tradingcards.api.model.DropType;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 import java.util.Map;

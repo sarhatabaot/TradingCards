@@ -21,17 +21,18 @@ public abstract class Card<T>{
     //CardMeta
     private final CardMeta cardMeta;
 
-    public Card(final String cardName) {
+    protected Card(final String cardName) {
         this.cardName = cardName;
         this.cardMeta = new CardMeta();
     }
 
-    public Card(final Card card) {
+    protected Card(final Card<T> card) {
         this.cardName = card.getCardName();
         this.material = card.getMaterial();
         this.type = card.getType();
         this.series = card.getSeries();
         this.hasShiny = card.hasShiny();
+        this.rarity = card.getRarity();
 
         this.cardMeta = card.getCardMeta();
     }

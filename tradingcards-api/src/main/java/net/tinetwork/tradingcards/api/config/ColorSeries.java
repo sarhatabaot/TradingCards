@@ -1,19 +1,7 @@
 package net.tinetwork.tradingcards.api.config;
 
-public class ColorSeries {
-    private final String series;
-    private final String type;
-    private final String info;
-    private final String about;
-    private final String rarity;
-
-    public ColorSeries(final String series, final String type, final String info, final String about, final String rarity) {
-        this.series = series;
-        this.type = type;
-        this.info = info;
-        this.about = about;
-        this.rarity = rarity;
-    }
+public record ColorSeries(String series, String type, String info, String about,
+                          String rarity) {
 
     public String getSeries() {
         return series;
