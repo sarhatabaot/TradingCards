@@ -6,6 +6,7 @@ import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.api.model.deck.Deck;
 import net.tinetwork.tradingcards.api.model.deck.StorageEntry;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
+import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.StorageType;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.sql.ConnectionFactory;
@@ -32,7 +33,7 @@ import java.util.UUID;
 /**
  * @author sarhatabaot
  */
-public class SqlStorage implements Storage {
+public class SqlStorage implements Storage<TradingCard> {
     private static final String DECKS_SELECT_ALL_BY_UUID =
             "SELECT * FROM {prefix}decks " +
                     "WHERE uuid=?;";

@@ -38,7 +38,7 @@ import static net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil.cardK
 /**
  * @author sarhatabaot
  */
-public class YamlStorage implements Storage {
+public class YamlStorage implements Storage<TradingCard> {
     private final CardsConfig cardsConfig;
     private final DeckConfig deckConfig;
     private final RaritiesConfig raritiesConfig;
@@ -47,7 +47,7 @@ public class YamlStorage implements Storage {
     private final CustomTypesConfig customTypesConfig;
     private final TradingCards plugin;
 
-    private final Map<String, Card<TradingCard>> cards;
+    private final Map<String, TradingCard> cards;
 
     public YamlStorage(final TradingCards plugin) throws ConfigurateException {
         this.plugin = plugin;
@@ -155,22 +155,14 @@ public class YamlStorage implements Storage {
         return this.seriesConfig.series().values();
     }
 
-    //TODO
     @Override
-    public Map<String, Card> getCards() {
-        for (SimpleCardsConfig simpleCardsConfig : cardsConfig.getCardConfigs()) {
-            for (final Rarity rarity : plugin.getRarityManager().getRarities()) {
-                var cardNodes = simpleCardsConfig.getCards(rarity.getName()).entrySet();
+    public Map<String, TradingCard> getCardsMap() {
+        return this.cards;
+    }
 
-                for (Map.Entry<Object, ? extends ConfigurationNode> nodeEntry : cardNodes) {
-                    final String cardName = nodeEntry.getValue().key().toString();
-                    final String cardKey = cardKey(rarity.getName(), cardName);
-                    plugin.debug(TradingCardManager.class,"CardKey="+cardKey);
-                    cards.put(cardKey, generateCard(simpleCardsConfig, cardName, rarity.getName()));
-                }
-            }
-        }
-        return null;
+    @Override
+    public List<TradingCard> getCards() {
+        return this.cards.values().stream().toList();
     }
 
     @Override
