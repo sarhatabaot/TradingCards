@@ -61,41 +61,29 @@ public class TradingCardManager implements CardManager<TradingCard> {
     private void loadAllCards() {
         this.rarityCardList = new HashMap<>();
         this.cards = plugin.getStorage().getCardsMap();
-
+        this.activeCards = new ArrayList<>();
+        loadActiveCards();
     }
 
     //TODO should be done in specific storage impl
     // This can be done in SQL fairly easily..
     private void loadActiveCards() {
-        this.activeCards = plugin.getStorage().getActiveCards();
+        loadActiveCardNames();
+        loadActiveRarityCardListNames();
+    }
+
+    private void loadActiveCardNames() {
+        for(TradingCard card: plugin.getStorage().getActiveCards()) {
+            this.activeCards.add(cardKey(card.getRarity().getName(),card.getCardName()));
+        }
+    }
+
+    private void loadActiveRarityCardListNames() {
         this.activeRarityCardList = new HashMap<>();
-        var cardConfigs = plugin.getCardsConfig().getCardConfigs();
-        for (SimpleCardsConfig simpleCardsConfig : cardConfigs) {
-            for (final Rarity rarity : plugin.getRarityManager().getRarities()) {
-                activeRarityCardList.put(rarity.getName(), new ArrayList<>());
-
-                var cardNodes = simpleCardsConfig.getCards(rarity.getName()).entrySet();
-
-                for (Map.Entry<Object, ? extends ConfigurationNode> nodeEntry : cardNodes) {
-                    final String cardName = nodeEntry.getValue().key().toString();
-                    final String cardKey = cardKey(rarity.getName(), cardName);
-                    plugin.debug(TradingCardManager.class,"CardKey=" + cardKey);
-                    Card<TradingCard> card = cards.get(cardKey);
-                    //A card should only be created if the series exists, checking here for now TODO
-                    plugin.debug(TradingCardManager.class,card.toString());
-                    if(plugin.getSeriesManager().getSeries(card.getSeries().getName().toLowerCase()) == null) {
-                        plugin.debug(TradingCardManager.class,"This series does not exist, make sure it is in series.yml" + card.getSeries());
-                        continue;
-                    }
-
-                    //This only loads on startup, that means that it doesn't update. But only on restarts TODO
-                    if (card.getSeries().isActive()) {
-                        activeRarityCardList.get(rarity.getName()).add(cardName);
-                        activeCards.add(cardKey);
-                    }
-
-                }
-            }
+        for(TradingCard card: plugin.getStorage().getActiveCards()) {
+            final Rarity rarity = card.getRarity();
+            activeRarityCardList.putIfAbsent(rarity.getName(),new ArrayList<>());
+            activeRarityCardList.get(rarity.getName()).add(card.getCardName());
         }
     }
 
@@ -105,8 +93,13 @@ public class TradingCardManager implements CardManager<TradingCard> {
     }
 
     @Override
+    public List<String> getRarityCardListNames(final String rarity) {
+        return this.rarityCardList.get(rarity);
+    }
+
+    @Override
     public List<String> getActiveRarityCardList(final String rarity) {
-        return plugin.getStorage().getCardsInRarity(rarity);
+        return this.activeRarityCardList.get(rarity);
     }
 
     @Override
@@ -202,7 +195,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
             return getRandomCard(rarity,forcedShiny);
         //TODO Reallly inefficient
         List<String> raritySeries = new ArrayList<>();
-        for(String cardKey: getRarityCardList(rarity)) {
+        for(String cardKey: getRarityCardListNames(rarity)) {
             TradingCard tradingCard = getCard(cardKey,rarity,forcedShiny);
             if(tradingCard.getSeries().getName().equals(series)) {
                 raritySeries.add(tradingCard.getCardName());

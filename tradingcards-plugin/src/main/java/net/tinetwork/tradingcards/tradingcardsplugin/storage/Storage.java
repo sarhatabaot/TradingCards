@@ -121,6 +121,8 @@ public interface Storage<T extends Card<T>> {
      */
     @Deprecated
     Map<String, T> getCardsMap();
+    @Deprecated
+    Map<String, T> getActiveCardsMap();
 
     /**
      * @return A list of all cards.

@@ -48,8 +48,12 @@ public class YamlStorage implements Storage<TradingCard> {
     private final CustomTypesConfig customTypesConfig;
     private final TradingCards plugin;
 
+
+    //String is CardKey (rarity.name) We should just have it as a class..
     private final Map<String, TradingCard> cards;
+    private final Map<String, TradingCard> activeCards;
     private final Map<String, List<TradingCard>> rarityCardList;
+    private final Map<String, List<TradingCard>> seriesCardList;
     private final Set<Series> activeSeries;
 
     public YamlStorage(final TradingCards plugin) throws ConfigurateException {
@@ -64,8 +68,11 @@ public class YamlStorage implements Storage<TradingCard> {
         this.cardsConfig = new CardsConfig(plugin);
 
         this.cards = new HashMap<>();
-        this.activeSeries = new HashSet<>();
         this.rarityCardList = new HashMap<>();
+        this.seriesCardList = new HashMap<>();
+
+        this.activeSeries = new HashSet<>();
+        this.activeCards = new HashMap<>();
     }
 
     @Override
@@ -232,6 +239,21 @@ public class YamlStorage implements Storage<TradingCard> {
         }
     }
 
+
+    private void loadActiveCards() {
+        for(TradingCard card: getCards()) {
+            //This only loads on startup, that means that it doesn't update. But only on restarts TODO
+            if(card.getSeries().isActive()) {
+                activeCards.put(cardKey(card.getRarity().getName(),card.getCardName()), card);
+            }
+        }
+    }
+
+    @Override
+    public Map<String, TradingCard> getActiveCardsMap() {
+        return activeCards;
+    }
+
     @Override
     public Set<Series> getActiveSeries() {
         return activeSeries;
@@ -249,7 +271,7 @@ public class YamlStorage implements Storage<TradingCard> {
 
     @Override
     public List<TradingCard> getActiveCards() {
-        return null;
+        return activeCards.values().stream().toList();
     }
 
     @Override

@@ -57,7 +57,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private ImmutableList<EntityType> bossMobs;
 
     /* Configs */
-    private Storage storage;
+    private Storage<TradingCard> storage;
 
     /* Local Settings */
     private StorageConfig storageConfig;
@@ -207,7 +207,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private void initCommands() {
         var commandManager = new PaperCommandManager(this);
         commandManager.getCommandCompletions().registerCompletion("rarities", c -> cardManager.getRarityNames());
-        commandManager.getCommandCompletions().registerCompletion("cards", c -> cardManager.getRarityCardList(c.getContextValueByName(String.class, "rarity")));
+        commandManager.getCommandCompletions().registerCompletion("cards", c -> cardManager.getRarityCardListNames(c.getContextValueByName(String.class, "rarity")));
         commandManager.getCommandCompletions().registerCompletion("active-cards", c -> cardManager.getActiveRarityCardList(c.getContextValueByName(String.class, "rarity")));
         commandManager.getCommandCompletions().registerCompletion("packs", c -> packManager.getCachedPacksItemstacks().keySet());
         commandManager.registerCommand(new CardsCommand(this, playerBlacklist));

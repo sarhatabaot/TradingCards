@@ -15,7 +15,6 @@ public interface CardManager<T extends Card<T>> {
     Map<String, T> getCards();
 
     /**
-     *
      * @return
      */
     List<String> getActiveCards();
@@ -71,6 +70,7 @@ public interface CardManager<T extends Card<T>> {
      * @return returns a list of card names from rarity.
      */
     List<T> getRarityCardList(final String rarity);
+    List<String> getRarityCardListNames(final String rarity);
 
     /**
      * @param rarity Rarity
