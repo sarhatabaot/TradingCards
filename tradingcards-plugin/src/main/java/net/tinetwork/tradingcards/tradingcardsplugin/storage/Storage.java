@@ -182,4 +182,6 @@ public interface Storage<T extends Card<T>> {
      * Just YAML for now.
      */
     void reload();
+
+    DropType getCustomType(final String typeId);
 }

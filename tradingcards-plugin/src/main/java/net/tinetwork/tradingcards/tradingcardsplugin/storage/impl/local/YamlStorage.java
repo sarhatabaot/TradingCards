@@ -16,6 +16,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.CustomTypes
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.PacksConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.RaritiesConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.SeriesConfig;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.DropTypeManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingCardManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.StorageType;
@@ -40,14 +41,13 @@ import static net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil.cardK
  * @author sarhatabaot
  */
 public class YamlStorage implements Storage<TradingCard> {
+    private final TradingCards plugin;
     private final CardsConfig cardsConfig;
     private final DeckConfig deckConfig;
     private final RaritiesConfig raritiesConfig;
     private final SeriesConfig seriesConfig;
     private final PacksConfig packsConfig;
     private final CustomTypesConfig customTypesConfig;
-    private final TradingCards plugin;
-
 
     //String is CardKey (rarity.name) We should just have it as a class..
     private final Map<String, TradingCard> cards;
@@ -89,7 +89,9 @@ public class YamlStorage implements Storage<TradingCard> {
     public void init(final TradingCards plugin) {
         loadCards();
         loadActiveSeries();
+        loadActiveCards();
         loadRarityCards();
+        loadSeriesCards();
     }
 
     @Override
@@ -240,6 +242,16 @@ public class YamlStorage implements Storage<TradingCard> {
     }
 
 
+    private void loadSeriesCards() {
+        for(Map.Entry<String,TradingCard> entry: cards.entrySet()) {
+            final TradingCard card = entry.getValue();
+            final Series series = card.getSeries();
+            seriesCardList.putIfAbsent(series.getName(),new ArrayList<>());
+            seriesCardList.get(series.getName()).add(card);
+        }
+    }
+
+
     private void loadActiveCards() {
         for(TradingCard card: getCards()) {
             //This only loads on startup, that means that it doesn't update. But only on restarts TODO
@@ -266,7 +278,7 @@ public class YamlStorage implements Storage<TradingCard> {
 
     @Override
     public List<TradingCard> getCardsInSeries(final String seriesId) {
-        return null;
+        return seriesCardList.get(seriesId);
     }
 
     @Override
@@ -276,11 +288,21 @@ public class YamlStorage implements Storage<TradingCard> {
 
     @Override
     public Card<TradingCard> getCard(final String cardId, final String rarityId) {
-        return null;
+        return cards.get(cardKey(rarityId,cardId));
     }
 
     @Override
     public Card<TradingCard> getActiveCard(final String cardId, final String rarityId) {
-        return null;
+        return activeCards.get(cardKey(rarityId,cardId));
+    }
+
+    @Override
+    public DropType getCustomType(final String typeId) {
+        try {
+            return customTypesConfig.getDropType(typeId);
+        } catch (SerializationException e) {
+            Util.logWarningException(e);
+        }
+        return DropTypeManager.ALL;
     }
 }
