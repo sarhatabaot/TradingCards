@@ -1,4 +1,4 @@
-package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
+package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local;
 
 import net.tinetwork.tradingcards.api.model.Pack;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;

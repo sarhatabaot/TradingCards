@@ -1,4 +1,4 @@
-package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
+package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local;
 
 import net.tinetwork.tradingcards.api.config.settings.RarityConfigurate;
 import net.tinetwork.tradingcards.api.model.Rarity;
