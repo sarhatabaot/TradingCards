@@ -298,7 +298,7 @@ public class CardsCommand extends BaseCommand {
         private @NotNull String generateRarityCardList(final Player target, final String rarityId) {
             final StringBuilder stringBuilder = new StringBuilder();
             String prefix = "";
-            for (String cardId : plugin.getCardManager().getRarityCardList(rarityId)) {
+            for (String cardId : plugin.getCardManager().getRarityCardListNames(rarityId)) {
                 debug("rarityId=" + rarityId + ",cardId=" + cardId);
                 TradingCard card = getCard(cardId, rarityId);
                 debug(card.toString());
@@ -346,7 +346,7 @@ public class CardsCommand extends BaseCommand {
 
         //Counts the total amount of cards a player has from a rarity
         private int countPlayerCardsInRarity(final Player player, final String rarity) {
-            final List<String> rarityCardList = plugin.getCardManager().getRarityCardList(rarity);
+            final List<String> rarityCardList = plugin.getCardManager().getRarityCardListNames(rarity);
             int cardCounter = 0;
             for (String cardId : rarityCardList) {
                 if (deckManager.hasCard(player, cardId, rarity)) {
@@ -357,7 +357,7 @@ public class CardsCommand extends BaseCommand {
         }
 
         private int countShinyPlayerCardsInRarity(final Player player, final String rarity) {
-            final List<String> rarityCardList = plugin.getCardManager().getRarityCardList(rarity);
+            final List<String> rarityCardList = plugin.getCardManager().getRarityCardListNames(rarity);
             int cardCounter = 0;
             for (String cardId : rarityCardList) {
                 if (deckManager.hasShinyCard(player, cardId, rarity)) {
