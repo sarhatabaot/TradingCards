@@ -1,20 +1,17 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.managers;
 
-import net.tinetwork.tradingcards.api.card.Card;
 import net.tinetwork.tradingcards.api.manager.CardManager;
 import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.api.model.Rarity;
-import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.api.model.chance.Chance;
 import net.tinetwork.tradingcards.api.model.chance.EmptyChance;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
-import net.tinetwork.tradingcards.tradingcardsplugin.config.SimpleCardsConfig;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local.SimpleCardsConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
-import org.spongepowered.configurate.ConfigurationNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package net.tinetwork.tradingcards.tradingcardsplugin.config.deck;
+package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local.deck;
 
 import net.tinetwork.tradingcards.api.model.deck.Deck;
 import net.tinetwork.tradingcards.api.model.deck.StorageEntry;
