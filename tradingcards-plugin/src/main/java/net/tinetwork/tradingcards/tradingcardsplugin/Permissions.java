@@ -37,6 +37,7 @@ public class Permissions {
     public static final String CREATE_SERIES = "cards.create.series";
     public static final String CREATE_CARD = "cards.create.card";
     public static final String CREATE_CUSTOM_TYPE = "cards.create.customtype";
+    public static final String EDIT = "cards.edit";
     private Permissions () {
         throw new UnsupportedOperationException();
     }
