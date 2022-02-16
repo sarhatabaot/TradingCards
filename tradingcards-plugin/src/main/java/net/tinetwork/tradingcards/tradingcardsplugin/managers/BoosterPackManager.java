@@ -110,4 +110,9 @@ public class BoosterPackManager implements PackManager {
     public List<Pack> getPacks() {
         return plugin.getStorage().getPacks();
     }
+
+    @Override
+    public boolean containsPack(final String packId) {
+        return false;
+    }
 }

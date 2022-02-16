@@ -74,7 +74,7 @@ public class CardsCommand extends BaseCommand {
 
     @CatchUnknown
     @HelpCommand
-    public void onHelp(CommandHelp help) {
+    public void onHelp(@NotNull CommandHelp help) {
         help.showHelp();
     }
 
@@ -98,7 +98,7 @@ public class CardsCommand extends BaseCommand {
     @Subcommand("resolve")
     @CommandPermission(Permissions.RESOLVE)
     @Description("Shows a player's uuid")
-    public void onResolve(final CommandSender sender, final Player player) {
+    public void onResolve(final CommandSender sender, final @NotNull Player player) {
         ChatUtil.sendMessage(sender, plugin.getMessagesConfig().resolveMsg().replace("%name%", player.getName()).replace("%uuid%", player.getUniqueId().toString()));
     }
 
@@ -734,6 +734,68 @@ public class CardsCommand extends BaseCommand {
                     Util.logSevereException(e);
                 }
             }
+        }
+    }
+
+    @Subcommand("create")
+    @CommandPermission(Permissions.CREATE)
+    public class CreateSubCommand extends BaseCommand {
+
+        @Subcommand("rarity")
+        @CommandPermission(Permissions.CREATE_RARITY)
+        public void onRarity(final CommandSender sender, final String rarityId) {
+            if(plugin.getRarityManager().containsRarity(rarityId)) {
+                sender.sendMessage("This rarity already exists. Cannot create a new one.");
+                return;
+            }
+
+
+            plugin.getStorage().createRarity(rarityId);
+        }
+
+        @Subcommand("card")
+        @CommandPermission(Permissions.CREATE_CARD)
+        public void onCard(final CommandSender sender,final String cardId, final String rarityId, final String seriesId) {
+            //Check is rarity & series exist
+            if(plugin.getCardManager().containsCard(cardId,rarityId,seriesId)) {
+                sender.sendMessage("This card already exists. Cannot create a new one.");
+                return;
+            }
+
+            plugin.getStorage().createCard(cardId,rarityId,seriesId);
+        }
+
+        @Subcommand("pack")
+        @CommandPermission(Permissions.CREATE_PACK)
+        public void onPack(final CommandSender sender,final String packId){
+            if(plugin.getPackManager().containsPack(packId)) {
+                sender.sendMessage("This pack already exists. Cannot create a new one.");
+                return;
+            }
+
+            plugin.getStorage().createPack(packId);
+        }
+
+        @Subcommand("series")
+        @CommandPermission(Permissions.CREATE_SERIES)
+        public void onSeries(final CommandSender sender, final String seriesId){
+            if(plugin.getSeriesManager().containsSeries(seriesId)) {
+                sender.sendMessage("This series already exists. Cannot create a new one.");
+                return;
+            }
+
+            plugin.getStorage().createSeries(seriesId);
+        }
+
+        @Subcommand("type")
+        @CommandPermission(Permissions.CREATE_CUSTOM_TYPE)
+        public void onType(final CommandSender sender,final String typeId){
+            if(plugin.getDropTypeManager().containsType(typeId)) {
+                sender.sendMessage("This type already exists. Cannot create a new one.");
+                return;
+            }
+
+            plugin.getStorage().createCustomType(typeId);
         }
     }
 

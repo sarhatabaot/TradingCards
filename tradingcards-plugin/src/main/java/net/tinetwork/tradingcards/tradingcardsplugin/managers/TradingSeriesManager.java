@@ -32,4 +32,9 @@ public class TradingSeriesManager implements SeriesManager {
     public Collection<Series> getAllSeries() {
         return plugin.getStorage().getAllSeries();
     }
+
+    @Override
+    public boolean containsSeries(final String seriesId) {
+        return plugin.getStorage().getSeries(seriesId) != null;
+    }
 }

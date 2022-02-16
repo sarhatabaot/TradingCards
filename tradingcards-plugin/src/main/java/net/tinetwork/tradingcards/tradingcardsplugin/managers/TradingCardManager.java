@@ -251,6 +251,15 @@ public class TradingCardManager implements CardManager<TradingCard> {
     }
 
 
+    public boolean containsCard(final String cardId, final String rarityId, final String seriesId) {
+        if(cards.containsKey(cardKey(rarityId,cardId))) {
+            TradingCard card = cards.get(cardKey(rarityId,cardId));
+            return card.getSeries().getName().equals(seriesId);
+        }
+        return false;
+    }
+
+
     public TradingCard generateCard(final SimpleCardsConfig simpleCardsConfig, final String cardId, final String rarityId) {
         if ("none".equalsIgnoreCase(rarityId)) {
             return NULL_CARD;

@@ -14,5 +14,6 @@ public interface TypeManager {
     void loadTypes();
     Map<String, DropType> getTypes();
 
-    DropType getMobType(EntityType type);
+    DropType getMobType(final EntityType type);
+    boolean containsType(final String typeId);
 }

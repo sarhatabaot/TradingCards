@@ -184,4 +184,15 @@ public interface Storage<T extends Card<T>> {
     void reload();
 
     DropType getCustomType(final String typeId);
+
+    //Create
+    void createCard(final String cardId, final String rarityId, final String seriesId);
+    void createRarity(final String rarityId);
+    void createSeries(final String seriesId);
+    void createCustomType(final String typeId);
+    void createPack(final String packId);
+    //Edit
+    //edit <type> <params>
+    //void editCard(final String cardId, final String rarityId, )
+
 }
