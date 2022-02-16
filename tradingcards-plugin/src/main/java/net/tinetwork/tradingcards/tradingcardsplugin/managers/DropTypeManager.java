@@ -28,8 +28,7 @@ public class DropTypeManager implements TypeManager {
 
     @Override
     public DropType getType(final String type) throws UnsupportedDropTypeException {
-        DropType dropType = mobTypes.get(type);
-        if(dropType == null) {
+        if(!mobTypes.containsKey(type)) {
             return switch (type.toLowerCase()) {
                 case "boss" -> BOSS;
                 case "hostile" -> HOSTILE;
@@ -39,7 +38,7 @@ public class DropTypeManager implements TypeManager {
                 default -> throw new UnsupportedDropTypeException();
             };
         }
-        return dropType;
+        return mobTypes.get(type);
     }
 
     @Override

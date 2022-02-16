@@ -40,6 +40,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPluginLoader;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurateException;
 
@@ -171,7 +172,8 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         }
     }
 
-    private Storage initStorage() throws ConfigurateException {
+    @Contract(" -> new")
+    private @NotNull Storage<TradingCard> initStorage() throws ConfigurateException {
         StorageType storageType = this.storageConfig.getType();
         getLogger().info("Using storage "+storageType.name());
         switch (storageType){
@@ -185,8 +187,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
                 return new SqlStorage(this,
                             this.storageConfig.getTablePrefix(),
                             new MySqlConnectionFactory(this.storageConfig));
-
-
             }
             //YAML is the default
             default -> {

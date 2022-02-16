@@ -35,7 +35,7 @@ import java.util.UUID;
 public class TradingDeckManager implements DeckManager {
     private final TradingCards plugin;
     private final TradingCardManager cardManager;
-    private final Storage storage;
+    private final Storage<TradingCard> storage;
     private final Map<UUID,Integer> playerDeckViewingMap;
 
     public TradingDeckManager(final @NotNull TradingCards plugin) {
