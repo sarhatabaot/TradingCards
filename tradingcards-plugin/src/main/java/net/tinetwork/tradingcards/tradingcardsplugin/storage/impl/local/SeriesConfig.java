@@ -25,12 +25,12 @@ import java.util.Map;
  * @author sarhatabaot
  */
 public class SeriesConfig extends SeriesConfigurate {
-    private Map<String,Series> seriesMap;
-    private Map<String,ColorSeries> seriesColors;
-    private final ColorSeries defaultColors = new ColorSeries("&a", "&b","&e","&c","&6");
+    private Map<String, Series> seriesMap;
+    private Map<String, ColorSeries> seriesColors;
+    private final ColorSeries defaultColors = new ColorSeries("&a", "&b", "&e", "&c", "&6");
 
     public SeriesConfig(final TradingCards plugin) throws ConfigurateException {
-        super(plugin, "settings"+ File.separator, "series.yml", "settings");
+        super(plugin, "settings" + File.separator, "series.yml", "settings");
     }
 
     @Override
@@ -39,36 +39,38 @@ public class SeriesConfig extends SeriesConfigurate {
         loadSeries();
         loadSeriesColors();
     }
+
     private void loadSeriesColors() {
         this.seriesColors = new HashMap<>();
-        for(String seriesId: this.seriesMap.keySet()) {
+        for (String seriesId : this.seriesMap.keySet()) {
             final ConfigurationNode seriesNode = rootNode.node(seriesId);
             try {
-                ColorSeries colorSeries = seriesNode.node("colors").get(ColorSeries.class,defaultColors);
-                seriesColors.put(seriesId,colorSeries);
-                plugin.debug(SeriesConfig.class,"Added "+colorSeries.toString());
-            } catch (SerializationException|NullPointerException e){
-                plugin.getLogger().info("Couldn't add="+seriesId);
+                ColorSeries colorSeries = seriesNode.node("colors").get(ColorSeries.class, defaultColors);
+                seriesColors.put(seriesId, colorSeries);
+                plugin.debug(SeriesConfig.class, "Added " + colorSeries.toString());
+            } catch (SerializationException | NullPointerException e) {
+                plugin.getLogger().info("Couldn't add=" + seriesId);
                 Util.logSevereException(e);
             }
         }
-        for(Map.Entry<String,ColorSeries> entry: seriesColors.entrySet()) {
-            plugin.debug(SeriesConfig.class,entry.getKey()+":"+entry.getValue().toString());
+        for (Map.Entry<String, ColorSeries> entry : seriesColors.entrySet()) {
+            plugin.debug(SeriesConfig.class, entry.getKey() + ":" + entry.getValue().toString());
         }
     }
+
     private void loadSeries() {
-        for(Map.Entry<Object, ? extends ConfigurationNode> nodeEntry: rootNode.childrenMap().entrySet()) {
+        for (Map.Entry<Object, ? extends ConfigurationNode> nodeEntry : rootNode.childrenMap().entrySet()) {
             final String seriesKey = nodeEntry.getValue().key().toString();
             try {
                 final Series series = getSeries(seriesKey);
-                seriesMap.put(seriesKey,series);
-                plugin.debug(SeriesConfig.class,"Added "+series.toString());
-            } catch (SerializationException e){
+                seriesMap.put(seriesKey, series);
+                plugin.debug(SeriesConfig.class, "Added " + series.toString());
+            } catch (SerializationException e) {
                 Util.logSevereException(e);
-                plugin.debug(SeriesConfig.class,"Couldn't add="+seriesKey);
+                plugin.debug(SeriesConfig.class, "Couldn't add=" + seriesKey);
             }
         }
-        plugin.debug(SeriesConfig.class,"Total Series="+ seriesMap.size());
+        plugin.debug(SeriesConfig.class, "Total Series=" + seriesMap.size());
 
     }
 
@@ -76,13 +78,22 @@ public class SeriesConfig extends SeriesConfigurate {
         return rootNode.node(key).get(Series.class);
     }
 
-    public Map<String,Series> series() {
+    public Map<String, Series> series() {
         return this.seriesMap;
     }
 
     public ColorSeries getColorSeries(final String key) {
-        plugin.debug(SeriesConfig.class,"SeriesKey="+key);
+        plugin.debug(SeriesConfig.class, "SeriesKey=" + key);
         return this.seriesColors.get(key);
+    }
+
+    public void createSeries(final String seriesId) {
+        try {
+            ConfigurationNode seriesNode = rootNode.node(seriesId).set(new Series(seriesId, Mode.ACTIVE, seriesId, null));
+            loader.save(seriesNode);
+        } catch (ConfigurateException e) {
+            Util.logSevereException(e);
+        }
     }
 
     @Override
@@ -90,7 +101,7 @@ public class SeriesConfig extends SeriesConfigurate {
         loaderBuilder.defaultOptions(opts -> opts.serializers(builder ->
                 builder.registerExact(DateScheduleSerializer.TYPE, DateScheduleSerializer.INSTANCE)
                         .registerExact(SeriesSerializer.TYPE, SeriesSerializer.INSTANCE)
-                        .registerExact(ColorSeriesSerializer.TYPE,ColorSeriesSerializer.INSTANCE)));
+                        .registerExact(ColorSeriesSerializer.TYPE, ColorSeriesSerializer.INSTANCE)));
     }
 
 
@@ -102,15 +113,17 @@ public class SeriesConfig extends SeriesConfigurate {
         //across all types.
         private static final String ACTIVE_FROM = "active-from";
         private static final String ACTIVE_UNTIL = "active-until";
-        private  DateScheduleSerializer(){
+
+        private DateScheduleSerializer() {
 
         }
+
         @Override
         public DateSchedule deserialize(final Type type, final ConfigurationNode node) throws SerializationException {
             final LocalDate activeFromDate = LocalDate.parse(node.node(ACTIVE_FROM).getString());
             final LocalDate activeUntilDate = LocalDate.parse(node.node(ACTIVE_UNTIL).getString());
 
-            return new DateSchedule(activeFromDate,activeUntilDate);
+            return new DateSchedule(activeFromDate, activeUntilDate);
         }
 
         @Override
@@ -142,17 +155,17 @@ public class SeriesConfig extends SeriesConfigurate {
             Schedule schedule = null;
             ScheduleType scheduleType = null;
 
-            if(mode == Mode.SCHEDULED) {
+            if (mode == Mode.SCHEDULED) {
                 scheduleType = ScheduleType.valueOf(node.node(SCHEDULE).node(SCHEDULE_TYPE).getString());
             }
 
 
-            if(scheduleType == ScheduleType.DATE) {
+            if (scheduleType == ScheduleType.DATE) {
                 schedule = node.node(SCHEDULE).get(Schedule.class);
             }
 
 
-            return new Series(node.key().toString(),mode,displayName,schedule);
+            return new Series(node.key().toString(), mode, displayName, schedule);
         }
 
         @Override
@@ -178,7 +191,7 @@ public class SeriesConfig extends SeriesConfigurate {
             final String about = node.node(ABOUT).getString();
             final String rarity = node.node(RARITY).getString();
             final String series = node.node(SERIES).getString();
-            return new ColorSeries(series,typeFormat,info,about,rarity);
+            return new ColorSeries(series, typeFormat, info, about, rarity);
         }
 
         @Override

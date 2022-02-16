@@ -288,18 +288,19 @@ public class YamlStorage implements Storage<TradingCard> {
     //Assume that checks have been made already? TODO
     @Override
     public void createCard(final String cardId, final String rarityId, final String seriesId) {
+        //use the first available config to create new cards, perhaps this should be configurable.
         SimpleCardsConfig config = cardsConfig.getCardConfigs().get(0);
         config.createCard(cardId,rarityId,seriesId);
     }
 
     @Override
     public void createRarity(final String rarityId) {
-
+        raritiesConfig.createRarity(rarityId);
     }
 
     @Override
     public void createSeries(final String seriesId) {
-
+        seriesConfig.createSeries(seriesId);
     }
 
     @Override
