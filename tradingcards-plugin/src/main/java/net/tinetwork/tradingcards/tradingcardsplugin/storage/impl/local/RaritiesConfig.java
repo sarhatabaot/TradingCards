@@ -3,6 +3,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local;
 import net.tinetwork.tradingcards.api.config.settings.RarityConfigurate;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
+import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
@@ -59,6 +60,17 @@ public class RaritiesConfig extends RarityConfigurate{
 
     public List<Rarity> rarities() {
         return rarities;
+    }
+
+    public void createRarity(final String rarityId) {
+        ConfigurationNode rarityNode = raritiesNode.node(rarityId);
+        try {
+            Rarity rarity = new Rarity(rarityId,rarityId,"",0,0,new ArrayList<>());
+            rarityNode.set(rarity);
+            loader.save(rarityNode);
+        } catch (ConfigurateException e) {
+            Util.logSevereException(e);
+        }
     }
 
     public static final class RaritySerializer implements TypeSerializer<Rarity> {
