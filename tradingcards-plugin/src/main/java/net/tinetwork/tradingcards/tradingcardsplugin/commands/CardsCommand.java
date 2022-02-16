@@ -686,7 +686,7 @@ public class CardsCommand extends BaseCommand {
 
 
         @Subcommand("confirm")
-        public void onMigrateConfirm(final CommandSender sender) {
+        public void onMigrateConfirm(final @NotNull CommandSender sender) {
             sender.sendMessage(ChatUtil.color("&2Started migration from YAML to " + plugin.getStorage().getType().name()));
             sender.sendMessage(ChatUtil.color("&2This may take a while..."));
             new MigratorBukkitRunnable(sender).runTask(plugin);
@@ -756,7 +756,7 @@ public class CardsCommand extends BaseCommand {
         @Subcommand("card")
         @CommandPermission(Permissions.CREATE_CARD)
         public void onCard(final CommandSender sender,final String cardId, final String rarityId, final String seriesId) {
-            //Check is rarity & series exist
+            //Check if rarity & series exist
             if(plugin.getCardManager().containsCard(cardId,rarityId,seriesId)) {
                 sender.sendMessage("This card already exists. Cannot create a new one.");
                 return;

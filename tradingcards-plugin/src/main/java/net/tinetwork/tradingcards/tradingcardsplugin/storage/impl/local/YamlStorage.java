@@ -285,6 +285,33 @@ public class YamlStorage implements Storage<TradingCard> {
         return cards.get(cardKey(rarityId,cardId));
     }
 
+    //Assume that checks have been made already? TODO
+    @Override
+    public void createCard(final String cardId, final String rarityId, final String seriesId) {
+        SimpleCardsConfig config = cardsConfig.getCardConfigs().get(0);
+        config.createCard(cardId,rarityId,seriesId);
+    }
+
+    @Override
+    public void createRarity(final String rarityId) {
+
+    }
+
+    @Override
+    public void createSeries(final String seriesId) {
+
+    }
+
+    @Override
+    public void createCustomType(final String typeId) {
+
+    }
+
+    @Override
+    public void createPack(final String packId) {
+
+    }
+
     @Override
     public Card<TradingCard> getActiveCard(final String cardId, final String rarityId) {
         return activeCards.get(cardKey(rarityId,cardId));

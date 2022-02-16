@@ -57,6 +57,20 @@ public class SimpleCardsConfig extends SimpleConfigurate {
     }
 
 
+    public void createCard(final String cardId, final String rarityId, final String seriesId) {
+        final Rarity rarity = plugin.getRarityManager().getRarity(rarityId);
+        final Series series = plugin.getSeriesManager().getSeries(seriesId);
+        ConfigurationNode rarityNode = cardsNode.node(rarityId);
+        TradingCard card = new TradingCard(cardId).rarity(rarity).series(series).get();
+        try {
+            rarityNode.set(card);
+            loader.save(rarityNode);
+        } catch (ConfigurateException e) {
+            Util.logSevereException(e);
+        }
+    }
+
+
     public static class CardSerializer implements TypeSerializer<TradingCard> {
         @SuppressWarnings("rawtypes")
         private static TradingCardsPlugin<? extends Card> plugin;

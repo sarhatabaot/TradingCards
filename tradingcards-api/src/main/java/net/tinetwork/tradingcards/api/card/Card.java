@@ -7,6 +7,7 @@ import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.api.utils.NbtUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class Card<T>{
     private final String cardName;
@@ -26,7 +27,7 @@ public abstract class Card<T>{
         this.cardMeta = new CardMeta();
     }
 
-    protected Card(final Card<T> card) {
+    protected Card(final @NotNull Card<T> card) {
         this.cardName = card.getCardName();
         this.material = card.getMaterial();
         this.type = card.getType();
