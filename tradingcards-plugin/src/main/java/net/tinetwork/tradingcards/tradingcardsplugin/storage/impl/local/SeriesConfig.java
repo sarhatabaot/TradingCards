@@ -10,6 +10,7 @@ import net.tinetwork.tradingcards.api.model.schedule.ScheduleType;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
@@ -87,6 +88,7 @@ public class SeriesConfig extends SeriesConfigurate {
         return this.seriesColors.get(key);
     }
 
+    //ColorSeries should be a part of series?
     public void createSeries(final String seriesId) {
         try {
             ConfigurationNode seriesNode = rootNode.node(seriesId).set(new Series(seriesId, Mode.ACTIVE, seriesId, null));
@@ -185,7 +187,7 @@ public class SeriesConfig extends SeriesConfigurate {
         private static final String RARITY = "rarity";
 
         @Override
-        public ColorSeries deserialize(final Type type, final ConfigurationNode node) throws SerializationException {
+        public ColorSeries deserialize(final Type type, final @NotNull ConfigurationNode node) throws SerializationException {
             final String typeFormat = node.node(TYPE_PATH).getString();
             final String info = node.node(INFO).getString();
             final String about = node.node(ABOUT).getString();

@@ -1,6 +1,10 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote;
 
 import com.google.common.collect.ImmutableMap;
+import net.tinetwork.tradingcards.api.card.Card;
+import net.tinetwork.tradingcards.api.config.ColorSeries;
+import net.tinetwork.tradingcards.api.model.DropType;
+import net.tinetwork.tradingcards.api.model.Pack;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.api.model.deck.Deck;
@@ -12,6 +16,8 @@ import net.tinetwork.tradingcards.tradingcardsplugin.storage.StorageType;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.sql.ConnectionFactory;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.sql.SchemaReader;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
@@ -23,11 +29,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -148,7 +156,8 @@ public class SqlStorage implements Storage<TradingCard> {
         return null;
     }
 
-    private Deck getDeckFromResultSet(ResultSet resultSet) throws SQLException {
+    @Contract("_ -> new")
+    private @NotNull Deck getDeckFromResultSet(@NotNull ResultSet resultSet) throws SQLException {
         final String playerUuid = statementProcessor.unwrap(resultSet.getString(COLUMN_UUID));
         final int deckNumber = resultSet.getInt(COLUMN_DECK_NUMBER);
         List<StorageEntry> entries = new ArrayList<>();
@@ -166,7 +175,7 @@ public class SqlStorage implements Storage<TradingCard> {
     //Entries will be sorted by rarityid and then by card name
     public static class StorageEntryComparator implements Comparator<StorageEntry> {
         @Override
-        public int compare(final StorageEntry o1, final StorageEntry o2) {
+        public int compare(final @NotNull StorageEntry o1, final StorageEntry o2) {
             if (o1.equals(o2))
                 return 0;
             if (o1.getCardId().equals(o2.getCardId()))
@@ -233,7 +242,7 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
     @Override
-    public void saveDeck(final UUID playerUuid, final int deckNumber, final Deck deck) {
+    public void saveDeck(final UUID playerUuid, final int deckNumber, final @NotNull Deck deck) {
         //Get current Deck. Compare which cards don't exist anymore.
         //Get a list of cards to remove, if any exist.
         Deck dbDeck = getDeck(playerUuid, deckNumber);
@@ -293,7 +302,7 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
 
-    private void updateCard(final UUID playerUuid, final int deckNumber, final StorageEntry storageEntry) {
+    private void updateCard(final @NotNull UUID playerUuid, final int deckNumber, final @NotNull StorageEntry storageEntry) {
         try (Connection connection = connectionFactory.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(DECKS_UPDATE_CARD,
                     null,
@@ -455,7 +464,114 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
     @Override
+    public List<Rarity> getRarities() {
+        return null;
+    }
+
+    @Override
+    public ColorSeries getColorSeries(final String seriesId) {
+        return null;
+    }
+
+    @Override
+    public Collection<Series> getAllSeries() {
+        return null;
+    }
+
+    @Override
+    public Set<Series> getActiveSeries() {
+        return null;
+    }
+
+    @Override
+    public Map<String, TradingCard> getCardsMap() {
+        return null;
+    }
+
+    @Override
+    public Map<String, TradingCard> getActiveCardsMap() {
+        return null;
+    }
+
+    @Override
+    public List<TradingCard> getCards() {
+        return null;
+    }
+
+    @Override
+    public List<TradingCard> getCardsInRarity(final String rarityId) {
+        return null;
+    }
+
+    @Override
+    public List<TradingCard> getCardsInSeries(final String seriesId) {
+        return null;
+    }
+
+    @Override
+    public List<TradingCard> getActiveCards() {
+        return null;
+    }
+
+    @Override
+    public Card<TradingCard> getCard(final String cardId, final String rarityId) {
+        return null;
+    }
+
+    @Override
+    public Card<TradingCard> getActiveCard(final String cardId, final String rarityId) {
+        return null;
+    }
+
+    @Override
+    public @Nullable Pack getPack(final String packsId) {
+        return null;
+    }
+
+    @Override
+    public List<Pack> getPacks() {
+        return null;
+    }
+
+    @Override
+    public Set<DropType> getDropTypes() {
+        return null;
+    }
+
+    @Override
+    public DropType getCustomType(final String typeId) {
+        return null;
+    }
+
+    @Override
+    public void createCard(final String cardId, final String rarityId, final String seriesId) {
+
+    }
+
+    @Override
+    public void createRarity(final String rarityId) {
+
+    }
+
+    @Override
+    public void createSeries(final String seriesId) {
+
+    }
+
+    @Override
+    public void createCustomType(final String typeId) {
+
+    }
+
+    @Override
+    public void createPack(final String packId) {
+
+    }
+
+    @Override
     public void reload() {
         //nothing to do here.
     }
+
+
 }

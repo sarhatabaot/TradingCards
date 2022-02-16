@@ -799,6 +799,25 @@ public class CardsCommand extends BaseCommand {
         }
     }
 
+    @Subcommand("edit")
+    @CommandPermission(Permissions.EDIT)
+    public class EditSubCommand extends BaseCommand {
+        public void onRarity() {
+
+        }
+
+        public void onSeries(){
+
+        }
+
+        public void onPack() {
+
+        }
+        public void onType(){
+
+        }
+    }
+
 }
 
 
