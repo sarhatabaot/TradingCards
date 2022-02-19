@@ -26,7 +26,10 @@ public class TradingRarityManager implements RarityManager {
 
     @Override
     public boolean containsRarity(final String rarityId) {
-        //todo although this can be done, we could check if it exists first
-        return getRarity(rarityId) == null;
+        for(Rarity rarity: getRarities()) {
+            if(rarity.getName().equals(rarityId))
+                return true;
+        }
+        return false;
     }
 }
