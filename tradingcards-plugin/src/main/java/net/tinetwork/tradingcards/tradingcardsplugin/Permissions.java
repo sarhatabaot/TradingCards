@@ -38,6 +38,11 @@ public class Permissions {
     public static final String CREATE_CARD = "cards.create.card";
     public static final String CREATE_CUSTOM_TYPE = "cards.create.customtype";
     public static final String EDIT = "cards.edit";
+    public static final String EDIT_CARD = "cards.edit.card";
+    public static final String EDIT_RARITY = "cards.edit.rarity";
+    public static final String EDIT_SERIES = "cards.edit.series";
+    public static final String EDIT_CUSTOM_TYPE = "cards.edit.customtype";
+    public static final String EDIT_PACK = "cards.edit.pack";
     private Permissions () {
         throw new UnsupportedOperationException();
     }
