@@ -50,6 +50,7 @@ import org.spongepowered.configurate.ConfigurateException;
 import java.io.File;
 import java.util.Random;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 public class TradingCards extends TradingCardsPlugin<TradingCard> {
@@ -218,7 +219,9 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         commandManager.getCommandCompletions().registerCompletion("cards", c -> cardManager.getRarityCardListNames(c.getContextValueByName(String.class, "rarity")));
         commandManager.getCommandCompletions().registerCompletion("active-cards", c -> cardManager.getActiveRarityCardList(c.getContextValueByName(String.class, "rarity")));
         commandManager.getCommandCompletions().registerCompletion("packs", c -> packManager.getPacks().stream().map(Pack::id).toList());
-        commandManager.getCommandCompletions().registerCompletion("drop-types", c -> dropTypeManager.getDefaultTypes());
+        commandManager.getCommandCompletions().registerCompletion("default-types", c -> dropTypeManager.getDefaultTypes());
+        commandManager.getCommandCompletions().registerCompletion("custom-types",c -> dropTypeManager.getTypes().keySet());
+        commandManager.getCommandCompletions().registerCompletion("all-types",c -> Stream.concat(dropTypeManager.getDefaultTypes().stream(),dropTypeManager.getTypes().keySet().stream()).toList());
         commandManager.getCommandCompletions().registerCompletion("series",c -> seriesManager.getAllSeries().stream().map(Series::getName).toList());
         commandManager.registerCommand(new CardsCommand(this, playerBlacklist));
         commandManager.registerCommand(new DeckCommand(this));

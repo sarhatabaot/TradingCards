@@ -823,7 +823,7 @@ public class CardsCommand extends BaseCommand {
 
         @Subcommand("type")
         @CommandPermission(Permissions.CREATE_CUSTOM_TYPE)
-        @CommandCompletion("@nothing @drop-types")
+        @CommandCompletion("@nothing @default-types")
         public void onType(final CommandSender sender, final String typeId, final String type) {
             if (plugin.getDropTypeManager().containsType(typeId)) {
                 sender.sendMessage("This type already exists. Cannot create a new one.");
