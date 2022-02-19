@@ -310,7 +310,7 @@ public class YamlStorage implements Storage<TradingCard> {
 
     @Override
     public void createPack(final String packId) {
-
+        packsConfig.createPack(packId);
     }
 
     @Override

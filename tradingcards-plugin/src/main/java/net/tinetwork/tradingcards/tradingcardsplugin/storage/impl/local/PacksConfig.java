@@ -3,6 +3,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local;
 import net.tinetwork.tradingcards.api.model.Pack;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.api.config.SimpleConfigurate;
+import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
@@ -32,6 +33,16 @@ public class PacksConfig extends SimpleConfigurate {
 
     public List<Pack> getPacks() {
         return packs;
+    }
+
+
+    public void createPack(final String packId){
+        try {
+            ConfigurationNode packNode = rootNode.node(packId).set(new Pack(packId,new ArrayList<>(),packId,100.0,"cards.packs."+packId));
+            loader.save(packNode);
+        } catch (ConfigurateException e) {
+            Util.logSevereException(e);
+        }
     }
 
     @Override
