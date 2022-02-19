@@ -1,10 +1,13 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local;
 
 import net.tinetwork.tradingcards.api.model.DropType;
+import net.tinetwork.tradingcards.api.model.Series;
+import net.tinetwork.tradingcards.api.model.schedule.Mode;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.api.config.SimpleConfigurate;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
@@ -55,6 +58,15 @@ public class CustomTypesConfig extends SimpleConfigurate {
         return rootNode.node(name).get(DropType.class);
     }
 
+    public void createCustomType(final String typeId, final String type) {
+        try {
+            ConfigurationNode typeNode = rootNode.node(typeId).set(new DropType(typeId,typeId,type));
+            loader.save(typeNode);
+        } catch (ConfigurateException e) {
+            Util.logSevereException(e);
+        }
+    }
+
     public static class DropTypeSerializer implements TypeSerializer<DropType> {
         public static final DropTypeSerializer INSTANCE = new DropTypeSerializer();
         public static final Class<DropType> TYPE = DropType.class;
@@ -65,7 +77,7 @@ public class CustomTypesConfig extends SimpleConfigurate {
 
         }
         @Override
-        public DropType deserialize(final Type type, final ConfigurationNode node) throws SerializationException {
+        public DropType deserialize(final Type type, final @NotNull ConfigurationNode node) throws SerializationException {
             final String id = node.key().toString();
             final String displayName = node.node(DISPLAY_NAME).getString();
             final String dropType = node.node(DROP_TYPE).getString();

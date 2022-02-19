@@ -189,7 +189,7 @@ public interface Storage<T extends Card<T>> {
     void createCard(final String cardId, final String rarityId, final String seriesId);
     void createRarity(final String rarityId);
     void createSeries(final String seriesId);
-    void createCustomType(final String typeId);
+    void createCustomType(final String typeId, final String type);
     void createPack(final String packId);
     //Edit
     //edit <type> <params>

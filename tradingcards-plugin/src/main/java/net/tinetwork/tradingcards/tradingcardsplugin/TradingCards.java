@@ -210,6 +210,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         commandManager.getCommandCompletions().registerCompletion("cards", c -> cardManager.getRarityCardListNames(c.getContextValueByName(String.class, "rarity")));
         commandManager.getCommandCompletions().registerCompletion("active-cards", c -> cardManager.getActiveRarityCardList(c.getContextValueByName(String.class, "rarity")));
         commandManager.getCommandCompletions().registerCompletion("packs", c -> packManager.getCachedPacksItemstacks().keySet());
+        commandManager.getCommandCompletions().registerCompletion("drop-types", c -> dropTypeManager.getDefaultTypes());
         commandManager.registerCommand(new CardsCommand(this, playerBlacklist));
         commandManager.registerCommand(new DeckCommand(this));
         commandManager.enableUnstableAPI("help");

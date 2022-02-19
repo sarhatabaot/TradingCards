@@ -68,4 +68,9 @@ public class DropTypeManager implements TypeManager {
         }
         return mobTypes.containsKey(typeId);
     }
+
+
+    public List<String> getDefaultTypes() {
+        return defaultTypes;
+    }
 }

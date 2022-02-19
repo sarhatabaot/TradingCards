@@ -739,6 +739,7 @@ public class CardsCommand extends BaseCommand {
 
     @Subcommand("create")
     @CommandPermission(Permissions.CREATE)
+    @Description("Creates any type, without customization, edit later using /cards edit.")
     public class CreateSubCommand extends BaseCommand {
 
         @Subcommand("rarity")
@@ -789,13 +790,19 @@ public class CardsCommand extends BaseCommand {
 
         @Subcommand("type")
         @CommandPermission(Permissions.CREATE_CUSTOM_TYPE)
-        public void onType(final CommandSender sender,final String typeId){
+        @CommandCompletion("@nothing @drop-types")
+        public void onType(final CommandSender sender,final String typeId, final String type){
             if(plugin.getDropTypeManager().containsType(typeId)) {
                 sender.sendMessage("This type already exists. Cannot create a new one.");
                 return;
             }
 
-            plugin.getStorage().createCustomType(typeId);
+            if(!plugin.getDropTypeManager().getDefaultTypes().contains(type)){
+                sender.sendMessage("Type must be: 'all, hostile, neutral, passive or boss.");
+                return;
+            }
+
+            plugin.getStorage().createCustomType(typeId, type);
         }
     }
 

@@ -68,6 +68,13 @@ public class SqlStorage implements Storage<TradingCard> {
             "DELETE FROM {prefix}decks " +
                     "WHERE uuid=? AND deck_number=? AND card_id=? AND rarity_id=? AND is_shiny=?;";
 
+
+    private static final String RARITY_SELECT_ALL =
+            "SELECT * FROM {prefix}rarities;";
+    private static final String RARITY_SELECT_BY_ID =
+            "SELECT * FROM {prefix}rarities " +
+                    "WHERE rarity_id=?;";
+
     private static final String COLUMN_UUID = "uuid";
     private static final String COLUMN_CARD_ID = "card_id";
     private static final String COLUMN_RARITY_ID = "rarity_id";
@@ -396,7 +403,7 @@ public class SqlStorage implements Storage<TradingCard> {
         }
     }
 
-    public void remove(final UUID playerUuid, final int deckNumber, final StorageEntry entry) {
+    public void remove(final UUID playerUuid, final int deckNumber, final @NotNull StorageEntry entry) {
         try (Connection connection = connectionFactory.getConnection()) {
             ImmutableMap<String, String> values = statementProcessor.generateValuesMap(playerUuid, deckNumber, entry.getCardId(), entry.getRarityId(), entry.getAmount(), entry.isShiny());
             try (PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(DECKS_REMOVE_CARD, values,
@@ -559,7 +566,7 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
     @Override
-    public void createCustomType(final String typeId) {
+    public void createCustomType(final String typeId, final String type) {
 
     }
 

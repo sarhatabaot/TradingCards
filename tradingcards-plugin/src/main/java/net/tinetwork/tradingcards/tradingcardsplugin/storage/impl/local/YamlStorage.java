@@ -304,8 +304,8 @@ public class YamlStorage implements Storage<TradingCard> {
     }
 
     @Override
-    public void createCustomType(final String typeId) {
-
+    public void createCustomType(final String typeId, final String type) {
+        customTypesConfig.createCustomType(typeId,type);
     }
 
     @Override
