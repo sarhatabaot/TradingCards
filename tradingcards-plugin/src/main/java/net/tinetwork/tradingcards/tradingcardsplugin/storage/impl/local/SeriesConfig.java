@@ -91,7 +91,8 @@ public class SeriesConfig extends SeriesConfigurate {
     //ColorSeries should be a part of series?
     public void createSeries(final String seriesId) {
         try {
-            rootNode.node(seriesId).set(new Series(seriesId, Mode.ACTIVE, seriesId, null));
+            Series series = new Series(seriesId, Mode.ACTIVE, seriesId, null);
+            rootNode.node(seriesId).set(series);
             loader.save(rootNode);
         } catch (ConfigurateException e) {
             Util.logSevereException(e);
@@ -171,8 +172,15 @@ public class SeriesConfig extends SeriesConfigurate {
         }
 
         @Override
-        public void serialize(final Type type, @Nullable final Series obj, final ConfigurationNode node) throws SerializationException {
-            //
+        public void serialize(final Type type, @Nullable final Series series, final ConfigurationNode target) throws SerializationException {
+            if (series == null) {
+                target.set(null);
+                return;
+            }
+
+            target.node(DISPLAY_NAME).set(series.getDisplayName());
+            target.node(MODE).set(series.getMode());
+            target.node(SCHEDULE).set(series.getSchedule());
         }
     }
 
