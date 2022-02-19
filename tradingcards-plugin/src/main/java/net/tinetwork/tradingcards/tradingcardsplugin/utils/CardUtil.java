@@ -1,6 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.utils;
 
 import de.tr7zw.nbtapi.NBTItem;
+import net.tinetwork.tradingcards.api.config.ColorSeries;
 import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
@@ -173,11 +174,12 @@ public class CardUtil {
 
     public static @NotNull List<String> formatLore(final String info, final String about, final String rarity, final boolean isShiny, final String type, final Series series) {
         List<String> lore = new ArrayList<>();
-        final String typeFormat = ChatUtil.color(plugin.getSeriesManager().getColorSeries(series.getName()).getType() + plugin.getGeneralConfig().displayType() + type);
-        final String infoFormat = ChatUtil.color(plugin.getSeriesManager().getColorSeries(series.getName()).getInfo() + plugin.getGeneralConfig().displayInfo());
-        final String seriesFormat = ChatUtil.color(plugin.getSeriesManager().getColorSeries(series.getName()).getSeries() + plugin.getGeneralConfig().displaySeries() + series.getDisplayName());
-        final String aboutFormat = ChatUtil.color(plugin.getSeriesManager().getColorSeries(series.getName()).getAbout() + plugin.getGeneralConfig().displayAbout());
-        final String rarityFormat = ChatUtil.color(plugin.getSeriesManager().getColorSeries(series.getName()).getRarity());
+        final ColorSeries colorSeries = series.getColorSeries();
+        final String typeFormat = ChatUtil.color(colorSeries.getType() + plugin.getGeneralConfig().displayType() + type);
+        final String infoFormat = ChatUtil.color(colorSeries.getInfo() + plugin.getGeneralConfig().displayInfo());
+        final String seriesFormat = ChatUtil.color(colorSeries.getSeries() + plugin.getGeneralConfig().displaySeries() + series.getDisplayName());
+        final String aboutFormat = ChatUtil.color(colorSeries.getAbout() + plugin.getGeneralConfig().displayAbout());
+        final String rarityFormat = ChatUtil.color(colorSeries.getRarity());
 
         lore.add(typeFormat);
         if (!"None".equalsIgnoreCase(info) && !info.isEmpty()) {

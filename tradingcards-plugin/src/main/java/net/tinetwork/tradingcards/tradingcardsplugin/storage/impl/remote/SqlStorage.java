@@ -476,11 +476,6 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
     @Override
-    public ColorSeries getColorSeries(final String seriesId) {
-        return null;
-    }
-
-    @Override
     public Collection<Series> getAllSeries() {
         return null;
     }

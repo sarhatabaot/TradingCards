@@ -156,11 +156,6 @@ public class YamlStorage implements Storage<TradingCard> {
     }
 
     @Override
-    public ColorSeries getColorSeries(final String seriesId) {
-        return this.seriesConfig.getColorSeries(seriesId);
-    }
-
-    @Override
     public Collection<Series> getAllSeries() {
         return this.seriesConfig.series().values();
     }

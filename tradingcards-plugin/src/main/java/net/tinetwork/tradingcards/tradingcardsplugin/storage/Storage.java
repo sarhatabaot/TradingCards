@@ -100,12 +100,6 @@ public interface Storage<T extends Card<T>> {
     Series getSeries(final String seriesId);
 
     /**
-     * @param seriesId Series id.
-     * @return Returns a color series.
-     */
-    ColorSeries getColorSeries(final String seriesId);
-
-    /**
      * @return Returns a collection of all series
      */
     Collection<Series> getAllSeries();

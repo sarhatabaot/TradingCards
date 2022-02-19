@@ -12,7 +12,6 @@ import java.util.Collection;
 public interface SeriesManager {
     @Nullable
     Series getSeries(final String seriesId);
-    ColorSeries getColorSeries(final String seriesId);
     Collection<Series> getAllSeries();
     boolean containsSeries(final String seriesId);
 }
