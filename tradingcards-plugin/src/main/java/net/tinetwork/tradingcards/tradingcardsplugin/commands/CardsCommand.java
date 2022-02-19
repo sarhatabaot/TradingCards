@@ -741,67 +741,72 @@ public class CardsCommand extends BaseCommand {
     @CommandPermission(Permissions.CREATE)
     @Description("Creates any type, without customization, edit later using /cards edit.")
     public class CreateSubCommand extends BaseCommand {
+        private void sendCreatedMessage(final CommandSender sender, final String type, final String id) {
+            sender.sendMessage("Created " + type + " " + id);
+            sender.sendMessage("To edit " + id + " run /cards edit " + type + " " + id);
+        }
 
         @Subcommand("rarity")
         @CommandPermission(Permissions.CREATE_RARITY)
         public void onRarity(final CommandSender sender, final String rarityId) {
-            if(plugin.getRarityManager().containsRarity(rarityId)) {
+            if (plugin.getRarityManager().containsRarity(rarityId)) {
                 sender.sendMessage("This rarity already exists. Cannot create a new one.");
                 return;
             }
 
-
+            sendCreatedMessage(sender, "rarity", rarityId);
             plugin.getStorage().createRarity(rarityId);
         }
 
         @Subcommand("card")
         @CommandPermission(Permissions.CREATE_CARD)
-        public void onCard(final CommandSender sender,final String cardId, final String rarityId, final String seriesId) {
+        public void onCard(final CommandSender sender, final String cardId, final String rarityId, final String seriesId) {
             //Check if rarity & series exist
-            if(plugin.getCardManager().containsCard(cardId,rarityId,seriesId)) {
+            if (plugin.getCardManager().containsCard(cardId, rarityId, seriesId)) {
                 sender.sendMessage("This card already exists. Cannot create a new one.");
                 return;
             }
 
-            plugin.getStorage().createCard(cardId,rarityId,seriesId);
+            sendCreatedMessage(sender,"card",cardId);
+            plugin.getStorage().createCard(cardId, rarityId, seriesId);
         }
 
         @Subcommand("pack")
         @CommandPermission(Permissions.CREATE_PACK)
-        public void onPack(final CommandSender sender,final String packId){
-            if(plugin.getPackManager().containsPack(packId)) {
+        public void onPack(final CommandSender sender, final String packId) {
+            if (plugin.getPackManager().containsPack(packId)) {
                 sender.sendMessage("This pack already exists. Cannot create a new one.");
                 return;
             }
-
+            sendCreatedMessage(sender,"pack",packId);
             plugin.getStorage().createPack(packId);
         }
 
         @Subcommand("series")
         @CommandPermission(Permissions.CREATE_SERIES)
-        public void onSeries(final CommandSender sender, final String seriesId){
-            if(plugin.getSeriesManager().containsSeries(seriesId)) {
+        public void onSeries(final CommandSender sender, final String seriesId) {
+            if (plugin.getSeriesManager().containsSeries(seriesId)) {
                 sender.sendMessage("This series already exists. Cannot create a new one.");
                 return;
             }
-
+            sendCreatedMessage(sender,"series",seriesId);
             plugin.getStorage().createSeries(seriesId);
         }
 
         @Subcommand("type")
         @CommandPermission(Permissions.CREATE_CUSTOM_TYPE)
         @CommandCompletion("@nothing @drop-types")
-        public void onType(final CommandSender sender,final String typeId, final String type){
-            if(plugin.getDropTypeManager().containsType(typeId)) {
+        public void onType(final CommandSender sender, final String typeId, final String type) {
+            if (plugin.getDropTypeManager().containsType(typeId)) {
                 sender.sendMessage("This type already exists. Cannot create a new one.");
                 return;
             }
 
-            if(!plugin.getDropTypeManager().getDefaultTypes().contains(type)){
+            if (!plugin.getDropTypeManager().getDefaultTypes().contains(type)) {
                 sender.sendMessage("Type must be: 'all, hostile, neutral, passive or boss.");
                 return;
             }
-
+            sendCreatedMessage(sender,"customtype",typeId);
             plugin.getStorage().createCustomType(typeId, type);
         }
     }
@@ -813,14 +818,15 @@ public class CardsCommand extends BaseCommand {
 
         }
 
-        public void onSeries(){
+        public void onSeries() {
 
         }
 
         public void onPack() {
 
         }
-        public void onType(){
+
+        public void onType() {
 
         }
     }
