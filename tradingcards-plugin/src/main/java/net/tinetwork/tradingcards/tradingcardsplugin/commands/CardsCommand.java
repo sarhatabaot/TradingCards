@@ -358,7 +358,7 @@ public class CardsCommand extends BaseCommand {
         }
 
         //Counts the total amount of cards a player has from a rarity
-        //TODO, this should be done via the storage impl
+        //TODO, this should be done via the storage impl, since this can be done easily through sql
         private int countPlayerCardsInRarity(final Player player, final String rarity) {
             final List<String> rarityCardList = plugin.getCardManager().getRarityCardListNames(rarity);
             int cardCounter = 0;
@@ -758,7 +758,7 @@ public class CardsCommand extends BaseCommand {
     @CommandPermission(Permissions.CREATE)
     @Description("Creates any type, without customization, edit later using /cards edit.")
     public class CreateSubCommand extends BaseCommand {
-        private void sendCreatedMessage(final CommandSender sender, final String type, final String id) {
+        private void sendCreatedMessage(final @NotNull CommandSender sender, final String type, final String id) {
             sender.sendMessage("Created " + type + " " + id);
             sender.sendMessage("To edit " + id + " run /cards edit " + type + " " + id);
         }
@@ -842,18 +842,64 @@ public class CardsCommand extends BaseCommand {
     @Subcommand("edit")
     @CommandPermission(Permissions.EDIT)
     public class EditSubCommand extends BaseCommand {
-        public void onRarity() {
+
+        @Subcommand("card")
+        @CommandPermission(Permissions.EDIT_CARD)
+        public class EditCardSubCommand extends BaseCommand {
 
         }
 
+        @Subcommand("rarity")
+        @CommandPermission(Permissions.EDIT_RARITY)
+        public class EditRaritySubCommand extends BaseCommand {
+            @Subcommand("display-name")
+            public void onSetDisplayName(final CommandSender sender, final String displayName) {
+
+            }
+            @Subcommand("default-color")
+            public void onSetDefaultColor(final CommandSender sender,final String defaultColor){
+
+            }
+            @Subcommand("buy-price")
+            public void onSetBuyPrice(final CommandSender sender,final double buyPrice){
+
+            }
+            @Subcommand("sell-price")
+            public void onSetSellPrice(final CommandSender sender, final double sellPrice){
+
+            }
+            @Subcommand("rewards add")
+            @Description("adds a new entry to a rewards list.")
+            public void onAddReward(final CommandSender sender, final String rewards) {
+
+            }
+            @Subcommand("rewards remove")
+            @Description("Removes the last entry in a rewards list.")
+            public void onRemoveReward(final CommandSender sender) {
+
+            }
+            @Subcommand("rewards remove-all")
+            @Description("Removes all entries in a rewards list.")
+            public void onRemoveAllRewards(final CommandSender sender) {
+
+            }
+
+        }
+
+        @Subcommand("series")
+        @CommandPermission(Permissions.EDIT_SERIES)
         public void onSeries() {
 
         }
 
+        @Subcommand("pack")
+        @CommandPermission(Permissions.EDIT_PACK)
         public void onPack() {
 
         }
 
+        @Subcommand("type")
+        @CommandPermission(Permissions.EDIT_CUSTOM_TYPE)
         public void onType() {
 
         }
