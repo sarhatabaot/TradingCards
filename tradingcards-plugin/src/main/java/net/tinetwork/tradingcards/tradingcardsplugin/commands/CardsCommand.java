@@ -22,6 +22,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.MessagesCon
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingCardManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingDeckManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.StorageType;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local.CardsConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local.YamlStorage;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
@@ -348,6 +349,9 @@ public class CardsCommand extends BaseCommand {
         private int countPlayerCardsInRarity(final Player player, final String rarity) {
             final List<String> rarityCardList = plugin.getCardManager().getRarityCardListNames(rarity);
             int cardCounter = 0;
+            if(rarityCardList == null || rarityCardList.isEmpty())
+                return cardCounter;
+
             for (String cardId : rarityCardList) {
                 if (deckManager.hasCard(player, cardId, rarity)) {
                     cardCounter++;
