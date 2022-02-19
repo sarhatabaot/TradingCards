@@ -88,7 +88,7 @@ public class SqlStorage implements Storage<TradingCard> {
     private static final String COLUMN_SELL_PRICE = "sell_price";
 
     private static final String COLUMN_COMMAND = "command";
-    private static final String COLUMN_ORDER_NUMBER = "order_number";
+    private static final String COLUMN_ORDER_NUMBER = "command_order";
 
     private static final String RARITY_GET_BY_ID =
             "SELECT * FROM {prefix}rarities " +
@@ -97,7 +97,7 @@ public class SqlStorage implements Storage<TradingCard> {
     private static final String REWARDS_GET_BY_ID =
             "SELECT * FROM {prefix}rewards " +
                     "WHERE rarity_id=?" +
-                    "ORDER BY order_number;";
+                    "ORDER BY command_order;";
 
     private final TradingCards plugin;
     private final ConnectionFactory connectionFactory;

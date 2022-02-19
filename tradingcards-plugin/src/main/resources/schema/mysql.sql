@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS `{prefix}rarities` (
 CREATE TABLE IF NOT EXISTS `{prefix}rewards` (
     rarity_id     VARCHAR(200)       NOT NULL, --This should just be the rarity_id, we don't even need a dedicated rewards_id. (We need one in the table but not in the rarities table)
     command       TINYTEXT           NOT NULL,
-    order_number  INT                NOT NULL,
+    command_order  INT               NOT NULL,
     PRIMARY KEY (rarity_id)
     FOREIGN KEY (rarity_id) REFERENCES `{prefix}rarities`(rarity_id)
 ) DEFAULT CHARSET = utf8mb4;
