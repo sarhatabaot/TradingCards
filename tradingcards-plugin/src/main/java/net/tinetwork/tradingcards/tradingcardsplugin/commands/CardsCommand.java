@@ -820,7 +820,7 @@ public class CardsCommand extends BaseCommand {
             }
 
             if (!plugin.getDropTypeManager().getDefaultTypes().contains(type)) {
-                sender.sendMessage("Type must be: 'all, hostile, neutral, passive or boss.");
+                sender.sendMessage("Type must be: all, hostile, neutral, passive or boss.");
                 return;
             }
             sendCreatedMessage(sender,"customtype",typeId);
