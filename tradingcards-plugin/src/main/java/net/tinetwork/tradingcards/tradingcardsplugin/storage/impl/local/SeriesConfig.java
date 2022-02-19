@@ -91,8 +91,8 @@ public class SeriesConfig extends SeriesConfigurate {
     //ColorSeries should be a part of series?
     public void createSeries(final String seriesId) {
         try {
-            ConfigurationNode seriesNode = rootNode.node(seriesId).set(new Series(seriesId, Mode.ACTIVE, seriesId, null));
-            loader.save(seriesNode);
+            rootNode.node(seriesId).set(new Series(seriesId, Mode.ACTIVE, seriesId, null));
+            loader.save(rootNode);
         } catch (ConfigurateException e) {
             Util.logSevereException(e);
         }

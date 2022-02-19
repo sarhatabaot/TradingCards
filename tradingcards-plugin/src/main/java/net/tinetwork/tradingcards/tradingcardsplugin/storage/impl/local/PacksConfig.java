@@ -38,8 +38,8 @@ public class PacksConfig extends SimpleConfigurate {
 
     public void createPack(final String packId){
         try {
-            ConfigurationNode packNode = rootNode.node(packId).set(new Pack(packId,new ArrayList<>(),packId,100.0,"cards.packs."+packId));
-            loader.save(packNode);
+            rootNode.node(packId).set(new Pack(packId,new ArrayList<>(),packId,100.0,"cards.packs."+packId));
+            loader.save(rootNode);
         } catch (ConfigurateException e) {
             Util.logSevereException(e);
         }

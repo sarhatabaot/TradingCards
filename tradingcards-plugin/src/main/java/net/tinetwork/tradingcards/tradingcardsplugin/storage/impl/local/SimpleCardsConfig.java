@@ -65,8 +65,8 @@ public class SimpleCardsConfig extends SimpleConfigurate {
         ConfigurationNode rarityNode = cardsNode.node(rarityId);
         TradingCard card = new TradingCard(cardId).rarity(rarity).series(series).get();
         try {
-            rarityNode.set(card);
-            loader.save(rarityNode);
+            rarityNode.node(cardId).set(card);
+            loader.save(rootNode);
         } catch (ConfigurateException e) {
             Util.logSevereException(e);
         }
