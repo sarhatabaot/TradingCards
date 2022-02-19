@@ -59,7 +59,7 @@ public class YamlStorage implements Storage<TradingCard> {
         this.raritiesConfig = new RaritiesConfig(plugin);
         this.seriesConfig = new SeriesConfig(plugin);
         this.customTypesConfig = new CustomTypesConfig(plugin);
-        this.cardsConfig = new CardsConfig(plugin);
+        this.cardsConfig = new CardsConfig(plugin,this);
 
         this.cards = new HashMap<>();
         this.rarityCardList = new HashMap<>();
@@ -205,7 +205,7 @@ public class YamlStorage implements Storage<TradingCard> {
 
     private void loadCards() {
         for (SimpleCardsConfig simpleCardsConfig : cardsConfig.getCardConfigs()) {
-            for (final Rarity rarity : plugin.getRarityManager().getRarities()) {
+            for (final Rarity rarity : raritiesConfig.rarities()) {
                 var cardNodes = simpleCardsConfig.getCards(rarity.getName()).entrySet();
 
                 for (Map.Entry<Object, ? extends ConfigurationNode> nodeEntry : cardNodes) {
@@ -326,5 +326,30 @@ public class YamlStorage implements Storage<TradingCard> {
             Util.logWarningException(e);
         }
         return DropTypeManager.ALL;
+    }
+
+
+    protected CardsConfig getCardsConfig() {
+        return cardsConfig;
+    }
+
+    protected DeckConfig getDeckConfig() {
+        return deckConfig;
+    }
+
+    protected RaritiesConfig getRaritiesConfig() {
+        return raritiesConfig;
+    }
+
+    protected SeriesConfig getSeriesConfig() {
+        return seriesConfig;
+    }
+
+    protected PacksConfig getPacksConfig() {
+        return packsConfig;
+    }
+
+    protected CustomTypesConfig getCustomTypesConfig() {
+        return customTypesConfig;
     }
 }

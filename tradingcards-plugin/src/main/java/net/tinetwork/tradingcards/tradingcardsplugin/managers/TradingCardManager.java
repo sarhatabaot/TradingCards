@@ -59,6 +59,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
         this.rarityCardList = new HashMap<>();
         this.cards = plugin.getStorage().getCardsMap();
         this.activeCards = new ArrayList<>();
+        loadRarityCardNames();
         loadActiveCards();
     }
 
@@ -81,6 +82,14 @@ public class TradingCardManager implements CardManager<TradingCard> {
             final Rarity rarity = card.getRarity();
             activeRarityCardList.putIfAbsent(rarity.getName(),new ArrayList<>());
             activeRarityCardList.get(rarity.getName()).add(card.getCardName());
+        }
+    }
+
+    private void loadRarityCardNames(){
+        for(TradingCard card: plugin.getStorage().getCards()) {
+            final Rarity rarity = card.getRarity();
+            rarityCardList.putIfAbsent(rarity.getName(),new ArrayList<>());
+            rarityCardList.get(rarity.getName()).add(card.getCardName());
         }
     }
 

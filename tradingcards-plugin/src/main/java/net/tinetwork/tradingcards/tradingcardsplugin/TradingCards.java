@@ -196,12 +196,16 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         }
     }
 
+    //The order is important. Decks & Packs must load after cards load.
+    //Cards must load after rarity, droptype & series.
     private void initManagers() {
+        this.rarityManager = new TradingRarityManager(this);
         this.dropTypeManager = new DropTypeManager(this);
+        this.seriesManager = new TradingSeriesManager(this);
+
         this.cardManager = new TradingCardManager(this);
         this.packManager = new BoosterPackManager(this);
         this.deckManager = new TradingDeckManager(this);
-        this.rarityManager = new TradingRarityManager(this);
     }
 
     private void initCommands() {
@@ -218,6 +222,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     }
 
     public void reloadManagers() {
+        //todo
         this.cardManager.initValues();
         this.packManager.initValues();
         this.deckManager = new TradingDeckManager(this);

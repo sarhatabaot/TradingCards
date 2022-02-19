@@ -24,8 +24,10 @@ public class Series {
         if(mode == Mode.ACTIVE)
             return true;
 
+        //not implemented yet
         if(mode == Mode.SCHEDULED) {
-            return schedule.isActive();
+            //return schedule.isActive();
+            return false;
         }
 
         //fallthrough

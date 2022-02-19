@@ -54,6 +54,7 @@ public class PacksConfig extends SimpleConfigurate {
     @Override
     protected void initValues() throws ConfigurateException {
         this.packNames = new ArrayList<>();
+        this.packs = new ArrayList<>();
         for(Map.Entry<Object, ? extends ConfigurationNode> nodeEntry: rootNode.childrenMap().entrySet()) {
             final String name = nodeEntry.getValue().key().toString();
             final Pack pack = getPack(name);

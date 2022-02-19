@@ -3,7 +3,6 @@ package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local;
 import net.tinetwork.tradingcards.api.TradingCardsPlugin;
 import net.tinetwork.tradingcards.api.card.Card;
 import net.tinetwork.tradingcards.api.config.SimpleConfigurate;
-import net.tinetwork.tradingcards.api.exceptions.UnsupportedDropTypeException;
 import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
@@ -29,9 +28,12 @@ import java.util.Map;
  */
 public class SimpleCardsConfig extends SimpleConfigurate {
     private ConfigurationNode cardsNode;
+    private static YamlStorage yamlStorage;
 
-    public SimpleCardsConfig(final TradingCards plugin, final String fileName) throws ConfigurateException {
+    public SimpleCardsConfig(final TradingCards plugin, final String fileName, final YamlStorage yamlStorage) throws ConfigurateException {
         super(plugin, "cards" + File.separator, fileName, "cards");
+        SimpleCardsConfig.yamlStorage = yamlStorage;
+
     }
 
     @Override
@@ -108,11 +110,11 @@ public class SimpleCardsConfig extends SimpleConfigurate {
             final String about = node.node(ABOUT).getString();
             final int customModelData = node.node(CUSTOM_MODEL_DATA).getInt(0);
 
-            final Rarity rarity = plugin.getRarityManager().getRarity(rarityId);
+            final Rarity rarity = yamlStorage.getRaritiesConfig().getRarity(rarityId);
             final double buyPrice = getBuyPrice(node, rarity);
             final double sellPrice = getSellPrice(node, rarity);
 
-            final Series series = plugin.getSeriesManager().getSeries(seriesId);
+            final Series series = yamlStorage.getSeriesConfig().series().get(seriesId);;
             TradingCard card = new TradingCard(id);
             return card.material(material)
                     .rarity(rarity)
@@ -153,8 +155,8 @@ public class SimpleCardsConfig extends SimpleConfigurate {
 
         private DropType getDropType(final @NotNull ConfigurationNode node, final String id){
             try {
-                return plugin.getDropTypeManager().getType(node.node(TYPE).getString());
-            } catch (UnsupportedDropTypeException e) {
+                return yamlStorage.getCustomTypesConfig().getDropType(node.node(TYPE).getString());
+            } catch (SerializationException e) {
                 plugin.getLogger().warning("Could not get the type for " + id + " reason: " + e.getMessage());
                 plugin.getLogger().warning("Defaulting to passive.");
                 return DropTypeManager.PASSIVE;
