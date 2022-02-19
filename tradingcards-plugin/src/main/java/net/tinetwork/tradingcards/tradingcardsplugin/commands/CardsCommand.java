@@ -332,12 +332,12 @@ public class CardsCommand extends BaseCommand {
             final String sectionFormatComplete = messagesConfig.sectionFormatComplete();
 
             int cardCounter = countPlayerCardsInRarity(target, rarityId);
-
+            int sizeOfRarityCardList = getSizeOfRarityCardList(rarityId);
             //send title
-            if (cardCounter == plugin.getCardManager().getRarityCardList(rarityId).size()) {
+            if (cardCounter == sizeOfRarityCardList) {
                 ChatUtil.sendMessage(sender, String.format(sectionFormatComplete, rarityObject.getDisplayName(), plugin.getGeneralConfig().colorRarityCompleted()));
             } else {
-                ChatUtil.sendMessage(sender, String.format(sectionFormat, rarityObject.getDisplayName(), cardCounter, plugin.getCardManager().getRarityCardList(rarityId).size()));
+                ChatUtil.sendMessage(sender, String.format(sectionFormat, rarityObject.getDisplayName(), cardCounter, sizeOfRarityCardList));
             }
 
             //send actual message
@@ -345,7 +345,15 @@ public class CardsCommand extends BaseCommand {
             ChatUtil.sendMessage(sender, rarityCardList);
         }
 
+        private int getSizeOfRarityCardList(final String rarityId) {
+            final List<TradingCard> rarityCardList = plugin.getCardManager().getRarityCardList(rarityId);
+            if(rarityCardList == null || rarityCardList.isEmpty())
+                return 0;
+            return rarityCardList.size();
+        }
+
         //Counts the total amount of cards a player has from a rarity
+        //TODO, this should be done via the storage impl
         private int countPlayerCardsInRarity(final Player player, final String rarity) {
             final List<String> rarityCardList = plugin.getCardManager().getRarityCardListNames(rarity);
             int cardCounter = 0;
@@ -359,7 +367,7 @@ public class CardsCommand extends BaseCommand {
             }
             return cardCounter;
         }
-
+        //TODO, this should be done via the storage impl
         private int countShinyPlayerCardsInRarity(final Player player, final String rarity) {
             final List<String> rarityCardList = plugin.getCardManager().getRarityCardListNames(rarity);
             int cardCounter = 0;

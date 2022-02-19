@@ -12,6 +12,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local.SimpleCa
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -94,6 +95,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
     }
 
     @Override
+    @Nullable
     public List<TradingCard> getRarityCardList(final String rarity) {
         return plugin.getStorage().getCardsInRarity(rarity);
     }
