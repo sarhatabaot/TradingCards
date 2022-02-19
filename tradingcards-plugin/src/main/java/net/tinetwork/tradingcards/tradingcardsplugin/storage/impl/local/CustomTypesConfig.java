@@ -63,6 +63,7 @@ public class CustomTypesConfig extends SimpleConfigurate {
         try {
             rootNode.node(typeId).set(new DropType(typeId,typeId,type));
             loader.save(rootNode);
+            reloadConfig();
         } catch (ConfigurateException e) {
             Util.logSevereException(e);
         }

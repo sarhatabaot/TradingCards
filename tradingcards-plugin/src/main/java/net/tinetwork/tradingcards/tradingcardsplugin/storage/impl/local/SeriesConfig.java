@@ -77,6 +77,7 @@ public class SeriesConfig extends SeriesConfigurate {
             Series series = new Series(seriesId, Mode.ACTIVE, seriesId, null, defaultColors);
             rootNode.node(seriesId).set(series);
             loader.save(rootNode);
+            reloadConfig();
         } catch (ConfigurateException e) {
             Util.logSevereException(e);
         }

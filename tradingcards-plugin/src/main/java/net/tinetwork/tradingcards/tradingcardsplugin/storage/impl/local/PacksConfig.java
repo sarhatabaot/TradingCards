@@ -40,6 +40,7 @@ public class PacksConfig extends SimpleConfigurate {
         try {
             rootNode.node(packId).set(new Pack(packId,new ArrayList<>(),packId,100.0,"cards.packs."+packId));
             loader.save(rootNode);
+            reloadConfig();
         } catch (ConfigurateException e) {
             Util.logSevereException(e);
         }

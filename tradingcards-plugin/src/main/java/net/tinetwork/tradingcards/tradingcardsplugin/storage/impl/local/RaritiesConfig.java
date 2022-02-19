@@ -68,6 +68,7 @@ public class RaritiesConfig extends RarityConfigurate{
             Rarity rarity = new Rarity(rarityId,rarityId,"",0,0,new ArrayList<>());
             raritiesNode.node(rarityId).set(rarity);
             loader.save(rootNode);
+            reloadConfig();
         } catch (ConfigurateException e) {
             Util.logSevereException(e);
         }

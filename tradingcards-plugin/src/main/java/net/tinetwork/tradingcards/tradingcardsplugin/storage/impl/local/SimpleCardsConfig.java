@@ -40,7 +40,9 @@ public class SimpleCardsConfig extends SimpleConfigurate {
     protected void preLoaderBuild() {
         CardSerializer.init(plugin);
         loaderBuilder.defaultOptions(opts -> opts.serializers(builder ->
-                builder.registerExact(TradingCard.class, CardSerializer.INSTANCE))).build();
+                builder.registerExact(TradingCard.class, CardSerializer.INSTANCE).
+                        registerExact(SeriesConfig.SeriesSerializer.TYPE, SeriesConfig.SeriesSerializer.INSTANCE)
+                .registerExact(SeriesConfig.ColorSeriesSerializer.TYPE, SeriesConfig.ColorSeriesSerializer.INSTANCE))).build();
     }
 
 
@@ -64,9 +66,11 @@ public class SimpleCardsConfig extends SimpleConfigurate {
         final Series series = plugin.getSeriesManager().getSeries(seriesId);
         ConfigurationNode rarityNode = cardsNode.node(rarityId);
         TradingCard card = new TradingCard(cardId).rarity(rarity).series(series).get();
+        plugin.debug(SimpleCardsConfig.class, card.toString());
         try {
             rarityNode.node(cardId).set(card);
             loader.save(rootNode);
+            reloadConfig();
         } catch (ConfigurateException e) {
             Util.logSevereException(e);
         }
