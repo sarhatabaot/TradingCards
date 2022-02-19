@@ -6,6 +6,7 @@ import net.milkbowl.vault.economy.Economy;
 import net.tinetwork.tradingcards.api.TradingCardsPlugin;
 import net.tinetwork.tradingcards.api.manager.PackManager;
 import net.tinetwork.tradingcards.api.manager.RarityManager;
+import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.CardsCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.DeckCommand;
@@ -46,6 +47,7 @@ import org.spongepowered.configurate.ConfigurateException;
 
 import java.io.File;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 
 public class TradingCards extends TradingCardsPlugin<TradingCard> {
@@ -215,6 +217,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         commandManager.getCommandCompletions().registerCompletion("active-cards", c -> cardManager.getActiveRarityCardList(c.getContextValueByName(String.class, "rarity")));
         commandManager.getCommandCompletions().registerCompletion("packs", c -> packManager.getCachedPacksItemstacks().keySet());
         commandManager.getCommandCompletions().registerCompletion("drop-types", c -> dropTypeManager.getDefaultTypes());
+        commandManager.getCommandCompletions().registerCompletion("series",c -> seriesManager.getAllSeries().stream().map(Series::getName).toList());
         commandManager.registerCommand(new CardsCommand(this, playerBlacklist));
         commandManager.registerCommand(new DeckCommand(this));
         commandManager.enableUnstableAPI("help");

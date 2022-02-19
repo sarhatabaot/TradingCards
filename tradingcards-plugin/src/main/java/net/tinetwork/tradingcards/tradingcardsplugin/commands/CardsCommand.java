@@ -777,10 +777,21 @@ public class CardsCommand extends BaseCommand {
 
         @Subcommand("card")
         @CommandPermission(Permissions.CREATE_CARD)
-        public void onCard(final CommandSender sender, final String cardId, final String rarityId, final String seriesId) {
+        @CommandCompletion("@nothing @rarities @series")
+        public void onCard(final CommandSender sender,@Single final String cardId,@Single final String rarityId,@Single final String seriesId) {
             //Check if rarity & series exist
             if (plugin.getCardManager().containsCard(cardId, rarityId, seriesId)) {
                 sender.sendMessage("This card already exists. Cannot create a new one.");
+                return;
+            }
+
+            if(!plugin.getRarityManager().containsRarity(rarityId)) {
+                sender.sendMessage("This rarity doesn't exist.");
+                return;
+            }
+
+            if(!plugin.getSeriesManager().containsSeries(seriesId)) {
+                sender.sendMessage("This series doesn't exist.");
                 return;
             }
 
