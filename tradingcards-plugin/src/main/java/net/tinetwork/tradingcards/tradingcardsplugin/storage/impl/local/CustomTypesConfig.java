@@ -41,7 +41,7 @@ public class CustomTypesConfig extends SimpleConfigurate {
                 plugin.debug(CustomTypesConfig.class,"Couldn't add="+dropTypeKey);
             }
         }
-        plugin.debug(CustomTypesConfig.class,"Total Rarities="+dropTypes.size());
+        plugin.debug(CustomTypesConfig.class,"Total Custom Types="+dropTypes.size());
     }
 
     public Set<DropType> getDropTypes() {
