@@ -44,6 +44,7 @@ import org.spongepowered.configurate.ConfigurateException;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -299,7 +300,11 @@ public class CardsCommand extends BaseCommand {
         private @NotNull String generateRarityCardList(final Player target, final String rarityId) {
             final StringBuilder stringBuilder = new StringBuilder();
             String prefix = "";
-            for (String cardId : plugin.getCardManager().getRarityCardListNames(rarityId)) {
+            final List<String> rarityCardListName = plugin.getCardManager().getRarityCardListNames(rarityId);
+            if(rarityCardListName == null || rarityCardListName.isEmpty())
+                return "";
+
+            for (final String cardId : plugin.getCardManager().getRarityCardListNames(rarityId)) {
                 debug("rarityId=" + rarityId + ",cardId=" + cardId);
                 TradingCard card = getCard(cardId, rarityId);
                 debug(card.toString());
