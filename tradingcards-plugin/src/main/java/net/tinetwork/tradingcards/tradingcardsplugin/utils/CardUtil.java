@@ -89,6 +89,8 @@ public class CardUtil {
     }
 
     public static boolean isCard(final ItemStack itemStack) {
+        if(itemStack == null || itemStack.getType().isAir())
+            return false;
         final NBTItem nbtItem = new NBTItem(itemStack);
         return isCard(nbtItem);
     }
