@@ -13,7 +13,7 @@ advanced-pack:
     - "uncommon:6:default"
     - "rare:2:default"
   price: 150.00
-  permission: "card.packs.advanced-pack"
+  permission: "cards.packs.advanced-pack"
 expert-pack:
   display-name: "Expert Pack"
   content:
