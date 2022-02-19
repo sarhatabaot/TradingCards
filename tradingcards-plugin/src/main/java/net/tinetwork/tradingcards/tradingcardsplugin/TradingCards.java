@@ -6,6 +6,8 @@ import net.milkbowl.vault.economy.Economy;
 import net.tinetwork.tradingcards.api.TradingCardsPlugin;
 import net.tinetwork.tradingcards.api.manager.PackManager;
 import net.tinetwork.tradingcards.api.manager.RarityManager;
+import net.tinetwork.tradingcards.api.model.Pack;
+import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.CardsCommand;
@@ -212,10 +214,10 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
     private void initCommands() {
         var commandManager = new PaperCommandManager(this);
-        commandManager.getCommandCompletions().registerCompletion("rarities", c -> cardManager.getRarityNames());
+        commandManager.getCommandCompletions().registerCompletion("rarities", c -> rarityManager.getRarities().stream().map(Rarity::getName).toList());
         commandManager.getCommandCompletions().registerCompletion("cards", c -> cardManager.getRarityCardListNames(c.getContextValueByName(String.class, "rarity")));
         commandManager.getCommandCompletions().registerCompletion("active-cards", c -> cardManager.getActiveRarityCardList(c.getContextValueByName(String.class, "rarity")));
-        commandManager.getCommandCompletions().registerCompletion("packs", c -> packManager.getCachedPacksItemstacks().keySet());
+        commandManager.getCommandCompletions().registerCompletion("packs", c -> packManager.getPacks().stream().map(Pack::id).toList());
         commandManager.getCommandCompletions().registerCompletion("drop-types", c -> dropTypeManager.getDefaultTypes());
         commandManager.getCommandCompletions().registerCompletion("series",c -> seriesManager.getAllSeries().stream().map(Series::getName).toList());
         commandManager.registerCommand(new CardsCommand(this, playerBlacklist));
