@@ -113,6 +113,10 @@ public class BoosterPackManager implements PackManager {
 
     @Override
     public boolean containsPack(final String packId) {
+        for(Pack pack: getPacks()) {
+            if(pack.id().equals(packId))
+                return true;
+        }
         return false;
     }
 }
