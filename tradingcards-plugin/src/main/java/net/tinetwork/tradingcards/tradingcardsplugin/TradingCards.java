@@ -11,7 +11,9 @@ import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.CardsCommand;
+import net.tinetwork.tradingcards.tradingcardsplugin.commands.CreateCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.DeckCommand;
+import net.tinetwork.tradingcards.tradingcardsplugin.commands.EditCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.ChancesConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.GeneralConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.MessagesConfig;
@@ -224,6 +226,8 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         commandManager.getCommandCompletions().registerCompletion("all-types",c -> Stream.concat(dropTypeManager.getDefaultTypes().stream(),dropTypeManager.getTypes().keySet().stream()).toList());
         commandManager.getCommandCompletions().registerCompletion("series",c -> seriesManager.getAllSeries().stream().map(Series::getName).toList());
         commandManager.registerCommand(new CardsCommand(this, playerBlacklist));
+        commandManager.registerCommand(new CreateCommand(this));
+        commandManager.registerCommand(new EditCommand(this));
         commandManager.registerCommand(new DeckCommand(this));
         commandManager.enableUnstableAPI("help");
         commandManager.enableUnstableAPI("brigadier");
