@@ -50,6 +50,7 @@ import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurateException;
 
 import java.io.File;
+import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -225,6 +226,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         commandManager.getCommandCompletions().registerCompletion("custom-types",c -> dropTypeManager.getTypes().keySet());
         commandManager.getCommandCompletions().registerCompletion("all-types",c -> Stream.concat(dropTypeManager.getDefaultTypes().stream(),dropTypeManager.getTypes().keySet().stream()).toList());
         commandManager.getCommandCompletions().registerCompletion("series",c -> seriesManager.getAllSeries().stream().map(Series::getName).toList());
+        commandManager.getCommandCompletions().registerCompletion("series-colors", c -> List.of("info=","about=","type=","series=","rarity="));
         commandManager.registerCommand(new CardsCommand(this, playerBlacklist));
         commandManager.registerCommand(new CreateCommand(this));
         commandManager.registerCommand(new EditCommand(this));
@@ -234,7 +236,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     }
 
     public void reloadManagers() {
-        //todo
+        //todo reload all the other managers as well
         this.cardManager.initValues();
         this.packManager.initValues();
         this.deckManager = new TradingDeckManager(this);

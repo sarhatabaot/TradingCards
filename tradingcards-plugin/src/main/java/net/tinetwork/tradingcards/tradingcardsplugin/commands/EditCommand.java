@@ -102,17 +102,20 @@ public class EditCommand extends BaseCommand {
         @Subcommand("series")
         @CommandPermission(Permissions.EDIT_SERIES)
         public static class EditSeriesSubCommand extends BaseCommand {
+            @Subcommand("display-name")
             public void onEditDisplayName() {
 
             }
-
+            @Subcommand("mode")
             public void onEditMode(){
 
             }
 
             //series="" info="" etc
-            public void onEditColors(){
-
+            @Subcommand("colors")
+            @CommandCompletion("@series-colors")
+            public void onEditColors(final CommandSender sender, String... colors){
+                
             }
 
         }
