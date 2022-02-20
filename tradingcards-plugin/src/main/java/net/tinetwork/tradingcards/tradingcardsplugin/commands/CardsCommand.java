@@ -841,12 +841,41 @@ public class CardsCommand extends BaseCommand {
 
     @Subcommand("edit")
     @CommandPermission(Permissions.EDIT)
-    public class EditSubCommand extends BaseCommand {
+    public static class EditSubCommand extends BaseCommand {
 
         @Subcommand("card")
         @CommandPermission(Permissions.EDIT_CARD)
         public class EditCardSubCommand extends BaseCommand {
+            @Subcommand("display-name")
+            public void onEditDisplayName() {
 
+            }
+            @Subcommand("custom-model-data")
+            public void onEditCustomModelData(){
+
+            }
+            @Subcommand("buy-price")
+            public void onEditBuyPrice() {
+
+            }
+            @Subcommand("sell-price")
+            public void onEditSellPrice(){
+
+            }
+            @Subcommand("info")
+            public void onEditInfo() {
+
+            }
+            @Subcommand("series")
+            public void onEditSeries(){
+
+
+            }
+
+            @Subcommand("type")
+            public void onEditType(){
+
+            }
         }
 
         @Subcommand("rarity")
@@ -886,22 +915,54 @@ public class CardsCommand extends BaseCommand {
 
         }
 
+
         @Subcommand("series")
         @CommandPermission(Permissions.EDIT_SERIES)
-        public void onSeries() {
+        public static class EditSeriesSubCommand extends BaseCommand {
+            public void onEditDisplayName() {
+
+            }
+
+            public void onEditMode(){
+
+            }
+
+            //series="" info="" etc
+            public void onEditColors(){
+
+            }
 
         }
 
         @Subcommand("pack")
         @CommandPermission(Permissions.EDIT_PACK)
-        public void onPack() {
+        public static class EditPackSubCommand extends BaseCommand {
+            @Subcommand("display-name")
+            public void onEditDisplayName(){
 
+            }
+            @Subcommand("price")
+            public void onEditPrice(){
+
+            }
+            @Subcommand("permission")
+            public void onEditPermission(){
+
+            }
         }
 
         @Subcommand("type")
         @CommandPermission(Permissions.EDIT_CUSTOM_TYPE)
-        public void onType() {
+        public static class EditTypeSubCommand extends BaseCommand {
+            @Subcommand("type")
+            @CommandCompletion("@default-types")
+            public void onEditType(final CommandSender sender, final String type) {
 
+            }
+            @Subcommand("display-name")
+            public void onEditDisplayName(final CommandSender sender, final String displayName) {
+
+            }
         }
     }
 
