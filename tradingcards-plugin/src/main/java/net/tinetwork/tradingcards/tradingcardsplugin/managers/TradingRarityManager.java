@@ -5,11 +5,12 @@ import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
 import java.util.List;
 
 public class TradingRarityManager implements RarityManager {
     private final TradingCards plugin;
-
+    public static final Rarity EMPTY_RARITY = new Rarity("empty","empty","",0.00,0.00, Collections.singletonList(""));
     public TradingRarityManager(final TradingCards plugin) {
         this.plugin = plugin;
     }
