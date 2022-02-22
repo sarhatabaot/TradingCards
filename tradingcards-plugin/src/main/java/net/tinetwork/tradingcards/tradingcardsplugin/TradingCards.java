@@ -9,6 +9,8 @@ import net.tinetwork.tradingcards.api.manager.RarityManager;
 import net.tinetwork.tradingcards.api.model.Pack;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
+import net.tinetwork.tradingcards.api.model.schedule.Mode;
+import net.tinetwork.tradingcards.api.model.schedule.Schedule;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.CardsCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.CreateCommand;
@@ -50,9 +52,14 @@ import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurateException;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 
@@ -164,7 +171,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         try {
             this.playerBlacklist = new PlayerBlacklist(this);
             this.worldBlacklist = new WorldBlacklist(this);
-        } catch (ConfigurateException e){
+        } catch (ConfigurateException e) {
             getLogger().severe(e.getMessage());
         }
     }
@@ -183,8 +190,8 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     @Contract(" -> new")
     private @NotNull Storage<TradingCard> initStorage() throws ConfigurateException {
         StorageType storageType = this.storageConfig.getType();
-        getLogger().info("Using storage "+storageType.name());
-        switch (storageType){
+        getLogger().info("Using storage " + storageType.name());
+        switch (storageType) {
             case MARIADB -> {
                 return new SqlStorage(this,
                         this.storageConfig.getTablePrefix(),
@@ -193,8 +200,8 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
             case MYSQL -> {
                 return new SqlStorage(this,
-                            this.storageConfig.getTablePrefix(),
-                            new MySqlConnectionFactory(this.storageConfig));
+                        this.storageConfig.getTablePrefix(),
+                        new MySqlConnectionFactory(this.storageConfig));
             }
             //YAML is the default
             default -> {
@@ -223,13 +230,53 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         commandManager.getCommandCompletions().registerCompletion("active-cards", c -> cardManager.getActiveRarityCardList(c.getContextValueByName(String.class, "rarity")));
         commandManager.getCommandCompletions().registerCompletion("packs", c -> packManager.getPacks().stream().map(Pack::id).toList());
         commandManager.getCommandCompletions().registerCompletion("default-types", c -> dropTypeManager.getDefaultTypes());
-        commandManager.getCommandCompletions().registerCompletion("custom-types",c -> dropTypeManager.getTypes().keySet());
-        commandManager.getCommandCompletions().registerCompletion("all-types",c -> Stream.concat(dropTypeManager.getDefaultTypes().stream(),dropTypeManager.getTypes().keySet().stream()).toList());
-        commandManager.getCommandCompletions().registerCompletion("series",c -> seriesManager.getAllSeries().stream().map(Series::getName).toList());
-        commandManager.getCommandCompletions().registerCompletion("series-colors", c -> List.of("info=","about=","type=","series=","rarity="));
+        commandManager.getCommandCompletions().registerCompletion("custom-types", c -> dropTypeManager.getTypes().keySet());
+        commandManager.getCommandCompletions().registerCompletion("all-types", c -> Stream.concat(dropTypeManager.getDefaultTypes().stream(), dropTypeManager.getTypes().keySet().stream()).toList());
+        commandManager.getCommandCompletions().registerCompletion("series", c -> seriesManager.getAllSeries().stream().map(Series::getName).toList());
+        commandManager.getCommandCompletions().registerCompletion("series-colors", c -> List.of("info=", "about=", "type=", "series=", "rarity="));
+        commandManager.getCommandCompletions().registerCompletion("edit-type", c -> Stream.of(EditCommand.EditSubCommand.EditType.values()).map(Enum::name).toList());
+        commandManager.getCommandCompletions().registerCompletion("edit-pack", c -> Stream.of(EditCommand.EditSubCommand.EditPack.values()).map(Enum::name).toList());
+        commandManager.getCommandCompletions().registerCompletion("edit-series", c -> Stream.of(EditCommand.EditSubCommand.EditSeries.values()).map(Enum::name).toList());
+        commandManager.getCommandCompletions().registerCompletion("edit-rarity", c -> Stream.of(EditCommand.EditSubCommand.EditRarity.values()).map(Enum::name).toList());
+        commandManager.getCommandCompletions().registerCompletion("edit-card", c -> Stream.of(EditCommand.EditSubCommand.EditCard.values()).map(Enum::name).toList());
+        commandManager.getCommandCompletions().registerCompletion(
+                "edit-type-value", c -> switch (c.getContextValueByName(EditCommand.EditSubCommand.EditType.class, "editType")) {
+                    case TYPE -> dropTypeManager.getDefaultTypes();
+                    case DISPLAY_NAME -> Collections.singleton("");
+                });
+        commandManager.getCommandCompletions().registerCompletion(
+                "edit-pack-value", c -> switch (c.getContextValueByName(EditCommand.EditSubCommand.EditPack.class, "editPack")) {
+                    case PRICE, PERMISSION, DISPLAY_NAME -> Collections.singleton("");
+                    case CONTENTS -> IntStream.rangeClosed(0, packManager.getPack(c.getContextValueByName(String.class, "packId")).getPackEntryList().size() - 1)
+                            .boxed().map(String::valueOf).toList();
+
+                }
+        );
+        commandManager.getCommandCompletions().registerCompletion(
+                "edit-series-value", c -> switch (c.getContextValueByName(EditCommand.EditSubCommand.EditSeries.class,"editSeries")) {
+                    case MODE -> Arrays.stream(Mode.values()).map(Enum::name).toList();
+                    case DISPLAY_NAME -> Collections.singleton("");
+                    case COLORS -> List.of("info=", "about=", "type=", "series=", "rarity=");
+                }
+        );
+        commandManager.getCommandCompletions().registerCompletion(
+                "edit-rarity-value", c -> switch (c.getContextValueByName(EditCommand.EditSubCommand.EditRarity.class,"editRarity")) {
+                    case BUY_PRICE, SELL_PRICE, DEFAULT_COLOR, DISPLAY_NAME, REMOVE_ALL_REWARDS -> Collections.singleton("");
+                    case ADD_REWARD, REMOVE_REWARD -> IntStream.rangeClosed(0, Objects.requireNonNullElse(rarityManager.getRarity(c.getContextValueByName(String.class, "rarityId")),TradingRarityManager.EMPTY_RARITY).getRewards().size() - 1)
+                            .boxed().map(String::valueOf).toList();
+                }
+        );
+        commandManager.getCommandCompletions().registerCompletion(
+                "edit-card-value", c -> switch (c.getContextValueByName(EditCommand.EditSubCommand.EditCard.class,"editCard")) {
+                    case DISPLAY_NAME, SELL_PRICE, BUY_PRICE, INFO, CUSTOM_MODEL_DATA -> Collections.singleton("");
+                    case SERIES -> seriesManager.getAllSeries().stream().map(Series::getName).toList();
+                    case TYPE -> Stream.concat(dropTypeManager.getDefaultTypes().stream(), dropTypeManager.getTypes().keySet().stream()).toList();
+                }
+        );
+
         commandManager.registerCommand(new CardsCommand(this, playerBlacklist));
-        commandManager.registerCommand(new CreateCommand(this));
         commandManager.registerCommand(new EditCommand(this));
+        commandManager.registerCommand(new CreateCommand(this));
         commandManager.registerCommand(new DeckCommand(this));
         commandManager.enableUnstableAPI("help");
         commandManager.enableUnstableAPI("brigadier");
@@ -381,7 +428,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     @Override
     public void debug(final Class<?> className, final String message) {
         if (getGeneralConfig().debugMode()) {
-            getLogger().info("DEBUG "+className.getSimpleName() + " "+ message);
+            getLogger().info("DEBUG " + className.getSimpleName() + " " + message);
         }
     }
 
