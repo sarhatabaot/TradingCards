@@ -1,7 +1,6 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.managers;
 
 
-import com.google.common.collect.ImmutableList;
 import net.tinetwork.tradingcards.api.exceptions.UnsupportedDropTypeException;
 import net.tinetwork.tradingcards.api.manager.TypeManager;
 import net.tinetwork.tradingcards.api.model.DropType;
@@ -30,7 +29,7 @@ public class DropTypeManager implements TypeManager {
     }
 
     @Override
-    public DropType getType(final String type) throws UnsupportedDropTypeException {
+    public DropType getType(final String type) {
         if(!mobTypes.containsKey(type)) {
             return switch (type.toLowerCase()) {
                 case "boss" -> BOSS;
@@ -38,7 +37,6 @@ public class DropTypeManager implements TypeManager {
                 case "neutral" -> NEUTRAL;
                 case "passive" -> PASSIVE;
                 case "all" -> ALL;
-                default -> throw new UnsupportedDropTypeException();
             };
         }
         return mobTypes.get(type);

@@ -1,5 +1,8 @@
 package net.tinetwork.tradingcards.api.model;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 public record Pack(String id, List<PackEntry> packEntryList,
@@ -41,7 +44,8 @@ public record Pack(String id, List<PackEntry> packEntryList,
                     + ((seriesId != null) ? ":" + seriesId : "");
         }
 
-        public static PackEntry fromString(final String string) {
+        @Contract("_ -> new")
+        public static @NotNull PackEntry fromString(final @NotNull String string) {
             final String[] split = string.split(":");
             final String rarityId = split[0];
             final int amount = Integer.parseInt(split[1]);

@@ -1,7 +1,6 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local;
 
 import net.tinetwork.tradingcards.api.card.Card;
-import net.tinetwork.tradingcards.api.config.ColorSeries;
 import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.api.model.Pack;
 import net.tinetwork.tradingcards.api.model.Rarity;
@@ -347,4 +346,5 @@ public class YamlStorage implements Storage<TradingCard> {
     protected CustomTypesConfig getCustomTypesConfig() {
         return customTypesConfig;
     }
+
 }

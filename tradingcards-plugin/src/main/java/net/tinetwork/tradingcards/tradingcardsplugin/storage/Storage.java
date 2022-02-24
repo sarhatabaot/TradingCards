@@ -1,12 +1,12 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.storage;
 
 import net.tinetwork.tradingcards.api.card.Card;
-import net.tinetwork.tradingcards.api.config.ColorSeries;
 import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.api.model.Pack;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.api.model.deck.Deck;
+import net.tinetwork.tradingcards.api.model.schedule.Mode;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import org.jetbrains.annotations.Nullable;
 
@@ -185,8 +185,33 @@ public interface Storage<T extends Card<T>> {
     void createSeries(final String seriesId);
     void createCustomType(final String typeId, final String type);
     void createPack(final String packId);
-    //Edit
-    //edit <type> <params>
-    //void editCard(final String cardId, final String rarityId, )
-
+    // Edit
+    // Edit Card
+    void editCardDisplayName(final String rarityId, final String cardId, final String seriesId, final String displayName);
+    void editCardSeries(final String rarityId, final String cardId, final String seriesId, final String value);
+    void editCardSellPrice(final String rarityId, final String cardId, final String seriesId, final double value);
+    void editCardType(final String rarityId,final String cardId, final String seriesId, final String value);
+    void editCardInfo(final String rarityId,final String cardId, final String seriesId, final String value);
+    void editCardCustomModelData(final String rarityId,final String cardId,final String seriesId, final int value);
+    void editCardBuyPrice(final String rarityId,final String cardId, final String seriesId,final double value);
+    // Edit Rarity
+    void editRarityBuyPrice(final String rarityId, final double buyPrice);
+    void editRarityAddReward(final String rarityId, final String reward);
+    void editRarityDefaultColor(final String rarityId, final String defaultColor);
+    void editRarityDisplayName(final String rarityId, final String displayName);
+    void editRaritySellPrice(final String rarityId, final double sellPrice);
+    void editRarityRemoveAllRewards(final String rarityId);
+    void editRarityRemoveReward(final String rarityId, final int rewardNumber);
+    // Edit Series
+    void editSeriesDisplayName(final String seriesId, final String displayName);
+    void editSeriesColors(final String seriesId, final String colors);
+    void editSeriesMode(final String seriesId, final Mode mode);
+    // Edit Type
+    void editCustomTypeDisplayName(final String typeId, final String displayName);
+    void editCustomTypeType(final String typeId, final DropType type); //It has to be a default type.
+    // Edit Pack
+    void editPackDisplayName(final String packId, final String displayName);
+    void editPackContents(final String packId, final int lineNumber, final Pack.PackEntry packEntry);
+    void editPackPermission(final String packId, final String permission);
+    void editPackPrice(final String packId,final double price);
 }
