@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class DropTypeManager implements TypeManager {
     private final TradingCards plugin;
-    private List<String> defaultTypes = List.of("hostile","neutral","passive","boss","all");
+    private final List<String> defaultTypes = List.of("hostile","neutral","passive","boss","all");
     public static final DropType HOSTILE = new DropType("hostile","Hostile","hostile");
     public static final DropType NEUTRAL = new DropType("neutral", "Neutral", "neutral");
     public static final DropType PASSIVE = new DropType("passive", "Passive", "passive");

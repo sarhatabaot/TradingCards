@@ -3,8 +3,14 @@ package net.tinetwork.tradingcards.tradingcardsplugin.commands.edit;
 /**
  * @author sarhatabaot
  */
-public enum EditSeries {
+public enum EditSeries implements Edit{
     DISPLAY_NAME,
     MODE,
-    COLORS
+    COLORS;
+
+
+    @Override
+    public String editName() {
+        return "series";
+    }
 }

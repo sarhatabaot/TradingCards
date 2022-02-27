@@ -279,7 +279,7 @@ public class YamlStorage implements Storage<TradingCard> {
         return cards.get(cardKey(rarityId,cardId));
     }
 
-    //Assume that checks have been made already? TODO
+    //Assume that checks have been made already?
     @Override
     public void createCard(final String cardId, final String rarityId, final String seriesId) {
         //use the first available config to create new cards, perhaps this should be configurable.
