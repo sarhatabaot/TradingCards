@@ -2,6 +2,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local;
 
 import net.tinetwork.tradingcards.api.config.ColorSeries;
 import net.tinetwork.tradingcards.api.config.settings.SeriesConfigurate;
+import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.api.model.schedule.DateSchedule;
 import net.tinetwork.tradingcards.api.model.schedule.Mode;
@@ -39,6 +40,16 @@ public class SeriesConfig extends SeriesConfigurate {
         loadSeries();
     }
 
+    public void editDisplayName(final String seriesId, final String displayName) {
+
+    }
+    public void editColors(final String seriesId, final String colors) {
+
+    }
+
+    public void editMode(final String seriesId, final Mode mode) {
+
+    }
     private void loadSeries() {
         for (Map.Entry<Object, ? extends ConfigurationNode> nodeEntry : rootNode.childrenMap().entrySet()) {
             final String seriesKey = nodeEntry.getValue().key().toString();

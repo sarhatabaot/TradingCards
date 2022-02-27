@@ -35,6 +35,22 @@ public class PacksConfig extends SimpleConfigurate {
         return packs;
     }
 
+    public void editDisplayName(final String packId, final String displayName) {
+
+    }
+
+    public void editContents(final String packId, final int lineNumber, final Pack.PackEntry packEntry) {
+
+    }
+
+    public void editPermission(final String packId, final String permission) {
+
+    }
+
+    public void editPrice(final String packId, final double price){
+
+    }
+
 
     public void createPack(final String packId){
         try {

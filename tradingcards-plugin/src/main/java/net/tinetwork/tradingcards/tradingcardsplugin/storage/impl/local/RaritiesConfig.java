@@ -4,6 +4,7 @@ import net.tinetwork.tradingcards.api.config.settings.RarityConfigurate;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
@@ -43,6 +44,34 @@ public class RaritiesConfig extends RarityConfigurate{
 
     public boolean containsRarity(final String id) {
         return raritiesNode.hasChild(id);
+    }
+
+    public void editBuyPrice(final String rarityId, final double buyPrice){
+
+    }
+
+    public void editAddReward(final String rarityId,final String reward){
+
+    }
+
+    public void editDefaultColor(final String rarityId, final String defaultColor) {
+
+    }
+
+    public void editDisplayName(final String rarityId, final String displayName) {
+
+    }
+
+    public void editSellPrice(final String rarityId, final double sellPrice) {
+
+    }
+
+    public void editRemoveAllRewards(final String rarityId) {
+
+    }
+
+    public void editRemoveReward(final String rarityId, final int rewardNumber) {
+
     }
 
     private void loadRarities()  {
@@ -87,7 +116,7 @@ public class RaritiesConfig extends RarityConfigurate{
         private RaritySerializer() {
         }
 
-        private ConfigurationNode nonVirtualNode(final ConfigurationNode source, final Object... path) throws SerializationException {
+        private ConfigurationNode nonVirtualNode(final @NotNull ConfigurationNode source, final Object... path) throws SerializationException {
             if (!source.hasChild(path)) {
                 throw new SerializationException("Required field " + Arrays.toString(path) + " was not present in node");
             }

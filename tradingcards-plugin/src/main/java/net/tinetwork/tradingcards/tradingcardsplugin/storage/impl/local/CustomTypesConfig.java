@@ -1,9 +1,6 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local;
 
 import net.tinetwork.tradingcards.api.model.DropType;
-import net.tinetwork.tradingcards.api.model.Rarity;
-import net.tinetwork.tradingcards.api.model.Series;
-import net.tinetwork.tradingcards.api.model.schedule.Mode;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.api.config.SimpleConfigurate;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
@@ -43,6 +40,12 @@ public class CustomTypesConfig extends SimpleConfigurate {
             }
         }
         plugin.debug(CustomTypesConfig.class,"Total Custom Types="+dropTypes.size());
+    }
+    public void editType(final String typeId, final DropType dropType) {
+
+    }
+    public void editDisplayName(final String typeId, final String displayName) {
+
     }
 
     public Set<DropType> getDropTypes() {
