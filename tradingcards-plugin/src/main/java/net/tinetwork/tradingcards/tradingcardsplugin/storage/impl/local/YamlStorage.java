@@ -7,6 +7,7 @@ import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.api.model.deck.Deck;
 import net.tinetwork.tradingcards.api.model.deck.StorageEntry;
+import net.tinetwork.tradingcards.api.model.schedule.Mode;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.DropTypeManager;
@@ -347,4 +348,125 @@ public class YamlStorage implements Storage<TradingCard> {
         return customTypesConfig;
     }
 
+    @Override
+    public void editCardDisplayName(final String rarityId, final String cardId, final String seriesId, final String displayName) {
+        SimpleCardsConfig simpleCardsConfig = cardsConfig.getCardConfigs().get(0);
+        simpleCardsConfig.editDisplayName(rarityId,cardId,seriesId,displayName);
+    }
+
+    @Override
+    public void editCardSeries(final String rarityId, final String cardId, final String seriesId, final Series value) {
+        SimpleCardsConfig simpleCardsConfig = cardsConfig.getCardConfigs().get(0);
+        simpleCardsConfig.editSeries(rarityId,cardId,seriesId,value);
+    }
+
+    @Override
+    public void editCardSellPrice(final String rarityId, final String cardId, final String seriesId, final double value) {
+        SimpleCardsConfig simpleCardsConfig = cardsConfig.getCardConfigs().get(0);
+        simpleCardsConfig.editSellPrice(rarityId,cardId,seriesId,value);
+    }
+
+    @Override
+    public void editCardType(final String rarityId, final String cardId, final String seriesId, final DropType value) {
+        SimpleCardsConfig simpleCardsConfig = cardsConfig.getCardConfigs().get(0);
+        simpleCardsConfig.editType(rarityId,cardId,seriesId,value);
+    }
+
+    @Override
+    public void editCardInfo(final String rarityId, final String cardId, final String seriesId, final String value) {
+        SimpleCardsConfig simpleCardsConfig = cardsConfig.getCardConfigs().get(0);
+        simpleCardsConfig.editInfo(rarityId,cardId,seriesId,value);
+    }
+
+    @Override
+    public void editCardCustomModelData(final String rarityId, final String cardId, final String seriesId, final int value) {
+        SimpleCardsConfig simpleCardsConfig = cardsConfig.getCardConfigs().get(0);
+        simpleCardsConfig.editModelData(rarityId,cardId,seriesId,value);
+    }
+
+    @Override
+    public void editCardBuyPrice(final String rarityId, final String cardId, final String seriesId, final double value) {
+        SimpleCardsConfig simpleCardsConfig = cardsConfig.getCardConfigs().get(0);
+        simpleCardsConfig.editBuyPrice(rarityId,cardId,seriesId,value);
+    }
+
+    @Override
+    public void editRarityBuyPrice(final String rarityId, final double buyPrice) {
+        raritiesConfig.editBuyPrice(rarityId,buyPrice);
+    }
+
+    @Override
+    public void editRarityAddReward(final String rarityId, final String reward) {
+        raritiesConfig.editAddReward(rarityId,reward);
+    }
+
+    @Override
+    public void editRarityDefaultColor(final String rarityId, final String defaultColor) {
+        raritiesConfig.editDefaultColor(rarityId,defaultColor);
+    }
+
+    @Override
+    public void editRarityDisplayName(final String rarityId, final String displayName) {
+        raritiesConfig.editDisplayName(rarityId,displayName);
+    }
+
+    @Override
+    public void editRaritySellPrice(final String rarityId, final double sellPrice) {
+        raritiesConfig.editSellPrice(rarityId,sellPrice);
+    }
+
+    @Override
+    public void editRarityRemoveAllRewards(final String rarityId) {
+        raritiesConfig.editRemoveAllRewards(rarityId);
+    }
+
+    @Override
+    public void editRarityRemoveReward(final String rarityId, final int rewardNumber) {
+        raritiesConfig.editRemoveReward(rarityId,rewardNumber);
+    }
+
+    @Override
+    public void editSeriesDisplayName(final String seriesId, final String displayName) {
+        seriesConfig.editDisplayName(seriesId,displayName);
+    }
+
+    @Override
+    public void editSeriesColors(final String seriesId, final String colors) {
+        seriesConfig.editColors(seriesId,colors);
+    }
+
+    @Override
+    public void editSeriesMode(final String seriesId, final Mode mode) {
+        seriesConfig.editMode(seriesId,mode);
+    }
+
+    @Override
+    public void editCustomTypeDisplayName(final String typeId, final String displayName) {
+        customTypesConfig.editDisplayName(typeId,displayName);
+    }
+
+    @Override
+    public void editCustomTypeType(final String typeId, final DropType type) {
+        customTypesConfig.editType(typeId, type);
+    }
+
+    @Override
+    public void editPackDisplayName(final String packId, final String displayName) {
+        packsConfig.editDisplayName(packId,displayName);
+    }
+
+    @Override
+    public void editPackContents(final String packId, final int lineNumber, final Pack.PackEntry packEntry) {
+        packsConfig.editContents(packId,lineNumber,packEntry);
+    }
+
+    @Override
+    public void editPackPermission(final String packId, final String permission) {
+        packsConfig.editPermission(packId,permission);
+    }
+
+    @Override
+    public void editPackPrice(final String packId, final double price) {
+        packsConfig.editPrice(packId,price);
+    }
 }

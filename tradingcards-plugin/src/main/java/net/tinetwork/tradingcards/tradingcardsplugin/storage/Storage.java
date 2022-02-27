@@ -188,9 +188,9 @@ public interface Storage<T extends Card<T>> {
     // Edit
     // Edit Card
     void editCardDisplayName(final String rarityId, final String cardId, final String seriesId, final String displayName);
-    void editCardSeries(final String rarityId, final String cardId, final String seriesId, final String value);
+    void editCardSeries(final String rarityId, final String cardId, final String seriesId, final Series value);
     void editCardSellPrice(final String rarityId, final String cardId, final String seriesId, final double value);
-    void editCardType(final String rarityId,final String cardId, final String seriesId, final String value);
+    void editCardType(final String rarityId,final String cardId, final String seriesId, final DropType value);
     void editCardInfo(final String rarityId,final String cardId, final String seriesId, final String value);
     void editCardCustomModelData(final String rarityId,final String cardId,final String seriesId, final int value);
     void editCardBuyPrice(final String rarityId,final String cardId, final String seriesId,final double value);

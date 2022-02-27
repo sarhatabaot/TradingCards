@@ -9,6 +9,7 @@ import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.api.model.Pack;
+import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.api.model.schedule.Mode;
 import net.tinetwork.tradingcards.tradingcardsplugin.Permissions;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
@@ -80,7 +81,9 @@ public class EditCommand extends BaseCommand {
                         ChatUtil.sendPrefixedMessage(sender,String.format("A type named &4%s&r could not be found.",value));
                         return;
                     }
-                    storage.editCardType(rarityId, cardId, seriesId, value);
+
+                    final DropType type = plugin.getDropTypeManager().getType(value);
+                    storage.editCardType(rarityId, cardId, seriesId, type);
                 }
                 case CUSTOM_MODEL_DATA -> {
                     int customModelData = getIntFromString(value);
@@ -96,7 +99,8 @@ public class EditCommand extends BaseCommand {
                         ChatUtil.sendPrefixedMessage(sender,String.format(SERIES_NOT_FOUND_FORMAT,value));
                         return;
                     }
-                    storage.editCardSeries(rarityId, cardId, seriesId, value);
+                    final Series series = plugin.getSeriesManager().getSeries(value);
+                    storage.editCardSeries(rarityId, cardId, seriesId, series);
                 }
                 case BUY_PRICE -> {
                     double buyPrice = getDoubleFromString(value);
