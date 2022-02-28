@@ -21,6 +21,7 @@ import java.io.File;
 import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -41,14 +42,44 @@ public class SeriesConfig extends SeriesConfigurate {
     }
 
     public void editDisplayName(final String seriesId, final String displayName) {
-
+        ConfigurationNode seriesNode = rootNode.node(seriesId);
+        try {
+            Series selectedSeries = getSeries(seriesId);
+            selectedSeries.setDisplayName(displayName);
+            seriesNode.set(selectedSeries);
+            loader.save(rootNode);
+        } catch (ConfigurateException e) {
+            Util.logSevereException(e);
+        }
     }
-    public void editColors(final String seriesId, final String colors) {
+    public void editColors(final String seriesId, final @NotNull String colors) {
+        //TODO
+        List<String> colorStrings = List.of("info=", "about=", "type=", "series=", "rarity=");
+        String[] colorsArgs = colors.split(" ");
+        try {
+            Series selectedSeries = getSeries(seriesId);
+            ColorSeries colorSeries = selectedSeries.getColorSeries();
+            for(String colorString: colorStrings) {
+                for(String colorArg: colorsArgs) {
 
+                }
+            }
+
+        } catch (ConfigurateException e) {
+            Util.logSevereException(e);
+        }
     }
 
     public void editMode(final String seriesId, final Mode mode) {
-
+        ConfigurationNode seriesNode = rootNode.node(seriesId);
+        try {
+            Series selectedSeries = getSeries(seriesId);
+            selectedSeries.setMode(mode);
+            seriesNode.set(selectedSeries);
+            loader.save(rootNode);
+        } catch (ConfigurateException e) {
+            Util.logSevereException(e);
+        }
     }
     private void loadSeries() {
         for (Map.Entry<Object, ? extends ConfigurationNode> nodeEntry : rootNode.childrenMap().entrySet()) {
@@ -208,11 +239,11 @@ public class SeriesConfig extends SeriesConfigurate {
                 return;
             }
 
-            target.node(SERIES).set(obj.series());
-            target.node(TYPE_PATH).set(obj.type());
-            target.node(INFO).set(obj.info());
-            target.node(ABOUT).set(obj.about());
-            target.node(RARITY).set(obj.rarity());
+            target.node(SERIES).set(obj.getSeries());
+            target.node(TYPE_PATH).set(obj.getType());
+            target.node(INFO).set(obj.getInfo());
+            target.node(ABOUT).set(obj.getAbout());
+            target.node(RARITY).set(obj.getRarity());
         }
     }
 
