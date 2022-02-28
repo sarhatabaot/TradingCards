@@ -41,11 +41,30 @@ public class CustomTypesConfig extends SimpleConfigurate {
         }
         plugin.debug(CustomTypesConfig.class,"Total Custom Types="+dropTypes.size());
     }
-    public void editType(final String typeId, final DropType dropType) {
+    public void editType(final String typeId, final String dropType) {
+        final ConfigurationNode dropTypeNode = rootNode.node(typeId);
+        try {
+            DropType selectedType = getDropType(typeId);
+            selectedType.setType(dropType);
+            dropTypeNode.set(selectedType);
+            loader.save(rootNode);
+            reloadConfig();
+        } catch (ConfigurateException e) {
+            Util.logSevereException(e);
+        }
 
     }
     public void editDisplayName(final String typeId, final String displayName) {
-
+        final ConfigurationNode dropTypeNode = rootNode.node(typeId);
+        try {
+            DropType selectedType = getDropType(typeId);
+            selectedType.setDisplayName(displayName);
+            dropTypeNode.set(selectedType);
+            loader.save(rootNode);
+            reloadConfig();
+        } catch (ConfigurateException e) {
+            Util.logSevereException(e);
+        }
     }
 
     public Set<DropType> getDropTypes() {

@@ -208,7 +208,7 @@ public interface Storage<T extends Card<T>> {
     void editSeriesMode(final String seriesId, final Mode mode);
     // Edit Type
     void editCustomTypeDisplayName(final String typeId, final String displayName);
-    void editCustomTypeType(final String typeId, final DropType type); //It has to be a default type.
+    void editCustomTypeType(final String typeId, final String type); //It has to be a default type.
     // Edit Pack
     void editPackDisplayName(final String packId, final String displayName);
     void editPackContents(final String packId, final int lineNumber, final Pack.PackEntry packEntry);

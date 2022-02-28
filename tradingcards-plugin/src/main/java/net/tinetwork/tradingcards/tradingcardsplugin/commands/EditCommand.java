@@ -277,8 +277,8 @@ public class EditCommand extends BaseCommand {
                         ChatUtil.sendPrefixedMessage(sender,"Type must be from "+plugin.getDropTypeManager().getDefaultTypes().toString());
                         return;
                     }
-                    final DropType type = plugin.getDropTypeManager().getType(value);
-                    storage.editCustomTypeType(typeId, type);
+
+                    storage.editCustomTypeType(typeId, value);
                 }
             }
             sendSetTypes(sender,typeId,editType,value);

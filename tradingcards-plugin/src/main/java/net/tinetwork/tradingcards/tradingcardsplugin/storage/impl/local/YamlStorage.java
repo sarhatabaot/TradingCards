@@ -446,7 +446,7 @@ public class YamlStorage implements Storage<TradingCard> {
     }
 
     @Override
-    public void editCustomTypeType(final String typeId, final DropType type) {
+    public void editCustomTypeType(final String typeId, final String type) {
         customTypesConfig.editType(typeId, type);
     }
 
