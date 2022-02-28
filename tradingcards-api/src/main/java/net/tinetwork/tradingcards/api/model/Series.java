@@ -7,9 +7,9 @@ import net.tinetwork.tradingcards.api.model.schedule.Schedule;
 
 public class Series {
     private final String name;
-    private final Mode mode;
-    private final String displayName;
-    private final ColorSeries colorSeries;
+    private Mode mode;
+    private String displayName;
+    private ColorSeries colorSeries;
 
     private final Schedule schedule;
 
@@ -55,6 +55,18 @@ public class Series {
 
     public ColorSeries getColorSeries() {
         return colorSeries;
+    }
+
+    public void setMode(final Mode mode) {
+        this.mode = mode;
+    }
+
+    public void setDisplayName(final String displayName) {
+        this.displayName = displayName;
+    }
+
+    public void setColorSeries(final ColorSeries colorSeries) {
+        this.colorSeries = colorSeries;
     }
 
     @Override

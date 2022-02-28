@@ -36,19 +36,52 @@ public class PacksConfig extends SimpleConfigurate {
     }
 
     public void editDisplayName(final String packId, final String displayName) {
+        ConfigurationNode packNode = rootNode.node(packId);
+        try {
+            Pack pack = getPack(packId);
+            pack.setDisplayName(displayName);
+            packNode.set(pack);
+            loader.save(rootNode);
+        } catch (ConfigurateException e) {
+            Util.logSevereException(e);
+        }
 
     }
 
     public void editContents(final String packId, final int lineNumber, final Pack.PackEntry packEntry) {
-
+        ConfigurationNode packNode = rootNode.node(packId);
+        try {
+            Pack pack = getPack(packId);
+            pack.getPackEntryList().set(lineNumber,packEntry);
+            packNode.set(pack);
+            loader.save(rootNode);
+        } catch (ConfigurateException e) {
+            Util.logSevereException(e);
+        }
     }
 
     public void editPermission(final String packId, final String permission) {
-
+        ConfigurationNode packNode = rootNode.node(packId);
+        try {
+            Pack pack = getPack(packId);
+            pack.setPermissions(permission);
+            packNode.set(pack);
+            loader.save(rootNode);
+        } catch (ConfigurateException e) {
+            Util.logSevereException(e);
+        }
     }
 
     public void editPrice(final String packId, final double price){
-
+        ConfigurationNode packNode = rootNode.node(packId);
+        try {
+            Pack pack = getPack(packId);
+            pack.setPrice(price);
+            packNode.set(pack);
+            loader.save(rootNode);
+        } catch (ConfigurateException e) {
+            Util.logSevereException(e);
+        }
     }
 
 
