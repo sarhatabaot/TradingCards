@@ -9,6 +9,7 @@ import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.api.model.deck.Deck;
 import net.tinetwork.tradingcards.api.model.deck.StorageEntry;
+import net.tinetwork.tradingcards.api.model.schedule.Mode;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
@@ -298,12 +299,12 @@ public class SqlStorage implements Storage<TradingCard> {
         }
         if (!cardsToAdd.isEmpty()) {
             for (StorageEntry entryToAdd : cardsToAdd) {
-                addCard(playerUuid, deckNumber, entryToAdd);
+                addCardToDeck(playerUuid, deckNumber, entryToAdd);
             }
         }
         if (!cardsToRemove.isEmpty()) {
             for (StorageEntry entryToRemove : cardsToRemove) {
-                remove(playerUuid, deckNumber, entryToRemove);
+                removeCardFromDeck(playerUuid, deckNumber, entryToRemove);
             }
         }
     }
@@ -387,7 +388,7 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
 
-    public void addCard(final UUID playerUuid, final int deckNumber, final StorageEntry entry) {
+    public void addCardToDeck(final UUID playerUuid, final int deckNumber, final StorageEntry entry) {
         final String cardId = entry.getCardId();
         final String rarityId = entry.getRarityId();
         final int amount = entry.getAmount();
@@ -403,7 +404,7 @@ public class SqlStorage implements Storage<TradingCard> {
         }
     }
 
-    public void remove(final UUID playerUuid, final int deckNumber, final @NotNull StorageEntry entry) {
+    public void removeCardFromDeck(final UUID playerUuid, final int deckNumber, final @NotNull StorageEntry entry) {
         try (Connection connection = connectionFactory.getConnection()) {
             ImmutableMap<String, String> values = statementProcessor.generateValuesMap(playerUuid, deckNumber, entry.getCardId(), entry.getRarityId(), entry.getAmount(), entry.isShiny());
             try (PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(DECKS_REMOVE_CARD, values,
@@ -575,5 +576,119 @@ public class SqlStorage implements Storage<TradingCard> {
         //nothing to do here.
     }
 
+    @Override
+    public void editCardDisplayName(final String rarityId, final String cardId, final String seriesId, final String displayName) {
 
+
+    }
+
+    @Override
+    public void editCardSeries(final String rarityId, final String cardId, final String seriesId, final Series value) {
+
+    }
+
+    @Override
+    public void editCardSellPrice(final String rarityId, final String cardId, final String seriesId, final double value) {
+
+    }
+
+    @Override
+    public void editCardType(final String rarityId, final String cardId, final String seriesId, final DropType value) {
+
+    }
+
+    @Override
+    public void editCardInfo(final String rarityId, final String cardId, final String seriesId, final String value) {
+
+    }
+
+    @Override
+    public void editCardCustomModelData(final String rarityId, final String cardId, final String seriesId, final int value) {
+
+    }
+
+    @Override
+    public void editCardBuyPrice(final String rarityId, final String cardId, final String seriesId, final double value) {
+
+    }
+
+    @Override
+    public void editRarityBuyPrice(final String rarityId, final double buyPrice) {
+
+    }
+
+    @Override
+    public void editRarityAddReward(final String rarityId, final String reward) {
+
+    }
+
+    @Override
+    public void editRarityDefaultColor(final String rarityId, final String defaultColor) {
+
+    }
+
+    @Override
+    public void editRarityDisplayName(final String rarityId, final String displayName) {
+
+    }
+
+    @Override
+    public void editRaritySellPrice(final String rarityId, final double sellPrice) {
+
+    }
+
+    @Override
+    public void editRarityRemoveAllRewards(final String rarityId) {
+
+    }
+
+    @Override
+    public void editRarityRemoveReward(final String rarityId, final int rewardNumber) {
+
+    }
+
+    @Override
+    public void editSeriesDisplayName(final String seriesId, final String displayName) {
+
+    }
+
+    @Override
+    public void editSeriesColors(final String seriesId, final ColorSeries colors) {
+
+    }
+
+    @Override
+    public void editSeriesMode(final String seriesId, final Mode mode) {
+
+    }
+
+    @Override
+    public void editCustomTypeDisplayName(final String typeId, final String displayName) {
+
+    }
+
+    @Override
+    public void editCustomTypeType(final String typeId, final String type) {
+
+    }
+
+    @Override
+    public void editPackDisplayName(final String packId, final String displayName) {
+
+    }
+
+    @Override
+    public void editPackContents(final String packId, final int lineNumber, final Pack.PackEntry packEntry) {
+
+    }
+
+    @Override
+    public void editPackPermission(final String packId, final String permission) {
+
+    }
+
+    @Override
+    public void editPackPrice(final String packId, final double price) {
+
+    }
 }
