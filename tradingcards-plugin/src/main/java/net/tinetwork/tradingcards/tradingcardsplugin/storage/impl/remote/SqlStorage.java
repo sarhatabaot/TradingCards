@@ -374,6 +374,9 @@ public class SqlStorage implements Storage<TradingCard> {
                         plugin.debug(SqlStorage.class, cardId);
                         return !resultSet.wasNull();
                     }
+                    if (resultSet.getFetchSize() == 0 || resultSet.wasNull()) {
+                        return false;
+                    }
                 }
             }
         } catch (SQLException e) {
@@ -388,7 +391,7 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
 
-    public void addCardToDeck(final UUID playerUuid, final int deckNumber, final StorageEntry entry) {
+    public void addCardToDeck(final UUID playerUuid, final int deckNumber, final @NotNull StorageEntry entry) {
         final String cardId = entry.getCardId();
         final String rarityId = entry.getRarityId();
         final int amount = entry.getAmount();
