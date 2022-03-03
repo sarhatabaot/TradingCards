@@ -1,6 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.storage;
 
 import net.tinetwork.tradingcards.api.card.Card;
+import net.tinetwork.tradingcards.api.config.ColorSeries;
 import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.api.model.Pack;
 import net.tinetwork.tradingcards.api.model.Rarity;
@@ -204,7 +205,7 @@ public interface Storage<T extends Card<T>> {
     void editRarityRemoveReward(final String rarityId, final int rewardNumber);
     // Edit Series
     void editSeriesDisplayName(final String seriesId, final String displayName);
-    void editSeriesColors(final String seriesId, final String colors);
+    void editSeriesColors(final String seriesId, final ColorSeries colors);
     void editSeriesMode(final String seriesId, final Mode mode);
     // Edit Type
     void editCustomTypeDisplayName(final String typeId, final String displayName);

@@ -29,7 +29,6 @@ import java.util.Map;
  */
 public class SeriesConfig extends SeriesConfigurate {
     private Map<String, Series> seriesMap;
-    private final ColorSeries defaultColors = new ColorSeries("&a", "&b", "&e", "&c", "&6");
 
     public SeriesConfig(final TradingCards plugin) throws ConfigurateException {
         super(plugin, "settings" + File.separator, "series.yml", "settings");
@@ -52,19 +51,13 @@ public class SeriesConfig extends SeriesConfigurate {
             Util.logSevereException(e);
         }
     }
-    public void editColors(final String seriesId, final @NotNull String colors) {
-        //TODO
-        List<String> colorStrings = List.of("info=", "about=", "type=", "series=", "rarity=");
-        String[] colorsArgs = colors.split(" ");
+    public void editColors(final String seriesId, final @NotNull ColorSeries colors) {
+        ConfigurationNode seriesNode = rootNode.node(seriesId);
         try {
             Series selectedSeries = getSeries(seriesId);
-            ColorSeries colorSeries = selectedSeries.getColorSeries();
-            for(String colorString: colorStrings) {
-                for(String colorArg: colorsArgs) {
-
-                }
-            }
-
+            selectedSeries.setColorSeries(colors);
+            seriesNode.set(selectedSeries);
+            loader.save(rootNode);
         } catch (ConfigurateException e) {
             Util.logSevereException(e);
         }
@@ -105,18 +98,9 @@ public class SeriesConfig extends SeriesConfigurate {
         return this.seriesMap;
     }
 
-    /**
-     * @deprecated Use series.getColorSeries() instead.
-     */
-    @Deprecated
-    public ColorSeries getColorSeries(final String key) throws SerializationException{
-        return getSeries(key).getColorSeries();
-    }
-
-    //ColorSeries should be a part of series?
     public void createSeries(final String seriesId) {
         try {
-            Series series = new Series(seriesId, Mode.ACTIVE, seriesId, null, defaultColors);
+            Series series = new Series(seriesId, Mode.ACTIVE, seriesId, null, Util.DEFAULT_COLORS);
             rootNode.node(seriesId).set(series);
             loader.save(rootNode);
             reloadConfig();
