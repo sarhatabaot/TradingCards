@@ -1,5 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.utils;
 
+import net.tinetwork.tradingcards.api.config.ColorSeries;
+
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -10,6 +12,7 @@ import java.util.logging.Logger;
 public class Util {
     private static Logger logger;
     public static final List<String> COLORS = List.of("info=", "about=", "type=", "series=", "rarity=");
+    public static final ColorSeries DEFAULT_COLORS = new ColorSeries("&a", "&b", "&e", "&c", "&6");
 
     private Util() {
         throw new UnsupportedOperationException();
