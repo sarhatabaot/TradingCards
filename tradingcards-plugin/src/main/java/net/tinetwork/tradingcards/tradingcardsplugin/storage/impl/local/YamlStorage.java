@@ -244,7 +244,7 @@ public class YamlStorage implements Storage<TradingCard> {
 
     private void loadActiveCards() {
         for(TradingCard card: getCards()) {
-            //This only loads on startup, that means that it doesn't update. But only on restarts TODO
+            //This only loads on startup, that means that it doesn't update. But only on restarts/reloads TODO
             if(card.getSeries().isActive()) {
                 activeCards.put(cardKey(card.getRarity().getName(),card.getCardName()), card);
             }
