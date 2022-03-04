@@ -76,6 +76,10 @@ public class SqlStorage implements Storage<TradingCard> {
             "SELECT * FROM {prefix}rarities " +
                     "WHERE rarity_id=?;";
 
+
+    private static final String SERIES_SELECT_ALL =
+            "SELECT * FROM {prefix}series;";
+
     private static final String COLUMN_UUID = "uuid";
     private static final String COLUMN_CARD_ID = "card_id";
     private static final String COLUMN_RARITY_ID = "rarity_id";
@@ -87,6 +91,9 @@ public class SqlStorage implements Storage<TradingCard> {
     private static final String COLUMN_DISPLAY_NAME = "display_name";
     private static final String COLUMN_BUY_PRICE = "buy_price";
     private static final String COLUMN_SELL_PRICE = "sell_price";
+
+    private static final String COLUMN_SERIES_ID = "series_id";
+    private static final String COLUMN_MODE = "mode";
 
     private static final String COLUMN_COMMAND = "command";
     private static final String COLUMN_ORDER_NUMBER = "command_order";
@@ -504,7 +511,31 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public Collection<Series> getAllSeries() {
+        try(final Connection connection = connectionFactory.getConnection()) {
+            try(final PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(SERIES_SELECT_ALL,null,null))) {
+                try (final ResultSet resultSet = statement.executeQuery()){
+                    List<Series> series = new ArrayList<>();
+                    while(resultSet.next()) {
+                        final String id = resultSet.getString(COLUMN_SERIES_ID);
+                        final String displayName = resultSet.getString(COLUMN_DISPLAY_NAME);
+                        final Mode mode = Mode.getMode(resultSet.getString(COLUMN_MODE));
+                        final ColorSeries colorSeries = getColorSeries(id);
+                        series.add(new Series(id,mode,displayName,null,colorSeries));
+                    }
+                    if (resultSet.getFetchSize() == 0 || resultSet.wasNull()) {
+                        return Collections.emptyList();
+                    }
+                    return series;
+                }
+            }
+        } catch (SQLException e) {
+            Util.logSevereException(e);
+        }
         return null;
+    }
+
+    private ColorSeries getColorSeries(final String seriesId) {
+        
     }
 
     @Override
