@@ -538,7 +538,8 @@ public class SqlStorage implements Storage<TradingCard> {
         return null;
     }
 
-    private ColorSeries getColorSeries(final String seriesId) {
+    @Contract("_ -> new")
+    private @NotNull ColorSeries getColorSeries(final String seriesId) {
         try(final Connection connection = connectionFactory.getConnection()) {
             try (final PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(COLOR_GET_BY_ID, null, Map.of(COLUMN_SERIES_ID,seriesId)))) {
                 try (final ResultSet resultSet = statement.executeQuery()) {
@@ -555,6 +556,7 @@ public class SqlStorage implements Storage<TradingCard> {
         } catch (SQLException e) {
             Util.logSevereException(e);
         }
+        return Util.DEFAULT_COLORS;
     }
 
     @Override
