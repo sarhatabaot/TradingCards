@@ -39,7 +39,6 @@ CREATE TABLE IF NOT EXISTS `{prefix}series` (
 
 CREATE TABLE IF NOT EXISTS `{prefix}series_colors` (
    series_id    VARCHAR(200)       NOT NULL,
-   color        VARCHAR(10)        NOT NULL,
    `type`       VARCHAR(10)        NOT NULL,
    info         VARCHAR(10)        NOT NULL,
    about        VARCHAR(10)        NOT NULL,

@@ -72,13 +72,24 @@ public class SqlStorage implements Storage<TradingCard> {
 
     private static final String RARITY_SELECT_ALL =
             "SELECT * FROM {prefix}rarities;";
-    private static final String RARITY_SELECT_BY_ID =
+    private static final String RARITY_GET_BY_ID =
             "SELECT * FROM {prefix}rarities " +
                     "WHERE rarity_id=?;";
 
-
+    private static final String REWARDS_GET_BY_ID =
+            "SELECT * FROM {prefix}rewards " +
+                    "WHERE rarity_id=?" +
+                    "ORDER BY command_order;";
     private static final String SERIES_SELECT_ALL =
             "SELECT * FROM {prefix}series;";
+
+    private static final String SERIES_GET_BY_ID =
+            "SELECT * FROM {prefix}series " +
+                    "WHERE series_id=?;";
+
+    private static final String COLOR_GET_BY_ID =
+            "SELECT * FROM {prefix}series_colors "+
+                    "WHERE series_id=?;";
 
     private static final String COLUMN_UUID = "uuid";
     private static final String COLUMN_CARD_ID = "card_id";
@@ -98,14 +109,7 @@ public class SqlStorage implements Storage<TradingCard> {
     private static final String COLUMN_COMMAND = "command";
     private static final String COLUMN_ORDER_NUMBER = "command_order";
 
-    private static final String RARITY_GET_BY_ID =
-            "SELECT * FROM {prefix}rarities " +
-                    "WHERE rarity_id=?;";
 
-    private static final String REWARDS_GET_BY_ID =
-            "SELECT * FROM {prefix}rewards " +
-                    "WHERE rarity_id=?" +
-                    "ORDER BY command_order;";
 
     private final TradingCards plugin;
     private final ConnectionFactory connectionFactory;
@@ -535,7 +539,22 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
     private ColorSeries getColorSeries(final String seriesId) {
-        
+        try(final Connection connection = connectionFactory.getConnection()) {
+            try (final PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(COLOR_GET_BY_ID, null, Map.of(COLUMN_SERIES_ID,seriesId)))) {
+                try (final ResultSet resultSet = statement.executeQuery()) {
+                    if(resultSet.next()) {
+                        final String about = resultSet.getString("about");
+                        final String info= resultSet.getString("info");
+                        final String type= resultSet.getString("type");
+                        final String rarity= resultSet.getString("rarity");
+                        final String series= resultSet.getString("series");
+                        return new ColorSeries(series,type,info,about,rarity);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            Util.logSevereException(e);
+        }
     }
 
     @Override
