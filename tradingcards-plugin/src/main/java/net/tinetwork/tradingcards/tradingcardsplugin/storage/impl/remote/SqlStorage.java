@@ -83,8 +83,8 @@ public class SqlStorage implements Storage<TradingCard> {
     private static final String COLUMN_AMOUNT = "amount";
     private static final String COLUMN_IS_SHINY = "is_shiny";
 
-    private static final String COLUMN_DISPLAY_COLOR  = "display_name";
-    private static final String COLUMN_DISPLAY_NAME = "display_color";
+    private static final String COLUMN_DEFAULT_COLOR = "default_color";
+    private static final String COLUMN_DISPLAY_NAME = "display_name";
     private static final String COLUMN_BUY_PRICE = "buy_price";
     private static final String COLUMN_SELL_PRICE = "sell_price";
 
@@ -200,7 +200,7 @@ public class SqlStorage implements Storage<TradingCard> {
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     if(resultSet.next()) {
                         final String displayName = resultSet.getString(COLUMN_DISPLAY_NAME);
-                        final String defaultColor = resultSet.getString(COLUMN_DISPLAY_COLOR);
+                        final String defaultColor = resultSet.getString(COLUMN_DEFAULT_COLOR);
                         final List<String> rewards = getRewards(rarityId);
                         final double buyPrice = resultSet.getDouble(COLUMN_BUY_PRICE);
                         final double sellPrice = resultSet.getDouble(COLUMN_SELL_PRICE);
@@ -476,8 +476,31 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public List<Rarity> getRarities() {
-        return null;
+        try (final Connection connection = connectionFactory.getConnection()) {
+            try (final PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(RARITY_SELECT_ALL,null,null))){
+                try(final ResultSet resultSet = statement.executeQuery()) {
+                    final List<Rarity> rarities = new ArrayList<>();
+                    while(resultSet.next()) {
+                        final String id = resultSet.getString(COLUMN_RARITY_ID);
+                        final String displayName = resultSet.getString(COLUMN_DISPLAY_NAME);
+                        final String defaultColor= resultSet.getString(COLUMN_DEFAULT_COLOR);
+                        final double buyPrice = resultSet.getDouble(COLUMN_BUY_PRICE);
+                        final double sellPrice = resultSet.getDouble(COLUMN_SELL_PRICE);
+                        final List<String> rewards = getRewards(id);
+                        rarities.add(new Rarity(id,displayName,defaultColor,buyPrice,sellPrice,rewards));
+                    }
+                    if (resultSet.getFetchSize() == 0 || resultSet.wasNull()) {
+                        return Collections.emptyList();
+                    }
+                    return rarities;
+                }
+            }
+        } catch (SQLException e) {
+            Util.logSevereException(e);
+        }
+        return Collections.emptyList();
     }
+
 
     @Override
     public Collection<Series> getAllSeries() {
