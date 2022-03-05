@@ -10,6 +10,7 @@ import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.api.model.deck.Deck;
 import net.tinetwork.tradingcards.api.model.deck.StorageEntry;
 import net.tinetwork.tradingcards.api.model.schedule.Mode;
+import net.tinetwork.tradingcards.api.model.schedule.Schedule;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
@@ -33,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -90,6 +92,10 @@ public class SqlStorage implements Storage<TradingCard> {
     private static final String COLOR_GET_BY_ID =
             "SELECT * FROM {prefix}series_colors "+
                     "WHERE series_id=?;";
+
+    private static final String SERIES_GET_BY_ID_ACTIVE =
+            "SELECT * FROM {prefix}series "+
+                    "WHERE series_id=? AND series_mode=ACTIVE;";
 
     private static final String COLUMN_UUID = "uuid";
     private static final String COLUMN_CARD_ID = "card_id";
@@ -561,7 +567,28 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public Set<Series> getActiveSeries() {
-        return null;
+        try(final Connection connection = connectionFactory.getConnection()) {
+            try (final PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(SERIES_GET_BY_ID_ACTIVE, null, null))) {
+                try (final ResultSet resultSet = statement.executeQuery()) {
+                    final Set<Series> activeSeries = new HashSet<>();
+                    while(resultSet.next()) {
+                        final String id = resultSet.getString(COLUMN_SERIES_ID);
+                        final String displayName = resultSet.getString(COLUMN_DISPLAY_NAME);
+                        final Mode mode = Mode.getMode(resultSet.getString(COLUMN_MODE));
+                        final ColorSeries colorSeries = getColorSeries(id);
+                        activeSeries.add(new Series(id,mode,displayName, null,colorSeries));
+                    }
+
+                    if (resultSet.getFetchSize() == 0 || resultSet.wasNull()) {
+                        return Collections.emptySet();
+                    }
+                    return activeSeries;
+                }
+            }
+        } catch (SQLException e) {
+            Util.logSevereException(e);
+        }
+        return Collections.emptySet();
     }
 
     @Override
