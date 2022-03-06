@@ -3,6 +3,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.managers;
 import net.tinetwork.tradingcards.api.manager.CardManager;
 import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.api.model.Rarity;
+import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.api.model.chance.Chance;
 import net.tinetwork.tradingcards.api.model.chance.EmptyChance;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
@@ -35,6 +36,8 @@ public class TradingCardManager implements CardManager<TradingCard> {
     private Map<String, List<String>> rarityCardList;
     private Map<String, List<String>> activeRarityCardList;
 
+    //in 5.6.0 this is in another class
+    private Map<String,Map<String,List<String>>> raritySeriesCardList;
 
     public TradingCardManager(final TradingCards plugin) {
         this.plugin = plugin;
@@ -51,6 +54,22 @@ public class TradingCardManager implements CardManager<TradingCard> {
         plugin.debug(TradingCardManager.class,StringUtils.join(cards.keySet(), ","));
     }
 
+
+    private void loadRaritySeriesCardList() {
+        this.raritySeriesCardList = new HashMap<>();
+        for(final Rarity rarity : plugin.getRaritiesConfig().rarities()) {
+            this.raritySeriesCardList.putIfAbsent(rarity.getName(),new HashMap<>());
+            Map<String,List<String>> seriesCardList = this.raritySeriesCardList.get(rarity.getName());
+            for(String cardKey: getRarityCardList(rarity.getName())) {
+                TradingCard tradingCard = getCard(cardKey,rarity.getName());
+                String series = tradingCard.getSeries().getName();
+                seriesCardList.putIfAbsent(series,new ArrayList<>());
+                seriesCardList.get(series).add(tradingCard.getCardName());
+            }
+        }
+
+
+    }
 
     /**
      * Pre-loads all existing cards.
@@ -201,16 +220,10 @@ public class TradingCardManager implements CardManager<TradingCard> {
     public TradingCard getRandomCard(final String rarity, final String series, final boolean forcedShiny) {
         if(series == null)
             return getRandomCard(rarity,forcedShiny);
-        //TODO Reallly inefficient
-        List<String> raritySeries = new ArrayList<>();
-        for(String cardKey: getRarityCardListNames(rarity)) {
-            TradingCard tradingCard = getCard(cardKey,rarity,forcedShiny);
-            if(tradingCard.getSeries().getName().equals(series)) {
-                raritySeries.add(tradingCard.getCardName());
-            }
-        }
-        var cindex = plugin.getRandom().nextInt(raritySeries.size());
-        String randomCardName = raritySeries.get(cindex);
+
+        List<String> raritySeries = this.raritySeriesCardList.get(rarity).get(series);
+        int cardIndex = plugin.getRandom().nextInt(raritySeries.size());
+        String randomCardName = raritySeries.get(cardIndex);
         return getCard(randomCardName, rarity, forcedShiny);
     }
 
