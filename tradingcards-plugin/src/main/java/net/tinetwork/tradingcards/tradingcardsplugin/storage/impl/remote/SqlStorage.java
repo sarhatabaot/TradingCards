@@ -82,6 +82,8 @@ public class SqlStorage implements Storage<TradingCard> {
             "SELECT * FROM {prefix}rewards " +
                     "WHERE rarity_id=?" +
                     "ORDER BY command_order;";
+    private static final String CARDS_SELECT_ALL =
+            "SELECT * FROM {prefix}cards;";
     private static final String SERIES_SELECT_ALL =
             "SELECT * FROM {prefix}series;";
 
@@ -108,6 +110,9 @@ public class SqlStorage implements Storage<TradingCard> {
     private static final String COLUMN_DISPLAY_NAME = "display_name";
     private static final String COLUMN_BUY_PRICE = "buy_price";
     private static final String COLUMN_SELL_PRICE = "sell_price";
+    private static final String COLUMN_HAS_SHINY = "has_shiny";
+    private static final String COLUMN_INFO = "info";
+    private static final String COLUMN_CUSTOM_MODEL_DATA = "custom_model_data";
 
     private static final String COLUMN_SERIES_ID = "series_id";
     private static final String COLUMN_MODE = "mode";
@@ -263,6 +268,25 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public Series getSeries(final String seriesId) {
+        try (Connection connection = connectionFactory.getConnection()) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(statementProcessor.apply(SERIES_GET_BY_ID,null,Map.of(COLUMN_SERIES_ID,seriesId)))) {
+                try (ResultSet resultSet = preparedStatement.executeQuery()){
+                    if(resultSet.next()) {
+                        final String id = resultSet.getString(COLUMN_SERIES_ID);
+                        final String displayName = resultSet.getString(COLUMN_DISPLAY_NAME);
+                        final Mode mode = Mode.getMode(resultSet.getString(COLUMN_MODE));
+                        final ColorSeries colorSeries = getColorSeries(id);
+                        return new Series(id,mode,displayName,null,colorSeries);
+                    }
+                    if (resultSet.getFetchSize() == 0 || resultSet.wasNull()) {
+                        this.plugin.getLogger().info("No such series "+seriesId);
+                        return null;
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            Util.logSevereException(e);
+        }
         return null;
     }
 
@@ -603,7 +627,41 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public List<TradingCard> getCards() {
-        return null;
+        try (Connection connection = connectionFactory.getConnection()) {
+            try(PreparedStatement preparedStatement = connection.prepareStatement(statementProcessor.apply(CARDS_SELECT_ALL,null,null) )){
+                try(ResultSet resultSet = preparedStatement.executeQuery()) {
+                    List<TradingCard> cards = new ArrayList<>();
+                    while(resultSet.next()) {
+                        final String id = resultSet.getString(COLUMN_CARD_ID);
+                        final String displayName = resultSet.getString(COLUMN_DISPLAY_NAME);
+                        final Rarity rarity = getRarityById(resultSet.getString(COLUMN_RARITY_ID));
+                        final boolean hasShiny = resultSet.getBoolean(COLUMN_HAS_SHINY);
+                        final Series series = getSeries(resultSet.getString(COLUMN_SERIES_ID));
+                        final String info = resultSet.getString(COLUMN_INFO);
+                        final int customModelData = resultSet.getInt(COLUMN_CUSTOM_MODEL_DATA);
+                        final double buyPrice = resultSet.getDouble(COLUMN_BUY_PRICE);
+                        final double sellPrice = resultSet.getDouble(COLUMN_SELL_PRICE);
+                        final TradingCard card = new TradingCard(id);
+                        card.displayName(displayName)
+                                .rarity(rarity)
+                                .hasShiny(hasShiny)
+                                .series(series)
+                                .info(info)
+                                .customModelNbt(customModelData)
+                                .buyPrice(buyPrice)
+                                .sellPrice(sellPrice);
+                        cards.add(card);
+                    }
+                    if (resultSet.getFetchSize() == 0 || resultSet.wasNull()) {
+                        return Collections.emptyList();
+                    }
+                    return cards;
+                }
+            }
+        } catch (SQLException e){
+            Util.logSevereException(e);
+        }
+        return Collections.emptyList();
     }
 
     @Override
