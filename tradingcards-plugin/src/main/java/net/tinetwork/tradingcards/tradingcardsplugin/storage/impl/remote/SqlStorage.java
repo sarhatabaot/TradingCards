@@ -10,7 +10,6 @@ import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.api.model.deck.Deck;
 import net.tinetwork.tradingcards.api.model.deck.StorageEntry;
 import net.tinetwork.tradingcards.api.model.schedule.Mode;
-import net.tinetwork.tradingcards.api.model.schedule.Schedule;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
@@ -84,6 +83,16 @@ public class SqlStorage implements Storage<TradingCard> {
                     "ORDER BY command_order;";
     private static final String CARDS_SELECT_ALL =
             "SELECT * FROM {prefix}cards;";
+
+    private static final String CARDS_SELECT_BY_RARITY_ID =
+            "SELECT * FROM {prefix}cards "+
+                    "WHERE rarity_id=?;";
+    private static final String CARDS_SELECT_BY_SERIES_ID =
+            "SELECT * FROM {prefix}cards "+
+                    "WHERE series_id=?;";
+    private static final String CARDS_SELECT_BY_RARITY_AND_SERIES =
+            "SELECT * FROM {prefix}cards "+
+                    "WHERE rarity_id=? AND series_id=?;";
     private static final String SERIES_SELECT_ALL =
             "SELECT * FROM {prefix}series;";
 
@@ -550,11 +559,7 @@ public class SqlStorage implements Storage<TradingCard> {
                 try (final ResultSet resultSet = statement.executeQuery()){
                     List<Series> series = new ArrayList<>();
                     while(resultSet.next()) {
-                        final String id = resultSet.getString(COLUMN_SERIES_ID);
-                        final String displayName = resultSet.getString(COLUMN_DISPLAY_NAME);
-                        final Mode mode = Mode.getMode(resultSet.getString(COLUMN_MODE));
-                        final ColorSeries colorSeries = getColorSeries(id);
-                        series.add(new Series(id,mode,displayName,null,colorSeries));
+                        series.add(getSeriesFromResult(resultSet));
                     }
                     if (resultSet.getFetchSize() == 0 || resultSet.wasNull()) {
                         return Collections.emptyList();
@@ -596,11 +601,8 @@ public class SqlStorage implements Storage<TradingCard> {
                 try (final ResultSet resultSet = statement.executeQuery()) {
                     final Set<Series> activeSeries = new HashSet<>();
                     while(resultSet.next()) {
-                        final String id = resultSet.getString(COLUMN_SERIES_ID);
-                        final String displayName = resultSet.getString(COLUMN_DISPLAY_NAME);
-                        final Mode mode = Mode.getMode(resultSet.getString(COLUMN_MODE));
-                        final ColorSeries colorSeries = getColorSeries(id);
-                        activeSeries.add(new Series(id,mode,displayName, null,colorSeries));
+                        final Series series = getSeriesFromResult(resultSet);
+                        activeSeries.add(series);
                     }
 
                     if (resultSet.getFetchSize() == 0 || resultSet.wasNull()) {
@@ -632,24 +634,7 @@ public class SqlStorage implements Storage<TradingCard> {
                 try(ResultSet resultSet = preparedStatement.executeQuery()) {
                     List<TradingCard> cards = new ArrayList<>();
                     while(resultSet.next()) {
-                        final String id = resultSet.getString(COLUMN_CARD_ID);
-                        final String displayName = resultSet.getString(COLUMN_DISPLAY_NAME);
-                        final Rarity rarity = getRarityById(resultSet.getString(COLUMN_RARITY_ID));
-                        final boolean hasShiny = resultSet.getBoolean(COLUMN_HAS_SHINY);
-                        final Series series = getSeries(resultSet.getString(COLUMN_SERIES_ID));
-                        final String info = resultSet.getString(COLUMN_INFO);
-                        final int customModelData = resultSet.getInt(COLUMN_CUSTOM_MODEL_DATA);
-                        final double buyPrice = resultSet.getDouble(COLUMN_BUY_PRICE);
-                        final double sellPrice = resultSet.getDouble(COLUMN_SELL_PRICE);
-                        final TradingCard card = new TradingCard(id);
-                        card.displayName(displayName)
-                                .rarity(rarity)
-                                .hasShiny(hasShiny)
-                                .series(series)
-                                .info(info)
-                                .customModelNbt(customModelData)
-                                .buyPrice(buyPrice)
-                                .sellPrice(sellPrice);
+                        final TradingCard card = getTradingCardFromResult(resultSet);
                         cards.add(card);
                     }
                     if (resultSet.getFetchSize() == 0 || resultSet.wasNull()) {
@@ -662,6 +647,36 @@ public class SqlStorage implements Storage<TradingCard> {
             Util.logSevereException(e);
         }
         return Collections.emptyList();
+    }
+
+    private @NotNull Series getSeriesFromResult(final @NotNull ResultSet resultSet) throws SQLException {
+        final String id = resultSet.getString(COLUMN_SERIES_ID);
+        final String displayName = resultSet.getString(COLUMN_DISPLAY_NAME);
+        final Mode mode = Mode.getMode(resultSet.getString(COLUMN_MODE));
+        final ColorSeries colorSeries = getColorSeries(id);
+        return new Series(id,mode,displayName, null,colorSeries);
+    }
+
+    private @NotNull TradingCard getTradingCardFromResult(final @NotNull ResultSet resultSet) throws SQLException {
+        final String id = resultSet.getString(COLUMN_CARD_ID);
+        final String displayName = resultSet.getString(COLUMN_DISPLAY_NAME);
+        final Rarity rarity = getRarityById(resultSet.getString(COLUMN_RARITY_ID));
+        final boolean hasShiny = resultSet.getBoolean(COLUMN_HAS_SHINY);
+        final Series series = getSeries(resultSet.getString(COLUMN_SERIES_ID));
+        final String info = resultSet.getString(COLUMN_INFO);
+        final int customModelData = resultSet.getInt(COLUMN_CUSTOM_MODEL_DATA);
+        final double buyPrice = resultSet.getDouble(COLUMN_BUY_PRICE);
+        final double sellPrice = resultSet.getDouble(COLUMN_SELL_PRICE);
+        final TradingCard card = new TradingCard(id);
+        card.displayName(displayName)
+                .rarity(rarity)
+                .hasShiny(hasShiny)
+                .series(series)
+                .info(info)
+                .customModelNbt(customModelData)
+                .buyPrice(buyPrice)
+                .sellPrice(sellPrice);
+        return card;
     }
 
     @Override
