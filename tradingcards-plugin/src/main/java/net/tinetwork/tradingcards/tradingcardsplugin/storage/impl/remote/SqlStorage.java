@@ -85,13 +85,13 @@ public class SqlStorage implements Storage<TradingCard> {
             "SELECT * FROM {prefix}cards;";
 
     private static final String CARDS_SELECT_BY_RARITY_ID =
-            "SELECT * FROM {prefix}cards "+
+            "SELECT * FROM {prefix}cards " +
                     "WHERE rarity_id=?;";
     private static final String CARDS_SELECT_BY_SERIES_ID =
-            "SELECT * FROM {prefix}cards "+
+            "SELECT * FROM {prefix}cards " +
                     "WHERE series_id=?;";
     private static final String CARDS_SELECT_BY_RARITY_AND_SERIES =
-            "SELECT * FROM {prefix}cards "+
+            "SELECT * FROM {prefix}cards " +
                     "WHERE rarity_id=? AND series_id=?;";
     private static final String SERIES_SELECT_ALL =
             "SELECT * FROM {prefix}series;";
@@ -101,11 +101,11 @@ public class SqlStorage implements Storage<TradingCard> {
                     "WHERE series_id=?;";
 
     private static final String COLOR_GET_BY_ID =
-            "SELECT * FROM {prefix}series_colors "+
+            "SELECT * FROM {prefix}series_colors " +
                     "WHERE series_id=?;";
 
     private static final String SERIES_GET_BY_ID_ACTIVE =
-            "SELECT * FROM {prefix}series "+
+            "SELECT * FROM {prefix}series " +
                     "WHERE series_id=? AND series_mode=ACTIVE;";
 
     private static final String COLUMN_UUID = "uuid";
@@ -128,7 +128,6 @@ public class SqlStorage implements Storage<TradingCard> {
 
     private static final String COLUMN_COMMAND = "command";
     private static final String COLUMN_ORDER_NUMBER = "command_order";
-
 
 
     private final TradingCards plugin;
@@ -226,19 +225,19 @@ public class SqlStorage implements Storage<TradingCard> {
     @Override
     public @Nullable Rarity getRarityById(final String rarityId) {
         try (Connection connection = connectionFactory.getConnection()) {
-            try (PreparedStatement preparedStatement = connection.prepareStatement(statementProcessor.apply(RARITY_GET_BY_ID,null,
-                    Map.of(COLUMN_RARITY_ID,rarityId)))) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(statementProcessor.apply(RARITY_GET_BY_ID, null,
+                    Map.of(COLUMN_RARITY_ID, rarityId)))) {
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                    if(resultSet.next()) {
+                    if (resultSet.next()) {
                         final String displayName = resultSet.getString(COLUMN_DISPLAY_NAME);
                         final String defaultColor = resultSet.getString(COLUMN_DEFAULT_COLOR);
                         final List<String> rewards = getRewards(rarityId);
                         final double buyPrice = resultSet.getDouble(COLUMN_BUY_PRICE);
                         final double sellPrice = resultSet.getDouble(COLUMN_SELL_PRICE);
-                        return new Rarity(rarityId,displayName,defaultColor,buyPrice,sellPrice,rewards);
+                        return new Rarity(rarityId, displayName, defaultColor, buyPrice, sellPrice, rewards);
                     }
                     if (resultSet.getFetchSize() == 0 || resultSet.wasNull()) {
-                        this.plugin.getLogger().info("No such rarity "+rarityId);
+                        this.plugin.getLogger().info("No such rarity " + rarityId);
                         return null;
                     }
                 }
@@ -251,18 +250,18 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public List<String> getRewards(final String rarityId) {
-        try(Connection connection = connectionFactory.getConnection()){
-            try (PreparedStatement preparedStatement = connection.prepareStatement(statementProcessor.apply(REWARDS_GET_BY_ID,null,
-                    Map.of(COLUMN_RARITY_ID,rarityId)))) {
-                try (ResultSet resultSet = preparedStatement.executeQuery()){
+        try (Connection connection = connectionFactory.getConnection()) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(statementProcessor.apply(REWARDS_GET_BY_ID, null,
+                    Map.of(COLUMN_RARITY_ID, rarityId)))) {
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     List<String> rewards = new ArrayList<>();
-                    while(resultSet.next()) {
+                    while (resultSet.next()) {
                         final String command = resultSet.getString(COLUMN_COMMAND);
                         rewards.add(command);
                     }
 
                     if (resultSet.getFetchSize() == 0 || resultSet.wasNull()) {
-                        this.plugin.getLogger().info("No such rarity "+rarityId);
+                        this.plugin.getLogger().info("No such rarity " + rarityId);
                         return Collections.emptyList();
                     }
 
@@ -278,17 +277,17 @@ public class SqlStorage implements Storage<TradingCard> {
     @Override
     public Series getSeries(final String seriesId) {
         try (Connection connection = connectionFactory.getConnection()) {
-            try (PreparedStatement preparedStatement = connection.prepareStatement(statementProcessor.apply(SERIES_GET_BY_ID,null,Map.of(COLUMN_SERIES_ID,seriesId)))) {
-                try (ResultSet resultSet = preparedStatement.executeQuery()){
-                    if(resultSet.next()) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(statementProcessor.apply(SERIES_GET_BY_ID, null, Map.of(COLUMN_SERIES_ID, seriesId)))) {
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    if (resultSet.next()) {
                         final String id = resultSet.getString(COLUMN_SERIES_ID);
                         final String displayName = resultSet.getString(COLUMN_DISPLAY_NAME);
                         final Mode mode = Mode.getMode(resultSet.getString(COLUMN_MODE));
                         final ColorSeries colorSeries = getColorSeries(id);
-                        return new Series(id,mode,displayName,null,colorSeries);
+                        return new Series(id, mode, displayName, null, colorSeries);
                     }
                     if (resultSet.getFetchSize() == 0 || resultSet.wasNull()) {
-                        this.plugin.getLogger().info("No such series "+seriesId);
+                        this.plugin.getLogger().info("No such series " + seriesId);
                         return null;
                     }
                 }
@@ -321,7 +320,7 @@ public class SqlStorage implements Storage<TradingCard> {
         List<StorageEntry> cardsToRemove = new ArrayList<>();
 
         for (StorageEntry deckEntry : deckEntries) {
-            boolean cardExistsInDatabase = dbDeck.containsCard(deckEntry.getCardId(), deckEntry.getRarityId(),deckEntry.isShiny());
+            boolean cardExistsInDatabase = dbDeck.containsCard(deckEntry.getCardId(), deckEntry.getRarityId(), deckEntry.isShiny());
             //if it exists, but the entry is 64, add a new line?
             if (cardExistsInDatabase) {
                 if (!dbDeckEntries.contains(deckEntry)) {
@@ -376,7 +375,7 @@ public class SqlStorage implements Storage<TradingCard> {
                             COLUMN_AMOUNT, String.valueOf(storageEntry.getAmount()),
                             COLUMN_IS_SHINY, String.valueOf(storageEntry.isShiny()))))) {
                 statement.executeUpdate();
-                plugin.debug(SqlStorage.class,"(UPDATE) "+ storageEntry);
+                plugin.debug(SqlStorage.class, "(UPDATE) " + storageEntry);
             }
         } catch (SQLException e) {
             plugin.getLogger().severe(e.getMessage());
@@ -450,7 +449,7 @@ public class SqlStorage implements Storage<TradingCard> {
         try (Connection connection = connectionFactory.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(DECKS_INSERT_CARD, values, null))) {
                 statement.executeUpdate();
-                plugin.debug(SqlStorage.class,"(ADD) "+ entry);
+                plugin.debug(SqlStorage.class, "(ADD) " + entry);
             }
         } catch (SQLException e) {
             plugin.getLogger().severe(e.getMessage());
@@ -468,7 +467,7 @@ public class SqlStorage implements Storage<TradingCard> {
                             COLUMN_AMOUNT, String.valueOf(entry.getAmount()),
                             COLUMN_IS_SHINY, String.valueOf(entry.isShiny()))))) {
                 statement.execute();
-                plugin.debug(SqlStorage.class,"(REMOVE) "+ entry);
+                plugin.debug(SqlStorage.class, "(REMOVE) " + entry);
             }
         } catch (SQLException e) {
             plugin.getLogger().severe(e.getMessage());
@@ -527,17 +526,17 @@ public class SqlStorage implements Storage<TradingCard> {
     @Override
     public List<Rarity> getRarities() {
         try (final Connection connection = connectionFactory.getConnection()) {
-            try (final PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(RARITY_SELECT_ALL,null,null))){
-                try(final ResultSet resultSet = statement.executeQuery()) {
+            try (final PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(RARITY_SELECT_ALL, null, null))) {
+                try (final ResultSet resultSet = statement.executeQuery()) {
                     final List<Rarity> rarities = new ArrayList<>();
-                    while(resultSet.next()) {
+                    while (resultSet.next()) {
                         final String id = resultSet.getString(COLUMN_RARITY_ID);
                         final String displayName = resultSet.getString(COLUMN_DISPLAY_NAME);
-                        final String defaultColor= resultSet.getString(COLUMN_DEFAULT_COLOR);
+                        final String defaultColor = resultSet.getString(COLUMN_DEFAULT_COLOR);
                         final double buyPrice = resultSet.getDouble(COLUMN_BUY_PRICE);
                         final double sellPrice = resultSet.getDouble(COLUMN_SELL_PRICE);
                         final List<String> rewards = getRewards(id);
-                        rarities.add(new Rarity(id,displayName,defaultColor,buyPrice,sellPrice,rewards));
+                        rarities.add(new Rarity(id, displayName, defaultColor, buyPrice, sellPrice, rewards));
                     }
                     if (resultSet.getFetchSize() == 0 || resultSet.wasNull()) {
                         return Collections.emptyList();
@@ -554,11 +553,11 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public Collection<Series> getAllSeries() {
-        try(final Connection connection = connectionFactory.getConnection()) {
-            try(final PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(SERIES_SELECT_ALL,null,null))) {
-                try (final ResultSet resultSet = statement.executeQuery()){
+        try (final Connection connection = connectionFactory.getConnection()) {
+            try (final PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(SERIES_SELECT_ALL, null, null))) {
+                try (final ResultSet resultSet = statement.executeQuery()) {
                     List<Series> series = new ArrayList<>();
-                    while(resultSet.next()) {
+                    while (resultSet.next()) {
                         series.add(getSeriesFromResult(resultSet));
                     }
                     if (resultSet.getFetchSize() == 0 || resultSet.wasNull()) {
@@ -575,16 +574,16 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Contract("_ -> new")
     private @NotNull ColorSeries getColorSeries(final String seriesId) {
-        try(final Connection connection = connectionFactory.getConnection()) {
-            try (final PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(COLOR_GET_BY_ID, null, Map.of(COLUMN_SERIES_ID,seriesId)))) {
+        try (final Connection connection = connectionFactory.getConnection()) {
+            try (final PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(COLOR_GET_BY_ID, null, Map.of(COLUMN_SERIES_ID, seriesId)))) {
                 try (final ResultSet resultSet = statement.executeQuery()) {
-                    if(resultSet.next()) {
+                    if (resultSet.next()) {
                         final String about = resultSet.getString("about");
-                        final String info= resultSet.getString("info");
-                        final String type= resultSet.getString("type");
-                        final String rarity= resultSet.getString("rarity");
-                        final String series= resultSet.getString("series");
-                        return new ColorSeries(series,type,info,about,rarity);
+                        final String info = resultSet.getString("info");
+                        final String type = resultSet.getString("type");
+                        final String rarity = resultSet.getString("rarity");
+                        final String series = resultSet.getString("series");
+                        return new ColorSeries(series, type, info, about, rarity);
                     }
                 }
             }
@@ -596,11 +595,11 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public Set<Series> getActiveSeries() {
-        try(final Connection connection = connectionFactory.getConnection()) {
+        try (final Connection connection = connectionFactory.getConnection()) {
             try (final PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(SERIES_GET_BY_ID_ACTIVE, null, null))) {
                 try (final ResultSet resultSet = statement.executeQuery()) {
                     final Set<Series> activeSeries = new HashSet<>();
-                    while(resultSet.next()) {
+                    while (resultSet.next()) {
                         final Series series = getSeriesFromResult(resultSet);
                         activeSeries.add(series);
                     }
@@ -630,10 +629,10 @@ public class SqlStorage implements Storage<TradingCard> {
     @Override
     public List<TradingCard> getCards() {
         try (Connection connection = connectionFactory.getConnection()) {
-            try(PreparedStatement preparedStatement = connection.prepareStatement(statementProcessor.apply(CARDS_SELECT_ALL,null,null) )){
-                try(ResultSet resultSet = preparedStatement.executeQuery()) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(statementProcessor.apply(CARDS_SELECT_ALL, null, null))) {
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     List<TradingCard> cards = new ArrayList<>();
-                    while(resultSet.next()) {
+                    while (resultSet.next()) {
                         final TradingCard card = getTradingCardFromResult(resultSet);
                         cards.add(card);
                     }
@@ -643,7 +642,7 @@ public class SqlStorage implements Storage<TradingCard> {
                     return cards;
                 }
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
             Util.logSevereException(e);
         }
         return Collections.emptyList();
@@ -654,7 +653,7 @@ public class SqlStorage implements Storage<TradingCard> {
         final String displayName = resultSet.getString(COLUMN_DISPLAY_NAME);
         final Mode mode = Mode.getMode(resultSet.getString(COLUMN_MODE));
         final ColorSeries colorSeries = getColorSeries(id);
-        return new Series(id,mode,displayName, null,colorSeries);
+        return new Series(id, mode, displayName, null, colorSeries);
     }
 
     private @NotNull TradingCard getTradingCardFromResult(final @NotNull ResultSet resultSet) throws SQLException {
@@ -681,12 +680,46 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public List<TradingCard> getCardsInRarity(final String rarityId) {
-        return null;
+        try (Connection connection = connectionFactory.getConnection()) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(statementProcessor.apply(CARDS_SELECT_BY_RARITY_ID, null, Map.of("rarity_id", rarityId)))) {
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    List<TradingCard> cards = new ArrayList<>();
+                    while (resultSet.next()) {
+                        final TradingCard card = getTradingCardFromResult(resultSet);
+                        cards.add(card);
+                    }
+                    if (resultSet.getFetchSize() == 0 || resultSet.wasNull()) {
+                        return Collections.emptyList();
+                    }
+                    return cards;
+                }
+            }
+        } catch (SQLException e) {
+            Util.logSevereException(e);
+        }
+        return Collections.emptyList();
     }
 
     @Override
     public List<TradingCard> getCardsInSeries(final String seriesId) {
-        return null;
+        try (Connection connection = connectionFactory.getConnection()) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(statementProcessor.apply(CARDS_SELECT_BY_SERIES_ID, null, Map.of("seriies_id", seriesId)))) {
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    List<TradingCard> cards = new ArrayList<>();
+                    while (resultSet.next()) {
+                        final TradingCard card = getTradingCardFromResult(resultSet);
+                        cards.add(card);
+                    }
+                    if (resultSet.getFetchSize() == 0 || resultSet.wasNull()) {
+                        return Collections.emptyList();
+                    }
+                    return cards;
+                }
+            }
+        } catch (SQLException e) {
+            Util.logSevereException(e);
+        }
+        return Collections.emptyList();
     }
 
     @Override
