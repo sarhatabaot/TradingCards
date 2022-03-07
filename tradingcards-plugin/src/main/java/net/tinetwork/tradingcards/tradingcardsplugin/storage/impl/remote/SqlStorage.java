@@ -125,6 +125,12 @@ public class SqlStorage implements Storage<TradingCard> {
             "SELECT * FROM {prefix}packs "+
                     "WHERE pack_id=?;";
 
+    private static final String CUSTOM_TYPES_SELECT_ALL =
+            "SELECT * FROM {prefix}custom_types;";
+    private static final String CUSTOM_TYPES_GET_BY_ID =
+            "SELECT * FROM {prefix}custom_types " +
+                    "WHERE type_id=?;";
+
 
     private static final String COLUMN_UUID = "uuid";
     private static final String COLUMN_CARD_ID = "card_id";
@@ -144,13 +150,15 @@ public class SqlStorage implements Storage<TradingCard> {
     private static final String COLUMN_SERIES_ID = "series_id";
     private static final String COLUMN_MODE = "mode";
 
-
     private static final String COLUMN_PACK_ID = "pack_id";
     private static final String COLUMN_PACK_PERMISSION = "permission";
 
     private static final String COLUMN_COMMAND = "command";
     private static final String COLUMN_ORDER_NUMBER = "command_order";
     private static final String COLUMN_CARD_AMOUNT = "card_amount";
+
+    private static final String COLUMN_TYPE_ID = "type_id";
+    private static final String COLUMN_DROP_TYPE = "drop_type";
 
     private final TradingCards plugin;
     private final ConnectionFactory connectionFactory;
@@ -775,7 +783,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public Card<TradingCard> getActiveCard(final String cardId, final String rarityId) {
-        //?
+        //TODO
         return null;
     }
 
@@ -856,11 +864,44 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public Set<DropType> getDropTypes() {
-        return null;
+        try(Connection connection = connectionFactory.getConnection()) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(statementProcessor.apply(CUSTOM_TYPES_SELECT_ALL, null,null) )){
+                try (ResultSet resultSet = preparedStatement.executeQuery()){
+                    Set<DropType> customTypes = new HashSet<>();
+                    while(resultSet.next()) {
+                        customTypes.add(getDropTypeFromResult(resultSet));
+                    }
+
+                    if (resultSet.getFetchSize() == 0 || resultSet.wasNull()) {
+                        return Collections.emptySet();
+                    }
+                    return customTypes;
+                }
+            }
+        }catch (SQLException e){
+            Util.logSevereException(e);
+        }
+        return Collections.emptySet();
     }
 
+
+    private @NotNull DropType getDropTypeFromResult(final @NotNull ResultSet resultSet) throws SQLException{
+        final String typeId = resultSet.getString(COLUMN_TYPE_ID);
+        final String type = resultSet.getString(COLUMN_DROP_TYPE);
+        final String displayName = resultSet.getString(COLUMN_DISPLAY_NAME);
+        return new DropType(typeId,displayName,type);
+    }
     @Override
     public DropType getCustomType(final String typeId) {
+        try (Connection connection = connectionFactory.getConnection()){
+            try (PreparedStatement preparedStatement = connection.prepareStatement(statementProcessor.apply(CUSTOM_TYPES_GET_BY_ID,null,Map.of("type_id",typeId)))){
+                try (ResultSet resultSet = preparedStatement.executeQuery()){
+                    return getDropTypeFromResult(resultSet);
+                }
+            }
+        }catch (SQLException e) {
+            Util.logSevereException(e);
+        }
         return null;
     }
 
