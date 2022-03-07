@@ -11,6 +11,7 @@ import net.tinetwork.tradingcards.api.model.deck.Deck;
 import net.tinetwork.tradingcards.api.model.deck.StorageEntry;
 import net.tinetwork.tradingcards.api.model.schedule.Mode;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
+import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.StorageType;
@@ -83,7 +84,9 @@ public class SqlStorage implements Storage<TradingCard> {
                     "ORDER BY command_order;";
     private static final String CARDS_SELECT_ALL =
             "SELECT * FROM {prefix}cards;";
-
+    private static final String CARDS_SELECT_BY_CARD_ID_AND_RARITY =
+            "SELECT * FROM {prefix}cards "+
+                    "WHERE card_id=? AND rarity_id=?;";
     private static final String CARDS_SELECT_BY_RARITY_ID =
             "SELECT * FROM {prefix}cards " +
                     "WHERE rarity_id=?;";
@@ -724,16 +727,33 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public List<TradingCard> getActiveCards() {
+        //get lists of cards in series, check which ones are active
         return null;
     }
 
     @Override
     public Card<TradingCard> getCard(final String cardId, final String rarityId) {
-        return null;
+        try (Connection connection = connectionFactory.getConnection()) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(statementProcessor.apply(CARDS_SELECT_BY_CARD_ID_AND_RARITY, null,
+                    Map.of(COLUMN_RARITY_ID, rarityId, COLUMN_CARD_ID, cardId)))) {
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    if (resultSet.next()) {
+                        return getTradingCardFromResult(resultSet);
+                    }
+                    if (resultSet.getFetchSize() == 0 || resultSet.wasNull()) {
+                        return new EmptyCard();
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            Util.logSevereException(e);
+        }
+        return new EmptyCard();
     }
 
     @Override
     public Card<TradingCard> getActiveCard(final String cardId, final String rarityId) {
+        //?
         return null;
     }
 
