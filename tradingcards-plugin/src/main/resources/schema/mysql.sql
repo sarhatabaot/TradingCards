@@ -57,18 +57,18 @@ CREATE TABLE IF NOT EXISTS `{prefix}custom_types` (
 CREATE TABLE IF NOT EXISTS `{prefix}packs` (
     pack_id         VARCHAR(200)       NOT NULL, -- Foreign key for packs_content
     display_name    TINYTEXT           NOT NULL,
-    price           DOUBLE             NOT NULL,
+    buy_price       DOUBLE             NOT NULL,
     permission      VARCHAR(200)       NOT NULL,
     PRIMARY KEY (pack_id)
 ) DEFAULT CHARSET = utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `{prefix}packs_content` (
-    order_number     INT                NOT NULL,
+    command_order     INT               NOT NULL,
     pack_id          VARCHAR(200)       NOT NULL,
     rarity_id        VARCHAR(200)       NOT NULL, -- foreign key from rarities
     card_amount      VARCHAR(200)       NOT NULL,
     series_id        VARCHAR(200)       NOT NULL, -- foreign key from series
-    PRIMARY KEY (order_number),
+    PRIMARY KEY (command_order),
     FOREIGN KEY (rarity_id) REFERENCES `{prefix}rarities`(rarity_id),
     FOREIGN KEY (series_id) REFERENCES `{prefix}series`(series_id)
 ) DEFAULT CHARSET = utf8mb4;

@@ -21,6 +21,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,6 +41,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 /**
  * @author sarhatabaot
@@ -111,6 +113,15 @@ public class SqlStorage implements Storage<TradingCard> {
             "SELECT * FROM {prefix}series " +
                     "WHERE series_id=? AND series_mode=ACTIVE;";
 
+
+    private static final String PACKS_SELECT_ALL =
+            "SELECT * FROM {prefix}packs;";
+
+    private static final String PACKS_GET_CONTENT_BY_ID =
+            "SELECT * FROM {prefix}packs_content " +
+                    "WHERE pack_id=?;";
+
+
     private static final String COLUMN_UUID = "uuid";
     private static final String COLUMN_CARD_ID = "card_id";
     private static final String COLUMN_RARITY_ID = "rarity_id";
@@ -129,9 +140,13 @@ public class SqlStorage implements Storage<TradingCard> {
     private static final String COLUMN_SERIES_ID = "series_id";
     private static final String COLUMN_MODE = "mode";
 
+
+    private static final String COLUMN_PACK_ID = "pack_id";
+    private static final String COLUMN_PACK_PERMISSION = "permission";
+
     private static final String COLUMN_COMMAND = "command";
     private static final String COLUMN_ORDER_NUMBER = "command_order";
-
+    private static final String COLUMN_CARD_AMOUNT = "card_amount";
 
     private final TradingCards plugin;
     private final ConnectionFactory connectionFactory;
@@ -727,8 +742,11 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public List<TradingCard> getActiveCards() {
-        //get lists of cards in series, check which ones are active
-        return null;
+        List<TradingCard> activeCards = new ArrayList<>();
+        for(Series series: getActiveSeries()) {
+            activeCards = Stream.concat(activeCards.stream(),getCardsInSeries(series.getName()).stream()).toList();
+        }
+        return activeCards;
     }
 
     @Override
@@ -762,9 +780,63 @@ public class SqlStorage implements Storage<TradingCard> {
         return null;
     }
 
+
+    private @NotNull Pack getPackFromResult(@NotNull ResultSet resultSet) throws SQLException{
+        final String id = resultSet.getString(COLUMN_PACK_ID);
+        final String displayName = resultSet.getString(COLUMN_DISPLAY_NAME);
+        final double price = resultSet.getDouble(COLUMN_BUY_PRICE);
+        final String permission =resultSet.getString(COLUMN_PACK_PERMISSION);
+        final List<Pack.PackEntry> entries = getPackEntries(id);
+        return new Pack(id,entries,displayName,price,permission);
+    }
+    private Pack.@NotNull PackEntry getPackEntryFromResult(@NotNull ResultSet resultSet) throws SQLException{
+        final String rarityId = resultSet.getString(COLUMN_RARITY_ID);
+        final String seriesId = resultSet.getString(COLUMN_SERIES_ID);
+        final int cardAmount = resultSet.getInt(COLUMN_CARD_AMOUNT);
+        return new Pack.PackEntry(rarityId,cardAmount,seriesId);
+    }
+    private @NotNull @Unmodifiable List<Pack.PackEntry> getPackEntries(final String packId) {
+        try(Connection connection = connectionFactory.getConnection()) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(statementProcessor.apply(PACKS_GET_CONTENT_BY_ID,null,Map.of("pack_id",packId)))){
+                try(ResultSet resultSet = preparedStatement.executeQuery()) {
+                    List<Pack.PackEntry> entries = new ArrayList<>();
+                    while(resultSet.next()) {
+                        int commandOrder = resultSet.getInt(COLUMN_ORDER_NUMBER);
+                        entries.add(commandOrder,getPackEntryFromResult(resultSet));
+                    }
+                    if (resultSet.getFetchSize() == 0 || resultSet.wasNull()) {
+                        return Collections.emptyList();
+                    }
+                    return entries;
+                }
+            }
+        } catch (SQLException e) {
+            Util.logSevereException(e);
+        }
+
+        return Collections.emptyList();
+    }
     @Override
     public List<Pack> getPacks() {
-        return null;
+        try (Connection connection = connectionFactory.getConnection()) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(statementProcessor.apply(PACKS_SELECT_ALL, null, null))) {
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    List<Pack> packs = new ArrayList<>();
+                    while(resultSet.next()) {
+                        packs.add(getPackFromResult(resultSet));
+                    }
+                    if (resultSet.getFetchSize() == 0 || resultSet.wasNull()) {
+                        return Collections.emptyList();
+                    }
+                    return packs;
+                }
+
+            }
+        } catch (SQLException e) {
+            Util.logSevereException(e);
+        }
+        return Collections.emptyList();
+
     }
 
     @Override
