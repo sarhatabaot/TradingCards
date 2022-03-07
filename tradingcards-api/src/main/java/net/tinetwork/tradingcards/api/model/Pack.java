@@ -112,8 +112,9 @@ public final class Pack {
             return seriesId;
         }
 
+        @Contract(pure = true)
         @Override
-        public String toString() {
+        public @NotNull String toString() {
             return rarityId + ":" + amount
                     + ((seriesId != null) ? ":" + seriesId : "");
         }
