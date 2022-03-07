@@ -121,6 +121,10 @@ public class SqlStorage implements Storage<TradingCard> {
             "SELECT * FROM {prefix}packs_content " +
                     "WHERE pack_id=?;";
 
+    private static final String PACKS_GET_BY_ID =
+            "SELECT * FROM {prefix}packs "+
+                    "WHERE pack_id=?;";
+
 
     private static final String COLUMN_UUID = "uuid";
     private static final String COLUMN_CARD_ID = "card_id";
@@ -777,6 +781,17 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public @Nullable Pack getPack(final String packsId) {
+        try(Connection connection = connectionFactory.getConnection()) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(PACKS_GET_BY_ID)){
+                try (ResultSet resultSet = preparedStatement.executeQuery()){
+                    if(resultSet.next()){
+                        return getPackFromResult(resultSet);
+                    }
+                }
+            }
+        } catch (SQLException e){
+            Util.logSevereException(e);
+        }
         return null;
     }
 
