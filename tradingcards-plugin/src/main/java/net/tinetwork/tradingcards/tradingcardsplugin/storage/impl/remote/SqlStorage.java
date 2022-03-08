@@ -39,6 +39,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
@@ -103,6 +104,34 @@ public class SqlStorage implements Storage<TradingCard> {
     private static final String CARDS_CREATE =
             "INSERT INTO {prefix}cards (card_id,rarity_id,series_id) " +
                     "VALUES (?,?,?);";
+    private static final String CARDS_UPDATE_DISPLAY_NAME =
+            "UPDATE {prefix}cards " +
+                    "SET display_name=? " +
+                    "WHERE card_id=? AND rarity_id=? AND series_id=?;";
+    private static final String CARDS_UPDATE_SERIES =
+            "UPDATE {prefix}cards " +
+                    "SET series_id=? " +
+                    "WHERE card_id=? AND rarity_id=? AND series_id=?;";
+    private static final String CARDS_UPDATE_SELL_PRICE =
+            "UPDATE {prefix}cards " +
+                    "SET sell_price=? " +
+                    "WHERE card_id=? AND rarity_id=? AND series_id=?;";
+    private static final String CARDS_UPDATE_BUY_PRICE =
+            "UPDATE {prefix}cards " +
+                    "SET buy_price=? " +
+                    "WHERE card_id=? AND rarity_id=? AND series_id=?;";
+    private static final String CARDS_UPDATE_TYPE =
+            "UPDATE {prefix}cards " +
+                    "SET type_id=? " +
+                    "WHERE card_id=? AND rarity_id=? AND series_id=?;";
+    private static final String CARDS_UPDATE_INFO =
+            "UPDATE {prefix}cards " +
+                    "SET info=? " +
+                    "WHERE card_id=? AND rarity_id=? AND series_id=?;";
+    private static final String CARDS_UPDATE_CUSTOM_MODEL_DATA =
+            "UPDATE {prefix}cards " +
+                    "SET custom_model_data=? " +
+                    "WHERE card_id=? AND rarity_id=? AND series_id=?;";
     private static final String RARITY_CREATE =
             "INSERT INTO {prefix}rarities (rarity_id) " +
                     "VALUES (?);";
@@ -983,38 +1012,81 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void editCardDisplayName(final String rarityId, final String cardId, final String seriesId, final String displayName) {
-
-
+        try (Connection connection = connectionFactory.getConnection()){
+            try (PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(CARDS_UPDATE_DISPLAY_NAME,
+                    Map.of("display_name",displayName),
+                    Map.of("card_id", cardId,"rarity_id",rarityId,"series_id",seriesId)))){
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            Util.logSevereException(e);
+        }
     }
 
     @Override
     public void editCardSeries(final String rarityId, final String cardId, final String seriesId, final Series value) {
-
+        try (Connection connection = connectionFactory.getConnection()){
+            try (PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(CARDS_UPDATE_SERIES, Map.of("series_id", seriesId),Map.of("card_id",cardId,"rarity_id",rarityId,"series_id",seriesId)))){
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            Util.logSevereException(e);
+        }
     }
 
     @Override
     public void editCardSellPrice(final String rarityId, final String cardId, final String seriesId, final double value) {
-
+        try (Connection connection = connectionFactory.getConnection()){
+            try (PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(CARDS_UPDATE_SELL_PRICE, Map.of("sell_price", String.valueOf(value)),Map.of("card_id",cardId,"rarity_id",rarityId,"series_id",seriesId)))){
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            Util.logSevereException(e);
+        }
     }
 
     @Override
     public void editCardType(final String rarityId, final String cardId, final String seriesId, final DropType value) {
-
+        try (Connection connection = connectionFactory.getConnection()){
+            try (PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(CARDS_UPDATE_TYPE, Map.of("type_id", String.valueOf(value)),Map.of("card_id",cardId,"rarity_id",rarityId,"series_id",seriesId)))){
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            Util.logSevereException(e);
+        }
     }
 
     @Override
     public void editCardInfo(final String rarityId, final String cardId, final String seriesId, final String value) {
-
+        try (Connection connection = connectionFactory.getConnection()){
+            try (PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(CARDS_UPDATE_INFO, Map.of("info", String.valueOf(value)),Map.of("card_id",cardId,"rarity_id",rarityId,"series_id",seriesId)))){
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            Util.logSevereException(e);
+        }
     }
 
     @Override
     public void editCardCustomModelData(final String rarityId, final String cardId, final String seriesId, final int value) {
-
+        try (Connection connection = connectionFactory.getConnection()){
+            try (PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(CARDS_UPDATE_CUSTOM_MODEL_DATA, Map.of("custom_model_data", String.valueOf(value)),Map.of("card_id",cardId,"rarity_id",rarityId,"series_id",seriesId)))){
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            Util.logSevereException(e);
+        }
     }
 
     @Override
     public void editCardBuyPrice(final String rarityId, final String cardId, final String seriesId, final double value) {
-
+        try (Connection connection = connectionFactory.getConnection()){
+            try (PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(CARDS_UPDATE_BUY_PRICE, Map.of("buy_price", String.valueOf(value)),Map.of("card_id",cardId,"rarity_id",rarityId,"series_id",seriesId)))){
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            Util.logSevereException(e);
+        }
     }
 
     @Override
