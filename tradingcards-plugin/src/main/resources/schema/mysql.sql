@@ -84,7 +84,9 @@ CREATE TABLE IF NOT EXISTS `{prefix}cards` (
     custom_model_data   INT,
     buy_price           DOUBLE,
     sell_price          DOUBLE,
+    type_id             VARCHAR(200)        NOT NULL,
     PRIMARY KEY (`id`),
     FOREIGN KEY (rarity_id) REFERENCES `{prefix}rarities`(rarity_id),
-    FOREIGN KEY (series_id) REFERENCES `{prefix}series`(series_id)
+    FOREIGN KEY (series_id) REFERENCES `{prefix}series`(series_id),
+    FOREIGN KEY (type_id) REFERENCES `{prefix}custom_types`(type_id),
 ) DEFAULT CHARSET = utf8mb4;
