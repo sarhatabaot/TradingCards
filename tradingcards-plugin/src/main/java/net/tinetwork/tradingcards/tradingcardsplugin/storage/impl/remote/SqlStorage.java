@@ -175,6 +175,10 @@ public class SqlStorage implements Storage<TradingCard> {
             "SELECT * FROM {prefix}series " +
                     "WHERE series_id=?;";
 
+    private static final String SERIES_UPDATE_DISPLAY_NAME;
+    private static final String SERIES_UPDATE_COLORS;
+    private static final String SERIES_MODE;
+
     private static final String COLOR_GET_BY_ID =
             "SELECT * FROM {prefix}series_colors " +
                     "WHERE series_id=?;";
@@ -197,11 +201,18 @@ public class SqlStorage implements Storage<TradingCard> {
             "SELECT * FROM {prefix}packs "+
                     "WHERE pack_id=?;";
 
+    private static final String PACKS_UPDATE_DISPLAY_NAME;
+    private static final String PACKS_UPDATE_PERMISSION;
+    private static final String PACKS_UPDATE_PRICE;
+    private static final String PACKS_UPDATE_CONTENT;
+
     private static final String CUSTOM_TYPES_SELECT_ALL =
             "SELECT * FROM {prefix}custom_types;";
     private static final String CUSTOM_TYPES_GET_BY_ID =
             "SELECT * FROM {prefix}custom_types " +
                     "WHERE type_id=?;";
+    private static final String CUSTOM_TYPES_UPDATE_TYPE;
+    private static final String CUSTOM_TYPES_UPDATE_DISPLAY_NAME;
 
 
     private static final String COLUMN_UUID = "uuid";
