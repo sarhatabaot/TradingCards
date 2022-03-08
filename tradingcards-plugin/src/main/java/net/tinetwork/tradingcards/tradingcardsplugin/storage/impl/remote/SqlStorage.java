@@ -84,6 +84,8 @@ public class SqlStorage implements Storage<TradingCard> {
             "SELECT * FROM {prefix}rewards " +
                     "WHERE rarity_id=?" +
                     "ORDER BY command_order;";
+
+
     private static final String CARDS_SELECT_ALL =
             "SELECT * FROM {prefix}cards;";
     private static final String CARDS_SELECT_BY_CARD_ID_AND_RARITY =
@@ -98,6 +100,12 @@ public class SqlStorage implements Storage<TradingCard> {
     private static final String CARDS_SELECT_BY_RARITY_AND_SERIES =
             "SELECT * FROM {prefix}cards " +
                     "WHERE rarity_id=? AND series_id=?;";
+    private static final String CARDS_CREATE =
+            "INSERT INTO {prefix}cards (card_id,rarity_id,series_id) " +
+                    "VALUES (?,?,?);";
+    private static final String RARITY_CREATE =
+            "INSERT INTO {prefix}rarities (rarity_id) " +
+                    "VALUES (?);";
     private static final String SERIES_SELECT_ALL =
             "SELECT * FROM {prefix}series;";
 
@@ -907,12 +915,24 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void createCard(final String cardId, final String rarityId, final String seriesId) {
-
+        try(Connection connection= connectionFactory.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(CARDS_CREATE,Map.of("card_id",cardId,"rarity_id",rarityId,"series_id",seriesId) ,null ) )){
+                statement.executeUpdate();
+            }
+        } catch (SQLException e){
+            Util.logSevereException(e);
+        }
     }
 
     @Override
     public void createRarity(final String rarityId) {
-
+        try (Connection connection = connectionFactory.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(RARITY_CREATE,Map.of("rarity_id",rarityId),null) )) {
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            Util.logSevereException(e);
+        }
     }
 
     @Override
