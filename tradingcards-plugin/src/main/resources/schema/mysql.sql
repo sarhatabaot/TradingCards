@@ -23,8 +23,8 @@ CREATE TABLE IF NOT EXISTS `{prefix}rarities` (
 ) DEFAULT CHARSET = utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `{prefix}rewards` (
-    rarity_id     VARCHAR(200)       NOT NULL, --This should just be the rarity_id, we don't even need a dedicated rewards_id. (We need one in the table but not in the rarities table)
-    command       TINYTEXT           NOT NULL,
+    rarity_id      VARCHAR(200)       NOT NULL, --This should just be the rarity_id, we don't even need a dedicated rewards_id. (We need one in the table but not in the rarities table)
+    command        TINYTEXT           NOT NULL,
     command_order  INT               NOT NULL,
     PRIMARY KEY (rarity_id)
     FOREIGN KEY (rarity_id) REFERENCES `{prefix}rarities`(rarity_id)
@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS `{prefix}packs` (
 ) DEFAULT CHARSET = utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `{prefix}packs_content` (
-    command_order    INT               NOT NULL,
+    command_order    INT                NOT NULL,
     pack_id          VARCHAR(200)       NOT NULL,
     rarity_id        VARCHAR(200)       NOT NULL, -- foreign key from rarities
     card_amount      VARCHAR(200)       NOT NULL,

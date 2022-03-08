@@ -81,11 +81,38 @@ public class SqlStorage implements Storage<TradingCard> {
             "SELECT * FROM {prefix}rarities " +
                     "WHERE rarity_id=?;";
 
+    private static final String RARITY_UPDATE_BUY_PRICE =
+            "UPDATE {prefix}rarities " +
+                    "SET buy_price=? " +
+                    "WHERE rarity_id=?;";
+    private static final String RARITY_UPDATE_SELL_PRICE =
+            "UPDATE {prefix}rarities " +
+                    "SET sell_price=? " +
+                    "WHERE rarity_id=?;";
+    private static final String RARITY_UPDATE_DEFAULT_COLOR =
+            "UPDATE {prefix}rarities " +
+                    "SET default_color=? " +
+                    "WHERE rarity_id=?;";
+    private static final String RARITY_UPDATE_DISPLAY_NAME =
+            "UPDATE {prefix}rarities " +
+                    "SET display_name=? " +
+                    "WHERE rarity_id=?;";
+
+
     private static final String REWARDS_GET_BY_ID =
             "SELECT * FROM {prefix}rewards " +
                     "WHERE rarity_id=?" +
                     "ORDER BY command_order;";
-
+    private static final String REWARDS_UPDATE_ADD_REWARD = //todo
+            "UPDATE {prefix}rewards " +
+                    "SET reward=? command_order=?" +
+                    "WHERE rarity_id=?;";
+    private static final String REWARDS_UPDATE_REMOVE_REWARD =
+            "DELETE FROM {prefix}rewards " +
+                    "WHERE rarity_id=? AND command_order=?;";
+    private static final String REWARDS_UPDATE_REMOVE_ALL_REWARDS =
+            "DELETE FROM {prefix}rewards " +
+                    "WHERE rarity_id=?;";
 
     private static final String CARDS_SELECT_ALL =
             "SELECT * FROM {prefix}cards;";
@@ -1091,37 +1118,79 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void editRarityBuyPrice(final String rarityId, final double buyPrice) {
-
+        try (Connection connection = connectionFactory.getConnection()){
+            try (PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(RARITY_UPDATE_BUY_PRICE, Map.of("buy_price", String.valueOf(buyPrice)),Map.of("rarity_id",rarityId)))){
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            Util.logSevereException(e);
+        }
     }
 
     @Override
     public void editRarityAddReward(final String rarityId, final String reward) {
-
+        try (Connection connection = connectionFactory.getConnection()){//todo
+            try (PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(REWARDS_UPDATE_ADD_REWARD, Map.of("reward", reward),Map.of("rarity_id",rarityId)))){
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            Util.logSevereException(e);
+        }
     }
 
     @Override
     public void editRarityDefaultColor(final String rarityId, final String defaultColor) {
-
+        try (Connection connection = connectionFactory.getConnection()){
+            try (PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(RARITY_UPDATE_DEFAULT_COLOR, Map.of("default_color", defaultColor),Map.of("rarity_id",rarityId)))){
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            Util.logSevereException(e);
+        }
     }
 
     @Override
     public void editRarityDisplayName(final String rarityId, final String displayName) {
-
+        try (Connection connection = connectionFactory.getConnection()){
+            try (PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(RARITY_UPDATE_DISPLAY_NAME, Map.of("display_name", displayName),Map.of("rarity_id",rarityId)))){
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            Util.logSevereException(e);
+        }
     }
 
     @Override
     public void editRaritySellPrice(final String rarityId, final double sellPrice) {
-
+        try (Connection connection = connectionFactory.getConnection()){
+            try (PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(RARITY_UPDATE_SELL_PRICE, Map.of("sell_price", String.valueOf(sellPrice)),Map.of("rarity_id",rarityId)))){
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            Util.logSevereException(e);
+        }
     }
 
     @Override
     public void editRarityRemoveAllRewards(final String rarityId) {
-
+        try (Connection connection = connectionFactory.getConnection()){
+            try (PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(REWARDS_UPDATE_REMOVE_ALL_REWARDS,null ,Map.of("rarity_id",rarityId)))){
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            Util.logSevereException(e);
+        }
     }
 
     @Override
     public void editRarityRemoveReward(final String rarityId, final int rewardNumber) {
-
+        try (Connection connection = connectionFactory.getConnection()){
+            try (PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(REWARDS_UPDATE_REMOVE_REWARD, null,Map.of("rarity_id",rarityId,"command_order",String.valueOf(rewardNumber))))){
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            Util.logSevereException(e);
+        }
     }
 
     @Override
