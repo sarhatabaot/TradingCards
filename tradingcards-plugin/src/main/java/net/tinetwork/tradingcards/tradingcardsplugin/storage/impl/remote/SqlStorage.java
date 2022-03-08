@@ -106,6 +106,12 @@ public class SqlStorage implements Storage<TradingCard> {
     private static final String RARITY_CREATE =
             "INSERT INTO {prefix}rarities (rarity_id) " +
                     "VALUES (?);";
+    private static final String SERIES_CREATE =
+            "INSERT INTO {prefix}series (series_id) "+
+                    "VALUES (?);";
+    private static final String CUSTOM_TYPES_CREATE =
+            "INSERT INTO {prefix}custom_types (type_id,drop_type) " +
+                    "VALUES (?,?);";
     private static final String SERIES_SELECT_ALL =
             "SELECT * FROM {prefix}series;";
 
@@ -121,7 +127,9 @@ public class SqlStorage implements Storage<TradingCard> {
             "SELECT * FROM {prefix}series " +
                     "WHERE series_id=? AND series_mode=ACTIVE;";
 
-
+    private static final String PACKS_CREATE =
+            "INSERT INTO {prefix}packs (pack_id) " +
+                    "VALUES (?);";
     private static final String PACKS_SELECT_ALL =
             "SELECT * FROM {prefix}packs;";
 
@@ -937,17 +945,35 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void createSeries(final String seriesId) {
-
+        try (Connection connection = connectionFactory.getConnection()){
+            try (PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(SERIES_CREATE,Map.of("series_id",seriesId),null) )){
+                statement.executeUpdate();
+            }
+        }catch (SQLException e) {
+            Util.logSevereException(e);
+        }
     }
 
     @Override
     public void createCustomType(final String typeId, final String type) {
-
+        try (Connection connection = connectionFactory.getConnection()){
+            try (PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(CUSTOM_TYPES_CREATE,Map.of("type_id",typeId,"drop_type",type), null))){
+                statement.executeUpdate();
+            }
+        }catch (SQLException e) {
+            Util.logSevereException(e);
+        }
     }
 
     @Override
     public void createPack(final String packId) {
-
+        try(Connection connection = connectionFactory.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(PACKS_CREATE,Map.of("pack_id", packId),null) )) {
+                statement.executeUpdate();
+            }
+        }catch (SQLException e) {
+            Util.logSevereException(e);
+        }
     }
 
     @Override
