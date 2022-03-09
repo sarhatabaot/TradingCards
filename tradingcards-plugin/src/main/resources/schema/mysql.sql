@@ -43,6 +43,7 @@ CREATE TABLE IF NOT EXISTS `{prefix}series_colors` (
    info         VARCHAR(10)        NOT NULL,
    about        VARCHAR(10)        NOT NULL,
    rarity       VARCHAR(10)        NOT NULL,
+   series       VARCHAR(10)        NOT NULL,
    PRIMARY KEY (series_id)
    FOREIGN KEY (series_id) REFERENCES `{prefix}series`(series_id)
 ) DEFAULT CHARSET = utf8mb4;
