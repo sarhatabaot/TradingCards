@@ -136,6 +136,8 @@ public interface Storage<T extends Card<T>> {
      */
     List<T> getCardsInSeries(final String seriesId);
 
+    List<T> getCardsInRarityAndSeries(final String rarityId, final String seriesId);
+
     /**
      * @return A list of all active cards.
      */

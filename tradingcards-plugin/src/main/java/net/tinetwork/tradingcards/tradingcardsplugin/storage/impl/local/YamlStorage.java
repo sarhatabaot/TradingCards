@@ -49,6 +49,7 @@ public class YamlStorage implements Storage<TradingCard> {
     private final Map<String, TradingCard> activeCards;
     private final Map<String, List<TradingCard>> rarityCardList;
     private final Map<String, List<TradingCard>> seriesCardList;
+    private Map<String,Map<String,List<String>>> raritySeriesCardList;
     private final Set<Series> activeSeries;
 
     public YamlStorage(final TradingCards plugin) throws ConfigurateException {
@@ -269,6 +270,21 @@ public class YamlStorage implements Storage<TradingCard> {
     @Override
     public List<TradingCard> getCardsInSeries(final String seriesId) {
         return seriesCardList.get(seriesId);
+    }
+
+    @Override
+    public List<TradingCard> getCardsInRarityAndSeries(final String rarityId, final String seriesId) {
+        for(final Rarity rarity : plugin.getStorage().getRarities()) {
+            this.raritySeriesCardList.putIfAbsent(rarity.getName(),new HashMap<>());
+            Map<String,List<String>> seriesCardList = this.raritySeriesCardList.get(rarity.getName());
+            for(String cardKey: rarityCardList.get(rarity.getName())) {
+                TradingCard tradingCard = getCard(cardKey,rarity.getName());
+                String series = tradingCard.getSeries().getName();
+                seriesCardList.putIfAbsent(series,new ArrayList<>());
+                seriesCardList.get(series).add(tradingCard.getCardName());
+            }
+        }
+        return null;
     }
 
     @Override

@@ -36,9 +36,6 @@ public class TradingCardManager implements CardManager<TradingCard> {
     private Map<String, List<String>> rarityCardList;
     private Map<String, List<String>> activeRarityCardList;
 
-    //in 5.6.0 this is in another class
-    private Map<String,Map<String,List<String>>> raritySeriesCardList;
-
     public TradingCardManager(final TradingCards plugin) {
         this.plugin = plugin;
         initValues();
@@ -55,21 +52,6 @@ public class TradingCardManager implements CardManager<TradingCard> {
     }
 
 
-    private void loadRaritySeriesCardList() {
-        this.raritySeriesCardList = new HashMap<>();
-        for(final Rarity rarity : plugin.getRaritiesConfig().rarities()) {
-            this.raritySeriesCardList.putIfAbsent(rarity.getName(),new HashMap<>());
-            Map<String,List<String>> seriesCardList = this.raritySeriesCardList.get(rarity.getName());
-            for(String cardKey: getRarityCardList(rarity.getName())) {
-                TradingCard tradingCard = getCard(cardKey,rarity.getName());
-                String series = tradingCard.getSeries().getName();
-                seriesCardList.putIfAbsent(series,new ArrayList<>());
-                seriesCardList.get(series).add(tradingCard.getCardName());
-            }
-        }
-
-
-    }
 
     /**
      * Pre-loads all existing cards.
@@ -221,10 +203,9 @@ public class TradingCardManager implements CardManager<TradingCard> {
         if(series == null)
             return getRandomCard(rarity,forcedShiny);
 
-        List<String> raritySeries = this.raritySeriesCardList.get(rarity).get(series);
+        List<TradingCard> raritySeries = plugin.getStorage().getCardsInRarityAndSeries(rarity,series);
         int cardIndex = plugin.getRandom().nextInt(raritySeries.size());
-        String randomCardName = raritySeries.get(cardIndex);
-        return getCard(randomCardName, rarity, forcedShiny);
+        return raritySeries.get(cardIndex);
     }
 
     @Override
