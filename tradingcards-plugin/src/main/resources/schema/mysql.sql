@@ -63,12 +63,12 @@ CREATE TABLE IF NOT EXISTS `{prefix}packs` (
 ) DEFAULT CHARSET = utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `{prefix}packs_content` (
-    command_order    INT                NOT NULL,
+    `id`    INT                NOT NULL,
     pack_id          VARCHAR(200)       NOT NULL,
     rarity_id        VARCHAR(200)       NOT NULL, -- foreign key from rarities
     card_amount      VARCHAR(200)       NOT NULL,
     series_id        VARCHAR(200)       NOT NULL, -- foreign key from series
-    PRIMARY KEY (command_order),
+    PRIMARY KEY (`id`),
     FOREIGN KEY (rarity_id) REFERENCES `{prefix}rarities`(rarity_id),
     FOREIGN KEY (series_id) REFERENCES `{prefix}series`(series_id)
 ) DEFAULT CHARSET = utf8mb4;

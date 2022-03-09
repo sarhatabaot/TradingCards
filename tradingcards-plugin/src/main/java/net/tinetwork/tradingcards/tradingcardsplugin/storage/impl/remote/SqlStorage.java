@@ -201,18 +201,36 @@ public class SqlStorage implements Storage<TradingCard> {
             "SELECT * FROM {prefix}packs "+
                     "WHERE pack_id=?;";
 
-    private static final String PACKS_UPDATE_DISPLAY_NAME;
-    private static final String PACKS_UPDATE_PERMISSION;
-    private static final String PACKS_UPDATE_PRICE;
-    private static final String PACKS_UPDATE_CONTENT;
+    private static final String PACKS_UPDATE_DISPLAY_NAME =
+            "UPDATE {prefix}packs " +
+                    "SET display_name=? "+
+                    "WHERE pack_id=?;";
+    private static final String PACKS_UPDATE_PERMISSION =
+            "UPDATE {prefix}packs " +
+                    "SET permission=? "+
+                    "WHERE pack_id=?;";
+    private static final String PACKS_UPDATE_PRICE =
+            "UPDATE {prefix}packs " +
+                    "SET buy_price=? "+
+                    "WHERE pack_id=?;";
+    private static final String PACKS_UPDATE_CONTENT = //todo
+            "UPDATE {prefix}packs_content " +
+                    "SET rarity_id=?, card_amount=?, series_id=?" +
+                    "WHERE pack_id=?;";
 
     private static final String CUSTOM_TYPES_SELECT_ALL =
             "SELECT * FROM {prefix}custom_types;";
     private static final String CUSTOM_TYPES_GET_BY_ID =
             "SELECT * FROM {prefix}custom_types " +
                     "WHERE type_id=?;";
-    private static final String CUSTOM_TYPES_UPDATE_TYPE;
-    private static final String CUSTOM_TYPES_UPDATE_DISPLAY_NAME;
+    private static final String CUSTOM_TYPES_UPDATE_TYPE =
+            "UPDATE {prefix}custom_types " +
+                    "SET drop_type=?" +
+                    "WHERE type_id=?;";
+    private static final String CUSTOM_TYPES_UPDATE_DISPLAY_NAME =
+            "UPDATE {prefix}custom_types " +
+                    "SET display_name=?" +
+                    "WHERE type_id=?;";
 
 
     private static final String COLUMN_UUID = "uuid";
@@ -1184,24 +1202,12 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void editRarityRemoveAllRewards(final String rarityId) {
-        try (Connection connection = connectionFactory.getConnection()){
-            try (PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(REWARDS_UPDATE_REMOVE_ALL_REWARDS,null ,Map.of("rarity_id",rarityId)))){
-                statement.executeUpdate();
-            }
-        } catch (SQLException e) {
-            Util.logSevereException(e);
-        }
+        executeUpdate(REWARDS_UPDATE_REMOVE_ALL_REWARDS,null ,Map.of("rarity_id",rarityId));
     }
 
     @Override
     public void editRarityRemoveReward(final String rarityId, final int rewardNumber) {
-        try (Connection connection = connectionFactory.getConnection()){
-            try (PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(REWARDS_UPDATE_REMOVE_REWARD, null,Map.of("rarity_id",rarityId,"command_order",String.valueOf(rewardNumber))))){
-                statement.executeUpdate();
-            }
-        } catch (SQLException e) {
-            Util.logSevereException(e);
-        }
+        executeUpdate(REWARDS_UPDATE_REMOVE_REWARD,null,Map.of("rarity_id",rarityId,"command_order",String.valueOf(rewardNumber)));
     }
 
     @Override
@@ -1221,17 +1227,17 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void editCustomTypeDisplayName(final String typeId, final String displayName) {
-
+        executeUpdate(CUSTOM_TYPES_UPDATE_DISPLAY_NAME, Map.of("display_name", displayName),Map.of("type_id",typeId));
     }
 
     @Override
     public void editCustomTypeType(final String typeId, final String type) {
-
+        executeUpdate(CUSTOM_TYPES_UPDATE_TYPE,Map.of("drop_type", type),Map.of("type_id",typeId));
     }
 
     @Override
     public void editPackDisplayName(final String packId, final String displayName) {
-
+        executeUpdate(PACKS_UPDATE_DISPLAY_NAME,Map.of("display_name", displayName), Map.of("pack_id", packId));
     }
 
     @Override
@@ -1241,11 +1247,22 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void editPackPermission(final String packId, final String permission) {
-
+        executeUpdate(PACKS_UPDATE_PERMISSION,Map.of(COLUMN_PACK_PERMISSION, permission), Map.of("pack_id",packId));
     }
 
     @Override
     public void editPackPrice(final String packId, final double price) {
+        executeUpdate(PACKS_UPDATE_PRICE,Map.of(COLUMN_BUY_PRICE,String.valueOf(price)),Map.of("pack_id",packId));
+    }
 
+
+    private void executeUpdate(@NotNull String sql,@Nullable Map<String,String> values,@Nullable Map<String,String> where) {
+        try (Connection connection = connectionFactory.getConnection()){
+            try (PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(sql, values,where))){
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            Util.logSevereException(e);
+        }
     }
 }
