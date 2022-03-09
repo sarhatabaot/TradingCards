@@ -44,12 +44,12 @@ public class YamlStorage implements Storage<TradingCard> {
     private final PacksConfig packsConfig;
     private final CustomTypesConfig customTypesConfig;
 
-    //String is CardKey (rarity.name) We should just have it as a class..
+    //String is CardKey (rarity_id.card_id) We should just have it as a class..
     private final Map<String, TradingCard> cards;
     private final Map<String, TradingCard> activeCards;
     private final Map<String, List<TradingCard>> rarityCardList;
     private final Map<String, List<TradingCard>> seriesCardList;
-    private Map<String,Map<String,List<String>>> raritySeriesCardList;
+    private Map<String,Map<String,List<TradingCard>>> raritySeriesCardList;
     private final Set<Series> activeSeries;
 
     public YamlStorage(final TradingCards plugin) throws ConfigurateException {
@@ -88,6 +88,7 @@ public class YamlStorage implements Storage<TradingCard> {
         loadActiveCards();
         loadRarityCards();
         loadSeriesCards();
+        loadRaritySeriesCardList();
     }
 
     @Override
@@ -274,17 +275,20 @@ public class YamlStorage implements Storage<TradingCard> {
 
     @Override
     public List<TradingCard> getCardsInRarityAndSeries(final String rarityId, final String seriesId) {
+        return raritySeriesCardList.get(rarityId).get(seriesId);
+    }
+
+    private void loadRaritySeriesCardList() {
+        this.raritySeriesCardList = new HashMap<>();
         for(final Rarity rarity : plugin.getStorage().getRarities()) {
             this.raritySeriesCardList.putIfAbsent(rarity.getName(),new HashMap<>());
-            Map<String,List<String>> seriesCardList = this.raritySeriesCardList.get(rarity.getName());
-            for(String cardKey: rarityCardList.get(rarity.getName())) {
-                TradingCard tradingCard = getCard(cardKey,rarity.getName());
+            Map<String,List<TradingCard>> seriesCardList = this.raritySeriesCardList.get(rarity.getName());
+            for(TradingCard tradingCard: rarityCardList.get(rarity.getName())) {
                 String series = tradingCard.getSeries().getName();
                 seriesCardList.putIfAbsent(series,new ArrayList<>());
-                seriesCardList.get(series).add(tradingCard.getCardName());
+                seriesCardList.get(series).add(tradingCard);
             }
         }
-        return null;
     }
 
     @Override
@@ -297,7 +301,6 @@ public class YamlStorage implements Storage<TradingCard> {
         return cards.get(cardKey(rarityId,cardId));
     }
 
-    //Assume that checks have been made already?
     @Override
     public void createCard(final String cardId, final String rarityId, final String seriesId) {
         //use the first available config to create new cards, perhaps this should be configurable.

@@ -890,6 +890,28 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
     @Override
+    public List<TradingCard> getCardsInRarityAndSeries(final String rarityId, final String seriesId) {
+        return new ExecuteQuery<List<TradingCard>>() {
+            @Override
+            public List<TradingCard> getQuery(final ResultSet resultSet) throws SQLException {
+                List<TradingCard> cards = new ArrayList<>();
+                while(resultSet.next()) {
+                    cards.add(getTradingCardFromResult(resultSet));
+                }
+                if(resultSet.getFetchSize() == 0 || resultSet.wasNull()) {
+                    return returnNull();
+                }
+                return cards;
+            }
+
+            @Override
+            public List<TradingCard> returnNull() {
+                return Collections.emptyList();
+            }
+        }.runQuery(CARDS_SELECT_BY_RARITY_AND_SERIES,null,Map.of(COLUMN_RARITY_ID,rarityId,COLUMN_SERIES_ID,seriesId));
+    }
+
+    @Override
     public List<TradingCard> getActiveCards() {
         List<TradingCard> activeCards = new ArrayList<>();
         for(Series series: getActiveSeries()) {
