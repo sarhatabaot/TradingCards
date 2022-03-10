@@ -245,6 +245,11 @@ public class EditCommand extends BaseCommand {
                         return;
                     }
                     String content = split[1];
+                    if(content.equalsIgnoreCase( "delete")) {
+                        storage.editPackContentsDelete(packId,lineNumber);
+                        return;
+                    }
+
                     Pack.PackEntry entry = Pack.PackEntry.fromString(content);
                     storage.editPackContents(packId, lineNumber, entry);
 

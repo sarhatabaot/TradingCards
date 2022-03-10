@@ -112,8 +112,8 @@ public interface Storage<T extends Card<T>> {
     Set<Series> getActiveSeries();
 
     /* TODO
-     * @return Returns a <CardsKey, Card> map CardsKey should only be for yaml
-     * This should be used only in yaml storage, and via getCard();
+     *  @return Returns a <CardsKey, Card> map CardsKey should only be for yaml
+     *  This should be used only in yaml storage, and via getCard();
      */
     @Deprecated
     Map<String, T> getCardsMap();
@@ -216,6 +216,8 @@ public interface Storage<T extends Card<T>> {
     // Edit Pack
     void editPackDisplayName(final String packId, final String displayName);
     void editPackContents(final String packId, final int lineNumber, final Pack.PackEntry packEntry);
+    void editPackContentsAdd(final String packId, final Pack.PackEntry packEntry);
+    void editPackContentsDelete(final String packId, final int lineNumber);
     void editPackPermission(final String packId, final String permission);
     void editPackPrice(final String packId,final double price);
 

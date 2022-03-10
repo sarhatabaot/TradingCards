@@ -105,7 +105,7 @@ public class SqlStorage implements Storage<TradingCard> {
             "SELECT * FROM {prefix}rewards " +
                     "WHERE rarity_id=?" +
                     "ORDER BY command_order;";
-    private static final String REWARDS_UPDATE_ADD_REWARD = //todo
+    private static final String REWARDS_UPDATE_ADD_REWARD =
             "UPDATE {prefix}rewards " +
                     "SET reward=? command_order=?" +
                     "WHERE rarity_id=?;";
@@ -224,10 +224,16 @@ public class SqlStorage implements Storage<TradingCard> {
             "UPDATE {prefix}packs " +
                     "SET buy_price=? "+
                     "WHERE pack_id=?;";
-    private static final String PACKS_UPDATE_CONTENT = //todo
+    private static final String PACKS_INSERT_CONTENT_ADD_LINE =
+            "INSERT INTO {prefix}packs_content (line_number, pack_id, rarity_id, card_amount, series_id)" +
+                    "VALUES (?,?,?,?,?);";
+    private static final String PACKS_DELETE_CONTENT =
+            "DELETE FROM {prefix}packs_content " +
+                    "WHERE pack_id=? AND line_number=?;";
+    private static final String PACKS_UPDATE_CONTENT_SET_LINE =
             "UPDATE {prefix}packs_content " +
                     "SET rarity_id=?, card_amount=?, series_id=?" +
-                    "WHERE pack_id=?;";
+                    "WHERE pack_id=? AND line_number=?;";
 
     private static final String CUSTOM_TYPES_SELECT_ALL =
             "SELECT * FROM {prefix}custom_types;";
@@ -300,7 +306,7 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
     @Override
-    public List<Deck> getPlayerDecks(final UUID playerUuid) {
+    public List<Deck> getPlayerDecks(final @NotNull UUID playerUuid) {
         return new ExecuteQuery<List<Deck>>() {
             @Override
             public List<Deck> getQuery(final ResultSet resultSet) throws SQLException {
@@ -319,7 +325,7 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
     @Override
-    public Deck getDeck(final UUID playerUuid, final int deckNumber) {
+    public Deck getDeck(final @NotNull UUID playerUuid, final int deckNumber) {
         return new ExecuteQuery<Deck>() {
             @Override
             public Deck getQuery(final ResultSet resultSet) throws SQLException {
@@ -389,8 +395,9 @@ public class SqlStorage implements Storage<TradingCard> {
                 return returnNull();
             }
 
+            @Contract(pure = true)
             @Override
-            public Rarity returnNull() {
+            public @Nullable Rarity returnNull() {
                 return null;
             }
         }.runQuery(RARITY_GET_BY_ID, null, Map.of(COLUMN_RARITY_ID, rarityId));
@@ -415,8 +422,9 @@ public class SqlStorage implements Storage<TradingCard> {
                 return rewards;
             }
 
+            @Contract(pure = true)
             @Override
-            public List<String> returnNull() {
+            public @NotNull @Unmodifiable List<String> returnNull() {
                 return Collections.emptyList();
             }
         }.runQuery(REWARDS_GET_BY_ID, null, Map.of(COLUMN_RARITY_ID, rarityId));
@@ -569,7 +577,7 @@ public class SqlStorage implements Storage<TradingCard> {
                 try (ResultSet resultSet = statement.executeQuery()) {
                     if (resultSet.next()) {
                         //try and access a result, if it doesn't exist, return false.
-                        String cardId = resultSet.getString(COLUMN_CARD_ID); //todo
+                        String cardId = resultSet.getString(COLUMN_CARD_ID);
                         plugin.debug(SqlStorage.class, cardId);
                         return !resultSet.wasNull();
                     }
@@ -694,8 +702,9 @@ public class SqlStorage implements Storage<TradingCard> {
                 return rarities;
             }
 
+            @Contract(pure = true)
             @Override
-            public List<Rarity> returnNull() {
+            public @NotNull @Unmodifiable List<Rarity> returnNull() {
                 return Collections.emptyList();
             }
         }.runQuery(RARITY_SELECT_ALL, null, null);
@@ -717,8 +726,9 @@ public class SqlStorage implements Storage<TradingCard> {
                 return series;
             }
 
+            @Contract(pure = true)
             @Override
-            public Collection<Series> returnNull() {
+            public @NotNull @Unmodifiable Collection<Series> returnNull() {
                 return Collections.emptyList();
             }
         }.runQuery(SERIES_SELECT_ALL, null, null);
@@ -881,8 +891,9 @@ public class SqlStorage implements Storage<TradingCard> {
                 return cards;
             }
 
+            @Contract(pure = true)
             @Override
-            public List<TradingCard> returnNull() {
+            public @NotNull @Unmodifiable List<TradingCard> returnNull() {
                 return Collections.emptyList();
             }
         }.runQuery(CARDS_SELECT_BY_SERIES_ID, null, Map.of(COLUMN_SERIES_ID, seriesId));
@@ -903,8 +914,9 @@ public class SqlStorage implements Storage<TradingCard> {
                 return cards;
             }
 
+            @Contract(pure = true)
             @Override
-            public List<TradingCard> returnNull() {
+            public @NotNull @Unmodifiable List<TradingCard> returnNull() {
                 return Collections.emptyList();
             }
         }.runQuery(CARDS_SELECT_BY_RARITY_AND_SERIES,null,Map.of(COLUMN_RARITY_ID,rarityId,COLUMN_SERIES_ID,seriesId));
@@ -930,8 +942,9 @@ public class SqlStorage implements Storage<TradingCard> {
                 return returnNull();
             }
 
+            @Contract(" -> new")
             @Override
-            public TradingCard returnNull() {
+            public @NotNull TradingCard returnNull() {
                 return new EmptyCard();
             }
         }.runQuery(CARDS_SELECT_BY_CARD_ID_AND_RARITY, null, Map.of(COLUMN_RARITY_ID, rarityId, COLUMN_CARD_ID, cardId));
@@ -954,8 +967,9 @@ public class SqlStorage implements Storage<TradingCard> {
                 return returnNull();
             }
 
+            @Contract(pure = true)
             @Override
-            public Pack returnNull() {
+            public @Nullable Pack returnNull() {
                 return null;
             }
         }.runQuery(PACKS_GET_BY_ID,null,Map.of(COLUMN_PACK_ID, packsId));
@@ -991,8 +1005,9 @@ public class SqlStorage implements Storage<TradingCard> {
                 return entries;
             }
 
+            @Contract(pure = true)
             @Override
-            public List<Pack.PackEntry> returnNull() {
+            public @NotNull @Unmodifiable List<Pack.PackEntry> returnNull() {
                 return Collections.emptyList();
             }
         }.runQuery(PACKS_GET_CONTENT_BY_ID,null,Map.of(COLUMN_PACK_ID,packId));
@@ -1053,12 +1068,13 @@ public class SqlStorage implements Storage<TradingCard> {
     public DropType getCustomType(final String typeId) {
         ExecuteQuery<DropType> executeQuery = new ExecuteQuery<>() {
             @Override
-            public DropType getQuery(final ResultSet resultSet) throws SQLException {
+            public @NotNull DropType getQuery(final ResultSet resultSet) throws SQLException {
                 return getDropTypeFromResult(resultSet);
             }
 
+            @Contract(pure = true)
             @Override
-            public DropType returnNull() {
+            public @Nullable DropType returnNull() {
                 return null;
             }
         };
@@ -1157,7 +1173,8 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void editRarityAddReward(final String rarityId, final String reward) {
-        executeUpdate(REWARDS_UPDATE_ADD_REWARD, Map.of("reward", reward),Map.of(COLUMN_RARITY_ID,rarityId));//todo
+        String commandOrder = String.valueOf(getRewards(rarityId).size() - 1);
+        executeUpdate(REWARDS_UPDATE_ADD_REWARD, Map.of("reward", reward, COLUMN_ORDER_NUMBER,commandOrder),Map.of(COLUMN_RARITY_ID,rarityId));
     }
 
     @Override
@@ -1191,12 +1208,12 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
     @Override
-    public void editSeriesColors(final String seriesId, final ColorSeries colors) {
+    public void editSeriesColors(final String seriesId, final @NotNull ColorSeries colors) {
         executeUpdate(SERIES_UPDATE_COLORS,Map.of(COLUMN_COLOR_TYPE,colors.getType(),COLUMN_COLOR_INFO,colors.getInfo(),COLUMN_COLOR_ABOUT,colors.getAbout(),COLUMN_COLOR_RARITY,colors.getRarity(),COLUMN_COLOR_SERIES,colors.getSeries()),Map.of(COLUMN_SERIES_ID,seriesId));
     }
 
     @Override
-    public void editSeriesMode(final String seriesId, final Mode mode) {
+    public void editSeriesMode(final String seriesId, final @NotNull Mode mode) {
         executeUpdate(SERIES_UPDATE_MODE,Map.of(COLUMN_MODE, mode.toString()),Map.of(COLUMN_SERIES_ID,seriesId));
     }
 
@@ -1216,8 +1233,19 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
     @Override
-    public void editPackContents(final String packId, final int lineNumber, final Pack.PackEntry packEntry) {
-        //TODO
+    public void editPackContents(final String packId, final int lineNumber, final Pack.@NotNull PackEntry packEntry) {
+        executeUpdate(PACKS_UPDATE_CONTENT_SET_LINE, Map.of(COLUMN_RARITY_ID,packEntry.getRarityId(),COLUMN_CARD_AMOUNT,String.valueOf(packEntry.getAmount()),COLUMN_SERIES_ID,packEntry.getSeries()),Map.of(COLUMN_PACK_ID,packId,"line_number",String.valueOf(lineNumber)));
+    }
+
+    @Override
+    public void editPackContentsAdd(final String packId, final Pack.@NotNull PackEntry packEntry) {
+        final String lineNumber = String.valueOf(getPackEntries(packId).size());
+        executeUpdate(PACKS_INSERT_CONTENT_ADD_LINE,Map.of("line_number",lineNumber,COLUMN_PACK_ID,packId,COLUMN_RARITY_ID,packEntry.getRarityId(),COLUMN_CARD_AMOUNT,String.valueOf(packEntry.getAmount()),COLUMN_SERIES_ID,packEntry.getSeries()),Map.of(COLUMN_PACK_ID,packId));
+    }
+
+    @Override
+    public void editPackContentsDelete(final String packId, final int lineNumber) {
+        executeUpdate(PACKS_DELETE_CONTENT,null,Map.of(COLUMN_PACK_ID,packId,"line_number",String.valueOf(lineNumber)));
     }
 
     @Override
