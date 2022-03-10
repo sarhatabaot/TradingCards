@@ -36,6 +36,7 @@ public class DropTypeManager implements TypeManager {
                 case "neutral" -> NEUTRAL;
                 case "passive" -> PASSIVE;
                 case "all" -> ALL;
+                default -> mobTypes.get(type);
             };
         }
         return mobTypes.get(type);
