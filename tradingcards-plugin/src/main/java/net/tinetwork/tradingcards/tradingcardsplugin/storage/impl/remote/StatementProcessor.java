@@ -155,7 +155,7 @@ public class StatementProcessor {
         return "'" + string + "'";
     }
 
-    public String unwrap(final String string) {
+    public String unwrap(final @NotNull String string) {
         return string.replace("'", "");
     }
 }

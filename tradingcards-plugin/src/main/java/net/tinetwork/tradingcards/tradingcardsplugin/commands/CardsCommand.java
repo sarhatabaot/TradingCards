@@ -356,8 +356,6 @@ public class CardsCommand extends BaseCommand {
             return rarityCardList.size();
         }
 
-        //Counts the total amount of cards a player has from a rarity
-        //TODO, this should be done via the storage impl, since this can be done easily through sql
         private int countPlayerCardsInRarity(final Player player, final String rarity) {
             final List<String> rarityCardList = plugin.getCardManager().getRarityCardListNames(rarity);
             int cardCounter = 0;
@@ -371,7 +369,6 @@ public class CardsCommand extends BaseCommand {
             }
             return cardCounter;
         }
-        //TODO, this should be done via the storage impl
         private int countShinyPlayerCardsInRarity(final Player player, final String rarity) {
             final List<String> rarityCardList = plugin.getCardManager().getRarityCardListNames(rarity);
             int cardCounter = 0;

@@ -41,7 +41,6 @@ public class DeckSerializer implements TypeSerializer<Deck> {
 
     @Override
     public void serialize(final Type type, @org.checkerframework.checker.nullness.qual.Nullable final Deck obj, final ConfigurationNode node) throws SerializationException {
-        //We should actually implement this here? TODO
         final List<String> deckEntriesStrings = new ArrayList<>();
         if (obj.getDeckEntries() != null) {
             for (StorageEntry entry : obj.getDeckEntries())

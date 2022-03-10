@@ -201,7 +201,6 @@ public class SimpleCardsConfig extends SimpleConfigurate {
         private static final String DISPLAY_NAME = "display-name";
         private static final String SERIES = "series";
         private static final String TYPE = "type";
-        //TODO, confusing, does a card have a shiny version, or is it shiny?
         private static final String HAS_SHINY = "has-shiny-version";
         private static final String INFO = "info";
         private static final String ABOUT = "about";

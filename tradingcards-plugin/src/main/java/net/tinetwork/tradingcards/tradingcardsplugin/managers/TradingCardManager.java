@@ -56,7 +56,6 @@ public class TradingCardManager implements CardManager<TradingCard> {
     /**
      * Pre-loads all existing cards.
      */
-    //TODO should be done in specific storage impl
     private void loadAllCards() {
         this.rarityCardList = new HashMap<>();
         this.cards = plugin.getStorage().getCardsMap();
@@ -65,8 +64,6 @@ public class TradingCardManager implements CardManager<TradingCard> {
         loadActiveCards();
     }
 
-    //TODO should be done in specific storage impl
-    // This can be done in SQL fairly easily..
     private void loadActiveCards() {
         loadActiveCardNames();
         loadActiveRarityCardListNames();
