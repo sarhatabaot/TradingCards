@@ -12,9 +12,6 @@ import java.io.File;
  * @author sarhatabaot
  */
 public class StorageConfig extends SimpleConfigurate {
-
-    //TODO Since we are storing sensitive information, we should add a command that sends the info back to dev usage
-    //TODO Something like /cards debug (zips all settings and modifies the password/username line to **
     private StorageType type;
     private String address;
     private String port;
