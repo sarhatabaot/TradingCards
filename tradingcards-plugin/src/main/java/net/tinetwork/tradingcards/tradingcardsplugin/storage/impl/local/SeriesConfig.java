@@ -2,7 +2,6 @@ package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local;
 
 import net.tinetwork.tradingcards.api.config.ColorSeries;
 import net.tinetwork.tradingcards.api.config.settings.SeriesConfigurate;
-import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.api.model.schedule.DateSchedule;
 import net.tinetwork.tradingcards.api.model.schedule.Mode;
@@ -21,7 +20,6 @@ import java.io.File;
 import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**

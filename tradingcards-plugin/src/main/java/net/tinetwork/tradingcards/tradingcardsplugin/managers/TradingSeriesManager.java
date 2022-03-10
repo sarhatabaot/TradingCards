@@ -1,6 +1,5 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.managers;
 
-import net.tinetwork.tradingcards.api.config.ColorSeries;
 import net.tinetwork.tradingcards.api.manager.SeriesManager;
 import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;

@@ -3,8 +3,6 @@ package net.tinetwork.tradingcards.api;
 import net.tinetwork.tradingcards.api.blacklist.Blacklist;
 import net.tinetwork.tradingcards.api.card.Card;
 import net.tinetwork.tradingcards.api.config.settings.GeneralConfigurate;
-import net.tinetwork.tradingcards.api.config.settings.RarityConfigurate;
-import net.tinetwork.tradingcards.api.config.settings.SeriesConfigurate;
 import net.tinetwork.tradingcards.api.manager.CardManager;
 import net.tinetwork.tradingcards.api.manager.DeckManager;
 import net.tinetwork.tradingcards.api.manager.PackManager;
