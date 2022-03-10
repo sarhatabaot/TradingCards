@@ -285,10 +285,10 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     }
 
     public void reloadManagers() {
-        //todo reload all the other managers as well
         this.cardManager.initValues();
         this.packManager.initValues();
         this.deckManager = new TradingDeckManager(this);
+        this.dropTypeManager.loadTypes();
     }
 
     @Override
