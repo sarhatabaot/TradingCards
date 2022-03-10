@@ -19,6 +19,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.sql.Con
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.sql.SchemaReader;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -1244,4 +1245,5 @@ public class SqlStorage implements Storage<TradingCard> {
             Util.logSevereException(e);
         }
     }
+
 }

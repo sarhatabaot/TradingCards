@@ -9,6 +9,7 @@ import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.api.model.deck.Deck;
 import net.tinetwork.tradingcards.api.model.schedule.Mode;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
@@ -217,4 +218,5 @@ public interface Storage<T extends Card<T>> {
     void editPackContents(final String packId, final int lineNumber, final Pack.PackEntry packEntry);
     void editPackPermission(final String packId, final String permission);
     void editPackPrice(final String packId,final double price);
+
 }

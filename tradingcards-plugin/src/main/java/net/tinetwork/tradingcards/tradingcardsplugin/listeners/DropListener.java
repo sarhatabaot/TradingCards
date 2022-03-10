@@ -93,7 +93,6 @@ public class DropListener extends SimpleListener {
     }
 
     //Gets the rarity key for the appropriate player card.
-    //TODO, refactor
     private @Nullable String getRarityKey(Player player) {
         List<Rarity> rarities = plugin.getRarityManager().getRarities();
         if (rarities == null)
