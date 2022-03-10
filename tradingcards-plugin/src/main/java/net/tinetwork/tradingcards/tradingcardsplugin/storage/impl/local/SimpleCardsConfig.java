@@ -234,7 +234,7 @@ public class SimpleCardsConfig extends SimpleConfigurate {
             final double buyPrice = getBuyPrice(node, rarity);
             final double sellPrice = getSellPrice(node, rarity);
 
-            final Series series = yamlStorage.getSeriesConfig().series().get(seriesId);;
+            final Series series = yamlStorage.getSeriesConfig().series().get(seriesId);
             TradingCard card = new TradingCard(id);
             return card.material(material)
                     .rarity(rarity)

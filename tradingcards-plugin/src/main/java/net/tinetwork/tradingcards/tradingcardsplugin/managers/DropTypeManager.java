@@ -1,7 +1,6 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.managers;
 
 
-import net.tinetwork.tradingcards.api.exceptions.UnsupportedDropTypeException;
 import net.tinetwork.tradingcards.api.manager.TypeManager;
 import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
