@@ -64,7 +64,7 @@ public class CreateCommand extends BaseCommand{
                 return;
             }
 
-            sendCreatedMessage(sender,"card",cardId);
+            sendCreatedMessage(sender,"card","card-id: "+cardId +"rarity-id:"+ rarityId +"series-id" + seriesId);
             plugin.getStorage().createCard(cardId, rarityId, seriesId);
         }
 
