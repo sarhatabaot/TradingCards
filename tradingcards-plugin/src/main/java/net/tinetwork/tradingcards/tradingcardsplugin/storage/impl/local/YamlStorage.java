@@ -283,6 +283,8 @@ public class YamlStorage implements Storage<TradingCard> {
         for(final Rarity rarity : plugin.getStorage().getRarities()) {
             this.raritySeriesCardList.putIfAbsent(rarity.getName(),new HashMap<>());
             Map<String,List<TradingCard>> seriesCardList = this.raritySeriesCardList.get(rarity.getName());
+            if(rarityCardList.get(rarity.getName()) == null)
+                continue;
             for(TradingCard tradingCard: rarityCardList.get(rarity.getName())) {
                 String series = tradingCard.getSeries().getName();
                 seriesCardList.putIfAbsent(series,new ArrayList<>());

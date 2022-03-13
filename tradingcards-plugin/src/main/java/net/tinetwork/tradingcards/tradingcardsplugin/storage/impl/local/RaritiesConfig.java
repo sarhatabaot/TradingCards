@@ -47,7 +47,7 @@ public class RaritiesConfig extends RarityConfigurate{
     }
 
     public void editBuyPrice(final String rarityId, final double buyPrice){
-        ConfigurationNode rarityNode = rootNode.node(rarityId);
+        ConfigurationNode rarityNode = raritiesNode.node(rarityId);
         try {
             Rarity rarity = getRarity(rarityId);
             rarity.setBuyPrice(buyPrice);
@@ -60,7 +60,7 @@ public class RaritiesConfig extends RarityConfigurate{
     }
 
     public void editAddReward(final String rarityId,final String reward){
-        ConfigurationNode rarityNode = rootNode.node(rarityId);
+        ConfigurationNode rarityNode = raritiesNode.node(rarityId);
         try {
             Rarity rarity = getRarity(rarityId);
             rarity.getRewards().add(reward);
@@ -73,7 +73,7 @@ public class RaritiesConfig extends RarityConfigurate{
     }
 
     public void editDefaultColor(final String rarityId, final String defaultColor) {
-        ConfigurationNode rarityNode = rootNode.node(rarityId);
+        ConfigurationNode rarityNode = raritiesNode.node(rarityId);
         try {
             Rarity rarity = getRarity(rarityId);
             rarity.setDefaultColor(defaultColor);
@@ -86,7 +86,7 @@ public class RaritiesConfig extends RarityConfigurate{
     }
 
     public void editDisplayName(final String rarityId, final String displayName) {
-        ConfigurationNode rarityNode = rootNode.node(rarityId);
+        ConfigurationNode rarityNode = raritiesNode.node(rarityId);
         try {
             Rarity rarity = getRarity(rarityId);
             rarity.setDisplayName(displayName);
@@ -99,7 +99,7 @@ public class RaritiesConfig extends RarityConfigurate{
     }
 
     public void editSellPrice(final String rarityId, final double sellPrice) {
-        ConfigurationNode rarityNode = rootNode.node(rarityId);
+        ConfigurationNode rarityNode = raritiesNode.node(rarityId);
         try {
             Rarity rarity = getRarity(rarityId);
             rarity.setSellPrice(sellPrice);
@@ -112,7 +112,7 @@ public class RaritiesConfig extends RarityConfigurate{
     }
 
     public void editRemoveAllRewards(final String rarityId) {
-        ConfigurationNode rarityNode = rootNode.node(rarityId);
+        ConfigurationNode rarityNode = raritiesNode.node(rarityId);
         try {
             Rarity rarity = getRarity(rarityId);
             rarity.setRewards(new ArrayList<>());
@@ -125,7 +125,7 @@ public class RaritiesConfig extends RarityConfigurate{
     }
 
     public void editRemoveReward(final String rarityId, final int rewardNumber) {
-        ConfigurationNode rarityNode = rootNode.node(rarityId);
+        ConfigurationNode rarityNode = raritiesNode.node(rarityId);
         try {
             Rarity rarity = getRarity(rarityId);
             rarity.getRewards().remove(rewardNumber);
