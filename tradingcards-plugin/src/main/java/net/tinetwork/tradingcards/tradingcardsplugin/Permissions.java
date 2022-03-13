@@ -18,6 +18,7 @@ public class Permissions {
     public static final String ADMIN_DEBUG_MODULES = "cards.admin.debug.modules";
     public static final String ADMIN_DEBUG_PACKS = "cards.admin.debug.packs";
     public static final String ADMIN_DEBUG_RARITIES = "cards.admin.debug.rarities";
+    public static final String ADMIN_DEBUG_RARITIES_SERIES = "cards.admin.debug.rarities.series";
     public static final String ADMIN_DEBUG_EXISTS = "cards.admin.debug.exists";
     public static final String ADMIN_DEBUG_ZIP = "cards.admin.debug.zip";
     public static final String ADMIN_MIGRATE = "cards.admin.migrate";
