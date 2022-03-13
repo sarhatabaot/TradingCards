@@ -2,7 +2,6 @@ package net.tinetwork.tradingcards.tradingcardsplugin;
 
 import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.PaperCommandManager;
-import com.google.common.collect.ImmutableSet;
 import net.milkbowl.vault.economy.Economy;
 import net.tinetwork.tradingcards.api.TradingCardsPlugin;
 import net.tinetwork.tradingcards.api.manager.PackManager;
@@ -74,13 +73,6 @@ import java.util.stream.Stream;
 
 public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private final Random random = new Random();
-
-    /* Mobs */
-    private ImmutableSet<EntityType> hostileMobs;
-    private ImmutableSet<EntityType> passiveMobs;
-    private ImmutableSet<EntityType> neutralMobs;
-    private ImmutableSet<EntityType> bossMobs;
-
     /* Configs */
     private Storage<TradingCard> storage;
 
@@ -129,8 +121,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     @Override
     public void onEnable() {
         Util.init(getLogger());
-
-        cacheMobs();
         initConfigs();
 
         try {
@@ -378,23 +368,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         pm.registerEvents(new DeckListener(this), this);
     }
 
-    private void cacheMobs() {
-        this.hostileMobs = ImmutableSet.<EntityType>builder().add(EntityType.SPIDER, EntityType.CAVE_SPIDER, EntityType.ZOMBIE, EntityType.SKELETON, EntityType.CREEPER,
-                EntityType.BLAZE, EntityType.SILVERFISH, EntityType.GHAST, EntityType.SLIME, EntityType.EVOKER, EntityType.VINDICATOR,
-                EntityType.VEX, EntityType.SHULKER, EntityType.GUARDIAN, EntityType.MAGMA_CUBE, EntityType.ELDER_GUARDIAN, EntityType.STRAY,
-                EntityType.HUSK, EntityType.DROWNED, EntityType.WITCH, EntityType.ZOMBIE_VILLAGER, EntityType.ENDERMITE, EntityType.PILLAGER, EntityType.RAVAGER,
-                EntityType.HOGLIN, EntityType.PIGLIN, EntityType.STRIDER, EntityType.ZOGLIN, EntityType.ZOMBIFIED_PIGLIN, EntityType.WITHER_SKELETON).build();
-
-        this.neutralMobs = ImmutableSet.<EntityType>builder().add(EntityType.ENDERMAN, EntityType.POLAR_BEAR, EntityType.LLAMA, EntityType.WOLF,
-                EntityType.DOLPHIN, EntityType.SNOWMAN, EntityType.IRON_GOLEM, EntityType.BEE, EntityType.PANDA, EntityType.FOX).build();
-
-        this.passiveMobs = ImmutableSet.<EntityType>builder().add(EntityType.DONKEY, EntityType.MULE, EntityType.SKELETON_HORSE, EntityType.CHICKEN, EntityType.COW,
-                EntityType.SQUID, EntityType.TURTLE, EntityType.TROPICAL_FISH, EntityType.PUFFERFISH, EntityType.SHEEP, EntityType.PIG,
-                EntityType.PHANTOM, EntityType.SALMON, EntityType.COD, EntityType.RABBIT, EntityType.VILLAGER, EntityType.BAT,
-                EntityType.PARROT, EntityType.HORSE, EntityType.WANDERING_TRADER, EntityType.CAT, EntityType.MUSHROOM_COW, EntityType.TRADER_LLAMA).build();
-        this.bossMobs = ImmutableSet.<EntityType>builder().add(EntityType.ENDER_DRAGON, EntityType.WITHER).build();
-    }
-
 
     private boolean setupEconomy() {
         if (this.getServer().getPluginManager().getPlugin("Vault") == null) {
@@ -411,19 +384,19 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     }
 
     public boolean isMobHostile(EntityType e) {
-        return this.hostileMobs.contains(e);
+        return DefaultMobGroups.HOSTILE.hasMobType(e);
     }
 
     public boolean isMobNeutral(EntityType e) {
-        return this.neutralMobs.contains(e);
+        return DefaultMobGroups.NEUTRAL.hasMobType(e);
     }
 
     public boolean isMobPassive(EntityType e) {
-        return this.passiveMobs.contains(e);
+        return DefaultMobGroups.PASSIVE.hasMobType(e);
     }
 
     public boolean isMobBoss(EntityType e) {
-        return this.bossMobs.contains(e);
+        return DefaultMobGroups.BOSS.hasMobType(e);
     }
 
     @Override
@@ -438,7 +411,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
     @Override
     public boolean isMob(EntityType type) {
-        return this.hostileMobs.contains(type) || this.neutralMobs.contains(type) || this.passiveMobs.contains(type) || this.bossMobs.contains(type);
+        return DefaultMobGroups.isMob(type);
     }
 
     @Override

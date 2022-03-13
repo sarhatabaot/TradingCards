@@ -3,6 +3,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.storage;
 import net.tinetwork.tradingcards.api.card.Card;
 import net.tinetwork.tradingcards.api.config.ColorSeries;
 import net.tinetwork.tradingcards.api.model.DropType;
+import net.tinetwork.tradingcards.api.model.MobGroup;
 import net.tinetwork.tradingcards.api.model.Pack;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
@@ -109,6 +110,8 @@ public interface Storage<T extends Card<T>> {
      * @return Returns a set of all "active" series.
      */
     Set<Series> getActiveSeries();
+
+    MobGroup getMobGroup(String groupId);
 
     /* TODO
      *  @return Returns a <CardsKey, Card> map CardsKey should only be for yaml

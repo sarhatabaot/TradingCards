@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import net.tinetwork.tradingcards.api.card.Card;
 import net.tinetwork.tradingcards.api.config.ColorSeries;
 import net.tinetwork.tradingcards.api.model.DropType;
+import net.tinetwork.tradingcards.api.model.MobGroup;
 import net.tinetwork.tradingcards.api.model.Pack;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
@@ -780,6 +781,7 @@ public class SqlStorage implements Storage<TradingCard> {
             }
         }.runQuery(SERIES_GET_BY_ID_ACTIVE, null, null);
     }
+
 
     @Override
     public Map<String, TradingCard> getCardsMap() {
