@@ -64,7 +64,7 @@ public class EditCommand extends BaseCommand {
                 return;
             }
             if (!plugin.getCardManager().containsCard(cardId, rarityId, seriesId)) {
-                ChatUtil.sendPrefixedMessage(sender, String.format("A card named &4%s&r could not be found.", StringUtils.join(List.of(cardId, rarityId, seriesId), "&r,&4")));
+                ChatUtil.sendPrefixedMessage(sender, String.format("A card named &4%s&r could not be found.", StringUtils.join(List.of(cardId, rarityId, seriesId), "&r,&4 ")));
                 return;
             }
 
