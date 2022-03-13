@@ -53,8 +53,8 @@ public class EditCommand extends BaseCommand {
 
         @Subcommand("card")
         @CommandPermission(Permissions.EDIT_CARD)
-        @CommandCompletion("@rarities @cards @series @edit-card @edit-card-value")
-        public void onEditCard(final CommandSender sender, final String rarityId, final String cardId, final String seriesId, final EditCard editCard, final String value) {
+        @CommandCompletion("@rarities @series @command-cards @edit-card @edit-card-value")
+        public void onEditCard(final CommandSender sender, final String rarityId,  final String seriesId, final String cardId, final EditCard editCard, final String value) {
             if (!plugin.getRarityManager().containsRarity(rarityId)) {
                 ChatUtil.sendPrefixedMessage(sender, String.format("A rarity named &4%s&r could not be found.", rarityId));
                 return;

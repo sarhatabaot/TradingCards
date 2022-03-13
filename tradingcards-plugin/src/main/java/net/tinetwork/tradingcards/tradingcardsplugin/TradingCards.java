@@ -230,6 +230,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         var commandManager = new PaperCommandManager(this);
         commandManager.getCommandCompletions().registerCompletion("rarities", c -> rarityManager.getRarities().stream().map(Rarity::getName).toList());
         commandManager.getCommandCompletions().registerCompletion("cards", c -> cardManager.getRarityCardListNames(c.getContextValueByName(String.class, "rarity")));
+        commandManager.getCommandCompletions().registerCompletion("command-cards", c -> storage.getCardsInRarityAndSeries(c.getContextValueByName(String.class, "rarity"), c.getContextValueByName(String.class, "series")).stream().map(TradingCard::getCardName).toList());
         commandManager.getCommandCompletions().registerCompletion("active-cards", c -> cardManager.getActiveRarityCardList(c.getContextValueByName(String.class, "rarity")));
         commandManager.getCommandCompletions().registerCompletion("packs", c -> packManager.getPacks().stream().map(Pack::id).toList());
         commandManager.getCommandCompletions().registerCompletion("default-types", c -> dropTypeManager.getDefaultTypes());
@@ -256,21 +257,21 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
                 }
         );
         commandManager.getCommandCompletions().registerCompletion(
-                "edit-series-value", c -> switch (c.getContextValueByName(EditSeries.class,"editSeries")) {
+                "edit-series-value", c -> switch (c.getContextValueByName(EditSeries.class, "editSeries")) {
                     case MODE -> Arrays.stream(Mode.values()).map(Enum::name).toList();
                     case DISPLAY_NAME -> Collections.singleton("");
                     case COLORS -> List.of("info=", "about=", "type=", "series=", "rarity=");
                 }
         );
         commandManager.getCommandCompletions().registerCompletion(
-                "edit-rarity-value", c -> switch (c.getContextValueByName(EditRarity.class,"editRarity")) {
+                "edit-rarity-value", c -> switch (c.getContextValueByName(EditRarity.class, "editRarity")) {
                     case BUY_PRICE, SELL_PRICE, DEFAULT_COLOR, DISPLAY_NAME, REMOVE_ALL_REWARDS -> Collections.singleton("");
-                    case ADD_REWARD, REMOVE_REWARD -> IntStream.rangeClosed(0, Objects.requireNonNullElse(rarityManager.getRarity(c.getContextValueByName(String.class, "rarityId")),TradingRarityManager.EMPTY_RARITY).getRewards().size() - 1)
+                    case ADD_REWARD, REMOVE_REWARD -> IntStream.rangeClosed(0, Objects.requireNonNullElse(rarityManager.getRarity(c.getContextValueByName(String.class, "rarityId")), TradingRarityManager.EMPTY_RARITY).getRewards().size() - 1)
                             .boxed().map(String::valueOf).toList();
                 }
         );
         commandManager.getCommandCompletions().registerCompletion(
-                "edit-card-value", c -> switch (c.getContextValueByName(EditCard.class,"editCard")) {
+                "edit-card-value", c -> switch (c.getContextValueByName(EditCard.class, "editCard")) {
                     case DISPLAY_NAME, SELL_PRICE, BUY_PRICE, INFO, CUSTOM_MODEL_DATA -> Collections.singleton("");
                     case SERIES -> seriesManager.getAllSeries().stream().map(Series::getName).toList();
                     case TYPE -> Stream.concat(dropTypeManager.getDefaultTypes().stream(), dropTypeManager.getTypes().keySet().stream()).toList();
