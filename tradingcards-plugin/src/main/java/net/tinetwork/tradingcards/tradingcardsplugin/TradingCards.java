@@ -1,5 +1,6 @@
 package net.tinetwork.tradingcards.tradingcardsplugin;
 
+import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.PaperCommandManager;
 import com.google.common.collect.ImmutableSet;
 import net.milkbowl.vault.economy.Economy;
@@ -235,7 +236,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         var commandManager = new PaperCommandManager(this);
         commandManager.getCommandCompletions().registerCompletion("rarities", c -> rarityManager.getRarities().stream().map(Rarity::getName).toList());
         commandManager.getCommandCompletions().registerCompletion("cards", c -> cardManager.getRarityCardListNames(c.getContextValueByName(String.class, "rarity")));
-        commandManager.getCommandCompletions().registerCompletion("command-cards", c -> storage.getCardsInRarityAndSeries(c.getContextValueByName(String.class, "rarity"), c.getContextValueByName(String.class, "series")).stream().map(TradingCard::getCardName).toList());
+        commandManager.getCommandCompletions().registerCompletion("command-cards", c -> storage.getCardsInRarityAndSeries(c.getContextValue(Rarity.class).getName(), c.getContextValue(Series.class).getName()).stream().map(TradingCard::getCardName).toList());
         commandManager.getCommandCompletions().registerCompletion("active-cards", c -> cardManager.getActiveRarityCardList(c.getContextValueByName(String.class, "rarity")));
         commandManager.getCommandCompletions().registerCompletion("packs", c -> packManager.getPacks().stream().map(Pack::id).toList());
         commandManager.getCommandCompletions().registerCompletion("default-types", c -> dropTypeManager.getDefaultTypes());
@@ -282,6 +283,21 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
                     case TYPE -> Stream.concat(dropTypeManager.getDefaultTypes().stream(), dropTypeManager.getTypes().keySet().stream()).toList();
                 }
         );
+        commandManager.getCommandContexts().registerContext(Rarity.class, c -> {
+                    String rarityId = c.popFirstArg();
+                    if (!getRarityManager().containsRarity(rarityId)) {
+                        throw new InvalidCommandArgument("No such rarity");
+                    }
+                    return getRarityManager().getRarity(rarityId);
+                }
+        );
+        commandManager.getCommandContexts().registerContext(Series.class, c-> {
+            String seriesId = c.popFirstArg();
+            if (!getSeriesManager().containsSeries(seriesId)) {
+                throw new InvalidCommandArgument("No such series");
+            }
+            return getSeriesManager().getSeries(seriesId);
+        });
 
         commandManager.registerCommand(new CardsCommand(this, playerBlacklist));
         commandManager.registerCommand(new EditCommand(this));
