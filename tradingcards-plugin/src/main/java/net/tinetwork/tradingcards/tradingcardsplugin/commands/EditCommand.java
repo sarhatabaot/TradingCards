@@ -192,7 +192,7 @@ public class EditCommand extends BaseCommand {
                             case "type=" -> type = string.split("=")[1];
                             case "series=" -> series = string.split("=")[1];
                             case "rarity" -> rarity = string.split("=")[1];
-                            default -> plugin.debug(EditCommand.class,"Unsupported argument: "+value);
+                            default -> plugin.debug(EditCommand.class, "Unsupported argument: " + value);
                         }
                     }
 
@@ -243,8 +243,8 @@ public class EditCommand extends BaseCommand {
                         return;
                     }
                     String content = split[1];
-                    if(content.equalsIgnoreCase( "delete")) {
-                        storage.editPackContentsDelete(packId,lineNumber);
+                    if (content.equalsIgnoreCase("delete")) {
+                        storage.editPackContentsDelete(packId, lineNumber);
                         return;
                     }
 
@@ -311,6 +311,11 @@ public class EditCommand extends BaseCommand {
 
         //set edit.toString() to value for id
         private void sendSetTypes(final CommandSender sender, final String id, final @NotNull Edit edit, final String value) {
+            if (edit instanceof EditRarity editRarity && editRarity == EditRarity.DEFAULT_COLOR) {
+                String partialFormat = String.format("&7Set &b%s &7to &b{value} &7for &b%s", edit, id);
+                sender.sendMessage(ChatUtil.color(plugin.prefixed(partialFormat)).replace("{value}", value));
+                return;
+            }
             ChatUtil.sendPrefixedMessage(sender, String.format("&7Set &b%s &7to &b%s &7for &b%s", edit, value, id));
         }
     }
