@@ -23,7 +23,7 @@ public class RaritiesConfig extends RarityConfigurate{
     private CommentedConfigurationNode raritiesNode;
 
     public RaritiesConfig(TradingCards plugin) throws ConfigurateException {
-        super(plugin, "settings"+ File.separator,"rarities.yml", "settings");
+        super(plugin, "data"+ File.separator,"rarities.yml", "data");
     }
 
     @Override
