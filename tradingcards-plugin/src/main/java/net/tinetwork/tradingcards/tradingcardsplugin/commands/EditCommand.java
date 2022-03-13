@@ -10,6 +10,7 @@ import co.aikar.commands.annotation.Subcommand;
 import net.tinetwork.tradingcards.api.config.ColorSeries;
 import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.api.model.Pack;
+import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.api.model.schedule.Mode;
 import net.tinetwork.tradingcards.tradingcardsplugin.Permissions;
@@ -54,7 +55,9 @@ public class EditCommand extends BaseCommand {
         @Subcommand("card")
         @CommandPermission(Permissions.EDIT_CARD)
         @CommandCompletion("@rarities @series @command-cards @edit-card @edit-card-value")
-        public void onEditCard(final CommandSender sender, final String rarityId,  final String seriesId, final String cardId, final EditCard editCard, final String value) {
+        public void onEditCard(final CommandSender sender, final Rarity rarity, final Series series, final String cardId, final EditCard editCard, final String value) {
+            final String rarityId = rarity.getName();
+            final String seriesId = series.getName();
             if (!plugin.getRarityManager().containsRarity(rarityId)) {
                 ChatUtil.sendPrefixedMessage(sender, String.format("A rarity named &4%s&r could not be found.", rarityId));
                 return;
@@ -101,7 +104,6 @@ public class EditCommand extends BaseCommand {
                         ChatUtil.sendPrefixedMessage(sender, String.format(SERIES_NOT_FOUND_FORMAT, value));
                         return;
                     }
-                    final Series series = plugin.getSeriesManager().getSeries(value);
                     storage.editCardSeries(rarityId, cardId, seriesId, series);
                 }
                 case BUY_PRICE -> {

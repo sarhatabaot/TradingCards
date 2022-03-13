@@ -14,6 +14,7 @@ import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.World;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -214,5 +215,13 @@ public class CardUtil {
         boolean isShiny = shinyRandom <= plugin.getChancesConfig().shinyVersionChance();
         plugin.debug(TradingCardManager.class,"Shiny="+isShiny+", Value="+shinyRandom+", ShinyChance="+plugin.getChancesConfig().shinyVersionChance());
         return isShiny;
+    }
+
+    public static boolean hasVault(final CommandSender player) {
+        if (!plugin.isHasVault()) {
+            ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().noVault());
+            return false;
+        }
+        return true;
     }
 }

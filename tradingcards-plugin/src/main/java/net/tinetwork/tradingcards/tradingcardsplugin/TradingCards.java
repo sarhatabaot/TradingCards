@@ -1,7 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin;
 
+import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.PaperCommandManager;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import net.milkbowl.vault.economy.Economy;
 import net.tinetwork.tradingcards.api.TradingCardsPlugin;
@@ -12,10 +12,16 @@ import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.api.model.schedule.Mode;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
+import net.tinetwork.tradingcards.tradingcardsplugin.commands.BuyCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.CardsCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.CreateCommand;
+import net.tinetwork.tradingcards.tradingcardsplugin.commands.DebugCommands;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.DeckCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.EditCommand;
+import net.tinetwork.tradingcards.tradingcardsplugin.commands.GiveCommands;
+import net.tinetwork.tradingcards.tradingcardsplugin.commands.ListCommand;
+import net.tinetwork.tradingcards.tradingcardsplugin.commands.MigrateCommand;
+import net.tinetwork.tradingcards.tradingcardsplugin.commands.SellCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.EditCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.EditPack;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.EditRarity;
@@ -230,7 +236,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         var commandManager = new PaperCommandManager(this);
         commandManager.getCommandCompletions().registerCompletion("rarities", c -> rarityManager.getRarities().stream().map(Rarity::getName).toList());
         commandManager.getCommandCompletions().registerCompletion("cards", c -> cardManager.getRarityCardListNames(c.getContextValueByName(String.class, "rarity")));
-        commandManager.getCommandCompletions().registerCompletion("command-cards", c -> storage.getCardsInRarityAndSeries(c.getContextValueByName(String.class, "rarity"), c.getContextValueByName(String.class, "series")).stream().map(TradingCard::getCardName).toList());
+        commandManager.getCommandCompletions().registerCompletion("command-cards", c -> storage.getCardsInRarityAndSeries(c.getContextValue(Rarity.class).getName(), c.getContextValue(Series.class).getName()).stream().map(TradingCard::getCardName).toList());
         commandManager.getCommandCompletions().registerCompletion("active-cards", c -> cardManager.getActiveRarityCardList(c.getContextValueByName(String.class, "rarity")));
         commandManager.getCommandCompletions().registerCompletion("packs", c -> packManager.getPacks().stream().map(Pack::id).toList());
         commandManager.getCommandCompletions().registerCompletion("default-types", c -> dropTypeManager.getDefaultTypes());
@@ -277,10 +283,31 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
                     case TYPE -> Stream.concat(dropTypeManager.getDefaultTypes().stream(), dropTypeManager.getTypes().keySet().stream()).toList();
                 }
         );
+        commandManager.getCommandContexts().registerContext(Rarity.class, c -> {
+                    String rarityId = c.popFirstArg();
+                    if (!getRarityManager().containsRarity(rarityId)) {
+                        throw new InvalidCommandArgument("No such rarity");
+                    }
+                    return getRarityManager().getRarity(rarityId);
+                }
+        );
+        commandManager.getCommandContexts().registerContext(Series.class, c-> {
+            String seriesId = c.popFirstArg();
+            if (!getSeriesManager().containsSeries(seriesId)) {
+                throw new InvalidCommandArgument("No such series");
+            }
+            return getSeriesManager().getSeries(seriesId);
+        });
 
         commandManager.registerCommand(new CardsCommand(this, playerBlacklist));
         commandManager.registerCommand(new EditCommand(this));
         commandManager.registerCommand(new CreateCommand(this));
+        commandManager.registerCommand(new BuyCommand(this));
+        commandManager.registerCommand(new DebugCommands(this));
+        commandManager.registerCommand(new GiveCommands(this));
+        commandManager.registerCommand(new ListCommand(this));
+        commandManager.registerCommand(new MigrateCommand(this));
+        commandManager.registerCommand(new SellCommand(this));
         commandManager.registerCommand(new DeckCommand(this));
         commandManager.enableUnstableAPI("help");
         commandManager.enableUnstableAPI("brigadier");
