@@ -24,7 +24,7 @@ public class CustomTypesConfig extends SimpleConfigurate {
     private Set<DropType> dropTypes;
 
     public CustomTypesConfig(final TradingCards plugin) throws ConfigurateException {
-        super(plugin, "settings"+ File.separator, "custom-types.yml", "settings");
+        super(plugin, "data"+ File.separator, "custom-types.yml", "data");
     }
 
     @Override

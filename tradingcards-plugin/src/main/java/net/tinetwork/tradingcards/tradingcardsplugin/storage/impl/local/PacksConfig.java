@@ -20,7 +20,7 @@ public class PacksConfig extends SimpleConfigurate {
     private List<String> packNames;
     private List<Pack> packs;
     public PacksConfig(TradingCards plugin) throws ConfigurateException {
-        super(plugin, "settings"+ File.separator,"packs.yml", "settings");
+        super(plugin, "data"+ File.separator,"packs.yml", "data");
     }
 
     public Pack getPack(final String name) throws SerializationException {

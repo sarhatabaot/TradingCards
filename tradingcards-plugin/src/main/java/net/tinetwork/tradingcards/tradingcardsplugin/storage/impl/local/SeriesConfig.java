@@ -29,7 +29,7 @@ public class SeriesConfig extends SeriesConfigurate {
     private Map<String, Series> seriesMap;
 
     public SeriesConfig(final TradingCards plugin) throws ConfigurateException {
-        super(plugin, "settings" + File.separator, "series.yml", "settings");
+        super(plugin, "data" + File.separator, "series.yml", "data");
     }
 
     @Override
