@@ -1,7 +1,6 @@
 package net.tinetwork.tradingcards.tradingcardsplugin;
 
 import co.aikar.commands.PaperCommandManager;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import net.milkbowl.vault.economy.Economy;
 import net.tinetwork.tradingcards.api.TradingCardsPlugin;
@@ -12,10 +11,16 @@ import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.api.model.schedule.Mode;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
+import net.tinetwork.tradingcards.tradingcardsplugin.commands.BuySubCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.CardsCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.CreateCommand;
+import net.tinetwork.tradingcards.tradingcardsplugin.commands.DebugCommands;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.DeckCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.EditCommand;
+import net.tinetwork.tradingcards.tradingcardsplugin.commands.GiveCommands;
+import net.tinetwork.tradingcards.tradingcardsplugin.commands.ListSubCommand;
+import net.tinetwork.tradingcards.tradingcardsplugin.commands.MigrateSubCommand;
+import net.tinetwork.tradingcards.tradingcardsplugin.commands.SellSubCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.EditCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.EditPack;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.EditRarity;
@@ -281,6 +286,12 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         commandManager.registerCommand(new CardsCommand(this, playerBlacklist));
         commandManager.registerCommand(new EditCommand(this));
         commandManager.registerCommand(new CreateCommand(this));
+        commandManager.registerCommand(new BuySubCommand(this));
+        commandManager.registerCommand(new DebugCommands(this));
+        commandManager.registerCommand(new GiveCommands(this));
+        commandManager.registerCommand(new ListSubCommand(this));
+        commandManager.registerCommand(new MigrateSubCommand(this));
+        commandManager.registerCommand(new SellSubCommand(this));
         commandManager.registerCommand(new DeckCommand(this));
         commandManager.enableUnstableAPI("help");
         commandManager.enableUnstableAPI("brigadier");
