@@ -314,5 +314,11 @@ public class TradingCardManager implements CardManager<TradingCard> {
         return simpleCardsConfig.getCard(rarityId, cardId).get();
     }
 
-
+    @Override
+    public boolean containsCard(final String rarityId, final String cardId, final String seriesId) {
+        final TradingCard card = getCard(cardId,rarityId);
+        if(card == null || card instanceof EmptyCard)
+            return false;
+        return card.getSeries().getName().equals(seriesId);
+    }
 }
