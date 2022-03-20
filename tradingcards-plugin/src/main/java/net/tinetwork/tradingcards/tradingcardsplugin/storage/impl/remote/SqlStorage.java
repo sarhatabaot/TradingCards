@@ -102,11 +102,11 @@ public class SqlStorage implements Storage<TradingCard> {
 
     private static final String REWARDS_GET_BY_ID =
             "SELECT * FROM {prefix}rewards " +
-                    "WHERE rarity_id=?" +
+                    "WHERE rarity_id=? " +
                     "ORDER BY command_order;";
     private static final String REWARDS_UPDATE_ADD_REWARD =
             "UPDATE {prefix}rewards " +
-                    "SET reward=? command_order=?" +
+                    "SET reward=? command_order=? " +
                     "WHERE rarity_id=?;";
     private static final String REWARDS_UPDATE_REMOVE_REWARD =
             "DELETE FROM {prefix}rewards " +
@@ -1085,7 +1085,7 @@ public class SqlStorage implements Storage<TradingCard> {
     public abstract class ExecuteQuery<T> {
         public T runQuery(final String sql,Map<String, String> values, Map<String,String> where) {
             try (Connection connection = connectionFactory.getConnection()){
-                try (PreparedStatement preparedStatement = connection.prepareStatement(statementProcessor.apply(sql,values,where))){
+                try (PreparedStatement preparedStatement = connection.prepareStatement(statementProcessor.apply(sql,statementProcessor.wrapValues(values),statementProcessor.wrapValues(where)))){
                     try (ResultSet resultSet = preparedStatement.executeQuery()){
                         return getQuery(resultSet);
                     }
