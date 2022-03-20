@@ -197,6 +197,10 @@ public class SqlStorage implements Storage<TradingCard> {
             "SELECT * FROM {prefix}series " +
                     "WHERE series_id=? AND series_mode=ACTIVE;";
 
+    private static final String SERIES_GET_ALL_ACTIVE =
+            "SELECT * FROM {prefix}series " +
+                    "WHERE series_mode=ACTIVE;";
+
     private static final String PACKS_CREATE =
             "INSERT INTO {prefix}packs (pack_id) " +
                     "VALUES (?);";
@@ -778,7 +782,7 @@ public class SqlStorage implements Storage<TradingCard> {
             public Set<Series> returnNull() {
                 return Collections.emptySet();
             }
-        }.runQuery(SERIES_GET_BY_ID_ACTIVE, null, null);
+        }.runQuery(SERIES_GET_ALL_ACTIVE, null, null);
     }
 
     @Override
