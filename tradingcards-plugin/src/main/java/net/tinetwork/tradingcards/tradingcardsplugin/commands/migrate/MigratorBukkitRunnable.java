@@ -1,6 +1,8 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.commands.migrate;
 
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
+import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
 import org.bukkit.command.CommandSender;
@@ -11,12 +13,14 @@ import org.spongepowered.configurate.ConfigurateException;
  * @author sarhatabaot
  */
 public abstract class MigratorBukkitRunnable extends BukkitRunnable {
-    protected final CommandSender sender;
     protected final TradingCards plugin;
+    protected final CommandSender sender;
+    protected final Storage<TradingCard> source;
 
-    protected MigratorBukkitRunnable(final TradingCards plugin, final CommandSender sender) {
+    protected MigratorBukkitRunnable(final TradingCards plugin, final CommandSender sender, final Storage<TradingCard> source) {
         this.plugin = plugin;
         this.sender = sender;
+        this.source = source;
     }
 
     @Override
