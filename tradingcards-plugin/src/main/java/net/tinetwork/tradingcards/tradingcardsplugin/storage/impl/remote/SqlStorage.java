@@ -81,26 +81,29 @@ public class SqlStorage implements Storage<TradingCard> {
             "SELECT * FROM {prefix}rarities;";
     private static final String RARITY_GET_BY_ID =
             "SELECT * FROM {prefix}rarities " +
-                    "WHERE rarity_id=?;";
+                    "WHERE rarity_id='?';";
 
     private static final String RARITY_UPDATE_BUY_PRICE =
             "UPDATE {prefix}rarities " +
                     "SET buy_price=? " +
-                    "WHERE rarity_id=?;";
+                    "WHERE rarity_id='?';";
     private static final String RARITY_UPDATE_SELL_PRICE =
             "UPDATE {prefix}rarities " +
                     "SET sell_price=? " +
-                    "WHERE rarity_id=?;";
+                    "WHERE rarity_id='?';";
     private static final String RARITY_UPDATE_DEFAULT_COLOR =
             "UPDATE {prefix}rarities " +
                     "SET default_color=? " +
-                    "WHERE rarity_id=?;";
+                    "WHERE rarity_id='?';";
     private static final String RARITY_UPDATE_DISPLAY_NAME =
             "UPDATE {prefix}rarities " +
                     "SET display_name=? " +
-                    "WHERE rarity_id=?;";
+                    "WHERE rarity_id='?';";
+    private static final String RARITY_CREATE =
+            "INSERT INTO {prefix}rarities (rarity_id) " +
+                    "VALUES ('?');";
 
-
+    /* Rewards */
     private static final String REWARDS_GET_BY_ID =
             "SELECT * FROM {prefix}rewards " +
                     "WHERE rarity_id=? " +
@@ -108,62 +111,62 @@ public class SqlStorage implements Storage<TradingCard> {
     private static final String REWARDS_UPDATE_ADD_REWARD =
             "UPDATE {prefix}rewards " +
                     "SET reward=? command_order=? " +
-                    "WHERE rarity_id=?;";
+                    "WHERE rarity_id='?';";
     private static final String REWARDS_UPDATE_REMOVE_REWARD =
             "DELETE FROM {prefix}rewards " +
-                    "WHERE rarity_id=? AND command_order=?;";
+                    "WHERE rarity_id='?' AND command_order='?';";
     private static final String REWARDS_UPDATE_REMOVE_ALL_REWARDS =
             "DELETE FROM {prefix}rewards " +
-                    "WHERE rarity_id=?;";
+                    "WHERE rarity_id='?';";
 
+
+    /* Cards */
     private static final String CARDS_SELECT_ALL =
             "SELECT * FROM {prefix}cards;";
     private static final String CARDS_SELECT_BY_CARD_ID_AND_RARITY =
             "SELECT * FROM {prefix}cards "+
-                    "WHERE card_id=? AND rarity_id=?;";
+                    "WHERE card_id='?' AND rarity_id='?';";
     private static final String CARDS_SELECT_BY_RARITY_ID =
             "SELECT * FROM {prefix}cards " +
-                    "WHERE rarity_id=?;";
+                    "WHERE rarity_id='?';";
     private static final String CARDS_SELECT_BY_SERIES_ID =
             "SELECT * FROM {prefix}cards " +
-                    "WHERE series_id=?;";
+                    "WHERE series_id='?';";
     private static final String CARDS_SELECT_BY_RARITY_AND_SERIES =
             "SELECT * FROM {prefix}cards " +
-                    "WHERE rarity_id=? AND series_id=?;";
+                    "WHERE rarity_id='?' AND series_id='?';";
     private static final String CARDS_CREATE =
             "INSERT INTO {prefix}cards (card_id,rarity_id,series_id) " +
-                    "VALUES (?,?,?);";
+                    "VALUES ('?','?','?');";
     private static final String CARDS_UPDATE_DISPLAY_NAME =
             "UPDATE {prefix}cards " +
                     "SET display_name=? " +
-                    "WHERE card_id=? AND rarity_id=? AND series_id=?;";
+                    "WHERE card_id='?' AND rarity_id='?' AND series_id='?';";
     private static final String CARDS_UPDATE_SERIES =
             "UPDATE {prefix}cards " +
                     "SET series_id=? " +
-                    "WHERE card_id=? AND rarity_id=? AND series_id=?;";
+                    "WHERE card_id='?' AND rarity_id='?' AND series_id='?';";
     private static final String CARDS_UPDATE_SELL_PRICE =
             "UPDATE {prefix}cards " +
                     "SET sell_price=? " +
-                    "WHERE card_id=? AND rarity_id=? AND series_id=?;";
+                    "WHERE card_id='?' AND rarity_id='?' AND series_id='?';";
     private static final String CARDS_UPDATE_BUY_PRICE =
             "UPDATE {prefix}cards " +
                     "SET buy_price=? " +
-                    "WHERE card_id=? AND rarity_id=? AND series_id=?;";
+                    "WHERE card_id='?' AND rarity_id='?' AND series_id='?';";
     private static final String CARDS_UPDATE_TYPE =
             "UPDATE {prefix}cards " +
                     "SET type_id=? " +
-                    "WHERE card_id=? AND rarity_id=? AND series_id=?;";
+                    "WHERE card_id='?' AND rarity_id='?' AND series_id='?';";
     private static final String CARDS_UPDATE_INFO =
             "UPDATE {prefix}cards " +
                     "SET info=? " +
-                    "WHERE card_id=? AND rarity_id=? AND series_id=?;";
+                    "WHERE card_id='?' AND rarity_id='?' AND series_id='?';";
     private static final String CARDS_UPDATE_CUSTOM_MODEL_DATA =
             "UPDATE {prefix}cards " +
                     "SET custom_model_data=? " +
-                    "WHERE card_id=? AND rarity_id=? AND series_id=?;";
-    private static final String RARITY_CREATE =
-            "INSERT INTO {prefix}rarities (rarity_id) " +
-                    "VALUES ('?');";
+                    "WHERE card_id='?' AND rarity_id='?' AND series_id='?';";
+
     private static final String SERIES_CREATE =
             "INSERT INTO {prefix}series (series_id) "+
                     "VALUES ('?');";
@@ -175,28 +178,28 @@ public class SqlStorage implements Storage<TradingCard> {
 
     private static final String SERIES_GET_BY_ID =
             "SELECT * FROM {prefix}series " +
-                    "WHERE series_id=?;";
+                    "WHERE series_id='?';";
 
     private static final String SERIES_UPDATE_DISPLAY_NAME =
             "UPDATE {prefix}series " +
                     "SET display_name=? " +
-                    "WHERE series_id=?;";
+                    "WHERE series_id='?';";
     private static final String SERIES_UPDATE_COLORS =
             "UPDATE {prefix}series_colors " +
                     "SET type=?, info=?, about=?, rarity=? " +
-                    "WHERE series_id=?;";
+                    "WHERE series_id='?';";
     private static final String SERIES_UPDATE_MODE =
             "UPDATE {prefix}series " +
                     "SET mode=? " +
-                    "WHERE series_id=?;";
+                    "WHERE series_id='?';";
 
     private static final String COLOR_GET_BY_ID =
             "SELECT * FROM {prefix}series_colors " +
-                    "WHERE series_id=?;";
+                    "WHERE series_id='?';";
 
     private static final String SERIES_GET_BY_ID_ACTIVE =
             "SELECT * FROM {prefix}series " +
-                    "WHERE series_id=? AND series_mode='ACTIVE';";
+                    "WHERE series_id='?' AND series_mode='ACTIVE';";
 
     private static final String SERIES_GET_ALL_ACTIVE =
             "SELECT * FROM {prefix}series " +
@@ -204,54 +207,54 @@ public class SqlStorage implements Storage<TradingCard> {
 
     private static final String PACKS_CREATE =
             "INSERT INTO {prefix}packs (pack_id) " +
-                    "VALUES (?);";
+                    "VALUES ('?');";
     private static final String PACKS_SELECT_ALL =
             "SELECT * FROM {prefix}packs;";
 
     private static final String PACKS_GET_CONTENT_BY_ID =
             "SELECT * FROM {prefix}packs_content " +
-                    "WHERE pack_id=?;";
+                    "WHERE pack_id='?';";
 
     private static final String PACKS_GET_BY_ID =
             "SELECT * FROM {prefix}packs "+
-                    "WHERE pack_id=?;";
+                    "WHERE pack_id='?';";
 
     private static final String PACKS_UPDATE_DISPLAY_NAME =
             "UPDATE {prefix}packs " +
                     "SET display_name=? "+
-                    "WHERE pack_id=?;";
+                    "WHERE pack_id='?';";
     private static final String PACKS_UPDATE_PERMISSION =
             "UPDATE {prefix}packs " +
                     "SET permission=? "+
-                    "WHERE pack_id=?;";
+                    "WHERE pack_id='?';";
     private static final String PACKS_UPDATE_PRICE =
             "UPDATE {prefix}packs " +
                     "SET buy_price=? "+
-                    "WHERE pack_id=?;";
+                    "WHERE pack_id='?';";
     private static final String PACKS_INSERT_CONTENT_ADD_LINE =
-            "INSERT INTO {prefix}packs_content (line_number, pack_id, rarity_id, card_amount, series_id)" +
-                    "VALUES (?,?,?,?,?);";
+            "INSERT INTO {prefix}packs_content (line_number, pack_id, rarity_id, card_amount, series_id) " +
+                    "VALUES ('?','?','?','?','?');";
     private static final String PACKS_DELETE_CONTENT =
             "DELETE FROM {prefix}packs_content " +
-                    "WHERE pack_id=? AND line_number=?;";
+                    "WHERE pack_id='?' AND line_number='?';";
     private static final String PACKS_UPDATE_CONTENT_SET_LINE =
             "UPDATE {prefix}packs_content " +
-                    "SET rarity_id=?, card_amount=?, series_id=?" +
-                    "WHERE pack_id=? AND line_number=?;";
+                    "SET rarity_id=?, card_amount=?, series_id=? " +
+                    "WHERE pack_id='?' AND line_number='?';";
 
     private static final String CUSTOM_TYPES_SELECT_ALL =
             "SELECT * FROM {prefix}custom_types;";
     private static final String CUSTOM_TYPES_GET_BY_ID =
             "SELECT * FROM {prefix}custom_types " +
-                    "WHERE type_id=?;";
+                    "WHERE type_id='?';";
     private static final String CUSTOM_TYPES_UPDATE_TYPE =
             "UPDATE {prefix}custom_types " +
-                    "SET drop_type=?" +
-                    "WHERE type_id=?;";
+                    "SET drop_type=? " +
+                    "WHERE type_id='?';";
     private static final String CUSTOM_TYPES_UPDATE_DISPLAY_NAME =
             "UPDATE {prefix}custom_types " +
-                    "SET display_name=?" +
-                    "WHERE type_id=?;";
+                    "SET display_name=? " +
+                    "WHERE type_id='?';";
 
 
     private static final String COLUMN_UUID = "uuid";
