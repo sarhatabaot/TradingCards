@@ -6,6 +6,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -30,11 +31,13 @@ public class StatementProcessor {
     }
 
     private @NotNull String values(final String statement, @NotNull Map<String,String> values) {
-        final String orderValues = StringUtils.substringBetween(statement, "decks (", ") VALUES");
-        plugin.debug(StatementProcessor.class,orderValues);
-        Map<String, Integer> statementOrder = getColumnOrder(orderValues);
+        //TODO, only works for decks.
+        final String orderOfValues = StringUtils.substringBetween(statement, " (", ") VALUES");
+        plugin.debug(StatementProcessor.class,orderOfValues);
+        Map<String, Integer> statementOrder = getColumnOrder(orderOfValues);
         final String valuesArguments = getValuesArguments(statement);
-        String[] order = orderValues.split(", ");
+
+        String[] order = (orderOfValues.length() == 1) ? new String[]{orderOfValues} :orderOfValues.split(", ");
         for(Map.Entry<String,String> entry: values.entrySet()){
             final String key = entry.getKey();
             final int index = statementOrder.get(key);
@@ -147,6 +150,18 @@ public class StatementProcessor {
             builder.put("is_shiny",isShiny.toString());
         }
 
+        return builder.build();
+    }
+
+    public ImmutableMap<String, String> wrapValues(Map<String, String> map) {
+        ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
+        if(map == null)
+            return builder.build();
+        for(Map.Entry<String,String> entry: map.entrySet()) {
+            switch (entry.getKey()) {
+                case "uuid", "deck_number", "card_id", "rarity_id", "amount", "is_shiny" -> builder.put(entry.getKey(), wrap(entry.getValue()));
+            }
+        }
         return builder.build();
     }
 
