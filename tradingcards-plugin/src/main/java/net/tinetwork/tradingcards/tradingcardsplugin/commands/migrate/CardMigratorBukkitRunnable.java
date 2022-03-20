@@ -3,7 +3,6 @@ package net.tinetwork.tradingcards.tradingcardsplugin.commands.migrate;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
-import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local.YamlStorage;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
 import org.bukkit.command.CommandSender;
 import org.spongepowered.configurate.ConfigurateException;
@@ -12,14 +11,22 @@ import org.spongepowered.configurate.ConfigurateException;
  * @author sarhatabaot
  */
 public class CardMigratorBukkitRunnable extends MigratorBukkitRunnable {
+    @Override
+    public String getMigrationType() {
+        return "cards";
+    }
+
+    @Override
+    public int getTotalAmount() {
+        return source.getCards().size();
+    }
+
     public CardMigratorBukkitRunnable(final TradingCards plugin, final CommandSender sender, final Storage<TradingCard> source) {
         super(plugin, sender, source);
     }
 
     @Override
     public void onExecute() throws ConfigurateException {
-        int cardsAmount = source.getCards().size();
-        Util.logAndMessage(sender,"Found "+cardsAmount+" cards.");
         for(TradingCard card: source.getCards()) {
             Util.logAndMessage(sender,"Started conversion for "+card.getCardName());
             final String cardId = card.getCardName();
@@ -33,6 +40,5 @@ public class CardMigratorBukkitRunnable extends MigratorBukkitRunnable {
             plugin.getStorage().editCardType(rarityId,cardId,seriesId,card.getType());
             plugin.getStorage().editCardDisplayName(rarityId,cardId,seriesId,card.getDisplayName());
         }
-        Util.logAndMessage(sender, "&2Finished conversion of " + cardsAmount + " cards.");
     }
 }

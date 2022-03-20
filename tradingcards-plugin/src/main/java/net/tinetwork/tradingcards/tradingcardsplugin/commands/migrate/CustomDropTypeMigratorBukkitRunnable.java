@@ -17,13 +17,20 @@ public class CustomDropTypeMigratorBukkitRunnable extends MigratorBukkitRunnable
     }
 
     @Override
+    public String getMigrationType() {
+        return "custom-types";
+    }
+
+    @Override
+    public int getTotalAmount() {
+        return source.getDropTypes().size();
+    }
+
+    @Override
     public void onExecute() throws ConfigurateException {
-        int totalTypes = source.getDropTypes().size();
-        Util.logAndMessage(sender,"Found "+totalTypes + " types.");
         for(DropType dropType: source.getDropTypes()) {
             plugin.getStorage().createCustomType(dropType.getId(),dropType.getType());
             plugin.getStorage().editCustomTypeDisplayName(dropType.getId(),dropType.getDisplayName());
         }
-        Util.logAndMessage(sender, "&2Finished conversion of " + totalTypes + " types.");
     }
 }

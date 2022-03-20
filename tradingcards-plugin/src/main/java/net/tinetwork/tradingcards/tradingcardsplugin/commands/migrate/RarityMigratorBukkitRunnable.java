@@ -20,8 +20,6 @@ public class RarityMigratorBukkitRunnable extends MigratorBukkitRunnable{
 
     @Override
     public void onExecute() throws ConfigurateException {
-        int totalRarities = source.getRarities().size();
-        Util.logAndMessage(sender,"Found "+totalRarities +" rarities.");
         for(final Rarity rarity: source.getRarities()) {
             Util.logAndMessage(sender,"Started conversion for "+rarity.getName());
             plugin.getStorage().createRarity(rarity.getName());
@@ -35,6 +33,15 @@ public class RarityMigratorBukkitRunnable extends MigratorBukkitRunnable{
                 plugin.getStorage().editRarityAddReward(rarity.getName(),reward);
             }
         }
-        Util.logAndMessage(sender, "&2Finished conversion of " + totalRarities + " rarities.");
+    }
+
+    @Override
+    public String getMigrationType() {
+        return "rarities";
+    }
+
+    @Override
+    public int getTotalAmount() {
+        return source.getRarities().size();
     }
 }

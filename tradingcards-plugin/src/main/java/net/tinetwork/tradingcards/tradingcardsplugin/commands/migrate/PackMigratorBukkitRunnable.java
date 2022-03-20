@@ -17,9 +17,17 @@ public class PackMigratorBukkitRunnable extends MigratorBukkitRunnable{
     }
 
     @Override
+    public String getMigrationType() {
+        return "packs";
+    }
+
+    @Override
+    public int getTotalAmount() {
+        return source.getPacks().size();
+    }
+
+    @Override
     public void onExecute() throws ConfigurateException {
-        int totalPacks = source.getPacks().size();
-        Util.logAndMessage(sender,"Found "+totalPacks+" packs.");
         for(Pack pack: source.getPacks()) {
             Util.logAndMessage(sender,"Started conversion for "+pack.id());
             plugin.getStorage().createPack(pack.id());
@@ -31,6 +39,5 @@ public class PackMigratorBukkitRunnable extends MigratorBukkitRunnable{
                 plugin.getStorage().editPackContentsAdd(pack.id(),entry);
             }
         }
-        Util.logAndMessage(sender, "&2Finished conversion of " + totalPacks + " packs.");
     }
 }

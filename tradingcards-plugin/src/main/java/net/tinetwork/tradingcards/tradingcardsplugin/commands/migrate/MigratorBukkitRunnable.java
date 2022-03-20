@@ -27,9 +27,13 @@ public abstract class MigratorBukkitRunnable extends BukkitRunnable {
     public void run() {
         long startTime = System.nanoTime();
         try {
-            Util.logAndMessage(sender, "Found " + getTotalAmount() + " " + getConversionType());
+            if(getTotalAmount() != 0) { //because decks have to be different, change so this isn't needed todo
+                Util.logAndMessage(sender, "Found " + getTotalAmount() + " " + getMigrationType());
+            }
             onExecute();
-            Util.logAndMessage(sender, "&2Finished conversion of " + getTotalAmount() + " " + getConversionType());
+            if(getTotalAmount() != 0) { //because decks have to be different, change so this isn't needed todo
+                Util.logAndMessage(sender, "&2Finished conversion of " + getTotalAmount() + " " + getMigrationType());
+            }
             long endTime = System.nanoTime();
             long duration = (endTime - startTime) / 1000000;
             sender.sendMessage(ChatUtil.color("&aTook a total of " + duration + "ms"));
@@ -44,7 +48,7 @@ public abstract class MigratorBukkitRunnable extends BukkitRunnable {
 
     public abstract void onExecute() throws ConfigurateException;
 
-    public abstract String getConversionType();
+    public abstract String getMigrationType();
 
     public abstract int getTotalAmount();
 

@@ -29,7 +29,7 @@ public class SeriesMigratorBukkitRunnable extends MigratorBukkitRunnable{
 
 
     @Override
-    public String getConversionType() {
+    public String getMigrationType() {
         return "series";
     }
 

@@ -25,6 +25,16 @@ public class DeckMigratorBukkitRunnable extends MigratorBukkitRunnable {
     }
 
     @Override
+    public String getMigrationType() {
+        return "decks";
+    }
+
+    @Override
+    public int getTotalAmount() {
+        return 0;
+    }
+
+    @Override
     public void onExecute() throws ConfigurateException {
         //Assume that the source is yaml, change later
         YamlStorage yamlStorage = (YamlStorage) source;
