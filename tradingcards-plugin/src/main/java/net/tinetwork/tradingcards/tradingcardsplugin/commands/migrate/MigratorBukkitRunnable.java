@@ -27,7 +27,9 @@ public abstract class MigratorBukkitRunnable extends BukkitRunnable {
     public void run() {
         long startTime = System.nanoTime();
         try {
+            Util.logAndMessage(sender, "Found " + getTotalAmount() + " " + getConversionType());
             onExecute();
+            Util.logAndMessage(sender, "&2Finished conversion of " + getTotalAmount() + " " + getConversionType());
             long endTime = System.nanoTime();
             long duration = (endTime - startTime) / 1000000;
             sender.sendMessage(ChatUtil.color("&aTook a total of " + duration + "ms"));
@@ -41,5 +43,9 @@ public abstract class MigratorBukkitRunnable extends BukkitRunnable {
     }
 
     public abstract void onExecute() throws ConfigurateException;
+
+    public abstract String getConversionType();
+
+    public abstract int getTotalAmount();
 
 }
