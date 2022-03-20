@@ -91,19 +91,12 @@ public class StatementProcessor {
     }
 
 
+
     public String apply(final String statement,@Nullable Map<String, String> values,@Nullable Map<String, String> where) {
-        plugin.debug(StatementProcessor.class,"base statement="+statement);
-        String finalStatement = applyPrefix(statement);
-        plugin.debug(StatementProcessor.class,"prefixed statement="+finalStatement);
-        if (statement.contains("VALUES") && values != null) {
-            finalStatement = values(finalStatement,values);
-        }
-        if (statement.contains("WHERE") && where != null) {
-            finalStatement = where(finalStatement,where);
-        }
-        plugin.debug(StatementProcessor.class,"final statement="+finalStatement);
-        return finalStatement;
+        return apply(statement,values,where,null);
     }
+
+
     private String extractSetStatement(final String statement) {
         if (StringUtils.substringBetween(statement, "SET", "WHERE") == null)
             return StringUtils.substringBetween(statement, "SET",";");

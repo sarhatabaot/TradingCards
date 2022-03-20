@@ -49,6 +49,7 @@ import java.util.stream.Stream;
  * @author sarhatabaot
  */
 public class SqlStorage implements Storage<TradingCard> {
+    /* Decks */
     private static final String DECKS_SELECT_ALL_BY_UUID =
             "SELECT * FROM {prefix}decks " +
                     "WHERE uuid=?;";
@@ -75,7 +76,7 @@ public class SqlStorage implements Storage<TradingCard> {
             "DELETE FROM {prefix}decks " +
                     "WHERE uuid=? AND deck_number=? AND card_id=? AND rarity_id=? AND is_shiny=?;";
 
-
+    /* Rarity */
     private static final String RARITY_SELECT_ALL =
             "SELECT * FROM {prefix}rarities;";
     private static final String RARITY_GET_BY_ID =
@@ -162,13 +163,13 @@ public class SqlStorage implements Storage<TradingCard> {
                     "WHERE card_id=? AND rarity_id=? AND series_id=?;";
     private static final String RARITY_CREATE =
             "INSERT INTO {prefix}rarities (rarity_id) " +
-                    "VALUES (?);";
+                    "VALUES ('?');";
     private static final String SERIES_CREATE =
             "INSERT INTO {prefix}series (series_id) "+
-                    "VALUES (?);";
+                    "VALUES ('?');";
     private static final String CUSTOM_TYPES_CREATE =
             "INSERT INTO {prefix}custom_types (type_id,drop_type) " +
-                    "VALUES (?,?);";
+                    "VALUES ('?','?');";
     private static final String SERIES_SELECT_ALL =
             "SELECT * FROM {prefix}series;";
 
@@ -195,11 +196,11 @@ public class SqlStorage implements Storage<TradingCard> {
 
     private static final String SERIES_GET_BY_ID_ACTIVE =
             "SELECT * FROM {prefix}series " +
-                    "WHERE series_id=? AND series_mode=ACTIVE;";
+                    "WHERE series_id=? AND series_mode='ACTIVE';";
 
     private static final String SERIES_GET_ALL_ACTIVE =
             "SELECT * FROM {prefix}series " +
-                    "WHERE series_mode=ACTIVE;";
+                    "WHERE series_mode='ACTIVE';";
 
     private static final String PACKS_CREATE =
             "INSERT INTO {prefix}packs (pack_id) " +
@@ -1087,9 +1088,9 @@ public class SqlStorage implements Storage<TradingCard> {
 
 
     public abstract class ExecuteQuery<T> {
-        public T runQuery(final String sql,Map<String, String> values, Map<String,String> where) {
+        public T runQuery(final String sql,Map<String, String> values, Map<String,String> where, Map<String, String> set) {
             try (Connection connection = connectionFactory.getConnection()){
-                try (PreparedStatement preparedStatement = connection.prepareStatement(statementProcessor.apply(sql,statementProcessor.wrapValues(values),statementProcessor.wrapValues(where)))){
+                try (PreparedStatement preparedStatement = connection.prepareStatement(statementProcessor.apply(sql,values,where,set))){
                     try (ResultSet resultSet = preparedStatement.executeQuery()){
                         return getQuery(resultSet);
                     }
@@ -1100,33 +1101,38 @@ public class SqlStorage implements Storage<TradingCard> {
 
             return returnNull();
         }
+
+        public T runQuery(final String sql,Map<String, String> values, Map<String,String> where) {
+            return runQuery(sql,values,where,null);
+        }
+
         public abstract T getQuery(ResultSet resultSet) throws SQLException;
         public abstract T returnNull();
     }
 
     @Override
     public void createCard(final String cardId, final String rarityId, final String seriesId) {
-        executeUpdate(CARDS_CREATE,Map.of(COLUMN_CARD_ID,cardId,COLUMN_RARITY_ID,rarityId,COLUMN_SERIES_ID,seriesId) ,null);
+        executeUpdate(CARDS_CREATE,Map.of(COLUMN_CARD_ID,cardId,COLUMN_RARITY_ID,rarityId,COLUMN_SERIES_ID,seriesId) ,null,null);
     }
 
     @Override
     public void createRarity(final String rarityId) {
-        executeUpdate(RARITY_CREATE,Map.of(COLUMN_RARITY_ID,rarityId),null);
+        executeUpdate(RARITY_CREATE,Map.of(COLUMN_RARITY_ID,rarityId),null,null);
     }
 
     @Override
     public void createSeries(final String seriesId) {
-        executeUpdate(SERIES_CREATE,Map.of(COLUMN_SERIES_ID,seriesId),null);
+        executeUpdate(SERIES_CREATE,Map.of(COLUMN_SERIES_ID,seriesId),null,null);
     }
 
     @Override
     public void createCustomType(final String typeId, final String type) {
-        executeUpdate(CUSTOM_TYPES_CREATE,Map.of(COLUMN_TYPE_ID,typeId,COLUMN_DROP_TYPE,type), null);
+        executeUpdate(CUSTOM_TYPES_CREATE,Map.of(COLUMN_TYPE_ID,typeId,COLUMN_DROP_TYPE,type), null,null);
     }
 
     @Override
     public void createPack(final String packId) {
-        executeUpdate(PACKS_CREATE,Map.of(COLUMN_PACK_ID, packId),null);
+        executeUpdate(PACKS_CREATE,Map.of(COLUMN_PACK_ID, packId),null,null);
     }
 
     @Override
@@ -1136,141 +1142,141 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void editCardDisplayName(final String rarityId, final String cardId, final String seriesId, final String displayName) {
-        executeUpdate(CARDS_UPDATE_DISPLAY_NAME, Map.of(COLUMN_DISPLAY_NAME,displayName), Map.of(COLUMN_CARD_ID, cardId,COLUMN_RARITY_ID,rarityId,COLUMN_SERIES_ID,seriesId));
+        executeUpdate(CARDS_UPDATE_DISPLAY_NAME, null, Map.of(COLUMN_CARD_ID, cardId,COLUMN_RARITY_ID,rarityId,COLUMN_SERIES_ID,seriesId), Map.of(COLUMN_DISPLAY_NAME,displayName));
     }
 
     @Override
     public void editCardSeries(final String rarityId, final String cardId, final String seriesId, final Series value) {
-        executeUpdate(CARDS_UPDATE_SERIES, Map.of(COLUMN_SERIES_ID, seriesId),Map.of(COLUMN_CARD_ID,cardId,COLUMN_RARITY_ID,rarityId,COLUMN_SERIES_ID,seriesId));
+        executeUpdate(CARDS_UPDATE_SERIES, null,Map.of(COLUMN_CARD_ID,cardId,COLUMN_RARITY_ID,rarityId,COLUMN_SERIES_ID,seriesId), Map.of(COLUMN_SERIES_ID, seriesId));
     }
 
     @Override
     public void editCardSellPrice(final String rarityId, final String cardId, final String seriesId, final double value) {
-        executeUpdate(CARDS_UPDATE_SELL_PRICE, Map.of(COLUMN_SELL_PRICE, String.valueOf(value)),Map.of(COLUMN_CARD_ID,cardId,COLUMN_RARITY_ID,rarityId,COLUMN_SERIES_ID,seriesId));
+        executeUpdate(CARDS_UPDATE_SELL_PRICE, null,Map.of(COLUMN_CARD_ID,cardId,COLUMN_RARITY_ID,rarityId,COLUMN_SERIES_ID,seriesId),Map.of(COLUMN_SELL_PRICE, String.valueOf(value)));
     }
 
     @Override
     public void editCardType(final String rarityId, final String cardId, final String seriesId, final DropType value) {
-        executeUpdate(CARDS_UPDATE_TYPE, Map.of(COLUMN_TYPE_ID, String.valueOf(value)),Map.of(COLUMN_CARD_ID,cardId,COLUMN_RARITY_ID,rarityId,COLUMN_SERIES_ID,seriesId));
+        executeUpdate(CARDS_UPDATE_TYPE, null,Map.of(COLUMN_CARD_ID,cardId,COLUMN_RARITY_ID,rarityId,COLUMN_SERIES_ID,seriesId),Map.of(COLUMN_TYPE_ID, String.valueOf(value)));
     }
 
     @Override
     public void editCardInfo(final String rarityId, final String cardId, final String seriesId, final String value) {
-        executeUpdate(CARDS_UPDATE_INFO, Map.of("info", String.valueOf(value)),Map.of(COLUMN_CARD_ID,cardId,COLUMN_RARITY_ID,rarityId,COLUMN_SERIES_ID,seriesId));
+        executeUpdate(CARDS_UPDATE_INFO, null,Map.of(COLUMN_CARD_ID,cardId,COLUMN_RARITY_ID,rarityId,COLUMN_SERIES_ID,seriesId),Map.of(COLUMN_INFO, String.valueOf(value)));
     }
 
     @Override
     public void editCardCustomModelData(final String rarityId, final String cardId, final String seriesId, final int value) {
-        executeUpdate(CARDS_UPDATE_CUSTOM_MODEL_DATA, Map.of(COLUMN_CUSTOM_MODEL_DATA, String.valueOf(value)),Map.of(COLUMN_CARD_ID,cardId,COLUMN_RARITY_ID,rarityId,COLUMN_SERIES_ID,seriesId));
+        executeUpdate(CARDS_UPDATE_CUSTOM_MODEL_DATA, null,Map.of(COLUMN_CARD_ID,cardId,COLUMN_RARITY_ID,rarityId,COLUMN_SERIES_ID,seriesId),Map.of(COLUMN_CUSTOM_MODEL_DATA, String.valueOf(value)));
     }
 
     @Override
     public void editCardBuyPrice(final String rarityId, final String cardId, final String seriesId, final double value) {
-        executeUpdate(CARDS_UPDATE_BUY_PRICE, Map.of(COLUMN_BUY_PRICE, String.valueOf(value)),Map.of(COLUMN_CARD_ID,cardId,COLUMN_RARITY_ID,rarityId,COLUMN_SERIES_ID,seriesId));
+        executeUpdate(CARDS_UPDATE_BUY_PRICE, null,Map.of(COLUMN_CARD_ID,cardId,COLUMN_RARITY_ID,rarityId,COLUMN_SERIES_ID,seriesId),Map.of(COLUMN_BUY_PRICE, String.valueOf(value)));
     }
 
     @Override
     public void editRarityBuyPrice(final String rarityId, final double buyPrice) {
-        executeUpdate(RARITY_UPDATE_BUY_PRICE, Map.of(COLUMN_BUY_PRICE, String.valueOf(buyPrice)),Map.of(COLUMN_RARITY_ID,rarityId));
+        executeUpdate(RARITY_UPDATE_BUY_PRICE, null,Map.of(COLUMN_RARITY_ID,rarityId),Map.of(COLUMN_BUY_PRICE, String.valueOf(buyPrice)));
     }
 
     @Override
     public void editRarityAddReward(final String rarityId, final String reward) {
         String commandOrder = String.valueOf(getRewards(rarityId).size() - 1);
-        executeUpdate(REWARDS_UPDATE_ADD_REWARD, Map.of("reward", reward, COLUMN_ORDER_NUMBER,commandOrder),Map.of(COLUMN_RARITY_ID,rarityId));
+        executeUpdate(REWARDS_UPDATE_ADD_REWARD, null,Map.of(COLUMN_RARITY_ID,rarityId),Map.of("reward", reward, COLUMN_ORDER_NUMBER,commandOrder));
     }
 
     @Override
     public void editRarityDefaultColor(final String rarityId, final String defaultColor) {
-        executeUpdate(RARITY_UPDATE_DEFAULT_COLOR, Map.of(COLUMN_DEFAULT_COLOR, defaultColor),Map.of(COLUMN_RARITY_ID,rarityId));
+        executeUpdate(RARITY_UPDATE_DEFAULT_COLOR, null,Map.of(COLUMN_RARITY_ID,rarityId),Map.of(COLUMN_DEFAULT_COLOR, defaultColor));
     }
 
     @Override
     public void editRarityDisplayName(final String rarityId, final String displayName) {
-        executeUpdate(RARITY_UPDATE_DISPLAY_NAME, Map.of(COLUMN_DISPLAY_NAME, displayName),Map.of(COLUMN_RARITY_ID,rarityId));
+        executeUpdate(RARITY_UPDATE_DISPLAY_NAME, null,Map.of(COLUMN_RARITY_ID,rarityId),Map.of(COLUMN_DISPLAY_NAME, displayName));
     }
 
     @Override
     public void editRaritySellPrice(final String rarityId, final double sellPrice) {
-        executeUpdate(RARITY_UPDATE_SELL_PRICE, Map.of(COLUMN_SELL_PRICE, String.valueOf(sellPrice)),Map.of(COLUMN_RARITY_ID,rarityId));
+        executeUpdate(RARITY_UPDATE_SELL_PRICE, null,Map.of(COLUMN_RARITY_ID,rarityId),Map.of(COLUMN_SELL_PRICE, String.valueOf(sellPrice)));
     }
 
     @Override
     public void editRarityRemoveAllRewards(final String rarityId) {
-        executeUpdate(REWARDS_UPDATE_REMOVE_ALL_REWARDS,null ,Map.of(COLUMN_RARITY_ID,rarityId));
+        executeUpdate(REWARDS_UPDATE_REMOVE_ALL_REWARDS,null ,Map.of(COLUMN_RARITY_ID,rarityId),null);
     }
 
     @Override
     public void editRarityRemoveReward(final String rarityId, final int rewardNumber) {
-        executeUpdate(REWARDS_UPDATE_REMOVE_REWARD,null,Map.of(COLUMN_RARITY_ID,rarityId,COLUMN_ORDER_NUMBER,String.valueOf(rewardNumber)));
+        executeUpdate(REWARDS_UPDATE_REMOVE_REWARD,null,Map.of(COLUMN_RARITY_ID,rarityId,COLUMN_ORDER_NUMBER,String.valueOf(rewardNumber)),null);
     }
 
     @Override
     public void editSeriesDisplayName(final String seriesId, final String displayName) {
-        executeUpdate(SERIES_UPDATE_DISPLAY_NAME, Map.of(COLUMN_DISPLAY_NAME,displayName),Map.of(COLUMN_SERIES_ID,seriesId));
+        executeUpdate(SERIES_UPDATE_DISPLAY_NAME, null,Map.of(COLUMN_SERIES_ID,seriesId), Map.of(COLUMN_DISPLAY_NAME,displayName));
     }
 
     @Override
     public void editSeriesColors(final String seriesId, final @NotNull ColorSeries colors) {
-        executeUpdate(SERIES_UPDATE_COLORS,Map.of(COLUMN_COLOR_TYPE,colors.getType(),COLUMN_COLOR_INFO,colors.getInfo(),COLUMN_COLOR_ABOUT,colors.getAbout(),COLUMN_COLOR_RARITY,colors.getRarity(),COLUMN_COLOR_SERIES,colors.getSeries()),Map.of(COLUMN_SERIES_ID,seriesId));
+        executeUpdate(SERIES_UPDATE_COLORS,null,Map.of(COLUMN_SERIES_ID,seriesId),Map.of(COLUMN_COLOR_TYPE,colors.getType(),COLUMN_COLOR_INFO,colors.getInfo(),COLUMN_COLOR_ABOUT,colors.getAbout(),COLUMN_COLOR_RARITY,colors.getRarity(),COLUMN_COLOR_SERIES,colors.getSeries()));
     }
 
     @Override
     public void editSeriesMode(final String seriesId, final @NotNull Mode mode) {
-        executeUpdate(SERIES_UPDATE_MODE,Map.of(COLUMN_MODE, mode.toString()),Map.of(COLUMN_SERIES_ID,seriesId));
+        executeUpdate(SERIES_UPDATE_MODE,null,Map.of(COLUMN_SERIES_ID,seriesId),Map.of(COLUMN_MODE, mode.toString()));
     }
 
     @Override
     public void editCustomTypeDisplayName(final String typeId, final String displayName) {
-        executeUpdate(CUSTOM_TYPES_UPDATE_DISPLAY_NAME, Map.of(COLUMN_DISPLAY_NAME, displayName),Map.of(COLUMN_TYPE_ID,typeId));
+        executeUpdate(CUSTOM_TYPES_UPDATE_DISPLAY_NAME, null,Map.of(COLUMN_TYPE_ID,typeId),Map.of(COLUMN_DISPLAY_NAME, displayName));
     }
 
     @Override
     public void editCustomTypeType(final String typeId, final String type) {
-        executeUpdate(CUSTOM_TYPES_UPDATE_TYPE,Map.of(COLUMN_DROP_TYPE, type),Map.of(COLUMN_TYPE_ID,typeId));
+        executeUpdate(CUSTOM_TYPES_UPDATE_TYPE,null,Map.of(COLUMN_TYPE_ID,typeId),Map.of(COLUMN_DROP_TYPE, type));
     }
 
     @Override
     public void editPackDisplayName(final String packId, final String displayName) {
-        executeUpdate(PACKS_UPDATE_DISPLAY_NAME,Map.of(COLUMN_DISPLAY_NAME, displayName), Map.of(COLUMN_PACK_ID, packId));
+        executeUpdate(PACKS_UPDATE_DISPLAY_NAME,null, Map.of(COLUMN_PACK_ID, packId),Map.of(COLUMN_DISPLAY_NAME, displayName));
     }
 
     @Override
     public void editPackContents(final String packId, final int lineNumber, final Pack.@NotNull PackEntry packEntry) {
-        executeUpdate(PACKS_UPDATE_CONTENT_SET_LINE, Map.of(COLUMN_RARITY_ID,packEntry.getRarityId(),COLUMN_CARD_AMOUNT,String.valueOf(packEntry.getAmount()),COLUMN_SERIES_ID,packEntry.getSeries()),Map.of(COLUMN_PACK_ID,packId,"line_number",String.valueOf(lineNumber)));
+        executeUpdate(PACKS_UPDATE_CONTENT_SET_LINE, null,Map.of(COLUMN_PACK_ID,packId,"line_number",String.valueOf(lineNumber)),Map.of(COLUMN_RARITY_ID,packEntry.getRarityId(),COLUMN_CARD_AMOUNT,String.valueOf(packEntry.getAmount()),COLUMN_SERIES_ID,packEntry.getSeries()));
     }
 
     @Override
     public void editPackContentsAdd(final String packId, final Pack.@NotNull PackEntry packEntry) {
         final String lineNumber = String.valueOf(getPackEntries(packId).size());
-        executeUpdate(PACKS_INSERT_CONTENT_ADD_LINE,Map.of("line_number",lineNumber,COLUMN_PACK_ID,packId,COLUMN_RARITY_ID,packEntry.getRarityId(),COLUMN_CARD_AMOUNT,String.valueOf(packEntry.getAmount()),COLUMN_SERIES_ID,packEntry.getSeries()),Map.of(COLUMN_PACK_ID,packId));
+        executeUpdate(PACKS_INSERT_CONTENT_ADD_LINE,null,Map.of(COLUMN_PACK_ID,packId),Map.of("line_number",lineNumber,COLUMN_PACK_ID,packId,COLUMN_RARITY_ID,packEntry.getRarityId(),COLUMN_CARD_AMOUNT,String.valueOf(packEntry.getAmount()),COLUMN_SERIES_ID,packEntry.getSeries()));
     }
 
     @Override
     public void editPackContentsDelete(final String packId, final int lineNumber) {
-        executeUpdate(PACKS_DELETE_CONTENT,null,Map.of(COLUMN_PACK_ID,packId,"line_number",String.valueOf(lineNumber)));
+        executeUpdate(PACKS_DELETE_CONTENT,null,Map.of(COLUMN_PACK_ID,packId,"line_number",String.valueOf(lineNumber)),null);
     }
 
     @Override
     public void editPackPermission(final String packId, final String permission) {
-        executeUpdate(PACKS_UPDATE_PERMISSION,Map.of(COLUMN_PACK_PERMISSION, permission), Map.of(COLUMN_PACK_ID,packId));
+        executeUpdate(PACKS_UPDATE_PERMISSION,null, Map.of(COLUMN_PACK_ID,packId),Map.of(COLUMN_PACK_PERMISSION, permission));
     }
 
     @Override
     public void editPackPrice(final String packId, final double price) {
-        executeUpdate(PACKS_UPDATE_PRICE,Map.of(COLUMN_BUY_PRICE,String.valueOf(price)),Map.of(COLUMN_PACK_ID,packId));
+        executeUpdate(PACKS_UPDATE_PRICE,null,Map.of(COLUMN_PACK_ID,packId),Map.of(COLUMN_BUY_PRICE,String.valueOf(price)));
     }
 
-    private void executeUpdate(@NotNull String sql,@Nullable Map<String,String> values,@Nullable Map<String,String> where) {
+    private void executeUpdate(@NotNull String sql,@Nullable Map<String,String> values,@Nullable Map<String,String> where, @Nullable Map<String, String> set) {
         try (Connection connection = connectionFactory.getConnection()){
-            try (PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(sql, values,where))){
-                statement.executeUpdate();
+            try (PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(sql, values,where,set))){
                 plugin.debug(SqlStorage.class, "Run SQL:");
                 plugin.debug(SqlStorage.class,sql);
                 if(values != null)
                     plugin.debug(SqlStorage.class, values.toString());
                 if(where != null)
                     plugin.debug(SqlStorage.class, where.toString());
+                statement.executeUpdate();
             }
         } catch (SQLException e) {
             Util.logSevereException(e);
