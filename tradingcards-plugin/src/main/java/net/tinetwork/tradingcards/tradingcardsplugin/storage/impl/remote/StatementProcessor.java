@@ -19,17 +19,17 @@ public class StatementProcessor {
         this.plugin = plugin;
     }
 
-    public String applyPrefix(final String statement) {
+    public String applyPrefix(final @NotNull String statement) {
         return statement.replace("{prefix}", tablePrefix);
     }
 
-    private String getValuesArguments(final String statement) {
+    private String getValuesArguments(final @NotNull String statement) {
         if(statement.contains("WHERE"))
             return StringUtils.substringBetween(statement, "VALUES", "WHERE");
         return StringUtils.substringBetween(statement,"VALUES",";");
     }
 
-    private String values(final String statement, Map<String,String> values) {
+    private @NotNull String values(final String statement, @NotNull Map<String,String> values) {
         final String orderValues = StringUtils.substringBetween(statement, "decks (", ") VALUES");
         plugin.debug(StatementProcessor.class,orderValues);
         Map<String, Integer> statementOrder = getColumnOrder(orderValues);
