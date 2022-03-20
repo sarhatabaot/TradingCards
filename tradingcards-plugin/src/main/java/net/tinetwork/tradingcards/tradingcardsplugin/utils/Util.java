@@ -1,6 +1,9 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.utils;
 
 import net.tinetwork.tradingcards.api.config.ColorSeries;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 
 import java.util.List;
 import java.util.logging.Level;
@@ -31,5 +34,12 @@ public class Util {
 
     public static void logException(Level level, Exception e) {
         logger.log(level,e.getMessage(),e);
+    }
+
+    public static void logAndMessage(final CommandSender sender, final String message) {
+        if(!(sender instanceof ConsoleCommandSender)) {
+            sender.sendMessage(ChatUtil.color(message));
+        }
+        logger.log(Level.INFO, ChatColor.stripColor(message));
     }
 }
