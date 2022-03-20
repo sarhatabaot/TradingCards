@@ -12,17 +12,15 @@ import org.spongepowered.configurate.ConfigurateException;
  * @author sarhatabaot
  */
 public class CardMigratorBukkitRunnable extends MigratorBukkitRunnable {
-    public CardMigratorBukkitRunnable(final TradingCards plugin, final CommandSender sender) {
-        super(plugin, sender);
+    public CardMigratorBukkitRunnable(final TradingCards plugin, final CommandSender sender, final Storage<TradingCard> source) {
+        super(plugin, sender, source);
     }
 
     @Override
     public void onExecute() throws ConfigurateException {
-        YamlStorage yamlStorage = new YamlStorage(plugin);
-        yamlStorage.init(plugin);
-        int cardsAmount = yamlStorage.getCards().size();
+        int cardsAmount = source.getCards().size();
         Util.logAndMessage(sender,"Found "+cardsAmount+" cards.");
-        for(TradingCard card: yamlStorage.getCards()) {
+        for(TradingCard card: source.getCards()) {
             Util.logAndMessage(sender,"Started conversion for "+card.getCardName());
             final String cardId = card.getCardName();
             final String rarityId = card.getRarity().getName();
