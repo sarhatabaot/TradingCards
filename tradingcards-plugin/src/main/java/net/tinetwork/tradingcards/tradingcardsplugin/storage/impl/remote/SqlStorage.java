@@ -961,7 +961,6 @@ public class SqlStorage implements Storage<TradingCard> {
                 return Collections.emptySet();
             }
         }.prepareAndRunQuery();
-        //.runQuery(SERIES_GET_ALL_ACTIVE, null, null);
     }
 
     @Override
@@ -1266,7 +1265,7 @@ public class SqlStorage implements Storage<TradingCard> {
             public @NotNull @Unmodifiable List<Pack.PackEntry> returnNull() {
                 return Collections.emptyList();
             }
-        }.prepareAndRunQuery();//.runQuery(PACKS_GET_CONTENT_BY_ID,null,Map.of(COLUMN_PACK_ID,packId));
+        }.prepareAndRunQuery();
     }
 
     @Override
@@ -1298,7 +1297,7 @@ public class SqlStorage implements Storage<TradingCard> {
             public List<Pack> returnNull() {
                 return Collections.emptyList();
             }
-        }.prepareAndRunQuery();//.runQuery(PACKS_SELECT_ALL, null,null);
+        }.prepareAndRunQuery();
     }
 
     @Override
@@ -1369,6 +1368,10 @@ public class SqlStorage implements Storage<TradingCard> {
         return executeQuery.prepareAndRunQuery();
     }
 
+    @Override
+    public void reload() {
+        //nothing to do here.
+    }
 
     @Override
     public void createCard(final String cardId, final String rarityId, final String seriesId) {
@@ -1395,10 +1398,6 @@ public class SqlStorage implements Storage<TradingCard> {
         executeUpdate(PACKS_CREATE, Map.of(COLUMN_PACK_ID, packId), null, null);
     }
 
-    @Override
-    public void reload() {
-        //nothing to do here.
-    }
 
     @Override
     public void editCardDisplayName(final String rarityId, final String cardId, final String seriesId, final String displayName) {
@@ -1427,58 +1426,155 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void editCardCustomModelData(final String rarityId, final String cardId, final String seriesId, final int value) {
+        new ExecuteUpdate(this,jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.update(Cards.CARDS)
+                        .set(Cards.CARDS.CUSTOM_MODEL_DATA,value)
+                        .where(Cards.CARDS.RARITY_ID.eq(rarityId))
+                        .and(Cards.CARDS.CARD_ID.eq(cardId))
+                        .and(Cards.CARDS.SERIES_ID.eq(seriesId))
+                        .execute();
+            }
+        }.executeUpdate();
         executeUpdate(CARDS_UPDATE_CUSTOM_MODEL_DATA, null, Map.of(COLUMN_CARD_ID, cardId, COLUMN_RARITY_ID, rarityId, COLUMN_SERIES_ID, seriesId), Map.of(COLUMN_CUSTOM_MODEL_DATA, String.valueOf(value)));
     }
 
     @Override
     public void editCardBuyPrice(final String rarityId, final String cardId, final String seriesId, final double value) {
-        executeUpdate(CARDS_UPDATE_BUY_PRICE, null, Map.of(COLUMN_CARD_ID, cardId, COLUMN_RARITY_ID, rarityId, COLUMN_SERIES_ID, seriesId), Map.of(COLUMN_BUY_PRICE, String.valueOf(value)));
+        new ExecuteUpdate(this,jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.update(Cards.CARDS)
+                        .set(Cards.CARDS.BUY_PRICE,value)
+                        .where(Cards.CARDS.RARITY_ID.eq(rarityId))
+                        .and(Cards.CARDS.CARD_ID.eq(cardId))
+                        .and(Cards.CARDS.SERIES_ID.eq(seriesId))
+                        .execute();
+            }
+        }.executeUpdate();
     }
 
     @Override
     public void editRarityBuyPrice(final String rarityId, final double buyPrice) {
-        executeUpdate(RARITY_UPDATE_BUY_PRICE, null, Map.of(COLUMN_RARITY_ID, rarityId), Map.of(COLUMN_BUY_PRICE, String.valueOf(buyPrice)));
+        new ExecuteUpdate(this,jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.update(Rarities.RARITIES)
+                        .set(Rarities.RARITIES.BUY_PRICE,buyPrice)
+                        .where(Rarities.RARITIES.RARITY_ID.eq(rarityId))
+                        .execute();
+            }
+        }.executeUpdate();
     }
 
     @Override
     public void editRarityAddReward(final String rarityId, final String reward) {
-        String commandOrder = String.valueOf(getRewards(rarityId).size() - 1);
-        executeUpdate(REWARDS_UPDATE_ADD_REWARD, null, Map.of(COLUMN_RARITY_ID, rarityId), Map.of("reward", reward, COLUMN_ORDER_NUMBER, commandOrder));
+        int commandOrder = getRewards(rarityId).size() - 1;
+        new ExecuteUpdate(this,jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.update(Rewards.REWARDS)
+                        .set(Rewards.REWARDS.COMMAND,reward)
+                        .set(Rewards.REWARDS.COMMAND_ORDER,commandOrder)
+                        .where(Rewards.REWARDS.RARITY_ID.eq(rarityId))
+                        .execute();
+            }
+        }.executeUpdate();
     }
 
     @Override
     public void editRarityDefaultColor(final String rarityId, final String defaultColor) {
-        executeUpdate(RARITY_UPDATE_DEFAULT_COLOR, null, Map.of(COLUMN_RARITY_ID, rarityId), Map.of(COLUMN_DEFAULT_COLOR, defaultColor));
+        new ExecuteUpdate(this,jooqSettings){
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.update(Rarities.RARITIES)
+                        .set(Rarities.RARITIES.DEFAULT_COLOR, defaultColor)
+                        .where(Rarities.RARITIES.RARITY_ID.eq(rarityId))
+                        .execute();
+            }
+        }.executeUpdate();
     }
 
     @Override
     public void editRarityDisplayName(final String rarityId, final String displayName) {
-        executeUpdate(RARITY_UPDATE_DISPLAY_NAME, null, Map.of(COLUMN_RARITY_ID, rarityId), Map.of(COLUMN_DISPLAY_NAME, displayName));
+        new ExecuteUpdate(this,jooqSettings){
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.update(Rarities.RARITIES)
+                        .set(Rarities.RARITIES.DISPLAY_NAME, displayName)
+                        .where(Rarities.RARITIES.RARITY_ID.eq(rarityId))
+                        .execute();
+            }
+        }.executeUpdate();
     }
 
     @Override
     public void editRaritySellPrice(final String rarityId, final double sellPrice) {
-        executeUpdate(RARITY_UPDATE_SELL_PRICE, null, Map.of(COLUMN_RARITY_ID, rarityId), Map.of(COLUMN_SELL_PRICE, String.valueOf(sellPrice)));
+        new ExecuteUpdate(this,jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.update(Rarities.RARITIES)
+                        .set(Rarities.RARITIES.SELL_PRICE, sellPrice)
+                        .where(Rarities.RARITIES.RARITY_ID.eq(rarityId))
+                        .execute();
+            }
+        }.executeUpdate();
     }
 
     @Override
     public void editRarityRemoveAllRewards(final String rarityId) {
-        executeUpdate(REWARDS_UPDATE_REMOVE_ALL_REWARDS, null, Map.of(COLUMN_RARITY_ID, rarityId), null);
+        new ExecuteUpdate(this,jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.deleteFrom(Rewards.REWARDS)
+                        .where(Rewards.REWARDS.RARITY_ID.eq(rarityId))
+                        .execute();
+            }
+        }.executeUpdate();
     }
 
     @Override
     public void editRarityRemoveReward(final String rarityId, final int rewardNumber) {
-        executeUpdate(REWARDS_UPDATE_REMOVE_REWARD, null, Map.of(COLUMN_RARITY_ID, rarityId, COLUMN_ORDER_NUMBER, String.valueOf(rewardNumber)), null);
+        new ExecuteUpdate(this,jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.deleteFrom(Rewards.REWARDS)
+                        .where(Rewards.REWARDS.RARITY_ID.eq(rarityId))
+                        .and(Rewards.REWARDS.COMMAND_ORDER.eq(rewardNumber))
+                        .execute();
+            }
+        }.executeUpdate();
     }
 
     @Override
     public void editSeriesDisplayName(final String seriesId, final String displayName) {
-        executeUpdate(SERIES_UPDATE_DISPLAY_NAME, null, Map.of(COLUMN_SERIES_ID, seriesId), Map.of(COLUMN_DISPLAY_NAME, displayName));
+        new ExecuteUpdate(this,jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.update(net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Series.SERIES)
+                        .set(net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Series.SERIES.DISPLAY_NAME,displayName)
+                        .where(net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Series.SERIES.SERIES_ID.eq(seriesId))
+                        .execute();
+            }
+        }.executeUpdate();
     }
 
     @Override
     public void editSeriesColors(final String seriesId, final @NotNull ColorSeries colors) {
-        executeUpdate(SERIES_UPDATE_COLORS, null, Map.of(COLUMN_SERIES_ID, seriesId), Map.of(COLUMN_COLOR_TYPE, colors.getType(), COLUMN_COLOR_INFO, colors.getInfo(), COLUMN_COLOR_ABOUT, colors.getAbout(), COLUMN_COLOR_RARITY, colors.getRarity(), COLUMN_COLOR_SERIES, colors.getSeries()));
+        new ExecuteUpdate(this,jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.update(SeriesColors.SERIES_COLORS)
+                        .set(SeriesColors.SERIES_COLORS.SERIES,colors.getSeries())
+                        .set(SeriesColors.SERIES_COLORS.ABOUT,colors.getAbout())
+                        .set(SeriesColors.SERIES_COLORS.INFO,colors.getInfo())
+                        .set(SeriesColors.SERIES_COLORS.RARITY,colors.getRarity())
+                        .set(SeriesColors.SERIES_COLORS.TYPE,colors.getType())
+                        .where(SeriesColors.SERIES_COLORS.SERIES_ID.eq(seriesId))
+                        .execute();
+            }
+        }.executeUpdate();
     }
 
     @Override
