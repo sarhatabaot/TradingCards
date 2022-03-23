@@ -19,12 +19,37 @@ import java.util.Map;
 /**
  * @author sarhatabaot
  */
-public abstract class ExecuteQuery<T> {
+public abstract class ExecuteQuery<T,R> {
     private final SqlStorage sqlStorage;
     private final Settings settings;
+
     public ExecuteQuery(final SqlStorage sqlStorage, final Settings settings) {
         this.sqlStorage = sqlStorage;
         this.settings = settings;
+    }
+
+    public T prepareAndRunQuery() {
+        try (Connection connection = sqlStorage.getConnectionFactory().getConnection()) {
+            DSLContext dslContext = DSL.using(connection, sqlStorage.getType().getDialect(), settings);
+            return onRunQuery(dslContext);
+        } catch (SQLException e) {
+            Util.logSevereException(e);
+        }
+        return returnNull();
+    }
+
+    public abstract T onRunQuery(DSLContext dslContext) throws SQLException;
+
+    public abstract T getQuery(@NotNull final R result) throws SQLException;
+
+    public abstract T returnNull();
+
+    @Deprecated
+    public abstract T getQuery(ResultSet resultSet) throws SQLException;
+
+    @Deprecated
+    public T runQuery(final String sql, Map<String, String> values, Map<String, String> where) {
+        return runQuery(sql, values, where, null);
     }
 
     @Deprecated
@@ -42,27 +67,4 @@ public abstract class ExecuteQuery<T> {
         return returnNull();
     }
 
-    @Deprecated
-    public T runQuery(final String sql, Map<String, String> values, Map<String, String> where) {
-        return runQuery(sql, values, where, null);
-    }
-
-    public T prepareAndRunQuery() {
-        try (Connection connection = sqlStorage.getConnectionFactory().getConnection()) {
-            DSLContext dslContext = DSL.using(connection, sqlStorage.getType().getDialect(), settings);
-            return onRunQuery(dslContext);
-        } catch (SQLException e) {
-            Util.logSevereException(e);
-        }
-        return returnNull();
-    }
-
-    public abstract T onRunQuery(DSLContext dslContext) throws SQLException;
-
-    @Deprecated
-    public abstract T getQuery(ResultSet resultSet) throws SQLException;
-
-    public abstract T getQuery(@NotNull final Result<Record> result) throws SQLException;
-
-    public abstract T returnNull();
 }

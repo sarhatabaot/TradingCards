@@ -37,6 +37,7 @@ import org.jetbrains.annotations.Unmodifiable;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Result;
+import org.jooq.Results;
 import org.jooq.SQLDialect;
 import org.jooq.conf.MappedSchema;
 import org.jooq.conf.MappedTable;
@@ -69,24 +70,6 @@ import java.util.stream.Stream;
  * @author sarhatabaot
  */
 public class SqlStorage implements Storage<TradingCard> {
-    /* Decks */
-    private static final String DECKS_INSERT_CARD =
-            "INSERT INTO {prefix}decks (uuid, deck_number, card_id, rarity_id, amount, is_shiny) " +
-                    "VALUES (?,?,?,?,?,?);";
-    private static final String DECKS_REMOVE_CARD =
-            "DELETE FROM {prefix}decks " +
-                    "WHERE uuid=? AND deck_number=? AND card_id=? AND rarity_id=? AND is_shiny=?;";
-
-    private static final String CARDS_CREATE =
-            "INSERT INTO {prefix}cards (card_id,rarity_id,series_id) " +
-                    "VALUES ('?','?','?');";
-
-    private static final String CUSTOM_TYPES_UPDATE_DISPLAY_NAME =
-            "UPDATE {prefix}custom_types " +
-                    "SET display_name=? " +
-                    "WHERE type_id='?';";
-
-
     private static final String COLUMN_UUID = "uuid";
     private static final String COLUMN_CARD_ID = "card_id";
     private static final String COLUMN_RARITY_ID = "rarity_id";
@@ -169,27 +152,21 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public List<Deck> getPlayerDecks(final @NotNull UUID playerUuid) {
-        return new ExecuteQuery<List<Deck>>(this, jooqSettings) {
+        return new ExecuteQuery<List<Deck>, Results>(this, jooqSettings) {
             @Override
             public List<Deck> onRunQuery(final DSLContext dslContext) throws SQLException {
-                Result<Record> recordResult = dslContext.select().from(Decks.DECKS).where(Decks.DECKS.UUID.eq(playerUuid.toString())).fetch();
-                return getQuery(recordResult);
+                return getQuery(dslContext.select().from(Decks.DECKS).where(Decks.DECKS.UUID.eq(playerUuid.toString())).fetchMany());
             }
 
             @Override
-            public List<Deck> getQuery(final ResultSet resultSet) throws SQLException {
-                List<Deck> decks = new ArrayList<>();
-                while (resultSet.next()) {
-                    decks.add(getDeckFromResultSet(resultSet));
-                }
-                return decks;
+            public List<Deck> getQuery(final ResultSet resultSet) {
+                return null;
             }
 
             @Override
-            public @NotNull List<Deck> getQuery(final @NotNull Result<Record> result) throws SQLException {
-                List<Record> resultList = result.stream().toList();
+            public @NotNull List<Deck> getQuery(final @NotNull Results results) throws SQLException {
                 List<Deck> decks = new ArrayList<>();
-                for (Record recordResult : resultList) {
+                for (Result<Record> recordResult : results) {
                     decks.add(getDeckFromRecord(recordResult));
                 }
                 return decks;
@@ -204,23 +181,21 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public Deck getDeck(final @NotNull UUID playerUuid, final int deckNumber) {
-        return new ExecuteQuery<Deck>(this, jooqSettings) {
+        return new ExecuteQuery<Deck, Results>(this, jooqSettings) {
             @Override
             public Deck onRunQuery(final DSLContext dslContext) throws SQLException {
-                Result<Record> recordResult = dslContext.select().from(Decks.DECKS)
+                return getQuery(dslContext.select().from(Decks.DECKS)
                         .where(Decks.DECKS.UUID.eq(playerUuid.toString())
-                                .and(Decks.DECKS.DECK_NUMBER.eq(deckNumber))).fetch();
-                return getQuery(recordResult);
+                                .and(Decks.DECKS.DECK_NUMBER.eq(deckNumber))).fetchMany());
             }
 
             @Override
-            public @NotNull Deck getQuery(final @NotNull Result<Record> recordResult) throws SQLException {
-                List<Record> recordList = recordResult.stream().toList();
-                if (recordList.isEmpty()) {
+            public @NotNull Deck getQuery(final @NotNull Results recordResult) throws SQLException {
+                if (recordResult.isEmpty()) {
                     plugin.debug(getClass(), "Could not find a deck for uuid=" + playerUuid + ",decknumber=" + deckNumber);
                     return new Deck(playerUuid, deckNumber, new ArrayList<>());
                 }
-                return getDeckFromRecord(recordList.get(0));
+                return getDeckFromRecord(recordResult.get(0));
             }
 
             @Override
@@ -258,7 +233,7 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
 
-    private Deck getDeckFromRecord(Record recordResult) throws SQLException {
+    private Deck getDeckFromRecord(Result<Record> recordResult) throws SQLException {
 //        final String playerUuid = recordResult.getValue(Decks.DECKS.UUID); todo for now
 //        final int deckNumber = recordResult.getValue(Decks.DECKS.ID);
         return getDeckFromResultSet(recordResult.intoResultSet());
@@ -279,24 +254,22 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public @Nullable Rarity getRarityById(final String rarityId) {
-        return new ExecuteQuery<Rarity>(this, jooqSettings) {
+        return new ExecuteQuery<Rarity, Results>(this, jooqSettings) {
 
             @Override
             public Rarity onRunQuery(final DSLContext dslContext) throws SQLException {
-                Result<Record> recordResult = dslContext.select().from(Rarities.RARITIES)
-                        .where(Rarities.RARITIES.RARITY_ID.eq(rarityId)).fetch();
-                return getQuery(recordResult);
+                return getQuery(dslContext.select().from(Rarities.RARITIES)
+                        .where(Rarities.RARITIES.RARITY_ID.eq(rarityId)).fetchMany());
             }
 
             @Override
-            public Rarity getQuery(final @NotNull Result<Record> resultRecord) throws SQLException {
-                List<Record> result = resultRecord.stream().toList();
-                if (result.isEmpty()) {
+            public Rarity getQuery(final @NotNull Results results) {
+                if (results.isEmpty()) {
                     plugin.getLogger().info("No such rarity " + rarityId);
                     return returnNull();
                 }
 
-                final Record recordResult = result.get(0);
+                final Result<Record> recordResult = results.get(0);
                 final String displayName = recordResult.getValue(Rarities.RARITIES.DISPLAY_NAME);
                 final String defaultColor = recordResult.getValue(Rarities.RARITIES.DEFAULT_COLOR);
                 final List<String> rewards = getRewards(rarityId);
@@ -307,17 +280,6 @@ public class SqlStorage implements Storage<TradingCard> {
 
             @Override
             public Rarity getQuery(final ResultSet resultSet) throws SQLException {
-                if (resultSet.next()) {
-                    final String displayName = resultSet.getString(COLUMN_DISPLAY_NAME);
-                    final String defaultColor = resultSet.getString(COLUMN_DEFAULT_COLOR);
-                    final List<String> rewards = getRewards(rarityId);
-                    final double buyPrice = resultSet.getDouble(COLUMN_BUY_PRICE);
-                    final double sellPrice = resultSet.getDouble(COLUMN_SELL_PRICE);
-                    return new Rarity(rarityId, displayName, defaultColor, buyPrice, sellPrice, rewards);
-                }
-                if (resultSet.getFetchSize() == 0 || resultSet.wasNull()) {
-                    plugin.getLogger().info("No such rarity " + rarityId);
-                }
                 return returnNull();
             }
 
@@ -496,12 +458,12 @@ public class SqlStorage implements Storage<TradingCard> {
             }
 
             @Override
-            public Boolean getQuery(final ResultSet resultSet) throws SQLException {
+            public Boolean getQuery(final ResultSet resultSet) {
                 return null;
             }
 
             @Override
-            public Boolean getQuery(final @NotNull Result<Record> result) throws SQLException {
+            public Boolean getQuery(final @NotNull Result<Record> result) {
                 return result.isNotEmpty();
             }
 
@@ -544,37 +506,40 @@ public class SqlStorage implements Storage<TradingCard> {
 
 
     public void addCardToDeck(final UUID playerUuid, final int deckNumber, final @NotNull StorageEntry entry) {
+        //TODO, add series_id to decks.
         final String cardId = entry.getCardId();
         final String rarityId = entry.getRarityId();
         final int amount = entry.getAmount();
-        final boolean isShiny = entry.isShiny();
-        ImmutableMap<String, String> values = statementProcessor.generateValuesMap(playerUuid, deckNumber, cardId, rarityId, amount, isShiny);
-        try (Connection connection = connectionFactory.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(DECKS_INSERT_CARD, values, null))) {
-                statement.executeUpdate();
-                plugin.debug(SqlStorage.class, "(ADD) " + entry);
+        final byte isShiny = (byte) (entry.isShiny() ? 1 : 0);
+        new ExecuteUpdate(this, jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.insertInto(Decks.DECKS)
+                        .set(Decks.DECKS.UUID, playerUuid.toString())
+                        .set(Decks.DECKS.DECK_NUMBER, deckNumber)
+                        .set(Decks.DECKS.CARD_ID, cardId)
+                        .set(Decks.DECKS.RARITY_ID, rarityId)
+                        .set(Decks.DECKS.AMOUNT, amount)
+                        .set(Decks.DECKS.IS_SHINY, isShiny)
+                        .execute();
             }
-        } catch (SQLException e) {
-            plugin.getLogger().severe(e.getMessage());
-        }
+        }.executeUpdate();
     }
 
     public void removeCardFromDeck(final UUID playerUuid, final int deckNumber, final @NotNull StorageEntry entry) {
-        try (Connection connection = connectionFactory.getConnection()) {
-            ImmutableMap<String, String> values = statementProcessor.generateValuesMap(playerUuid, deckNumber, entry.getCardId(), entry.getRarityId(), entry.getAmount(), entry.isShiny());
-            try (PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(DECKS_REMOVE_CARD, values,
-                    Map.of(COLUMN_UUID, statementProcessor.wrap(playerUuid.toString()),
-                            COLUMN_DECK_NUMBER, String.valueOf(deckNumber),
-                            COLUMN_CARD_ID, statementProcessor.wrap(entry.getCardId()),
-                            COLUMN_RARITY_ID, statementProcessor.wrap(entry.getRarityId()),
-                            COLUMN_AMOUNT, String.valueOf(entry.getAmount()),
-                            COLUMN_IS_SHINY, String.valueOf(entry.isShiny()))))) {
-                statement.execute();
+        new ExecuteUpdate(this, jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.deleteFrom(Decks.DECKS)
+                        .where(Decks.DECKS.UUID.eq(playerUuid.toString()))
+                        .and(Decks.DECKS.DECK_NUMBER.eq(deckNumber))
+                        .and(Decks.DECKS.CARD_ID.eq(entry.getCardId()))
+                        .and(Decks.DECKS.RARITY_ID.eq(entry.getRarityId()))
+                        .and(Decks.DECKS.AMOUNT.eq(entry.getAmount()))
+                        .and(Decks.DECKS.IS_SHINY.eq((byte) (entry.isShiny() ? 1 : 0))).execute();
                 plugin.debug(SqlStorage.class, "(REMOVE) " + entry);
             }
-        } catch (SQLException e) {
-            plugin.getLogger().severe(e.getMessage());
-        }
+        }.executeUpdate();
     }
 
     //From LuckPerms.
@@ -1190,7 +1155,6 @@ public class SqlStorage implements Storage<TradingCard> {
                         .execute();
             }
         }.executeUpdate();
-        executeUpdate(CARDS_CREATE, Map.of(COLUMN_CARD_ID, cardId, COLUMN_RARITY_ID, rarityId, COLUMN_SERIES_ID, seriesId), null, null);
     }
 
     @Override
@@ -1492,7 +1456,6 @@ public class SqlStorage implements Storage<TradingCard> {
                         .where(CustomTypes.CUSTOM_TYPES.TYPE_ID.eq(typeId)).execute();
             }
         }.executeUpdate();
-        executeUpdate(CUSTOM_TYPES_UPDATE_DISPLAY_NAME, null, Map.of(COLUMN_TYPE_ID, typeId), Map.of(COLUMN_DISPLAY_NAME, displayName));
     }
 
     @Override
