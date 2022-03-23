@@ -15,6 +15,9 @@ import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.StorageType;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.Minecraft;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Decks;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Rarities;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.sql.ConnectionFactory;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.sql.SchemaReader;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
@@ -23,6 +26,13 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
+import org.jooq.DSLContext;
+import org.jooq.Record;
+import org.jooq.Result;
+import org.jooq.conf.MappedSchema;
+import org.jooq.conf.MappedTable;
+import org.jooq.conf.RenderMapping;
+import org.jooq.conf.Settings;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -294,6 +304,7 @@ public class SqlStorage implements Storage<TradingCard> {
     private final TradingCards plugin;
     private final ConnectionFactory connectionFactory;
     private final StatementProcessor statementProcessor;
+    private final Settings jooqSettings;
 
 
     @Override
@@ -306,15 +317,43 @@ public class SqlStorage implements Storage<TradingCard> {
         }
     }
 
-    public SqlStorage(final TradingCards plugin, final String tablePrefix, final ConnectionFactory connectionFactory) {
+    public ConnectionFactory getConnectionFactory() {
+        return connectionFactory;
+    }
+
+    public StatementProcessor getStatementProcessor() {
+        return statementProcessor;
+    }
+
+    public SqlStorage(final TradingCards plugin, final String tablePrefix,final String dbName, final ConnectionFactory connectionFactory) {
         this.plugin = plugin;
         this.connectionFactory = connectionFactory;
         this.statementProcessor = new StatementProcessor(tablePrefix, plugin);
+        this.jooqSettings = new Settings();
+        initJooqSettings(tablePrefix,dbName);
+    }
+
+    private void initJooqSettings(final String tablePrefix,final String dbName) {
+        MappedTable mappedTable = new MappedTable();
+        mappedTable.withOutput(tablePrefix+mappedTable.getInput());
+        jooqSettings.withRenderMapping(
+                new RenderMapping().withSchemata(
+                        new MappedSchema().withInput("minecraft")
+                                .withOutput(dbName)
+                                .withTables(mappedTable)
+                )
+        );
     }
 
     @Override
     public List<Deck> getPlayerDecks(final @NotNull UUID playerUuid) {
-        return new ExecuteQuery<List<Deck>>() {
+        return new ExecuteQuery<List<Deck>>(this) {
+            @Override
+            public List<Deck> onRunQuery(final DSLContext dslContext) throws SQLException {
+                Result<Record> recordResult = dslContext.select().from(Decks.DECKS).where(Decks.DECKS.UUID.eq(playerUuid.toString())).fetch();
+                return getQuery(recordResult.stream().toList());
+            }
+
             @Override
             public List<Deck> getQuery(final ResultSet resultSet) throws SQLException {
                 List<Deck> decks = new ArrayList<>();
@@ -325,15 +364,42 @@ public class SqlStorage implements Storage<TradingCard> {
             }
 
             @Override
+            public @NotNull List<Deck> getQuery(final @NotNull List<Record> result) throws SQLException {
+                List<Deck> decks = new ArrayList<>();
+                for(Record recordResult: result) {
+                    decks.add(getDeckFromRecord(recordResult));
+                }
+                return decks;
+            }
+
+            @Override
             public List<Deck> returnNull() {
                 return Collections.emptyList();
             }
-        }.runQuery(DECKS_SELECT_ALL_BY_UUID, null, Map.of(COLUMN_UUID, statementProcessor.wrap(playerUuid.toString())));
+        }.prepareAndRunQuery();
+        //.runQuery(DECKS_SELECT_ALL_BY_UUID, null, Map.of(COLUMN_UUID, statementProcessor.wrap(playerUuid.toString())));
     }
 
     @Override
     public Deck getDeck(final @NotNull UUID playerUuid, final int deckNumber) {
-        return new ExecuteQuery<Deck>() {
+        return new ExecuteQuery<Deck>(this) {
+            @Override
+            public Deck onRunQuery(final DSLContext dslContext) throws SQLException {
+                Result<Record> recordResult = dslContext.select().from(Decks.DECKS)
+                        .where(Decks.DECKS.UUID.eq(playerUuid.toString())
+                                .and(Decks.DECKS.DECK_NUMBER.eq(deckNumber))).fetch();
+                return getQuery(recordResult.stream().toList());
+            }
+
+            @Override
+            public @NotNull Deck getQuery(final @NotNull List<Record> result) throws SQLException {
+                if(result.isEmpty()) {
+                    plugin.debug(getClass(), "Could not find a deck for uuid=" + playerUuid + ",decknumber=" + deckNumber);
+                    return new Deck(playerUuid, deckNumber, new ArrayList<>());
+                }
+                return getDeckFromRecord(result.get(0));
+            }
+
             @Override
             public Deck getQuery(final ResultSet resultSet) throws SQLException {
                 if (resultSet.next()) {
@@ -350,9 +416,8 @@ public class SqlStorage implements Storage<TradingCard> {
             public Deck returnNull() {
                 return null;
             }
-        }.runQuery(DECKS_SELECT_BY_DECK_NUMBER, null,
-                Map.of(COLUMN_UUID, statementProcessor.wrap(playerUuid.toString()),
-                        COLUMN_DECK_NUMBER, String.valueOf(deckNumber)));
+        }.prepareAndRunQuery();
+                //runQuery(DECKS_SELECT_BY_DECK_NUMBER, null, Map.of(COLUMN_UUID, statementProcessor.wrap(playerUuid.toString()), COLUMN_DECK_NUMBER, String.valueOf(deckNumber)));
     }
 
     @Contract("_ -> new")
@@ -370,6 +435,13 @@ public class SqlStorage implements Storage<TradingCard> {
         return new Deck(UUID.fromString(playerUuid), deckNumber, entries);
     }
 
+
+    private Deck getDeckFromRecord(Record recordResult) throws SQLException{
+//        final String playerUuid = recordResult.getValue(Decks.DECKS.UUID); todo for now
+//        final int deckNumber = recordResult.getValue(Decks.DECKS.ID);
+        return getDeckFromResultSet(recordResult.intoResultSet());
+    }
+
     //Implements a simple comparator to allow for sorting
     //Entries will be sorted by rarityid and then by card name
     public static class StorageEntryComparator implements Comparator<StorageEntry> {
@@ -385,7 +457,31 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public @Nullable Rarity getRarityById(final String rarityId) {
-        return new ExecuteQuery<Rarity>() {
+        return new ExecuteQuery<Rarity>(this) {
+
+            @Override
+            public Rarity onRunQuery(final DSLContext dslContext) throws SQLException {
+                Result<Record> recordResult = dslContext.select().from(Rarities.RARITIES)
+                        .where(Rarities.RARITIES.RARITY_ID.eq(rarityId)).fetch();
+                return getQuery(recordResult);
+            }
+
+            @Override
+            public Rarity getQuery(final @NotNull List<Record> result) throws SQLException {
+                if(result.isEmpty()) {
+                    plugin.getLogger().info("No such rarity " + rarityId);
+                    return returnNull();
+                }
+
+                final Record recordResult = result.get(0);
+                final String displayName = recordResult.getValue(Rarities.RARITIES.DISPLAY_NAME);
+                final String defaultColor = recordResult.getValue(Rarities.RARITIES.DEFAULT_COLOR);
+                final List<String> rewards = getRewards(rarityId);
+                final double buyPrice = recordResult.getValue(Rarities.RARITIES.BUY_PRICE);
+                final double sellPrice = recordResult.getValue(Rarities.RARITIES.SELL_PRICE);
+                return new Rarity(rarityId, displayName, defaultColor, buyPrice, sellPrice, rewards);
+            }
+
             @Override
             public Rarity getQuery(final ResultSet resultSet) throws SQLException {
                 if (resultSet.next()) {
@@ -407,12 +503,24 @@ public class SqlStorage implements Storage<TradingCard> {
             public @Nullable Rarity returnNull() {
                 return null;
             }
-        }.runQuery(RARITY_GET_BY_ID, null, Map.of(COLUMN_RARITY_ID, rarityId));
+        }.prepareAndRunQuery();
+                //runQuery(RARITY_GET_BY_ID, null, Map.of(COLUMN_RARITY_ID, rarityId));
     }
 
     @Override
     public List<String> getRewards(final String rarityId) {
-        return new ExecuteQuery<List<String>>() {
+        return new ExecuteQuery<List<String>>(this) {
+
+            @Override
+            public List<String> onRunQuery(final DSLContext dslContext) throws SQLException {
+                return null;
+            }
+
+            @Override
+            public @NotNull List<String> getQuery(final @NotNull List<Record> result) throws SQLException {
+                return null;
+            }
+
             @Override
             public List<String> getQuery(final ResultSet resultSet) throws SQLException {
                 List<String> rewards = new ArrayList<>();
@@ -439,7 +547,17 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public Series getSeries(final String seriesId) {
-        return new ExecuteQuery<Series>() {
+        return new ExecuteQuery<Series>(this) {
+            @Override
+            public Series onRunQuery(final DSLContext dslContext) throws SQLException {
+                return null;
+            }
+
+            @Override
+            public Series getQuery(final @NotNull List<Record> result) throws SQLException {
+                return null;
+            }
+
             @Override
             public Series getQuery(final ResultSet resultSet) throws SQLException {
                 if (resultSet.next()) {
@@ -690,7 +808,17 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public List<Rarity> getRarities() {
-        return new ExecuteQuery<List<Rarity>>() {
+        return new ExecuteQuery<List<Rarity>>(this) {
+            @Override
+            public List<Rarity> onRunQuery(final DSLContext dslContext) throws SQLException {
+                return null;
+            }
+
+            @Override
+            public @NotNull List<Rarity> getQuery(final @NotNull List<Record> result) throws SQLException {
+                return null;
+            }
+
             @Override
             public List<Rarity> getQuery(final ResultSet resultSet) throws SQLException {
                 final List<Rarity> rarities = new ArrayList<>();
@@ -720,7 +848,17 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public Collection<Series> getAllSeries() {
-        return new ExecuteQuery<Collection<Series>>() {
+        return new ExecuteQuery<Collection<Series>>(this) {
+            @Override
+            public Collection<Series> onRunQuery(final DSLContext dslContext) throws SQLException {
+                return null;
+            }
+
+            @Override
+            public Collection<Series> getQuery(final @NotNull List<Record> result) throws SQLException {
+                return null;
+            }
+
             @Override
             public Collection<Series> getQuery(final ResultSet resultSet) throws SQLException {
                 List<Series> series = new ArrayList<>();
@@ -743,7 +881,17 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Contract("_ -> new")
     private @NotNull ColorSeries getColorSeries(final String seriesId) {
-        return new ExecuteQuery<ColorSeries>() {
+        return new ExecuteQuery<ColorSeries>(this) {
+            @Override
+            public ColorSeries onRunQuery(final DSLContext dslContext) throws SQLException {
+                return null;
+            }
+
+            @Override
+            public @NotNull ColorSeries getQuery(final @NotNull List<Record> result) throws SQLException {
+                return null;
+            }
+
             @Override
             public ColorSeries getQuery(final ResultSet resultSet) throws SQLException {
                 if (resultSet.next()) {
@@ -767,7 +915,17 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public Set<Series> getActiveSeries() {
-        return new ExecuteQuery<Set<Series>>() {
+        return new ExecuteQuery<Set<Series>>(this) {
+            @Override
+            public Set<Series> onRunQuery(final DSLContext dslContext) throws SQLException {
+                return null;
+            }
+
+            @Override
+            public @NotNull Set<Series> getQuery(final @NotNull List<Record> result) throws SQLException {
+                return null;
+            }
+
             @Override
             public Set<Series> getQuery(final ResultSet resultSet) throws SQLException {
                 final Set<Series> activeSeries = new HashSet<>();
@@ -808,7 +966,17 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public List<TradingCard> getCards() {
-        return new ExecuteQuery<List<TradingCard>>() {
+        return new ExecuteQuery<List<TradingCard>>(this) {
+            @Override
+            public List<TradingCard> onRunQuery(final DSLContext dslContext) throws SQLException {
+                return null;
+            }
+
+            @Override
+            public @NotNull List<TradingCard> getQuery(final @NotNull List<Record> result) throws SQLException {
+                return null;
+            }
+
             @Override
             public List<TradingCard> getQuery(final ResultSet resultSet) throws SQLException {
                 List<TradingCard> cards = new ArrayList<>();
@@ -861,7 +1029,17 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public List<TradingCard> getCardsInRarity(final String rarityId) {
-        return new ExecuteQuery<List<TradingCard>>() {
+        return new ExecuteQuery<List<TradingCard>>(this) {
+            @Override
+            public List<TradingCard> onRunQuery(final DSLContext dslContext) throws SQLException {
+                return null;
+            }
+
+            @Override
+            public @NotNull List<TradingCard> getQuery(final @NotNull List<Record> result) throws SQLException {
+                return null;
+            }
+
             @Override
             public List<TradingCard> getQuery(final ResultSet resultSet) throws SQLException {
                 List<TradingCard> cards = new ArrayList<>();
@@ -884,7 +1062,18 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public List<TradingCard> getCardsInSeries(final String seriesId) {
-        return new ExecuteQuery<List<TradingCard>>() {
+        return new ExecuteQuery<List<TradingCard>>(this) {
+
+            @Override
+            public List<TradingCard> onRunQuery(final DSLContext dslContext) throws SQLException {
+                return null;
+            }
+
+            @Override
+            public List<TradingCard> getQuery(final @NotNull List<Record> result) throws SQLException {
+                return null;
+            }
+
             @Override
             public List<TradingCard> getQuery(final ResultSet resultSet) throws SQLException {
                 List<TradingCard> cards = new ArrayList<>();
@@ -908,7 +1097,17 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public List<TradingCard> getCardsInRarityAndSeries(final String rarityId, final String seriesId) {
-        return new ExecuteQuery<List<TradingCard>>() {
+        return new ExecuteQuery<List<TradingCard>>(this) {
+            @Override
+            public List<TradingCard> onRunQuery(final DSLContext dslContext) throws SQLException {
+                return null;
+            }
+
+            @Override
+            public @NotNull List<TradingCard> getQuery(final @NotNull List<Record> result) throws SQLException {
+                return null;
+            }
+
             @Override
             public List<TradingCard> getQuery(final ResultSet resultSet) throws SQLException {
                 List<TradingCard> cards = new ArrayList<>();
@@ -940,7 +1139,17 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public Card<TradingCard> getCard(final String cardId, final String rarityId) {
-        return new ExecuteQuery<TradingCard>() {
+        return new ExecuteQuery<TradingCard>(this) {
+            @Override
+            public TradingCard onRunQuery(final DSLContext dslContext) throws SQLException {
+                return null;
+            }
+
+            @Override
+            public @NotNull TradingCard getQuery(final @NotNull List<Record> result) throws SQLException {
+                return null;
+            }
+
             @Override
             public TradingCard getQuery(final ResultSet resultSet) throws SQLException {
                 if (resultSet.next()) {
@@ -965,7 +1174,17 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public @Nullable Pack getPack(final String packsId) {
-        return new ExecuteQuery<Pack>() {
+        return new ExecuteQuery<Pack>(this) {
+            @Override
+            public Pack onRunQuery(final DSLContext dslContext) throws SQLException {
+                return null;
+            }
+
+            @Override
+            public @NotNull Pack getQuery(final @NotNull List<Record> result) throws SQLException {
+                return null;
+            }
+
             @Override
             public Pack getQuery(final ResultSet resultSet) throws SQLException {
                 if(resultSet.next()){
@@ -998,7 +1217,18 @@ public class SqlStorage implements Storage<TradingCard> {
         return new Pack.PackEntry(rarityId,cardAmount,seriesId);
     }
     private @NotNull @Unmodifiable List<Pack.PackEntry> getPackEntries(final String packId) {
-        return new ExecuteQuery<List<Pack.PackEntry>>() {
+        return new ExecuteQuery<List<Pack.PackEntry>>(this) {
+
+            @Override
+            public List<Pack.PackEntry> onRunQuery(final DSLContext dslContext) throws SQLException {
+                return null;
+            }
+
+            @Override
+            public List<Pack.PackEntry> getQuery(final @NotNull List<Record> result) throws SQLException {
+                return null;
+            }
+
             @Override
             public List<Pack.PackEntry> getQuery(final ResultSet resultSet) throws SQLException {
                 List<Pack.PackEntry> entries = new ArrayList<>();
@@ -1021,7 +1251,17 @@ public class SqlStorage implements Storage<TradingCard> {
     }
     @Override
     public List<Pack> getPacks() {
-        return new ExecuteQuery<List<Pack>>() {
+        return new ExecuteQuery<List<Pack>>(this) {
+            @Override
+            public List<Pack> onRunQuery(final DSLContext dslContext) throws SQLException {
+                return null;
+            }
+
+            @Override
+            public @NotNull List<Pack> getQuery(final @NotNull List<Record> result) throws SQLException {
+                return null;
+            }
+
             @Override
             public List<Pack> getQuery(final ResultSet resultSet) throws SQLException {
                 List<Pack> packs = new ArrayList<>();
@@ -1043,7 +1283,17 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public Set<DropType> getDropTypes() {
-        return new ExecuteQuery<Set<DropType>>() {
+        return new ExecuteQuery<Set<DropType>>(this) {
+            @Override
+            public Set<DropType> onRunQuery(final DSLContext dslContext) throws SQLException {
+                return null;
+            }
+
+            @Override
+            public @NotNull Set<DropType> getQuery(final @NotNull List<Record> result) throws SQLException {
+                return null;
+            }
+
             @Override
             public Set<DropType> getQuery(final ResultSet resultSet) throws SQLException {
                 Set<DropType> customTypes = new HashSet<>();
@@ -1073,7 +1323,17 @@ public class SqlStorage implements Storage<TradingCard> {
     }
     @Override
     public DropType getCustomType(final String typeId) {
-        ExecuteQuery<DropType> executeQuery = new ExecuteQuery<>() {
+        ExecuteQuery<DropType> executeQuery = new ExecuteQuery<>(this) {
+            @Override
+            public DropType onRunQuery(final DSLContext dslContext) throws SQLException {
+                return null;
+            }
+
+            @Override
+            public @NotNull DropType getQuery(final @NotNull List<Record> result) throws SQLException {
+                return null;
+            }
+
             @Override
             public @NotNull DropType getQuery(final ResultSet resultSet) throws SQLException {
                 return getDropTypeFromResult(resultSet);
@@ -1088,30 +1348,6 @@ public class SqlStorage implements Storage<TradingCard> {
         return executeQuery.runQuery(CUSTOM_TYPES_GET_BY_ID,null,Map.of(COLUMN_TYPE_ID,typeId));
     }
 
-
-
-    public abstract class ExecuteQuery<T> {
-        public T runQuery(final String sql,Map<String, String> values, Map<String,String> where, Map<String, String> set) {
-            try (Connection connection = connectionFactory.getConnection()){
-                try (PreparedStatement preparedStatement = connection.prepareStatement(statementProcessor.apply(sql,values,where,set))){
-                    try (ResultSet resultSet = preparedStatement.executeQuery()){
-                        return getQuery(resultSet);
-                    }
-                }
-            } catch (SQLException e) {
-                Util.logSevereException(e);
-            }
-
-            return returnNull();
-        }
-
-        public T runQuery(final String sql,Map<String, String> values, Map<String,String> where) {
-            return runQuery(sql,values,where,null);
-        }
-
-        public abstract T getQuery(ResultSet resultSet) throws SQLException;
-        public abstract T returnNull();
-    }
 
     @Override
     public void createCard(final String cardId, final String rarityId, final String seriesId) {

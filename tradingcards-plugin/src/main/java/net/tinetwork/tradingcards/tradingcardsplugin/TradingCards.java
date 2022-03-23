@@ -204,12 +204,14 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
             case MARIADB -> {
                 return new SqlStorage(this,
                         this.storageConfig.getTablePrefix(),
+                        this.storageConfig.getDatabase(),
                         new MariaDbConnectionFactory(this.storageConfig));
             }
 
             case MYSQL -> {
                 return new SqlStorage(this,
                         this.storageConfig.getTablePrefix(),
+                        this.storageConfig.getDatabase(),
                         new MySqlConnectionFactory(this.storageConfig));
             }
             //YAML is the default
