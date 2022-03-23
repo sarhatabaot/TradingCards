@@ -15,9 +15,17 @@ import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.StorageType;
-import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.Minecraft;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.enums.CustomTypesDropType;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.enums.SeriesSeriesMode;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Cards;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.CustomTypes;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Decks;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Packs;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.PacksContent;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Rarities;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Rewards;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.SeriesColors;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.records.PacksContentRecord;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.sql.ConnectionFactory;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.sql.SchemaReader;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
@@ -29,10 +37,12 @@ import org.jetbrains.annotations.Unmodifiable;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Result;
+import org.jooq.SQLDialect;
 import org.jooq.conf.MappedSchema;
 import org.jooq.conf.MappedTable;
 import org.jooq.conf.RenderMapping;
 import org.jooq.conf.Settings;
+import org.jooq.impl.DSL;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -134,7 +144,7 @@ public class SqlStorage implements Storage<TradingCard> {
     private static final String CARDS_SELECT_ALL =
             "SELECT * FROM {prefix}cards;";
     private static final String CARDS_SELECT_BY_CARD_ID_AND_RARITY =
-            "SELECT * FROM {prefix}cards "+
+            "SELECT * FROM {prefix}cards " +
                     "WHERE card_id='?' AND rarity_id='?';";
     private static final String CARDS_SELECT_BY_RARITY_ID =
             "SELECT * FROM {prefix}cards " +
@@ -178,7 +188,7 @@ public class SqlStorage implements Storage<TradingCard> {
                     "WHERE card_id='?' AND rarity_id='?' AND series_id='?';";
 
     private static final String SERIES_CREATE =
-            "INSERT INTO {prefix}series (series_id) "+
+            "INSERT INTO {prefix}series (series_id) " +
                     "VALUES ('?');";
     private static final String CUSTOM_TYPES_CREATE =
             "INSERT INTO {prefix}custom_types (type_id,drop_type) " +
@@ -226,20 +236,20 @@ public class SqlStorage implements Storage<TradingCard> {
                     "WHERE pack_id='?';";
 
     private static final String PACKS_GET_BY_ID =
-            "SELECT * FROM {prefix}packs "+
+            "SELECT * FROM {prefix}packs " +
                     "WHERE pack_id='?';";
 
     private static final String PACKS_UPDATE_DISPLAY_NAME =
             "UPDATE {prefix}packs " +
-                    "SET display_name=? "+
+                    "SET display_name=? " +
                     "WHERE pack_id='?';";
     private static final String PACKS_UPDATE_PERMISSION =
             "UPDATE {prefix}packs " +
-                    "SET permission=? "+
+                    "SET permission=? " +
                     "WHERE pack_id='?';";
     private static final String PACKS_UPDATE_PRICE =
             "UPDATE {prefix}packs " +
-                    "SET buy_price=? "+
+                    "SET buy_price=? " +
                     "WHERE pack_id='?';";
     private static final String PACKS_INSERT_CONTENT_ADD_LINE =
             "INSERT INTO {prefix}packs_content (line_number, pack_id, rarity_id, card_amount, series_id) " +
@@ -298,13 +308,14 @@ public class SqlStorage implements Storage<TradingCard> {
     private static final String COLUMN_COLOR_ABOUT = "about";
     private static final String COLUMN_COLOR_INFO = "info";
     private static final String COLUMN_COLOR_TYPE = "type";
-    private static final String COLUMN_COLOR_RARITY= "rarity";
+    private static final String COLUMN_COLOR_RARITY = "rarity";
     private static final String COLUMN_COLOR_SERIES = "series";
 
     private final TradingCards plugin;
     private final ConnectionFactory connectionFactory;
     private final StatementProcessor statementProcessor;
     private final Settings jooqSettings;
+    private final StorageType storageType;
 
 
     @Override
@@ -325,17 +336,18 @@ public class SqlStorage implements Storage<TradingCard> {
         return statementProcessor;
     }
 
-    public SqlStorage(final TradingCards plugin, final String tablePrefix,final String dbName, final ConnectionFactory connectionFactory) {
+    public SqlStorage(final TradingCards plugin, final String tablePrefix, final String dbName, final ConnectionFactory connectionFactory, final StorageType storageType) {
         this.plugin = plugin;
         this.connectionFactory = connectionFactory;
+        this.storageType = storageType;
         this.statementProcessor = new StatementProcessor(tablePrefix, plugin);
         this.jooqSettings = new Settings();
-        initJooqSettings(tablePrefix,dbName);
+        initJooqSettings(tablePrefix, dbName);
     }
 
-    private void initJooqSettings(final String tablePrefix,final String dbName) {
+    private void initJooqSettings(final String tablePrefix, final String dbName) {
         MappedTable mappedTable = new MappedTable();
-        mappedTable.withOutput(tablePrefix+mappedTable.getInput());
+        mappedTable.withOutput(tablePrefix + mappedTable.getInput());
         jooqSettings.withRenderMapping(
                 new RenderMapping().withSchemata(
                         new MappedSchema().withInput("minecraft")
@@ -347,11 +359,11 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public List<Deck> getPlayerDecks(final @NotNull UUID playerUuid) {
-        return new ExecuteQuery<List<Deck>>(this) {
+        return new ExecuteQuery<List<Deck>>(this, jooqSettings) {
             @Override
             public List<Deck> onRunQuery(final DSLContext dslContext) throws SQLException {
                 Result<Record> recordResult = dslContext.select().from(Decks.DECKS).where(Decks.DECKS.UUID.eq(playerUuid.toString())).fetch();
-                return getQuery(recordResult.stream().toList());
+                return getQuery(recordResult);
             }
 
             @Override
@@ -364,9 +376,10 @@ public class SqlStorage implements Storage<TradingCard> {
             }
 
             @Override
-            public @NotNull List<Deck> getQuery(final @NotNull List<Record> result) throws SQLException {
+            public @NotNull List<Deck> getQuery(final @NotNull Result<Record> result) throws SQLException {
+                List<Record> resultList = result.stream().toList();
                 List<Deck> decks = new ArrayList<>();
-                for(Record recordResult: result) {
+                for (Record recordResult : resultList) {
                     decks.add(getDeckFromRecord(recordResult));
                 }
                 return decks;
@@ -382,22 +395,23 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public Deck getDeck(final @NotNull UUID playerUuid, final int deckNumber) {
-        return new ExecuteQuery<Deck>(this) {
+        return new ExecuteQuery<Deck>(this, jooqSettings) {
             @Override
             public Deck onRunQuery(final DSLContext dslContext) throws SQLException {
                 Result<Record> recordResult = dslContext.select().from(Decks.DECKS)
                         .where(Decks.DECKS.UUID.eq(playerUuid.toString())
                                 .and(Decks.DECKS.DECK_NUMBER.eq(deckNumber))).fetch();
-                return getQuery(recordResult.stream().toList());
+                return getQuery(recordResult);
             }
 
             @Override
-            public @NotNull Deck getQuery(final @NotNull List<Record> result) throws SQLException {
-                if(result.isEmpty()) {
+            public @NotNull Deck getQuery(final @NotNull Result<Record> recordResult) throws SQLException {
+                List<Record> recordList = recordResult.stream().toList();
+                if (recordList.isEmpty()) {
                     plugin.debug(getClass(), "Could not find a deck for uuid=" + playerUuid + ",decknumber=" + deckNumber);
                     return new Deck(playerUuid, deckNumber, new ArrayList<>());
                 }
-                return getDeckFromRecord(result.get(0));
+                return getDeckFromRecord(recordList.get(0));
             }
 
             @Override
@@ -417,7 +431,7 @@ public class SqlStorage implements Storage<TradingCard> {
                 return null;
             }
         }.prepareAndRunQuery();
-                //runQuery(DECKS_SELECT_BY_DECK_NUMBER, null, Map.of(COLUMN_UUID, statementProcessor.wrap(playerUuid.toString()), COLUMN_DECK_NUMBER, String.valueOf(deckNumber)));
+        //runQuery(DECKS_SELECT_BY_DECK_NUMBER, null, Map.of(COLUMN_UUID, statementProcessor.wrap(playerUuid.toString()), COLUMN_DECK_NUMBER, String.valueOf(deckNumber)));
     }
 
     @Contract("_ -> new")
@@ -436,7 +450,7 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
 
-    private Deck getDeckFromRecord(Record recordResult) throws SQLException{
+    private Deck getDeckFromRecord(Record recordResult) throws SQLException {
 //        final String playerUuid = recordResult.getValue(Decks.DECKS.UUID); todo for now
 //        final int deckNumber = recordResult.getValue(Decks.DECKS.ID);
         return getDeckFromResultSet(recordResult.intoResultSet());
@@ -457,7 +471,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public @Nullable Rarity getRarityById(final String rarityId) {
-        return new ExecuteQuery<Rarity>(this) {
+        return new ExecuteQuery<Rarity>(this, jooqSettings) {
 
             @Override
             public Rarity onRunQuery(final DSLContext dslContext) throws SQLException {
@@ -467,8 +481,9 @@ public class SqlStorage implements Storage<TradingCard> {
             }
 
             @Override
-            public Rarity getQuery(final @NotNull List<Record> result) throws SQLException {
-                if(result.isEmpty()) {
+            public Rarity getQuery(final @NotNull Result<Record> resultRecord) throws SQLException {
+                List<Record> result = resultRecord.stream().toList();
+                if (result.isEmpty()) {
                     plugin.getLogger().info("No such rarity " + rarityId);
                     return returnNull();
                 }
@@ -504,21 +519,23 @@ public class SqlStorage implements Storage<TradingCard> {
                 return null;
             }
         }.prepareAndRunQuery();
-                //runQuery(RARITY_GET_BY_ID, null, Map.of(COLUMN_RARITY_ID, rarityId));
+        //runQuery(RARITY_GET_BY_ID, null, Map.of(COLUMN_RARITY_ID, rarityId));
     }
 
     @Override
     public List<String> getRewards(final String rarityId) {
-        return new ExecuteQuery<List<String>>(this) {
+        return new ExecuteQuery<List<String>>(this, jooqSettings) {
 
             @Override
             public List<String> onRunQuery(final DSLContext dslContext) throws SQLException {
-                return null;
+                Result<Record> result = dslContext.select().from(Rewards.REWARDS)
+                        .where(Rewards.REWARDS.RARITY_ID.eq(rarityId)).fetch();
+                return getQuery(result);
             }
 
             @Override
-            public @NotNull List<String> getQuery(final @NotNull List<Record> result) throws SQLException {
-                return null;
+            public @NotNull List<String> getQuery(final @NotNull Result<Record> result) throws SQLException {
+                return getQuery(result);
             }
 
             @Override
@@ -542,20 +559,20 @@ public class SqlStorage implements Storage<TradingCard> {
             public @NotNull @Unmodifiable List<String> returnNull() {
                 return Collections.emptyList();
             }
-        }.runQuery(REWARDS_GET_BY_ID, null, Map.of(COLUMN_RARITY_ID, rarityId));
+        }.prepareAndRunQuery();//runQuery(REWARDS_GET_BY_ID, null, Map.of(COLUMN_RARITY_ID, rarityId));
     }
 
     @Override
     public Series getSeries(final String seriesId) {
-        return new ExecuteQuery<Series>(this) {
+        return new ExecuteQuery<Series>(this, jooqSettings) {
             @Override
             public Series onRunQuery(final DSLContext dslContext) throws SQLException {
-                return null;
+                return getQuery(dslContext.select().from(net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Series.SERIES).where(net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Series.SERIES.SERIES_ID.eq(seriesId)).fetch());
             }
 
             @Override
-            public Series getQuery(final @NotNull List<Record> result) throws SQLException {
-                return null;
+            public Series getQuery(final @NotNull Result<Record> result) throws SQLException {
+                return getQuery(result.intoResultSet());
             }
 
             @Override
@@ -578,7 +595,7 @@ public class SqlStorage implements Storage<TradingCard> {
             public Series returnNull() {
                 return null;
             }
-        }.runQuery(SERIES_GET_BY_ID, null, Map.of(COLUMN_SERIES_ID, seriesId));
+        }.prepareAndRunQuery();//runQuery(SERIES_GET_BY_ID, null, Map.of(COLUMN_SERIES_ID, seriesId));
     }
 
     @Override
@@ -667,59 +684,57 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public boolean hasCard(final UUID playerUuid, final String card, final String rarity) {
-        try (Connection connection = connectionFactory.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(DECKS_SELECT_BY_CARD_AND_RARITY, null,
-                    Map.of(COLUMN_UUID, statementProcessor.wrap(playerUuid.toString()),
-                            COLUMN_CARD_ID, statementProcessor.wrap(card),
-                            COLUMN_RARITY_ID, statementProcessor.wrap(rarity))))) {
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    //try and access a result, if it doesn't exist, return false.
-                    if (resultSet.next()) {
-                        String cardId = resultSet.getString(COLUMN_CARD_ID);
-                        String rarityId = resultSet.getString(COLUMN_RARITY_ID);
-                        plugin.debug(SqlStorage.class, cardId);
-                        return card.equals(cardId) && rarity.equals(rarityId);
-                    }
-                    if (resultSet.getFetchSize() == 0 || resultSet.wasNull()) {
-                        return false;
-                    }
-                }
+        return new ExecuteQuery<Boolean>(this, jooqSettings) {
+            @Override
+            public Boolean onRunQuery(final DSLContext dslContext) throws SQLException {
+                return getQuery(dslContext.select().from(Decks.DECKS).where(Decks.DECKS.UUID.eq(playerUuid.toString()).and(Decks.DECKS.CARD_ID.eq(card).and(Decks.DECKS.RARITY_ID.eq(rarity)).and(Decks.DECKS.IS_SHINY.eq((byte) 0)))).fetch());
             }
-        } catch (SQLException e) {
-            return false;
-        }
-        return false;
+
+            @Override
+            public Boolean getQuery(final ResultSet resultSet) throws SQLException {
+                return null;
+            }
+
+            @Override
+            public Boolean getQuery(final @NotNull Result<Record> result) throws SQLException {
+                return result.isNotEmpty();
+            }
+
+            @Override
+            public Boolean returnNull() {
+                return false;
+            }
+        }.prepareAndRunQuery();
     }
 
     @Override
     public boolean hasShinyCard(final UUID playerUuid, final String card, final String rarity) {
-        try (Connection connection = connectionFactory.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(DECKS_SELECT_BY_CARD_AND_RARITY_SHINY, null,
-                    Map.of(COLUMN_UUID, statementProcessor.wrap(playerUuid.toString()),
-                            COLUMN_CARD_ID, statementProcessor.wrap(card),
-                            COLUMN_RARITY_ID, statementProcessor.wrap(rarity),
-                            COLUMN_IS_SHINY, String.valueOf(true))))) {
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    if (resultSet.next()) {
-                        //try and access a result, if it doesn't exist, return false.
-                        String cardId = resultSet.getString(COLUMN_CARD_ID);
-                        plugin.debug(SqlStorage.class, cardId);
-                        return !resultSet.wasNull();
-                    }
-                    if (resultSet.getFetchSize() == 0 || resultSet.wasNull()) {
-                        return false;
-                    }
-                }
+        return new ExecuteQuery<Boolean>(this, jooqSettings) {
+            @Override
+            public Boolean onRunQuery(final DSLContext dslContext) throws SQLException {
+                return getQuery(dslContext.select().from(Decks.DECKS).where(Decks.DECKS.UUID.eq(playerUuid.toString()).and(Decks.DECKS.CARD_ID.eq(card).and(Decks.DECKS.RARITY_ID.eq(rarity)).and(Decks.DECKS.IS_SHINY.eq((byte) 1)))).fetch());
             }
-        } catch (SQLException e) {
-            return false;
-        }
-        return false;
+
+            @Override
+            public Boolean getQuery(final ResultSet resultSet) throws SQLException {
+                return null;
+            }
+
+            @Override
+            public Boolean getQuery(final @NotNull Result<Record> result) throws SQLException {
+                return result.isNotEmpty();
+            }
+
+            @Override
+            public Boolean returnNull() {
+                return false;
+            }
+        }.prepareAndRunQuery();
     }
 
     @Override
     public StorageType getType() {
-        return StorageType.MYSQL;
+        return storageType;
     }
 
 
@@ -808,16 +823,12 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public List<Rarity> getRarities() {
-        return new ExecuteQuery<List<Rarity>>(this) {
+        return new ExecuteQuery<List<Rarity>>(this, jooqSettings) {
             @Override
             public List<Rarity> onRunQuery(final DSLContext dslContext) throws SQLException {
-                return null;
+                return getQuery(dslContext.select().from(Rarities.RARITIES).fetch());
             }
 
-            @Override
-            public @NotNull List<Rarity> getQuery(final @NotNull List<Record> result) throws SQLException {
-                return null;
-            }
 
             @Override
             public List<Rarity> getQuery(final ResultSet resultSet) throws SQLException {
@@ -837,26 +848,26 @@ public class SqlStorage implements Storage<TradingCard> {
                 return rarities;
             }
 
+            @Override
+            public List<Rarity> getQuery(final @NotNull Result<Record> result) throws SQLException {
+                return getQuery(result.intoResultSet());
+            }
+
             @Contract(pure = true)
             @Override
             public @NotNull @Unmodifiable List<Rarity> returnNull() {
                 return Collections.emptyList();
             }
-        }.runQuery(RARITY_SELECT_ALL, null, null);
+        }.prepareAndRunQuery();
     }
 
 
     @Override
     public Collection<Series> getAllSeries() {
-        return new ExecuteQuery<Collection<Series>>(this) {
+        return new ExecuteQuery<Collection<Series>>(this, jooqSettings) {
             @Override
             public Collection<Series> onRunQuery(final DSLContext dslContext) throws SQLException {
-                return null;
-            }
-
-            @Override
-            public Collection<Series> getQuery(final @NotNull List<Record> result) throws SQLException {
-                return null;
+                return getQuery(dslContext.select().from(net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Series.SERIES).fetch());
             }
 
             @Override
@@ -871,25 +882,30 @@ public class SqlStorage implements Storage<TradingCard> {
                 return series;
             }
 
+            @Override
+            public Collection<Series> getQuery(final @NotNull Result<Record> result) throws SQLException {
+                return getQuery(result.intoResultSet());
+            }
+
             @Contract(pure = true)
             @Override
             public @NotNull @Unmodifiable Collection<Series> returnNull() {
                 return Collections.emptyList();
             }
-        }.runQuery(SERIES_SELECT_ALL, null, null);
+        }.prepareAndRunQuery();
     }
 
     @Contract("_ -> new")
     private @NotNull ColorSeries getColorSeries(final String seriesId) {
-        return new ExecuteQuery<ColorSeries>(this) {
+        return new ExecuteQuery<ColorSeries>(this, jooqSettings) {
             @Override
             public ColorSeries onRunQuery(final DSLContext dslContext) throws SQLException {
-                return null;
+                return getQuery(dslContext.select().from(SeriesColors.SERIES_COLORS).where(SeriesColors.SERIES_COLORS.SERIES_ID.eq(seriesId)).fetch());
             }
 
             @Override
-            public @NotNull ColorSeries getQuery(final @NotNull List<Record> result) throws SQLException {
-                return null;
+            public ColorSeries getQuery(final @NotNull Result<Record> result) throws SQLException {
+                return getQuery(result.intoResultSet());
             }
 
             @Override
@@ -910,20 +926,15 @@ public class SqlStorage implements Storage<TradingCard> {
             public ColorSeries returnNull() {
                 return Util.DEFAULT_COLORS;
             }
-        }.runQuery(COLOR_GET_BY_ID, null, Map.of(COLUMN_SERIES_ID, seriesId));
+        }.prepareAndRunQuery();
     }
 
     @Override
     public Set<Series> getActiveSeries() {
-        return new ExecuteQuery<Set<Series>>(this) {
+        return new ExecuteQuery<Set<Series>>(this, jooqSettings) {
             @Override
             public Set<Series> onRunQuery(final DSLContext dslContext) throws SQLException {
-                return null;
-            }
-
-            @Override
-            public @NotNull Set<Series> getQuery(final @NotNull List<Record> result) throws SQLException {
-                return null;
+                return getQuery(dslContext.select().from(net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Series.SERIES).where(net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Series.SERIES.SERIES_MODE.eq(SeriesSeriesMode.ACTIVE)).fetch());
             }
 
             @Override
@@ -941,20 +952,26 @@ public class SqlStorage implements Storage<TradingCard> {
             }
 
             @Override
+            public Set<Series> getQuery(final @NotNull Result<Record> result) throws SQLException {
+                return getQuery(result.intoResultSet());
+            }
+
+            @Override
             public Set<Series> returnNull() {
                 return Collections.emptySet();
             }
-        }.runQuery(SERIES_GET_ALL_ACTIVE, null, null);
+        }.prepareAndRunQuery();
+        //.runQuery(SERIES_GET_ALL_ACTIVE, null, null);
     }
 
     @Override
     public Map<String, TradingCard> getCardsMap() {
-        Map<String, TradingCard> cardsMap =  new HashMap<>();
-        for(TradingCard tradingCard: getCards()) {
+        Map<String, TradingCard> cardsMap = new HashMap<>();
+        for (TradingCard tradingCard : getCards()) {
             final String cardId = tradingCard.getCardName();
             final String rarityId = tradingCard.getRarity().getName();
-            final String cardKey = CardUtil.cardKey(rarityId,cardId);
-            cardsMap.put(cardKey,tradingCard);
+            final String cardKey = CardUtil.cardKey(rarityId, cardId);
+            cardsMap.put(cardKey, tradingCard);
         }
         return cardsMap;
     }
@@ -966,15 +983,10 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public List<TradingCard> getCards() {
-        return new ExecuteQuery<List<TradingCard>>(this) {
+        return new ExecuteQuery<List<TradingCard>>(this, jooqSettings) {
             @Override
             public List<TradingCard> onRunQuery(final DSLContext dslContext) throws SQLException {
-                return null;
-            }
-
-            @Override
-            public @NotNull List<TradingCard> getQuery(final @NotNull List<Record> result) throws SQLException {
-                return null;
+                return getQuery(dslContext.select().from(Cards.CARDS).fetch());
             }
 
             @Override
@@ -991,10 +1003,15 @@ public class SqlStorage implements Storage<TradingCard> {
             }
 
             @Override
+            public List<TradingCard> getQuery(final @NotNull Result<Record> result) throws SQLException {
+                return getQuery(result.intoResultSet());
+            }
+
+            @Override
             public List<TradingCard> returnNull() {
                 return Collections.emptyList();
             }
-        }.runQuery(CARDS_SELECT_ALL,null,null);
+        }.prepareAndRunQuery();
     }
 
     private @NotNull Series getSeriesFromResult(final @NotNull ResultSet resultSet) throws SQLException {
@@ -1029,15 +1046,15 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public List<TradingCard> getCardsInRarity(final String rarityId) {
-        return new ExecuteQuery<List<TradingCard>>(this) {
+        return new ExecuteQuery<List<TradingCard>>(this, jooqSettings) {
             @Override
             public List<TradingCard> onRunQuery(final DSLContext dslContext) throws SQLException {
-                return null;
+                return getQuery(dslContext.select().where(Cards.CARDS.RARITY_ID.eq(rarityId)).fetch());
             }
 
             @Override
-            public @NotNull List<TradingCard> getQuery(final @NotNull List<Record> result) throws SQLException {
-                return null;
+            public List<TradingCard> getQuery(final @NotNull Result<Record> result) throws SQLException {
+                return getQuery(result.intoResultSet());
             }
 
             @Override
@@ -1057,21 +1074,21 @@ public class SqlStorage implements Storage<TradingCard> {
             public List<TradingCard> returnNull() {
                 return Collections.emptyList();
             }
-        }.runQuery(CARDS_SELECT_BY_RARITY_ID, null, Map.of(COLUMN_RARITY_ID, rarityId));
+        }.prepareAndRunQuery();
     }
 
     @Override
     public List<TradingCard> getCardsInSeries(final String seriesId) {
-        return new ExecuteQuery<List<TradingCard>>(this) {
+        return new ExecuteQuery<List<TradingCard>>(this, jooqSettings) {
 
             @Override
-            public List<TradingCard> onRunQuery(final DSLContext dslContext) throws SQLException {
-                return null;
+            public List<TradingCard> getQuery(final @NotNull Result<Record> result) throws SQLException {
+                return getQuery(result.intoResultSet());
             }
 
             @Override
-            public List<TradingCard> getQuery(final @NotNull List<Record> result) throws SQLException {
-                return null;
+            public List<TradingCard> onRunQuery(final DSLContext dslContext) throws SQLException {
+                return getQuery(dslContext.select().from(Cards.CARDS).where(Cards.CARDS.SERIES_ID.eq(seriesId)).fetch());
             }
 
             @Override
@@ -1092,29 +1109,29 @@ public class SqlStorage implements Storage<TradingCard> {
             public @NotNull @Unmodifiable List<TradingCard> returnNull() {
                 return Collections.emptyList();
             }
-        }.runQuery(CARDS_SELECT_BY_SERIES_ID, null, Map.of(COLUMN_SERIES_ID, seriesId));
+        }.prepareAndRunQuery();
     }
 
     @Override
     public List<TradingCard> getCardsInRarityAndSeries(final String rarityId, final String seriesId) {
-        return new ExecuteQuery<List<TradingCard>>(this) {
+        return new ExecuteQuery<List<TradingCard>>(this, jooqSettings) {
             @Override
             public List<TradingCard> onRunQuery(final DSLContext dslContext) throws SQLException {
-                return null;
+                return getQuery(dslContext.select().from(Cards.CARDS).where(Cards.CARDS.RARITY_ID.eq(rarityId).and(Cards.CARDS.SERIES_ID.eq(seriesId))).fetch());
             }
 
             @Override
-            public @NotNull List<TradingCard> getQuery(final @NotNull List<Record> result) throws SQLException {
-                return null;
+            public List<TradingCard> getQuery(final @NotNull Result<Record> result) throws SQLException {
+                return getQuery(result.intoResultSet());
             }
 
             @Override
             public List<TradingCard> getQuery(final ResultSet resultSet) throws SQLException {
                 List<TradingCard> cards = new ArrayList<>();
-                while(resultSet.next()) {
+                while (resultSet.next()) {
                     cards.add(getTradingCardFromResult(resultSet));
                 }
-                if(resultSet.getFetchSize() == 0 || resultSet.wasNull()) {
+                if (resultSet.getFetchSize() == 0 || resultSet.wasNull()) {
                     return returnNull();
                 }
                 return cards;
@@ -1125,29 +1142,29 @@ public class SqlStorage implements Storage<TradingCard> {
             public @NotNull @Unmodifiable List<TradingCard> returnNull() {
                 return Collections.emptyList();
             }
-        }.runQuery(CARDS_SELECT_BY_RARITY_AND_SERIES,null,Map.of(COLUMN_RARITY_ID,rarityId,COLUMN_SERIES_ID,seriesId));
+        }.prepareAndRunQuery();
     }
 
     @Override
     public List<TradingCard> getActiveCards() {
         List<TradingCard> activeCards = new ArrayList<>();
-        for(Series series: getActiveSeries()) {
-            activeCards = Stream.concat(activeCards.stream(),getCardsInSeries(series.getName()).stream()).toList();
+        for (Series series : getActiveSeries()) {
+            activeCards = Stream.concat(activeCards.stream(), getCardsInSeries(series.getName()).stream()).toList();
         }
         return activeCards;
     }
 
     @Override
     public Card<TradingCard> getCard(final String cardId, final String rarityId) {
-        return new ExecuteQuery<TradingCard>(this) {
+        return new ExecuteQuery<TradingCard>(this, jooqSettings) {
             @Override
             public TradingCard onRunQuery(final DSLContext dslContext) throws SQLException {
-                return null;
+                return getQuery(dslContext.select().from(Cards.CARDS).where(Cards.CARDS.CARD_ID.eq(cardId).and(Cards.CARDS.RARITY_ID.eq(rarityId))).fetch());
             }
 
             @Override
-            public @NotNull TradingCard getQuery(final @NotNull List<Record> result) throws SQLException {
-                return null;
+            public TradingCard getQuery(final @NotNull Result<Record> result) throws SQLException {
+                return getQuery(result.intoResultSet());
             }
 
             @Override
@@ -1163,7 +1180,7 @@ public class SqlStorage implements Storage<TradingCard> {
             public @NotNull TradingCard returnNull() {
                 return new EmptyCard();
             }
-        }.runQuery(CARDS_SELECT_BY_CARD_ID_AND_RARITY, null, Map.of(COLUMN_RARITY_ID, rarityId, COLUMN_CARD_ID, cardId));
+        }.prepareAndRunQuery();
     }
 
     @Override
@@ -1174,20 +1191,20 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public @Nullable Pack getPack(final String packsId) {
-        return new ExecuteQuery<Pack>(this) {
+        return new ExecuteQuery<Pack>(this, jooqSettings) {
             @Override
             public Pack onRunQuery(final DSLContext dslContext) throws SQLException {
-                return null;
+                return getQuery(dslContext.select().from(Packs.PACKS).where(Packs.PACKS.PACK_ID.eq(packsId)).fetch());
             }
 
             @Override
-            public @NotNull Pack getQuery(final @NotNull List<Record> result) throws SQLException {
-                return null;
+            public Pack getQuery(final @NotNull Result<Record> result) throws SQLException {
+                return getQuery(result.intoResultSet());
             }
 
             @Override
             public Pack getQuery(final ResultSet resultSet) throws SQLException {
-                if(resultSet.next()){
+                if (resultSet.next()) {
                     return getPackFromResult(resultSet);
                 }
                 return returnNull();
@@ -1198,43 +1215,45 @@ public class SqlStorage implements Storage<TradingCard> {
             public @Nullable Pack returnNull() {
                 return null;
             }
-        }.runQuery(PACKS_GET_BY_ID,null,Map.of(COLUMN_PACK_ID, packsId));
+        }.prepareAndRunQuery();
     }
 
 
-    private @NotNull Pack getPackFromResult(@NotNull ResultSet resultSet) throws SQLException{
+    private @NotNull Pack getPackFromResult(@NotNull ResultSet resultSet) throws SQLException {
         final String id = resultSet.getString(COLUMN_PACK_ID);
         final String displayName = resultSet.getString(COLUMN_DISPLAY_NAME);
         final double price = resultSet.getDouble(COLUMN_BUY_PRICE);
-        final String permission =resultSet.getString(COLUMN_PACK_PERMISSION);
+        final String permission = resultSet.getString(COLUMN_PACK_PERMISSION);
         final List<Pack.PackEntry> entries = getPackEntries(id);
-        return new Pack(id,entries,displayName,price,permission);
+        return new Pack(id, entries, displayName, price, permission);
     }
-    private Pack.@NotNull PackEntry getPackEntryFromResult(@NotNull ResultSet resultSet) throws SQLException{
+
+    private Pack.@NotNull PackEntry getPackEntryFromResult(@NotNull ResultSet resultSet) throws SQLException {
         final String rarityId = resultSet.getString(COLUMN_RARITY_ID);
         final String seriesId = resultSet.getString(COLUMN_SERIES_ID);
         final int cardAmount = resultSet.getInt(COLUMN_CARD_AMOUNT);
-        return new Pack.PackEntry(rarityId,cardAmount,seriesId);
+        return new Pack.PackEntry(rarityId, cardAmount, seriesId);
     }
+
     private @NotNull @Unmodifiable List<Pack.PackEntry> getPackEntries(final String packId) {
-        return new ExecuteQuery<List<Pack.PackEntry>>(this) {
+        return new ExecuteQuery<List<Pack.PackEntry>>(this, jooqSettings) {
 
             @Override
             public List<Pack.PackEntry> onRunQuery(final DSLContext dslContext) throws SQLException {
-                return null;
+                return getQuery(dslContext.select().from(PacksContent.PACKS_CONTENT).where(PacksContent.PACKS_CONTENT.PACK_ID.eq(packId)).fetch());
             }
 
             @Override
-            public List<Pack.PackEntry> getQuery(final @NotNull List<Record> result) throws SQLException {
-                return null;
+            public List<Pack.PackEntry> getQuery(final @NotNull Result<Record> result) throws SQLException {
+                return getQuery(result.intoResultSet());
             }
 
             @Override
             public List<Pack.PackEntry> getQuery(final ResultSet resultSet) throws SQLException {
                 List<Pack.PackEntry> entries = new ArrayList<>();
-                while(resultSet.next()) {
+                while (resultSet.next()) {
                     int commandOrder = resultSet.getInt(COLUMN_ORDER_NUMBER);
-                    entries.add(commandOrder,getPackEntryFromResult(resultSet));
+                    entries.add(commandOrder, getPackEntryFromResult(resultSet));
                 }
                 if (resultSet.getFetchSize() == 0 || resultSet.wasNull()) {
                     return returnNull();
@@ -1247,25 +1266,26 @@ public class SqlStorage implements Storage<TradingCard> {
             public @NotNull @Unmodifiable List<Pack.PackEntry> returnNull() {
                 return Collections.emptyList();
             }
-        }.runQuery(PACKS_GET_CONTENT_BY_ID,null,Map.of(COLUMN_PACK_ID,packId));
+        }.prepareAndRunQuery();//.runQuery(PACKS_GET_CONTENT_BY_ID,null,Map.of(COLUMN_PACK_ID,packId));
     }
+
     @Override
     public List<Pack> getPacks() {
-        return new ExecuteQuery<List<Pack>>(this) {
+        return new ExecuteQuery<List<Pack>>(this, jooqSettings) {
             @Override
             public List<Pack> onRunQuery(final DSLContext dslContext) throws SQLException {
-                return null;
+                return getQuery(dslContext.select().from(Packs.PACKS).fetch());
             }
 
             @Override
-            public @NotNull List<Pack> getQuery(final @NotNull List<Record> result) throws SQLException {
-                return null;
+            public List<Pack> getQuery(final @NotNull Result<Record> result) throws SQLException {
+                return getQuery(result.intoResultSet());
             }
 
             @Override
             public List<Pack> getQuery(final ResultSet resultSet) throws SQLException {
                 List<Pack> packs = new ArrayList<>();
-                while(resultSet.next()) {
+                while (resultSet.next()) {
                     packs.add(getPackFromResult(resultSet));
                 }
                 if (resultSet.getFetchSize() == 0 || resultSet.wasNull()) {
@@ -1278,26 +1298,26 @@ public class SqlStorage implements Storage<TradingCard> {
             public List<Pack> returnNull() {
                 return Collections.emptyList();
             }
-        }.runQuery(PACKS_SELECT_ALL, null,null);
+        }.prepareAndRunQuery();//.runQuery(PACKS_SELECT_ALL, null,null);
     }
 
     @Override
     public Set<DropType> getDropTypes() {
-        return new ExecuteQuery<Set<DropType>>(this) {
+        return new ExecuteQuery<Set<DropType>>(this, jooqSettings) {
             @Override
             public Set<DropType> onRunQuery(final DSLContext dslContext) throws SQLException {
-                return null;
+                return getQuery(dslContext.select().from(CustomTypes.CUSTOM_TYPES).fetch());
             }
 
             @Override
-            public @NotNull Set<DropType> getQuery(final @NotNull List<Record> result) throws SQLException {
-                return null;
+            public Set<DropType> getQuery(final @NotNull Result<Record> result) throws SQLException {
+                return getQuery(result.intoResultSet());
             }
 
             @Override
             public Set<DropType> getQuery(final ResultSet resultSet) throws SQLException {
                 Set<DropType> customTypes = new HashSet<>();
-                while(resultSet.next()) {
+                while (resultSet.next()) {
                     customTypes.add(getDropTypeFromResult(resultSet));
                 }
 
@@ -1311,27 +1331,28 @@ public class SqlStorage implements Storage<TradingCard> {
             public Set<DropType> returnNull() {
                 return Collections.emptySet();
             }
-        }.runQuery(CUSTOM_TYPES_SELECT_ALL, null,null);
+        }.prepareAndRunQuery();
     }
 
 
-    private @NotNull DropType getDropTypeFromResult(final @NotNull ResultSet resultSet) throws SQLException{
+    private @NotNull DropType getDropTypeFromResult(final @NotNull ResultSet resultSet) throws SQLException {
         final String typeId = resultSet.getString(COLUMN_TYPE_ID);
         final String type = resultSet.getString(COLUMN_DROP_TYPE);
         final String displayName = resultSet.getString(COLUMN_DISPLAY_NAME);
-        return new DropType(typeId,displayName,type);
+        return new DropType(typeId, displayName, type);
     }
+
     @Override
     public DropType getCustomType(final String typeId) {
-        ExecuteQuery<DropType> executeQuery = new ExecuteQuery<>(this) {
+        ExecuteQuery<DropType> executeQuery = new ExecuteQuery<>(this, jooqSettings) {
             @Override
             public DropType onRunQuery(final DSLContext dslContext) throws SQLException {
-                return null;
+                return getQuery(dslContext.select().from(CustomTypes.CUSTOM_TYPES).where(CustomTypes.CUSTOM_TYPES.TYPE_ID.eq(typeId)).fetch());
             }
 
             @Override
-            public @NotNull DropType getQuery(final @NotNull List<Record> result) throws SQLException {
-                return null;
+            public DropType getQuery(final @NotNull Result<Record> result) throws SQLException {
+                return getQuery(result.intoResultSet());
             }
 
             @Override
@@ -1345,33 +1366,33 @@ public class SqlStorage implements Storage<TradingCard> {
                 return null;
             }
         };
-        return executeQuery.runQuery(CUSTOM_TYPES_GET_BY_ID,null,Map.of(COLUMN_TYPE_ID,typeId));
+        return executeQuery.prepareAndRunQuery();
     }
 
 
     @Override
     public void createCard(final String cardId, final String rarityId, final String seriesId) {
-        executeUpdate(CARDS_CREATE,Map.of(COLUMN_CARD_ID,cardId,COLUMN_RARITY_ID,rarityId,COLUMN_SERIES_ID,seriesId) ,null,null);
+        executeUpdate(CARDS_CREATE, Map.of(COLUMN_CARD_ID, cardId, COLUMN_RARITY_ID, rarityId, COLUMN_SERIES_ID, seriesId), null, null);
     }
 
     @Override
     public void createRarity(final String rarityId) {
-        executeUpdate(RARITY_CREATE,Map.of(COLUMN_RARITY_ID,rarityId),null,null);
+        executeUpdate(RARITY_CREATE, Map.of(COLUMN_RARITY_ID, rarityId), null, null);
     }
 
     @Override
     public void createSeries(final String seriesId) {
-        executeUpdate(SERIES_CREATE,Map.of(COLUMN_SERIES_ID,seriesId),null,null);
+        executeUpdate(SERIES_CREATE, Map.of(COLUMN_SERIES_ID, seriesId), null, null);
     }
 
     @Override
     public void createCustomType(final String typeId, final String type) {
-        executeUpdate(CUSTOM_TYPES_CREATE,Map.of(COLUMN_TYPE_ID,typeId,COLUMN_DROP_TYPE,type), null,null);
+        executeUpdate(CUSTOM_TYPES_CREATE, Map.of(COLUMN_TYPE_ID, typeId, COLUMN_DROP_TYPE, type), null, null);
     }
 
     @Override
     public void createPack(final String packId) {
-        executeUpdate(PACKS_CREATE,Map.of(COLUMN_PACK_ID, packId),null,null);
+        executeUpdate(PACKS_CREATE, Map.of(COLUMN_PACK_ID, packId), null, null);
     }
 
     @Override
@@ -1381,139 +1402,204 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void editCardDisplayName(final String rarityId, final String cardId, final String seriesId, final String displayName) {
-        executeUpdate(CARDS_UPDATE_DISPLAY_NAME, null, Map.of(COLUMN_CARD_ID, cardId,COLUMN_RARITY_ID,rarityId,COLUMN_SERIES_ID,seriesId), Map.of(COLUMN_DISPLAY_NAME,displayName));
+        executeUpdate(CARDS_UPDATE_DISPLAY_NAME, null, Map.of(COLUMN_CARD_ID, cardId, COLUMN_RARITY_ID, rarityId, COLUMN_SERIES_ID, seriesId), Map.of(COLUMN_DISPLAY_NAME, displayName));
     }
 
     @Override
     public void editCardSeries(final String rarityId, final String cardId, final String seriesId, final Series value) {
-        executeUpdate(CARDS_UPDATE_SERIES, null,Map.of(COLUMN_CARD_ID,cardId,COLUMN_RARITY_ID,rarityId,COLUMN_SERIES_ID,seriesId), Map.of(COLUMN_SERIES_ID, seriesId));
+        executeUpdate(CARDS_UPDATE_SERIES, null, Map.of(COLUMN_CARD_ID, cardId, COLUMN_RARITY_ID, rarityId, COLUMN_SERIES_ID, seriesId), Map.of(COLUMN_SERIES_ID, seriesId));
     }
 
     @Override
     public void editCardSellPrice(final String rarityId, final String cardId, final String seriesId, final double value) {
-        executeUpdate(CARDS_UPDATE_SELL_PRICE, null,Map.of(COLUMN_CARD_ID,cardId,COLUMN_RARITY_ID,rarityId,COLUMN_SERIES_ID,seriesId),Map.of(COLUMN_SELL_PRICE, String.valueOf(value)));
+        executeUpdate(CARDS_UPDATE_SELL_PRICE, null, Map.of(COLUMN_CARD_ID, cardId, COLUMN_RARITY_ID, rarityId, COLUMN_SERIES_ID, seriesId), Map.of(COLUMN_SELL_PRICE, String.valueOf(value)));
     }
 
     @Override
     public void editCardType(final String rarityId, final String cardId, final String seriesId, final DropType value) {
-        executeUpdate(CARDS_UPDATE_TYPE, null,Map.of(COLUMN_CARD_ID,cardId,COLUMN_RARITY_ID,rarityId,COLUMN_SERIES_ID,seriesId),Map.of(COLUMN_TYPE_ID, String.valueOf(value)));
+        executeUpdate(CARDS_UPDATE_TYPE, null, Map.of(COLUMN_CARD_ID, cardId, COLUMN_RARITY_ID, rarityId, COLUMN_SERIES_ID, seriesId), Map.of(COLUMN_TYPE_ID, String.valueOf(value)));
     }
 
     @Override
     public void editCardInfo(final String rarityId, final String cardId, final String seriesId, final String value) {
-        executeUpdate(CARDS_UPDATE_INFO, null,Map.of(COLUMN_CARD_ID,cardId,COLUMN_RARITY_ID,rarityId,COLUMN_SERIES_ID,seriesId),Map.of(COLUMN_INFO, String.valueOf(value)));
+        executeUpdate(CARDS_UPDATE_INFO, null, Map.of(COLUMN_CARD_ID, cardId, COLUMN_RARITY_ID, rarityId, COLUMN_SERIES_ID, seriesId), Map.of(COLUMN_INFO, String.valueOf(value)));
     }
 
     @Override
     public void editCardCustomModelData(final String rarityId, final String cardId, final String seriesId, final int value) {
-        executeUpdate(CARDS_UPDATE_CUSTOM_MODEL_DATA, null,Map.of(COLUMN_CARD_ID,cardId,COLUMN_RARITY_ID,rarityId,COLUMN_SERIES_ID,seriesId),Map.of(COLUMN_CUSTOM_MODEL_DATA, String.valueOf(value)));
+        executeUpdate(CARDS_UPDATE_CUSTOM_MODEL_DATA, null, Map.of(COLUMN_CARD_ID, cardId, COLUMN_RARITY_ID, rarityId, COLUMN_SERIES_ID, seriesId), Map.of(COLUMN_CUSTOM_MODEL_DATA, String.valueOf(value)));
     }
 
     @Override
     public void editCardBuyPrice(final String rarityId, final String cardId, final String seriesId, final double value) {
-        executeUpdate(CARDS_UPDATE_BUY_PRICE, null,Map.of(COLUMN_CARD_ID,cardId,COLUMN_RARITY_ID,rarityId,COLUMN_SERIES_ID,seriesId),Map.of(COLUMN_BUY_PRICE, String.valueOf(value)));
+        executeUpdate(CARDS_UPDATE_BUY_PRICE, null, Map.of(COLUMN_CARD_ID, cardId, COLUMN_RARITY_ID, rarityId, COLUMN_SERIES_ID, seriesId), Map.of(COLUMN_BUY_PRICE, String.valueOf(value)));
     }
 
     @Override
     public void editRarityBuyPrice(final String rarityId, final double buyPrice) {
-        executeUpdate(RARITY_UPDATE_BUY_PRICE, null,Map.of(COLUMN_RARITY_ID,rarityId),Map.of(COLUMN_BUY_PRICE, String.valueOf(buyPrice)));
+        executeUpdate(RARITY_UPDATE_BUY_PRICE, null, Map.of(COLUMN_RARITY_ID, rarityId), Map.of(COLUMN_BUY_PRICE, String.valueOf(buyPrice)));
     }
 
     @Override
     public void editRarityAddReward(final String rarityId, final String reward) {
         String commandOrder = String.valueOf(getRewards(rarityId).size() - 1);
-        executeUpdate(REWARDS_UPDATE_ADD_REWARD, null,Map.of(COLUMN_RARITY_ID,rarityId),Map.of("reward", reward, COLUMN_ORDER_NUMBER,commandOrder));
+        executeUpdate(REWARDS_UPDATE_ADD_REWARD, null, Map.of(COLUMN_RARITY_ID, rarityId), Map.of("reward", reward, COLUMN_ORDER_NUMBER, commandOrder));
     }
 
     @Override
     public void editRarityDefaultColor(final String rarityId, final String defaultColor) {
-        executeUpdate(RARITY_UPDATE_DEFAULT_COLOR, null,Map.of(COLUMN_RARITY_ID,rarityId),Map.of(COLUMN_DEFAULT_COLOR, defaultColor));
+        executeUpdate(RARITY_UPDATE_DEFAULT_COLOR, null, Map.of(COLUMN_RARITY_ID, rarityId), Map.of(COLUMN_DEFAULT_COLOR, defaultColor));
     }
 
     @Override
     public void editRarityDisplayName(final String rarityId, final String displayName) {
-        executeUpdate(RARITY_UPDATE_DISPLAY_NAME, null,Map.of(COLUMN_RARITY_ID,rarityId),Map.of(COLUMN_DISPLAY_NAME, displayName));
+        executeUpdate(RARITY_UPDATE_DISPLAY_NAME, null, Map.of(COLUMN_RARITY_ID, rarityId), Map.of(COLUMN_DISPLAY_NAME, displayName));
     }
 
     @Override
     public void editRaritySellPrice(final String rarityId, final double sellPrice) {
-        executeUpdate(RARITY_UPDATE_SELL_PRICE, null,Map.of(COLUMN_RARITY_ID,rarityId),Map.of(COLUMN_SELL_PRICE, String.valueOf(sellPrice)));
+        executeUpdate(RARITY_UPDATE_SELL_PRICE, null, Map.of(COLUMN_RARITY_ID, rarityId), Map.of(COLUMN_SELL_PRICE, String.valueOf(sellPrice)));
     }
 
     @Override
     public void editRarityRemoveAllRewards(final String rarityId) {
-        executeUpdate(REWARDS_UPDATE_REMOVE_ALL_REWARDS,null ,Map.of(COLUMN_RARITY_ID,rarityId),null);
+        executeUpdate(REWARDS_UPDATE_REMOVE_ALL_REWARDS, null, Map.of(COLUMN_RARITY_ID, rarityId), null);
     }
 
     @Override
     public void editRarityRemoveReward(final String rarityId, final int rewardNumber) {
-        executeUpdate(REWARDS_UPDATE_REMOVE_REWARD,null,Map.of(COLUMN_RARITY_ID,rarityId,COLUMN_ORDER_NUMBER,String.valueOf(rewardNumber)),null);
+        executeUpdate(REWARDS_UPDATE_REMOVE_REWARD, null, Map.of(COLUMN_RARITY_ID, rarityId, COLUMN_ORDER_NUMBER, String.valueOf(rewardNumber)), null);
     }
 
     @Override
     public void editSeriesDisplayName(final String seriesId, final String displayName) {
-        executeUpdate(SERIES_UPDATE_DISPLAY_NAME, null,Map.of(COLUMN_SERIES_ID,seriesId), Map.of(COLUMN_DISPLAY_NAME,displayName));
+        executeUpdate(SERIES_UPDATE_DISPLAY_NAME, null, Map.of(COLUMN_SERIES_ID, seriesId), Map.of(COLUMN_DISPLAY_NAME, displayName));
     }
 
     @Override
     public void editSeriesColors(final String seriesId, final @NotNull ColorSeries colors) {
-        executeUpdate(SERIES_UPDATE_COLORS,null,Map.of(COLUMN_SERIES_ID,seriesId),Map.of(COLUMN_COLOR_TYPE,colors.getType(),COLUMN_COLOR_INFO,colors.getInfo(),COLUMN_COLOR_ABOUT,colors.getAbout(),COLUMN_COLOR_RARITY,colors.getRarity(),COLUMN_COLOR_SERIES,colors.getSeries()));
+        executeUpdate(SERIES_UPDATE_COLORS, null, Map.of(COLUMN_SERIES_ID, seriesId), Map.of(COLUMN_COLOR_TYPE, colors.getType(), COLUMN_COLOR_INFO, colors.getInfo(), COLUMN_COLOR_ABOUT, colors.getAbout(), COLUMN_COLOR_RARITY, colors.getRarity(), COLUMN_COLOR_SERIES, colors.getSeries()));
     }
 
     @Override
     public void editSeriesMode(final String seriesId, final @NotNull Mode mode) {
-        executeUpdate(SERIES_UPDATE_MODE,null,Map.of(COLUMN_SERIES_ID,seriesId),Map.of(COLUMN_MODE, mode.toString()));
+        new ExecuteUpdate(this,jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.update(net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Series.SERIES)
+                        .set(net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Series.SERIES.SERIES_MODE,SeriesSeriesMode.lookupLiteral(mode.name()))
+                        .where(net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Series.SERIES.SERIES_ID.eq(seriesId))
+                        .execute();
+            }
+        }.executeUpdate();
     }
 
     @Override
     public void editCustomTypeDisplayName(final String typeId, final String displayName) {
-        executeUpdate(CUSTOM_TYPES_UPDATE_DISPLAY_NAME, null,Map.of(COLUMN_TYPE_ID,typeId),Map.of(COLUMN_DISPLAY_NAME, displayName));
+        new ExecuteUpdate(this,jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.update(CustomTypes.CUSTOM_TYPES)
+                        .set(CustomTypes.CUSTOM_TYPES.DISPLAY_NAME,displayName)
+                        .where(CustomTypes.CUSTOM_TYPES.TYPE_ID.eq(typeId)).execute();
+            }
+        }.executeUpdate();
+        executeUpdate(CUSTOM_TYPES_UPDATE_DISPLAY_NAME, null, Map.of(COLUMN_TYPE_ID, typeId), Map.of(COLUMN_DISPLAY_NAME, displayName));
     }
 
     @Override
     public void editCustomTypeType(final String typeId, final String type) {
-        executeUpdate(CUSTOM_TYPES_UPDATE_TYPE,null,Map.of(COLUMN_TYPE_ID,typeId),Map.of(COLUMN_DROP_TYPE, type));
+        new ExecuteUpdate(this,jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.update(CustomTypes.CUSTOM_TYPES)
+                        .set(CustomTypes.CUSTOM_TYPES.DROP_TYPE, CustomTypesDropType.lookupLiteral(type))
+                        .where(CustomTypes.CUSTOM_TYPES.TYPE_ID.eq(typeId)).execute();
+            }
+        }.executeUpdate();
     }
 
     @Override
     public void editPackDisplayName(final String packId, final String displayName) {
-        executeUpdate(PACKS_UPDATE_DISPLAY_NAME,null, Map.of(COLUMN_PACK_ID, packId),Map.of(COLUMN_DISPLAY_NAME, displayName));
+        new ExecuteUpdate(this,jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.update(Packs.PACKS)
+                        .set(Packs.PACKS.DISPLAY_NAME,displayName)
+                        .where(Packs.PACKS.PACK_ID.eq(packId)).execute();
+            }
+        }.executeUpdate();
     }
 
     @Override
     public void editPackContents(final String packId, final int lineNumber, final Pack.@NotNull PackEntry packEntry) {
-        executeUpdate(PACKS_UPDATE_CONTENT_SET_LINE, null,Map.of(COLUMN_PACK_ID,packId,"line_number",String.valueOf(lineNumber)),Map.of(COLUMN_RARITY_ID,packEntry.getRarityId(),COLUMN_CARD_AMOUNT,String.valueOf(packEntry.getAmount()),COLUMN_SERIES_ID,packEntry.getSeries()));
+        new ExecuteUpdate(this,jooqSettings){
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.update(PacksContent.PACKS_CONTENT)
+                        .set(PacksContent.PACKS_CONTENT.PACK_ID,packId)
+                        .set(PacksContent.PACKS_CONTENT.LINE_NUMBER,lineNumber)
+                        .set(PacksContent.PACKS_CONTENT.SERIES_ID,packEntry.seriesId())
+                        .set(PacksContent.PACKS_CONTENT.RARITY_ID,packEntry.getRarityId())
+                        .set(PacksContent.PACKS_CONTENT.CARD_AMOUNT,String.valueOf(packEntry.getAmount())).execute();
+            }
+        }.executeUpdate();
     }
 
     @Override
     public void editPackContentsAdd(final String packId, final Pack.@NotNull PackEntry packEntry) {
-        final String lineNumber = String.valueOf(getPackEntries(packId).size());
-        executeUpdate(PACKS_INSERT_CONTENT_ADD_LINE,null,Map.of(COLUMN_PACK_ID,packId),Map.of("line_number",lineNumber,COLUMN_PACK_ID,packId,COLUMN_RARITY_ID,packEntry.getRarityId(),COLUMN_CARD_AMOUNT,String.valueOf(packEntry.getAmount()),COLUMN_SERIES_ID,packEntry.getSeries()));
+        final int lineNumber = getPackEntries(packId).size();
+        new ExecuteUpdate(this,jooqSettings){
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.insertInto(PacksContent.PACKS_CONTENT)
+                        .set(PacksContent.PACKS_CONTENT.PACK_ID,packId)
+                        .set(PacksContent.PACKS_CONTENT.LINE_NUMBER,lineNumber)
+                        .set(PacksContent.PACKS_CONTENT.SERIES_ID,packEntry.seriesId())
+                        .set(PacksContent.PACKS_CONTENT.RARITY_ID,packEntry.getRarityId())
+                                .set(PacksContent.PACKS_CONTENT.CARD_AMOUNT,String.valueOf(packEntry.getAmount())).execute();
+            }
+        }.executeUpdate();
     }
 
     @Override
     public void editPackContentsDelete(final String packId, final int lineNumber) {
-        executeUpdate(PACKS_DELETE_CONTENT,null,Map.of(COLUMN_PACK_ID,packId,"line_number",String.valueOf(lineNumber)),null);
+        new ExecuteUpdate(this,jooqSettings){
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.deleteFrom(PacksContent.PACKS_CONTENT).where(PacksContent.PACKS_CONTENT.PACK_ID.eq(packId).and(PacksContent.PACKS_CONTENT.LINE_NUMBER.eq(lineNumber))).execute();
+            }
+        }.executeUpdate();
     }
 
     @Override
     public void editPackPermission(final String packId, final String permission) {
-        executeUpdate(PACKS_UPDATE_PERMISSION,null, Map.of(COLUMN_PACK_ID,packId),Map.of(COLUMN_PACK_PERMISSION, permission));
+        new ExecuteUpdate(this,jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.update(Packs.PACKS).set(Packs.PACKS.PERMISSION,permission).where(Packs.PACKS.PACK_ID.eq(packId)).execute();
+            }
+        }.executeUpdate();
     }
 
     @Override
     public void editPackPrice(final String packId, final double price) {
-        executeUpdate(PACKS_UPDATE_PRICE,null,Map.of(COLUMN_PACK_ID,packId),Map.of(COLUMN_BUY_PRICE,String.valueOf(price)));
+        new ExecuteUpdate(this, jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.update(Packs.PACKS).set(Packs.PACKS.BUY_PRICE,price).where(Packs.PACKS.PACK_ID.eq(packId)).execute();
+            }
+        }.executeUpdate();
     }
 
-    private void executeUpdate(@NotNull String sql,@Nullable Map<String,String> values,@Nullable Map<String,String> where, @Nullable Map<String, String> set) {
-        try (Connection connection = connectionFactory.getConnection()){
-            try (PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(sql, values,where,set))){
+    private void executeUpdate(@NotNull String sql, @Nullable Map<String, String> values, @Nullable Map<String, String> where, @Nullable Map<String, String> set) {
+        try (Connection connection = connectionFactory.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement(statementProcessor.apply(sql, values, where, set))) {
                 plugin.debug(SqlStorage.class, "Run SQL:");
-                plugin.debug(SqlStorage.class,sql);
-                if(values != null)
+                plugin.debug(SqlStorage.class, sql);
+                if (values != null)
                     plugin.debug(SqlStorage.class, values.toString());
-                if(where != null)
+                if (where != null)
                     plugin.debug(SqlStorage.class, where.toString());
                 statement.executeUpdate();
             }
