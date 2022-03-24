@@ -67,7 +67,7 @@ public class CustomTypesConfig extends SimpleConfigurate {
         }
     }
 
-    public Set<DropType> getDropTypes() {
+    public Set<DropType> getCustomTypes() {
         return dropTypes;
     }
 

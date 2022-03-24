@@ -190,7 +190,7 @@ public class YamlStorage implements Storage<TradingCard> {
 
     @Override
     public Set<DropType> getDropTypes() {
-        return this.customTypesConfig.getDropTypes();
+        return this.customTypesConfig.getCustomTypes();
     }
 
     public TradingCard generateCard(final SimpleCardsConfig simpleCardsConfig, final String cardId, final String rarityId) {
@@ -248,7 +248,7 @@ public class YamlStorage implements Storage<TradingCard> {
         for(TradingCard card: getCards()) {
             //This only loads on startup, that means that it doesn't update. But only on restarts/reloads TODO
             if(card.getSeries().isActive()) {
-                activeCards.put(cardKey(card.getRarity().getName(),card.getCardName()), card);
+                activeCards.put(cardKey(card.getRarity().getName(),card.getCardId()), card);
             }
         }
     }

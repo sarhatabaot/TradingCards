@@ -46,8 +46,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.BatchUpdateException;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -598,7 +596,7 @@ public class SqlStorage implements Storage<TradingCard> {
     public Map<String, TradingCard> getCardsMap() {
         Map<String, TradingCard> cardsMap = new HashMap<>();
         for (TradingCard tradingCard : getCards()) {
-            final String cardId = tradingCard.getCardName();
+            final String cardId = tradingCard.getCardId();
             final String rarityId = tradingCard.getRarity().getName();
             final String cardKey = CardUtil.cardKey(rarityId, cardId);
             cardsMap.put(cardKey, tradingCard);

@@ -5,7 +5,6 @@ import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
 import org.bukkit.command.CommandSender;
-import org.spongepowered.configurate.ConfigurateException;
 
 /**
  * @author sarhatabaot
@@ -26,10 +25,10 @@ public class CardMigratorBukkitRunnable extends MigratorBukkitRunnable {
     }
 
     @Override
-    public void onExecute() throws ConfigurateException {
+    public void onExecute() {
         for(TradingCard card: source.getCards()) {
-            Util.logAndMessage(sender,"Started conversion for "+card.getCardName());
-            final String cardId = card.getCardName();
+            Util.logAndMessage(sender,"Started conversion for "+card.getCardId());
+            final String cardId = card.getCardId();
             final String rarityId = card.getRarity().getName();
             final String seriesId = card.getSeries().getName();
             plugin.getStorage().createCard(cardId, rarityId,seriesId);

@@ -71,7 +71,7 @@ public class BuyCommand extends BaseCommand {
             if (!CardUtil.hasVault(player))
                 return;
 
-            if (plugin.getCardManager().getCard(card, rarity, false).getCardName().equals("nullCard")) {
+            if (plugin.getCardManager().getCard(card, rarity, false).getCardId().equals("nullCard")) {
                 ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().cardDoesntExist());
                 return;
             }

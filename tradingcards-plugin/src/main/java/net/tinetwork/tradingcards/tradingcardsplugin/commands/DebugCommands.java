@@ -156,7 +156,7 @@ public class DebugCommands extends BaseCommand {
         @CommandCompletion("@rarities @series")
         @CommandPermission(Permissions.ADMIN_DEBUG_RARITIES_SERIES)
         public void onRaritiesSeriesCards(final CommandSender sender, final String rarityId, final String seriesId) {
-            sender.sendMessage(StringUtils.join(plugin.getStorage().getCardsInRarityAndSeries(rarityId, seriesId).stream().map(TradingCard::getCardName).toList(), ", "));
+            sender.sendMessage(StringUtils.join(plugin.getStorage().getCardsInRarityAndSeries(rarityId, seriesId).stream().map(TradingCard::getCardId).toList(), ", "));
         }
     }
 }

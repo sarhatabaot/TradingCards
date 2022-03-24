@@ -238,7 +238,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         var commandManager = new PaperCommandManager(this);
         commandManager.getCommandCompletions().registerCompletion("rarities", c -> rarityManager.getRarities().stream().map(Rarity::getName).toList());
         commandManager.getCommandCompletions().registerCompletion("cards", c -> cardManager.getRarityCardListNames(c.getContextValueByName(String.class, "rarity")));
-        commandManager.getCommandCompletions().registerCompletion("command-cards", c -> storage.getCardsInRarityAndSeries(c.getContextValue(Rarity.class).getName(), c.getContextValue(Series.class).getName()).stream().map(TradingCard::getCardName).toList());
+        commandManager.getCommandCompletions().registerCompletion("command-cards", c -> storage.getCardsInRarityAndSeries(c.getContextValue(Rarity.class).getName(), c.getContextValue(Series.class).getName()).stream().map(TradingCard::getCardId).toList());
         commandManager.getCommandCompletions().registerCompletion("active-cards", c -> cardManager.getActiveRarityCardList(c.getContextValueByName(String.class, "rarity")));
         commandManager.getCommandCompletions().registerCompletion("packs", c -> packManager.getPacks().stream().map(Pack::id).toList());
         commandManager.getCommandCompletions().registerCompletion("default-types", c -> dropTypeManager.getDefaultTypes());
