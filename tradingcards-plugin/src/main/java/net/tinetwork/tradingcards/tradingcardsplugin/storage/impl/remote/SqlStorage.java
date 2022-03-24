@@ -981,7 +981,7 @@ public class SqlStorage implements Storage<TradingCard> {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.insertInto(CustomTypes.CUSTOM_TYPES)
-                        .set(CustomTypes.CUSTOM_TYPES.TYPE_ID, type)
+                        .set(CustomTypes.CUSTOM_TYPES.TYPE_ID, typeId)
                         .onDuplicateKeyIgnore()
                         .execute();
             }
@@ -1255,13 +1255,13 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
     @Override
-    public void editCustomTypeType(final String typeId, final String type) {
+    public void editCustomTypeType(final String customTypeId, final String defaultTypeId) {
         new ExecuteUpdate(this, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.update(CustomTypes.CUSTOM_TYPES)
-                        .set(CustomTypes.CUSTOM_TYPES.DROP_TYPE, CustomTypesDropType.lookupLiteral(type))
-                        .where(CustomTypes.CUSTOM_TYPES.TYPE_ID.eq(typeId)).execute();
+                        .set(CustomTypes.CUSTOM_TYPES.DROP_TYPE, CustomTypesDropType.lookupLiteral(defaultTypeId))
+                        .where(CustomTypes.CUSTOM_TYPES.TYPE_ID.eq(customTypeId)).execute();
             }
         }.executeUpdate();
     }
