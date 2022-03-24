@@ -496,8 +496,8 @@ public class SqlStorage implements Storage<TradingCard> {
                     final String rarityId = recordResult.getValue(Rarities.RARITIES.RARITY_ID);
                     final String displayName = recordResult.getValue(Rarities.RARITIES.DISPLAY_NAME);
                     final String defaultColor = recordResult.getValue(Rarities.RARITIES.DEFAULT_COLOR);
-                    final double buyPrice = recordResult.getValue(Rarities.RARITIES.BUY_PRICE);
-                    final double sellPrice = recordResult.getValue(Rarities.RARITIES.SELL_PRICE);
+                    final double buyPrice = (recordResult.getValue(Rarities.RARITIES.BUY_PRICE) == null ? 0.00D : recordResult.getValue(Rarities.RARITIES.BUY_PRICE));
+                    final double sellPrice = (recordResult.getValue(Rarities.RARITIES.SELL_PRICE) == null ? 0.00D : recordResult.getValue(Rarities.RARITIES.SELL_PRICE));
                     final List<String> rewards = getRewards(rarityId);
                     rarities.add(new Rarity(rarityId, displayName, defaultColor, buyPrice, sellPrice, rewards));
                 }
@@ -854,8 +854,11 @@ public class SqlStorage implements Storage<TradingCard> {
     public List<Pack> getPacks() {
         return new ExecuteQuery<List<Pack>,Result<Record>>(this, jooqSettings) {
             @Override
-            public List<Pack> onRunQuery(final DSLContext dslContext) throws SQLException {
-                return getQuery(dslContext.select().from(Packs.PACKS).fetch());
+            public List<Pack> onRunQuery(final DSLContext dslContext) {
+                Result<Record> result = dslContext.select()
+                        .from(Packs.PACKS)
+                        .fetch();
+                return getQuery(result);
             }
 
             @Override
@@ -955,6 +958,7 @@ public class SqlStorage implements Storage<TradingCard> {
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.insertInto(Rarities.RARITIES)
                         .set(Rarities.RARITIES.RARITY_ID, rarityId)
+                        .onDuplicateKeyIgnore()
                         .execute();
             }
         }.executeUpdate();
@@ -967,6 +971,7 @@ public class SqlStorage implements Storage<TradingCard> {
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.insertInto(net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Series.SERIES)
                         .set(net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Series.SERIES.SERIES_ID, seriesId)
+                        .onDuplicateKeyIgnore()
                         .execute();
             }
         }.executeUpdate();
@@ -979,6 +984,7 @@ public class SqlStorage implements Storage<TradingCard> {
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.insertInto(CustomTypes.CUSTOM_TYPES)
                         .set(CustomTypes.CUSTOM_TYPES.TYPE_ID, type)
+                        .onDuplicateKeyIgnore()
                         .execute();
             }
         }.executeUpdate();
@@ -991,6 +997,7 @@ public class SqlStorage implements Storage<TradingCard> {
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.insertInto(Packs.PACKS)
                         .set(Packs.PACKS.PACK_ID, packId)
+                        .onDuplicateKeyIgnore()
                         .execute();
             }
         }.executeUpdate();
