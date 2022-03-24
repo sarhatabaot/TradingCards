@@ -44,17 +44,17 @@ public class BuyCommand extends BaseCommand {
 
             Pack pack = plugin.getPackManager().getPack(name);
 
-            if (pack.getPrice() <= 0.0D) {
+            if (pack.getBuyPrice() <= 0.0D) {
                 ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().cannotBeBought());
                 return;
             }
 
-            EconomyResponse economyResponse = plugin.getEcon().withdrawPlayer(player, pack.getPrice());
+            EconomyResponse economyResponse = plugin.getEcon().withdrawPlayer(player, pack.getBuyPrice());
             if (economyResponse.transactionSuccess()) {
                 if (plugin.getGeneralConfig().closedEconomy()) {
-                    plugin.getEcon().bankDeposit(plugin.getGeneralConfig().serverAccount(), pack.getPrice());
+                    plugin.getEcon().bankDeposit(plugin.getGeneralConfig().serverAccount(), pack.getBuyPrice());
                 }
-                ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().boughtCard().replace("%amount%", String.valueOf(pack.getPrice())));
+                ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().boughtCard().replace("%amount%", String.valueOf(pack.getBuyPrice())));
                 CardUtil.dropItem(player, plugin.getPackManager().getPackItem(name));
                 return;
             }

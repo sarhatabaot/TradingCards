@@ -64,7 +64,7 @@ public class PacksConfig extends SimpleConfigurate {
         ConfigurationNode packNode = rootNode.node(packId);
         try {
             Pack pack = getPack(packId);
-            pack.setPermissions(permission);
+            pack.setPermission(permission);
             packNode.set(pack);
             loader.save(rootNode);
         } catch (ConfigurateException e) {
@@ -76,7 +76,7 @@ public class PacksConfig extends SimpleConfigurate {
         ConfigurationNode packNode = rootNode.node(packId);
         try {
             Pack pack = getPack(packId);
-            pack.setPrice(price);
+            pack.setBuyPrice(price);
             packNode.set(pack);
             loader.save(rootNode);
         } catch (ConfigurateException e) {
@@ -161,8 +161,8 @@ public class PacksConfig extends SimpleConfigurate {
             }
 
             target.node(CONTENT).set(pack.getPackEntryList());
-            target.node(PRICE).set(pack.getPrice());
-            target.node(PERMISSION).set(pack.getPermissions());
+            target.node(PRICE).set(pack.getBuyPrice());
+            target.node(PERMISSION).set(pack.getPermission());
         }
     }
 }

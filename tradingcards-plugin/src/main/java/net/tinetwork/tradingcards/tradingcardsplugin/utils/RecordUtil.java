@@ -42,7 +42,7 @@ public class RecordUtil {
     public static @NotNull Pack getPackFromRecord(@NotNull Record recordResult, final List<Pack.PackEntry> entries) {
         final String packId = recordResult.getValue(Packs.PACKS.PACK_ID);
         final String displayName = recordResult.getValue(Packs.PACKS.DISPLAY_NAME);
-        final double price = recordResult.getValue(Packs.PACKS.BUY_PRICE);
+        final double price = (recordResult.getValue(Packs.PACKS.BUY_PRICE) == null) ? 0.00D : recordResult.getValue(Packs.PACKS.BUY_PRICE);
         final String permission = recordResult.getValue(Packs.PACKS.PERMISSION);
         return new Pack(packId, entries, displayName, price, permission);
     }
