@@ -321,6 +321,11 @@ public class YamlStorage implements Storage<TradingCard> {
     }
 
     @Override
+    public void createColorSeries(final String seriesId) {
+        //does nothing. in series.
+    }
+
+    @Override
     public void createCustomType(final String typeId, final String type) {
         customTypesConfig.createCustomType(typeId,type);
     }
@@ -460,6 +465,11 @@ public class YamlStorage implements Storage<TradingCard> {
     @Override
     public void editSeriesMode(final String seriesId, final Mode mode) {
         seriesConfig.editMode(seriesId,mode);
+    }
+
+    @Override
+    public void editColorSeries(final String seriesId, final ColorSeries colors) {
+        editColorSeries(seriesId,colors);
     }
 
     @Override
