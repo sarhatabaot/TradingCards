@@ -23,6 +23,8 @@ public class SeriesMigratorBukkitRunnable extends MigratorBukkitRunnable{
             plugin.getStorage().createSeries(series.getName());
             plugin.getStorage().editSeriesMode(series.getName(),series.getMode());
             plugin.getStorage().editSeriesDisplayName(series.getName(),series.getDisplayName());
+            plugin.getStorage().createColorSeries(series.getName());
+            plugin.getStorage().editColorSeries(series.getName(),series.getColorSeries());
             plugin.getStorage().editSeriesColors(series.getName(),series.getColorSeries());
         }
     }

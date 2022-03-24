@@ -976,12 +976,43 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
     @Override
+    public void createColorSeries(final String seriesId) {
+        new ExecuteUpdate(this,jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.insertInto(SeriesColors.SERIES_COLORS)
+                        .set(SeriesColors.SERIES_COLORS.SERIES_ID, seriesId)
+                        .onDuplicateKeyIgnore()
+                        .execute();
+            }
+        }.executeUpdate();
+    }
+
+    @Override
+    public void editColorSeries(final String seriesId, final ColorSeries colors) {
+        new ExecuteUpdate(this,jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.update(SeriesColors.SERIES_COLORS)
+                        .set(SeriesColors.SERIES_COLORS.SERIES, colors.getSeries())
+                        .set(SeriesColors.SERIES_COLORS.ABOUT,colors.getAbout())
+                        .set(SeriesColors.SERIES_COLORS.INFO, colors.getInfo())
+                        .set(SeriesColors.SERIES_COLORS.TYPE, colors.getType())
+                        .set(SeriesColors.SERIES_COLORS.RARITY, colors.getRarity())
+                        .where(SeriesColors.SERIES_COLORS.SERIES_ID.eq(seriesId))
+                        .execute();
+            }
+        }.executeUpdate();
+    }
+
+    @Override
     public void createCustomType(final String typeId, final String type) {
         new ExecuteUpdate(this, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.insertInto(CustomTypes.CUSTOM_TYPES)
                         .set(CustomTypes.CUSTOM_TYPES.TYPE_ID, typeId)
+                        .set(CustomTypes.CUSTOM_TYPES.DROP_TYPE, CustomTypesDropType.lookupLiteral(type))
                         .onDuplicateKeyIgnore()
                         .execute();
             }
@@ -1259,6 +1290,8 @@ public class SqlStorage implements Storage<TradingCard> {
         new ExecuteUpdate(this, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
+                plugin.debug(SqlStorage.class,defaultTypeId);
+                plugin.debug(SqlStorage.class,CustomTypesDropType.lookupLiteral(defaultTypeId).toString());
                 dslContext.update(CustomTypes.CUSTOM_TYPES)
                         .set(CustomTypes.CUSTOM_TYPES.DROP_TYPE, CustomTypesDropType.lookupLiteral(defaultTypeId))
                         .where(CustomTypes.CUSTOM_TYPES.TYPE_ID.eq(customTypeId)).execute();
