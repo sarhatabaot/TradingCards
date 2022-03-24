@@ -239,7 +239,7 @@ public class SqlStorage implements Storage<TradingCard> {
             }
 
             @Override
-            public Series getQuery(final @NotNull Result<Record> result) throws SQLException {
+            public Series getQuery(final @NotNull Result<Record> result) {
                 Record record = result.get(0);
                 return RecordUtil.getSeriesFromRecord(record,getColorSeries(seriesId));
             }
@@ -350,7 +350,7 @@ public class SqlStorage implements Storage<TradingCard> {
     public boolean hasCard(final UUID playerUuid, final String card, final String rarity) {
         return new ExecuteQuery<Boolean,Result<Record>>(this, jooqSettings) {
             @Override
-            public Boolean onRunQuery(final DSLContext dslContext) throws SQLException {
+            public Boolean onRunQuery(final DSLContext dslContext) {
                 return getQuery(dslContext.select().from(Decks.DECKS).where(Decks.DECKS.UUID.eq(playerUuid.toString()).and(Decks.DECKS.CARD_ID.eq(card).and(Decks.DECKS.RARITY_ID.eq(rarity)).and(Decks.DECKS.IS_SHINY.eq((byte) 0)))).fetch());
             }
 
@@ -370,7 +370,7 @@ public class SqlStorage implements Storage<TradingCard> {
     public boolean hasShinyCard(final UUID playerUuid, final String card, final String rarity) {
         return new ExecuteQuery<Boolean,Result<Record>>(this, jooqSettings) {
             @Override
-            public Boolean onRunQuery(final DSLContext dslContext) throws SQLException {
+            public Boolean onRunQuery(final DSLContext dslContext) {
                 return getQuery(dslContext.select().from(Decks.DECKS).where(Decks.DECKS.UUID.eq(playerUuid.toString()).and(Decks.DECKS.CARD_ID.eq(card).and(Decks.DECKS.RARITY_ID.eq(rarity)).and(Decks.DECKS.IS_SHINY.eq((byte) 1)))).fetch());
             }
 
