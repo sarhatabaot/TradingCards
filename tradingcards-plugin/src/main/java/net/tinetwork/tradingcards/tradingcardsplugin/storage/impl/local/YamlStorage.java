@@ -50,6 +50,9 @@ public class YamlStorage implements Storage<TradingCard> {
     private final Map<String, List<TradingCard>> rarityCardList;
     private final Map<String, List<TradingCard>> seriesCardList;
     private Map<String,Map<String,List<TradingCard>>> raritySeriesCardList;
+
+
+
     private final Set<Series> activeSeries;
 
     public YamlStorage(final TradingCards plugin) throws ConfigurateException {
@@ -417,6 +420,11 @@ public class YamlStorage implements Storage<TradingCard> {
         simpleCardsConfig.editBuyPrice(rarityId,cardId,seriesId,value);
     }
 
+    @Override
+    public void editCardHasShiny(final String rarityId, final String cardId, final String seriesId, final boolean value) {
+        SimpleCardsConfig simpleCardsConfig = cardsConfig.getCardConfigs().get(0);
+        simpleCardsConfig.editHasShiny(rarityId,cardId,seriesId,value);
+    }
     @Override
     public void editRarityBuyPrice(final String rarityId, final double buyPrice) {
         raritiesConfig.editBuyPrice(rarityId,buyPrice);

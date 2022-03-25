@@ -39,6 +39,7 @@ public class CardMigratorBukkitRunnable extends MigratorBukkitRunnable {
             plugin.getStorage().editCardCustomModelData(rarityId,cardId,seriesId,card.getCustomModelNbt());
             plugin.getStorage().editCardType(rarityId,cardId,seriesId,card.getType());
             plugin.getStorage().editCardDisplayName(rarityId,cardId,seriesId,card.getDisplayName());
+            plugin.getStorage().editCardHasShiny(rarityId,cardId,seriesId,card.hasShiny());
         }
     }
 }

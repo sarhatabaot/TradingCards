@@ -10,6 +10,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.DropTypeManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local.card.EditCardConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
 import org.bukkit.Material;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -77,121 +78,75 @@ public class SimpleCardsConfig extends SimpleConfigurate {
     }
 
     public void editDisplayName(final String rarityId, final String cardId,final String seriesId,final String displayName){
-        ConfigurationNode rarityNode = cardsNode.node(rarityId);
-        ConfigurationNode cardNode = rarityNode.node(cardId);
-        try {
-            TradingCard card = cardNode.get(TradingCard.class);
-            if(card == null) {
-                throw new ConfigurateException();
+        new EditCardConfig<String>(rootNode,cardsNode,loader,this) {
+            @Override
+            protected void onUpdate(final TradingCard card, final String value) {
+                card.displayName(value);
             }
-            card.displayName(displayName);
-            cardNode.set(card);
-            loader.save(rootNode);
-            reloadConfig();
-        } catch (ConfigurateException e) {
-            Util.logSevereException(e);
-        }
+        }.updateValue(rarityId,cardId,seriesId,displayName);
     }
 
     public void editSeries(final String rarityId, final String cardId,final String seriesId,final Series series) {
-        ConfigurationNode rarityNode = cardsNode.node(rarityId);
-        ConfigurationNode cardNode = rarityNode.node(cardId);
-        try {
-            TradingCard card = cardNode.get(TradingCard.class);
-            if(card == null) {
-                throw new ConfigurateException();
+        new EditCardConfig<Series>(rootNode,cardsNode,loader,this){
+            @Override
+            protected void onUpdate(final TradingCard card, final Series value) {
+                card.series(value);
             }
-            card.series(series);
-            cardNode.set(card);
-            loader.save(rootNode);
-            reloadConfig();
-        } catch (ConfigurateException e) {
-            Util.logSevereException(e);
-        }
+        }.updateValue(rarityId,cardId,seriesId,series);
     }
 
     public void editSellPrice(final String rarityId, final String cardId,final String seriesId,final double sellPrice) {
-        ConfigurationNode rarityNode = cardsNode.node(rarityId);
-        ConfigurationNode cardNode = rarityNode.node(cardId);
-        try {
-            TradingCard card = cardNode.get(TradingCard.class);
-            if(card == null) {
-                throw new ConfigurateException();
+        new EditCardConfig<Double>(rootNode,cardsNode,loader,this){
+            @Override
+            protected void onUpdate(final TradingCard card, final Double value) {
+                card.sellPrice(sellPrice);
             }
-            card.sellPrice(sellPrice);
-            cardNode.set(card);
-            loader.save(rootNode);
-            reloadConfig();
-        } catch (ConfigurateException e) {
-            Util.logSevereException(e);
-        }
+        }.updateValue(rarityId,cardId,seriesId,sellPrice);
     }
     public void editType(final String rarityId, final String cardId,final String seriesId,final DropType type) {
-        ConfigurationNode rarityNode = cardsNode.node(rarityId);
-        ConfigurationNode cardNode = rarityNode.node(cardId);
-        try {
-            TradingCard card = cardNode.get(TradingCard.class);
-            if(card == null) {
-                throw new ConfigurateException();
+        new EditCardConfig<DropType>(rootNode,cardsNode,loader,this){
+            @Override
+            protected void onUpdate(final TradingCard card, final DropType value) {
+                card.type(value);
             }
-            card.type(type);
-            cardNode.set(card);
-            loader.save(rootNode);
-            reloadConfig();
-        } catch (ConfigurateException e) {
-            Util.logSevereException(e);
-        }
+        }.updateValue(rarityId,cardId,seriesId,type);
     }
 
     public void editInfo(final String rarityId, final String cardId,final String seriesId,final String info) {
-        ConfigurationNode rarityNode = cardsNode.node(rarityId);
-        ConfigurationNode cardNode = rarityNode.node(cardId);
-        try {
-            TradingCard card = cardNode.get(TradingCard.class);
-            if(card == null) {
-                throw new ConfigurateException();
+        new EditCardConfig<String>(rootNode,cardsNode,loader,this){
+            @Override
+            protected void onUpdate(final TradingCard card, final String value) {
+                card.info(info);
             }
-            card.info(info);
-            cardNode.set(card);
-            loader.save(rootNode);
-            reloadConfig();
-        } catch (ConfigurateException e) {
-            Util.logSevereException(e);
-        }
+        }.updateValue(rarityId,cardId,seriesId,info);
     }
 
     public void editModelData(final String rarityId, final String cardId,final String seriesId,final int data) {
-        ConfigurationNode rarityNode = cardsNode.node(rarityId);
-        ConfigurationNode cardNode = rarityNode.node(cardId);
-        try {
-            TradingCard card = cardNode.get(TradingCard.class);
-            if(card == null) {
-                throw new ConfigurateException();
+        new EditCardConfig<Integer>(rootNode,cardsNode,loader,this){
+            @Override
+            protected void onUpdate(final TradingCard card, final Integer value) {
+                card.customModelNbt(value);
             }
-            card.customModelNbt(data);
-            cardNode.set(card);
-            loader.save(rootNode);
-            reloadConfig();
-        } catch (ConfigurateException e) {
-            Util.logSevereException(e);
-        }
+        }.updateValue(rarityId,cardId,seriesId,data);
     }
 
     public void editBuyPrice(final String rarityId, final String cardId,final String seriesId,final double buyPrice) {
-        ConfigurationNode rarityNode = cardsNode.node(rarityId);
-        ConfigurationNode cardNode = rarityNode.node(cardId);
-        try {
-            TradingCard card = cardNode.get(TradingCard.class);
-            if(card == null) {
-                throw new ConfigurateException();
+        new EditCardConfig<Double>(rootNode,cardsNode,loader,this){
+            @Override
+            protected void onUpdate(final TradingCard card, final Double value) {
+                card.buyPrice(value);
             }
-            card.buyPrice(buyPrice);
-            cardNode.set(card);
-            loader.save(rootNode);
-            reloadConfig();
-        } catch (ConfigurateException e) {
-            Util.logSevereException(e);
-        }
+        }.updateValue(rarityId,cardId,seriesId,buyPrice);
+    }
+
+
+    public void editHasShiny(final String rarityId, final String cardId, final String seriesId, final boolean hasShiny) {
+        new EditCardConfig<Boolean>(rootNode,cardsNode,loader,this) {
+            @Override
+            protected void onUpdate(final TradingCard card, final Boolean value) {
+                card.hasShiny(hasShiny);
+            }
+        }.updateValue(rarityId,cardId,seriesId,hasShiny);
     }
 
     public static class CardSerializer implements TypeSerializer<TradingCard> {

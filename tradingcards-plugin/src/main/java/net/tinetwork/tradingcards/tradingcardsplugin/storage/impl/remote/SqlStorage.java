@@ -544,7 +544,7 @@ public class SqlStorage implements Storage<TradingCard> {
     private @NotNull ColorSeries getColorSeries(final String seriesId) {
         return new ExecuteQuery<ColorSeries,Result<Record>>(this, jooqSettings) {
             @Override
-            public ColorSeries onRunQuery(final DSLContext dslContext) throws SQLException {
+            public ColorSeries onRunQuery(final DSLContext dslContext) {
                 return getQuery(dslContext.select().from(SeriesColors.SERIES_COLORS).where(SeriesColors.SERIES_COLORS.SERIES_ID.eq(seriesId)).limit(1).fetch());
             }
 
@@ -1139,6 +1139,21 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
     @Override
+    public void editCardHasShiny(final String rarityId, final String cardId, final String seriesId, final boolean value) {
+        new ExecuteUpdate(this,jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.update(Cards.CARDS)
+                        .set(Cards.CARDS.HAS_SHINY, toByte(value))
+                        .where(Cards.CARDS.RARITY_ID.eq(rarityId))
+                        .and(Cards.CARDS.CARD_ID.eq(cardId))
+                        .and(Cards.CARDS.SERIES_ID.eq(seriesId))
+                        .execute();
+            }
+        }.executeUpdate();
+    }
+
+    @Override
     public void editRarityBuyPrice(final String rarityId, final double buyPrice) {
         new ExecuteUpdate(this, jooqSettings) {
             @Override
@@ -1370,6 +1385,15 @@ public class SqlStorage implements Storage<TradingCard> {
                 dslContext.update(Packs.PACKS).set(Packs.PACKS.BUY_PRICE, price).where(Packs.PACKS.PACK_ID.eq(packId)).execute();
             }
         }.executeUpdate();
+    }
+
+    @Contract(pure = true)
+    private byte toByte(boolean value) {
+        return (byte) (value ? 1 : 0);
+    }
+
+    private boolean toBoolean(byte value) {
+        return value != 0;
     }
 
 }
