@@ -198,7 +198,7 @@ public class SqlStorage implements Storage<TradingCard> {
             public List<String> onRunQuery(final DSLContext dslContext) {
                 Result<Record> result = dslContext.select().from(Rewards.REWARDS).where(Rewards.REWARDS.RARITY_ID.eq(rarityId)).fetch();
                 if(result.isEmpty()) {
-                    plugin.debug(SqlStorage.class,"Reward for rarity " + rarityId);
+                    plugin.debug(SqlStorage.class,"No reward for rarity " + rarityId);
                     return empty();
                 }
                 return getQuery(result);
