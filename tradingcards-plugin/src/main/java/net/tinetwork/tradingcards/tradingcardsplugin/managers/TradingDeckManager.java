@@ -106,12 +106,16 @@ public class TradingDeckManager implements DeckManager {
 
         for (StorageEntry deckEntry : deckEntries) {
             plugin.debug(getClass(),deckEntry.toString());
-            TradingCard card = cardManager.getCard(deckEntry.getCardId(),
-                    deckEntry.getRarityId());
+
+            final String cardId = deckEntry.getCardId();
+            final String rarityId = deckEntry.getRarityId();
+
+            TradingCard card = cardManager.getCard(cardId, rarityId);
             if(card instanceof EmptyCard) {
-                plugin.debug(getClass(),"Card is not in a cards file, skipping.");
+                plugin.debug(getClass(),"Card is not in a cards storage, skipping.");
                 continue;
             }
+
             ItemStack cardItem = card.build(deckEntry.isShiny());
             cardItem.setAmount(deckEntry.getAmount());
             cards.add(cardItem);

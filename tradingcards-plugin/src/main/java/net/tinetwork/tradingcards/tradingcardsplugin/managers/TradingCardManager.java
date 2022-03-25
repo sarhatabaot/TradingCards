@@ -3,6 +3,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.managers;
 import net.tinetwork.tradingcards.api.manager.CardManager;
 import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.api.model.Rarity;
+import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.api.model.chance.Chance;
 import net.tinetwork.tradingcards.api.model.chance.EmptyChance;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Stream;
 
 import static net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil.cardKey;
 
@@ -32,7 +34,10 @@ public class TradingCardManager implements CardManager<TradingCard> {
     private List<String> activeCards;
 
     //This stores the cards from a single rarity, over multiple files
+    //Should be under a specific storage
     private Map<String, List<String>> rarityCardList;
+
+    //active series rarity list see plugin.getStorage().getCardsInRarityAndSeries()
     private Map<String, List<String>> activeRarityCardList;
 
     public TradingCardManager(final TradingCards plugin) {
@@ -56,7 +61,6 @@ public class TradingCardManager implements CardManager<TradingCard> {
      * Pre-loads all existing cards.
      */
     private void loadAllCards() {
-        this.rarityCardList = new HashMap<>();
         this.cards = plugin.getStorage().getCardsMap();
         this.activeCards = new ArrayList<>();
         loadRarityCardNames();
@@ -76,18 +80,23 @@ public class TradingCardManager implements CardManager<TradingCard> {
 
     private void loadActiveRarityCardListNames() {
         this.activeRarityCardList = new HashMap<>();
-        for(TradingCard card: plugin.getStorage().getActiveCards()) {
-            final Rarity rarity = card.getRarity();
-            activeRarityCardList.putIfAbsent(rarity.getName(),new ArrayList<>());
-            activeRarityCardList.get(rarity.getName()).add(card.getCardId());
+        for(Series series: plugin.getStorage().getActiveSeries()) {
+            for (Rarity rarity: plugin.getStorage().getRarities()) {
+                activeRarityCardList.putIfAbsent(rarity.getName(),new ArrayList<>());
+
+                List<String> currentList = activeRarityCardList.get(rarity.getName());
+                Stream<String> cardIdInRarityAndSeries = plugin.getStorage().getCardsInRarityAndSeries(rarity.getName(),series.getName()).stream().map(TradingCard::getCardId);
+                List<String> mergedList = Stream.concat(currentList.stream(),cardIdInRarityAndSeries).toList();
+                activeRarityCardList.put(rarity.getName(),mergedList);
+            }
+
         }
     }
 
     private void loadRarityCardNames(){
-        for(TradingCard card: plugin.getStorage().getCards()) {
-            final Rarity rarity = card.getRarity();
-            rarityCardList.putIfAbsent(rarity.getName(),new ArrayList<>());
-            rarityCardList.get(rarity.getName()).add(card.getCardId());
+        this.rarityCardList = new HashMap<>();
+        for(Rarity rarity: plugin.getStorage().getRarities()) {
+            rarityCardList.put(rarity.getName(),plugin.getStorage().getCardsInRarity(rarity.getName()).stream().map(TradingCard::getCardId).toList());
         }
     }
 
@@ -137,14 +146,14 @@ public class TradingCardManager implements CardManager<TradingCard> {
                 card.isShiny(forcedShiny);
             return card;
         }
-        return new EmptyCard();
+        return NULL_CARD;
     }
 
     public TradingCard getCard(final String cardName, final String rarity) {
         if (cards.containsKey(cardKey(rarity,cardName))) {
             return cards.get(cardKey(rarity, cardName)).get();
         }
-        return new EmptyCard();
+        return NULL_CARD;
     }
 
     @Override
@@ -155,7 +164,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
         }
         //fallthrough
         //if it doesn't contain this card for some reason
-        return new EmptyCard();
+        return NULL_CARD;
     }
 
     @Override
@@ -166,7 +175,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
         }
         //fallthrough
         //if it doesn't contain this card for some reason
-        return new EmptyCard();
+        return NULL_CARD;
     }
 
     @Override
@@ -208,7 +217,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
     public TradingCard getRandomActiveCard(final String rarity, final boolean forcedShiny) {
         if (activeCards.isEmpty()) {
             plugin.debug(TradingCardManager.class,"There are no cards in the active series. Not dropping anything.");
-            return new EmptyCard();
+            return NULL_CARD;
         }
 
         List<String> cardNames = getActiveRarityCardList(rarity);
