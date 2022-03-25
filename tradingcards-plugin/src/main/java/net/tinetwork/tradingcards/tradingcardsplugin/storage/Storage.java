@@ -186,6 +186,7 @@ public interface Storage<T extends Card<T>> {
     void createCard(final String cardId, final String rarityId, final String seriesId);
     void createRarity(final String rarityId);
     void createSeries(final String seriesId);
+    void createColorSeries(final String seriesId);
     void createCustomType(final String typeId, final String type);
     void createPack(final String packId);
     // Edit
@@ -197,6 +198,7 @@ public interface Storage<T extends Card<T>> {
     void editCardInfo(final String rarityId,final String cardId, final String seriesId, final String value);
     void editCardCustomModelData(final String rarityId,final String cardId,final String seriesId, final int value);
     void editCardBuyPrice(final String rarityId,final String cardId, final String seriesId,final double value);
+    void editCardHasShiny(final String rarityId,final String cardId, final String seriesId,final boolean value);
     // Edit Rarity
     void editRarityBuyPrice(final String rarityId, final double buyPrice);
     void editRarityAddReward(final String rarityId, final String reward);
@@ -209,6 +211,8 @@ public interface Storage<T extends Card<T>> {
     void editSeriesDisplayName(final String seriesId, final String displayName);
     void editSeriesColors(final String seriesId, final ColorSeries colors);
     void editSeriesMode(final String seriesId, final Mode mode);
+    // Edit Series Colors
+    void editColorSeries(final String seriesId, final ColorSeries colors);
     // Edit Type
     void editCustomTypeDisplayName(final String typeId, final String displayName);
     void editCustomTypeType(final String typeId, final String type); //It has to be a default type.

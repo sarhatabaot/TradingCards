@@ -70,7 +70,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
 
     private void loadActiveCardNames() {
         for(TradingCard card: plugin.getStorage().getActiveCards()) {
-            this.activeCards.add(cardKey(card.getRarity().getName(),card.getCardName()));
+            this.activeCards.add(cardKey(card.getRarity().getName(),card.getCardId()));
         }
     }
 
@@ -79,7 +79,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
         for(TradingCard card: plugin.getStorage().getActiveCards()) {
             final Rarity rarity = card.getRarity();
             activeRarityCardList.putIfAbsent(rarity.getName(),new ArrayList<>());
-            activeRarityCardList.get(rarity.getName()).add(card.getCardName());
+            activeRarityCardList.get(rarity.getName()).add(card.getCardId());
         }
     }
 
@@ -87,7 +87,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
         for(TradingCard card: plugin.getStorage().getCards()) {
             final Rarity rarity = card.getRarity();
             rarityCardList.putIfAbsent(rarity.getName(),new ArrayList<>());
-            rarityCardList.get(rarity.getName()).add(card.getCardName());
+            rarityCardList.get(rarity.getName()).add(card.getCardId());
         }
     }
 
@@ -173,7 +173,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
     public TradingCard getRandomCard(final String rarity) {
         plugin.debug(TradingCardManager.class,"getRandomCard(),rarity=" + rarity);
         var cardIndex = plugin.getRandom().nextInt(getRarityCardList(rarity).size());
-        String randomCardName = getRarityCardList(rarity).get(cardIndex).getCardName();
+        String randomCardName = getRarityCardList(rarity).get(cardIndex).getCardId();
         return getCard(randomCardName, rarity);
     }
 
@@ -186,7 +186,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
     public TradingCard getRandomCard(final String rarity, final boolean forcedShiny) {
         plugin.debug(TradingCardManager.class,"getRandomCard(),rarity=" + rarity);
         var cardIndex = plugin.getRandom().nextInt(getRarityCardList(rarity).size());
-        String randomCardName = getRarityCardList(rarity).get(cardIndex).getCardName();
+        String randomCardName = getRarityCardList(rarity).get(cardIndex).getCardId();
         return getCard(randomCardName, rarity, forcedShiny);
     }
 

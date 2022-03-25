@@ -10,7 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class Card<T>{
-    private final String cardName;
+    private final String cardId;
 
     private Material material;
     private Rarity rarity;
@@ -22,13 +22,13 @@ public abstract class Card<T>{
     //CardMeta
     private final CardMeta cardMeta;
 
-    protected Card(final String cardName) {
-        this.cardName = cardName;
+    protected Card(final String cardId) {
+        this.cardId = cardId;
         this.cardMeta = new CardMeta();
     }
 
     protected Card(final @NotNull Card<T> card) {
-        this.cardName = card.getCardName();
+        this.cardId = card.getCardId();
         this.material = card.getMaterial();
         this.type = card.getType();
         this.series = card.getSeries();
@@ -62,7 +62,7 @@ public abstract class Card<T>{
 
     public String getDisplayName() {
         if(this.cardMeta.getDisplayName() == null || this.cardMeta.getDisplayName().isEmpty())
-            return cardName.replace("_"," ");
+            return cardId.replace("_"," ");
         return this.cardMeta.getDisplayName();
     }
 
@@ -123,8 +123,8 @@ public abstract class Card<T>{
         return this;
     }
 
-    public String getCardName() {
-        return cardName;
+    public String getCardId() {
+        return cardId;
     }
 
     public Rarity getRarity() {
@@ -179,7 +179,7 @@ public abstract class Card<T>{
 
     public NBTItem buildNBTItem(boolean shiny) {
         NBTItem nbtItem = new NBTItem(buildItem(shiny));
-        nbtItem.setString(NbtUtils.NBT_CARD_NAME,cardName);
+        nbtItem.setString(NbtUtils.NBT_CARD_NAME, cardId);
         nbtItem.setString(NbtUtils.NBT_RARITY,rarity.getName());
         nbtItem.setBoolean(NbtUtils.NBT_IS_CARD, true);
         nbtItem.setBoolean(NbtUtils.NBT_CARD_SHINY, shiny);
@@ -206,7 +206,7 @@ public abstract class Card<T>{
     @Override
     public String toString() {
         return "Card{" +
-                "cardName='" + cardName + '\'' +
+                "cardName='" + cardId + '\'' +
                 ", material=" + material +
                 ", rarity=" + rarity +
                 ", type=" + type +

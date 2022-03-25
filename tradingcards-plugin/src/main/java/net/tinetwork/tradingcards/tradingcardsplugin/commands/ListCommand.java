@@ -73,7 +73,7 @@ public class ListCommand extends BaseCommand {
 
         private boolean canBuyPack(final String name) {
             Pack pack = plugin.getPackManager().getPack(name);
-            return plugin.getGeneralConfig().vaultEnabled() && pack.getPrice() > 0.0D;
+            return plugin.getGeneralConfig().vaultEnabled() && pack.getBuyPrice() > 0.0D;
         }
 
         @Subcommand("pack")
@@ -87,7 +87,7 @@ public class ListCommand extends BaseCommand {
                 Pack pack = plugin.getPackManager().getPack(packName);
                 ++lineNumber;
                 if (canBuyPack(packName)) {
-                    ChatUtil.sendMessage(sender, "&6" + lineNumber + ") &e" + pack.getDisplayName() + " &7(&aPrice: " + pack.getPrice() + "&7)");
+                    ChatUtil.sendMessage(sender, "&6" + lineNumber + ") &e" + pack.getDisplayName() + " &7(&aPrice: " + pack.getBuyPrice() + "&7)");
                 } else {
                     ChatUtil.sendMessage(sender, "&6" + lineNumber + ") &e" + pack.getDisplayName());
                 }
