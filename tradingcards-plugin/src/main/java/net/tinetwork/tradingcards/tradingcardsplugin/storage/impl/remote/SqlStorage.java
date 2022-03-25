@@ -166,7 +166,7 @@ public class SqlStorage implements Storage<TradingCard> {
             public Rarity onRunQuery(final DSLContext dslContext) {
                 Result<Record> result = dslContext.select().from(Rarities.RARITIES).where(Rarities.RARITIES.RARITY_ID.eq(rarityId)).limit(1).fetch();
                 if (result.isEmpty()) {
-                    plugin.getLogger().info("No such rarity " + rarityId);
+                    plugin.debug(SqlStorage.class,"No such rarity " + rarityId);
                     return empty();
                 }
                 return getQuery(result.get(0));
@@ -198,7 +198,7 @@ public class SqlStorage implements Storage<TradingCard> {
             public List<String> onRunQuery(final DSLContext dslContext) {
                 Result<Record> result = dslContext.select().from(Rewards.REWARDS).where(Rewards.REWARDS.RARITY_ID.eq(rarityId)).fetch();
                 if(result.isEmpty()) {
-                    plugin.getLogger().info("No such rarity " + rarityId);
+                    plugin.debug(SqlStorage.class,"Reward for rarity " + rarityId);
                     return empty();
                 }
                 return getQuery(result);
