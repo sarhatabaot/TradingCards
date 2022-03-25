@@ -299,9 +299,9 @@ public class EditCommand extends BaseCommand {
             switch (editType) {
                 case DISPLAY_NAME -> storage.editCustomTypeDisplayName(typeId, value);
                 case TYPE -> {
-                    if (!plugin.getDropTypeManager().getDefaultTypes().contains(value)) {
+                    if (!plugin.getDropTypeManager().getDefaultTypes().stream().map(DropType::getId).toList().contains(value)) {
                         //You must set type to one of the types
-                        ChatUtil.sendPrefixedMessage(sender, "Type must be from " + plugin.getDropTypeManager().getDefaultTypes().toString());
+                        ChatUtil.sendPrefixedMessage(sender, "Type must be from " + plugin.getDropTypeManager().getDefaultTypes().stream().map(DropType::getId).toList().toString());
                         return;
                     }
 

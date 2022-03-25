@@ -343,7 +343,7 @@ public class YamlStorage implements Storage<TradingCard> {
     @Override
     public DropType getCustomType(final String typeId) {
         try {
-            return customTypesConfig.getDropType(typeId);
+            return customTypesConfig.getCustomType(typeId);
         } catch (SerializationException e) {
             Util.logWarningException(e);
         }

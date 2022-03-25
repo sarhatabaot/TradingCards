@@ -28,6 +28,7 @@ public class CardMigratorBukkitRunnable extends MigratorBukkitRunnable {
     public void onExecute() {
         for(TradingCard card: source.getCards()) {
             Util.logAndMessage(sender,"Started conversion for "+card.getCardId());
+            plugin.debug(CardMigratorBukkitRunnable.class,card.toString());
             final String cardId = card.getCardId();
             final String rarityId = card.getRarity().getName();
             final String seriesId = card.getSeries().getName();

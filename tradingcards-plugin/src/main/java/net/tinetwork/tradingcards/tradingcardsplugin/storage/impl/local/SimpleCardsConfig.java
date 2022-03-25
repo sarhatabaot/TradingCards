@@ -273,10 +273,25 @@ public class SimpleCardsConfig extends SimpleConfigurate {
             }
         }
 
+        @NotNull
         private DropType getDropType(final @NotNull ConfigurationNode node, final String id){
             try {
-                return yamlStorage.getCustomTypesConfig().getDropType(node.node(TYPE).getString());
-            } catch (SerializationException e) {
+                final String typeId = node.node(TYPE).getString();
+
+                if(typeId == null)
+                    throw new NullPointerException();
+
+                DropType dropType = yamlStorage.getCustomTypesConfig().getCustomType(typeId);
+                if(dropType == null) {
+                    dropType = plugin.getDropTypeManager().getDefaultTypes()
+                            .stream()
+                            .filter(type -> typeId.equals(type.getId())).toList().get(0);
+                    if (dropType != null)
+                        return dropType;
+                    throw new NullPointerException();
+                }
+                return dropType;
+            } catch (SerializationException|NullPointerException|ArrayIndexOutOfBoundsException e) {
                 plugin.getLogger().warning("Could not get the type for " + id + " reason: " + e.getMessage());
                 plugin.getLogger().warning("Defaulting to passive.");
                 return DropTypeManager.PASSIVE;

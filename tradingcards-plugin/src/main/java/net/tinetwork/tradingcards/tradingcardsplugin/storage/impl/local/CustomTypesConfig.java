@@ -33,7 +33,7 @@ public class CustomTypesConfig extends SimpleConfigurate {
         for(Map.Entry<Object, ? extends ConfigurationNode> nodeEntry: rootNode.childrenMap().entrySet()) {
             final String dropTypeKey = nodeEntry.getValue().key().toString();
             try {
-                dropTypes.add(getDropType(dropTypeKey));
+                dropTypes.add(getCustomType(dropTypeKey));
             } catch (SerializationException e){
                 Util.logSevereException(e);
                 plugin.debug(CustomTypesConfig.class,"Couldn't add="+dropTypeKey);
@@ -44,7 +44,7 @@ public class CustomTypesConfig extends SimpleConfigurate {
     public void editType(final String typeId, final String dropType) {
         final ConfigurationNode dropTypeNode = rootNode.node(typeId);
         try {
-            DropType selectedType = getDropType(typeId);
+            DropType selectedType = getCustomType(typeId);
             selectedType.setType(dropType);
             dropTypeNode.set(selectedType);
             loader.save(rootNode);
@@ -57,7 +57,7 @@ public class CustomTypesConfig extends SimpleConfigurate {
     public void editDisplayName(final String typeId, final String displayName) {
         final ConfigurationNode dropTypeNode = rootNode.node(typeId);
         try {
-            DropType selectedType = getDropType(typeId);
+            DropType selectedType = getCustomType(typeId);
             selectedType.setDisplayName(displayName);
             dropTypeNode.set(selectedType);
             loader.save(rootNode);
@@ -71,14 +71,16 @@ public class CustomTypesConfig extends SimpleConfigurate {
         return dropTypes;
     }
 
+
+
     @Override
     protected void preLoaderBuild() {
         loaderBuilder.defaultOptions(opts -> opts.serializers(builder ->
                 builder.registerExact(DropTypeSerializer.TYPE, DropTypeSerializer.INSTANCE)));
     }
 
-    public DropType getDropType(final String name) throws SerializationException {
-        return rootNode.node(name).get(DropType.class);
+    public DropType getCustomType(final String typeId) throws SerializationException {
+        return rootNode.node(typeId).get(DropType.class);
     }
 
     public void createCustomType(final String typeId, final String type) {
