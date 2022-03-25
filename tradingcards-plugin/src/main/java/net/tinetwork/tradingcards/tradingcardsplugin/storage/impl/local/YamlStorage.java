@@ -190,7 +190,7 @@ public class YamlStorage implements Storage<TradingCard> {
 
     @Override
     public Set<DropType> getDropTypes() {
-        return this.customTypesConfig.getDropTypes();
+        return this.customTypesConfig.getCustomTypes();
     }
 
     public TradingCard generateCard(final SimpleCardsConfig simpleCardsConfig, final String cardId, final String rarityId) {
@@ -248,7 +248,7 @@ public class YamlStorage implements Storage<TradingCard> {
         for(TradingCard card: getCards()) {
             //This only loads on startup, that means that it doesn't update. But only on restarts/reloads TODO
             if(card.getSeries().isActive()) {
-                activeCards.put(cardKey(card.getRarity().getName(),card.getCardName()), card);
+                activeCards.put(cardKey(card.getRarity().getName(),card.getCardId()), card);
             }
         }
     }
@@ -321,6 +321,11 @@ public class YamlStorage implements Storage<TradingCard> {
     }
 
     @Override
+    public void createColorSeries(final String seriesId) {
+        //does nothing. in series.
+    }
+
+    @Override
     public void createCustomType(final String typeId, final String type) {
         customTypesConfig.createCustomType(typeId,type);
     }
@@ -338,7 +343,7 @@ public class YamlStorage implements Storage<TradingCard> {
     @Override
     public DropType getCustomType(final String typeId) {
         try {
-            return customTypesConfig.getDropType(typeId);
+            return customTypesConfig.getCustomType(typeId);
         } catch (SerializationException e) {
             Util.logWarningException(e);
         }
@@ -460,6 +465,11 @@ public class YamlStorage implements Storage<TradingCard> {
     @Override
     public void editSeriesMode(final String seriesId, final Mode mode) {
         seriesConfig.editMode(seriesId,mode);
+    }
+
+    @Override
+    public void editColorSeries(final String seriesId, final ColorSeries colors) {
+        editColorSeries(seriesId,colors);
     }
 
     @Override

@@ -31,8 +31,8 @@ public class PackMigratorBukkitRunnable extends MigratorBukkitRunnable{
         for(Pack pack: source.getPacks()) {
             Util.logAndMessage(sender,"Started conversion for "+pack.id());
             plugin.getStorage().createPack(pack.id());
-            plugin.getStorage().editPackPrice(pack.id(),pack.price());
-            plugin.getStorage().editPackPermission(pack.id(),pack.getPermissions());
+            plugin.getStorage().editPackPrice(pack.id(),pack.getBuyPrice());
+            plugin.getStorage().editPackPermission(pack.id(),pack.getPermission());
             plugin.getStorage().editPackDisplayName(pack.id(), pack.getDisplayName());
 
             for(final Pack.PackEntry entry:pack.getPackEntryList()){

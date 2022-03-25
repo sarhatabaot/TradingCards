@@ -1,7 +1,7 @@
 package net.tinetwork.tradingcards.api.model.deck;
 
 import java.util.Objects;
-
+//TODO, add series id.
 public class StorageEntry {
     private final String rarityId;
     private final String cardId;
@@ -56,6 +56,7 @@ public class StorageEntry {
             return true;
         return Boolean.parseBoolean(string);
     }
+
 
     @Override
     public boolean equals(final Object o) {

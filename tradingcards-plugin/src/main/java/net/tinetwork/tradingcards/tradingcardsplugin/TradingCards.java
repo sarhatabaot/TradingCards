@@ -7,6 +7,7 @@ import net.milkbowl.vault.economy.Economy;
 import net.tinetwork.tradingcards.api.TradingCardsPlugin;
 import net.tinetwork.tradingcards.api.manager.PackManager;
 import net.tinetwork.tradingcards.api.manager.RarityManager;
+import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.api.model.Pack;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
@@ -204,13 +205,15 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
             case MARIADB -> {
                 return new SqlStorage(this,
                         this.storageConfig.getTablePrefix(),
-                        new MariaDbConnectionFactory(this.storageConfig));
+                        this.storageConfig.getDatabase(),
+                        new MariaDbConnectionFactory(this.storageConfig), storageType);
             }
 
             case MYSQL -> {
                 return new SqlStorage(this,
                         this.storageConfig.getTablePrefix(),
-                        new MySqlConnectionFactory(this.storageConfig));
+                        this.storageConfig.getDatabase(),
+                        new MySqlConnectionFactory(this.storageConfig), storageType);
             }
             //YAML is the default
             default -> {
@@ -236,12 +239,12 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         var commandManager = new PaperCommandManager(this);
         commandManager.getCommandCompletions().registerCompletion("rarities", c -> rarityManager.getRarities().stream().map(Rarity::getName).toList());
         commandManager.getCommandCompletions().registerCompletion("cards", c -> cardManager.getRarityCardListNames(c.getContextValueByName(String.class, "rarity")));
-        commandManager.getCommandCompletions().registerCompletion("command-cards", c -> storage.getCardsInRarityAndSeries(c.getContextValue(Rarity.class).getName(), c.getContextValue(Series.class).getName()).stream().map(TradingCard::getCardName).toList());
+        commandManager.getCommandCompletions().registerCompletion("command-cards", c -> storage.getCardsInRarityAndSeries(c.getContextValue(Rarity.class).getName(), c.getContextValue(Series.class).getName()).stream().map(TradingCard::getCardId).toList());
         commandManager.getCommandCompletions().registerCompletion("active-cards", c -> cardManager.getActiveRarityCardList(c.getContextValueByName(String.class, "rarity")));
         commandManager.getCommandCompletions().registerCompletion("packs", c -> packManager.getPacks().stream().map(Pack::id).toList());
-        commandManager.getCommandCompletions().registerCompletion("default-types", c -> dropTypeManager.getDefaultTypes());
+        commandManager.getCommandCompletions().registerCompletion("default-types", c -> dropTypeManager.getDefaultTypes().stream().map(DropType::getId).toList());
         commandManager.getCommandCompletions().registerCompletion("custom-types", c -> dropTypeManager.getTypes().keySet());
-        commandManager.getCommandCompletions().registerCompletion("all-types", c -> Stream.concat(dropTypeManager.getDefaultTypes().stream(), dropTypeManager.getTypes().keySet().stream()).toList());
+        commandManager.getCommandCompletions().registerCompletion("all-types", c -> Stream.concat(dropTypeManager.getDefaultTypes().stream().map(DropType::getId), dropTypeManager.getTypes().keySet().stream()).toList());
         commandManager.getCommandCompletions().registerCompletion("series", c -> seriesManager.getAllSeries().stream().map(Series::getName).toList());
         commandManager.getCommandCompletions().registerCompletion("series-colors", c -> List.of("info=", "about=", "type=", "series=", "rarity="));
         commandManager.getCommandCompletions().registerCompletion("edit-type", c -> Stream.of(EditType.values()).map(Enum::name).toList());
@@ -251,7 +254,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         commandManager.getCommandCompletions().registerCompletion("edit-card", c -> Stream.of(EditCard.values()).map(Enum::name).toList());
         commandManager.getCommandCompletions().registerCompletion(
                 "edit-type-value", c -> switch (c.getContextValueByName(EditType.class, "editType")) {
-                    case TYPE -> dropTypeManager.getDefaultTypes();
+                    case TYPE -> dropTypeManager.getDefaultTypes().stream().map(DropType::getId).toList();
                     case DISPLAY_NAME -> Collections.singleton("");
                 });
         commandManager.getCommandCompletions().registerCompletion(
@@ -280,7 +283,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
                 "edit-card-value", c -> switch (c.getContextValueByName(EditCard.class, "editCard")) {
                     case DISPLAY_NAME, SELL_PRICE, BUY_PRICE, INFO, CUSTOM_MODEL_DATA -> Collections.singleton("");
                     case SERIES -> seriesManager.getAllSeries().stream().map(Series::getName).toList();
-                    case TYPE -> Stream.concat(dropTypeManager.getDefaultTypes().stream(), dropTypeManager.getTypes().keySet().stream()).toList();
+                    case TYPE -> Stream.concat(dropTypeManager.getDefaultTypes().stream().map(DropType::getId), dropTypeManager.getTypes().keySet().stream()).toList();
                 }
         );
         commandManager.getCommandContexts().registerContext(Rarity.class, c -> {

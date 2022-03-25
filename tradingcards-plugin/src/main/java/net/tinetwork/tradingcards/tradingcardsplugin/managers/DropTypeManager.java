@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class DropTypeManager implements TypeManager {
     private final TradingCards plugin;
-    private final List<String> defaultTypes = List.of("hostile","neutral","passive","boss","all");
+    private final List<DropType> defaultTypes = List.of(HOSTILE,NEUTRAL,PASSIVE,BOSS,ALL);
     public static final DropType HOSTILE = new DropType("hostile","Hostile","hostile");
     public static final DropType NEUTRAL = new DropType("neutral", "Neutral", "neutral");
     public static final DropType PASSIVE = new DropType("passive", "Passive", "passive");
@@ -59,7 +59,7 @@ public class DropTypeManager implements TypeManager {
     public DropType getMobType(final EntityType type) {
         return CardUtil.getMobType(type);
     }
-
+    @Override
     public boolean containsType(final String typeId) {
         if(defaultTypes.contains(typeId)) {
             return true;
@@ -67,8 +67,8 @@ public class DropTypeManager implements TypeManager {
         return mobTypes.containsKey(typeId);
     }
 
-
-    public List<String> getDefaultTypes() {
+    @Override
+    public List<DropType> getDefaultTypes() {
         return defaultTypes;
     }
 }

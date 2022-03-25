@@ -10,28 +10,29 @@ public final class Pack {
     private final String id;
     private final List<PackEntry> packEntryList;
     private String displayName;
-    private double price;
-    private String permissions;
+    private double buyPrice;
+    private String permission;
 
-    public Pack(String id, List<PackEntry> packEntryList,
-                String displayName, double price, String permissions) {
+    public Pack(String id, List<PackEntry> packEntryList, String displayName, double buyPrice, String permission) {
         this.id = id;
         this.packEntryList = packEntryList;
         this.displayName = displayName;
-        this.price = price;
-        this.permissions = permissions;
+        this.buyPrice = buyPrice;
+        this.permission = permission;
     }
 
     public String getDisplayName() {
+        if(displayName == null)
+            return id;
         return displayName;
     }
 
-    public double getPrice() {
-        return price;
+    public double getBuyPrice() {
+        return buyPrice;
     }
 
-    public String getPermissions() {
-        return permissions;
+    public String getPermission() {
+        return permission;
     }
 
     public List<PackEntry> getPackEntryList() {
@@ -42,32 +43,17 @@ public final class Pack {
         return id;
     }
 
-    public List<PackEntry> packEntryList() {
-        return packEntryList;
-    }
-
-    public String displayName() {
-        return displayName;
-    }
-
-    public double price() {
-        return price;
-    }
-
-    public String permissions() {
-        return permissions;
-    }
 
     public void setDisplayName(final String displayName) {
         this.displayName = displayName;
     }
 
-    public void setPrice(final double price) {
-        this.price = price;
+    public void setBuyPrice(final double buyPrice) {
+        this.buyPrice = buyPrice;
     }
 
-    public void setPermissions(final String permissions) {
-        this.permissions = permissions;
+    public void setPermission(final String permission) {
+        this.permission = permission;
     }
 
     @Override
@@ -78,13 +64,13 @@ public final class Pack {
         return Objects.equals(this.id, that.id) &&
                 Objects.equals(this.packEntryList, that.packEntryList) &&
                 Objects.equals(this.displayName, that.displayName) &&
-                Double.doubleToLongBits(this.price) == Double.doubleToLongBits(that.price) &&
-                Objects.equals(this.permissions, that.permissions);
+                Double.doubleToLongBits(this.buyPrice) == Double.doubleToLongBits(that.buyPrice) &&
+                Objects.equals(this.permission, that.permission);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, packEntryList, displayName, price, permissions);
+        return Objects.hash(id, packEntryList, displayName, buyPrice, permission);
     }
 
     @Override
@@ -93,8 +79,8 @@ public final class Pack {
                 "id=" + id + ", " +
                 "packEntryList=" + packEntryList + ", " +
                 "displayName=" + displayName + ", " +
-                "price=" + price + ", " +
-                "permissions=" + permissions + ']';
+                "price=" + buyPrice + ", " +
+                "permissions=" + permission + ']';
     }
 
 

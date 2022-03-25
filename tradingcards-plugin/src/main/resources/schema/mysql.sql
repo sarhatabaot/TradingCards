@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS `{prefix}packs` (
 ) DEFAULT CHARSET = utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `{prefix}packs_content` (
-    `id`             INT                NOT NULL,
+    `id`             INT                NOT NULL AUTO_INCREMENT,
     line_number      INT                NOT NULL,
     pack_id          VARCHAR(200)       NOT NULL,
     rarity_id        VARCHAR(200)       NOT NULL,
@@ -70,16 +70,16 @@ CREATE TABLE IF NOT EXISTS `{prefix}packs_content` (
 ) DEFAULT CHARSET = utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `{prefix}cards` (
-    `id`                INT                 NOT NULL,
+    `id`                INT                 NOT NULL AUTO_INCREMENT,
     card_id             VARCHAR(200)        NOT NULL,
     display_name        TINYTEXT,
     rarity_id           VARCHAR(200)        NOT NULL,
-    has_shiny           BOOL                NOT NULL,
+    has_shiny           BOOL                        ,
     series_id           VARCHAR(200)        NOT NULL,
     info                TEXT,
     custom_model_data   INT,
     buy_price           DOUBLE,
     sell_price          DOUBLE,
-    type_id             VARCHAR(200)        NOT NULL,
+    type_id             VARCHAR(200),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARSET = utf8mb4;

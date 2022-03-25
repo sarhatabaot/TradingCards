@@ -4,6 +4,7 @@ import net.tinetwork.tradingcards.api.exceptions.UnsupportedDropTypeException;
 import net.tinetwork.tradingcards.api.model.DropType;
 import org.bukkit.entity.EntityType;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,4 +17,5 @@ public interface TypeManager {
 
     DropType getMobType(final EntityType type);
     boolean containsType(final String typeId);
+    List<DropType> getDefaultTypes();
 }
