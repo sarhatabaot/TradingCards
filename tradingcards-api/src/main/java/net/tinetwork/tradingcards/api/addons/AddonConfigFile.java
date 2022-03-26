@@ -14,6 +14,7 @@ import java.nio.charset.StandardCharsets;
  * @author sarhatabaot
  */
 public class AddonConfigFile {
+    private final String internalFilePath;
     private String resourcePath = "";
     protected final TradingCardsAddon addon;
     protected final String fileName;
@@ -27,12 +28,14 @@ public class AddonConfigFile {
         this.fileName = fileName;
         this.resourcePath = resourcePath;
         this.folder = new File(addon.getJavaPlugin().getDataFolder().getPath() + File.separator + folder);
+        this.internalFilePath = resourcePath + fileName;
     }
 
     public AddonConfigFile(final @NotNull TradingCardsAddon addon, final String fileName) {
         this.addon = addon;
         this.fileName = fileName;
         this.folder = addon.getJavaPlugin().getDataFolder();
+        this.internalFilePath = resourcePath + fileName;
     }
 
     public void saveDefaultConfig() {
@@ -41,7 +44,7 @@ public class AddonConfigFile {
         }
 
         if (!this.file.exists()) {
-            addon.getJavaPlugin().saveResource(resourcePath + fileName, false);
+            addon.getJavaPlugin().saveResource(internalFilePath, false);
         }
 
         reloadConfig();
@@ -77,11 +80,13 @@ public class AddonConfigFile {
 
         if (!file.exists()) {
             config = YamlConfiguration.loadConfiguration(file);
-            Reader defConfigStream;
-            defConfigStream = new InputStreamReader(addon.getJavaPlugin().getResource(resourcePath + fileName), StandardCharsets.UTF_8);
-            if (defConfigStream != null) {
-                YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-                config.setDefaults(defConfig);
+            try (Reader defConfigStream = new InputStreamReader(addon.getJavaPlugin().getResource(internalFilePath), StandardCharsets.UTF_8)) {
+                if (defConfigStream != null) {
+                    YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
+                    config.setDefaults(defConfig);
+                }
+            } catch (IOException e) {
+                addon.getAddonLogger().severe(e);
             }
         }
     }
