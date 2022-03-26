@@ -1,5 +1,8 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.commands.edit;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+
 /**
  * @author sarhatabaot
  */
@@ -9,8 +12,9 @@ public enum EditSeries implements Edit{
     COLORS;
 
 
+    @Contract(pure = true)
     @Override
-    public String editName() {
+    public @NotNull String editName() {
         return "series";
     }
 }

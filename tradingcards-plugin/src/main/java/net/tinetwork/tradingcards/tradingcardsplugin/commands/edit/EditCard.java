@@ -1,5 +1,8 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.commands.edit;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+
 public enum EditCard implements Edit{
     DISPLAY_NAME,
     CUSTOM_MODEL_DATA,
@@ -10,8 +13,9 @@ public enum EditCard implements Edit{
     TYPE;
 
 
+    @Contract(pure = true)
     @Override
-    public String editName() {
+    public @NotNull String editName() {
         return "card";
     }
 }

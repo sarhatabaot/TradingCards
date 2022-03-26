@@ -27,7 +27,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generat
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.sql.ConnectionFactory;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.sql.SchemaReader;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
-import net.tinetwork.tradingcards.tradingcardsplugin.utils.RecordUtil;
+import net.tinetwork.tradingcards.tradingcardsplugin.utils.JooqRecordUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -130,7 +130,7 @@ public class SqlStorage implements Storage<TradingCard> {
             public @NotNull List<Deck> getQuery(final @NotNull Results results) {
                 List<Deck> decks = new ArrayList<>();
                 for (Result<Record> recordResult : results) {
-                    decks.add(RecordUtil.getDeckFromRecord(recordResult));
+                    decks.add(JooqRecordUtil.getDeckFromRecord(recordResult));
                 }
                 return decks;
             }
@@ -158,7 +158,7 @@ public class SqlStorage implements Storage<TradingCard> {
                     plugin.debug(getClass(), "Could not find a deck for uuid=" + playerUuid + ",decknumber=" + deckNumber);
                     return new Deck(playerUuid, deckNumber, new ArrayList<>());
                 }
-                return RecordUtil.getDeckFromRecord(recordResult);
+                return JooqRecordUtil.getDeckFromRecord(recordResult);
             }
 
 
@@ -260,7 +260,7 @@ public class SqlStorage implements Storage<TradingCard> {
             @Override
             public @NotNull Series getQuery(final @NotNull Result<Record> result) {
                 Record recordResult = result.get(0);
-                return RecordUtil.getSeriesFromRecord(recordResult, getColorSeries(seriesId));
+                return JooqRecordUtil.getSeriesFromRecord(recordResult, getColorSeries(seriesId));
             }
 
             @Contract(pure = true)
@@ -563,7 +563,7 @@ public class SqlStorage implements Storage<TradingCard> {
             public Collection<Series> getQuery(final @NotNull Result<Record> result) {
                 List<Series> series = new ArrayList<>();
                 for (Record recordResult : result) {
-                    series.add(RecordUtil.getSeriesFromRecord(recordResult, getColorSeries(recordResult.getValue(net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Series.SERIES.SERIES_ID))));
+                    series.add(JooqRecordUtil.getSeriesFromRecord(recordResult, getColorSeries(recordResult.getValue(net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Series.SERIES.SERIES_ID))));
                 }
                 return series;
             }
@@ -593,7 +593,7 @@ public class SqlStorage implements Storage<TradingCard> {
                 if (result.isEmpty())
                     return empty();
 
-                return RecordUtil.getColorSeriesFromRecord(result.get(0));
+                return JooqRecordUtil.getColorSeriesFromRecord(result.get(0));
             }
 
             @Override
@@ -622,7 +622,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
                 final Set<Series> activeSeries = new HashSet<>();
                 for (Record recordResult : result) {
-                    final Series series = RecordUtil.getSeriesFromRecord(recordResult, getColorSeries(recordResult.getValue(net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Series.SERIES.SERIES_ID)));
+                    final Series series = JooqRecordUtil.getSeriesFromRecord(recordResult, getColorSeries(recordResult.getValue(net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Series.SERIES.SERIES_ID)));
                     activeSeries.add(series);
                 }
                 return activeSeries;
@@ -861,7 +861,7 @@ public class SqlStorage implements Storage<TradingCard> {
                     return empty();
                 }
                 Record recordResult = result.get(0);
-                return RecordUtil.getPackFromRecord(recordResult, getPackEntries(recordResult.getValue(Packs.PACKS.PACK_ID)));
+                return JooqRecordUtil.getPackFromRecord(recordResult, getPackEntries(recordResult.getValue(Packs.PACKS.PACK_ID)));
             }
 
             @Contract(pure = true)
@@ -892,7 +892,7 @@ public class SqlStorage implements Storage<TradingCard> {
                 List<Pack.PackEntry> entries = new ArrayList<>();
                 for (Record recordResult : result) {
                     int lineNumber = recordResult.getValue(PacksContent.PACKS_CONTENT.LINE_NUMBER);
-                    entries.add(lineNumber, RecordUtil.getPackEntryFromResult(recordResult));
+                    entries.add(lineNumber, JooqRecordUtil.getPackEntryFromResult(recordResult));
                 }
                 return entries;
             }
@@ -924,7 +924,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
                 List<Pack> packs = new ArrayList<>();
                 for (Record recordResult : result) {
-                    packs.add(RecordUtil.getPackFromRecord(recordResult, getPackEntries(recordResult.getValue(Packs.PACKS.PACK_ID))));
+                    packs.add(JooqRecordUtil.getPackFromRecord(recordResult, getPackEntries(recordResult.getValue(Packs.PACKS.PACK_ID))));
                 }
                 return packs;
             }
@@ -953,7 +953,7 @@ public class SqlStorage implements Storage<TradingCard> {
                 }
 
                 for (Record recordResult : result) {
-                    DropType dropType = RecordUtil.getDropTypeFromRecord(recordResult);
+                    DropType dropType = JooqRecordUtil.getDropTypeFromRecord(recordResult);
                     customTypes.add(dropType);
                 }
 
@@ -981,7 +981,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
             @Override
             public @NotNull DropType getQuery(final @NotNull Result<Record> result) {
-                return RecordUtil.getDropTypeFromRecord(result.get(0));
+                return JooqRecordUtil.getDropTypeFromRecord(result.get(0));
             }
 
             @Contract(pure = true)

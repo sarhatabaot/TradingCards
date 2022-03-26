@@ -10,9 +10,11 @@ import net.milkbowl.vault.economy.EconomyResponse;
 import net.tinetwork.tradingcards.api.model.Pack;
 import net.tinetwork.tradingcards.tradingcardsplugin.Permissions;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
+import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
+import net.tinetwork.tradingcards.tradingcardsplugin.utils.PlaceholderUtil;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -54,7 +56,7 @@ public class BuyCommand extends BaseCommand {
                 if (plugin.getGeneralConfig().closedEconomy()) {
                     plugin.getEcon().bankDeposit(plugin.getGeneralConfig().serverAccount(), pack.getBuyPrice());
                 }
-                ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().boughtCard().replace("%amount%", String.valueOf(pack.getBuyPrice())));
+                ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().boughtCard().replace(PlaceholderUtil.AMOUNT, String.valueOf(pack.getBuyPrice())));
                 CardUtil.dropItem(player, plugin.getPackManager().getPackItem(name));
                 return;
             }
@@ -71,7 +73,7 @@ public class BuyCommand extends BaseCommand {
             if (!CardUtil.hasVault(player))
                 return;
 
-            if (plugin.getCardManager().getCard(card, rarity, false).getCardId().equals("nullCard")) {
+            if (plugin.getCardManager().getCard(card, rarity, false) instanceof EmptyCard) {
                 ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().cardDoesntExist());
                 return;
             }
@@ -85,7 +87,7 @@ public class BuyCommand extends BaseCommand {
                     plugin.getEcon().bankDeposit(plugin.getGeneralConfig().serverAccount(), buyPrice);
                 }
                 CardUtil.dropItem(player, tradingCard.build(false));
-                ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().boughtCard().replace("%amount%", String.valueOf(buyPrice)));
+                ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().boughtCard().replace(PlaceholderUtil.AMOUNT, String.valueOf(buyPrice)));
                 return;
             }
             ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().notEnoughMoney());

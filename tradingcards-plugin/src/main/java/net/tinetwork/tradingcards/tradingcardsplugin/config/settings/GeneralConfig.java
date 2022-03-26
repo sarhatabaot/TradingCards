@@ -58,8 +58,6 @@ public class GeneralConfig extends GeneralConfigurate {
     private String colorPackName;
     private String colorPackLore;
     private String colorPackNormal;
-    private String colorPackSpecial;
-    private String colorPackExtra;
     private String colorListHaveCard;
     private String colorListHaveCardShiny;
     private String colorRarityCompleted;
@@ -134,8 +132,6 @@ public class GeneralConfig extends GeneralConfigurate {
         this.colorPackName = colorPacksNode.node("booster-pack-name").getString();
         this.colorPackLore = colorPacksNode.node("booster-pack-lore").getString();
         this.colorPackNormal = colorPacksNode.node("booster-pack-normal-cards").getString();
-        this.colorPackSpecial = colorPacksNode.node("booster-pack-special-cards").getString();
-        this.colorPackExtra = colorPacksNode.node("booster-pack-extra-cards").getString();
         //colors-lists
         final ConfigurationNode colorListsNode = colorNode.node("lists");
         this.colorListHaveCard = colorListsNode.node("list-have-card").getString();
@@ -290,14 +286,6 @@ public class GeneralConfig extends GeneralConfigurate {
 
     public String colorPackNormal() {
         return colorPackNormal;
-    }
-
-    public String colorPackSpecial() {
-        return colorPackSpecial;
-    }
-
-    public String colorPackExtra() {
-        return colorPackExtra;
     }
 
     public String colorListHaveCard() {

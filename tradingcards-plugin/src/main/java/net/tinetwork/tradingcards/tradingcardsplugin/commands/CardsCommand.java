@@ -13,6 +13,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.MessagesCon
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingCardManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
+import net.tinetwork.tradingcards.tradingcardsplugin.utils.PlaceholderUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.whitelist.PlayerBlacklist;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -70,7 +71,7 @@ public class CardsCommand extends BaseCommand {
     @CommandPermission(Permissions.RESOLVE)
     @Description("Shows a player's uuid")
     public void onResolve(final CommandSender sender, final @NotNull Player player) {
-        ChatUtil.sendMessage(sender, plugin.getMessagesConfig().resolveMsg().replace("%name%", player.getName()).replace("%uuid%", player.getUniqueId().toString()));
+        ChatUtil.sendMessage(sender, plugin.getMessagesConfig().resolveMsg().replace(PlaceholderUtil.NAME, player.getName()).replace(PlaceholderUtil.UUID, player.getUniqueId().toString()));
     }
 
     @Subcommand("toggle")
@@ -106,7 +107,7 @@ public class CardsCommand extends BaseCommand {
             return;
         }
 
-        Bukkit.broadcastMessage(plugin.getPrefixedMessage(messagesConfig.giveaway().replace("%player%", sender.getName()).replace("%rarity%", getFormattedRarity(rarity))));
+        Bukkit.broadcastMessage(plugin.getPrefixedMessage(messagesConfig.giveaway().replace(PlaceholderUtil.PLAYER, sender.getName()).replace(PlaceholderUtil.RARITY, getFormattedRarity(rarity))));
         for (final Player p5 : Bukkit.getOnlinePlayers()) {
             CardUtil.dropItem(p5, cardManager.getRandomCard(rarity).build(false));
         }
@@ -146,8 +147,8 @@ public class CardsCommand extends BaseCommand {
         final double buyPrice = tradingCard.getBuyPrice();
         final double sellPrice = tradingCard.getSellPrice();
 
-        final String buyMessage = (buyPrice > 0.0D) ? messagesConfig.canBuy().replace("%buyAmount%", String.valueOf(buyPrice)) : messagesConfig.canNotBuy();
-        final String sellMessage = (sellPrice > 0.0D) ? messagesConfig.canSell().replace("%sellAmount%", String.valueOf(sellPrice)) : messagesConfig.canNotSell();
+        final String buyMessage = (buyPrice > 0.0D) ? messagesConfig.canBuy().replace(PlaceholderUtil.BUY_AMOUNT, String.valueOf(buyPrice)) : messagesConfig.canNotBuy();
+        final String sellMessage = (sellPrice > 0.0D) ? messagesConfig.canSell().replace(PlaceholderUtil.SELL_AMOUNT, String.valueOf(sellPrice)) : messagesConfig.canNotSell();
         debug("buy=" + buyPrice + "|sell=" + sellPrice);
         ChatUtil.sendPrefixedMessage(player, buyMessage);
         ChatUtil.sendPrefixedMessage(player, sellMessage);

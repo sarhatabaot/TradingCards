@@ -1,5 +1,8 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.commands.edit;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+
 /**
  * @author sarhatabaot
  */
@@ -8,8 +11,9 @@ public enum EditType implements Edit{
     DISPLAY_NAME;
 
 
+    @Contract(pure = true)
     @Override
-    public String editName() {
+    public @NotNull String editName() {
         return "custom type";
     }
 }

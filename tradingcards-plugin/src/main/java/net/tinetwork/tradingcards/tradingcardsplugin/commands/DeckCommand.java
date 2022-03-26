@@ -13,13 +13,14 @@ import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import org.apache.commons.lang.Validate;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 @CommandAlias("deck")
 public class DeckCommand extends BaseCommand {
 	private final TradingCards plugin;
 	private final TradingDeckManager deckManager;
 
-	public DeckCommand(final TradingCards plugin) {
+	public DeckCommand(final @NotNull TradingCards plugin) {
 		this.plugin = plugin;
 		this.deckManager = plugin.getDeckManager();
 	}
