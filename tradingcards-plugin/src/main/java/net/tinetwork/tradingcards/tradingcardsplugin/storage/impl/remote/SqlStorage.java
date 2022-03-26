@@ -648,11 +648,6 @@ public class SqlStorage implements Storage<TradingCard> {
         return cardsMap;
     }
 
-    @Override
-    public Map<String, TradingCard> getActiveCardsMap() {
-        return null;
-    }
-
     private @NotNull TradingCard getTradingCardFromRecord(@NotNull Record recordResult) {
         final String cardId = recordResult.getValue(Cards.CARDS.CARD_ID);
         final String displayName = recordResult.getValue(Cards.CARDS.DISPLAY_NAME);
