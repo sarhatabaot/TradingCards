@@ -150,12 +150,6 @@ public interface Storage<T extends Card<T>> {
      */
     Card<T> getCard(final String cardId, final String rarityId);
 
-    /**
-     * @param cardId The card id.
-     * @param rarityId The rarity id.
-     * @return Returns an active card.
-     */
-    Card<T> getActiveCard(final String cardId, final String rarityId);
 
     /**
      * @param packsId The pack id.

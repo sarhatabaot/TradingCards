@@ -849,12 +849,6 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
     @Override
-    public Card<TradingCard> getActiveCard(final String cardId, final String rarityId) {
-        //TODO
-        return null;
-    }
-
-    @Override
     public @Nullable Pack getPack(final String packsId) {
         return new ExecuteQuery<Pack, Result<Record>>(this, jooqSettings) {
             @Override

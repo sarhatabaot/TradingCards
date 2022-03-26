@@ -339,11 +339,6 @@ public class YamlStorage implements Storage<TradingCard> {
     }
 
     @Override
-    public Card<TradingCard> getActiveCard(final String cardId, final String rarityId) {
-        return activeCards.get(cardKey(rarityId,cardId));
-    }
-
-    @Override
     public DropType getCustomType(final String typeId) {
         try {
             return customTypesConfig.getCustomType(typeId);
