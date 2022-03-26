@@ -35,7 +35,7 @@ public abstract class AddonConfigurate extends AddonConfigFile {
             this.rootNode = loader.load();
             initValues();
         } catch (ConfigurateException e) {
-            addon.getAddonLogger().severe(e.getMessage());
+            addon.getAddonLogger().severe("",e);
         }
     }
 }

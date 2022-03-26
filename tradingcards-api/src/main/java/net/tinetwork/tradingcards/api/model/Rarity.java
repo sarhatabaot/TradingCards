@@ -4,16 +4,16 @@ import java.util.List;
 import java.util.Objects;
 
 public final class Rarity {
-    private final String name;
+    private final String id;
     private String displayName;
     private String defaultColor;
     private double buyPrice;
     private double sellPrice;
     private List<String> rewards;
 
-    public Rarity(String name, String displayName, String defaultColor,
+    public Rarity(String id, String displayName, String defaultColor,
                   double buyPrice, double sellPrice, List<String> rewards) {
-        this.name = name;
+        this.id = id;
         this.displayName = displayName;
         this.defaultColor = defaultColor;
         this.buyPrice = buyPrice;
@@ -21,8 +21,8 @@ public final class Rarity {
         this.rewards = rewards;
     }
 
-    public String getName() {
-        return name;
+    public String getId() {
+        return id;
     }
 
     public void setRewards(final List<String> rewards) {
@@ -60,7 +60,7 @@ public final class Rarity {
     @Override
     public String toString() {
         return "Rarity{" +
-                "name='" + name + '\'' +
+                "name='" + id + '\'' +
                 ", displayName='" + displayName + '\'' +
                 ", defaultColor='" + defaultColor + '\'' +
                 ", rewards=" + rewards +
@@ -68,7 +68,7 @@ public final class Rarity {
     }
 
     public String name() {
-        return name;
+        return id;
     }
 
     public String displayName() {
@@ -96,7 +96,7 @@ public final class Rarity {
         if (obj == this) return true;
         if (obj == null || obj.getClass() != this.getClass()) return false;
         var that = (Rarity) obj;
-        return Objects.equals(this.name, that.name) &&
+        return Objects.equals(this.id, that.id) &&
                 Objects.equals(this.displayName, that.displayName) &&
                 Objects.equals(this.defaultColor, that.defaultColor) &&
                 Double.doubleToLongBits(this.buyPrice) == Double.doubleToLongBits(that.buyPrice) &&
@@ -106,7 +106,7 @@ public final class Rarity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, displayName, defaultColor, buyPrice, sellPrice, rewards);
+        return Objects.hash(id, displayName, defaultColor, buyPrice, sellPrice, rewards);
     }
 
 }

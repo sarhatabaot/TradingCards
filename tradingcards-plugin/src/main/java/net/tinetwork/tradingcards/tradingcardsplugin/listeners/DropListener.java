@@ -87,7 +87,7 @@ public class DropListener extends SimpleListener {
         }
 
         boolean isShiny = randomCard.hasShiny() && CardUtil.calculateIfShiny(false);
-        debug("Added card "+cardKey(randomCard.getRarity().getName(),randomCard.getCardId()));
+        debug("Added card "+cardKey(randomCard.getRarity().getId(),randomCard.getCardId()));
         //Add the card to the killedEntity drops
         e.getDrops().add(randomCard.build(isShiny));
     }
@@ -100,9 +100,9 @@ public class DropListener extends SimpleListener {
 
 
         for (final Rarity rarity : rarities) {
-            if (!(cardManager.getCard(player.getName(), rarity.getName(), false) instanceof EmptyCard)) {
-                debug(rarity.getName());
-                return rarity.getName();
+            if (!(cardManager.getCard(player.getName(), rarity.getId(), false) instanceof EmptyCard)) {
+                debug(rarity.getId());
+                return rarity.getId();
             }
         }
 

@@ -136,7 +136,7 @@ public class DebugCommands extends BaseCommand {
         public void onRarities(final CommandSender sender) {
             StringBuilder sb = new StringBuilder();
             for (Rarity rarity : plugin.getRarityManager().getRarities()) {
-                sb.append(rarity.getName()).append(", ");
+                sb.append(rarity.getId()).append(", ");
             }
             sender.sendMessage(sb.toString());
         }

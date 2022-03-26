@@ -30,8 +30,8 @@ public class CardMigratorBukkitRunnable extends MigratorBukkitRunnable {
             Util.logAndMessage(sender,"Started conversion for "+card.getCardId());
             plugin.debug(CardMigratorBukkitRunnable.class,card.toString());
             final String cardId = card.getCardId();
-            final String rarityId = card.getRarity().getName();
-            final String seriesId = card.getSeries().getName();
+            final String rarityId = card.getRarity().getId();
+            final String seriesId = card.getSeries().getId();
             plugin.getStorage().createCard(cardId, rarityId,seriesId);
             plugin.getStorage().editCardBuyPrice(rarityId,cardId,seriesId,card.getBuyPrice());
             plugin.getStorage().editCardSellPrice(rarityId,cardId,seriesId,card.getSellPrice());

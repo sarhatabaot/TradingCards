@@ -6,15 +6,15 @@ import net.tinetwork.tradingcards.api.model.schedule.Mode;
 import net.tinetwork.tradingcards.api.model.schedule.Schedule;
 
 public class Series {
-    private final String name;
+    private final String id;
     private Mode mode;
     private String displayName;
     private ColorSeries colorSeries;
 
     private final Schedule schedule;
 
-    public Series(final String name, final Mode mode, final String displayName, final Schedule schedule, final ColorSeries colorSeries) {
-        this.name = name;
+    public Series(final String id, final Mode mode, final String displayName, final Schedule schedule, final ColorSeries colorSeries) {
+        this.id = id;
         this.mode = mode;
         this.displayName = displayName;
         this.schedule = schedule;
@@ -46,8 +46,8 @@ public class Series {
         return schedule;
     }
 
-    public String getName() {
-        return name;
+    public String getId() {
+        return id;
     }
 
     public Mode getMode() {
@@ -73,7 +73,7 @@ public class Series {
     @Override
     public String toString() {
         return "Series{" +
-                "name='" + name + '\'' +
+                "name='" + id + '\'' +
                 ", mode=" + mode +
                 ", displayName='" + displayName + '\'' +
                 ", colorSeries=" + colorSeries +

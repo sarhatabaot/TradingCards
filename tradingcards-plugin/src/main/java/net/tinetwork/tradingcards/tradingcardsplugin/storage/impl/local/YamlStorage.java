@@ -207,13 +207,13 @@ public class YamlStorage implements Storage<TradingCard> {
     private void loadCards() {
         for (SimpleCardsConfig simpleCardsConfig : cardsConfig.getCardConfigs()) {
             for (final Rarity rarity : raritiesConfig.rarities()) {
-                var cardNodes = simpleCardsConfig.getCards(rarity.getName()).entrySet();
+                var cardNodes = simpleCardsConfig.getCards(rarity.getId()).entrySet();
 
                 for (Map.Entry<Object, ? extends ConfigurationNode> nodeEntry : cardNodes) {
                     final String cardName = nodeEntry.getValue().key().toString();
-                    final String cardKey = cardKey(rarity.getName(), cardName);
+                    final String cardKey = cardKey(rarity.getId(), cardName);
                     plugin.debug(TradingCardManager.class,"CardKey="+cardKey);
-                    cards.put(cardKey, generateCard(simpleCardsConfig, cardName, rarity.getName()));
+                    cards.put(cardKey, generateCard(simpleCardsConfig, cardName, rarity.getId()));
                 }
             }
         }
@@ -231,8 +231,8 @@ public class YamlStorage implements Storage<TradingCard> {
         for(Map.Entry<String,TradingCard> entry: cards.entrySet()) {
             final TradingCard card = entry.getValue();
             final Rarity rarity = card.getRarity();
-            rarityCardList.putIfAbsent(rarity.getName(),new ArrayList<>());
-            rarityCardList.get(rarity.getName()).add(card);
+            rarityCardList.putIfAbsent(rarity.getId(),new ArrayList<>());
+            rarityCardList.get(rarity.getId()).add(card);
         }
     }
 
@@ -241,8 +241,8 @@ public class YamlStorage implements Storage<TradingCard> {
         for(Map.Entry<String,TradingCard> entry: cards.entrySet()) {
             final TradingCard card = entry.getValue();
             final Series series = card.getSeries();
-            seriesCardList.putIfAbsent(series.getName(),new ArrayList<>());
-            seriesCardList.get(series.getName()).add(card);
+            seriesCardList.putIfAbsent(series.getId(),new ArrayList<>());
+            seriesCardList.get(series.getId()).add(card);
         }
     }
 
@@ -251,7 +251,7 @@ public class YamlStorage implements Storage<TradingCard> {
         for(TradingCard card: getCards()) {
             //This only loads on startup, that means that it doesn't update. But only on restarts/reloads TODO
             if(card.getSeries().isActive()) {
-                activeCards.put(cardKey(card.getRarity().getName(),card.getCardId()), card);
+                activeCards.put(cardKey(card.getRarity().getId(),card.getCardId()), card);
             }
         }
     }
@@ -280,12 +280,12 @@ public class YamlStorage implements Storage<TradingCard> {
     private void loadRaritySeriesCardList() {
         this.raritySeriesCardList = new HashMap<>();
         for(final Rarity rarity : plugin.getStorage().getRarities()) {
-            this.raritySeriesCardList.putIfAbsent(rarity.getName(),new HashMap<>());
-            Map<String,List<TradingCard>> seriesCardList = this.raritySeriesCardList.get(rarity.getName());
-            if(rarityCardList.get(rarity.getName()) == null)
+            this.raritySeriesCardList.putIfAbsent(rarity.getId(),new HashMap<>());
+            Map<String,List<TradingCard>> seriesCardList = this.raritySeriesCardList.get(rarity.getId());
+            if(rarityCardList.get(rarity.getId()) == null)
                 continue;
-            for(TradingCard tradingCard: rarityCardList.get(rarity.getName())) {
-                String series = tradingCard.getSeries().getName();
+            for(TradingCard tradingCard: rarityCardList.get(rarity.getId())) {
+                String series = tradingCard.getSeries().getId();
                 seriesCardList.putIfAbsent(series,new ArrayList<>());
                 seriesCardList.get(series).add(tradingCard);
             }

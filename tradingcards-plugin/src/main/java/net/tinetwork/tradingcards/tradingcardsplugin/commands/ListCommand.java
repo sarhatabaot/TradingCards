@@ -58,7 +58,7 @@ public class ListCommand extends BaseCommand {
                 final String sectionFormat = String.format(plugin.getMessagesConfig().sectionFormatPlayer(), target.getName());
                 ChatUtil.sendMessage(sender, String.format(sectionFormat, target.getName()));
                 for (Rarity rarityKey : plugin.getRarityManager().getRarities()) {
-                    listRarity(sender, target, rarityKey.getName());
+                    listRarity(sender, target, rarityKey.getId());
                 }
                 return;
             }

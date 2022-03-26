@@ -180,10 +180,10 @@ public abstract class Card<T>{
     public NBTItem buildNBTItem(boolean shiny) {
         NBTItem nbtItem = new NBTItem(buildItem(shiny));
         nbtItem.setString(NbtUtils.NBT_CARD_NAME, cardId);
-        nbtItem.setString(NbtUtils.NBT_RARITY,rarity.getName());
+        nbtItem.setString(NbtUtils.NBT_RARITY,rarity.getId());
         nbtItem.setBoolean(NbtUtils.NBT_IS_CARD, true);
         nbtItem.setBoolean(NbtUtils.NBT_CARD_SHINY, shiny);
-        nbtItem.setString(NbtUtils.NBT_CARD_SERIES,series.getName());
+        nbtItem.setString(NbtUtils.NBT_CARD_SERIES,series.getId());
         nbtItem.setInteger(NbtUtils.NBT_CARD_CUSTOM_MODEL, this.cardMeta.getCustomModelNbt());
         return nbtItem;
     }

@@ -5,8 +5,8 @@ public class DropType {
     private String displayName;
     private String type;
 
-    public DropType(final String name, final String displayName, final String type) {
-        this.id = name;
+    public DropType(final String id, final String displayName, final String type) {
+        this.id = id;
         this.displayName = displayName;
         this.type = type;
     }

@@ -74,7 +74,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
 
     private void loadActiveCardNames() {
         for(TradingCard card: plugin.getStorage().getActiveCards()) {
-            this.activeCards.add(cardKey(card.getRarity().getName(),card.getCardId()));
+            this.activeCards.add(cardKey(card.getRarity().getId(),card.getCardId()));
         }
     }
 
@@ -82,11 +82,11 @@ public class TradingCardManager implements CardManager<TradingCard> {
         this.activeRarityCardMap = new HashMap<>();
         for(Series series: plugin.getStorage().getActiveSeries()) {
             for (Rarity rarity: plugin.getStorage().getRarities()) {
-                activeRarityCardMap.putIfAbsent(rarity.getName(),new ArrayList<>());
-                List<String> currentList = activeRarityCardMap.get(rarity.getName());
-                Stream<String> cardIdInRarityAndSeries = plugin.getStorage().getCardsInRarityAndSeries(rarity.getName(),series.getName()).stream().map(TradingCard::getCardId);
+                activeRarityCardMap.putIfAbsent(rarity.getId(),new ArrayList<>());
+                List<String> currentList = activeRarityCardMap.get(rarity.getId());
+                Stream<String> cardIdInRarityAndSeries = plugin.getStorage().getCardsInRarityAndSeries(rarity.getId(),series.getId()).stream().map(TradingCard::getCardId);
                 List<String> mergedList = Stream.concat(currentList.stream(),cardIdInRarityAndSeries).toList();
-                activeRarityCardMap.put(rarity.getName(),mergedList);
+                activeRarityCardMap.put(rarity.getId(),mergedList);
             }
 
         }
@@ -95,7 +95,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
     private void loadRarityCardNames(){
         this.rarityCardMap = new HashMap<>();
         for(Rarity rarity: plugin.getStorage().getRarities()) {
-            rarityCardMap.put(rarity.getName(),plugin.getStorage().getCardsInRarity(rarity.getName()).stream().map(TradingCard::getCardId).toList());
+            rarityCardMap.put(rarity.getId(),plugin.getStorage().getCardsInRarity(rarity.getId()).stream().map(TradingCard::getCardId).toList());
         }
     }
 
@@ -265,7 +265,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
     public boolean containsCard(final String cardId, final String rarityId, final String seriesId) {
         if(cards.containsKey(cardKey(rarityId,cardId))) {
             TradingCard card = cards.get(cardKey(rarityId,cardId));
-            return card.getSeries().getName().equals(seriesId);
+            return card.getSeries().getId().equals(seriesId);
         }
         return false;
     }

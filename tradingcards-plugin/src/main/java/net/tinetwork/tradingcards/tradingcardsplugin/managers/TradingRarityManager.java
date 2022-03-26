@@ -28,7 +28,7 @@ public class TradingRarityManager implements RarityManager {
     @Override
     public boolean containsRarity(final String rarityId) {
         for(Rarity rarity: getRarities()) {
-            if(rarity.getName().equals(rarityId))
+            if(rarity.getId().equals(rarityId))
                 return true;
         }
         return false;

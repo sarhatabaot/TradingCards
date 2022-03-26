@@ -213,7 +213,7 @@ public class RaritiesConfig extends RarityConfigurate{
                 return;
             }
 
-            target.node(NAME).set(rarity.getName());
+            target.node(NAME).set(rarity.getId());
             target.node(DISPLAY_NAME).set(rarity.getDisplayName());
             target.node(DEFAULT_COLOR).set(rarity.getDefaultColor());
             target.node(REWARDS).set(rarity.getRewards());

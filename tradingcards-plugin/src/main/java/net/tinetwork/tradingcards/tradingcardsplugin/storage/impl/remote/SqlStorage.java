@@ -641,7 +641,7 @@ public class SqlStorage implements Storage<TradingCard> {
         Map<String, TradingCard> cardsMap = new HashMap<>();
         for (TradingCard tradingCard : getCards()) {
             final String cardId = tradingCard.getCardId();
-            final String rarityId = tradingCard.getRarity().getName();
+            final String rarityId = tradingCard.getRarity().getId();
             final String cardKey = CardUtil.cardKey(rarityId, cardId);
             cardsMap.put(cardKey, tradingCard);
         }
@@ -807,7 +807,7 @@ public class SqlStorage implements Storage<TradingCard> {
     public List<TradingCard> getActiveCards() {
         List<TradingCard> activeCards = new ArrayList<>();
         for (Series series : getActiveSeries()) {
-            activeCards = Stream.concat(activeCards.stream(), getCardsInSeries(series.getName()).stream()).toList();
+            activeCards = Stream.concat(activeCards.stream(), getCardsInSeries(series.getId()).stream()).toList();
         }
         return activeCards;
     }
@@ -1116,7 +1116,7 @@ public class SqlStorage implements Storage<TradingCard> {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.update(Cards.CARDS)
-                        .set(Cards.CARDS.SERIES_ID, value.getName())
+                        .set(Cards.CARDS.SERIES_ID, value.getId())
                         .where(Cards.CARDS.RARITY_ID.eq(rarityId))
                         .and(Cards.CARDS.CARD_ID.eq(cardId))
                         .and(Cards.CARDS.SERIES_ID.eq(seriesId))

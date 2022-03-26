@@ -11,7 +11,6 @@ import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.MessagesConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingCardManager;
-import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingDeckManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.whitelist.PlayerBlacklist;
@@ -90,8 +89,8 @@ public class CardsCommand extends BaseCommand {
 
     private String getFormattedRarity(final String rarity) {
         for (final Rarity rarityKey : plugin.getRarityManager().getRarities()) {
-            if (rarityKey.getName().equalsIgnoreCase(rarity.replace("_", " "))) {
-                return rarityKey.getName();
+            if (rarityKey.getId().equalsIgnoreCase(rarity.replace("_", " "))) {
+                return rarityKey.getId();
             }
         }
         return "";

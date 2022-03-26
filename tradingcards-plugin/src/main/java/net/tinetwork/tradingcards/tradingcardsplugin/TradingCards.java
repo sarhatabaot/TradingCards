@@ -237,15 +237,15 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
     private void initCommands() {
         var commandManager = new PaperCommandManager(this);
-        commandManager.getCommandCompletions().registerCompletion("rarities", c -> rarityManager.getRarities().stream().map(Rarity::getName).toList());
+        commandManager.getCommandCompletions().registerCompletion("rarities", c -> rarityManager.getRarities().stream().map(Rarity::getId).toList());
         commandManager.getCommandCompletions().registerCompletion("cards", c -> cardManager.getRarityCardListNames(c.getContextValueByName(String.class, "rarity")));
-        commandManager.getCommandCompletions().registerCompletion("command-cards", c -> storage.getCardsInRarityAndSeries(c.getContextValue(Rarity.class).getName(), c.getContextValue(Series.class).getName()).stream().map(TradingCard::getCardId).toList());
+        commandManager.getCommandCompletions().registerCompletion("command-cards", c -> storage.getCardsInRarityAndSeries(c.getContextValue(Rarity.class).getId(), c.getContextValue(Series.class).getId()).stream().map(TradingCard::getCardId).toList());
         commandManager.getCommandCompletions().registerCompletion("active-cards", c -> cardManager.getActiveRarityCardList(c.getContextValueByName(String.class, "rarity")));
         commandManager.getCommandCompletions().registerCompletion("packs", c -> packManager.getPacks().stream().map(Pack::id).toList());
         commandManager.getCommandCompletions().registerCompletion("default-types", c -> dropTypeManager.getDefaultTypes().stream().map(DropType::getId).toList());
         commandManager.getCommandCompletions().registerCompletion("custom-types", c -> dropTypeManager.getTypes().keySet());
         commandManager.getCommandCompletions().registerCompletion("all-types", c -> Stream.concat(dropTypeManager.getDefaultTypes().stream().map(DropType::getId), dropTypeManager.getTypes().keySet().stream()).toList());
-        commandManager.getCommandCompletions().registerCompletion("series", c -> seriesManager.getAllSeries().stream().map(Series::getName).toList());
+        commandManager.getCommandCompletions().registerCompletion("series", c -> seriesManager.getAllSeries().stream().map(Series::getId).toList());
         commandManager.getCommandCompletions().registerCompletion("series-colors", c -> List.of("info=", "about=", "type=", "series=", "rarity="));
         commandManager.getCommandCompletions().registerCompletion("edit-type", c -> Stream.of(EditType.values()).map(Enum::name).toList());
         commandManager.getCommandCompletions().registerCompletion("edit-pack", c -> Stream.of(EditPack.values()).map(Enum::name).toList());
@@ -282,7 +282,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         commandManager.getCommandCompletions().registerCompletion(
                 "edit-card-value", c -> switch (c.getContextValueByName(EditCard.class, "editCard")) {
                     case DISPLAY_NAME, SELL_PRICE, BUY_PRICE, INFO, CUSTOM_MODEL_DATA -> Collections.singleton("");
-                    case SERIES -> seriesManager.getAllSeries().stream().map(Series::getName).toList();
+                    case SERIES -> seriesManager.getAllSeries().stream().map(Series::getId).toList();
                     case TYPE -> Stream.concat(dropTypeManager.getDefaultTypes().stream().map(DropType::getId), dropTypeManager.getTypes().keySet().stream()).toList();
                 }
         );

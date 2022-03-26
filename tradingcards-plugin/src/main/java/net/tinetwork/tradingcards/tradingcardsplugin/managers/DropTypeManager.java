@@ -59,6 +59,7 @@ public class DropTypeManager implements TypeManager {
     public DropType getMobType(final EntityType type) {
         return CardUtil.getMobType(type);
     }
+
     @Override
     public boolean containsType(final String typeId) {
         if(defaultTypes.stream().map(DropType::getId).toList().contains(typeId)) {

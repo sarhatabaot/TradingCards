@@ -19,13 +19,13 @@ public class SeriesMigratorBukkitRunnable extends MigratorBukkitRunnable{
     @Override
     public void onExecute() throws ConfigurateException {
         for(Series series: source.getAllSeries()) {
-            Util.logAndMessage(sender,"Started conversion for "+series.getName());
-            plugin.getStorage().createSeries(series.getName());
-            plugin.getStorage().editSeriesMode(series.getName(),series.getMode());
-            plugin.getStorage().editSeriesDisplayName(series.getName(),series.getDisplayName());
-            plugin.getStorage().createColorSeries(series.getName());
-            plugin.getStorage().editColorSeries(series.getName(),series.getColorSeries());
-            plugin.getStorage().editSeriesColors(series.getName(),series.getColorSeries());
+            Util.logAndMessage(sender,"Started conversion for "+series.getId());
+            plugin.getStorage().createSeries(series.getId());
+            plugin.getStorage().editSeriesMode(series.getId(),series.getMode());
+            plugin.getStorage().editSeriesDisplayName(series.getId(),series.getDisplayName());
+            plugin.getStorage().createColorSeries(series.getId());
+            plugin.getStorage().editColorSeries(series.getId(),series.getColorSeries());
+            plugin.getStorage().editSeriesColors(series.getId(),series.getColorSeries());
         }
     }
 
