@@ -133,11 +133,11 @@ public class TradingDeckManager implements DeckManager {
 
     @NotNull
     @Override
-    public ItemStack createDeckItem(@NotNull final Player player, final int num) {
+    public ItemStack createDeckItem(@NotNull final Player player, final int deckNumber) {
         ItemStack deck = plugin.getGeneralConfig().blankDeck();
         ItemMeta deckMeta = deck.getItemMeta();
         //probably best to have this set somewhere
-        deckMeta.setDisplayName(ChatUtil.color(plugin.getGeneralConfig().deckPrefix() + player.getName() + "'s Deck #" + num));
+        deckMeta.setDisplayName(ChatUtil.color(plugin.getGeneralConfig().deckPrefix() + player.getName() + "'s Deck #" + deckNumber));
         deckMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         deck.setItemMeta(deckMeta);
         deck.addUnsafeEnchantment(Enchantment.DURABILITY, 10);
@@ -146,10 +146,10 @@ public class TradingDeckManager implements DeckManager {
 
     @NotNull
     @Override
-    public ItemStack getNbtItem(@NotNull final Player player, final int num) {
-        NBTItem nbtItem = new NBTItem(createDeckItem(player, num));
+    public ItemStack getNbtItem(@NotNull final Player player, final int deckNumber) {
+        NBTItem nbtItem = new NBTItem(createDeckItem(player, deckNumber));
         nbtItem.setBoolean(NbtUtils.NBT_IS_DECK, true);
-        nbtItem.setInteger(NbtUtils.NBT_DECK_NUMBER, num);
+        nbtItem.setInteger(NbtUtils.NBT_DECK_NUMBER, deckNumber);
         return nbtItem.getItem();
     }
 
@@ -197,7 +197,7 @@ public class TradingDeckManager implements DeckManager {
         return storage.hasShinyCard(player.getUniqueId(), cardId, rarityId);
     }
 
-    public void createNewDeckInFile(final UUID uuid, final int num) {
-        storage.saveDeck(uuid,num,new Deck(uuid,num, new ArrayList<>()));
+    public void createNewDeckInFile(final UUID uuid, final int deckNumber) {
+        storage.saveDeck(uuid, deckNumber,new Deck(uuid, deckNumber, new ArrayList<>()));
     }
 }

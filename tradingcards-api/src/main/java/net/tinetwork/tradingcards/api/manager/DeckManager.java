@@ -20,19 +20,19 @@ public interface DeckManager {
     /**
      *
      * @param player
-     * @param num
+     * @param deckNumber
      * @return
      */
     @NotNull
-    ItemStack createDeckItem(@NotNull final Player player, final int num);
+    ItemStack createDeckItem(@NotNull final Player player, final int deckNumber);
 
     /**
      * @param player
-     * @param num
+     * @param deckNumber
      * @return
      */
     @NotNull
-    ItemStack getNbtItem(@NotNull final Player player, final int num);
+    ItemStack getNbtItem(@NotNull final Player player, final int deckNumber);
 
     /**
      * @param material
@@ -71,7 +71,7 @@ public interface DeckManager {
 
     /**
      * @param uuid
-     * @param num
+     * @param deckNumber
      */
-    void createNewDeckInFile(final UUID uuid, final int num);
+    void createNewDeckInFile(final UUID uuid, final int deckNumber);
 }
