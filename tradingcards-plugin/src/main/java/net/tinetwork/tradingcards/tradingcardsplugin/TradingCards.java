@@ -200,27 +200,22 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     @Contract(" -> new")
     private @NotNull Storage<TradingCard> initStorage() throws ConfigurateException {
         StorageType storageType = this.storageConfig.getType();
-        getLogger().info("Using storage " + storageType.name());
+        getLogger().info(() -> "Using storage " + storageType.name());
         switch (storageType) {
-            case MARIADB -> {
-                return new SqlStorage(this,
-                        this.storageConfig.getTablePrefix(),
-                        this.storageConfig.getDatabase(),
-                        new MariaDbConnectionFactory(this.storageConfig), storageType);
-            }
+            case MARIADB -> new SqlStorage(this,
+                    this.storageConfig.getTablePrefix(),
+                    this.storageConfig.getDatabase(),
+                    new MariaDbConnectionFactory(this.storageConfig), storageType);
 
-            case MYSQL -> {
-                return new SqlStorage(this,
-                        this.storageConfig.getTablePrefix(),
-                        this.storageConfig.getDatabase(),
-                        new MySqlConnectionFactory(this.storageConfig), storageType);
-            }
+            case MYSQL -> new SqlStorage(this,
+                    this.storageConfig.getTablePrefix(),
+                    this.storageConfig.getDatabase(),
+                    new MySqlConnectionFactory(this.storageConfig), storageType);
+
             //YAML is the default
-            default -> {
-                return new YamlStorage(this);
-            }
-
+            default -> new YamlStorage(this);
         }
+        return new YamlStorage(this);
     }
 
     //The order is important. Decks & Packs must load after cards load.
@@ -294,7 +289,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
                     return getRarityManager().getRarity(rarityId);
                 }
         );
-        commandManager.getCommandContexts().registerContext(Series.class, c-> {
+        commandManager.getCommandContexts().registerContext(Series.class, c -> {
             String seriesId = c.popFirstArg();
             if (!getSeriesManager().containsSeries(seriesId)) {
                 throw new InvalidCommandArgument("No such series");
@@ -434,7 +429,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         try {
             EntityType type = EntityType.valueOf(input.toUpperCase());
             return isMob(type);
-        } catch (IllegalArgumentException var4) {
+        } catch (IllegalArgumentException e) {
             return false;
         }
     }
