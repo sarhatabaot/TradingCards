@@ -9,7 +9,6 @@ import net.tinetwork.tradingcards.api.model.chance.EmptyChance;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
-import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local.SimpleCardsConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -30,6 +29,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
     public static final EmptyCard NULL_CARD = new EmptyCard();
 
     //CardKey,Card<TradingCard>
+    //This should be entirely in storage
     private Map<String, TradingCard> cards;
     private List<String> activeCards;
 
@@ -83,7 +83,6 @@ public class TradingCardManager implements CardManager<TradingCard> {
         for(Series series: plugin.getStorage().getActiveSeries()) {
             for (Rarity rarity: plugin.getStorage().getRarities()) {
                 activeRarityCardList.putIfAbsent(rarity.getName(),new ArrayList<>());
-
                 List<String> currentList = activeRarityCardList.get(rarity.getName());
                 Stream<String> cardIdInRarityAndSeries = plugin.getStorage().getCardsInRarityAndSeries(rarity.getName(),series.getName()).stream().map(TradingCard::getCardId);
                 List<String> mergedList = Stream.concat(currentList.stream(),cardIdInRarityAndSeries).toList();
@@ -270,15 +269,4 @@ public class TradingCardManager implements CardManager<TradingCard> {
         }
         return false;
     }
-
-
-    public TradingCard generateCard(final SimpleCardsConfig simpleCardsConfig, final String cardId, final String rarityId) {
-        if ("none".equalsIgnoreCase(rarityId)) {
-            return NULL_CARD;
-        }
-
-        return simpleCardsConfig.getCard(rarityId, cardId).get();
-    }
-
-
 }
