@@ -149,9 +149,11 @@ public class TradingCardManager implements CardManager<TradingCard> {
         return NULL_CARD;
     }
 
-    public TradingCard getCard(final String cardName, final String rarity) {
-        if (cards.containsKey(cardKey(rarity,cardName))) {
-            return cards.get(cardKey(rarity, cardName)).get();
+    public TradingCard getCard(final String cardId, final String rarityId) {
+        final String cardKey = cardKey(rarityId,cardId);
+        plugin.debug(TradingCardManager.class,"CardKey="+cardKey);
+        if (cards.containsKey(cardKey)) {
+            return cards.get(cardKey).get();
         }
         return NULL_CARD;
     }

@@ -204,8 +204,8 @@ public class CardUtil {
 
 
     @Contract(pure = true)
-    public static @NotNull String cardKey(String rarity, String cardName) {
-        return rarity + "." + cardName;
+    public static @NotNull String cardKey(@NotNull final String rarityId,@NotNull final String cardId) {
+        return rarityId + "." + cardId;
     }
 
     public static boolean calculateIfShiny(boolean forcedShiny) {
