@@ -4,6 +4,7 @@ import de.tr7zw.nbtapi.NBTItem;
 import net.tinetwork.tradingcards.api.manager.PackManager;
 import net.tinetwork.tradingcards.api.model.Pack;
 import net.tinetwork.tradingcards.api.model.Rarity;
+import net.tinetwork.tradingcards.api.utils.NbtUtils;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import org.bukkit.enchantments.Enchantment;
@@ -87,13 +88,13 @@ public class BoosterPackManager implements PackManager {
         itemPackMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         itemPack.setItemMeta(itemPackMeta);
         NBTItem nbtItem = new NBTItem(itemPack);
-        nbtItem.setString("packId", name);
-        nbtItem.setBoolean("pack", true);
+        nbtItem.setString(NbtUtils.NBT_PACK_ID, name);
+        nbtItem.setBoolean(NbtUtils.NBT_PACK, true);
         return nbtItem.getItem();
     }
 
     public boolean isPack(final ItemStack item) {
-        return new NBTItem(item).getBoolean("pack");
+        return new NBTItem(item).getBoolean(NbtUtils.NBT_PACK);
     }
 
     @Override

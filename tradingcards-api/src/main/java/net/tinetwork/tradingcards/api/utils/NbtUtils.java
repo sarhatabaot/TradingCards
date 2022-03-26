@@ -20,6 +20,8 @@ public class NbtUtils {
     public static final String NBT_CARD_SHINY = "shiny";
     public static final String NBT_CARD_SERIES = "series";
     public static final String NBT_CARD_CUSTOM_MODEL = "CustomModelData";
+    public static final String NBT_PACK = "pack";
+    public static final String NBT_PACK_ID = "packId";
 
 
     public static boolean isCardSimilar(final NBTItem item1, final NBTItem item2) {
