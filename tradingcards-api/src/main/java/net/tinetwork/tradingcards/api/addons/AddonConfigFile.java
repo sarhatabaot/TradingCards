@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
@@ -60,7 +61,7 @@ public class AddonConfigFile {
         try {
             config.save(file);
         } catch (IOException ex) {
-            addon.getJavaPlugin().getLogger().warning(ex.getMessage());
+            addon.getAddonLogger().severe("",ex);
         }
     }
 
@@ -80,13 +81,18 @@ public class AddonConfigFile {
 
         if (!file.exists()) {
             config = YamlConfiguration.loadConfiguration(file);
-            try (Reader defConfigStream = new InputStreamReader(addon.getJavaPlugin().getResource(internalFilePath), StandardCharsets.UTF_8)) {
-                if (defConfigStream != null) {
+            try (InputStream internalResourceStream = addon.getJavaPlugin().getResource(internalFilePath)) {
+                if (internalResourceStream == null) {
+                    throw new NullPointerException("Could not get " + internalFilePath + "for some reason. Possibly missing the file.");
+                }
+
+                try (Reader defConfigStream = new InputStreamReader(internalResourceStream, StandardCharsets.UTF_8)) {
                     YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
                     config.setDefaults(defConfig);
+
                 }
-            } catch (IOException e) {
-                addon.getAddonLogger().severe(e);
+            } catch (IOException | NullPointerException e) {
+                addon.getAddonLogger().severe("", e);
             }
         }
     }
