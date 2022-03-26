@@ -30,6 +30,7 @@ public class Series {
         //not implemented yet
         if(mode == Mode.SCHEDULED) {
             //return schedule.isActive();
+            //todo
             return false;
         }
 

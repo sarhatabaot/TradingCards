@@ -152,7 +152,7 @@ public class SimpleCardsConfig extends SimpleConfigurate {
     public static class CardSerializer implements TypeSerializer<TradingCard> {
         @SuppressWarnings("rawtypes")
         private static TradingCardsPlugin<? extends Card> plugin;
-        public static CardSerializer INSTANCE = new CardSerializer();
+        public static final CardSerializer INSTANCE = new CardSerializer();
         private static final String DISPLAY_NAME = "display-name";
         private static final String SERIES = "series";
         private static final String TYPE = "type";

@@ -61,7 +61,7 @@ public class DropTypeManager implements TypeManager {
     }
     @Override
     public boolean containsType(final String typeId) {
-        if(defaultTypes.contains(typeId)) {
+        if(defaultTypes.stream().map(DropType::getId).toList().contains(typeId)) {
             return true;
         }
         return mobTypes.containsKey(typeId);

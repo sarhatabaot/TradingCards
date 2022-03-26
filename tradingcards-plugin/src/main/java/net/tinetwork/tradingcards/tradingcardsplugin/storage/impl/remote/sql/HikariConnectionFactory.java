@@ -51,7 +51,7 @@ public abstract class HikariConnectionFactory implements ConnectionFactory{
      * Called after the pool has been initialised
      */
     protected void postInitialize() {
-
+        //can be empty
     }
 
     //LP

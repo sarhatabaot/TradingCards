@@ -6,6 +6,7 @@ import net.tinetwork.tradingcards.api.events.DeckItemInteractEvent;
 import net.tinetwork.tradingcards.api.model.deck.Deck;
 import net.tinetwork.tradingcards.api.model.deck.StorageEntry;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
+import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingDeckManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
@@ -19,7 +20,7 @@ import java.util.*;
 
 public class DeckListener extends SimpleListener {
     private final TradingDeckManager deckManager;
-    private final Storage deckStorage;
+    private final Storage<TradingCard> deckStorage;
 
     public DeckListener(final TradingCards plugin) {
         super(plugin);

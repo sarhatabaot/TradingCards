@@ -19,7 +19,6 @@ import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local.YamlStor
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
 import org.bukkit.command.CommandSender;
-import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurateException;
 

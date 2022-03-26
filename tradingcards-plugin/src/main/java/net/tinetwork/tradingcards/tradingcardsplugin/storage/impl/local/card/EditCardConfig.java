@@ -1,6 +1,5 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local.card;
 
-import net.tinetwork.tradingcards.api.card.Card;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local.SimpleCardsConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;

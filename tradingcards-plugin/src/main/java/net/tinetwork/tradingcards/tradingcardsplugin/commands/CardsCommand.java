@@ -26,7 +26,6 @@ import org.jetbrains.annotations.NotNull;
 public class CardsCommand extends BaseCommand {
     private final TradingCards plugin;
     private final TradingCardManager cardManager;
-    private final TradingDeckManager deckManager;
     private final PlayerBlacklist playerBlacklist;
 
     private final MessagesConfig messagesConfig;
@@ -38,7 +37,6 @@ public class CardsCommand extends BaseCommand {
         this.plugin = plugin;
         this.playerBlacklist = playerBlacklist;
         this.cardManager = plugin.getCardManager();
-        this.deckManager = plugin.getDeckManager();
         this.messagesConfig = plugin.getMessagesConfig();
     }
 

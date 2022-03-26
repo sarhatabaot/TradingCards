@@ -257,11 +257,6 @@ public class YamlStorage implements Storage<TradingCard> {
     }
 
     @Override
-    public Map<String, TradingCard> getActiveCardsMap() {
-        return activeCards;
-    }
-
-    @Override
     public Set<Series> getActiveSeries() {
         return activeSeries;
     }
@@ -281,6 +276,7 @@ public class YamlStorage implements Storage<TradingCard> {
         return raritySeriesCardList.get(rarityId).get(seriesId);
     }
 
+    //todo
     private void loadRaritySeriesCardList() {
         this.raritySeriesCardList = new HashMap<>();
         for(final Rarity rarity : plugin.getStorage().getRarities()) {
@@ -472,7 +468,7 @@ public class YamlStorage implements Storage<TradingCard> {
 
     @Override
     public void editColorSeries(final String seriesId, final ColorSeries colors) {
-        editColorSeries(seriesId,colors);
+        seriesConfig.editColors(seriesId, colors);
     }
 
     @Override

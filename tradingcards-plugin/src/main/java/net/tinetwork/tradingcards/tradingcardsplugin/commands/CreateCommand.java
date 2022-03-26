@@ -7,6 +7,7 @@ import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
+import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.tradingcardsplugin.Permissions;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import org.bukkit.command.CommandSender;
@@ -99,7 +100,7 @@ public class CreateCommand extends BaseCommand{
                 return;
             }
 
-            if (!plugin.getDropTypeManager().getDefaultTypes().contains(type)) {
+            if (!plugin.getDropTypeManager().getDefaultTypes().stream().map(DropType::getId).toList().contains(type)) {
                 sender.sendMessage("Type must be: all, hostile, neutral, passive or boss.");
                 return;
             }
