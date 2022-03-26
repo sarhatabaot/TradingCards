@@ -100,4 +100,6 @@ public abstract class GeneralConfigurate extends SimpleConfigurate {
     public abstract String displayAbout();
 
     public abstract boolean useDefaultCardsFile();
+
+    public abstract int deckRows();
 }
