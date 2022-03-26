@@ -49,8 +49,8 @@ public class TradingCardManager implements CardManager<TradingCard> {
     public void initValues() {
         loadAllCards();
         loadActiveCards();
-        plugin.getLogger().info(String.format("Loaded %d cards.", cards.size()));
-        plugin.getLogger().info(String.format("Loaded %d rarities", rarityCardMap.keySet().size()));
+        plugin.getLogger().info(() -> String.format("Loaded %d cards.", cards.size()));
+        plugin.getLogger().info(() -> String.format("Loaded %d rarities", rarityCardMap.keySet().size()));
         plugin.debug(TradingCardManager.class,StringUtils.join(rarityCardMap.keySet(), ","));
         plugin.debug(TradingCardManager.class,StringUtils.join(cards.keySet(), ","));
     }

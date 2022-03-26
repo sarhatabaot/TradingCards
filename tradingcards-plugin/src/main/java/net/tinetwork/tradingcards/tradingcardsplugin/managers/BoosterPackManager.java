@@ -40,7 +40,7 @@ public class BoosterPackManager implements PackManager {
         for (Pack pack : plugin.getStorage().getPacks()) {
             loadPack(pack.id());
         }
-        plugin.getLogger().info("Loaded " + packsItemStackCache.size() + " packs.");
+        plugin.getLogger().info(() -> "Loaded " + packsItemStackCache.size() + " packs.");
         plugin.debug(BoosterPackManager.class, packsItemStackCache.keySet().toString());
         for(ItemStack itemStack: packsItemStackCache.values()) {
             plugin.debug(BoosterPackManager.class,itemStack.toString());

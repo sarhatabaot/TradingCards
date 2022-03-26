@@ -40,6 +40,6 @@ public class Util {
         if(!(sender instanceof ConsoleCommandSender)) {
             sender.sendMessage(ChatUtil.color(message));
         }
-        logger.log(Level.INFO, ChatColor.stripColor(message));
+        logger.log(Level.INFO, () -> ChatColor.stripColor(message));
     }
 }
