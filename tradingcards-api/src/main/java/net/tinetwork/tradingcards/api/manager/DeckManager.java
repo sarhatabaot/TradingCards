@@ -12,23 +12,21 @@ import java.util.UUID;
  */
 public interface DeckManager {
     /**
-     *
-     * @param p
+     * @param player
      * @param deckNum
      */
-    void openDeck(Player p, int deckNum);
+    void openDeck(@NotNull final Player player, final int deckNum);
 
     /**
      *
-     * @param p
+     * @param player
      * @param num
      * @return
      */
     @NotNull
-    ItemStack createDeckItem(@NotNull final Player p, final int num);
+    ItemStack createDeckItem(@NotNull final Player player, final int num);
 
     /**
-     *
      * @param player
      * @param num
      * @return
@@ -37,44 +35,43 @@ public interface DeckManager {
     ItemStack getNbtItem(@NotNull final Player player, final int num);
 
     /**
-     *
      * @param material
      * @return
      */
     boolean isDeckMaterial(final Material material);
 
     /**
-     *
      * @param item
      * @return
      */
     boolean isDeck(final ItemStack item);
 
     /**
-     *
-     * @param p
+     * @param player
      * @param num
      * @return
      */
-    boolean hasDeckItem(@NotNull final Player p, final int num);
+    boolean hasDeckItem(@NotNull final Player player, final int num);
 
     /**
-     *
      * @param player
-     * @param card
-     * @param rarity
+     * @param cardId
+     * @param rarityId
      * @return
      */
-    boolean hasCard(final Player player,final  String card,final  String rarity);
+    boolean hasCard(final Player player,final  String cardId,final  String rarityId);
 
     /**
-     *
      * @param player
-     * @param card
-     * @param rarity
+     * @param cardId
+     * @param rarityId
      * @return
      */
-    boolean hasShinyCard(final Player player, final  String card, final  String rarity);
+    boolean hasShinyCard(final Player player, final  String cardId, final  String rarityId);
 
+    /**
+     * @param uuid
+     * @param num
+     */
     void createNewDeckInFile(final UUID uuid, final int num);
 }

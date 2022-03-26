@@ -9,68 +9,82 @@ import java.util.Set;
 
 public interface CardManager<T extends Card<T>> {
     /**
-     *
-     * @return
+     * @return a map of cards and names.
      */
     Map<String, T> getCards();
 
     /**
-     * @return
+     * @return a list of active cards.
      */
     List<String> getActiveCards();
 
     /**
-     *
-     * @param cardName
-     * @param rarity
-     * @param forcedShiny
-     * @return
+     * @param cardId The card id.
+     * @param rarityId The rarity id.
+     * @param forcedShiny Force the card to be shiny.
+     * @return The card.
      */
-    T getCard(final String cardName, final String rarity, final boolean forcedShiny);
+    T getCard(final String cardId, final String rarityId, final boolean forcedShiny);
 
     /**
-     *
-     * @param cardName
-     * @param rarity
-     * @param forcedShiny
-     * @return
+     * @param cardId The card id.
+     * @param rarityId The rarity id.
+     * @param forcedShiny Force the card to be shiny.
+     * @return The card.
      */
-    T getActiveCard(final String cardName, final String rarity, final boolean forcedShiny);
-    T getActiveCard(final String cardName, final String rarity);
+    T getActiveCard(final String cardId, final String rarityId, final boolean forcedShiny);
     /**
-     *
-     * @param rarity
-     * @param forcedShiny
-     * @return
+     * @param cardId The card id.
+     * @param rarityId The rarity id.
+     * @return The card.
      */
-    T getRandomCard(final String rarity, final boolean forcedShiny);
-    T getRandomCard(final String rarity);
+    T getActiveCard(final String cardId, final String rarityId);
 
     /**
-     *
-     * @param rarity
-     * @param forcedShiny
-     * @return
+     * @param rarityId The rarity id.
+     * @param forcedShiny  Force the card to be shiny.
+     * @return A random card from a rarity.
      */
-    T getRandomActiveCard(final String rarity, final boolean forcedShiny);
+    T getRandomCard(final String rarityId, final boolean forcedShiny);
 
-    T getRandomActiveCard(final String rarity);
+    /**
+     * @param rarityId The rarity id.
+     * @return A random card from a rarity.
+     */
+    T getRandomCard(final String rarityId);
+
+    /**
+     * @param rarityId The rarity id.
+     * @param forcedShiny  Force the card to be shiny.
+     * @return A random active card.
+     */
+    T getRandomActiveCard(final String rarityId, final boolean forcedShiny);
+
+    /**
+     * @param rarityId The rarity id.
+     * @return A random active card.
+     */
+    T getRandomActiveCard(final String rarityId);
 
 
     /**
-     *
-     * @param dropType
-     * @param alwaysDrop
-     * @return
+     * @param dropType DropType
+     * @param alwaysDrop Should the card always drop.
+     * @return A random rarity
      */
     String getRandomRarity(final DropType dropType, boolean alwaysDrop);
 
     /**
-     * @param rarity Rarity
-     * @return returns a list of card names from rarity.
+     * @param rarityId The rarity id
+     * @return returns a list of cards from a rarity.
      */
-    List<T> getRarityCardList(final String rarity);
-    List<String> getRarityCardListNames(final String rarity);
+    List<T> getRarityCardList(final String rarityId);
+
+    /**
+     * @param rarityId The rarity id
+     * @return returns a list of cards names from a rarity.
+     */
+    List<String> getRarityCardListNames(final String rarityId);
 
     /**
      * @param rarity Rarity

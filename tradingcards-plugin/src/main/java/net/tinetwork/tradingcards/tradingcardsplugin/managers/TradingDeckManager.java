@@ -188,13 +188,13 @@ public class TradingDeckManager implements DeckManager {
     }
 
     @Override
-    public boolean hasCard(@NotNull Player player, String card, String rarity) {
-        return storage.hasCard(player.getUniqueId(), card, rarity);
+    public boolean hasCard(@NotNull Player player, String cardId, String rarityId) {
+        return storage.hasCard(player.getUniqueId(), cardId, rarityId);
     }
 
     @Override
-    public boolean hasShinyCard(@NotNull Player player, String card, String rarity) {
-        return storage.hasShinyCard(player.getUniqueId(), card, rarity);
+    public boolean hasShinyCard(@NotNull Player player, String cardId, String rarityId) {
+        return storage.hasShinyCard(player.getUniqueId(), cardId, rarityId);
     }
 
     public void createNewDeckInFile(final UUID uuid, final int num) {

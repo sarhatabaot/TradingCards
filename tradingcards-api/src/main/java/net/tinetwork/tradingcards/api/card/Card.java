@@ -40,8 +40,8 @@ public abstract class Card<T>{
 
     /**
      * Set if a card is shiny
-     * @param isShiny
-     * @return
+     * @param isShiny isShiny
+     * @return if the card is shiny
      */
     // A Card object cannot be shiny. It can have a "shiny" version. But that's purely a cosmetic/nbt.
     // Since this is a generated type.

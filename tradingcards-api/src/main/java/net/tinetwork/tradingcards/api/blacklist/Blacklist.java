@@ -3,14 +3,14 @@ package net.tinetwork.tradingcards.api.blacklist;
 public interface Blacklist<T> {
     /**
      * Return if the value is allowed.
-     * @param value
+     * @param value value
      * @return
      */
     boolean isAllowed(T value);
 
     /**
      * Add a value to the blacklist.
-     * @param value
+     * @param value value
      */
     void add(T value);
 
@@ -22,7 +22,7 @@ public interface Blacklist<T> {
 
     /**
      * Returns the mode the whitelist is in.
-     * @return
+     * @return mode
      */
     WhitelistMode getMode();
 }

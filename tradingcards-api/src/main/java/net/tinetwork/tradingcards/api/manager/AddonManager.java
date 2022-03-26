@@ -15,7 +15,7 @@ public interface AddonManager {
 
     /**
      * Reload a specific addon
-     * @param id
+     * @param id addon id
      */
     void reloadAddon(final String id);
 

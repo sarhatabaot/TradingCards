@@ -101,13 +101,13 @@ public class TradingCardManager implements CardManager<TradingCard> {
 
     @Override
     @Nullable
-    public List<TradingCard> getRarityCardList(final String rarity) {
-        return plugin.getStorage().getCardsInRarity(rarity);
+    public List<TradingCard> getRarityCardList(final String rarityId) {
+        return plugin.getStorage().getCardsInRarity(rarityId);
     }
 
     @Override
-    public List<String> getRarityCardListNames(final String rarity) {
-        return this.rarityCardMap.get(rarity);
+    public List<String> getRarityCardListNames(final String rarityId) {
+        return this.rarityCardMap.get(rarityId);
     }
 
     @Override
@@ -138,9 +138,9 @@ public class TradingCardManager implements CardManager<TradingCard> {
     }
 
     @Override
-    public TradingCard getCard(final String cardName, final String rarity, final boolean forcedShiny) {
-        if (cards.containsKey(cardKey(rarity,cardName))) {
-            TradingCard card = cards.get(cardKey(rarity, cardName)).get();
+    public TradingCard getCard(final String cardId, final String rarityId, final boolean forcedShiny) {
+        if (cards.containsKey(cardKey(rarityId, cardId))) {
+            TradingCard card = cards.get(cardKey(rarityId, cardId)).get();
             if(card.hasShiny())
                 card.isShiny(forcedShiny);
             return card;
@@ -158,10 +158,10 @@ public class TradingCardManager implements CardManager<TradingCard> {
     }
 
     @Override
-    public TradingCard getActiveCard(final String cardName, final String rarity, final boolean forcedShiny) {
-        final String cardKey = cardKey(rarity,cardName);
+    public TradingCard getActiveCard(final String cardId, final String rarityId, final boolean forcedShiny) {
+        final String cardKey = cardKey(rarityId, cardId);
         if (activeCards.contains(cardKey)) {
-            return getCard(cardName,rarity,forcedShiny);
+            return getCard(cardId, rarityId,forcedShiny);
         }
         //fallthrough
         //if it doesn't contain this card for some reason
@@ -169,10 +169,10 @@ public class TradingCardManager implements CardManager<TradingCard> {
     }
 
     @Override
-    public TradingCard getActiveCard(final String cardName, final String rarity) {
-        final String cardKey = cardKey(rarity,cardName);
+    public TradingCard getActiveCard(final String cardId, final String rarityId) {
+        final String cardKey = cardKey(rarityId, cardId);
         if (activeCards.contains(cardKey)) {
-            return getCard(cardName,rarity);
+            return getCard(cardId, rarityId);
         }
         //fallthrough
         //if it doesn't contain this card for some reason
@@ -180,24 +180,24 @@ public class TradingCardManager implements CardManager<TradingCard> {
     }
 
     @Override
-    public TradingCard getRandomCard(final String rarity) {
-        plugin.debug(TradingCardManager.class,"getRandomCard(),rarity=" + rarity);
-        var cardIndex = plugin.getRandom().nextInt(getRarityCardList(rarity).size());
-        String randomCardName = getRarityCardList(rarity).get(cardIndex).getCardId();
-        return getCard(randomCardName, rarity);
+    public TradingCard getRandomCard(final String rarityId) {
+        plugin.debug(TradingCardManager.class,"getRandomCard(),rarity=" + rarityId);
+        var cardIndex = plugin.getRandom().nextInt(getRarityCardList(rarityId).size());
+        String randomCardName = getRarityCardList(rarityId).get(cardIndex).getCardId();
+        return getCard(randomCardName, rarityId);
     }
 
     @Override
-    public TradingCard getRandomActiveCard(final String rarity) {
-        return getRandomActiveCard(rarity,false);
+    public TradingCard getRandomActiveCard(final String rarityId) {
+        return getRandomActiveCard(rarityId,false);
     }
 
     @Override
-    public TradingCard getRandomCard(final String rarity, final boolean forcedShiny) {
-        plugin.debug(TradingCardManager.class,"getRandomCard(),rarity=" + rarity);
-        var cardIndex = plugin.getRandom().nextInt(getRarityCardList(rarity).size());
-        String randomCardName = getRarityCardList(rarity).get(cardIndex).getCardId();
-        return getCard(randomCardName, rarity, forcedShiny);
+    public TradingCard getRandomCard(final String rarityId, final boolean forcedShiny) {
+        plugin.debug(TradingCardManager.class,"getRandomCard(),rarity=" + rarityId);
+        var cardIndex = plugin.getRandom().nextInt(getRarityCardList(rarityId).size());
+        String randomCardName = getRarityCardList(rarityId).get(cardIndex).getCardId();
+        return getCard(randomCardName, rarityId, forcedShiny);
     }
 
 
@@ -215,16 +215,16 @@ public class TradingCardManager implements CardManager<TradingCard> {
     }
 
     @Override
-    public TradingCard getRandomActiveCard(final String rarity, final boolean forcedShiny) {
+    public TradingCard getRandomActiveCard(final String rarityId, final boolean forcedShiny) {
         if (activeCards.isEmpty()) {
             plugin.debug(TradingCardManager.class,"There are no cards in the active series. Not dropping anything.");
             return NULL_CARD;
         }
 
-        List<String> cardNames = getActiveRarityCardList(rarity);
+        List<String> cardNames = getActiveRarityCardList(rarityId);
         var cardIndex = plugin.getRandom().nextInt(cardNames.size());
         String randomCardName = cardNames.get(cardIndex);
-        return getActiveCard(randomCardName, rarity, forcedShiny);
+        return getActiveCard(randomCardName, rarityId, forcedShiny);
     }
 
     private int getGeneralMobChance(@NotNull DropType dropType) {
