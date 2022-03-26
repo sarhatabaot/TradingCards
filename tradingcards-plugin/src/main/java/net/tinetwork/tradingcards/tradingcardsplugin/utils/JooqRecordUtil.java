@@ -24,7 +24,7 @@ import java.util.UUID;
 /**
  * @author sarhatabaot
  */
-public class RecordUtil {
+public class JooqRecordUtil {
     public static @NotNull Series getSeriesFromRecord(final @NotNull Record recordResult, final ColorSeries colorSeries) {
         final String seriesId = recordResult.getValue(net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Series.SERIES.SERIES_ID);
         final String displayName = recordResult.getValue(net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Series.SERIES.DISPLAY_NAME);
