@@ -83,7 +83,7 @@ public class ListCommand extends BaseCommand {
             int lineNumber = 0;
             ChatUtil.sendMessage(sender, plugin.getMessagesConfig().packSection());
 
-            for (String packName : plugin.getPackManager().getCachedPacksItemstacks().keySet()) {
+            for (String packName : plugin.getPackManager().getCachedPacksItemStacks().keySet()) {
                 Pack pack = plugin.getPackManager().getPack(packName);
                 ++lineNumber;
                 if (canBuyPack(packName)) {

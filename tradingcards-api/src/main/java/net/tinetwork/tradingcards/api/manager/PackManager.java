@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface PackManager {
-    Map<String,ItemStack> getCachedPacksItemstacks();
+    Map<String,ItemStack> getCachedPacksItemStacks();
 
     ItemStack getPackItem(String name);
 

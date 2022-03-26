@@ -48,7 +48,7 @@ public class BoosterPackManager implements PackManager {
     }
 
     @Override
-    public Map<String, ItemStack> getCachedPacksItemstacks() {
+    public Map<String, ItemStack> getCachedPacksItemStacks() {
         return packsItemStackCache;
     }
 
