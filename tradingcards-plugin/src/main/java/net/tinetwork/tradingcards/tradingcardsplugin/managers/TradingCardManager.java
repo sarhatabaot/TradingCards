@@ -35,10 +35,10 @@ public class TradingCardManager implements CardManager<TradingCard> {
 
     //This stores the cards from a single rarity, over multiple files
     //Should be under a specific storage
-    private Map<String, List<String>> rarityCardList;
+    private Map<String, List<String>> rarityCardMap;
 
     //active series rarity list see plugin.getStorage().getCardsInRarityAndSeries()
-    private Map<String, List<String>> activeRarityCardList;
+    private Map<String, List<String>> activeRarityCardMap;
 
     public TradingCardManager(final TradingCards plugin) {
         this.plugin = plugin;
@@ -50,8 +50,8 @@ public class TradingCardManager implements CardManager<TradingCard> {
         loadAllCards();
         loadActiveCards();
         plugin.getLogger().info(String.format("Loaded %d cards.", cards.size()));
-        plugin.getLogger().info(String.format("Loaded %d rarities", rarityCardList.keySet().size()));
-        plugin.debug(TradingCardManager.class,StringUtils.join(rarityCardList.keySet(), ","));
+        plugin.getLogger().info(String.format("Loaded %d rarities", rarityCardMap.keySet().size()));
+        plugin.debug(TradingCardManager.class,StringUtils.join(rarityCardMap.keySet(), ","));
         plugin.debug(TradingCardManager.class,StringUtils.join(cards.keySet(), ","));
     }
 
@@ -79,23 +79,23 @@ public class TradingCardManager implements CardManager<TradingCard> {
     }
 
     private void loadActiveRarityCardListNames() {
-        this.activeRarityCardList = new HashMap<>();
+        this.activeRarityCardMap = new HashMap<>();
         for(Series series: plugin.getStorage().getActiveSeries()) {
             for (Rarity rarity: plugin.getStorage().getRarities()) {
-                activeRarityCardList.putIfAbsent(rarity.getName(),new ArrayList<>());
-                List<String> currentList = activeRarityCardList.get(rarity.getName());
+                activeRarityCardMap.putIfAbsent(rarity.getName(),new ArrayList<>());
+                List<String> currentList = activeRarityCardMap.get(rarity.getName());
                 Stream<String> cardIdInRarityAndSeries = plugin.getStorage().getCardsInRarityAndSeries(rarity.getName(),series.getName()).stream().map(TradingCard::getCardId);
                 List<String> mergedList = Stream.concat(currentList.stream(),cardIdInRarityAndSeries).toList();
-                activeRarityCardList.put(rarity.getName(),mergedList);
+                activeRarityCardMap.put(rarity.getName(),mergedList);
             }
 
         }
     }
 
     private void loadRarityCardNames(){
-        this.rarityCardList = new HashMap<>();
+        this.rarityCardMap = new HashMap<>();
         for(Rarity rarity: plugin.getStorage().getRarities()) {
-            rarityCardList.put(rarity.getName(),plugin.getStorage().getCardsInRarity(rarity.getName()).stream().map(TradingCard::getCardId).toList());
+            rarityCardMap.put(rarity.getName(),plugin.getStorage().getCardsInRarity(rarity.getName()).stream().map(TradingCard::getCardId).toList());
         }
     }
 
@@ -107,22 +107,22 @@ public class TradingCardManager implements CardManager<TradingCard> {
 
     @Override
     public List<String> getRarityCardListNames(final String rarity) {
-        return this.rarityCardList.get(rarity);
+        return this.rarityCardMap.get(rarity);
     }
 
     @Override
     public List<String> getActiveRarityCardList(final String rarity) {
-        return this.activeRarityCardList.get(rarity);
+        return this.activeRarityCardMap.get(rarity);
     }
 
     @Override
     public Set<String> getRarityNames() {
-        return rarityCardList.keySet();
+        return rarityCardMap.keySet();
     }
 
     @Override
     public Set<String> getActiveRarityNames() {
-        return activeRarityCardList.keySet();
+        return activeRarityCardMap.keySet();
     }
 
 
