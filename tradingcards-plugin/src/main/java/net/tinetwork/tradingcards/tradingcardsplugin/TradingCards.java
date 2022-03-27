@@ -134,12 +134,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         cacheMobs();
         initConfigs();
 
-        try {
-            this.storage = initStorage();
-        } catch (ConfigurateException e) {
-            Util.logSevereException(e);
-        }
-        this.storage.init(this);
+        initStorage();
         initBlacklist();
 
         initManagers();
@@ -150,6 +145,16 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         hookVault();
         new Metrics(this, 12940);
     }
+
+    private void initStorage() {
+        try {
+            this.storage = loadStorage();
+        } catch (ConfigurateException e) {
+            Util.logSevereException(e);
+        }
+        this.storage.init(this);
+    }
+
 
     public GeneralConfig getGeneralConfig() {
         return generalConfig;
@@ -198,7 +203,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     }
 
     @Contract(" -> new")
-    private @NotNull Storage<TradingCard> initStorage() throws ConfigurateException {
+    private @NotNull Storage<TradingCard> loadStorage() throws ConfigurateException {
         StorageType storageType = this.storageConfig.getType();
         getLogger().info(() -> "Using storage " + storageType.name());
         switch (storageType) {
