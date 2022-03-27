@@ -206,7 +206,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private @NotNull Storage<TradingCard> loadStorage() throws ConfigurateException {
         StorageType storageType = this.storageConfig.getType();
         getLogger().info(() -> "Using storage " + storageType.name());
-        switch (storageType) {
+        return switch (storageType) {
             case MARIADB -> new SqlStorage(this,
                     this.storageConfig.getTablePrefix(),
                     this.storageConfig.getDatabase(),
@@ -218,9 +218,8 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
                     new MySqlConnectionFactory(this.storageConfig), storageType);
 
             //YAML is the default
-            default -> new YamlStorage(this);
-        }
-        return new YamlStorage(this);
+            case YAML -> new YamlStorage(this);
+        };
     }
 
     //The order is important. Decks & Packs must load after cards load.

@@ -715,6 +715,7 @@ public class SqlStorage implements Storage<TradingCard> {
             @Override
             public @NotNull List<TradingCard> getQuery(final @NotNull Result<Record> result) {
                 if (result.isEmpty()) {
+                    plugin.debug(SqlStorage.class,"Empty result for "+ rarityId);
                     return empty();
                 }
                 List<TradingCard> cards = new ArrayList<>();
