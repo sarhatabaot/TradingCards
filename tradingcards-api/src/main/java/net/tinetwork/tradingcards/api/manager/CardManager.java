@@ -101,4 +101,6 @@ public interface CardManager<T extends Card<T>> {
      * @return A set of active rarity names.
      */
     Set<String> getActiveRarityNames();
+
+    boolean containsCard(final String rarityId, final String cardId, final String seriesId);
 }
