@@ -256,6 +256,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
         };
     }
 
+    //TODO Should return a rarity.
     public String getRandomRarity(DropType dropType, boolean alwaysDrop) {
         int randomDropChance = plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1;
         int mobDropChance = getGeneralMobChance(dropType);
