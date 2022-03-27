@@ -10,9 +10,11 @@ import java.util.List;
 
 public class TradingRarityManager implements RarityManager {
     private final TradingCards plugin;
+    private final List<String> rarityIds;
     public static final Rarity EMPTY_RARITY = new Rarity("empty","empty","",0.00,0.00, Collections.singletonList(""));
     public TradingRarityManager(final TradingCards plugin) {
         this.plugin = plugin;
+        this.rarityIds = getRarities().stream().map(Rarity::getId).toList();
     }
 
     @Nullable
@@ -32,5 +34,9 @@ public class TradingRarityManager implements RarityManager {
                 return true;
         }
         return false;
+    }
+
+    public List<String> getRarityIds() {
+        return rarityIds;
     }
 }

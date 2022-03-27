@@ -92,6 +92,7 @@ public interface CardManager<T extends Card<T>> {
      */
     List<String> getActiveRarityCardList(final String rarity);
 
+    List<String> getCardsInRarityAndSeriesId(final String rarityId, final String seriesId);
     /**
      * @return A set of all rarity names.
      */

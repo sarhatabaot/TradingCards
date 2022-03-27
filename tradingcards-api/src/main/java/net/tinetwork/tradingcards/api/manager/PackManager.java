@@ -20,6 +20,8 @@ public interface PackManager {
 
     List<Pack> getPacks();
 
+    List<String> getPackNames();
+
     boolean containsPack(final String packId);
 
 }

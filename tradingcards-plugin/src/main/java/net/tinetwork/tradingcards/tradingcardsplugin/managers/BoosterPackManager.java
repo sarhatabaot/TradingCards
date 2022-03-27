@@ -1,5 +1,6 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.managers;
 
+import com.google.common.collect.ImmutableList;
 import de.tr7zw.nbtapi.NBTItem;
 import net.tinetwork.tradingcards.api.manager.PackManager;
 import net.tinetwork.tradingcards.api.model.Pack;
@@ -22,8 +23,10 @@ import java.util.Map;
 public class BoosterPackManager implements PackManager {
     private final ItemStack blankPack;
     private final TradingCards plugin;
+    private List<String> packNames;
 
     private Map<String, ItemStack> packsItemStackCache;
+
 
     public BoosterPackManager(@NotNull TradingCards plugin) {
         this.plugin = plugin;
@@ -45,6 +48,7 @@ public class BoosterPackManager implements PackManager {
         for(ItemStack itemStack: packsItemStackCache.values()) {
             plugin.debug(BoosterPackManager.class,itemStack.toString());
         }
+        packNames = plugin.getStorage().getPacks().stream().map(Pack::id).toList();
     }
 
     @Override
@@ -119,5 +123,10 @@ public class BoosterPackManager implements PackManager {
                 return true;
         }
         return false;
+    }
+
+    @Override
+    public List<String> getPackNames() {
+        return packNames;
     }
 }

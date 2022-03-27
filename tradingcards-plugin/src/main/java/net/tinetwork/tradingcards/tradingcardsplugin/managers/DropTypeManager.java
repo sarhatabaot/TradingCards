@@ -10,9 +10,11 @@ import org.bukkit.entity.EntityType;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public class DropTypeManager implements TypeManager {
     private final TradingCards plugin;
+    private final List<String> allTypesIds;
     private final List<DropType> defaultTypes = List.of(HOSTILE,NEUTRAL,PASSIVE,BOSS,ALL);
     public static final DropType HOSTILE = new DropType("hostile","Hostile","hostile");
     public static final DropType NEUTRAL = new DropType("neutral", "Neutral", "neutral");
@@ -25,6 +27,7 @@ public class DropTypeManager implements TypeManager {
     public DropTypeManager(final TradingCards plugin) {
         this.plugin = plugin;
         loadTypes();
+        this.allTypesIds = Stream.concat(getDefaultTypes().stream().map(DropType::getId), getTypes().keySet().stream()).toList();
     }
 
     @Override
@@ -71,5 +74,9 @@ public class DropTypeManager implements TypeManager {
     @Override
     public List<DropType> getDefaultTypes() {
         return defaultTypes;
+    }
+
+    public List<String> getAllTypesIds() {
+        return allTypesIds;
     }
 }

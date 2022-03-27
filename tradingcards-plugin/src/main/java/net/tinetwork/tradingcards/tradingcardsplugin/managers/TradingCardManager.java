@@ -33,28 +33,47 @@ public class TradingCardManager implements CardManager<TradingCard> {
     private Map<String, TradingCard> cards;
     private List<String> activeCards;
 
-    //This stores the cards from a single rarity, over multiple files
-    //Should be under a specific storage
+    //This stores the ids of cards from a single rarity, over multiple files
+    //rarity, card-list-id
     private Map<String, List<String>> rarityCardMap;
 
     //active series rarity list see plugin.getStorage().getCardsInRarityAndSeries()
+    //rarity, card-list-id
     private Map<String, List<String>> activeRarityCardMap;
+
+    private Map<String, Map<String, List<String>>> cardsInRarityAndSeriesIds;
 
     public TradingCardManager(final TradingCards plugin) {
         this.plugin = plugin;
         initValues();
     }
 
+    public List<String> getCardsInRarityAndSeriesId(final String rarityId, final String seriesId) {
+        return cardsInRarityAndSeriesIds.get(rarityId).get(seriesId);
+    }
 
     public void initValues() {
         loadAllCards();
         loadActiveCards();
+        loadCardsInRaritiesAndSeriesIds();
         plugin.getLogger().info(() -> String.format("Loaded %d cards.", cards.size()));
         plugin.getLogger().info(() -> String.format("Loaded %d rarities", rarityCardMap.keySet().size()));
         plugin.debug(TradingCardManager.class,StringUtils.join(rarityCardMap.keySet(), ","));
         plugin.debug(TradingCardManager.class,StringUtils.join(cards.keySet(), ","));
     }
 
+    private void loadCardsInRaritiesAndSeriesIds() {
+        cardsInRarityAndSeriesIds = new HashMap<>();
+        for(String rarityId: plugin.getRarityManager().getRarityIds()) {
+            cardsInRarityAndSeriesIds.putIfAbsent(rarityId, new HashMap<>());
+            for(String seriesId: plugin.getSeriesManager().getSeriesIds()) {
+                cardsInRarityAndSeriesIds.get(rarityId).putIfAbsent(seriesId,new ArrayList<>());
+                Stream<String> cardIdInRarityAndSeries = plugin.getStorage().getCardsInRarityAndSeries(rarityId,seriesId).stream().map(TradingCard::getCardId);
+                cardsInRarityAndSeriesIds.get(rarityId).get(seriesId).addAll(cardIdInRarityAndSeries.toList());
+            }
+        }
+
+    }
 
 
     /**
