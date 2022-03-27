@@ -103,11 +103,11 @@ public class ListCommand extends BaseCommand {
         private @NotNull String generateRarityCardList(final Player target, final String rarityId) {
             final StringBuilder stringBuilder = new StringBuilder();
             String prefix = "";
-            final List<String> rarityCardListName = plugin.getCardManager().getRarityCardListNames(rarityId);
+            final List<String> rarityCardListName = plugin.getCardManager().getRarityCardListIds(rarityId);
             if (rarityCardListName == null || rarityCardListName.isEmpty())
                 return "";
 
-            for (final String cardId : plugin.getCardManager().getRarityCardListNames(rarityId)) {
+            for (final String cardId : plugin.getCardManager().getRarityCardListIds(rarityId)) {
                 plugin.debug(ListSubCommand.class, "rarityId=" + rarityId + ",cardId=" + cardId);
                 TradingCard card = getCard(cardId, rarityId);
                 plugin.debug(ListSubCommand.class, card.toString());
@@ -161,7 +161,7 @@ public class ListCommand extends BaseCommand {
         }
 
         private int countPlayerCardsInRarity(final Player player, final String rarity) {
-            final List<String> rarityCardList = plugin.getCardManager().getRarityCardListNames(rarity);
+            final List<String> rarityCardList = plugin.getCardManager().getRarityCardListIds(rarity);
             int cardCounter = 0;
             if (rarityCardList == null || rarityCardList.isEmpty())
                 return cardCounter;
@@ -175,7 +175,7 @@ public class ListCommand extends BaseCommand {
         }
 
         private int countShinyPlayerCardsInRarity(final Player player, final String rarity) {
-            final List<String> rarityCardList = plugin.getCardManager().getRarityCardListNames(rarity);
+            final List<String> rarityCardList = plugin.getCardManager().getRarityCardListIds(rarity);
             int cardCounter = 0;
             for (String cardId : rarityCardList) {
                 if (plugin.getDeckManager().hasShinyCard(player, cardId, rarity)) {

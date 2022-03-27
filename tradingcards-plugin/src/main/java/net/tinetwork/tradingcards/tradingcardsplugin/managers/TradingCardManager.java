@@ -125,12 +125,12 @@ public class TradingCardManager implements CardManager<TradingCard> {
     }
 
     @Override
-    public List<String> getRarityCardListNames(final String rarityId) {
+    public List<String> getRarityCardListIds(final String rarityId) {
         return this.rarityCardMap.get(rarityId);
     }
 
     @Override
-    public List<String> getActiveRarityCardList(final String rarity) {
+    public List<String> getActiveRarityCardIds(final String rarity) {
         return this.activeRarityCardMap.get(rarity);
     }
 
@@ -240,7 +240,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
             return NULL_CARD;
         }
 
-        List<String> cardNames = getActiveRarityCardList(rarityId);
+        List<String> cardNames = getActiveRarityCardIds(rarityId);
         var cardIndex = plugin.getRandom().nextInt(cardNames.size());
         String randomCardName = cardNames.get(cardIndex);
         return getActiveCard(randomCardName, rarityId, forcedShiny);

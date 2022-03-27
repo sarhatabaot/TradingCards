@@ -84,13 +84,13 @@ public interface CardManager<T extends Card<T>> {
      * @param rarityId The rarity id
      * @return returns a list of cards names from a rarity.
      */
-    List<String> getRarityCardListNames(final String rarityId);
+    List<String> getRarityCardListIds(final String rarityId);
 
     /**
      * @param rarity Rarity
      * @return returns a list of actives card names from an active rarity.
      */
-    List<String> getActiveRarityCardList(final String rarity);
+    List<String> getActiveRarityCardIds(final String rarity);
 
     List<String> getCardsInRarityAndSeriesId(final String rarityId, final String seriesId);
     /**
