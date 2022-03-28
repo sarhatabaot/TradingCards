@@ -14,7 +14,6 @@ import net.tinetwork.tradingcards.tradingcardsplugin.commands.migrate.DeckMigrat
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.migrate.PackMigratorBukkitRunnable;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.migrate.RarityMigratorBukkitRunnable;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.migrate.SeriesMigratorBukkitRunnable;
-import net.tinetwork.tradingcards.tradingcardsplugin.managers.BoosterPackManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.StorageType;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local.YamlStorage;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
@@ -73,6 +72,8 @@ public class MigrateCommand extends BaseCommand {
             new CustomDropTypeMigratorBukkitRunnable(plugin,sender,yamlStorage).runTask(plugin);
             new CardMigratorBukkitRunnable(plugin,sender,yamlStorage).runTask(plugin);
             ranDataMigration = true;
+            sender.sendMessage("&2Completed migration from YAML to "+ plugin.getStorage().getType().name());
+            sender.sendMessage("&cYou should restart your server, otherwise functionality of the plugin will be limited.");
         }
 
         @Subcommand("deck confirm")
