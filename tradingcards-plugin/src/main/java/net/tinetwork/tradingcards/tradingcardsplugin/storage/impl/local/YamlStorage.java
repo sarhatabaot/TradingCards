@@ -512,4 +512,19 @@ public class YamlStorage implements Storage<TradingCard> {
     public void editPackPrice(final String packId, final double price) {
         packsConfig.editPrice(packId,price);
     }
+
+    @Override
+    public int getCardsCount() {
+        return cards.keySet().size();
+    }
+
+    @Override
+    public int getCardsInRarityCount(final String rarityId) {
+        return getCardsInRarity(rarityId).size();
+    }
+
+    @Override
+    public int getCardsInRarityAndSeriesCount(final String rarityId, final String seriesId) {
+        return getCardsInRarityAndSeries(rarityId,seriesId).size();
+    }
 }

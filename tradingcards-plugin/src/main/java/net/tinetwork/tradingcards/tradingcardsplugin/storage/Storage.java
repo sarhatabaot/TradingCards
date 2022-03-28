@@ -216,4 +216,22 @@ public interface Storage<T extends Card<T>> {
     void editPackPermission(final String packId, final String permission);
     void editPackPrice(final String packId,final double price);
 
+    /**
+     * @return The total amount of cards.
+     */
+    int getCardsCount();
+
+    /**
+     * @param rarityId The rarity id.
+     * @return The total amount of cards in a rarity
+     */
+    int getCardsInRarityCount(final String rarityId);
+    /**
+     * @param rarityId The rarity id.
+     * @param seriesId The series id.
+     * @return The total amount of cards in a rarity & a series
+     */
+    int getCardsInRarityAndSeriesCount(final String rarityId, final String seriesId);
+
+
 }
