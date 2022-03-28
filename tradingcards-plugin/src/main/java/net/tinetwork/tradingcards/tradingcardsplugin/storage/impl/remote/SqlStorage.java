@@ -468,7 +468,7 @@ public class SqlStorage implements Storage<TradingCard> {
     private void applySchema() throws IOException, SQLException {
         List<String> statements;
 
-        String schemaFileName = "schema/" + this.connectionFactory.getType().toLowerCase(Locale.ROOT) + ".sql";
+        String schemaFileName = "schema/base/" + this.connectionFactory.getType().toLowerCase(Locale.ROOT) + ".sql";
         try (InputStream is = this.plugin.getResource(schemaFileName)) {
             if (is == null) {
                 throw new IOException("Couldn't locate schema file for " + this.connectionFactory.getType());
