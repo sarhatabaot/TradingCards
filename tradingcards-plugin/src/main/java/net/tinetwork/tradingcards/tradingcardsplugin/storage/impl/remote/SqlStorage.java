@@ -661,11 +661,13 @@ public class SqlStorage implements Storage<TradingCard> {
         final int customModelData = recordResult.getValue(Cards.CARDS.CUSTOM_MODEL_DATA);
         final double buyPrice = recordResult.getValue(Cards.CARDS.BUY_PRICE);
         final double sellPrice = recordResult.getValue(Cards.CARDS.SELL_PRICE);
-        final TradingCard card = new TradingCard(cardId);
+        final DropType dropType = plugin.getDropTypeManager().getType(recordResult.get(Cards.CARDS.TYPE_ID));
+        final TradingCard card = new TradingCard(cardId,plugin.getGeneralConfig().cardMaterial());
         card.displayName(displayName)
                 .rarity(rarity)
                 .hasShiny(hasShiny)
                 .series(series)
+                .type(dropType)
                 .info(info)
                 .customModelNbt(customModelData)
                 .buyPrice(buyPrice)

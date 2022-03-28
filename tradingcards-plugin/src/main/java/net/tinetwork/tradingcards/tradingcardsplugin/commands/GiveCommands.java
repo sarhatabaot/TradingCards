@@ -135,13 +135,10 @@ public class GiveCommands extends BaseCommand {
                 return;
             }
 
-            try {
-                plugin.debug(GiveCommands.class, "Rarity: " + rarity);
-                ChatUtil.sendPrefixedMessage(sender, plugin.getMessagesConfig().giveRandomCardMsg().replace(PlaceholderUtil.PLAYER, player.getName()));
-                CardUtil.dropItem(player, plugin.getCardManager().getRandomCard(rarity).build(false));
-            } catch (IllegalArgumentException exception) {
-                ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().noEntity());
-            }
+
+            plugin.debug(GiveCommands.class, "Rarity: " + rarity);
+            ChatUtil.sendPrefixedMessage(sender, plugin.getMessagesConfig().giveRandomCardMsg().replace(PlaceholderUtil.PLAYER, player.getName()));
+            CardUtil.dropItem(player, plugin.getCardManager().getRandomCard(rarity).build(false));
         }
     }
 }

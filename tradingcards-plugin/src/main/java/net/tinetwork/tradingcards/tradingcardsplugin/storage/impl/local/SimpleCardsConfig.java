@@ -66,7 +66,7 @@ public class SimpleCardsConfig extends SimpleConfigurate {
         final Rarity rarity = plugin.getRarityManager().getRarity(rarityId);
         final Series series = plugin.getSeriesManager().getSeries(seriesId);
         ConfigurationNode rarityNode = cardsNode.node(rarityId);
-        TradingCard card = new TradingCard(cardId).rarity(rarity).series(series).get();
+        TradingCard card = new TradingCard(cardId,plugin.getGeneralConfig().cardMaterial()).rarity(rarity).series(series).get();
         plugin.debug(SimpleCardsConfig.class, card.toString());
         try {
             rarityNode.node(cardId).set(card);
@@ -190,7 +190,7 @@ public class SimpleCardsConfig extends SimpleConfigurate {
             final double sellPrice = getSellPrice(node, rarity);
 
             final Series series = yamlStorage.getSeriesConfig().series().get(seriesId);
-            TradingCard card = new TradingCard(id);
+            TradingCard card = new TradingCard(id,plugin.getGeneralConfig().cardMaterial());
             return card.material(material)
                     .rarity(rarity)
                     .displayName(displayName)
