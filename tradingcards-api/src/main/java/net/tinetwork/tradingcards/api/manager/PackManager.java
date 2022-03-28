@@ -20,7 +20,7 @@ public interface PackManager {
 
     List<Pack> getPacks();
 
-    List<String> getPackNames();
+    List<String> getPackIds();
 
     boolean containsPack(final String packId);
 

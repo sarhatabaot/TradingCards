@@ -237,9 +237,9 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         var commandManager = new PaperCommandManager(this);
         commandManager.getCommandCompletions().registerCompletion("rarities", c -> rarityManager.getRarityIds());
         commandManager.getCommandCompletions().registerCompletion("cards", c -> cardManager.getRarityCardListIds(c.getContextValueByName(String.class, "rarity")));
-        commandManager.getCommandCompletions().registerCompletion("command-cards", c -> cardManager.getCardsInRarityAndSeriesId(c.getContextValue(Rarity.class).getId(), c.getContextValue(Series.class).getId()));
+        commandManager.getCommandCompletions().registerCompletion("command-cards", c -> cardManager.getCardsInRarityAndSeriesIds(c.getContextValue(Rarity.class).getId(), c.getContextValue(Series.class).getId()));
         commandManager.getCommandCompletions().registerCompletion("active-cards", c -> cardManager.getActiveRarityCardIds(c.getContextValueByName(String.class, "rarity")));
-        commandManager.getCommandCompletions().registerCompletion("packs", c -> packManager.getPackNames());
+        commandManager.getCommandCompletions().registerCompletion("packs", c -> packManager.getPackIds());
         commandManager.getCommandCompletions().registerCompletion("default-types", c -> dropTypeManager.getDefaultTypes().stream().map(DropType::getId).toList());
         commandManager.getCommandCompletions().registerCompletion("custom-types", c -> dropTypeManager.getTypes().keySet());
         commandManager.getCommandCompletions().registerCompletion("all-types", c -> dropTypeManager.getAllTypesIds());
@@ -289,6 +289,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
                     if (!getRarityManager().containsRarity(rarityId)) {
                         throw new InvalidCommandArgument("No such rarity");
                     }
+
                     return getRarityManager().getRarity(rarityId);
                 }
         );

@@ -1,5 +1,6 @@
 package net.tinetwork.tradingcards.api.manager;
 
+import com.google.common.cache.LoadingCache;
 import net.tinetwork.tradingcards.api.model.Rarity;
 
 import java.util.List;
@@ -12,4 +13,5 @@ public interface RarityManager {
     List<Rarity> getRarities();
     boolean containsRarity(final String rarityId);
     List<String> getRarityIds();
+    LoadingCache<String,Rarity> getRarityCache();
 }

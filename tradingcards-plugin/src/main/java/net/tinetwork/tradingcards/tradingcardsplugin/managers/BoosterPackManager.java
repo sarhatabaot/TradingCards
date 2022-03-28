@@ -126,7 +126,7 @@ public class BoosterPackManager implements PackManager {
     }
 
     @Override
-    public List<String> getPackNames() {
+    public List<String> getPackIds() {
         return packNames;
     }
 }
