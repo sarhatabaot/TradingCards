@@ -48,6 +48,7 @@ public class MigrateCommand extends BaseCommand {
 
             sender.sendMessage(ChatUtil.color("&cAre you sure you want to migrate? This action is irreversible."));
             sender.sendMessage(ChatUtil.color("&cMake sure you have made a backup of your decks.yml before continuing."));
+            sender.sendMessage(ChatUtil.color("&cYou can easily backup all settings using /cards debug zip"));
             sender.sendMessage(ChatUtil.color("&cIf you want to convert from YAML to " + plugin.getStorage().getType().name()));
             sender.sendMessage(ChatUtil.color("&cPlease type /cards migrate <deck|data> confirm"));
         }
