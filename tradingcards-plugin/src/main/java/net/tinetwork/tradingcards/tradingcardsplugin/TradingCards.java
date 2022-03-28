@@ -107,6 +107,9 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private PlayerBlacklist playerBlacklist;
     private WorldBlacklist worldBlacklist;
 
+    /* Commands */
+    private MigrateCommand migrateCommand;
+
     public TradingCards() {
         super();
     }
@@ -308,7 +311,8 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         commandManager.registerCommand(new DebugCommands(this));
         commandManager.registerCommand(new GiveCommands(this));
         commandManager.registerCommand(new ListCommand(this));
-        commandManager.registerCommand(new MigrateCommand(this));
+        this.migrateCommand = new MigrateCommand(this);
+        commandManager.registerCommand(this.migrateCommand);
         commandManager.registerCommand(new SellCommand(this));
         commandManager.registerCommand(new DeckCommand(this));
         commandManager.enableUnstableAPI("help");
@@ -484,5 +488,9 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
     public TradingSeriesManager getSeriesManager() {
         return seriesManager;
+    }
+
+    public MigrateCommand getMigrateCommand() {
+        return migrateCommand;
     }
 }

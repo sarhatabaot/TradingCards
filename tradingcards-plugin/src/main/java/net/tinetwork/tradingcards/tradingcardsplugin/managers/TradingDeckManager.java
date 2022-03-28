@@ -11,6 +11,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.api.events.DeckLoadEvent;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.StorageType;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import net.tinetwork.tradingcards.api.utils.NbtUtils;
 import org.bukkit.Bukkit;
@@ -36,43 +37,52 @@ public class TradingDeckManager implements DeckManager {
     private final TradingCards plugin;
     private final TradingCardManager cardManager;
     private final Storage<TradingCard> storage;
-    private final Map<UUID,Integer> playerDeckViewingMap;
+    private final Map<UUID, Integer> playerDeckViewingMap;
 
     public TradingDeckManager(final @NotNull TradingCards plugin) {
         this.plugin = plugin;
         this.cardManager = plugin.getCardManager();
-        this.storage =  plugin.getStorage();
+        this.storage = plugin.getStorage();
         this.playerDeckViewingMap = new HashMap<>();
     }
 
 
     public void openDeck(@NotNull Player player, int deckNum) {
-        plugin.debug(TradingDeckManager.class,"Deck UUID: " + player.getUniqueId());
+        //Checks, if in SQL mode a migration has been done.
+        if (plugin.getStorage().getType() != StorageType.YAML
+                && (plugin.getStorage().getCardsCount() == 0 || plugin.getMigrateCommand().isRanDataMigration())) {
+            ChatUtil.sendPrefixedMessage(player, "Stopped opening of deck due to un-migrated data.");
+            ChatUtil.sendPrefixedMessage(player, "Make sure to migrate your data with /cards migrate data.");
+            ChatUtil.sendPrefixedMessage(player,"If you already ran /cards migrate data, make sure to restart your server.");
+            return;
+        }
+        plugin.debug(TradingDeckManager.class,"Just ran migration? "+plugin.getMigrateCommand().isRanDataMigration());
+        plugin.debug(TradingDeckManager.class, "Deck UUID: " + player.getUniqueId());
 
-        addDeckViewer(player.getUniqueId(),deckNum);
+        addDeckViewer(player.getUniqueId(), deckNum);
 
-        Inventory deckInventory = generateDeckInventory(player,deckNum);
-        DeckLoadEvent deckLoadEvent = new DeckLoadEvent(deckInventory,deckNum);
+        Inventory deckInventory = generateDeckInventory(player, deckNum);
+        DeckLoadEvent deckLoadEvent = new DeckLoadEvent(deckInventory, deckNum);
         Bukkit.getPluginManager().callEvent(deckLoadEvent);
 
         final InventoryView deckView = player.openInventory(deckLoadEvent.getInventory());
-        Bukkit.getPluginManager().callEvent(new DeckOpenEvent(deckView,deckNum));
+        Bukkit.getPluginManager().callEvent(new DeckOpenEvent(deckView, deckNum));
     }
 
     public void closeAllOpenViews() {
-        for(Map.Entry<UUID,Integer> entry: this.playerDeckViewingMap.entrySet()) {
-            Bukkit.getPluginManager().callEvent(new DeckCloseEvent(Bukkit.getPlayer(entry.getKey()).getOpenInventory(),entry.getValue()));
+        for (Map.Entry<UUID, Integer> entry : this.playerDeckViewingMap.entrySet()) {
+            Bukkit.getPluginManager().callEvent(new DeckCloseEvent(Bukkit.getPlayer(entry.getKey()).getOpenInventory(), entry.getValue()));
         }
     }
 
     public void addDeckViewer(UUID uuid, int num) {
-        plugin.debug(getClass(),"Added uuid "+uuid+" deck #"+num+" to deck viewer map.");
-        this.playerDeckViewingMap.put(uuid,num);
+        plugin.debug(getClass(), "Added uuid " + uuid + " deck #" + num + " to deck viewer map.");
+        this.playerDeckViewingMap.put(uuid, num);
     }
 
 
     public void removeDeckViewer(UUID uuid) {
-        plugin.debug(getClass(),"Removed uuid "+uuid+" from deck viewer map.");
+        plugin.debug(getClass(), "Removed uuid " + uuid + " from deck viewer map.");
         this.playerDeckViewingMap.remove(uuid);
     }
 
@@ -90,29 +100,29 @@ public class TradingDeckManager implements DeckManager {
         for (ItemStack cardItem : cards) {
             NBTItem nbtItem = new NBTItem(cardItem);
             inv.addItem(cardItem);
-            plugin.debug(TradingDeckManager.class,"Item=" + cardItem.getType() + ",amount=" + cardItem.getAmount() + ", added to inventory. NBT="+ nbtItem);
+            plugin.debug(TradingDeckManager.class, "Item=" + cardItem.getType() + ",amount=" + cardItem.getAmount() + ", added to inventory. NBT=" + nbtItem);
         }
         return inv;
     }
 
     private @NotNull List<ItemStack> loadCardsFromStorage(final UUID uuid, final int deckNum) {
         final List<ItemStack> cards = new ArrayList<>();
-        plugin.debug(TradingDeckManager.class,"uuid="+uuid+",deckNum="+deckNum);
-        final Deck deck = storage.getDeck(uuid,deckNum);
+        plugin.debug(TradingDeckManager.class, "uuid=" + uuid + ",deckNum=" + deckNum);
+        final Deck deck = storage.getDeck(uuid, deckNum);
 
         List<StorageEntry> deckEntries = deck.getDeckEntries();
-        if(deckEntries == null)
+        if (deckEntries == null)
             return cards;
 
         for (StorageEntry deckEntry : deckEntries) {
-            plugin.debug(getClass(),deckEntry.toString());
+            plugin.debug(getClass(), deckEntry.toString());
 
             final String cardId = deckEntry.getCardId();
             final String rarityId = deckEntry.getRarityId();
 
             TradingCard card = cardManager.getCard(cardId, rarityId);
-            if(card instanceof EmptyCard) {
-                plugin.debug(getClass(),"Card is not in a cards storage, skipping.");
+            if (card instanceof EmptyCard) {
+                plugin.debug(getClass(), "Card is not in a cards storage, skipping.");
                 continue;
             }
 
@@ -125,7 +135,7 @@ public class TradingDeckManager implements DeckManager {
 
     private int getDeckSize() {
         int deckRows = plugin.getGeneralConfig().deckRows();
-        if(deckRows > 6 || deckRows < 1) {
+        if (deckRows > 6 || deckRows < 1) {
             deckRows = 3;
         }
         return deckRows * 9;
@@ -159,7 +169,7 @@ public class TradingDeckManager implements DeckManager {
 
     @Override
     public boolean isDeck(final @NotNull ItemStack item) {
-        if(item.getType() == Material.AIR)
+        if (item.getType() == Material.AIR)
             return false;
         return new NBTItem(item).getBoolean(NbtUtils.NBT_IS_DECK);
     }
@@ -198,6 +208,6 @@ public class TradingDeckManager implements DeckManager {
     }
 
     public void createNewDeckInFile(final UUID uuid, final int deckNumber) {
-        storage.saveDeck(uuid, deckNumber,new Deck(uuid, deckNumber, new ArrayList<>()));
+        storage.saveDeck(uuid, deckNumber, new Deck(uuid, deckNumber, new ArrayList<>()));
     }
 }
