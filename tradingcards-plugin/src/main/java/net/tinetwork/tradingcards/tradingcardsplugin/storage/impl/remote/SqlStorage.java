@@ -95,6 +95,7 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
     private void initJooqSettings(final String tablePrefix, final String dbName) {
+        jooqSettings.setExecuteLogging(true);
         jooqSettings.withRenderMapping(
                 new RenderMapping().withSchemata(
                         new MappedSchema().withInput("minecraft")
@@ -211,13 +212,15 @@ public class SqlStorage implements Storage<TradingCard> {
 
             @Override
             public List<String> onRunQuery(final DSLContext dslContext) {
+                boolean doesExist = dslContext.fetchExists(dslContext.select()
+                        .from(Rewards.REWARDS)
+                        .where(Rewards.REWARDS.RARITY_ID.eq(rarityId)));
+                if(!doesExist) {
+                    return empty();
+                }
                 Result<Record> result = dslContext.select()
                         .from(Rewards.REWARDS)
                         .where(Rewards.REWARDS.RARITY_ID.eq(rarityId)).fetch();
-                if (result.isEmpty()) {
-                    plugin.debug(SqlStorage.class, "No reward for rarity " + rarityId);
-                    return empty();
-                }
                 return getQuery(result);
             }
 
