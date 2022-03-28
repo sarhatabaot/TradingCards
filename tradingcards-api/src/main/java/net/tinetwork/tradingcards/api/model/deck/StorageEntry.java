@@ -1,12 +1,12 @@
 package net.tinetwork.tradingcards.api.model.deck;
 
 import java.util.Objects;
-//TODO, add series id.
 public class StorageEntry {
     private final String rarityId;
     private final String cardId;
     private int amount;
     private final boolean isShiny;
+    private final String seriesId;
 
     public String getRarityId() {
         return rarityId;
@@ -28,16 +28,17 @@ public class StorageEntry {
         return isShiny;
     }
 
-    public StorageEntry(final String rarityId, final String cardId, final int amount, final boolean isShiny) {
+    public StorageEntry(final String rarityId, final String cardId, final int amount, final boolean isShiny,final String seriesId) {
         this.rarityId = rarityId;
         this.cardId = cardId;
         this.amount = amount;
         this.isShiny = isShiny;
+        this.seriesId = seriesId;
     }
 
     @Override
     public String toString() {
-        return rarityId + "," + cardId + "," + amount + "," + isShiny;
+        return rarityId + "," + cardId + "," + amount + "," + isShiny+","+seriesId;
     }
 
     public static StorageEntry fromString(final String string) {
@@ -46,7 +47,8 @@ public class StorageEntry {
         final String card = split[1];
         final int amount = Integer.parseInt(split[2]);
         final boolean isShiny = parseShinyString(split[3]);
-        return new StorageEntry(rarity, card, amount, isShiny);
+        final String seriesId = split[4];
+        return new StorageEntry(rarity, card, amount, isShiny,seriesId);
     }
 
     private static boolean parseShinyString(final String string) {
@@ -63,18 +65,22 @@ public class StorageEntry {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final StorageEntry that = (StorageEntry) o;
-        return amount == that.amount && isShiny == that.isShiny && Objects.equals(rarityId, that.rarityId) && Objects.equals(cardId, that.cardId);
+        return amount == that.amount && isShiny == that.isShiny && Objects.equals(rarityId, that.rarityId) && Objects.equals(cardId, that.cardId) && Objects.equals(seriesId,that.getSeriesId());
     }
 
     public boolean isSimilar(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final StorageEntry that = (StorageEntry) o;
-        return isShiny == that.isShiny && Objects.equals(rarityId, that.rarityId) && Objects.equals(cardId, that.cardId);
+        return isShiny == that.isShiny && Objects.equals(rarityId, that.rarityId) && Objects.equals(cardId, that.cardId) && Objects.equals(seriesId,that.getSeriesId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(rarityId, cardId, amount, isShiny);
+        return Objects.hash(rarityId, cardId, amount, isShiny,seriesId);
+    }
+
+    public String getSeriesId() {
+        return seriesId;
     }
 }
