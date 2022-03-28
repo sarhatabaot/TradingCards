@@ -117,7 +117,7 @@ public class EditCommand extends BaseCommand {
             }
 
 
-            String setCardMessage = String.format("%s %s %s", cardId,rarity,seriesId);
+            String setCardMessage = String.format("%s %s %s", cardId,rarityId,seriesId);
             sendSetTypes(sender, setCardMessage, editCard, value);
         }
 
