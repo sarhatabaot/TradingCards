@@ -14,6 +14,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.commands.migrate.DeckMigrat
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.migrate.PackMigratorBukkitRunnable;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.migrate.RarityMigratorBukkitRunnable;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.migrate.SeriesMigratorBukkitRunnable;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.BoosterPackManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.StorageType;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local.YamlStorage;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
@@ -28,7 +29,7 @@ import org.spongepowered.configurate.ConfigurateException;
 @CommandAlias("cards")
 public class MigrateCommand extends BaseCommand {
     private final TradingCards plugin;
-
+    private boolean ranDataMigration = false;
     public MigrateCommand(final TradingCards plugin) {
         this.plugin = plugin;
     }
@@ -71,6 +72,7 @@ public class MigrateCommand extends BaseCommand {
             new PackMigratorBukkitRunnable(plugin,sender,yamlStorage).runTask(plugin);
             new CustomDropTypeMigratorBukkitRunnable(plugin,sender,yamlStorage).runTask(plugin);
             new CardMigratorBukkitRunnable(plugin,sender,yamlStorage).runTask(plugin);
+            ranDataMigration = true;
         }
 
         @Subcommand("deck confirm")
@@ -91,4 +93,8 @@ public class MigrateCommand extends BaseCommand {
 
     }
 
+
+    public boolean isRanDataMigration() {
+        return ranDataMigration;
+    }
 }

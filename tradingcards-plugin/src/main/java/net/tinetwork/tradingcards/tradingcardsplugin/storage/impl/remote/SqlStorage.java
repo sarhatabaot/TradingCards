@@ -41,6 +41,7 @@ import org.jooq.conf.MappedSchema;
 import org.jooq.conf.MappedTable;
 import org.jooq.conf.RenderMapping;
 import org.jooq.conf.Settings;
+import org.jooq.impl.DSL;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -1473,4 +1474,63 @@ public class SqlStorage implements Storage<TradingCard> {
         return value != 0;
     }
 
+    @Override
+    public int getCardsCount() {
+        return new ExecuteQuery<Integer, Record>(this,jooqSettings) {
+            @Override
+            public Integer onRunQuery(final DSLContext dslContext) {
+                return dslContext.fetchCount(Cards.CARDS);
+            }
+
+            @Override
+            public Integer getQuery(final @NotNull Record result) {
+                return null;
+            }
+
+            @Override
+            public Integer empty() {
+                return 0;
+            }
+        }.prepareAndRunQuery();
+    }
+
+    @Override
+    public int getCardsInRarityCount(final String rarityId) {
+        return new ExecuteQuery<Integer, Record>(this,jooqSettings) {
+            @Override
+            public Integer onRunQuery(final DSLContext dslContext) {
+                return dslContext.fetchCount(Cards.CARDS, DSL.and(Cards.CARDS.RARITY_ID.eq(rarityId)));
+            }
+
+            @Override
+            public Integer getQuery(final @NotNull Record result) {
+                return null;
+            }
+
+            @Override
+            public Integer empty() {
+                return 0;
+            }
+        }.prepareAndRunQuery();
+    }
+
+    @Override
+    public int getCardsInRarityAndSeriesCount(final String rarityId, final String seriesId) {
+        return new ExecuteQuery<Integer, Record>(this,jooqSettings) {
+            @Override
+            public Integer onRunQuery(final DSLContext dslContext) {
+                return dslContext.fetchCount(Cards.CARDS, DSL.and(Cards.CARDS.RARITY_ID.eq(rarityId).and(Cards.CARDS.SERIES_ID.eq(seriesId))));
+            }
+
+            @Override
+            public Integer getQuery(final @NotNull Record result) {
+                return null;
+            }
+
+            @Override
+            public Integer empty() {
+                return 0;
+            }
+        }.prepareAndRunQuery();
+    }
 }
