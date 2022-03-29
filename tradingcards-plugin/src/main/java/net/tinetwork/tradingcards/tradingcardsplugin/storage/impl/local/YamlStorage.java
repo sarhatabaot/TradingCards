@@ -51,7 +51,10 @@ public class YamlStorage implements Storage<TradingCard> {
     private final Map<String, List<TradingCard>> seriesCardList;
     private Map<String,Map<String,List<TradingCard>>> raritySeriesCardList;
 
-
+    @Override
+    public void shutdown() throws Exception {
+        //nothing
+    }
 
     private final Set<Series> activeSeries;
 
