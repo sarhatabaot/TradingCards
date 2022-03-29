@@ -15,12 +15,13 @@ import java.util.stream.Stream;
 public class DropTypeManager implements TypeManager {
     private final TradingCards plugin;
     private final List<String> allTypesIds;
-    private final List<DropType> defaultTypes = List.of(HOSTILE,NEUTRAL,PASSIVE,BOSS,ALL);
+
     public static final DropType HOSTILE = new DropType("hostile","Hostile","hostile");
     public static final DropType NEUTRAL = new DropType("neutral", "Neutral", "neutral");
     public static final DropType PASSIVE = new DropType("passive", "Passive", "passive");
     public static final DropType BOSS = new DropType("boss", "Boss", "boss");
     public static final DropType ALL = new DropType("all","All","all");
+    public static final List<DropType> DEFAULT_TYPES = List.of(HOSTILE,NEUTRAL,PASSIVE,BOSS,ALL);
 
     private Map<String, DropType> mobTypes;
 
@@ -28,6 +29,7 @@ public class DropTypeManager implements TypeManager {
         this.plugin = plugin;
         loadTypes();
         this.allTypesIds = Stream.concat(getDefaultTypes().stream().map(DropType::getId), getTypes().keySet().stream()).toList();
+        this.plugin.getLogger().info(() -> "Loaded TypeManager.");
     }
 
     @Override
@@ -65,7 +67,7 @@ public class DropTypeManager implements TypeManager {
 
     @Override
     public boolean containsType(final String typeId) {
-        if(defaultTypes.stream().map(DropType::getId).toList().contains(typeId)) {
+        if(DEFAULT_TYPES.stream().map(DropType::getId).toList().contains(typeId)) {
             return true;
         }
         return mobTypes.containsKey(typeId);
@@ -73,7 +75,7 @@ public class DropTypeManager implements TypeManager {
 
     @Override
     public List<DropType> getDefaultTypes() {
-        return defaultTypes;
+        return DEFAULT_TYPES;
     }
 
     public List<String> getAllTypesIds() {

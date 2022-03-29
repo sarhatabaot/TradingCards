@@ -238,7 +238,7 @@ public class SimpleCardsConfig extends SimpleConfigurate {
 
                 DropType dropType = yamlStorage.getCustomTypesConfig().getCustomType(typeId);
                 if(dropType == null) {
-                    dropType = plugin.getDropTypeManager().getDefaultTypes()
+                    dropType = DropTypeManager.DEFAULT_TYPES
                             .stream()
                             .filter(type -> typeId.equals(type.getId())).toList().get(0);
                     if (dropType != null)
