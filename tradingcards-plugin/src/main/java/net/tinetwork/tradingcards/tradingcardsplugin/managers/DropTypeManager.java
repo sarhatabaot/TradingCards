@@ -1,7 +1,6 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.managers;
 
 
-import net.tinetwork.tradingcards.api.exceptions.UnsupportedDropTypeException;
 import net.tinetwork.tradingcards.api.manager.TypeManager;
 import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
@@ -9,10 +8,14 @@ import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import org.bukkit.entity.EntityType;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public class DropTypeManager implements TypeManager {
     private final TradingCards plugin;
+    private final List<String> allTypesIds;
+    private final List<DropType> defaultTypes = List.of(HOSTILE,NEUTRAL,PASSIVE,BOSS,ALL);
     public static final DropType HOSTILE = new DropType("hostile","Hostile","hostile");
     public static final DropType NEUTRAL = new DropType("neutral", "Neutral", "neutral");
     public static final DropType PASSIVE = new DropType("passive", "Passive", "passive");
@@ -24,28 +27,28 @@ public class DropTypeManager implements TypeManager {
     public DropTypeManager(final TradingCards plugin) {
         this.plugin = plugin;
         loadTypes();
+        this.allTypesIds = Stream.concat(getDefaultTypes().stream().map(DropType::getId), getTypes().keySet().stream()).toList();
     }
 
     @Override
-    public DropType getType(final String type) throws UnsupportedDropTypeException {
-        DropType dropType = mobTypes.get(type);
-        if(dropType == null) {
+    public DropType getType(final String type) {
+        if(!mobTypes.containsKey(type)) {
             return switch (type.toLowerCase()) {
                 case "boss" -> BOSS;
                 case "hostile" -> HOSTILE;
                 case "neutral" -> NEUTRAL;
                 case "passive" -> PASSIVE;
                 case "all" -> ALL;
-                default -> throw new UnsupportedDropTypeException();
+                default -> mobTypes.get(type);
             };
         }
-        return dropType;
+        return mobTypes.get(type);
     }
 
     @Override
     public void loadTypes() {
         this.mobTypes = new HashMap<>();
-        for(DropType dropType: plugin.getDropTypesConfig().getDropTypes()) {
+        for(DropType dropType: plugin.getStorage().getDropTypes()) {
             mobTypes.put(dropType.getId(),dropType);
         }
     }
@@ -58,5 +61,22 @@ public class DropTypeManager implements TypeManager {
     @Override
     public DropType getMobType(final EntityType type) {
         return CardUtil.getMobType(type);
+    }
+
+    @Override
+    public boolean containsType(final String typeId) {
+        if(defaultTypes.stream().map(DropType::getId).toList().contains(typeId)) {
+            return true;
+        }
+        return mobTypes.containsKey(typeId);
+    }
+
+    @Override
+    public List<DropType> getDefaultTypes() {
+        return defaultTypes;
+    }
+
+    public List<String> getAllTypesIds() {
+        return allTypesIds;
     }
 }

@@ -4,6 +4,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.StorageConfig;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -50,17 +51,18 @@ public abstract class HikariConnectionFactory implements ConnectionFactory{
     /**
      * Called after the pool has been initialised
      */
+    @SuppressWarnings("EmptyMethod")
     protected void postInitialize() {
-
+        //can be empty
     }
 
     //LP
-    protected void overrideProperties(Map<String,String> properties) {
+    protected void overrideProperties(@NotNull Map<String,String> properties) {
         properties.putIfAbsent("socketTimeout", String.valueOf(TimeUnit.SECONDS.toMillis(30)));
     }
 
     //LP
-    protected void setProperties(HikariConfig config, Map<String, String> properties) {
+    protected void setProperties(HikariConfig config, @NotNull Map<String, String> properties) {
         for (Map.Entry<String, String> property : properties.entrySet()) {
             config.addDataSourceProperty(property.getKey(), property.getValue());
         }

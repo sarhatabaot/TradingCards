@@ -7,8 +7,6 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.spongepowered.configurate.ConfigurateException;
 
-import java.util.List;
-
 /**
  * @author sarhatabaot
  */
@@ -102,4 +100,6 @@ public abstract class GeneralConfigurate extends SimpleConfigurate {
     public abstract String displayAbout();
 
     public abstract boolean useDefaultCardsFile();
+
+    public abstract int deckRows();
 }

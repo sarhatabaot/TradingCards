@@ -1,4 +1,4 @@
-package net.tinetwork.tradingcards.tradingcardsplugin.config;
+package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local;
 
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
@@ -12,9 +12,9 @@ import java.util.List;
 public class CardsConfig {
     private final File cardsFolder;
     private final TradingCards plugin;
-
+    private final YamlStorage yamlStorage;
     private List<SimpleCardsConfig> cardConfigs;
-    public CardsConfig(final TradingCards plugin) {
+    public CardsConfig(final TradingCards plugin, YamlStorage yamlStorage) {
         this.plugin = plugin;
 
         createCardsFolder(plugin);
@@ -22,7 +22,7 @@ public class CardsConfig {
             createDefaultCardConfig(plugin);
 
         this.cardsFolder = new File(plugin.getDataFolder().getPath() + File.separator + "cards");
-
+        this.yamlStorage = yamlStorage;
         initValues();
     }
 
@@ -37,7 +37,7 @@ public class CardsConfig {
             plugin.debug(CardsConfig.class,"File name: " + file.getName());
             if (file.getName().endsWith(".yml")) {
                 try {
-                    cardConfigs.add(new SimpleCardsConfig(plugin, file.getName()));
+                    cardConfigs.add(new SimpleCardsConfig(plugin, file.getName(), yamlStorage));
                     plugin.debug(CardsConfig.class,"Added: " + file.getName());
                 } catch (ConfigurateException e) {
                     plugin.getLogger().severe(e.getMessage());
@@ -54,7 +54,7 @@ public class CardsConfig {
 
     private void createDefaultCardConfig(final TradingCards plugin) {
         try {
-            new SimpleCardsConfig(plugin, "cards.yml").saveDefaultConfig();
+            new SimpleCardsConfig(plugin, "cards.yml", yamlStorage).saveDefaultConfig();
         } catch (ConfigurateException e) {
             Util.logSevereException(e);
         }

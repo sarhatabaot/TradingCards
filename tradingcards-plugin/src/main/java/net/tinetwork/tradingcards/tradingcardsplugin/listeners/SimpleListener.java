@@ -22,15 +22,15 @@ public abstract class SimpleListener implements Listener {
 	}
 
 	protected void info(final String message) {
-		logger.info(getClass().getSimpleName()+" "+message);
+		logger.info(() -> getClass().getSimpleName()+" "+message);
 	}
 
 	protected void warning(final String message){
-		logger.warning(getClass().getSimpleName()+" "+message);
+		logger.warning(() -> getClass().getSimpleName()+" "+message);
 	}
 
 
 	protected void severe(final String message){
-		logger.severe(getClass().getSimpleName()+" "+message);
+		logger.severe(() -> getClass().getSimpleName()+" "+message);
 	}
 }

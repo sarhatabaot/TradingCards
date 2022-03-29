@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChatUtil {
+	private static final char ALT_COLOR_CHAR = '&';
 	private static TradingCards plugin;
 	private ChatUtil() {
 		throw new UnsupportedOperationException();
@@ -26,19 +27,18 @@ public class ChatUtil {
 	}
 
 	public static void sendMessage(final @NotNull CommandSender toWhom, final String message) {
-		toWhom.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
+		toWhom.sendMessage(ChatColor.translateAlternateColorCodes(ALT_COLOR_CHAR, message));
 	}
 
 	public static @NotNull String color(Component component) {
-		return LegacyComponentSerializer.builder().character('&').build().serialize(component);
+		return LegacyComponentSerializer.builder().character(ALT_COLOR_CHAR).build().serialize(component);
 	}
 
 	@Contract("_ -> new")
 	public static @NotNull String color(String text) {
-		return ChatColor.translateAlternateColorCodes('&',text);
+		return ChatColor.translateAlternateColorCodes(ALT_COLOR_CHAR,text);
 	}
 
-	//TODO, WRAPPED String
 	public static @NotNull List<String> wrapString(@NotNull String s) {
 		String parsedString = ChatColor.stripColor(s);
 		String addedString = WordUtils.wrap(parsedString, plugin.getGeneralConfig().infoLineLength(), "\n", true);

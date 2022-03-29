@@ -12,69 +12,66 @@ import java.util.UUID;
  */
 public interface DeckManager {
     /**
-     *
-     * @param p
+     * @param player
      * @param deckNum
      */
-    void openDeck(Player p, int deckNum);
-
-    /**
-     *
-     * @param p
-     * @param num
-     * @return
-     */
-    @NotNull
-    ItemStack createDeckItem(@NotNull final Player p, final int num);
+    void openDeck(@NotNull final Player player, final int deckNum);
 
     /**
      *
      * @param player
-     * @param num
+     * @param deckNumber
      * @return
      */
     @NotNull
-    ItemStack getNbtItem(@NotNull final Player player, final int num);
+    ItemStack createDeckItem(@NotNull final Player player, final int deckNumber);
 
     /**
-     *
+     * @param player
+     * @param deckNumber
+     * @return
+     */
+    @NotNull
+    ItemStack getNbtItem(@NotNull final Player player, final int deckNumber);
+
+    /**
      * @param material
      * @return
      */
     boolean isDeckMaterial(final Material material);
 
     /**
-     *
      * @param item
      * @return
      */
     boolean isDeck(final ItemStack item);
 
     /**
-     *
-     * @param p
+     * @param player
      * @param num
      * @return
      */
-    boolean hasDeckItem(@NotNull final Player p, final int num);
+    boolean hasDeckItem(@NotNull final Player player, final int num);
 
     /**
-     *
      * @param player
-     * @param card
-     * @param rarity
+     * @param cardId
+     * @param rarityId
      * @return
      */
-    boolean hasCard(final Player player,final  String card,final  String rarity);
+    boolean hasCard(final Player player,final  String cardId,final  String rarityId);
 
     /**
-     *
      * @param player
-     * @param card
-     * @param rarity
+     * @param cardId
+     * @param rarityId
      * @return
      */
-    boolean hasShinyCard(final Player player, final  String card, final  String rarity);
+    boolean hasShinyCard(final Player player, final  String cardId, final  String rarityId);
 
-    void createNewDeckInFile(final UUID uuid, final int num);
+    /**
+     * @param uuid
+     * @param deckNumber
+     */
+    void createNewDeckInFile(final UUID uuid, final int deckNumber);
 }

@@ -23,7 +23,7 @@ public class TradingCardsAddonManager implements net.tinetwork.tradingcards.api.
         for(TradingCardsAddon addon: addons.values()){
             addon.onReload();
         }
-        plugin.getLogger().info("Reloaded "+addons.size()+" addons.");
+        plugin.getLogger().info(() -> "Reloaded "+addons.size()+" addons.");
     }
 
     @Override

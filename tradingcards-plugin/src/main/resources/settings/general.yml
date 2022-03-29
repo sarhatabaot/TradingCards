@@ -16,8 +16,6 @@ colors:
     booster-pack-name: "&a"
     booster-pack-lore: "&7"
     booster-pack-normal-cards: "&e"
-    booster-pack-special-cards: "&6"
-    booster-pack-extra-cards: "&9"
   lists:
     # What colour should /cards list give to cards owned in decks?
     list-have-card: "&a"

@@ -74,7 +74,7 @@ public class DeckEventListener extends SimpleListener {
         return amountOfItem >= 64;
     }
 
-    private int getAmountOfItem(final Inventory inventory,final NBTItem nbtItem) {
+    private int getAmountOfItem(final @NotNull Inventory inventory, final NBTItem nbtItem) {
         int amount = 0;
         for(ItemStack itemStack: inventory.getContents()) {
             NBTItem currentItem = new NBTItem(itemStack);

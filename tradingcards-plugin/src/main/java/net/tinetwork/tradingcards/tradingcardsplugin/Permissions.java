@@ -18,6 +18,7 @@ public class Permissions {
     public static final String ADMIN_DEBUG_MODULES = "cards.admin.debug.modules";
     public static final String ADMIN_DEBUG_PACKS = "cards.admin.debug.packs";
     public static final String ADMIN_DEBUG_RARITIES = "cards.admin.debug.rarities";
+    public static final String ADMIN_DEBUG_RARITIES_SERIES = "cards.admin.debug.rarities.series";
     public static final String ADMIN_DEBUG_EXISTS = "cards.admin.debug.exists";
     public static final String ADMIN_DEBUG_ZIP = "cards.admin.debug.zip";
     public static final String ADMIN_MIGRATE = "cards.admin.migrate";
@@ -31,7 +32,18 @@ public class Permissions {
     public static final String BUY = "cards.buy";
     public static final String BUY_PACK = "cards.buy.pack";
     public static final String BUY_CARD = "cards.buy.card";
-
+    public static final String CREATE = "cards.create";
+    public static final String CREATE_RARITY = "cards.create.rarity";
+    public static final String CREATE_PACK = "cards.create.pack";
+    public static final String CREATE_SERIES = "cards.create.series";
+    public static final String CREATE_CARD = "cards.create.card";
+    public static final String CREATE_CUSTOM_TYPE = "cards.create.customtype";
+    public static final String EDIT = "cards.edit";
+    public static final String EDIT_CARD = "cards.edit.card";
+    public static final String EDIT_RARITY = "cards.edit.rarity";
+    public static final String EDIT_SERIES = "cards.edit.series";
+    public static final String EDIT_CUSTOM_TYPE = "cards.edit.customtype";
+    public static final String EDIT_PACK = "cards.edit.pack";
     private Permissions () {
         throw new UnsupportedOperationException();
     }

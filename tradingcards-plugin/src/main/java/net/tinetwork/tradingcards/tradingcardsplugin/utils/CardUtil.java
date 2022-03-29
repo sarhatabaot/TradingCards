@@ -1,6 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.utils;
 
 import de.tr7zw.nbtapi.NBTItem;
+import net.tinetwork.tradingcards.api.config.ColorSeries;
 import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
@@ -11,19 +12,16 @@ import net.tinetwork.tradingcards.tradingcardsplugin.managers.DropTypeManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingCardManager;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
-import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.regex.Pattern;
 
 /**
  * @author sarhatabaot
@@ -31,8 +29,6 @@ import java.util.regex.Pattern;
 public class CardUtil {
     private static TradingCards plugin;
     private static TradingCardManager cardManager;
-    private static final char ALT_COLOR_CHAR = '&';
-    private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)" + ALT_COLOR_CHAR + "[0-9A-FK-ORX]");
     public static final int RANDOM_MAX = 100000;
     public static ItemStack BLANK_CARD;
 
@@ -43,6 +39,7 @@ public class CardUtil {
     private static final String PLACEHOLDER_SELL_PRICE = "%SELL_PRICE%";
     private static final String PLACEHOLDER_SHINY_PREFIX = "%SHINY_PREFIX%";
     private static final String PLACEHOLDER_SHINY_PREFIX_ALT = "%SHINYPREFIX%";
+    private static final String PLACEHOLDER_PLAYER = "%player%";
 
     private CardUtil() {
         throw new UnsupportedOperationException();
@@ -96,7 +93,7 @@ public class CardUtil {
         return isCard(nbtItem);
     }
 
-    public static boolean isCard(final NBTItem nbtItem) {
+    public static boolean isCard(final @NotNull NBTItem nbtItem) {
         return nbtItem.getBoolean(NbtUtils.NBT_IS_CARD);
     }
 
@@ -109,30 +106,30 @@ public class CardUtil {
             if (sender == null) {
                 broadcastPrefixedMessage(plugin.getMessagesConfig().giveawayNaturalBossNoPlayer());
             } else {
-                broadcastPrefixedMessage(plugin.getMessagesConfig().giveawayNaturalBoss().replace("%player%", sender.getName()));
+                broadcastPrefixedMessage(plugin.getMessagesConfig().giveawayNaturalBoss().replace(PLACEHOLDER_PLAYER, sender.getName()));
             }
         } else if (plugin.isMobHostile(mob)) {
             if (sender == null) {
                 broadcastPrefixedMessage(plugin.getMessagesConfig().giveawayNaturalHostileNoPlayer());
             } else {
-                broadcastPrefixedMessage(plugin.getMessagesConfig().giveawayNaturalHostile().replace("%player%", sender.getName()));
+                broadcastPrefixedMessage(plugin.getMessagesConfig().giveawayNaturalHostile().replace(PLACEHOLDER_PLAYER, sender.getName()));
             }
         } else if (plugin.isMobNeutral(mob)) {
             if (sender == null) {
                 broadcastPrefixedMessage(plugin.getPrefixedMessage(plugin.getMessagesConfig().giveawayNaturalNeutralNoPlayer()));
             } else {
-                broadcastPrefixedMessage(plugin.getPrefixedMessage(plugin.getMessagesConfig().giveawayNaturalNeutral().replace("%player%", sender.getName())));
+                broadcastPrefixedMessage(plugin.getPrefixedMessage(plugin.getMessagesConfig().giveawayNaturalNeutral().replace(PLACEHOLDER_PLAYER, sender.getName())));
             }
         } else if (plugin.isMobPassive(mob)) {
             if (sender == null) {
                 broadcastPrefixedMessage(plugin.getPrefixedMessage(plugin.getMessagesConfig().giveawayNaturalPassiveNoPlayer()));
             } else {
-                broadcastPrefixedMessage(plugin.getPrefixedMessage(plugin.getMessagesConfig().giveawayNaturalPassive().replace("%player%", sender.getName())));
+                broadcastPrefixedMessage(plugin.getPrefixedMessage(plugin.getMessagesConfig().giveawayNaturalPassive().replace(PLACEHOLDER_PLAYER, sender.getName())));
             }
         } else if (sender == null) {
             broadcastPrefixedMessage(plugin.getMessagesConfig().giveawayNaturalNoPlayer());
         } else {
-            broadcastPrefixedMessage(plugin.getMessagesConfig().giveawayNatural().replace("%player%", sender.getName()));
+            broadcastPrefixedMessage(plugin.getMessagesConfig().giveawayNatural().replace(PLACEHOLDER_PLAYER, sender.getName()));
         }
 
         for (final Player p : Bukkit.getOnlinePlayers()) {
@@ -174,11 +171,12 @@ public class CardUtil {
 
     public static @NotNull List<String> formatLore(final String info, final String about, final String rarity, final boolean isShiny, final String type, final Series series) {
         List<String> lore = new ArrayList<>();
-        final String typeFormat = ChatUtil.color(plugin.getSeriesConfig().getColorSeries(series.getName()).getType() + plugin.getGeneralConfig().displayType() + type);
-        final String infoFormat = ChatUtil.color(plugin.getSeriesConfig().getColorSeries(series.getName()).getInfo() + plugin.getGeneralConfig().displayInfo());
-        final String seriesFormat = ChatUtil.color(plugin.getSeriesConfig().getColorSeries(series.getName()).getSeries() + plugin.getGeneralConfig().displaySeries() + series.getDisplayName());
-        final String aboutFormat = ChatUtil.color(plugin.getSeriesConfig().getColorSeries(series.getName()).getAbout() + plugin.getGeneralConfig().displayAbout());
-        final String rarityFormat = ChatUtil.color(plugin.getSeriesConfig().getColorSeries(series.getName()).getRarity());
+        final ColorSeries colorSeries = series.getColorSeries();
+        final String typeFormat = ChatUtil.color(colorSeries.getType() + plugin.getGeneralConfig().displayType() + type);
+        final String infoFormat = ChatUtil.color(colorSeries.getInfo() + plugin.getGeneralConfig().displayInfo());
+        final String seriesFormat = ChatUtil.color(colorSeries.getSeries() + plugin.getGeneralConfig().displaySeries() + series.getDisplayName());
+        final String aboutFormat = ChatUtil.color(colorSeries.getAbout() + plugin.getGeneralConfig().displayAbout());
+        final String rarityFormat = ChatUtil.color(colorSeries.getRarity());
 
         lore.add(typeFormat);
         if (!"None".equalsIgnoreCase(info) && !info.isEmpty()) {
@@ -206,8 +204,8 @@ public class CardUtil {
 
 
     @Contract(pure = true)
-    public static @NotNull String cardKey(String rarity, String cardName) {
-        return rarity + "." + cardName;
+    public static @NotNull String cardKey(@NotNull final String rarityId,@NotNull final String cardId) {
+        return rarityId + "." + cardId;
     }
 
     public static boolean calculateIfShiny(boolean forcedShiny) {
@@ -217,5 +215,13 @@ public class CardUtil {
         boolean isShiny = shinyRandom <= plugin.getChancesConfig().shinyVersionChance();
         plugin.debug(TradingCardManager.class,"Shiny="+isShiny+", Value="+shinyRandom+", ShinyChance="+plugin.getChancesConfig().shinyVersionChance());
         return isShiny;
+    }
+
+    public static boolean hasVault(final CommandSender player) {
+        if (!plugin.isHasVault()) {
+            ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().noVault());
+            return false;
+        }
+        return true;
     }
 }

@@ -2,6 +2,8 @@ package net.tinetwork.tradingcards.api.addons;
 
 import net.tinetwork.tradingcards.api.TradingCardsPlugin;
 
+import java.util.logging.Level;
+
 public class AddonLogger {
 	private final String addonName;
 	private final TradingCardsPlugin<?> tradingCards;
@@ -12,15 +14,27 @@ public class AddonLogger {
 	}
 
 	public void severe(String message){
-		tradingCards.getLogger().severe(addonName+" "+message);
+		tradingCards.getLogger().severe(() -> addonName+" "+message);
+	}
+
+	public void severe(String message,Exception e){
+		tradingCards.getLogger().log(Level.SEVERE,e,() ->addonName+" "+message);
 	}
 
 	public void warning(String message){
-		tradingCards.getLogger().warning(addonName+" "+message);
+		tradingCards.getLogger().warning(() -> addonName+" "+message);
+	}
+
+	public void warning(String message,Exception e){
+		tradingCards.getLogger().log(Level.WARNING,e,() ->addonName+" "+message);
 	}
 
 	public void info(String message) {
-		tradingCards.getLogger().info(addonName+" "+message);
+		tradingCards.getLogger().info(() ->addonName+" "+message);
+	}
+
+	public void info(String message,Exception e){
+		tradingCards.getLogger().log(Level.INFO,e,() -> addonName+" "+message);
 	}
 
 	public void debug(String message){

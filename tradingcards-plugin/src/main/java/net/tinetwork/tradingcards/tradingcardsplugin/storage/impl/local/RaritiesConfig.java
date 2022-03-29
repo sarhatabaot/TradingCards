@@ -1,8 +1,11 @@
-package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
+package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local;
 
 import net.tinetwork.tradingcards.api.config.settings.RarityConfigurate;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
+import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
+import org.jetbrains.annotations.NotNull;
+import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
@@ -17,10 +20,10 @@ import java.util.Map;
 
 public class RaritiesConfig extends RarityConfigurate{
     private List<Rarity> rarities;
-    private ConfigurationNode raritiesNode;
+    private CommentedConfigurationNode raritiesNode;
 
     public RaritiesConfig(TradingCards plugin) throws ConfigurateException {
-        super(plugin, "settings"+ File.separator,"rarities.yml", "settings");
+        super(plugin, "data"+ File.separator,"rarities.yml", "data");
     }
 
     @Override
@@ -43,6 +46,97 @@ public class RaritiesConfig extends RarityConfigurate{
         return raritiesNode.hasChild(id);
     }
 
+    public void editBuyPrice(final String rarityId, final double buyPrice){
+        ConfigurationNode rarityNode = raritiesNode.node(rarityId);
+        try {
+            Rarity rarity = getRarity(rarityId);
+            rarity.setBuyPrice(buyPrice);
+            rarityNode.set(rarity);
+            loader.save(rootNode);
+            reloadConfig();
+        } catch (ConfigurateException e){
+            Util.logSevereException(e);
+        }
+    }
+
+    public void editAddReward(final String rarityId,final String reward){
+        ConfigurationNode rarityNode = raritiesNode.node(rarityId);
+        try {
+            Rarity rarity = getRarity(rarityId);
+            rarity.getRewards().add(reward);
+            rarityNode.set(rarity);
+            loader.save(rootNode);
+            reloadConfig();
+        } catch (ConfigurateException e){
+            Util.logSevereException(e);
+        }
+    }
+
+    public void editDefaultColor(final String rarityId, final String defaultColor) {
+        ConfigurationNode rarityNode = raritiesNode.node(rarityId);
+        try {
+            Rarity rarity = getRarity(rarityId);
+            rarity.setDefaultColor(defaultColor);
+            rarityNode.set(rarity);
+            loader.save(rootNode);
+            reloadConfig();
+        } catch (ConfigurateException e){
+            Util.logSevereException(e);
+        }
+    }
+
+    public void editDisplayName(final String rarityId, final String displayName) {
+        ConfigurationNode rarityNode = raritiesNode.node(rarityId);
+        try {
+            Rarity rarity = getRarity(rarityId);
+            rarity.setDisplayName(displayName);
+            rarityNode.set(rarity);
+            loader.save(rootNode);
+            reloadConfig();
+        } catch (ConfigurateException e){
+            Util.logSevereException(e);
+        }
+    }
+
+    public void editSellPrice(final String rarityId, final double sellPrice) {
+        ConfigurationNode rarityNode = raritiesNode.node(rarityId);
+        try {
+            Rarity rarity = getRarity(rarityId);
+            rarity.setSellPrice(sellPrice);
+            rarityNode.set(rarity);
+            loader.save(rootNode);
+            reloadConfig();
+        } catch (ConfigurateException e){
+            Util.logSevereException(e);
+        }
+    }
+
+    public void editRemoveAllRewards(final String rarityId) {
+        ConfigurationNode rarityNode = raritiesNode.node(rarityId);
+        try {
+            Rarity rarity = getRarity(rarityId);
+            rarity.setRewards(new ArrayList<>());
+            rarityNode.set(rarity);
+            loader.save(rootNode);
+            reloadConfig();
+        } catch (ConfigurateException e){
+            Util.logSevereException(e);
+        }
+    }
+
+    public void editRemoveReward(final String rarityId, final int rewardNumber) {
+        ConfigurationNode rarityNode = raritiesNode.node(rarityId);
+        try {
+            Rarity rarity = getRarity(rarityId);
+            rarity.getRewards().remove(rewardNumber);
+            rarityNode.set(rarity);
+            loader.save(rootNode);
+            reloadConfig();
+        } catch (ConfigurateException e){
+            Util.logSevereException(e);
+        }
+    }
+
     private void loadRarities()  {
         this.rarities = new ArrayList<>();
         for(Map.Entry<Object, ? extends ConfigurationNode> nodeEntry: raritiesNode.childrenMap().entrySet()) {
@@ -61,6 +155,17 @@ public class RaritiesConfig extends RarityConfigurate{
         return rarities;
     }
 
+    public void createRarity(final String rarityId) {
+        try {
+            Rarity rarity = new Rarity(rarityId,rarityId,"",0,0,new ArrayList<>());
+            raritiesNode.node(rarityId).set(rarity);
+            loader.save(rootNode);
+            reloadConfig();
+        } catch (ConfigurateException e) {
+            Util.logSevereException(e);
+        }
+    }
+
     public static final class RaritySerializer implements TypeSerializer<Rarity> {
         public static final RaritySerializer INSTANCE = new RaritySerializer();
         public static final Class<Rarity> TYPE = Rarity.class;
@@ -74,7 +179,7 @@ public class RaritiesConfig extends RarityConfigurate{
         private RaritySerializer() {
         }
 
-        private ConfigurationNode nonVirtualNode(final ConfigurationNode source, final Object... path) throws SerializationException {
+        private ConfigurationNode nonVirtualNode(final @NotNull ConfigurationNode source, final Object... path) throws SerializationException {
             if (!source.hasChild(path)) {
                 throw new SerializationException("Required field " + Arrays.toString(path) + " was not present in node");
             }
@@ -108,10 +213,12 @@ public class RaritiesConfig extends RarityConfigurate{
                 return;
             }
 
-            target.node(NAME).set(rarity.getName());
+            target.node(NAME).set(rarity.getId());
             target.node(DISPLAY_NAME).set(rarity.getDisplayName());
             target.node(DEFAULT_COLOR).set(rarity.getDefaultColor());
             target.node(REWARDS).set(rarity.getRewards());
+            target.node(BUY_PRICE).set(rarity.buyPrice());
+            target.node(SELL_PRICE).set(rarity.sellPrice());
         }
     }
 

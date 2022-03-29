@@ -87,22 +87,22 @@ public class DropListener extends SimpleListener {
         }
 
         boolean isShiny = randomCard.hasShiny() && CardUtil.calculateIfShiny(false);
-        debug("Added card "+cardKey(randomCard.getRarity().getName(),randomCard.getCardName()));
+        debug("Added card "+cardKey(randomCard.getRarity().getId(),randomCard.getCardId()));
         //Add the card to the killedEntity drops
         e.getDrops().add(randomCard.build(isShiny));
     }
 
     //Gets the rarity key for the appropriate player card.
     private @Nullable String getRarityKey(Player player) {
-        List<Rarity> rarities = plugin.getRaritiesConfig().rarities();
+        List<Rarity> rarities = plugin.getRarityManager().getRarities();
         if (rarities == null)
             return null;
 
 
         for (final Rarity rarity : rarities) {
-            if (!(cardManager.getCard(player.getName(), rarity.getName(), false) instanceof EmptyCard)) {
-                debug(rarity.getName());
-                return rarity.getName();
+            if (!(cardManager.getCard(player.getName(), rarity.getId(), false) instanceof EmptyCard)) {
+                debug(rarity.getId());
+                return rarity.getId();
             }
         }
 

@@ -6,6 +6,7 @@ import net.tinetwork.tradingcards.api.events.DeckItemInteractEvent;
 import net.tinetwork.tradingcards.api.model.deck.Deck;
 import net.tinetwork.tradingcards.api.model.deck.StorageEntry;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
+import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingDeckManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
@@ -16,11 +17,10 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class DeckListener extends SimpleListener {
     private final TradingDeckManager deckManager;
-    private final Storage deckStorage;
+    private final Storage<TradingCard> deckStorage;
 
     public DeckListener(final TradingCards plugin) {
         super(plugin);
@@ -60,7 +60,7 @@ public class DeckListener extends SimpleListener {
         }
 
         final Deck deck = new Deck(player.getUniqueId(),deckNum,serializedEntries);
-        deckStorage.save(player.getUniqueId(), deckNum, deck);
+        deckStorage.saveDeck(player.getUniqueId(), deckNum, deck);
         deckManager.removeDeckViewer(e.getPlayer().getUniqueId());
         debug("Deck closed");
     }

@@ -1,8 +1,9 @@
-package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
+package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local;
 
 import net.tinetwork.tradingcards.api.model.Pack;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.api.config.SimpleConfigurate;
+import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
@@ -16,17 +17,82 @@ import java.util.List;
 import java.util.Map;
 
 public class PacksConfig extends SimpleConfigurate {
-    private List<String> packs;
+    private List<String> packNames;
+    private List<Pack> packs;
     public PacksConfig(TradingCards plugin) throws ConfigurateException {
-        super(plugin, "settings"+ File.separator,"packs.yml", "settings");
+        super(plugin, "data"+ File.separator,"packs.yml", "data");
     }
 
     public Pack getPack(final String name) throws SerializationException {
         return rootNode.node(name).get(Pack.class);
     }
 
-    public List<String> getPacks() {
+    public List<String> getPackNames() {
+        return packNames;
+    }
+
+    public List<Pack> getPacks() {
         return packs;
+    }
+
+    public void editDisplayName(final String packId, final String displayName) {
+        ConfigurationNode packNode = rootNode.node(packId);
+        try {
+            Pack pack = getPack(packId);
+            pack.setDisplayName(displayName);
+            packNode.set(pack);
+            loader.save(rootNode);
+        } catch (ConfigurateException e) {
+            Util.logSevereException(e);
+        }
+
+    }
+
+    public void editContents(final String packId, final int lineNumber, final Pack.PackEntry packEntry) {
+        ConfigurationNode packNode = rootNode.node(packId);
+        try {
+            Pack pack = getPack(packId);
+            pack.getPackEntryList().set(lineNumber,packEntry);
+            packNode.set(pack);
+            loader.save(rootNode);
+        } catch (ConfigurateException e) {
+            Util.logSevereException(e);
+        }
+    }
+
+    public void editPermission(final String packId, final String permission) {
+        ConfigurationNode packNode = rootNode.node(packId);
+        try {
+            Pack pack = getPack(packId);
+            pack.setPermission(permission);
+            packNode.set(pack);
+            loader.save(rootNode);
+        } catch (ConfigurateException e) {
+            Util.logSevereException(e);
+        }
+    }
+
+    public void editPrice(final String packId, final double price){
+        ConfigurationNode packNode = rootNode.node(packId);
+        try {
+            Pack pack = getPack(packId);
+            pack.setBuyPrice(price);
+            packNode.set(pack);
+            loader.save(rootNode);
+        } catch (ConfigurateException e) {
+            Util.logSevereException(e);
+        }
+    }
+
+
+    public void createPack(final String packId){
+        try {
+            rootNode.node(packId).set(new Pack(packId,new ArrayList<>(),packId,100.0,"cards.packs."+packId));
+            loader.save(rootNode);
+            reloadConfig();
+        } catch (ConfigurateException e) {
+            Util.logSevereException(e);
+        }
     }
 
     @Override
@@ -37,10 +103,13 @@ public class PacksConfig extends SimpleConfigurate {
 
     @Override
     protected void initValues() throws ConfigurateException {
+        this.packNames = new ArrayList<>();
         this.packs = new ArrayList<>();
         for(Map.Entry<Object, ? extends ConfigurationNode> nodeEntry: rootNode.childrenMap().entrySet()) {
             final String name = nodeEntry.getValue().key().toString();
-            packs.add(name);
+            final Pack pack = getPack(name);
+            packs.add(pack);
+            packNames.add(name);
         }
     }
 
@@ -60,6 +129,7 @@ public class PacksConfig extends SimpleConfigurate {
             final ConfigurationNode priceNode = node.node(PRICE);
             final ConfigurationNode permissionsNode = node.node(PERMISSION);
             final ConfigurationNode displayNameNode = node.node(DISPLAY_NAME);
+            final String id = node.key().toString();
 
             final List<String> contentStringList = contentNode.getList(String.class);
             final List<Pack.PackEntry> packEntryList = new ArrayList<>();
@@ -70,7 +140,7 @@ public class PacksConfig extends SimpleConfigurate {
             final String permissions = permissionsNode.getString();
             final String displayName = getDisplayName(displayNameNode.getString(),node);
 
-            return new Pack(packEntryList,displayName, price,permissions);
+            return new Pack(id,packEntryList,displayName, price,permissions);
         }
 
         private String getDisplayName(final String displayName, final ConfigurationNode node) {
@@ -91,8 +161,8 @@ public class PacksConfig extends SimpleConfigurate {
             }
 
             target.node(CONTENT).set(pack.getPackEntryList());
-            target.node(PRICE).set(pack.getPrice());
-            target.node(PERMISSION).set(pack.getPermissions());
+            target.node(PRICE).set(pack.getBuyPrice());
+            target.node(PERMISSION).set(pack.getPermission());
         }
     }
 }

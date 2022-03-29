@@ -2,11 +2,11 @@ package net.tinetwork.tradingcards.api.model;
 
 public class DropType {
     private final String id;
-    private final String displayName;
-    private final String type;
+    private String displayName;
+    private String type;
 
-    public DropType(final String name, final String displayName, final String type) {
-        this.id = name;
+    public DropType(final String id, final String displayName, final String type) {
+        this.id = id;
         this.displayName = displayName;
         this.type = type;
     }
@@ -21,6 +21,14 @@ public class DropType {
 
     public String getType() {
         return type;
+    }
+
+    public void setDisplayName(final String displayName) {
+        this.displayName = displayName;
+    }
+
+    public void setType(final String type) {
+        this.type = type;
     }
 
     @Override
