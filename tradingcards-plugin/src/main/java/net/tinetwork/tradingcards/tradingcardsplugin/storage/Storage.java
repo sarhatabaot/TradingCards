@@ -112,6 +112,7 @@ public interface Storage<T extends Card<T>> {
 
     /* TODO
      *  @return Returns a <CardsKey, Card> map CardsKey should only be for yaml
+     *  This is effectively a cache with a composite key.
      *  This should be used only in yaml storage, and via getCard();
      */
     @Deprecated
@@ -233,5 +234,5 @@ public interface Storage<T extends Card<T>> {
      */
     int getCardsInRarityAndSeriesCount(final String rarityId, final String seriesId);
 
-
+    void shutdown() throws Exception;
 }

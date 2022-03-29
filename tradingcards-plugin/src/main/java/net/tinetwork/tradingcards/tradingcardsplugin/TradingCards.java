@@ -330,6 +330,11 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     public void onDisable() {
         econ = null;
         deckManager.closeAllOpenViews();
+        try {
+            this.getStorage().shutdown();
+        } catch (Exception ignored) {
+            //ignored
+        }
     }
 
     @Override
