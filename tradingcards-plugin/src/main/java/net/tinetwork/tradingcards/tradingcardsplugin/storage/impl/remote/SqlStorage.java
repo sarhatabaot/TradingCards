@@ -1001,6 +1001,14 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void reload() {
+        try {
+            shutdown();
+            plugin.getLogger().warning(() -> "We have detected a reload. Shutting down connection to database and reconnecting..");
+        } catch (Exception e){
+            return;
+        }
+
+        connectionFactory.init(plugin);
         //nothing to do here.
     }
 
@@ -1532,5 +1540,10 @@ public class SqlStorage implements Storage<TradingCard> {
                 return 0;
             }
         }.prepareAndRunQuery();
+    }
+
+    @Override
+    public void shutdown() throws Exception {
+        this.getConnectionFactory().shutdown();
     }
 }

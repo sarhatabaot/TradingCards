@@ -233,5 +233,5 @@ public interface Storage<T extends Card<T>> {
      */
     int getCardsInRarityAndSeriesCount(final String rarityId, final String seriesId);
 
-
+    void shutdown() throws Exception;
 }
