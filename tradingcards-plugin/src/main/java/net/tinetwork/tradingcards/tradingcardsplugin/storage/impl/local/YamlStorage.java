@@ -23,6 +23,7 @@ import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -276,22 +277,22 @@ public class YamlStorage implements Storage<TradingCard> {
 
     @Override
     public List<TradingCard> getCardsInRarityAndSeries(final String rarityId, final String seriesId) {
-        return raritySeriesCardList.get(rarityId).get(seriesId);
+        return raritySeriesCardList.get(rarityId).getOrDefault(seriesId, Collections.emptyList());
     }
 
-    //todo
     private void loadRaritySeriesCardList() {
         this.raritySeriesCardList = new HashMap<>();
         for(final Rarity rarity : plugin.getStorage().getRarities()) {
             this.raritySeriesCardList.putIfAbsent(rarity.getId(),new HashMap<>());
-            Map<String,List<TradingCard>> seriesCardList = this.raritySeriesCardList.get(rarity.getId());
+            Map<String,List<TradingCard>> seriesCardMap = this.raritySeriesCardList.get(rarity.getId());
             if(rarityCardList.get(rarity.getId()) == null)
                 continue;
             for(TradingCard tradingCard: rarityCardList.get(rarity.getId())) {
                 String series = tradingCard.getSeries().getId();
-                seriesCardList.putIfAbsent(series,new ArrayList<>());
-                seriesCardList.get(series).add(tradingCard);
+                seriesCardMap.putIfAbsent(series,new ArrayList<>());
+                seriesCardMap.get(series).add(tradingCard);
             }
+            this.raritySeriesCardList.put(rarity.getId(),seriesCardMap);
         }
     }
 

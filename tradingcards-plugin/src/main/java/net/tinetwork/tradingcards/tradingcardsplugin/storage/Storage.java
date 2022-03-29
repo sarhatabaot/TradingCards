@@ -135,6 +135,7 @@ public interface Storage<T extends Card<T>> {
      */
     List<T> getCardsInSeries(final String seriesId);
 
+    @Nullable
     List<T> getCardsInRarityAndSeries(final String rarityId, final String seriesId);
 
     /**
