@@ -46,6 +46,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
     public TradingCardManager(final TradingCards plugin) {
         this.plugin = plugin;
         initValues();
+        this.plugin.getLogger().info(() -> "Loaded CardManager.");
     }
 
     public List<String> getCardsInRarityAndSeriesIds(final String rarityId, final String seriesId) {
@@ -114,7 +115,8 @@ public class TradingCardManager implements CardManager<TradingCard> {
     private void loadRarityCardNames(){
         this.rarityCardMap = new HashMap<>();
         for(Rarity rarity: plugin.getRarityManager().getRarities()) {
-            rarityCardMap.put(rarity.getId(),plugin.getStorage().getCardsInRarity(rarity.getId()).stream().map(TradingCard::getCardId).toList());
+            rarityCardMap.put(rarity.getId(),
+                    plugin.getStorage().getCardsInRarity(rarity.getId()).stream().map(TradingCard::getCardId).toList());
         }
     }
 

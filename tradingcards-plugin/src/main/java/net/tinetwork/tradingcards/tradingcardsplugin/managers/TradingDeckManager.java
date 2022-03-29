@@ -44,6 +44,7 @@ public class TradingDeckManager implements DeckManager {
         this.cardManager = plugin.getCardManager();
         this.storage = plugin.getStorage();
         this.playerDeckViewingMap = new HashMap<>();
+        this.plugin.getLogger().info(() -> "Loaded DeckManager.");
     }
 
 

@@ -17,6 +17,7 @@ public class TradingSeriesManager implements SeriesManager {
     public TradingSeriesManager(final TradingCards plugin) {
         this.plugin = plugin;
         this.seriesIds = getAllSeries().stream().map(Series::getId).toList();
+        this.plugin.getLogger().info(() -> "Loaded SeriesManager.");
     }
 
     @Override

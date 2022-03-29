@@ -81,7 +81,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private ImmutableSet<EntityType> neutralMobs;
     private ImmutableSet<EntityType> bossMobs;
 
-    /* Configs */
+    /* Storage */
     private Storage<TradingCard> storage;
 
     /* Local Settings */
@@ -227,6 +227,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     //The order is important. Decks & Packs must load after cards load.
     //Cards must load after rarity, droptype & series.
     private void initManagers() {
+        getLogger().info(() -> "Initializing managers...");
         this.rarityManager = new TradingRarityManager(this);
         this.dropTypeManager = new DropTypeManager(this);
         this.seriesManager = new TradingSeriesManager(this);
@@ -497,5 +498,21 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
     public MigrateCommand getMigrateCommand() {
         return migrateCommand;
+    }
+
+    public ImmutableSet<EntityType> getHostileMobs() {
+        return hostileMobs;
+    }
+
+    public ImmutableSet<EntityType> getPassiveMobs() {
+        return passiveMobs;
+    }
+
+    public ImmutableSet<EntityType> getNeutralMobs() {
+        return neutralMobs;
+    }
+
+    public ImmutableSet<EntityType> getBossMobs() {
+        return bossMobs;
     }
 }

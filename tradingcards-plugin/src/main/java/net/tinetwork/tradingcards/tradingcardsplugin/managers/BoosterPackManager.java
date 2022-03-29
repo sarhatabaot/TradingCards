@@ -1,6 +1,5 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.managers;
 
-import com.google.common.collect.ImmutableList;
 import de.tr7zw.nbtapi.NBTItem;
 import net.tinetwork.tradingcards.api.manager.PackManager;
 import net.tinetwork.tradingcards.api.model.Pack;
@@ -32,6 +31,7 @@ public class BoosterPackManager implements PackManager {
         this.plugin = plugin;
         this.blankPack = new ItemStack(plugin.getGeneralConfig().packMaterial());
         initValues();
+        plugin.getLogger().info(() -> "Loaded PackManager.");
     }
 
     public void initValues() {
