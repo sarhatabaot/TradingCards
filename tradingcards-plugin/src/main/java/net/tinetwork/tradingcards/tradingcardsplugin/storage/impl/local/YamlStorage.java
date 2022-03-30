@@ -267,12 +267,12 @@ public class YamlStorage implements Storage<TradingCard> {
 
     @Override
     public List<TradingCard> getCardsInRarity(final String rarityId) {
-        return rarityCardList.get(rarityId);
+        return rarityCardList.getOrDefault(rarityId, Collections.emptyList());
     }
 
     @Override
     public List<TradingCard> getCardsInSeries(final String seriesId) {
-        return seriesCardList.get(seriesId);
+        return seriesCardList.getOrDefault(seriesId, Collections.emptyList());
     }
 
     @Override
