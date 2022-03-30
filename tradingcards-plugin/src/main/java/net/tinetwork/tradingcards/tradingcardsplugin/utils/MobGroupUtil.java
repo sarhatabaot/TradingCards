@@ -27,22 +27,6 @@ public class MobGroupUtil {
             EntityType.PARROT, EntityType.HORSE, EntityType.WANDERING_TRADER, EntityType.CAT, EntityType.MUSHROOM_COW, EntityType.TRADER_LLAMA).build();
     private static final Set<EntityType> boss = ImmutableSet.<EntityType>builder().add(EntityType.ENDER_DRAGON, EntityType.WITHER).build();
 
-    public static Set<EntityType> getHostile() {
-        return hostile;
-    }
-
-    public static Set<EntityType> getNeutral() {
-        return neutral;
-    }
-
-    public static Set<EntityType> getPassive() {
-        return passive;
-    }
-
-    public static Set<EntityType> getBoss() {
-        return boss;
-    }
-
     public static boolean isMob(EntityType type) {
         return hostile.contains(type) || neutral.contains(type) || passive.contains(type) || boss.contains(type);
     }
