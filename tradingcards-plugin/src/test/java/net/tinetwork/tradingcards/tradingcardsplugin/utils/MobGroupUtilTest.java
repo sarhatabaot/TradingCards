@@ -39,6 +39,9 @@ class MobGroupUtilTest {
     @DisplayName("isMob(EntityType)")
     void isMobType() {
         assertTrue(MobGroupUtil.isMob(EntityType.ENDER_DRAGON));
+        assertTrue(MobGroupUtil.isMob(EntityType.BLAZE));
+        assertTrue(MobGroupUtil.isMob(EntityType.SQUID));
+        assertTrue(MobGroupUtil.isMob(EntityType.DOLPHIN));
         assertFalse(MobGroupUtil.isMob(EntityType.SNOWBALL));
     }
     @Test
@@ -46,5 +49,6 @@ class MobGroupUtilTest {
     void isMobString() {
         assertTrue(MobGroupUtil.isMob("BLAZE"));
         assertFalse(MobGroupUtil.isMob("SNOWBALL"));
+        assertFalse(MobGroupUtil.isMob("Test"));
     }
 }
