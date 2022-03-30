@@ -49,6 +49,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.sql.Mar
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.sql.MySqlConnectionFactory;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
+import net.tinetwork.tradingcards.tradingcardsplugin.utils.MobGroupUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
 import net.tinetwork.tradingcards.tradingcardsplugin.whitelist.PlayerBlacklist;
 import net.tinetwork.tradingcards.tradingcardsplugin.whitelist.WorldBlacklist;
@@ -68,18 +69,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+import java.util.Set;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 
 public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private final Random random = new Random();
-
-    /* Mobs */
-    private ImmutableSet<EntityType> hostileMobs;
-    private ImmutableSet<EntityType> passiveMobs;
-    private ImmutableSet<EntityType> neutralMobs;
-    private ImmutableSet<EntityType> bossMobs;
 
     /* Storage */
     private Storage<TradingCard> storage;
@@ -133,7 +129,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     public void onEnable() {
         Util.init(getLogger());
 
-        cacheMobs();
         initConfigs();
 
         initStorage();
@@ -390,23 +385,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         pm.registerEvents(new DeckListener(this), this);
     }
 
-    private void cacheMobs() {
-        this.hostileMobs = ImmutableSet.<EntityType>builder().add(EntityType.SPIDER, EntityType.CAVE_SPIDER, EntityType.ZOMBIE, EntityType.SKELETON, EntityType.CREEPER,
-                EntityType.BLAZE, EntityType.SILVERFISH, EntityType.GHAST, EntityType.SLIME, EntityType.EVOKER, EntityType.VINDICATOR,
-                EntityType.VEX, EntityType.SHULKER, EntityType.GUARDIAN, EntityType.MAGMA_CUBE, EntityType.ELDER_GUARDIAN, EntityType.STRAY,
-                EntityType.HUSK, EntityType.DROWNED, EntityType.WITCH, EntityType.ZOMBIE_VILLAGER, EntityType.ENDERMITE, EntityType.PILLAGER, EntityType.RAVAGER,
-                EntityType.HOGLIN, EntityType.PIGLIN, EntityType.STRIDER, EntityType.ZOGLIN, EntityType.ZOMBIFIED_PIGLIN, EntityType.WITHER_SKELETON).build();
-
-        this.neutralMobs = ImmutableSet.<EntityType>builder().add(EntityType.ENDERMAN, EntityType.POLAR_BEAR, EntityType.LLAMA, EntityType.WOLF,
-                EntityType.DOLPHIN, EntityType.SNOWMAN, EntityType.IRON_GOLEM, EntityType.BEE, EntityType.PANDA, EntityType.FOX).build();
-
-        this.passiveMobs = ImmutableSet.<EntityType>builder().add(EntityType.DONKEY, EntityType.MULE, EntityType.SKELETON_HORSE, EntityType.CHICKEN, EntityType.COW,
-                EntityType.SQUID, EntityType.TURTLE, EntityType.TROPICAL_FISH, EntityType.PUFFERFISH, EntityType.SHEEP, EntityType.PIG,
-                EntityType.PHANTOM, EntityType.SALMON, EntityType.COD, EntityType.RABBIT, EntityType.VILLAGER, EntityType.BAT,
-                EntityType.PARROT, EntityType.HORSE, EntityType.WANDERING_TRADER, EntityType.CAT, EntityType.MUSHROOM_COW, EntityType.TRADER_LLAMA).build();
-        this.bossMobs = ImmutableSet.<EntityType>builder().add(EntityType.ENDER_DRAGON, EntityType.WITHER).build();
-    }
-
 
     private boolean setupEconomy() {
         if (this.getServer().getPluginManager().getPlugin("Vault") == null) {
@@ -423,34 +401,30 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     }
 
     public boolean isMobHostile(EntityType e) {
-        return this.hostileMobs.contains(e);
+        return MobGroupUtil.isMobHostile(e);
     }
 
     public boolean isMobNeutral(EntityType e) {
-        return this.neutralMobs.contains(e);
+        return MobGroupUtil.isMobNeutral(e);
     }
 
     public boolean isMobPassive(EntityType e) {
-        return this.passiveMobs.contains(e);
+        return MobGroupUtil.isMobPassive(e);
     }
 
     public boolean isMobBoss(EntityType e) {
-        return this.bossMobs.contains(e);
+        return MobGroupUtil.isMobBoss(e);
+
     }
 
     @Override
     public boolean isMob(@NotNull String input) {
-        try {
-            EntityType type = EntityType.valueOf(input.toUpperCase());
-            return isMob(type);
-        } catch (IllegalArgumentException e) {
-            return false;
-        }
+        return MobGroupUtil.isMob(input);
     }
 
     @Override
     public boolean isMob(EntityType type) {
-        return this.hostileMobs.contains(type) || this.neutralMobs.contains(type) || this.passiveMobs.contains(type) || this.bossMobs.contains(type);
+        return MobGroupUtil.isMob(type);
     }
 
     @Override
@@ -500,19 +474,4 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         return migrateCommand;
     }
 
-    public ImmutableSet<EntityType> getHostileMobs() {
-        return hostileMobs;
-    }
-
-    public ImmutableSet<EntityType> getPassiveMobs() {
-        return passiveMobs;
-    }
-
-    public ImmutableSet<EntityType> getNeutralMobs() {
-        return neutralMobs;
-    }
-
-    public ImmutableSet<EntityType> getBossMobs() {
-        return bossMobs;
-    }
 }
