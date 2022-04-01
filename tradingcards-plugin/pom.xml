@@ -77,6 +77,10 @@
             <url>https://repo.codemc.org/repository/maven-public/</url>
             <layout>default</layout>
         </repository>
+        <repository>
+            <id>placeholderapi</id>
+            <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
+        </repository>
     </repositories>
     <reporting>
         <plugins>
@@ -183,13 +187,13 @@
     </build>
 
     <dependencies>
+        <!-- Bukkit Libs -->
         <dependency>
             <groupId>net.tinetwork.tradingcards</groupId>
             <artifactId>tradingcards-api</artifactId>
             <version>5.6.0</version>
             <scope>compile</scope>
         </dependency>
-
         <dependency>
             <groupId>co.aikar</groupId>
             <artifactId>acf-paper</artifactId>
@@ -215,6 +219,13 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>me.clip</groupId>
+            <artifactId>placeholderapi</artifactId>
+            <version>2.11.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- Tests -->
+        <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <version>4.4.0</version>
@@ -226,16 +237,12 @@
             <version>1.13.0</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- DB -->
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
             <version>5.0.1</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.lingala.zip4j</groupId>
-            <artifactId>zip4j</artifactId>
-            <version>2.10.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -254,6 +261,13 @@
             <groupId>org.jooq</groupId>
             <artifactId>jooq-codegen</artifactId>
             <version>3.16.5</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- Others -->
+        <dependency>
+            <groupId>net.lingala.zip4j</groupId>
+            <artifactId>zip4j</artifactId>
+            <version>2.10.0</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

@@ -41,6 +41,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingRarityManag
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingCardManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingDeckManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingSeriesManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.placeholders.TradingCardsPlaceholderExpansion;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.StorageType;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local.YamlStorage;
@@ -150,6 +151,13 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
             Util.logSevereException(e);
         }
         this.storage.init(this);
+    }
+
+
+    private void hookPlaceholderApi() {
+        if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new TradingCardsPlaceholderExpansion(this).register();
+        }
     }
 
 
