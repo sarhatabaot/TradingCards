@@ -141,6 +141,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         initCommands();
 
         hookVault();
+        hookPlaceholderApi();
         new Metrics(this, 12940);
     }
 
