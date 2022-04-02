@@ -1,6 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.utils;
 
 import de.tr7zw.nbtapi.NBTItem;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.tinetwork.tradingcards.api.config.ColorSeries;
 import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.api.model.Rarity;
@@ -169,14 +170,14 @@ public class CardUtil {
     }
 
 
-    public static @NotNull List<String> formatLore(final String info, final String about, final String rarity, final boolean isShiny, final String type, final Series series) {
+    public static @NotNull List<String> formatLore(final String info, final String about, final String rarity, final boolean isShiny, final String type, final @NotNull Series series) {
         List<String> lore = new ArrayList<>();
         final ColorSeries colorSeries = series.getColorSeries();
-        final String typeFormat = ChatUtil.color(colorSeries.getType() + plugin.getGeneralConfig().displayType() + type);
-        final String infoFormat = ChatUtil.color(colorSeries.getInfo() + plugin.getGeneralConfig().displayInfo());
-        final String seriesFormat = ChatUtil.color(colorSeries.getSeries() + plugin.getGeneralConfig().displaySeries() + series.getDisplayName());
-        final String aboutFormat = ChatUtil.color(colorSeries.getAbout() + plugin.getGeneralConfig().displayAbout());
-        final String rarityFormat = ChatUtil.color(colorSeries.getRarity());
+        final String typeFormat = colorSeries.getType() + plugin.getGeneralConfig().displayType() + type;
+        final String infoFormat = colorSeries.getInfo() + plugin.getGeneralConfig().displayInfo();
+        final String seriesFormat = colorSeries.getSeries() + plugin.getGeneralConfig().displaySeries() + series.getDisplayName();
+        final String aboutFormat = colorSeries.getAbout() + plugin.getGeneralConfig().displayAbout();
+        final String rarityFormat = colorSeries.getRarity();
 
         lore.add(typeFormat);
         if (!"None".equalsIgnoreCase(info) && !info.isEmpty()) {
@@ -187,18 +188,26 @@ public class CardUtil {
         }
 
         lore.add(seriesFormat);
-        if (about != null) {
+        if (!"None".equalsIgnoreCase(about) && !about.isEmpty()) {
+            lore.add(aboutFormat);
+            lore.addAll(ChatUtil.wrapString(about));
+        } else {
             lore.add(aboutFormat + about);
         }
 
         final String rarityName = ChatUtil.color(rarity.replace('_', ' '));
-        if (isShiny) {
-            lore.add(ChatUtil.color(rarityFormat + plugin.getGeneralConfig().shinyName() + " " + rarityName));
-        } else {
-            lore.add(ChatUtil.color(rarityFormat + rarityName));
-        }
+        lore.add(getShinyFormat(isShiny,rarityFormat,rarityName));
 
+        lore.forEach(ChatUtil::color);
         return lore;
+    }
+
+    //Returns the format if it's shiny. If it isn't returns the normal format.
+    private static String getShinyFormat(boolean isShiny, String format, String name) {
+        if(isShiny) {
+            return format + plugin.getGeneralConfig().shinyName() + " " + name;
+        }
+        return format + name;
     }
 
 
