@@ -152,6 +152,11 @@ public class YamlStorage implements Storage<TradingCard> {
     }
 
     @Override
+    public boolean containsSeries(final String seriesId) {
+        return seriesConfig.series().containsKey(seriesId);
+    }
+
+    @Override
     public void reload() {
         this.raritiesConfig.reloadConfig();
         this.seriesConfig.reloadConfig();

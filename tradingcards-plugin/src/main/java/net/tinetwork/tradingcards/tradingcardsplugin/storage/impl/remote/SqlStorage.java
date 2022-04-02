@@ -275,6 +275,27 @@ public class SqlStorage implements Storage<TradingCard> {
         }.prepareAndRunQuery();
     }
 
+    @Override
+    public boolean containsSeries(final String seriesId) {
+        return new ExecuteQuery<Boolean,Record>(this,jooqSettings) {
+            @Override
+            public Boolean onRunQuery(final DSLContext dslContext) throws SQLException {
+                return dslContext.fetchExists(net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Series.SERIES
+                        ,net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Series.SERIES.SERIES_ID.eq(seriesId));
+            }
+
+            @Override
+            public Boolean getQuery(final @NotNull Record result) throws SQLException {
+                return empty();
+            }
+
+            @Override
+            public Boolean empty() {
+                return false;
+            }
+        }.prepareAndRunQuery();
+    }
+
     public static class StorageEntryComparator implements Comparator<StorageEntry> {
         @Override
         //Implements a simple comparator to allow for sorting

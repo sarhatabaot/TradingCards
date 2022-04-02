@@ -3,7 +3,6 @@ package net.tinetwork.tradingcards.tradingcardsplugin.placeholders;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -11,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
  * @author sarhatabaot
  */
 public class TradingCardsPlaceholderExpansion extends PlaceholderExpansion {
-    private TradingCards plugin;
+    private final TradingCards plugin;
 
     public TradingCardsPlaceholderExpansion(final TradingCards plugin) {
         this.plugin = plugin;
@@ -38,6 +37,141 @@ public class TradingCardsPlaceholderExpansion extends PlaceholderExpansion {
 
     @Override
     public @Nullable String onRequest(final OfflinePlayer player, @NotNull final String params) {
-        return super.onRequest(player, params);
+        //normal check first
+        if(params.startsWith("type_")) {
+            return new PlaceholderQuery(params){
+                @Override
+                protected String onPlaceholderValue() {
+                    if("display-name".equalsIgnoreCase(type)) {
+                        return plugin.getDropTypeManager().getType(type).getDisplayName();
+                    }
+
+                    if("type".equalsIgnoreCase(type)) {
+                        return plugin.getDropTypeManager().getType(type).getType();
+                    }
+                    return null;
+                }
+
+                @Override
+                public boolean containsType(final String id) {
+                    return plugin.getDropTypeManager().containsType(id);
+                }
+            }.getPlaceholderValue();
+        }
+
+        if(params.startsWith("card_")) {
+            return new PlaceholderQuery(params) {
+                @Override
+                protected String onPlaceholderValue() {
+                    final String rarityId = id.split("\\.")[0];
+                    final String cardId = id.split("\\.")[1];
+                    //final String seriesId = id.split("\\.")[2];
+                    return switch (type) {
+                        case "display-name" -> plugin.getCardManager().getCard(cardId, rarityId).getDisplayName();
+                        case "buy-price" -> String.valueOf(plugin.getCardManager().getCard(cardId, rarityId).getBuyPrice());
+                        case "sell-price" -> String.valueOf(plugin.getCardManager().getCard(cardId, rarityId).getSellPrice());
+                        case "info" -> plugin.getCardManager().getCard(cardId, rarityId).getInfo();
+                        case "about" -> plugin.getCardManager().getCard(cardId, rarityId).getAbout();
+                        case "type" -> plugin.getCardManager().getCard(cardId, rarityId).getType().getId();
+                        default -> null;
+                    };
+                }
+
+                @Override
+                public boolean containsType(final String id) {
+                    final String rarityId = id.split("\\.")[0];
+                    final String cardId = id.split("\\.")[1];
+                    final String seriesId = id.split("\\.")[2];
+                    return plugin.getCardManager().containsCard(cardId,rarityId,seriesId);
+                }
+            }.getPlaceholderValue();
+        }
+
+        if(params.startsWith("pack_")) {
+            return new PlaceholderQuery(params){
+                @Override
+                public String onPlaceholderValue() {
+                    return switch (type) {
+                        case "display-name" -> plugin.getPackManager().getPack(id).getDisplayName();
+                        case "buy-price" ->String.valueOf(plugin.getPackManager().getPack(id).getBuyPrice());
+                        case "permission" -> plugin.getPackManager().getPack(id).getPermission();
+                    };
+                }
+
+                @Override
+                public boolean containsType(final String id) {
+                    return plugin.getPackManager().containsPack(id);
+                }
+            }.getPlaceholderValue();
+        }
+
+        if(params.startsWith("rarity_")) {
+            return new PlaceholderQuery(params){
+                @Override
+                protected String onPlaceholderValue() {
+                    return switch (type) {
+                        case "default-color" -> plugin.getRarityManager().getRarity(id).defaultColor();
+                        case "display-name" -> plugin.getRarityManager().getRarity(id).displayName();
+                        case "buy-price" -> String.valueOf(plugin.getRarityManager().getRarity(id).buyPrice());
+                        case "sell-price" -> String.valueOf(plugin.getRarityManager().getRarity(id).sellPrice());
+                        default -> null;
+                    };
+                }
+
+                @Override
+                public boolean containsType(final String id) {
+                    return plugin.getRarityManager().containsRarity(id);
+                }
+            }.getPlaceholderValue();
+        }
+
+        if(params.startsWith("series_")) {
+            return new PlaceholderQuery(params){
+                @Override
+                protected String onPlaceholderValue() {
+                    if("mode".equalsIgnoreCase(type)) {
+                        return plugin.getSeriesManager().getSeries(id).getMode().name();
+                    }
+                    if("display-name".equalsIgnoreCase(type)) {
+                        return plugin.getSeriesManager().getSeries(id).getDisplayName();
+                    }
+
+                    return null;
+                }
+
+                @Override
+                public boolean containsType(final String id) {
+                    return plugin.getSeriesManager().containsSeries(id);
+                }
+            }.getPlaceholderValue();
+        }
+        if("version".equalsIgnoreCase(params)) {
+            return plugin.getDescription().getVersion();
+        }
+        if("prefix".equalsIgnoreCase(params)){
+            return plugin.getMessagesConfig().prefix();
+        }
+        return null;
     }
+
+
+    public abstract static class PlaceholderQuery {
+        protected String id;
+        protected String type;
+
+        protected PlaceholderQuery(@NotNull String params) {
+            this.id = params.split("_")[1];
+            this.type = params.split("_")[2];
+        }
+        public String getPlaceholderValue() {
+            if(!containsType(id))
+                return null;
+
+            return onPlaceholderValue();
+        }
+        protected abstract String onPlaceholderValue();
+        public abstract boolean containsType(String id);
+    }
+
+
 }
