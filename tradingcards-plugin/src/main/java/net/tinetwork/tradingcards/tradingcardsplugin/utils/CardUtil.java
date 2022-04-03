@@ -199,6 +199,7 @@ public class CardUtil {
         lore.add(getShinyFormat(isShiny,rarityFormat,rarityName));
 
         lore.forEach(ChatUtil::color);
+        lore.forEach(s -> PlaceholderAPI.setPlaceholders(null,s));
         return lore;
     }
 
