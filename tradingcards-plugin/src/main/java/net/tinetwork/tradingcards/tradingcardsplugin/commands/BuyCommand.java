@@ -40,14 +40,14 @@ public class BuyCommand extends BaseCommand {
             if (!CardUtil.hasVault(player))
                 return;
             if (plugin.getPackManager().getPack(name) == null) {
-                ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().packDoesntExist());
+                player.sendMessage(plugin.getMessagesConfig().packDoesntExist());
                 return;
             }
 
             Pack pack = plugin.getPackManager().getPack(name);
 
             if (pack.getBuyPrice() <= 0.0D) {
-                ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().cannotBeBought());
+                player.sendMessage(plugin.getMessagesConfig().cannotBeBought());
                 return;
             }
 

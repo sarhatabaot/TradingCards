@@ -36,6 +36,11 @@ public class TradingCardsPlaceholderExpansion extends PlaceholderExpansion {
     }
 
     @Override
+    public @NotNull String getName() {
+        return "TradingCards";
+    }
+
+    @Override
     public @Nullable String onRequest(final OfflinePlayer player, @NotNull final String params) {
         //normal check first
         if(params.startsWith("type_")) {
@@ -95,6 +100,7 @@ public class TradingCardsPlaceholderExpansion extends PlaceholderExpansion {
                         case "display-name" -> plugin.getPackManager().getPack(id).getDisplayName();
                         case "buy-price" ->String.valueOf(plugin.getPackManager().getPack(id).getBuyPrice());
                         case "permission" -> plugin.getPackManager().getPack(id).getPermission();
+                        default -> null;
                     };
                 }
 

@@ -26,16 +26,21 @@ public class TradingCard extends Card<TradingCard> {
 
     @Override
     public ItemStack buildItem(final boolean shiny) {
-        ItemStack card = new ItemStack(getMaterial());
-        ItemMeta cardMeta = card.getItemMeta();
-        cardMeta.setDisplayName(CardUtil.formatDisplayName(this, shiny));
+        ItemStack cardItemStack = new ItemStack(getMaterial());
+        ItemMeta cardMeta = cardItemStack.getItemMeta();
+
+        if(cardMeta == null)
+            throw new NullPointerException("Could not get itemmeta for this item.");
+
+        cardMeta.setDisplayName(CardUtil.formatDisplayName(this));
+
         cardMeta.setLore(CardUtil.formatLore(getInfo(),getAbout(),getRarity().getDisplayName(),shiny,getType().getDisplayName(),getSeries()));
         if (shiny) {
             cardMeta.addEnchant(Enchantment.ARROW_INFINITE, 1, false);
         }
         cardMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        card.setItemMeta(cardMeta);
+        cardItemStack.setItemMeta(cardMeta);
 
-        return card;
+        return cardItemStack;
     }
 }

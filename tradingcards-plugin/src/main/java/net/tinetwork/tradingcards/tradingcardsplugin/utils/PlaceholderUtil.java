@@ -2,6 +2,8 @@ package net.tinetwork.tradingcards.tradingcardsplugin.utils;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author sarhatabaot

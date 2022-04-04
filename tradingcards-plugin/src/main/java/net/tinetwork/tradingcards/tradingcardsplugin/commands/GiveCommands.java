@@ -48,8 +48,8 @@ public class GiveCommands extends BaseCommand {
             @Subcommand("player")
             @CommandPermission(Permissions.GIVE_CARD_PLAYER)
             @CommandCompletion("@players @rarities @cards")
-            public void onPlayer(final CommandSender sender, @Single final String playerName, @Single final String rarity, @Single final String cardName, @Single final boolean shiny) {
-                TradingCard card = plugin.getCardManager().getCard(cardName, rarity, shiny);
+            public void onPlayer(final CommandSender sender, @Single final String playerName, @Single final String rarityId, @Single final String cardId, @Single final boolean shiny) {
+                TradingCard card = plugin.getCardManager().getCard(cardId, rarityId, shiny);
                 if (shiny && !card.hasShiny()) {
                     ChatUtil.sendPrefixedMessage(sender, "This card does not have a shiny version.");
                     return;
@@ -69,7 +69,7 @@ public class GiveCommands extends BaseCommand {
 
                 ChatUtil.sendPrefixedMessage(target, plugin.getMessagesConfig().giveCard()
                         .replaceAll(PlaceholderUtil.matchAllAsRegEx(PlaceholderUtil.PLAYER), target.getName())
-                        .replaceAll(PlaceholderUtil.matchAllAsRegEx(PlaceholderUtil.CARD), rarity + " " + cardName));
+                        .replaceAll(PlaceholderUtil.matchAllAsRegEx(PlaceholderUtil.CARD), rarityId + " " + cardId));
 
                 target.getInventory().addItem(card.build(shiny));
             }

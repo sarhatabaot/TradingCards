@@ -32,6 +32,10 @@ public class CardUtil {
     private static TradingCardManager cardManager;
     public static final int RANDOM_MAX = 100000;
     public static ItemStack BLANK_CARD;
+    private static final String[] shinyPlayerCardFormat = new String[]{PlaceholderUtil.PREFIX, PlaceholderUtil.COLOR, PlaceholderUtil.NAME, PlaceholderUtil.BUY_PRICE, PlaceholderUtil.SELL_PRICE, PlaceholderUtil.SHINY_PREFIX};
+    private static final String[] shinyCardFormat = new String[]{PlaceholderUtil.PREFIX, PlaceholderUtil.COLOR, PlaceholderUtil.NAME, PlaceholderUtil.BUY_PRICE, PlaceholderUtil.SELL_PRICE, PlaceholderUtil.SHINY_PREFIX, "_"};
+    private static final String[] cardFormat = new String[]{PlaceholderUtil.PREFIX, PlaceholderUtil.COLOR, PlaceholderUtil.NAME, PlaceholderUtil.BUY_PRICE, PlaceholderUtil.SELL_PRICE, "_"};
+    private static final String[] playerCardFormat = new String[]{PlaceholderUtil.PREFIX, PlaceholderUtil.COLOR, PlaceholderUtil.NAME, PlaceholderUtil.BUY_PRICE, PlaceholderUtil.SELL_PRICE};
 
 
     private CardUtil() {
@@ -133,15 +137,18 @@ public class CardUtil {
 
     }
 
-    public static @NotNull String formatDisplayName(final @NotNull TradingCard card, boolean shiny) {
-        final String[] shinyPlayerCardFormat = new String[]{PlaceholderUtil.PREFIX, PlaceholderUtil.COLOR, PlaceholderUtil.NAME, PlaceholderUtil.BUY_PRICE, PlaceholderUtil.SELL_PRICE, PlaceholderUtil.SHINY_PREFIX};
-        final String[] shinyCardFormat = new String[]{PlaceholderUtil.PREFIX, PlaceholderUtil.COLOR, PlaceholderUtil.NAME, PlaceholderUtil.BUY_PRICE, PlaceholderUtil.SELL_PRICE, PlaceholderUtil.SHINY_PREFIX, "_"};
+    public static @NotNull String formatDisplayName(final @NotNull TradingCard card) {
+        final String finalTitle = getFormattedTitle(card);
 
-        final String[] cardFormat = new String[]{PlaceholderUtil.PREFIX, PlaceholderUtil.COLOR, PlaceholderUtil.NAME, PlaceholderUtil.BUY_PRICE, PlaceholderUtil.SELL_PRICE, "_"};
-        final String[] playerCardFormat = new String[]{PlaceholderUtil.PREFIX, PlaceholderUtil.COLOR, PlaceholderUtil.NAME, PlaceholderUtil.BUY_PRICE, PlaceholderUtil.SELL_PRICE};
+        if (plugin.placeholderapi()) {
+            return PlaceholderAPI.setPlaceholders(null, finalTitle);
+        }
+        return finalTitle;
+    }
 
+    private static @NotNull String getFormattedTitle(@NotNull TradingCard card) {
         Rarity rarity = card.getRarity();
-        final String shinyTitle = plugin.getGeneralConfig().displayShinyTitle();
+        String shinyTitle = plugin.getGeneralConfig().displayShinyTitle().replaceAll(PlaceholderUtil.matchAllAsRegEx(PlaceholderUtil.SHINY_PREFIX_ALT), PlaceholderUtil.SHINY_PREFIX);
         final String title = plugin.getGeneralConfig().displayTitle();
         final String shinyPrefix = plugin.getGeneralConfig().shinyName();
         final String prefix = plugin.getGeneralConfig().cardPrefix();
@@ -149,57 +156,53 @@ public class CardUtil {
         final String buyPrice = String.valueOf(card.getBuyPrice());
         final String sellPrice = String.valueOf(card.getSellPrice());
 
-        String finalTitle;
-        if (shiny && shinyPrefix != null) {
+        if (card.isShiny() && shinyPrefix != null) {
             if (card.isPlayerCard()) {
-                finalTitle = ChatUtil.color(StringUtils.replaceEach(shinyTitle.replaceAll(PlaceholderUtil.matchAllAsRegEx(PlaceholderUtil.SHINY_PREFIX_ALT), PlaceholderUtil.matchAllAsRegEx(PlaceholderUtil.SHINY_PREFIX)), shinyPlayerCardFormat, new String[]{prefix, rarityColour, card.getDisplayName(), buyPrice, sellPrice, shinyPrefix}));
-            } else {
-                finalTitle = ChatUtil.color(StringUtils.replaceEach(shinyTitle.replace(PlaceholderUtil.SHINY_PREFIX_ALT, PlaceholderUtil.SHINY_PREFIX), shinyCardFormat, new String[]{prefix, rarityColour, card.getDisplayName(), buyPrice, sellPrice, shinyPrefix, " "}));
+                return ChatUtil.color(StringUtils.replaceEach(shinyTitle, shinyPlayerCardFormat, new String[]{prefix, rarityColour, card.getDisplayName(), buyPrice, sellPrice, shinyPrefix}));
             }
-        } else {
-            if (card.isPlayerCard()) {
-                finalTitle = ChatUtil.color(StringUtils.replaceEach(title, playerCardFormat, new String[]{prefix, rarityColour, card.getDisplayName(), buyPrice, sellPrice}));
-            } else {
-                finalTitle = ChatUtil.color(StringUtils.replaceEach(title, cardFormat, new String[]{prefix, rarityColour, card.getDisplayName(), buyPrice, sellPrice, " "}));
-            }
+            return ChatUtil.color(StringUtils.replaceEach(shinyTitle, shinyCardFormat, new String[]{prefix, rarityColour, card.getDisplayName(), buyPrice, sellPrice, shinyPrefix, " "}));
+
         }
-        if (plugin.placeholderapi()) {
-            return PlaceholderAPI.setPlaceholders(null, finalTitle);
+
+        if (card.isPlayerCard()) {
+            return ChatUtil.color(StringUtils.replaceEach(title, playerCardFormat, new String[]{prefix, rarityColour, card.getDisplayName(), buyPrice, sellPrice}));
         }
-        return finalTitle;
+        return ChatUtil.color(StringUtils.replaceEach(title, cardFormat, new String[]{prefix, rarityColour, card.getDisplayName(), buyPrice, sellPrice, " "}));
     }
 
 
     public static @NotNull List<String> formatLore(final String info, final String about, final String rarity, final boolean isShiny, final String type, final @NotNull Series series) {
         List<String> lore = new ArrayList<>();
         final ColorSeries colorSeries = series.getColorSeries();
-        final String typeFormat = colorSeries.getType() + plugin.getGeneralConfig().displayType() + type;
-        final String infoFormat = colorSeries.getInfo() + plugin.getGeneralConfig().displayInfo();
-        final String seriesFormat = colorSeries.getSeries() + plugin.getGeneralConfig().displaySeries() + series.getDisplayName();
-        final String aboutFormat = colorSeries.getAbout() + plugin.getGeneralConfig().displayAbout();
-        final String rarityFormat = colorSeries.getRarity();
+        final String typeFormat = ChatUtil.color(colorSeries.getType() + plugin.getGeneralConfig().displayType() + type);
+        final String seriesFormat = ChatUtil.color(colorSeries.getSeries() + plugin.getGeneralConfig().displaySeries() + series.getDisplayName());
+        final String rarityFormat = ChatUtil.color(colorSeries.getRarity());
 
         lore.add(typeFormat);
-        if (!"none".equalsIgnoreCase(info) && !info.isEmpty()) {
-            lore.add(infoFormat);
-            lore.addAll(ChatUtil.wrapString(info));
-        } else {
-            lore.add(infoFormat + info);
+        if(info != null) {
+            final String infoFormat = ChatUtil.color(colorSeries.getInfo() + plugin.getGeneralConfig().displayInfo());
+            if (!"none".equalsIgnoreCase(info) && !info.isEmpty()) {
+                lore.add(ChatUtil.color(infoFormat));
+                lore.addAll(ChatUtil.wrapString(info));
+            } else {
+                lore.add(ChatUtil.color(infoFormat + info));
+            }
         }
 
         lore.add(seriesFormat);
-        if (!"none".equalsIgnoreCase(about) && !about.isEmpty()) {
-            lore.add(aboutFormat);
-            lore.addAll(ChatUtil.wrapString(about));
-        } else {
-            lore.add(aboutFormat + about);
+        if (about != null) {
+            final String aboutFormat = ChatUtil.color(colorSeries.getAbout() + plugin.getGeneralConfig().displayAbout());
+            if (!"none".equalsIgnoreCase(about) && !about.isEmpty()) {
+                lore.add(ChatUtil.color(aboutFormat));
+                lore.addAll(ChatUtil.wrapString(about));
+            } else {
+                lore.add(ChatUtil.color(aboutFormat + about));
+            }
         }
 
         final String rarityName = ChatUtil.color(rarity.replace('_', ' '));
         lore.add(getShinyFormat(isShiny, rarityFormat, rarityName));
-
-        lore.forEach(ChatUtil::color);
-        if(plugin.placeholderapi()) {
+        if (plugin.placeholderapi()) {
             lore.forEach(s -> PlaceholderAPI.setPlaceholders(null, s));
         }
         return lore;
