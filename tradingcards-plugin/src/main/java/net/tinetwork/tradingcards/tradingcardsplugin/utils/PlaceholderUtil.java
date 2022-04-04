@@ -2,8 +2,6 @@ package net.tinetwork.tradingcards.tradingcardsplugin.utils;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author sarhatabaot
@@ -13,24 +11,26 @@ public class PlaceholderUtil {
         throw new UnsupportedOperationException();
     }
 
-    public static final String PLAYER = "%player%";
-    public static final String PACK = "%pack%";
-    public static final String CARD = "%card%";
-    public static final String NAME = "%name%";
-    public static final String UUID = "%uuid%";
-    public static final String RARITY = "%rarity%";
-    public static final String BUY_AMOUNT = "%buyamount%";
-    public static final String SELL_AMOUNT = "%sellamount%";
-    public static final String PREFIX = "%prefix%";
-    public static final String COLOR = "%color%";
-    public static final String BUY_PRICE = "%buy_price%";
-    public static final String SELL_PRICE = "%sell_price%";
-    public static final String SHINY_PREFIX = "%shiny_prefix%";
-    public static final String SHINY_PREFIX_ALT = "%shinyprefix%";
-    public static final String AMOUNT = "%amount%";
+    public static final InternalPlaceholder PLAYER = new InternalPlaceholder("%player%");
+    public static final InternalPlaceholder PACK = new InternalPlaceholder("%pack%");
+    public static final InternalPlaceholder CARD = new InternalPlaceholder("%card%");
+    public static final InternalPlaceholder DISPLAY_NAME = new InternalPlaceholder("%name%");
+    public static final InternalPlaceholder UUID = new InternalPlaceholder("%uuid%");
+    public static final InternalPlaceholder RARITY = new InternalPlaceholder("%rarity%");
+    public static final InternalPlaceholder BUY_AMOUNT = new InternalPlaceholder("%buyamount%");
+    public static final InternalPlaceholder SELL_AMOUNT = new InternalPlaceholder("%sellamount%");
+    public static final InternalPlaceholder PREFIX = new InternalPlaceholder("%prefix%");
+    public static final InternalPlaceholder COLOR = new InternalPlaceholder("%color%");
+    public static final InternalPlaceholder BUY_PRICE = new InternalPlaceholder("%buy_price%");
+    public static final InternalPlaceholder SELL_PRICE = new InternalPlaceholder("%sell_price%");
+    public static final InternalPlaceholder SHINY_PREFIX = new InternalPlaceholder("%shiny_prefix%");
+    public static final InternalPlaceholder SHINY_PREFIX_ALT = new InternalPlaceholder("%shinyprefix%");
+    public static final InternalPlaceholder AMOUNT = new InternalPlaceholder("%amount%");
 
-    @Contract(pure = true)
-    public static @NotNull String matchAllAsRegEx(final String string) {
-        return "(?i)"+string;
+    public record InternalPlaceholder(String placeholder) {
+        @Contract(pure = true)
+        public @NotNull String asRegex() {
+            return "(?i)" + placeholder;
+        }
     }
 }

@@ -13,7 +13,6 @@ import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
-import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.PlaceholderUtil;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -56,12 +55,12 @@ public class BuyCommand extends BaseCommand {
                 if (plugin.getGeneralConfig().closedEconomy()) {
                     plugin.getEcon().bankDeposit(plugin.getGeneralConfig().serverAccount(), pack.getBuyPrice());
                 }
-                ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().boughtCard().replaceAll(PlaceholderUtil.matchAllAsRegEx(PlaceholderUtil.AMOUNT), String.valueOf(pack.getBuyPrice())));
+                player.sendMessage(plugin.getMessagesConfig().boughtCard().replaceAll(PlaceholderUtil.AMOUNT.asRegex(), String.valueOf(pack.getBuyPrice())));
                 CardUtil.dropItem(player, plugin.getPackManager().getPackItem(name));
                 return;
             }
 
-            ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().notEnoughMoney());
+            player.sendMessage(plugin.getMessagesConfig().notEnoughMoney());
         }
 
 
@@ -74,7 +73,7 @@ public class BuyCommand extends BaseCommand {
                 return;
 
             if (plugin.getCardManager().getCard(card, rarity, false) instanceof EmptyCard) {
-                ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().cardDoesntExist());
+                player.sendMessage(plugin.getMessagesConfig().cardDoesntExist());
                 return;
             }
 
@@ -87,11 +86,10 @@ public class BuyCommand extends BaseCommand {
                     plugin.getEcon().bankDeposit(plugin.getGeneralConfig().serverAccount(), buyPrice);
                 }
                 CardUtil.dropItem(player, tradingCard.build(false));
-                ChatUtil.sendPrefixedMessage(player,
-                        plugin.getMessagesConfig().boughtCard().replaceAll(PlaceholderUtil.matchAllAsRegEx(PlaceholderUtil.AMOUNT), String.valueOf(buyPrice)));
+                player.sendMessage(plugin.getMessagesConfig().boughtCard().replaceAll(PlaceholderUtil.AMOUNT.asRegex(), String.valueOf(buyPrice)));
                 return;
             }
-            ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().notEnoughMoney());
+            player.sendMessage(plugin.getMessagesConfig().notEnoughMoney());
         }
     }
 }

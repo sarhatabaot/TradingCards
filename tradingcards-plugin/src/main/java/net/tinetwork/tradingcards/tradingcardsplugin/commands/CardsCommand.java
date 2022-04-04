@@ -72,8 +72,8 @@ public class CardsCommand extends BaseCommand {
     @Description("Shows a player's uuid")
     public void onResolve(final CommandSender sender, final @NotNull Player player) {
         ChatUtil.sendMessage(sender,
-                plugin.getMessagesConfig().resolveMsg().replaceAll(PlaceholderUtil.matchAllAsRegEx(PlaceholderUtil.NAME),
-                        player.getName()).replaceAll(PlaceholderUtil.matchAllAsRegEx(PlaceholderUtil.UUID), player.getUniqueId().toString()));
+                plugin.getMessagesConfig().resolveMsg().replaceAll(PlaceholderUtil.DISPLAY_NAME.asRegex(),
+                        player.getName()).replaceAll(PlaceholderUtil.UUID.asRegex(), player.getUniqueId().toString()));
     }
 
     @Subcommand("toggle")
@@ -110,8 +110,8 @@ public class CardsCommand extends BaseCommand {
         }
 
         Bukkit.broadcastMessage(plugin.getPrefixedMessage(messagesConfig.giveaway()
-                .replaceAll(PlaceholderUtil.matchAllAsRegEx(PlaceholderUtil.PLAYER), sender.getName())
-                .replace(PlaceholderUtil.matchAllAsRegEx(PlaceholderUtil.RARITY), getFormattedRarity(rarity))));
+                .replaceAll(PlaceholderUtil.PLAYER.asRegex(), sender.getName())
+                .replaceAll(PlaceholderUtil.RARITY.asRegex(), getFormattedRarity(rarity))));
         for (final Player p5 : Bukkit.getOnlinePlayers()) {
             CardUtil.dropItem(p5, cardManager.getRandomCard(rarity).build(false));
         }
@@ -153,8 +153,8 @@ public class CardsCommand extends BaseCommand {
         final double sellPrice = tradingCard.getSellPrice();
 
         final String buyMessage = (buyPrice > 0.0D) ?
-                messagesConfig.canBuy().replaceAll(PlaceholderUtil.matchAllAsRegEx(PlaceholderUtil.BUY_AMOUNT), String.valueOf(buyPrice)) : messagesConfig.canNotBuy();
-        final String sellMessage = (sellPrice > 0.0D) ? messagesConfig.canSell().replaceAll(PlaceholderUtil.matchAllAsRegEx(PlaceholderUtil.SELL_AMOUNT), String.valueOf(sellPrice)) : messagesConfig.canNotSell();
+                messagesConfig.canBuy().replaceAll(PlaceholderUtil.BUY_AMOUNT.asRegex(), String.valueOf(buyPrice)) : messagesConfig.canNotBuy();
+        final String sellMessage = (sellPrice > 0.0D) ? messagesConfig.canSell().replaceAll(PlaceholderUtil.SELL_AMOUNT.asRegex(), String.valueOf(sellPrice)) : messagesConfig.canNotSell();
         debug("buy=" + buyPrice + "|sell=" + sellPrice);
         ChatUtil.sendPrefixedMessage(player, buyMessage);
         ChatUtil.sendPrefixedMessage(player, sellMessage);
