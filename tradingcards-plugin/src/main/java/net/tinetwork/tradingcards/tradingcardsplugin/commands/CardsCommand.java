@@ -40,6 +40,7 @@ public class CardsCommand extends BaseCommand {
         this.messagesConfig = plugin.getMessagesConfig();
     }
 
+    //Convenience
     private void debug(final String message) {
         plugin.debug(getClass(), message);
     }
@@ -146,7 +147,7 @@ public class CardsCommand extends BaseCommand {
 
         final String cardId = nbtItem.getString(NbtUtils.NBT_CARD_NAME);
         final String rarityId = nbtItem.getString(NbtUtils.NBT_RARITY);
-        debug("Card name=" + cardId + ", Card rarity=" + rarityId);
+        debug("CardId=" + cardId + ", RarityId=" + rarityId);
 
         final TradingCard tradingCard = cardManager.getCard(cardId, rarityId, false);
         final double buyPrice = tradingCard.getBuyPrice();
@@ -155,7 +156,7 @@ public class CardsCommand extends BaseCommand {
         final String buyMessage = (buyPrice > 0.0D) ?
                 messagesConfig.canBuy().replaceAll(PlaceholderUtil.BUY_AMOUNT.asRegex(), String.valueOf(buyPrice)) : messagesConfig.canNotBuy();
         final String sellMessage = (sellPrice > 0.0D) ? messagesConfig.canSell().replaceAll(PlaceholderUtil.SELL_AMOUNT.asRegex(), String.valueOf(sellPrice)) : messagesConfig.canNotSell();
-        debug("buy=" + buyPrice + "|sell=" + sellPrice);
+        debug("BuyPrice=" + buyPrice + ", SellPrice=" + sellPrice);
         ChatUtil.sendPrefixedMessage(player, buyMessage);
         ChatUtil.sendPrefixedMessage(player, sellMessage);
     }
