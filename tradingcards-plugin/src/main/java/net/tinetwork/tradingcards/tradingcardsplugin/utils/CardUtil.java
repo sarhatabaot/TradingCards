@@ -216,7 +216,7 @@ public class CardUtil {
     }
 
     //Returns the format if it's shiny. If it isn't returns the normal format.
-    private static String getShinyFormat(boolean isShiny, String format, String name) {
+    private static @NotNull String getShinyFormat(boolean isShiny, String format, String name) {
         if (isShiny) {
             return format + plugin.getGeneralConfig().shinyName() + " " + name;
         }
