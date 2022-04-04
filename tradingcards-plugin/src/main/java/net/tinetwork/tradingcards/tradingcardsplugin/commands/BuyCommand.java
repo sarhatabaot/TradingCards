@@ -56,7 +56,7 @@ public class BuyCommand extends BaseCommand {
                 if (plugin.getGeneralConfig().closedEconomy()) {
                     plugin.getEcon().bankDeposit(plugin.getGeneralConfig().serverAccount(), pack.getBuyPrice());
                 }
-                ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().boughtCard().replace(PlaceholderUtil.AMOUNT, String.valueOf(pack.getBuyPrice())));
+                ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().boughtCard().replaceAll(PlaceholderUtil.matchAllAsRegEx(PlaceholderUtil.AMOUNT), String.valueOf(pack.getBuyPrice())));
                 CardUtil.dropItem(player, plugin.getPackManager().getPackItem(name));
                 return;
             }
@@ -87,7 +87,8 @@ public class BuyCommand extends BaseCommand {
                     plugin.getEcon().bankDeposit(plugin.getGeneralConfig().serverAccount(), buyPrice);
                 }
                 CardUtil.dropItem(player, tradingCard.build(false));
-                ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().boughtCard().replace(PlaceholderUtil.AMOUNT, String.valueOf(buyPrice)));
+                ChatUtil.sendPrefixedMessage(player,
+                        plugin.getMessagesConfig().boughtCard().replaceAll(PlaceholderUtil.matchAllAsRegEx(PlaceholderUtil.AMOUNT), String.valueOf(buyPrice)));
                 return;
             }
             ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().notEnoughMoney());

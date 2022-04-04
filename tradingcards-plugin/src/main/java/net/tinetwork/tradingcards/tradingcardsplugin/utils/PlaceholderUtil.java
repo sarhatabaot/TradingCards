@@ -1,5 +1,8 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.utils;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+
 /**
  * @author sarhatabaot
  */
@@ -17,4 +20,9 @@ public class PlaceholderUtil {
     public static final String BUY_AMOUNT = "%buyAmount%";
     public static final String SELL_AMOUNT = "%sellAmount%";
     public static final String AMOUNT = "%amount%";
+
+    @Contract(pure = true)
+    public static @NotNull String matchAllAsRegEx(final String string) {
+        return "(?i)"+string;
+    }
 }

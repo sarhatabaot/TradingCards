@@ -68,8 +68,8 @@ public class GiveCommands extends BaseCommand {
 
 
                 ChatUtil.sendPrefixedMessage(target, plugin.getMessagesConfig().giveCard()
-                        .replace(PlaceholderUtil.PLAYER, target.getName())
-                        .replace(PlaceholderUtil.CARD, rarity + " " + cardName));
+                        .replaceAll(PlaceholderUtil.matchAllAsRegEx(PlaceholderUtil.PLAYER), target.getName())
+                        .replaceAll(PlaceholderUtil.matchAllAsRegEx(PlaceholderUtil.CARD), rarity + " " + cardName));
 
                 target.getInventory().addItem(card.build(shiny));
             }
@@ -96,7 +96,7 @@ public class GiveCommands extends BaseCommand {
 
             CardUtil.dropItem(player, plugin.getPackManager().getPackItem(pack));
 
-            ChatUtil.sendPrefixedMessage(sender, plugin.getMessagesConfig().givePack().replace(PlaceholderUtil.PLAYER, player.getName()).replace(PlaceholderUtil.PACK, pack));
+            ChatUtil.sendPrefixedMessage(sender, plugin.getMessagesConfig().givePack().replaceAll(PlaceholderUtil.matchAllAsRegEx(PlaceholderUtil.PLAYER), player.getName()).replaceAll(PlaceholderUtil.matchAllAsRegEx(PlaceholderUtil.PACK), pack));
             ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().boosterPackMsg());
         }
 
@@ -117,7 +117,8 @@ public class GiveCommands extends BaseCommand {
             try {
                 String rare = plugin.getCardManager().getRandomRarity(CardUtil.getMobType(entityType), true);
                 plugin.debug(getClass(), "Rarity: " + rare);
-                ChatUtil.sendPrefixedMessage(sender, plugin.getMessagesConfig().giveRandomCardMsg().replace(PlaceholderUtil.PLAYER, player.getName()));
+                ChatUtil.sendPrefixedMessage(sender,
+                        plugin.getMessagesConfig().giveRandomCardMsg().replaceAll(PlaceholderUtil.matchAllAsRegEx(PlaceholderUtil.PLAYER), player.getName()));
                 CardUtil.dropItem(player, plugin.getCardManager().getRandomCard(rare).build(false));
             } catch (IllegalArgumentException exception) {
                 ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().noEntity());
@@ -137,7 +138,7 @@ public class GiveCommands extends BaseCommand {
 
 
             plugin.debug(GiveCommands.class, "Rarity: " + rarity);
-            ChatUtil.sendPrefixedMessage(sender, plugin.getMessagesConfig().giveRandomCardMsg().replace(PlaceholderUtil.PLAYER, player.getName()));
+            ChatUtil.sendPrefixedMessage(sender, plugin.getMessagesConfig().giveRandomCardMsg().replaceAll(PlaceholderUtil.matchAllAsRegEx(PlaceholderUtil.PLAYER), player.getName()));
             CardUtil.dropItem(player, plugin.getCardManager().getRandomCard(rarity).build(false));
         }
     }
