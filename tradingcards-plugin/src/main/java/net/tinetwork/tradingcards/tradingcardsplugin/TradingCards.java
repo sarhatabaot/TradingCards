@@ -98,6 +98,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     /* Hooks */
     private boolean hasVault;
     private Economy econ = null;
+    private boolean placeholderapi = false;
 
 
     /* Blacklists */
@@ -158,9 +159,13 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private void hookPlaceholderApi() {
         if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new TradingCardsPlaceholderExpansion(this).register();
+            placeholderapi = true;
         }
     }
 
+    public boolean placeholderapi() {
+        return placeholderapi;
+    }
 
     public GeneralConfig getGeneralConfig() {
         return generalConfig;

@@ -17,8 +17,14 @@ public class PlaceholderUtil {
     public static final String NAME = "%name%";
     public static final String UUID = "%uuid%";
     public static final String RARITY = "%rarity%";
-    public static final String BUY_AMOUNT = "%buyAmount%";
-    public static final String SELL_AMOUNT = "%sellAmount%";
+    public static final String BUY_AMOUNT = "%buyamount%";
+    public static final String SELL_AMOUNT = "%sellamount%";
+    public static final String PREFIX = "%prefix%";
+    public static final String COLOR = "%color%";
+    public static final String BUY_PRICE = "%buy_price%";
+    public static final String SELL_PRICE = "%sell_price%";
+    public static final String SHINY_PREFIX = "%shiny_prefix%";
+    public static final String SHINY_PREFIX_ALT = "%shinyprefix%";
     public static final String AMOUNT = "%amount%";
 
     @Contract(pure = true)
