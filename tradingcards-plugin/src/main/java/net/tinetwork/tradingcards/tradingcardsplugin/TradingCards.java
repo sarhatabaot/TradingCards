@@ -249,9 +249,9 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private void initCommands() {
         var commandManager = new PaperCommandManager(this);
         commandManager.getCommandCompletions().registerCompletion("rarities", c -> rarityManager.getRarityIds());
-        commandManager.getCommandCompletions().registerCompletion("cards", c -> cardManager.getRarityCardListIds(c.getContextValueByName(String.class, "rarity")));
+        commandManager.getCommandCompletions().registerCompletion("cards", c -> cardManager.getRarityCardListIds(c.getContextValueByName(String.class, "rarityId")));
         commandManager.getCommandCompletions().registerCompletion("command-cards", c -> cardManager.getCardsInRarityAndSeriesIds(c.getContextValue(Rarity.class).getId(), c.getContextValue(Series.class).getId()));
-        commandManager.getCommandCompletions().registerCompletion("active-cards", c -> cardManager.getActiveRarityCardIds(c.getContextValueByName(String.class, "rarity")));
+        commandManager.getCommandCompletions().registerCompletion("active-cards", c -> cardManager.getActiveRarityCardIds(c.getContextValueByName(String.class, "rarityId")));
         commandManager.getCommandCompletions().registerCompletion("packs", c -> packManager.getPackIds());
         commandManager.getCommandCompletions().registerCompletion("default-types", c -> dropTypeManager.getDefaultTypes().stream().map(DropType::getId).toList());
         commandManager.getCommandCompletions().registerCompletion("custom-types", c -> dropTypeManager.getTypes().keySet());

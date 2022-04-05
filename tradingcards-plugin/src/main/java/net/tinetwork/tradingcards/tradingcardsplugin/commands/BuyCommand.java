@@ -35,15 +35,15 @@ public class BuyCommand extends BaseCommand {
         @CommandPermission(Permissions.BUY_PACK)
         @CommandCompletion("@packs")
         @Description("Buy a pack.")
-        public void onBuyPack(final Player player, final String name) {
+        public void onBuyPack(final Player player, final String packId) {
             if (!CardUtil.hasVault(player))
                 return;
-            if (plugin.getPackManager().getPack(name) == null) {
+            if (plugin.getPackManager().getPack(packId) == null) {
                 player.sendMessage(plugin.getMessagesConfig().packDoesntExist());
                 return;
             }
 
-            Pack pack = plugin.getPackManager().getPack(name);
+            Pack pack = plugin.getPackManager().getPack(packId);
 
             if (pack.getBuyPrice() <= 0.0D) {
                 player.sendMessage(plugin.getMessagesConfig().cannotBeBought());
@@ -56,7 +56,7 @@ public class BuyCommand extends BaseCommand {
                     plugin.getEcon().bankDeposit(plugin.getGeneralConfig().serverAccount(), pack.getBuyPrice());
                 }
                 player.sendMessage(plugin.getMessagesConfig().boughtCard().replaceAll(PlaceholderUtil.AMOUNT.asRegex(), String.valueOf(pack.getBuyPrice())));
-                CardUtil.dropItem(player, plugin.getPackManager().getPackItem(name));
+                CardUtil.dropItem(player, plugin.getPackManager().getPackItem(packId));
                 return;
             }
 

@@ -91,9 +91,9 @@ public class CardsCommand extends BaseCommand {
     }
 
 
-    private String getFormattedRarity(final String rarity) {
+    private String getFormattedRarity(final String rarityId) {
         for (final Rarity rarityKey : plugin.getRarityManager().getRarities()) {
-            if (rarityKey.getId().equalsIgnoreCase(rarity.replace("_", " "))) {
+            if (rarityKey.getId().equalsIgnoreCase(rarityId.replace("_", " "))) {
                 return rarityKey.getId();
             }
         }
@@ -104,17 +104,17 @@ public class CardsCommand extends BaseCommand {
     @CommandPermission(Permissions.GIVEAWAY_RARITY)
     @Description("Give away a random card by rarity to the server.")
     @CommandCompletion("@rarities")
-    public void onGiveawayRarity(final CommandSender sender, final String rarity) {
-        if (plugin.getRarityManager().getRarity(rarity) == null) {
+    public void onGiveawayRarity(final CommandSender sender, final String rarityId) {
+        if (plugin.getRarityManager().getRarity(rarityId) == null) {
             ChatUtil.sendPrefixedMessage(sender, messagesConfig.noRarity());
             return;
         }
 
         Bukkit.broadcastMessage(plugin.getPrefixedMessage(messagesConfig.giveaway()
                 .replaceAll(PlaceholderUtil.PLAYER.asRegex(), sender.getName())
-                .replaceAll(PlaceholderUtil.RARITY.asRegex(), getFormattedRarity(rarity))));
+                .replaceAll(PlaceholderUtil.RARITY.asRegex(), getFormattedRarity(rarityId))));
         for (final Player p5 : Bukkit.getOnlinePlayers()) {
-            CardUtil.dropItem(p5, cardManager.getRandomCard(rarity).build(false));
+            CardUtil.dropItem(p5, cardManager.getRandomCard(rarityId).build(false));
         }
     }
 
@@ -141,7 +141,7 @@ public class CardsCommand extends BaseCommand {
         }
         final NBTItem nbtItem = new NBTItem(player.getInventory().getItemInMainHand());
         if (!CardUtil.isCard(nbtItem)) {
-            ChatUtil.sendPrefixedMessage(player, messagesConfig.notACard());
+            player.sendMessage(messagesConfig.notACard());
             return;
         }
 
