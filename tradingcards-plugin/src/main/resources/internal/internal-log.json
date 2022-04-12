@@ -1,0 +1,10 @@
+{
+  "plugin-start": {
+    "vault-hook-success": "Vault hook successful!",
+    "vault-hook-fail": "Vault not found, hook unsuccessful!"
+  },
+  "init": {
+    "managers": "Initializing managers...",
+    "using-storage": "Using storage %s"
+  }
+}

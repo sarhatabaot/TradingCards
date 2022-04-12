@@ -1,0 +1,18 @@
+{
+  "version": "The version is %version%",
+  "migrate": {
+    "yaml-to-yaml": "&4Cannot convert from YAML to YAML.",
+    "change-storage-type": "&4Please change your storage type to MYSQL or MARIADB & restart your server.",
+    "warning": "&cAre you sure you want to migrate? This action is irreversible.",
+    "backup-hint1": "&cMake sure you have made a backup of your decks.yml before continuing.",
+    "backup-hint2": "&cYou can easily backup all settings using /cards debug zip",
+    "confirm-hint": "&cIf you want to convert from YAML to ",
+    "confirm-cmd": "&cPlease type /cards migrate <deck|data> confirm"
+  },
+  "migrate-confirm": {
+    "start-migration": "&2Started migration for decks from YAML to %storage-type%",
+    "complete-migration": "&2Completed migration from YAML to %storage-type",
+    "warning": "&2This may take a while...",
+    "restart-hint": "&cYou should restart your server, otherwise functionality of the plugin will be limited."
+  }
+}

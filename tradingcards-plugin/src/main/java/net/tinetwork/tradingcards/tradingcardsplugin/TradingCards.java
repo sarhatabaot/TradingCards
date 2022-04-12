@@ -41,6 +41,8 @@ import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingRarityManag
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingCardManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingDeckManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingSeriesManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalDebug;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalLog;
 import net.tinetwork.tradingcards.tradingcardsplugin.placeholders.TradingCardsPlaceholderExpansion;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.StorageType;
@@ -216,7 +218,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     @Contract(" -> new")
     private @NotNull Storage<TradingCard> loadStorage() throws ConfigurateException {
         StorageType storageType = this.storageConfig.getType();
-        getLogger().info(() -> "Using storage " + storageType.name());
+        getLogger().info(() -> InternalLog.Init.USING_STORAGE.formatted(storageType.name()));
         return switch (storageType) {
             case MARIADB -> new SqlStorage(this,
                     this.storageConfig.getTablePrefix(),
@@ -236,7 +238,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     //The order is important. Decks & Packs must load after cards load.
     //Cards must load after rarity, droptype & series.
     private void initManagers() {
-        getLogger().info(() -> "Initializing managers...");
+        getLogger().info(() -> InternalLog.Init.MANAGERS);
         this.rarityManager = new TradingRarityManager(this);
         this.dropTypeManager = new DropTypeManager(this);
         this.seriesManager = new TradingSeriesManager(this);
@@ -373,10 +375,10 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         if (this.generalConfig.vaultEnabled()) {
             if (this.getServer().getPluginManager().getPlugin("Vault") != null) {
                 this.setupEconomy();
-                getLogger().info("Vault hook successful!");
+                getLogger().info(() -> InternalLog.PluginStart.VAULT_HOOK_SUCCESS);
                 this.hasVault = true;
             } else {
-                getLogger().info("Vault not found, hook unsuccessful!");
+                getLogger().info(() -> InternalLog.PluginStart.VAULT_HOOK_FAIL);
             }
         }
     }
@@ -444,7 +446,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     @Override
     public void debug(final Class<?> className, final String message) {
         if (getGeneralConfig().debugMode()) {
-            getLogger().info(() -> "DEBUG " + className.getSimpleName() + " " + message);
+            getLogger().info(() -> InternalDebug.BASE_DEBUG_FORMAT.formatted(className.getSimpleName(),message));
         }
     }
 
