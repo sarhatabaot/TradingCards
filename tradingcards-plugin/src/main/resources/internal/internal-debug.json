@@ -1,3 +1,5 @@
 {
-  "base-debug-format": "DEBUG %s %s"
+  "base-debug-format": "DEBUG %s %s",
+  "load-pack": "Loaded pack: %s",
+  "whitelist-mode": "Whitelist Mode= %s"
 }

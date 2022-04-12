@@ -5,6 +5,9 @@
   },
   "init": {
     "managers": "Initializing managers...",
-    "using-storage": "Using storage %s"
+    "using-storage": "Using storage %s",
+    "load-pack-manager": "Loaded PackManager.",
+    "load-packs-amount": "Loaded %d packs.",
+    "load-droptype-manager": "Loaded DropTypeManager"
   }
 }

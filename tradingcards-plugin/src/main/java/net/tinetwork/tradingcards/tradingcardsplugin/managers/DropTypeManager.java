@@ -4,6 +4,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.managers;
 import net.tinetwork.tradingcards.api.manager.TypeManager;
 import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalLog;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import org.bukkit.entity.EntityType;
 
@@ -29,7 +30,7 @@ public class DropTypeManager implements TypeManager {
         this.plugin = plugin;
         loadTypes();
         this.allTypesIds = Stream.concat(getDefaultTypes().stream().map(DropType::getId), getTypes().keySet().stream()).toList();
-        this.plugin.getLogger().info(() -> "Loaded TypeManager.");
+        this.plugin.getLogger().info(() -> InternalLog.Init.LOAD_DROPTYPE_MANAGER);
     }
 
     @Override
