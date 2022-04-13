@@ -3,6 +3,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.managers;
 import net.tinetwork.tradingcards.api.manager.SeriesManager;
 import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalLog;
 
 import java.util.Collection;
 import java.util.List;
@@ -17,7 +18,7 @@ public class TradingSeriesManager implements SeriesManager {
     public TradingSeriesManager(final TradingCards plugin) {
         this.plugin = plugin;
         this.seriesIds = getAllSeries().stream().map(Series::getId).toList();
-        this.plugin.getLogger().info(() -> "Loaded SeriesManager.");
+        this.plugin.getLogger().info(() -> InternalLog.Init.LOAD_SERIES_MANAGER);
     }
 
     @Override

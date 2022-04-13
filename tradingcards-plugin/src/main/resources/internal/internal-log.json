@@ -8,6 +8,17 @@
     "using-storage": "Using storage %s",
     "load-pack-manager": "Loaded PackManager.",
     "load-packs-amount": "Loaded %d packs.",
-    "load-droptype-manager": "Loaded DropTypeManager"
+    "load-droptype-manager": "Loaded DropTypeManager.",
+    "load-series-manager": "Loaded SeriesManager.",
+    "load-rarity-manager": "Loaded RarityManager.",
+    "load-deck-manager": "Loaded DeckManager."
+  },
+  "card-manager": {
+    "load": "Loaded CardManager.",
+    "load-cards": "Loaded %d cards.",
+    "load-rarities": "Loaded %d rarities."
+  },
+  "reload": {
+    "addons": "Reloaded %d addons."
   }
 }

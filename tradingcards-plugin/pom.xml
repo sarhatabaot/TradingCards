@@ -180,7 +180,7 @@
             <plugin>
                 <groupId>com.github.sarhatabaot</groupId>
                 <artifactId>messages</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <version>1.0.0-SNAPSHOT</version>
                 <configuration>
                     <overwriteClasses>true</overwriteClasses>
                     <sourceFolder>src/main/resources/internal</sourceFolder>

@@ -1,5 +1,28 @@
 {
   "base-debug-format": "DEBUG %s %s",
   "load-pack": "Loaded pack: %s",
-  "whitelist-mode": "Whitelist Mode= %s"
+  "whitelist-mode": "Whitelist Mode= %s",
+  "cards-manager": {
+    "load-rarity-cards-ids": "Loading Rarity & Series card ids:",
+    "rarity-id": "%s - Rarity Id",
+    "series-id": "%s - Series Id",
+    "card-key": "CardKey= %s",
+    "random-card": "getRandomCard(),rarity= %s",
+    "empty-active-series": "There are no cards in the active series. Not dropping anything.",
+    "drop-chance": "DropChance= %d AlwaysDrop= %s MobType= %s MobDropChance= %d",
+    "rarity-chance": "RarityChance= %d"
+  },
+  "loaded-into-cache": "Loaded into cache for %s",
+  "decks-manager": {
+    "has-migration": "Just ran migration? %s",
+    "player-uuid": "Deck UUID: %s",
+    "added-deck-uuid-number": "Added uuid %s deck #%d to deck viewer map.",
+    "removed-deck-uuid": "Removed uuid %s from deck viewer map."
+  },
+  "drop-listener": {
+    "entity-type": "EntityType= %s",
+    "mob-type": "MobType= %s",
+    "added-card": "Added card %s",
+    "null-rarity-key": "rarityKey is null"
+  }
 }

@@ -5,6 +5,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingCardManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalDebug;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.whitelist.PlayerBlacklist;
 import net.tinetwork.tradingcards.tradingcardsplugin.whitelist.WorldBlacklist;
@@ -73,8 +74,8 @@ public class DropListener extends SimpleListener {
         if (!this.playerBlacklist.isAllowed(killer)) return;
         if (!this.worldBlacklist.isAllowed(world)) return;
         //Get card rarity
-        debug("EntityType=" + killedEntity.getType());
-        debug("MobType=" + CardUtil.getMobType(killedEntity.getType()));
+        debug(InternalDebug.DropListener.ENTITY_TYPE.formatted(killedEntity.getType()));
+        debug(InternalDebug.DropListener.MOB_TYPE.formatted(CardUtil.getMobType(killedEntity.getType())));
 
         String rarityName = cardManager.getRandomRarity(CardUtil.getMobType(killedEntity.getType()), false);
         if (rarityName.equalsIgnoreCase("None"))
@@ -87,7 +88,7 @@ public class DropListener extends SimpleListener {
         }
 
         boolean isShiny = randomCard.hasShiny() && CardUtil.calculateIfShiny(false);
-        debug("Added card "+cardKey(randomCard.getRarity().getId(),randomCard.getCardId()));
+        debug(InternalDebug.DropListener.ADDED_CARD.formatted(cardKey(randomCard.getRarity().getId(),randomCard.getCardId())));
         //Add the card to the killedEntity drops
         e.getDrops().add(randomCard.build(isShiny));
     }
@@ -106,7 +107,7 @@ public class DropListener extends SimpleListener {
             }
         }
 
-        debug("rarityKey is null");
+        debug(InternalDebug.DropListener.NULL_RARITY_KEY);
         return null;
     }
 }
