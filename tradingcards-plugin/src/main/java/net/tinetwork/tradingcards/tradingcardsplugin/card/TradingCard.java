@@ -1,6 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.card;
 
 import net.tinetwork.tradingcards.api.card.Card;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalExceptions;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -30,7 +31,7 @@ public class TradingCard extends Card<TradingCard> {
         ItemMeta cardMeta = cardItemStack.getItemMeta();
 
         if(cardMeta == null)
-            throw new NullPointerException("Could not get itemmeta for this item.");
+            throw new NullPointerException(InternalExceptions.NO_ITEM_META);
 
         cardMeta.setDisplayName(CardUtil.formatDisplayName(this));
 

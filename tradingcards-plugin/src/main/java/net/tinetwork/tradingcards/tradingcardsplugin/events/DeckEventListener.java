@@ -7,6 +7,7 @@ import net.tinetwork.tradingcards.api.utils.NbtUtils;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.listeners.SimpleListener;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingDeckManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalDebug;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -37,7 +38,7 @@ public class DeckEventListener extends SimpleListener {
     public void onAddItem(final @NotNull InventoryMoveItemEvent event) {
         final Inventory destination = event.getDestination();
         if(!(event.getInitiator().getHolder() instanceof Player player)) {
-            debug("Not a player entity, ignoring.");
+            debug(InternalDebug.DeckEventListener.NOT_A_PLAYER);
             return;
         }
 
@@ -46,12 +47,12 @@ public class DeckEventListener extends SimpleListener {
         }
         final UUID uuid = player.getUniqueId();
         if (!deckManager.containsViewer(player.getUniqueId())) {
-            debug("Not our gui, ignoring. UUID: " + uuid);
+            debug(InternalDebug.DeckEventListener.NOT_OUR_GUI.formatted(uuid));
             return;
         }
 
         if(!destination.containsAtLeast(event.getItem(), 1)) {
-            debug("Doesn't contain any items of this type, ignoring.");
+            debug(InternalDebug.DeckEventListener.NO_ITEMS_OF_TYPE);
             return;
         }
 
@@ -119,17 +120,17 @@ public class DeckEventListener extends SimpleListener {
         }
         final UUID uuid = event.getPlayer().getUniqueId();
         if (!deckManager.containsViewer(event.getPlayer().getUniqueId())) {
-            debug("Not our gui, ignoring. UUID: " + uuid);
+            debug(InternalDebug.DeckEventListener.NOT_OUR_GUI.formatted(uuid));
             return;
         }
 
         if (!(event.getPlayer() instanceof final Player player)) {
-            debug("Not a player entity, ignoring.");
+            debug(InternalDebug.DeckEventListener.NOT_A_PLAYER);
             return;
         }
 
         int deckNum = deckManager.getViewerDeckNum(player.getUniqueId());
-        debug("deck: " + deckNum + ",player: " + player.getName());
+        debug(InternalDebug.DeckEventListener.DECK_PLAYER.formatted(deckNum,player.getName(),player.getUniqueId()));
 
         Bukkit.getPluginManager().callEvent(new DeckCloseEvent(event.getView(),deckNum));
     }

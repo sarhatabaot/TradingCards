@@ -1,5 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin;
 
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalExceptions;
+
 public class Permissions {
     public static final String USE_PACK = "cards.use.pack";
     public static final String USE_DECK = "cards.use.deck";
@@ -45,6 +47,6 @@ public class Permissions {
     public static final String EDIT_CUSTOM_TYPE = "cards.edit.customtype";
     public static final String EDIT_PACK = "cards.edit.pack";
     private Permissions () {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException(InternalExceptions.UTIL_CLASS);
     }
 }

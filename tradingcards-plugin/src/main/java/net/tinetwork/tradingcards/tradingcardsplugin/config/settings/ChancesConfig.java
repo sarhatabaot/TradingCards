@@ -4,6 +4,7 @@ import net.tinetwork.tradingcards.api.model.chance.Chance;
 import net.tinetwork.tradingcards.api.model.chance.EmptyChance;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.api.config.SimpleConfigurate;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalExceptions;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
@@ -126,7 +127,7 @@ public class ChancesConfig extends SimpleConfigurate {
 
         private void validateChance(final ConfigurationNode node, final int chance, final String name) throws SerializationException{
             if (chance > MAX_CHANCE || chance < 0) {
-                throw new SerializationException(node, int.class, name + " chance must be between 1 and 100,000. This chance was " + chance);
+                throw new SerializationException(node, int.class, InternalExceptions.INVALID_CHANCE.formatted(name,chance));
             }
         }
 

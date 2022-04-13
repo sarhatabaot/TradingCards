@@ -13,6 +13,8 @@ import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.DropTypeManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingCardManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalDebug;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalLog;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.StorageType;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
@@ -221,7 +223,7 @@ public class YamlStorage implements Storage<TradingCard> {
                 for (Map.Entry<Object, ? extends ConfigurationNode> nodeEntry : cardNodes) {
                     final String cardName = nodeEntry.getValue().key().toString();
                     final String cardKey = cardKey(rarity.getId(), cardName);
-                    plugin.debug(YamlStorage.class,"CardKey="+cardKey);
+                    plugin.debug(YamlStorage.class, InternalDebug.CARD_KEY.formatted(cardKey));
                     cards.put(cardKey, generateCard(simpleCardsConfig, cardName, rarity.getId()));
                 }
             }

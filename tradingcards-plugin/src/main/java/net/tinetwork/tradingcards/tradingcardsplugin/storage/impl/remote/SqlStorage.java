@@ -12,6 +12,9 @@ import net.tinetwork.tradingcards.api.model.schedule.Mode;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalDebug;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalExceptions;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalLog;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.StorageType;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.enums.CustomTypesDropType;
@@ -157,7 +160,7 @@ public class SqlStorage implements Storage<TradingCard> {
             @Override
             public @NotNull Deck getQuery(final @NotNull Result<Record> recordResult) {
                 if (recordResult.isEmpty()) {
-                    plugin.debug(getClass(), "Could not find a deck for uuid=" + playerUuid + ",decknumber=" + deckNumber);
+                    plugin.debug(getClass(), InternalDebug.Sql.COULD_NOT_FIND_DECK.formatted(playerUuid,deckNumber));
                     return new Deck(playerUuid, deckNumber, new ArrayList<>());
                 }
                 return JooqRecordUtil.getDeckFromRecord(recordResult);
@@ -183,7 +186,7 @@ public class SqlStorage implements Storage<TradingCard> {
                         .limit(1)
                         .fetch();
                 if (result.isEmpty()) {
-                    plugin.debug(SqlStorage.class, "No such rarity " + rarityId);
+                    plugin.debug(SqlStorage.class, InternalDebug.NO_RARITY.formatted(rarityId));
                     return empty();
                 }
                 return getQuery(result.get(0));
@@ -254,7 +257,7 @@ public class SqlStorage implements Storage<TradingCard> {
                         .limit(1)
                         .fetch();
                 if (result.isEmpty()) {
-                    plugin.debug(SqlStorage.class, "No such series " + seriesId);
+                    plugin.debug(SqlStorage.class, InternalDebug.NO_SERIES.formatted(seriesId));
                     return empty();
                 }
 
@@ -386,7 +389,7 @@ public class SqlStorage implements Storage<TradingCard> {
                         .and(Decks.DECKS.RARITY_ID.eq(storageEntry.getRarityId()))
                         .and(Decks.DECKS.IS_SHINY.eq(isShiny))
                         .execute();
-                plugin.debug(SqlStorage.class, "(UPDATE) " + storageEntry);
+                plugin.debug(SqlStorage.class, InternalDebug.Sql.UPDATE.formatted(storageEntry));
             }
         }.executeUpdate();
     }
@@ -480,7 +483,7 @@ public class SqlStorage implements Storage<TradingCard> {
                         .and(Decks.DECKS.RARITY_ID.eq(entry.getRarityId()))
                         .and(Decks.DECKS.AMOUNT.eq(entry.getAmount()))
                         .and(Decks.DECKS.IS_SHINY.eq(toByte(entry.isShiny()))).execute();
-                plugin.debug(SqlStorage.class, "(REMOVE) " + entry);
+                plugin.debug(SqlStorage.class, InternalDebug.Sql.REMOVE.formatted(entry));
             }
         }.executeUpdate();
     }
@@ -492,7 +495,7 @@ public class SqlStorage implements Storage<TradingCard> {
         String schemaFileName = "schema/" + this.connectionFactory.getType().toLowerCase(Locale.ROOT) + ".sql";
         try (InputStream is = this.plugin.getResource(schemaFileName)) {
             if (is == null) {
-                throw new IOException("Couldn't locate schema file for " + this.connectionFactory.getType());
+                throw new IOException(InternalExceptions.NO_SCHEMA.formatted(this.connectionFactory.getType()));
             }
 
             statements = SchemaReader.getStatements(is).stream()
@@ -742,7 +745,7 @@ public class SqlStorage implements Storage<TradingCard> {
             @Override
             public @NotNull List<TradingCard> getQuery(final @NotNull Result<Record> result) {
                 if (result.isEmpty()) {
-                    plugin.debug(SqlStorage.class,"Empty result for "+ rarityId);
+                    plugin.debug(SqlStorage.class, InternalDebug.Sql.EMPTY_RESULT.formatted(rarityId));
                     return empty();
                 }
                 List<TradingCard> cards = new ArrayList<>();
@@ -1024,7 +1027,7 @@ public class SqlStorage implements Storage<TradingCard> {
     public void reload() {
         try {
             shutdown();
-            plugin.getLogger().warning(() -> "We have detected a reload. Shutting down connection to database and reconnecting..");
+            plugin.getLogger().warning(() -> InternalLog.Reload.SQL);
         } catch (Exception e){
             return;
         }

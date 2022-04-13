@@ -18,7 +18,12 @@
     "load-cards": "Loaded %d cards.",
     "load-rarities": "Loaded %d rarities."
   },
+  "drop-type": {
+    "could-not-get-type": "Could not get the type for %s reason: %s",
+    "default": "Defaulting to passive."
+  },
   "reload": {
-    "addons": "Reloaded %d addons."
+    "addons": "Reloaded %d addons.",
+    "sql": "We have detected a reload. Shutting down connection to database and reconnecting.."
   }
 }

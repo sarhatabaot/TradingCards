@@ -176,7 +176,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
 
     public TradingCard getCard(final String cardId, final String rarityId) {
         final String cardKey = cardKey(rarityId,cardId);
-        plugin.debug(TradingCardManager.class,InternalDebug.CardsManager.CARD_KEY.formatted(cardKey));
+        plugin.debug(TradingCardManager.class,InternalDebug.CARD_KEY.formatted(cardKey));
         if (cards.containsKey(cardKey)) {
             return cards.get(cardKey).get();
         }
