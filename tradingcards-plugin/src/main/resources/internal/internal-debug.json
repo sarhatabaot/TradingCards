@@ -5,6 +5,7 @@
   "no-rarity": "No such rarity %s",
   "no-series": "No such series %s",
   "card-key": "CardKey= %s",
+  "could-add-type": "Could not add %s",
   "cards-manager": {
     "load-rarity-cards-ids": "Loading Rarity & Series card ids:",
     "rarity-id": "%s - Rarity Id",

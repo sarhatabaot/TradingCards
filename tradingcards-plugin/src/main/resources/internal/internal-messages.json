@@ -1,4 +1,5 @@
 {
+  "started-conversion-for": "Started conversion for %s",
   "version": "The version is %version%",
   "migrate": {
     "yaml-to-yaml": "&4Cannot convert from YAML to YAML.",

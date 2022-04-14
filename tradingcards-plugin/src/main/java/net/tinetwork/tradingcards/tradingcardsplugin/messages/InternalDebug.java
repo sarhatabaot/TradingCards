@@ -7,6 +7,7 @@ public final class InternalDebug {
     public static final String NO_RARITY = "No such rarity %s";
     public static final String NO_SERIES = "No such series %s";
     public static final String CARD_KEY = "CardKey= %s";
+    public static final String COULD_ADD_TYPE = "Could not add %s";
 
     public static class CardsManager {
         public static final String LOAD_RARITY_CARDS_IDS = "Loading Rarity & Series card ids:";

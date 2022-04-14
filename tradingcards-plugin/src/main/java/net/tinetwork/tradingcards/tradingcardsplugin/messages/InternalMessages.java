@@ -1,6 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.messages;
 
 public final class InternalMessages {
+    public static final String STARTED_CONVERSION_FOR = "Started conversion for %s";
     public static final String VERSION = "The version is %version%";
 
     public static class Migrate {
