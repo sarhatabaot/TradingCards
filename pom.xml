@@ -16,6 +16,22 @@
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- Plugins -->
+        <maven.compiler.version>3.10.1</maven.compiler.version>
+
+        <!-- Bukkit Libs -->
+        <item.nbt.version>2.9.2</item.nbt.version>
+        <acf.version>0.5.1-SNAPSHOT</acf.version>
+
+        <!-- Versions -->
+        <spigot.version>1.17.1-R0.1-SNAPSHOT</spigot.version>
+        <vault.api.version>1.7.1</vault.api.version>
+        <lombok.version>1.18.22</lombok.version>
+        <jetbrains.annotations.version>23.0.0</jetbrains.annotations.version>
+        <configurate.version>4.1.2</configurate.version>
+        <adventure.version>4.10.1</adventure.version>
+        <junit.jupiter.version>5.8.2</junit.jupiter.version>
+        <slf4j.api.version>2.0.0-alpha7</slf4j.api.version>
     </properties>
 
     <modules>
@@ -56,49 +72,49 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.17.1-R0.1-SNAPSHOT</version>
+            <version>${spigot.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.github.MilkBowl</groupId>
             <artifactId>VaultAPI</artifactId>
-            <version>1.7.1</version>
+            <version>${vault.api.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.22</version>
+            <version>${lombok.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>23.0.0</version>
+            <version>${jetbrains.annotations.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.spongepowered</groupId>
             <artifactId>configurate-yaml</artifactId>
-            <version>4.1.2</version>
+            <version>${configurate.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-api</artifactId>
-            <version>4.10.1</version>
+            <version>${adventure.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.8.2</version>
+            <version>${junit.jupiter.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>2.0.0-alpha7</version>
+            <version>${slf4j.api.version}</version>
             <scope>compile</scope>
         </dependency>
 
