@@ -54,7 +54,7 @@
                     <plugin>
                         <groupId>org.jacoco</groupId>
                         <artifactId>jacoco-maven-plugin</artifactId>
-                        <version>0.8.7</version>
+                        <version>${jacoco.version}</version>
                         <executions>
                             <execution>
                                 <id>prepare-agent</id>
@@ -192,7 +192,7 @@
                     <version>${messages.version}</version>
                     <configuration>
                         <overwriteClasses>true</overwriteClasses>
-                        <sourceFolder>src/main/resources/internal</sourceFolder>
+                        <sourceFolder>internal-messages</sourceFolder>
                         <targetPackage>net.tinetwork.tradingcards.tradingcardsplugin.messages</targetPackage>
                         <privateConstructor>InternalExceptions.UTIL_CLASS</privateConstructor>
                     </configuration>
