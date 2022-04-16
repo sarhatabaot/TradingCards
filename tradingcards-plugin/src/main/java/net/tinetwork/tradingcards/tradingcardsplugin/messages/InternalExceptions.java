@@ -8,4 +8,7 @@ public final class InternalExceptions {
     public static final String DATA_SOURCE_NULL = "Unable to get a connection from the pool. (datasource is null)";
     public static final String GET_CONNECTION_NULL = "Unable to get a connection from the pool. (getConnection returned null)";
 
+    private InternalExceptions() {
+        throw new UnsupportedOperationException(InternalExceptions.UTIL_CLASS);
+    }
 }

@@ -12,6 +12,10 @@ public final class InternalMessages {
         public static final String BACKUP_HINT2 = "&cYou can easily backup all settings using /cards debug zip";
         public static final String CONFIRM_HINT = "&cIf you want to convert from YAML to ";
         public static final String CONFIRM_CMD = "&cPlease type /cards migrate <deck|data> confirm";
+
+        private Migrate() {
+            throw new UnsupportedOperationException(InternalExceptions.UTIL_CLASS);
+        }
     }
 
     public static class MigrateConfirm {
@@ -19,5 +23,13 @@ public final class InternalMessages {
         public static final String COMPLETE_MIGRATION = "&2Completed migration from YAML to %storage-type";
         public static final String WARNING = "&2This may take a while...";
         public static final String RESTART_HINT = "&cYou should restart your server, otherwise functionality of the plugin will be limited.";
+
+        private MigrateConfirm() {
+            throw new UnsupportedOperationException(InternalExceptions.UTIL_CLASS);
+        }
+    }
+
+    private InternalMessages() {
+        throw new UnsupportedOperationException(InternalExceptions.UTIL_CLASS);
     }
 }

@@ -17,6 +17,10 @@ public final class InternalDebug {
         public static final String EMPTY_ACTIVE_SERIES = "There are no cards in the active series. Not dropping anything.";
         public static final String DROP_CHANCE = "DropChance= %d AlwaysDrop= %s MobType= %s MobDropChance= %d";
         public static final String RARITY_CHANCE = "RarityChance= %d";
+
+        private CardsManager() {
+            throw new UnsupportedOperationException(InternalExceptions.UTIL_CLASS);
+        }
     }
 
     public static final String LOADED_INTO_CACHE = "Loaded into cache for %s";
@@ -26,6 +30,10 @@ public final class InternalDebug {
         public static final String PLAYER_UUID = "Deck UUID: %s";
         public static final String ADDED_DECK_UUID_NUMBER = "Added uuid %s deck #%d to deck viewer map.";
         public static final String REMOVED_DECK_UUID = "Removed uuid %s from deck viewer map.";
+
+        private DecksManager() {
+            throw new UnsupportedOperationException(InternalExceptions.UTIL_CLASS);
+        }
     }
 
     public static class DropListener {
@@ -33,11 +41,19 @@ public final class InternalDebug {
         public static final String MOB_TYPE = "MobType= %s";
         public static final String ADDED_CARD = "Added card %s";
         public static final String NULL_RARITY_KEY = "rarityKey is null";
+
+        private DropListener() {
+            throw new UnsupportedOperationException(InternalExceptions.UTIL_CLASS);
+        }
     }
 
     public static class DeckListener {
         public static final String ADDED_ENTRY = "Added %s to serialized list.";
         public static final String DECK_CLOSED = "Deck closed.";
+
+        private DeckListener() {
+            throw new UnsupportedOperationException(InternalExceptions.UTIL_CLASS);
+        }
     }
 
     public static class DeckEventListener {
@@ -45,6 +61,10 @@ public final class InternalDebug {
         public static final String NOT_A_PLAYER = "Not a player entity, ignoring.";
         public static final String NOT_OUR_GUI = "Not our gui, ignoring. UUID: %s";
         public static final String DECK_PLAYER = "deck: %d, player: %s, uuid: %s";
+
+        private DeckEventListener() {
+            throw new UnsupportedOperationException(InternalExceptions.UTIL_CLASS);
+        }
     }
 
     public static class Sql {
@@ -52,5 +72,13 @@ public final class InternalDebug {
         public static final String UPDATE = "(UPDATE) %s";
         public static final String REMOVE = "(REMOVE) %s";
         public static final String EMPTY_RESULT = "Empty result for %s";
+
+        private Sql() {
+            throw new UnsupportedOperationException(InternalExceptions.UTIL_CLASS);
+        }
+    }
+
+    private InternalDebug() {
+        throw new UnsupportedOperationException(InternalExceptions.UTIL_CLASS);
     }
 }
