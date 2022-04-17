@@ -60,5 +60,6 @@
   "sell-command": {
     "cannot-sell-shiny": "Cannot sell shiny card.",
     "sold-card": "You have sold %dx%s for %.2f"
-  }
+  },
+  "cannot-have-more-than-a-stack": "Cannot have more than a stack of this card per deck."
 }

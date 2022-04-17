@@ -8,6 +8,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.listeners.SimpleListener;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingDeckManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalDebug;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalMessages;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -65,7 +66,7 @@ public class DeckEventListener extends SimpleListener {
 
         if(containsAtLeast(destination,nbtItem)) {
             event.setCancelled(true);
-            ChatUtil.sendPrefixedMessage(player,"Cannot have more than a stack of this card per deck.");
+            ChatUtil.sendPrefixedMessage(player, InternalMessages.CANNOT_HAVE_MORE_THAN_A_STACK);
         }
 
     }

@@ -105,6 +105,8 @@ public final class InternalMessages {
         }
     }
 
+    public static final String CANNOT_HAVE_MORE_THAN_A_STACK = "Cannot have more than a stack of this card per deck.";
+
     private InternalMessages() {
         throw new UnsupportedOperationException(InternalExceptions.UTIL_CLASS);
     }
