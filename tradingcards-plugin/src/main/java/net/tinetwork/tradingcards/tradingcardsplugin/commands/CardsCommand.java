@@ -6,6 +6,8 @@ import co.aikar.commands.annotation.*;
 import de.tr7zw.nbtapi.NBTItem;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.utils.NbtUtils;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalDebug;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalMessages;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.Permissions;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
@@ -30,9 +32,6 @@ public class CardsCommand extends BaseCommand {
 
     private final MessagesConfig messagesConfig;
 
-    protected static final String PLAYER_NOT_ONLINE = "This player is not online. Or doesn't exist.";
-    protected static final String CANNOT_SELL_CARD = "Cannot sell this card.";
-
     public CardsCommand(final @NotNull TradingCards plugin, final PlayerBlacklist playerBlacklist) {
         this.plugin = plugin;
         this.playerBlacklist = playerBlacklist;
@@ -55,8 +54,7 @@ public class CardsCommand extends BaseCommand {
     @CommandPermission(Permissions.VERSION)
     @Description("Show the plugin version.")
     public void onVersion(final CommandSender sender) {
-        final String format = "%s %s API-%s";
-        ChatUtil.sendMessage(sender, String.format(format, plugin.getName(), plugin.getDescription().getVersion(), plugin.getDescription().getAPIVersion()));
+        ChatUtil.sendMessage(sender, InternalMessages.CardsCommand.VERSION.formatted(plugin.getName(), plugin.getDescription().getVersion(), plugin.getDescription().getAPIVersion()));
     }
 
     @Subcommand("reload")
@@ -147,7 +145,7 @@ public class CardsCommand extends BaseCommand {
 
         final String cardId = nbtItem.getString(NbtUtils.NBT_CARD_NAME);
         final String rarityId = nbtItem.getString(NbtUtils.NBT_RARITY);
-        debug("CardId=" + cardId + ", RarityId=" + rarityId);
+        debug(InternalDebug.CardsCommand.CARD_RARITY_ID.formatted(cardId,rarityId));
 
         final TradingCard tradingCard = cardManager.getCard(cardId, rarityId, false);
         final double buyPrice = tradingCard.getBuyPrice();
@@ -156,7 +154,7 @@ public class CardsCommand extends BaseCommand {
         final String buyMessage = (buyPrice > 0.0D) ?
                 messagesConfig.canBuy().replaceAll(PlaceholderUtil.BUY_AMOUNT.asRegex(), String.valueOf(buyPrice)) : messagesConfig.canNotBuy();
         final String sellMessage = (sellPrice > 0.0D) ? messagesConfig.canSell().replaceAll(PlaceholderUtil.SELL_AMOUNT.asRegex(), String.valueOf(sellPrice)) : messagesConfig.canNotSell();
-        debug("BuyPrice=" + buyPrice + ", SellPrice=" + sellPrice);
+        debug(InternalDebug.CardsCommand.BUY_SELL_PRICE.formatted(buyPrice,sellPrice));
         ChatUtil.sendPrefixedMessage(player, buyMessage);
         ChatUtil.sendPrefixedMessage(player, sellMessage);
     }

@@ -8,6 +8,7 @@ import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalMessages;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.Permissions;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
@@ -62,7 +63,7 @@ public class GiveCommands extends BaseCommand {
 
                 Player target = Bukkit.getPlayerExact(playerName);
                 if (isOnline(target)) {
-                    ChatUtil.sendPrefixedMessage(sender, CardsCommand.PLAYER_NOT_ONLINE);
+                    ChatUtil.sendPrefixedMessage(sender, InternalMessages.CardsCommand.PLAYER_OFFLINE);
                     return;
                 }
 
@@ -90,7 +91,7 @@ public class GiveCommands extends BaseCommand {
         public void onGiveBoosterPack(final CommandSender sender, @Single final String playerName, @Single final String packId) {
             Player player = Bukkit.getPlayerExact(playerName);
             if (isOnline(player)) {
-                ChatUtil.sendPrefixedMessage(sender, CardsCommand.PLAYER_NOT_ONLINE);
+                ChatUtil.sendPrefixedMessage(sender, InternalMessages.CardsCommand.PLAYER_OFFLINE);
                 return;
             }
 
@@ -112,7 +113,7 @@ public class GiveCommands extends BaseCommand {
         public void onGiveRandomCard(final CommandSender sender, @Single final String playerName, final EntityType entityType) {
             Player player = Bukkit.getPlayerExact(playerName);
             if (isOnline(player)) {
-                ChatUtil.sendPrefixedMessage(sender, CardsCommand.PLAYER_NOT_ONLINE);
+                ChatUtil.sendPrefixedMessage(sender, InternalMessages.CardsCommand.PLAYER_OFFLINE);
                 return;
             }
 
@@ -134,7 +135,7 @@ public class GiveCommands extends BaseCommand {
         public void onGiveRandomCard(final CommandSender sender, @Single final String playerName, @Single final String rarityId) {
             Player player = Bukkit.getPlayerExact(playerName);
             if (isOnline(player)) {
-                ChatUtil.sendPrefixedMessage(sender, CardsCommand.PLAYER_NOT_ONLINE);
+                ChatUtil.sendPrefixedMessage(sender, InternalMessages.CardsCommand.PLAYER_OFFLINE);
                 return;
             }
 

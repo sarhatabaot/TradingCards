@@ -78,6 +78,23 @@ public final class InternalDebug {
         }
     }
 
+    public static class CardsCommand {
+        public static final String CARD_RARITY_ID = "CardId= %s, RarityId= %s";
+        public static final String BUY_SELL_PRICE = "BuyPrice= %s, SellPrice= %s";
+
+        private CardsCommand() {
+            throw new UnsupportedOperationException(InternalExceptions.UTIL_CLASS);
+        }
+    }
+
+    public static class EditCommand {
+        public static final String UNSUPPORTED_ARG = "Unsupported argument: %s";
+
+        private EditCommand() {
+            throw new UnsupportedOperationException(InternalExceptions.UTIL_CLASS);
+        }
+    }
+
     private InternalDebug() {
         throw new UnsupportedOperationException(InternalExceptions.UTIL_CLASS);
     }

@@ -7,13 +7,58 @@
     "warning": "&cAre you sure you want to migrate? This action is irreversible.",
     "backup-hint1": "&cMake sure you have made a backup of your decks.yml before continuing.",
     "backup-hint2": "&cYou can easily backup all settings using /cards debug zip",
-    "confirm-hint": "&cIf you want to convert from YAML to ",
+    "confirm-hint": "&cIf you want to convert from YAML to %s",
     "confirm-cmd": "&cPlease type /cards migrate <deck|data> confirm"
   },
   "migrate-confirm": {
-    "start-migration": "&2Started migration for decks from YAML to %storage-type%",
-    "complete-migration": "&2Completed migration from YAML to %storage-type",
+    "start-migration": "&2Started migration for %s from YAML to %s",
+    "complete-migration": "&2Completed migration from YAML to %s",
     "warning": "&2This may take a while...",
     "restart-hint": "&cYou should restart your server, otherwise functionality of the plugin will be limited."
+  },
+  "cards-command": {
+    "version": "%s %s API-%s",
+    "player-offline": "This player is not online. Or doesn't exist.",
+    "cannot-sell": "Cannot sell this card."
+  },
+  "create-command": {
+    "created-type": "Created %s %s",
+    "created-type-edit": "To edit %s run /cards edit %s %s",
+    "series-exists": "Series %s already exists. Cannot create a new one.",
+    "type-exists": "Type %s already exists. Cannot create a new one.",
+    "rarity-exists": "Rarity %s already exists. Cannot create a new one.",
+    "card-exists": "Card %s already exists. Cannot create a new one.",
+    "pack-exists": "Pack %s already exists. Cannot create a new one."
+  },
+  "no-rarity": "Rarity &4%s&r doesn't exist.",
+  "no-series": "Series &4%s&r doesn't exist.",
+  "no-card": "Card &4%s&r doesn't exist.",
+  "no-type": "Type &4%s&r doesn't exist.",
+  "no-pack": "Pack &4%s&r doesn't exist.",
+  "type-must-be": "Type must be: %s",
+  "debug-command": {
+    "added-all-files": "Added all settings files to debug.zip.",
+    "enabled-modules": "Enabled Modules/Addons:",
+    "backing-up-setting": "Backing the settings folder to debug.zip",
+    "backup-hint": "This does not backup storage.yml.",
+    "modules": "Modules:",
+    "addons": "Addons:"
+  },
+  "deck-command": {
+    "cannot-run-from-console": "Cannot run this command from console, or there was a problem getting the player object."
+  },
+  "edit-command": {
+    "price-incorrect": "Price must be higher than -1",
+    "custom-model-data-incorrect": "CustomModelData must be higher than 0.",
+    "no-colors-args": "Could not find any arguments for colors.",
+    "colors-hint": "Must have: %s",
+    "mode-incorrect": "Mode must be one of %s",
+    "contents-syntax": "Incorrect syntax use: lineNumber=rarityId:cardId:amount:seriesId",
+    "contents-example": "For example: 0=common:zombie:1:default",
+    "line-number-incorrect": "Line number must be a number higher than -1"
+  },
+  "sell-command": {
+    "cannot-sell-shiny": "Cannot sell shiny card.",
+    "sold-card": "You have sold %dx%s for %.2f"
   }
 }

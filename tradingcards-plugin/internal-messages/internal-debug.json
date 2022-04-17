@@ -43,5 +43,12 @@
     "update": "(UPDATE) %s",
     "remove": "(REMOVE) %s",
     "empty-result": "Empty result for %s"
+  },
+  "cards-command": {
+    "card-rarity-id": "CardId= %s, RarityId= %s",
+    "buy-sell-price": "BuyPrice= %s, SellPrice= %s"
+  },
+  "edit-command": {
+    "unsupported-arg": "Unsupported argument: %s"
   }
 }

@@ -11,6 +11,7 @@ import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import net.tinetwork.tradingcards.api.model.Pack;
 import net.tinetwork.tradingcards.api.model.Rarity;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalMessages;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.Permissions;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
@@ -51,7 +52,7 @@ public class ListCommand extends BaseCommand {
         public void onListPlayer(final CommandSender sender, @Single final String playerName, @Single @Optional final String rarityId) {
             Player target = Bukkit.getPlayerExact(playerName);
             if (target == null) {
-                ChatUtil.sendPrefixedMessage(sender, CardsCommand.PLAYER_NOT_ONLINE);
+                ChatUtil.sendPrefixedMessage(sender, InternalMessages.CardsCommand.PLAYER_OFFLINE);
                 return;
             }
             if (rarityId == null) {
