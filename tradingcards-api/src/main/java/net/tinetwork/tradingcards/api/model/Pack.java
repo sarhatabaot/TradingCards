@@ -73,8 +73,9 @@ public final class Pack {
         return Objects.hash(id, packEntryList, displayName, buyPrice, permission);
     }
 
+    @Contract(pure = true)
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return "Pack[" +
                 "id=" + id + ", " +
                 "packEntryList=" + packEntryList + ", " +

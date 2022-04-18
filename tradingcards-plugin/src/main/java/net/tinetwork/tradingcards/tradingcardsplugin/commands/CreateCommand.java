@@ -8,7 +8,8 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import net.tinetwork.tradingcards.api.model.DropType;
-import net.tinetwork.tradingcards.tradingcardsplugin.Permissions;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalMessages;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.Permissions;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -29,15 +30,15 @@ public class CreateCommand extends BaseCommand{
     @Description("Creates any type, without customization, edit later using /cards edit.")
     public class CreateSubCommand extends BaseCommand {
         private void sendCreatedMessage(final @NotNull CommandSender sender, final String type, final String id) {
-            sender.sendMessage("Created " + type + " " + id);
-            sender.sendMessage("To edit " + id + " run /cards edit " + type + " " + id);
+            sender.sendMessage(InternalMessages.CreateCommand.CREATED_TYPE.formatted(type,id));
+            sender.sendMessage(InternalMessages.CreateCommand.CREATED_TYPE_EDIT.formatted(id,type,id));
         }
 
         @Subcommand("rarity")
         @CommandPermission(Permissions.CREATE_RARITY)
         public void onRarity(final CommandSender sender,@Single final String rarityId) {
             if (plugin.getRarityManager().containsRarity(rarityId)) {
-                sender.sendMessage("This rarity already exists. Cannot create a new one.");
+                sender.sendMessage(InternalMessages.CreateCommand.RARITY_EXISTS.formatted(rarityId));
                 return;
             }
 
@@ -51,17 +52,17 @@ public class CreateCommand extends BaseCommand{
         public void onCard(final CommandSender sender,@Single final String cardId,@Single final String rarityId,@Single final String seriesId) {
             //Check if rarity & series exist
             if (plugin.getCardManager().containsCard(cardId, rarityId, seriesId)) {
-                sender.sendMessage("This card already exists. Cannot create a new one.");
+                sender.sendMessage(InternalMessages.CreateCommand.CARD_EXISTS.formatted(cardId));
                 return;
             }
 
             if(!plugin.getRarityManager().containsRarity(rarityId)) {
-                sender.sendMessage("This rarity doesn't exist.");
+                sender.sendMessage(InternalMessages.NO_RARITY.formatted(rarityId));
                 return;
             }
 
             if(!plugin.getSeriesManager().containsSeries(seriesId)) {
-                sender.sendMessage("This series doesn't exist.");
+                sender.sendMessage(InternalMessages.NO_SERIES.formatted(seriesId));
                 return;
             }
 
@@ -73,7 +74,7 @@ public class CreateCommand extends BaseCommand{
         @CommandPermission(Permissions.CREATE_PACK)
         public void onPack(final CommandSender sender,@Single final String packId) {
             if (plugin.getPackManager().containsPack(packId)) {
-                sender.sendMessage("This pack already exists. Cannot create a new one.");
+                sender.sendMessage(InternalMessages.CreateCommand.PACK_EXISTS.formatted(packId));
                 return;
             }
             sendCreatedMessage(sender,"pack",packId);
@@ -84,7 +85,7 @@ public class CreateCommand extends BaseCommand{
         @CommandPermission(Permissions.CREATE_SERIES)
         public void onSeries(final CommandSender sender,@Single final String seriesId) {
             if (plugin.getSeriesManager().containsSeries(seriesId)) {
-                sender.sendMessage("This series already exists. Cannot create a new one.");
+                sender.sendMessage(InternalMessages.CreateCommand.SERIES_EXISTS.formatted(seriesId));
                 return;
             }
             sendCreatedMessage(sender,"series",seriesId);
@@ -96,12 +97,12 @@ public class CreateCommand extends BaseCommand{
         @CommandCompletion("@nothing @default-types")
         public void onType(final CommandSender sender,@Single final String typeId,@Single final String type) {
             if (plugin.getDropTypeManager().containsType(typeId)) {
-                sender.sendMessage("This type already exists. Cannot create a new one.");
+                sender.sendMessage(InternalMessages.CreateCommand.TYPE_EXISTS.formatted(typeId));
                 return;
             }
 
             if (!plugin.getDropTypeManager().getDefaultTypes().stream().map(DropType::getId).toList().contains(type)) {
-                sender.sendMessage("Type must be: all, hostile, neutral, passive or boss.");
+                sender.sendMessage(InternalMessages.TYPE_MUST_BE.formatted(plugin.getDropTypeManager().getDefaultTypes().stream().map(DropType::getId).toList().toString()));
                 return;
             }
             sendCreatedMessage(sender,"customtype",typeId);

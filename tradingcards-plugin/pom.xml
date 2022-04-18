@@ -15,6 +15,29 @@
     </parent>
     <properties>
         <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
+
+        <!-- Maven Plugin -->
+        <jacoco.version>0.8.7</jacoco.version>
+        <maven.shade.version>3.3.0</maven.shade.version>
+        <maven.surefire.version>3.0.0-M5</maven.surefire.version>
+        <messages.version>1.0.1</messages.version>
+        <formatter.version>2.18.0</formatter.version>
+
+        <!-- Bukkit Libs -->
+        <bstats.version>3.0.0</bstats.version>
+        <adventure.bukkit.version>4.1.0</adventure.bukkit.version>
+        <placeholderapi.version>2.11.1</placeholderapi.version>
+
+        <!-- Tests -->
+        <mockito.version>4.4.0</mockito.version>
+        <mockbukkit.version>1.13.0</mockbukkit.version>
+
+        <!-- DB -->
+        <hikaricp.version>5.0.1</hikaricp.version>
+        <jooq.version>3.16.5</jooq.version>
+        <!-- Others -->
+        <zip4j.version>2.10.0</zip4j.version>
+
     </properties>
 
     <pluginRepositories>
@@ -31,7 +54,7 @@
                     <plugin>
                         <groupId>org.jacoco</groupId>
                         <artifactId>jacoco-maven-plugin</artifactId>
-                        <version>0.8.7</version>
+                        <version>${jacoco.version}</version>
                         <executions>
                             <execution>
                                 <id>prepare-agent</id>
@@ -77,6 +100,10 @@
             <url>https://repo.codemc.org/repository/maven-public/</url>
             <layout>default</layout>
         </repository>
+        <repository>
+            <id>placeholderapi</id>
+            <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
+        </repository>
     </repositories>
     <reporting>
         <plugins>
@@ -98,61 +125,105 @@
     <build>
         <defaultGoal>clean package</defaultGoal>
         <finalName>TradingCards-${project.version}-${maven.build.timestamp}</finalName>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven.compiler.version}</version>
+                    <configuration>
+                        <compilerArgs>
+                            <arg>-parameters</arg>
+                        </compilerArgs>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-shade-plugin</artifactId>
+                    <version>${maven.shade.version}</version>
+                    <configuration>
+                        <createDependencyReducedPom>false</createDependencyReducedPom>
+                        <relocations>
+                            <relocation>
+                                <pattern>co.aikar.commands</pattern>
+                                <shadedPattern>${project.groupId}.acf</shadedPattern>
+                            </relocation>
+                            <relocation>
+                                <pattern>co.aikar.locales</pattern>
+                                <shadedPattern>${project.groupId}.locales</shadedPattern>
+                            </relocation>
+                            <relocation>
+                                <pattern>de.tr7zw.changeme.nbtapi</pattern>
+                                <shadedPattern>${project.groupId}.nbt</shadedPattern>
+                            </relocation>
+                            <relocation>
+                                <pattern>org.bstats</pattern>
+                                <shadedPattern>${project.groupId}.bstats</shadedPattern>
+                            </relocation>
+                        </relocations>
+
+                        <filters>
+                            <filter>
+                                <artifact>*:*</artifact>
+                                <excludes>
+                                    <excludes>META-INF/*.SF</excludes>
+                                    <excludes>META-INF/*.DSA</excludes>
+                                    <excludes>META-INF/*.RSA</excludes>
+                                    <exclude>META-INF/maven/**</exclude>
+                                </excludes>
+                            </filter>
+                        </filters>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven.surefire.version}</version>
+                    <configuration>
+                        <junitArtifactName>org.junit.jupiter:junit-jupiter</junitArtifactName>
+                        <trimStackTrace>false</trimStackTrace>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>com.github.sarhatabaot</groupId>
+                    <artifactId>messages</artifactId>
+                    <version>${messages.version}</version>
+                    <configuration>
+                        <overwriteClasses>true</overwriteClasses>
+                        <sourceFolder>internal-messages</sourceFolder>
+                        <targetPackage>net.tinetwork.tradingcards.tradingcardsplugin.messages</targetPackage>
+                        <privateConstructor>InternalExceptions.UTIL_CLASS</privateConstructor>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>net.revelc.code.formatter</groupId>
+                    <artifactId>formatter-maven-plugin</artifactId>
+                    <version>${formatter.version}</version>
+                    <configuration>
+                        <includes>
+                            <include>net/tinetwork/tradingcards/tradingcardsplugin/messages/</include>
+                        </includes>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.7</version>
+                <version>${jacoco.version}</version>
             </plugin>
             <plugin>
-                <version>3.10.1</version>
+                <version>${maven.compiler.version}</version>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <compilerArgs>
-                        <arg>-parameters</arg>
-                    </compilerArgs>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.3.0-SNAPSHOT</version>
-                <configuration>
-                    <createDependencyReducedPom>false</createDependencyReducedPom>
-                    <relocations>
-                        <relocation>
-                            <pattern>co.aikar.commands</pattern>
-                            <shadedPattern>${project.groupId}.acf</shadedPattern>
-                        </relocation>
-                        <relocation>
-                            <pattern>co.aikar.locales</pattern>
-                            <shadedPattern>${project.groupId}.locales</shadedPattern>
-                        </relocation>
-                        <relocation>
-                            <pattern>de.tr7zw.changeme.nbtapi</pattern>
-                            <shadedPattern>${project.groupId}.nbt</shadedPattern>
-                        </relocation>
-                        <relocation>
-                            <pattern>org.bstats</pattern>
-                            <shadedPattern>${project.groupId}.bstats</shadedPattern>
-                        </relocation>
-                    </relocations>
-
-                    <filters>
-                        <filter>
-                            <artifact>*:*</artifact>
-                            <excludes>
-                                <excludes>META-INF/*.SF</excludes>
-                                <excludes>META-INF/*.DSA</excludes>
-                                <excludes>META-INF/*.RSA</excludes>
-                                <exclude>META-INF/maven/**</exclude>
-                            </excludes>
-                        </filter>
-                    </filters>
-                </configuration>
+                <version>${maven.shade.version}</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -163,15 +234,19 @@
                 </executions>
             </plugin>
             <plugin>
-                <!-- Plugin for Unit Tests -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M5</version>
-
-                <configuration>
-                    <junitArtifactName>org.junit.jupiter:junit-jupiter</junitArtifactName>
-                    <trimStackTrace>false</trimStackTrace>
-                </configuration>
+                <version>${maven.surefire.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>com.github.sarhatabaot</groupId>
+                <artifactId>messages</artifactId>
+                <version>${messages.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>net.revelc.code.formatter</groupId>
+                <artifactId>formatter-maven-plugin</artifactId>
+                <version>${formatter.version}</version>
             </plugin>
         </plugins>
         <resources>
@@ -183,77 +258,87 @@
     </build>
 
     <dependencies>
+        <!-- Bukkit Libs -->
         <dependency>
             <groupId>net.tinetwork.tradingcards</groupId>
             <artifactId>tradingcards-api</artifactId>
-            <version>5.6.0</version>
+            <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
-
         <dependency>
             <groupId>co.aikar</groupId>
             <artifactId>acf-paper</artifactId>
-            <version>0.5.1-SNAPSHOT</version>
+            <version>${acf.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.bstats</groupId>
             <artifactId>bstats-bukkit</artifactId>
-            <version>3.0.0</version>
+            <version>${bstats.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>de.tr7zw</groupId>
             <artifactId>item-nbt-api-plugin</artifactId>
-            <version>2.9.2</version>
+            <version>${item.nbt.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-platform-bukkit</artifactId>
-            <version>4.1.0</version>
+            <version>${adventure.bukkit.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>me.clip</groupId>
+            <artifactId>placeholderapi</artifactId>
+            <version>${placeholderapi.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- Tests -->
+        <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>4.4.0</version>
+            <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.github.seeseemelk</groupId>
             <artifactId>MockBukkit-v1.17</artifactId>
-            <version>1.13.0</version>
+            <version>${mockbukkit.version}</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- DB -->
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
-            <version>5.0.1</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.lingala.zip4j</groupId>
-            <artifactId>zip4j</artifactId>
-            <version>2.10.0</version>
+            <version>${hikaricp.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.jooq</groupId>
             <artifactId>jooq</artifactId>
-            <version>3.16.5</version>
+            <version>${jooq.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.jooq</groupId>
             <artifactId>jooq-meta</artifactId>
-            <version>3.16.5</version>
+            <version>${jooq.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.jooq</groupId>
             <artifactId>jooq-codegen</artifactId>
-            <version>3.16.5</version>
+            <version>${jooq.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- Others -->
+        <dependency>
+            <groupId>net.lingala.zip4j</groupId>
+            <artifactId>zip4j</artifactId>
+            <version>${zip4j.version}</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

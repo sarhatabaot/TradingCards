@@ -10,6 +10,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.DropTypeManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalLog;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local.card.EditCardConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
 import org.bukkit.Material;
@@ -247,8 +248,8 @@ public class SimpleCardsConfig extends SimpleConfigurate {
                 }
                 return dropType;
             } catch (SerializationException|NullPointerException|ArrayIndexOutOfBoundsException e) {
-                plugin.getLogger().warning("Could not get the type for " + id + " reason: " + e.getMessage());
-                plugin.getLogger().warning("Defaulting to passive.");
+                plugin.getLogger().warning(InternalLog.DropType.COULD_NOT_GET_TYPE.formatted(id,e.getMessage()));
+                plugin.getLogger().warning(InternalLog.DropType.DEFAULT);
                 return DropTypeManager.PASSIVE;
             }
         }

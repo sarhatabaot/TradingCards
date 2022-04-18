@@ -41,6 +41,10 @@ import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingRarityManag
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingCardManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingDeckManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingSeriesManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalDebug;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalExceptions;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalLog;
+import net.tinetwork.tradingcards.tradingcardsplugin.placeholders.TradingCardsPlaceholderExpansion;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.StorageType;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local.YamlStorage;
@@ -97,6 +101,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     /* Hooks */
     private boolean hasVault;
     private Economy econ = null;
+    private boolean placeholderapi = false;
 
 
     /* Blacklists */
@@ -140,6 +145,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         initCommands();
 
         hookVault();
+        hookPlaceholderApi();
         new Metrics(this, 12940);
     }
 
@@ -152,6 +158,17 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         this.storage.init(this);
     }
 
+
+    private void hookPlaceholderApi() {
+        if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new TradingCardsPlaceholderExpansion(this).register();
+            placeholderapi = true;
+        }
+    }
+
+    public boolean placeholderapi() {
+        return placeholderapi;
+    }
 
     public GeneralConfig getGeneralConfig() {
         return generalConfig;
@@ -202,7 +219,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     @Contract(" -> new")
     private @NotNull Storage<TradingCard> loadStorage() throws ConfigurateException {
         StorageType storageType = this.storageConfig.getType();
-        getLogger().info(() -> "Using storage " + storageType.name());
+        getLogger().info(() -> InternalLog.Init.USING_STORAGE.formatted(storageType.name()));
         return switch (storageType) {
             case MARIADB -> new SqlStorage(this,
                     this.storageConfig.getTablePrefix(),
@@ -222,7 +239,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     //The order is important. Decks & Packs must load after cards load.
     //Cards must load after rarity, droptype & series.
     private void initManagers() {
-        getLogger().info(() -> "Initializing managers...");
+        getLogger().info(() -> InternalLog.Init.MANAGERS);
         this.rarityManager = new TradingRarityManager(this);
         this.dropTypeManager = new DropTypeManager(this);
         this.seriesManager = new TradingSeriesManager(this);
@@ -235,9 +252,9 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private void initCommands() {
         var commandManager = new PaperCommandManager(this);
         commandManager.getCommandCompletions().registerCompletion("rarities", c -> rarityManager.getRarityIds());
-        commandManager.getCommandCompletions().registerCompletion("cards", c -> cardManager.getRarityCardListIds(c.getContextValueByName(String.class, "rarity")));
+        commandManager.getCommandCompletions().registerCompletion("cards", c -> cardManager.getRarityCardListIds(c.getContextValueByName(String.class, "rarityId")));
         commandManager.getCommandCompletions().registerCompletion("command-cards", c -> cardManager.getCardsInRarityAndSeriesIds(c.getContextValue(Rarity.class).getId(), c.getContextValue(Series.class).getId()));
-        commandManager.getCommandCompletions().registerCompletion("active-cards", c -> cardManager.getActiveRarityCardIds(c.getContextValueByName(String.class, "rarity")));
+        commandManager.getCommandCompletions().registerCompletion("active-cards", c -> cardManager.getActiveRarityCardIds(c.getContextValueByName(String.class, "rarityId")));
         commandManager.getCommandCompletions().registerCompletion("packs", c -> packManager.getPackIds());
         commandManager.getCommandCompletions().registerCompletion("default-types", c -> dropTypeManager.getDefaultTypes().stream().map(DropType::getId).toList());
         commandManager.getCommandCompletions().registerCompletion("custom-types", c -> dropTypeManager.getTypes().keySet());
@@ -286,7 +303,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         commandManager.getCommandContexts().registerContext(Rarity.class, c -> {
                     String rarityId = c.popFirstArg();
                     if (!getRarityManager().containsRarity(rarityId)) {
-                        throw new InvalidCommandArgument("No such rarity");
+                        throw new InvalidCommandArgument(InternalExceptions.NO_RARITY.formatted(rarityId));
                     }
 
                     return getRarityManager().getRarity(rarityId);
@@ -295,7 +312,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         commandManager.getCommandContexts().registerContext(Series.class, c -> {
             String seriesId = c.popFirstArg();
             if (!getSeriesManager().containsSeries(seriesId)) {
-                throw new InvalidCommandArgument("No such series");
+                throw new InvalidCommandArgument(InternalExceptions.NO_SERIES.formatted(seriesId));
             }
             return getSeriesManager().getSeries(seriesId);
         });
@@ -359,10 +376,10 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         if (this.generalConfig.vaultEnabled()) {
             if (this.getServer().getPluginManager().getPlugin("Vault") != null) {
                 this.setupEconomy();
-                getLogger().info("Vault hook successful!");
+                getLogger().info(() -> InternalLog.PluginStart.VAULT_HOOK_SUCCESS);
                 this.hasVault = true;
             } else {
-                getLogger().info("Vault not found, hook unsuccessful!");
+                getLogger().info(() -> InternalLog.PluginStart.VAULT_HOOK_FAIL);
             }
         }
     }
@@ -430,7 +447,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     @Override
     public void debug(final Class<?> className, final String message) {
         if (getGeneralConfig().debugMode()) {
-            getLogger().info(() -> "DEBUG " + className.getSimpleName() + " " + message);
+            getLogger().info(() -> InternalDebug.BASE_DEBUG_FORMAT.formatted(className.getSimpleName(),message));
         }
     }
 

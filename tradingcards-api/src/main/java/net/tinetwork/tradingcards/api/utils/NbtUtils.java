@@ -1,6 +1,7 @@
 package net.tinetwork.tradingcards.api.utils;
 
 import de.tr7zw.nbtapi.NBTItem;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
@@ -24,7 +25,7 @@ public class NbtUtils {
     public static final String NBT_PACK_ID = "packId";
 
 
-    public static boolean isCardSimilar(final NBTItem item1, final NBTItem item2) {
+    public static boolean isCardSimilar(final @NotNull NBTItem item1, final @NotNull NBTItem item2) {
         return Objects.equals(item1.getBoolean(NBT_CARD_SHINY), item2.getBoolean(NBT_CARD_SHINY)) &&
                 item1.getString(NBT_CARD_NAME).equals(item2.getString(NBT_CARD_NAME)) &&
                 item1.getString(NBT_RARITY).equals(item2.getString(NBT_RARITY)) &&

@@ -15,7 +15,7 @@ public abstract class AddonConfigurate extends AddonConfigFile {
     protected final YamlConfigurationLoader loader;
     protected CommentedConfigurationNode rootNode;
 
-    public AddonConfigurate(TradingCardsAddon plugin, final String resourcePath, String fileName, String folder) throws ConfigurateException {
+    protected AddonConfigurate(TradingCardsAddon plugin, final String resourcePath, String fileName, String folder) throws ConfigurateException {
         super(plugin, resourcePath,fileName, folder);
         preLoaderBuild();
         this.loader = loaderBuilder.build();

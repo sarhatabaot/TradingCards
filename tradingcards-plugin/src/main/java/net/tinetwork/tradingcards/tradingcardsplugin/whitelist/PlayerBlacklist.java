@@ -4,6 +4,7 @@ import net.tinetwork.tradingcards.api.blacklist.Blacklist;
 import net.tinetwork.tradingcards.api.blacklist.WhitelistMode;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.api.config.SimpleConfigurate;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalDebug;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -62,7 +63,7 @@ public class PlayerBlacklist extends SimpleConfigurate implements Blacklist<Play
         else
             this.whitelistMode = WhitelistMode.BLACKLIST;
 
-        plugin.debug(getClass(), "Whitelist Mode=" + whitelistMode);
+        plugin.debug(getClass(), InternalDebug.WHITELIST_MODE.formatted(whitelistMode));
     }
 
     @Override

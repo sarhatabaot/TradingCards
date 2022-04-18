@@ -8,7 +8,8 @@ import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
-import net.tinetwork.tradingcards.tradingcardsplugin.Permissions;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalMessages;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.Permissions;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
@@ -41,35 +42,35 @@ public class GiveCommands extends BaseCommand {
         public class CardSubCommand extends BaseCommand {
             @Default
             @Description("Gives yourself a card.")
-            public void onDefault(final Player player, @Single final String rarity, @Single final String cardName) {
-                onPlayer(player, player.getName(), rarity, cardName, false);
+            public void onDefault(final Player player, @Single final String rarityId, @Single final String cardId) {
+                onPlayer(player, player.getName(), rarityId, cardId, false);
             }
 
             @Subcommand("player")
             @CommandPermission(Permissions.GIVE_CARD_PLAYER)
             @CommandCompletion("@players @rarities @cards")
-            public void onPlayer(final CommandSender sender, @Single final String playerName, @Single final String rarity, @Single final String cardName, @Single final boolean shiny) {
-                TradingCard card = plugin.getCardManager().getCard(cardName, rarity, shiny);
+            public void onPlayer(final CommandSender sender, @Single final String playerName, @Single final String rarityId, @Single final String cardId, @Single final boolean shiny) {
+                TradingCard card = plugin.getCardManager().getCard(cardId, rarityId, shiny);
                 if (shiny && !card.hasShiny()) {
                     ChatUtil.sendPrefixedMessage(sender, "This card does not have a shiny version.");
                     return;
                 }
 
                 if (card instanceof EmptyCard) {
-                    ChatUtil.sendPrefixedMessage(sender, plugin.getMessagesConfig().noCard());
+                    sender.sendMessage(plugin.getMessagesConfig().noCard());
                     return;
                 }
 
                 Player target = Bukkit.getPlayerExact(playerName);
                 if (isOnline(target)) {
-                    ChatUtil.sendPrefixedMessage(sender, CardsCommand.PLAYER_NOT_ONLINE);
+                    ChatUtil.sendPrefixedMessage(sender, InternalMessages.CardsCommand.PLAYER_OFFLINE);
                     return;
                 }
 
 
-                ChatUtil.sendPrefixedMessage(target, plugin.getMessagesConfig().giveCard()
-                        .replace(PlaceholderUtil.PLAYER, target.getName())
-                        .replace(PlaceholderUtil.CARD, rarity + " " + cardName));
+                target.sendMessage(plugin.getMessagesConfig().giveCard()
+                        .replaceAll(PlaceholderUtil.PLAYER.asRegex(), target.getName())
+                        .replaceAll(PlaceholderUtil.CARD.asRegex(), rarityId + " " + cardId));
 
                 target.getInventory().addItem(card.build(shiny));
             }
@@ -78,8 +79,8 @@ public class GiveCommands extends BaseCommand {
             @CommandPermission(Permissions.GIVE_CARD_SHINY)
             @CommandCompletion("@rarities @cards")
             @Description("Gives a shiny card.")
-            public void onShiny(final Player player, @Single final String rarity, @Single final String cardName) {
-                onPlayer(player, player.getName(), rarity, cardName, true);
+            public void onShiny(final Player player, @Single final String rarityId, @Single final String cardId) {
+                onPlayer(player, player.getName(), rarityId, cardId, true);
             }
         }
 
@@ -87,17 +88,19 @@ public class GiveCommands extends BaseCommand {
         @Description("Gives a pack to a player.")
         @CommandCompletion("@players @packs")
         @CommandPermission(Permissions.GIVE_PACK)
-        public void onGiveBoosterPack(final CommandSender sender, @Single final String playerName, @Single final String pack) {
+        public void onGiveBoosterPack(final CommandSender sender, @Single final String playerName, @Single final String packId) {
             Player player = Bukkit.getPlayerExact(playerName);
             if (isOnline(player)) {
-                ChatUtil.sendPrefixedMessage(sender, CardsCommand.PLAYER_NOT_ONLINE);
+                ChatUtil.sendPrefixedMessage(sender, InternalMessages.CardsCommand.PLAYER_OFFLINE);
                 return;
             }
 
-            CardUtil.dropItem(player, plugin.getPackManager().getPackItem(pack));
+            CardUtil.dropItem(player, plugin.getPackManager().getPackItem(packId));
 
-            ChatUtil.sendPrefixedMessage(sender, plugin.getMessagesConfig().givePack().replace(PlaceholderUtil.PLAYER, player.getName()).replace(PlaceholderUtil.PACK, pack));
-            ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().boosterPackMsg());
+            sender.sendMessage(plugin.getMessagesConfig().givePack()
+                    .replaceAll(PlaceholderUtil.PLAYER.asRegex(), player.getName())
+                    .replaceAll(PlaceholderUtil.PACK.asRegex(), packId));
+            player.sendMessage(plugin.getMessagesConfig().boosterPackMsg());
         }
 
         private boolean isOnline(final Player player) {
@@ -110,17 +113,18 @@ public class GiveCommands extends BaseCommand {
         public void onGiveRandomCard(final CommandSender sender, @Single final String playerName, final EntityType entityType) {
             Player player = Bukkit.getPlayerExact(playerName);
             if (isOnline(player)) {
-                ChatUtil.sendPrefixedMessage(sender, CardsCommand.PLAYER_NOT_ONLINE);
+                ChatUtil.sendPrefixedMessage(sender, InternalMessages.CardsCommand.PLAYER_OFFLINE);
                 return;
             }
 
             try {
                 String rare = plugin.getCardManager().getRandomRarity(CardUtil.getMobType(entityType), true);
-                plugin.debug(getClass(), "Rarity: " + rare);
-                ChatUtil.sendPrefixedMessage(sender, plugin.getMessagesConfig().giveRandomCardMsg().replace(PlaceholderUtil.PLAYER, player.getName()));
+                plugin.debug(getClass(), "RarityId: " + rare);
+                ChatUtil.sendPrefixedMessage(sender,
+                        plugin.getMessagesConfig().giveRandomCardMsg().replaceAll(PlaceholderUtil.PLAYER.asRegex(), player.getName()));
                 CardUtil.dropItem(player, plugin.getCardManager().getRandomCard(rare).build(false));
             } catch (IllegalArgumentException exception) {
-                ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().noEntity());
+                player.sendMessage(plugin.getMessagesConfig().noEntity());
             }
         }
 
@@ -128,17 +132,17 @@ public class GiveCommands extends BaseCommand {
         @Description("Gives a random card to a player. Specify rarity.")
         @CommandCompletion("@players @rarities")
         @CommandPermission(Permissions.GIVE_RANDOM_RARITY)
-        public void onGiveRandomCard(final CommandSender sender, @Single final String playerName, @Single final String rarity) {
+        public void onGiveRandomCard(final CommandSender sender, @Single final String playerName, @Single final String rarityId) {
             Player player = Bukkit.getPlayerExact(playerName);
             if (isOnline(player)) {
-                ChatUtil.sendPrefixedMessage(sender, CardsCommand.PLAYER_NOT_ONLINE);
+                ChatUtil.sendPrefixedMessage(sender, InternalMessages.CardsCommand.PLAYER_OFFLINE);
                 return;
             }
 
 
-            plugin.debug(GiveCommands.class, "Rarity: " + rarity);
-            ChatUtil.sendPrefixedMessage(sender, plugin.getMessagesConfig().giveRandomCardMsg().replace(PlaceholderUtil.PLAYER, player.getName()));
-            CardUtil.dropItem(player, plugin.getCardManager().getRandomCard(rarity).build(false));
+            plugin.debug(GiveCommands.class, "RarityId: " + rarityId);
+            sender.sendMessage(plugin.getMessagesConfig().giveRandomCardMsg().replaceAll(PlaceholderUtil.PLAYER.asRegex(), player.getName()));
+            CardUtil.dropItem(player, plugin.getCardManager().getRandomCard(rarityId).build(false));
         }
     }
 }

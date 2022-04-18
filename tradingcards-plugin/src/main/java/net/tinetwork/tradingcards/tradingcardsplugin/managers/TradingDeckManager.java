@@ -10,6 +10,8 @@ import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.api.events.DeckLoadEvent;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalDebug;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalLog;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.StorageType;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
@@ -44,7 +46,7 @@ public class TradingDeckManager implements DeckManager {
         this.cardManager = plugin.getCardManager();
         this.storage = plugin.getStorage();
         this.playerDeckViewingMap = new HashMap<>();
-        this.plugin.getLogger().info(() -> "Loaded DeckManager.");
+        this.plugin.getLogger().info(() -> InternalLog.Init.LOAD_DECK_MANAGER);
     }
 
 
@@ -57,8 +59,8 @@ public class TradingDeckManager implements DeckManager {
             ChatUtil.sendPrefixedMessage(player,"If you already ran /cards migrate data, make sure to restart your server.");
             return;
         }
-        plugin.debug(TradingDeckManager.class,"Just ran migration? "+plugin.getMigrateCommand().isRanDataMigration());
-        plugin.debug(TradingDeckManager.class, "Deck UUID: " + player.getUniqueId());
+        plugin.debug(TradingDeckManager.class, InternalDebug.DecksManager.HAS_MIGRATION.formatted(plugin.getMigrateCommand().isRanDataMigration()));
+        plugin.debug(TradingDeckManager.class, InternalDebug.DecksManager.PLAYER_UUID.formatted(player.getUniqueId()));
 
         addDeckViewer(player.getUniqueId(), deckNum);
 
@@ -77,13 +79,13 @@ public class TradingDeckManager implements DeckManager {
     }
 
     public void addDeckViewer(UUID uuid, int num) {
-        plugin.debug(getClass(), "Added uuid " + uuid + " deck #" + num + " to deck viewer map.");
+        plugin.debug(getClass(), InternalDebug.DecksManager.ADDED_DECK_UUID_NUMBER.formatted(uuid,num));
         this.playerDeckViewingMap.put(uuid, num);
     }
 
 
     public void removeDeckViewer(UUID uuid) {
-        plugin.debug(getClass(), "Removed uuid " + uuid + " from deck viewer map.");
+        plugin.debug(getClass(), InternalDebug.DecksManager.REMOVED_DECK_UUID.formatted(uuid));
         this.playerDeckViewingMap.remove(uuid);
     }
 

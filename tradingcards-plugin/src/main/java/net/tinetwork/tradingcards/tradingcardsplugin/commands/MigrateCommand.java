@@ -6,7 +6,8 @@ import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
-import net.tinetwork.tradingcards.tradingcardsplugin.Permissions;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalMessages;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.Permissions;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.migrate.CardMigratorBukkitRunnable;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.migrate.CustomDropTypeMigratorBukkitRunnable;
@@ -41,24 +42,24 @@ public class MigrateCommand extends BaseCommand {
         @Subcommand("all")
         public void onMigrateInfo(final CommandSender sender) {
             if (plugin.getStorage().getType() == StorageType.YAML) {
-                sender.sendMessage(ChatUtil.color("&4Cannot convert from YAML to YAML."));
-                sender.sendMessage(ChatUtil.color("&4Please change your storage type to MYSQL or MARIADB & restart your server."));
+                ChatUtil.sendMessage(sender, InternalMessages.Migrate.YAML_TO_YAML);
+                ChatUtil.sendMessage(sender, InternalMessages.Migrate.CHANGE_STORAGE_TYPE);
                 return;
             }
 
-            sender.sendMessage(ChatUtil.color("&cAre you sure you want to migrate? This action is irreversible."));
-            sender.sendMessage(ChatUtil.color("&cMake sure you have made a backup of your decks.yml before continuing."));
-            sender.sendMessage(ChatUtil.color("&cYou can easily backup all settings using /cards debug zip"));
-            sender.sendMessage(ChatUtil.color("&cIf you want to convert from YAML to " + plugin.getStorage().getType().name()));
-            sender.sendMessage(ChatUtil.color("&cPlease type /cards migrate <deck|data> confirm"));
+            ChatUtil.sendMessage(sender,InternalMessages.Migrate.WARNING);
+            ChatUtil.sendMessage(sender,InternalMessages.Migrate.BACKUP_HINT1);
+            ChatUtil.sendMessage(sender,InternalMessages.Migrate.BACKUP_HINT2);
+            ChatUtil.sendMessage(sender,InternalMessages.Migrate.CONFIRM_HINT.formatted(plugin.getStorage().getType().name()));
+            ChatUtil.sendMessage(sender,InternalMessages.Migrate.CONFIRM_CMD);
         }
 
 
         @Subcommand("data confirm")
         @Description("Converts all data files other than decks.")
         public void onDataMigrateConfirm(final @NotNull CommandSender sender) {
-            sender.sendMessage(ChatUtil.color("&2Started migration for data from YAML to " + plugin.getStorage().getType().name()));
-            sender.sendMessage(ChatUtil.color("&2This may take a while..."));
+            ChatUtil.sendMessage(sender,InternalMessages.MigrateConfirm.START_MIGRATION.formatted("data",plugin.getStorage().getType().name()));
+            ChatUtil.sendMessage(sender,InternalMessages.MigrateConfirm.WARNING);
             YamlStorage yamlStorage;
             try {
                 yamlStorage = new YamlStorage(plugin);
@@ -73,15 +74,16 @@ public class MigrateCommand extends BaseCommand {
             new CustomDropTypeMigratorBukkitRunnable(plugin,sender,yamlStorage).runTask(plugin);
             new CardMigratorBukkitRunnable(plugin,sender,yamlStorage).runTask(plugin);
             ranDataMigration = true;
-            sender.sendMessage("&2Completed migration from YAML to "+ plugin.getStorage().getType().name());
-            sender.sendMessage("&cYou should restart your server, otherwise functionality of the plugin will be limited.");
+
+            ChatUtil.sendMessage(sender,InternalMessages.MigrateConfirm.COMPLETE_MIGRATION.formatted(plugin.getStorage().getType().name()));
+            ChatUtil.sendMessage(sender,InternalMessages.MigrateConfirm.RESTART_HINT);
         }
 
         @Subcommand("deck confirm")
         @Description("Converts decks.")
         public void onDeckMigrateConfirm(final @NotNull CommandSender sender) {
-            sender.sendMessage(ChatUtil.color("&2Started migration for decks from YAML to " + plugin.getStorage().getType().name()));
-            sender.sendMessage(ChatUtil.color("&2This may take a while..."));
+            ChatUtil.sendMessage(sender,InternalMessages.MigrateConfirm.START_MIGRATION.formatted("decks",plugin.getStorage().getType().name()));
+            ChatUtil.sendMessage(sender,InternalMessages.MigrateConfirm.WARNING);
             YamlStorage yamlStorage;
             try {
                 yamlStorage = new YamlStorage(plugin);

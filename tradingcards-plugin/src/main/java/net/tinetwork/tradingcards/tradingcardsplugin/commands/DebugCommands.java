@@ -12,7 +12,9 @@ import net.lingala.zip4j.model.ZipParameters;
 import net.lingala.zip4j.progress.ProgressMonitor;
 import net.tinetwork.tradingcards.api.addons.TradingCardsAddon;
 import net.tinetwork.tradingcards.api.model.Rarity;
-import net.tinetwork.tradingcards.tradingcardsplugin.Permissions;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalDebug;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalMessages;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.Permissions;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
@@ -66,7 +68,7 @@ public class DebugCommands extends BaseCommand {
                     zipFile.addFolder(new File(listsFolder));
                     zipFile.addFolder(settingsFolder, zipParameters);
                     if (zipFile.getProgressMonitor().getResult().equals(ProgressMonitor.Result.SUCCESS)) {
-                        sender.sendMessage("Added all settings files to debug.zip.");
+                        sender.sendMessage(InternalMessages.DebugCommand.ADDED_ALL_FILES);
                     }
                 } catch (IOException e) {
                     Util.logWarningException(e);
@@ -79,8 +81,8 @@ public class DebugCommands extends BaseCommand {
         @CommandPermission(Permissions.ADMIN_DEBUG_ZIP)
         @Description("Creates a zip of all settings.")
         public void onZip(final @NotNull CommandSender sender) {
-            sender.sendMessage("Backing the settings folder to debug.zip");
-            sender.sendMessage("This does not backup storage.yml.");
+            sender.sendMessage(InternalMessages.DebugCommand.BACKING_UP_SETTING);
+            sender.sendMessage(InternalMessages.DebugCommand.BACKUP_HINT);
 
             new ZipBukkitRunnable(sender).runTask(plugin);
         }
@@ -103,9 +105,9 @@ public class DebugCommands extends BaseCommand {
         @CommandPermission(Permissions.ADMIN_DEBUG_MODULES)
         @Description("Shows all enabled hooks and addons.")
         public void onModules(final CommandSender sender) {
-            final StringBuilder builder = new StringBuilder("Enabled Modules/Addons:");
+            final StringBuilder builder = new StringBuilder(InternalMessages.DebugCommand.ENABLED_MODULES);
             builder.append("\n");
-            builder.append(ChatColor.GOLD).append(ChatColor.BOLD).append("Modules:");
+            builder.append(ChatColor.GOLD).append(ChatColor.BOLD).append(InternalMessages.DebugCommand.MODULES);
             for (String depend : plugin.getDescription().getSoftDepend()) {
                 if (Bukkit.getPluginManager().getPlugin(depend) == null)
                     builder.append(ChatColor.GRAY);
@@ -114,7 +116,7 @@ public class DebugCommands extends BaseCommand {
                 }
                 builder.append(depend).append(" ");
             }
-            builder.append(ChatColor.GOLD).append(ChatColor.BOLD).append("Addons:");
+            builder.append(ChatColor.GOLD).append(ChatColor.BOLD).append(InternalMessages.DebugCommand.ADDONS);
             for (Plugin bukkitPlugin : Bukkit.getPluginManager().getPlugins()) {
                 if (plugin instanceof TradingCardsAddon)
                     builder.append(ChatColor.GREEN).append(bukkitPlugin.getName()).append(" ");

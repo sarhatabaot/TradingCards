@@ -60,6 +60,7 @@ public abstract class GeneralConfigurate extends SimpleConfigurate {
     public abstract boolean deckInCreative();
 
     public abstract boolean useDeckItem();
+
     public abstract boolean useLargeDecks();
 
     public abstract boolean debugMode();

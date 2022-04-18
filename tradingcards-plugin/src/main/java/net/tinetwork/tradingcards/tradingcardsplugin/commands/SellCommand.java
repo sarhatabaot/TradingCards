@@ -9,7 +9,9 @@ import co.aikar.commands.annotation.Subcommand;
 import de.tr7zw.nbtapi.NBTItem;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.tinetwork.tradingcards.api.utils.NbtUtils;
-import net.tinetwork.tradingcards.tradingcardsplugin.Permissions;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalDebug;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalMessages;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.Permissions;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
@@ -47,16 +49,16 @@ public class SellCommand extends BaseCommand {
             final int itemInHandSlot = player.getInventory().getHeldItemSlot();
             final String cardId = nbtItem.getString(NbtUtils.NBT_CARD_NAME);
             final String rarityId = nbtItem.getString(NbtUtils.NBT_RARITY);
-            plugin.debug(SellSubCommand.class, "Card name=" + cardId + ", Card rarity=" + rarityId);
+            plugin.debug(SellSubCommand.class, InternalDebug.CardsCommand.CARD_RARITY_ID.formatted(cardId,rarityId));
 
             final TradingCard tradingCard = plugin.getCardManager().getCard(cardId, rarityId, false);
             if (tradingCard.isShiny()) {
-                ChatUtil.sendPrefixedMessage(player, "Cannot sell shiny card.");
+                ChatUtil.sendPrefixedMessage(player, InternalMessages.SellCommand.CANNOT_SELL_SHINY);
                 return;
             }
 
             if (tradingCard.getSellPrice() <= 0.00D) {
-                ChatUtil.sendPrefixedMessage(player, CardsCommand.CANNOT_SELL_CARD);
+                ChatUtil.sendPrefixedMessage(player, InternalMessages.CardsCommand.CANNOT_SELL);
                 return;
             }
 
@@ -64,7 +66,7 @@ public class SellCommand extends BaseCommand {
             double sellAmount = tradingCard.getSellPrice() * itemInHand.getAmount();
             EconomyResponse economyResponse = plugin.getEcon().depositPlayer(player, sellAmount);
             if (economyResponse.transactionSuccess()) {
-                ChatUtil.sendPrefixedMessage(player, String.format("You have sold %dx%s for %.2f", itemInHand.getAmount(), (rarityId + " " + cardId), sellAmount));
+                ChatUtil.sendPrefixedMessage(player, InternalMessages.SellCommand.SOLD_CARD.formatted(itemInHand.getAmount(), (rarityId + " " + cardId), sellAmount));
                 inventory.setItem(itemInHandSlot, null);
             }
         }

@@ -1,0 +1,10 @@
+{
+  "no-item-meta": "Could not get ItemMeta for this item.",
+  "invalid-chance": "%s chance must be between 1 and 100,000. This chance was %s",
+  "util-class": "Util class. It cannot be instantiated.",
+  "no-schema": "Couldn't locate schema file for %s",
+  "data-source-null": "Unable to get a connection from the pool. (datasource is null)",
+  "get-connection-null": "Unable to get a connection from the pool. (getConnection returned null)",
+  "no-series": "Series %s doesn't exist.",
+  "no-rarity": "Rarity %s doesn't exist"
+}

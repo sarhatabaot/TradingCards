@@ -2,6 +2,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.managers;
 
 import net.tinetwork.tradingcards.api.addons.TradingCardsAddon;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalLog;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +24,7 @@ public class TradingCardsAddonManager implements net.tinetwork.tradingcards.api.
         for(TradingCardsAddon addon: addons.values()){
             addon.onReload();
         }
-        plugin.getLogger().info(() -> "Reloaded "+addons.size()+" addons.");
+        plugin.getLogger().info(() -> InternalLog.Reload.ADDONS.formatted(addons.size()));
     }
 
     @Override

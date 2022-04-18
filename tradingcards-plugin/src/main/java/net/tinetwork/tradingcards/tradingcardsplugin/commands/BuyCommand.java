@@ -8,12 +8,11 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.tinetwork.tradingcards.api.model.Pack;
-import net.tinetwork.tradingcards.tradingcardsplugin.Permissions;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.Permissions;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
-import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.PlaceholderUtil;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -36,18 +35,18 @@ public class BuyCommand extends BaseCommand {
         @CommandPermission(Permissions.BUY_PACK)
         @CommandCompletion("@packs")
         @Description("Buy a pack.")
-        public void onBuyPack(final Player player, final String name) {
+        public void onBuyPack(final Player player, final String packId) {
             if (!CardUtil.hasVault(player))
                 return;
-            if (plugin.getPackManager().getPack(name) == null) {
-                ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().packDoesntExist());
+            if (plugin.getPackManager().getPack(packId) == null) {
+                player.sendMessage(plugin.getMessagesConfig().packDoesntExist());
                 return;
             }
 
-            Pack pack = plugin.getPackManager().getPack(name);
+            Pack pack = plugin.getPackManager().getPack(packId);
 
             if (pack.getBuyPrice() <= 0.0D) {
-                ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().cannotBeBought());
+                player.sendMessage(plugin.getMessagesConfig().cannotBeBought());
                 return;
             }
 
@@ -56,12 +55,12 @@ public class BuyCommand extends BaseCommand {
                 if (plugin.getGeneralConfig().closedEconomy()) {
                     plugin.getEcon().bankDeposit(plugin.getGeneralConfig().serverAccount(), pack.getBuyPrice());
                 }
-                ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().boughtCard().replace(PlaceholderUtil.AMOUNT, String.valueOf(pack.getBuyPrice())));
-                CardUtil.dropItem(player, plugin.getPackManager().getPackItem(name));
+                player.sendMessage(plugin.getMessagesConfig().boughtCard().replaceAll(PlaceholderUtil.AMOUNT.asRegex(), String.valueOf(pack.getBuyPrice())));
+                CardUtil.dropItem(player, plugin.getPackManager().getPackItem(packId));
                 return;
             }
 
-            ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().notEnoughMoney());
+            player.sendMessage(plugin.getMessagesConfig().notEnoughMoney());
         }
 
 
@@ -74,7 +73,7 @@ public class BuyCommand extends BaseCommand {
                 return;
 
             if (plugin.getCardManager().getCard(card, rarity, false) instanceof EmptyCard) {
-                ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().cardDoesntExist());
+                player.sendMessage(plugin.getMessagesConfig().cardDoesntExist());
                 return;
             }
 
@@ -87,10 +86,10 @@ public class BuyCommand extends BaseCommand {
                     plugin.getEcon().bankDeposit(plugin.getGeneralConfig().serverAccount(), buyPrice);
                 }
                 CardUtil.dropItem(player, tradingCard.build(false));
-                ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().boughtCard().replace(PlaceholderUtil.AMOUNT, String.valueOf(buyPrice)));
+                player.sendMessage(plugin.getMessagesConfig().boughtCard().replaceAll(PlaceholderUtil.AMOUNT.asRegex(), String.valueOf(buyPrice)));
                 return;
             }
-            ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().notEnoughMoney());
+            player.sendMessage(plugin.getMessagesConfig().notEnoughMoney());
         }
     }
 }
