@@ -1,6 +1,7 @@
 package net.tinetwork.tradingcards.api.model.chance;
 
 import net.tinetwork.tradingcards.api.model.DropType;
+import org.jetbrains.annotations.NotNull;
 
 public class Chance {
     private final String id;
@@ -47,7 +48,7 @@ public class Chance {
         };
     }
 
-    public int getFromMobType(final DropType dropType) {
+    public int getFromMobType(final @NotNull DropType dropType) {
         return switch (dropType.getType()) {
             case "hostile" -> this.getHostile();
             case "neutral" -> this.getNeutral();
