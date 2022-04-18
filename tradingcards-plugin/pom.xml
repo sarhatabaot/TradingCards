@@ -242,14 +242,6 @@
                 <groupId>com.github.sarhatabaot</groupId>
                 <artifactId>messages</artifactId>
                 <version>${messages.version}</version>
-                <executions>
-                    <execution>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>net.revelc.code.formatter</groupId>
