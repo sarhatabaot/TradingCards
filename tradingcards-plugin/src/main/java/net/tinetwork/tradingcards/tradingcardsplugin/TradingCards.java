@@ -42,6 +42,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingCardManager
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingDeckManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingSeriesManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalDebug;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalExceptions;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalLog;
 import net.tinetwork.tradingcards.tradingcardsplugin.placeholders.TradingCardsPlaceholderExpansion;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
@@ -302,7 +303,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         commandManager.getCommandContexts().registerContext(Rarity.class, c -> {
                     String rarityId = c.popFirstArg();
                     if (!getRarityManager().containsRarity(rarityId)) {
-                        throw new InvalidCommandArgument("No such rarity");
+                        throw new InvalidCommandArgument(InternalExceptions.NO_RARITY.formatted(rarityId));
                     }
 
                     return getRarityManager().getRarity(rarityId);
@@ -311,7 +312,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         commandManager.getCommandContexts().registerContext(Series.class, c -> {
             String seriesId = c.popFirstArg();
             if (!getSeriesManager().containsSeries(seriesId)) {
-                throw new InvalidCommandArgument("No such series");
+                throw new InvalidCommandArgument(InternalExceptions.NO_SERIES.formatted(seriesId));
             }
             return getSeriesManager().getSeries(seriesId);
         });

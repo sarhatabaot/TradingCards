@@ -7,6 +7,8 @@ public final class InternalExceptions {
     public static final String NO_SCHEMA = "Couldn't locate schema file for %s";
     public static final String DATA_SOURCE_NULL = "Unable to get a connection from the pool. (datasource is null)";
     public static final String GET_CONNECTION_NULL = "Unable to get a connection from the pool. (getConnection returned null)";
+    public static final String NO_SERIES = "Series %s doesn't exist.";
+    public static final String NO_RARITY = "Rarity %s doesn't exist";
 
     private InternalExceptions() {
         throw new UnsupportedOperationException(InternalExceptions.UTIL_CLASS);
