@@ -73,6 +73,21 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>development</id>
+            <build>
+                <finalName>TradingCards-${project.version}-${maven.build.timestamp}</finalName>
+            </build>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
+            <id>release</id>
+            <build>
+                <finalName>TradingCards-${project.version}</finalName>
+            </build>
+        </profile>
     </profiles>
     <repositories>
         <repository>
