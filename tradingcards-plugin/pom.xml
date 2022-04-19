@@ -11,7 +11,7 @@
     <parent>
         <groupId>net.tinetwork.tradingcards</groupId>
         <artifactId>tradingcards-parent</artifactId>
-        <version>5.6.0</version>
+        <version>5.6.1</version>
     </parent>
     <properties>
         <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
@@ -124,7 +124,6 @@
 
     <build>
         <defaultGoal>clean package</defaultGoal>
-        <finalName>TradingCards-${project.version}-${maven.build.timestamp}</finalName>
         <pluginManagement>
             <plugins>
                 <plugin>
