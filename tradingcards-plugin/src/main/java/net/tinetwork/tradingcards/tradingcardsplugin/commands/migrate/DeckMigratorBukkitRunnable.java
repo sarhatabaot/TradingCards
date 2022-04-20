@@ -3,6 +3,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.commands.migrate;
 import net.tinetwork.tradingcards.api.model.deck.Deck;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalMessages;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local.YamlStorage;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
@@ -47,7 +48,7 @@ public class DeckMigratorBukkitRunnable extends MigratorBukkitRunnable {
 
         for (Map.Entry<UUID, List<Deck>> entry : yamlDecks.entrySet()) {
             final UUID playerUuid = entry.getKey();
-            Util.logAndMessage(sender,"&2Started conversion for " + playerUuid);
+            Util.logAndMessage(sender, InternalMessages.STARTED_CONVERSION_FOR.formatted(playerUuid));
             for (Deck deck : entry.getValue()) {
                 plugin.getStorage().saveDeck(playerUuid, deck.getNumber(), deck);
             }

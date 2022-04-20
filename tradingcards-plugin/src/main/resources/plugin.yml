@@ -1,7 +1,7 @@
 name: TradingCards
 main: net.tinetwork.tradingcards.tradingcardsplugin.TradingCards
 version: ${project.version}
-softdepend: [Vault]
+softdepend: [Vault,PlaceholderAPI]
 authors: [Xenoyia, sarhatabaot, TreasureIslandMC]
 api-version: "1.17"
 libraries:

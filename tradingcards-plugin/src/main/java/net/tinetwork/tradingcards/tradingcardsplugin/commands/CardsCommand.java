@@ -6,7 +6,9 @@ import co.aikar.commands.annotation.*;
 import de.tr7zw.nbtapi.NBTItem;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.utils.NbtUtils;
-import net.tinetwork.tradingcards.tradingcardsplugin.Permissions;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalDebug;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalMessages;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.Permissions;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.MessagesConfig;
@@ -30,9 +32,6 @@ public class CardsCommand extends BaseCommand {
 
     private final MessagesConfig messagesConfig;
 
-    protected static final String PLAYER_NOT_ONLINE = "This player is not online. Or doesn't exist.";
-    protected static final String CANNOT_SELL_CARD = "Cannot sell this card.";
-
     public CardsCommand(final @NotNull TradingCards plugin, final PlayerBlacklist playerBlacklist) {
         this.plugin = plugin;
         this.playerBlacklist = playerBlacklist;
@@ -40,6 +39,7 @@ public class CardsCommand extends BaseCommand {
         this.messagesConfig = plugin.getMessagesConfig();
     }
 
+    //Convenience
     private void debug(final String message) {
         plugin.debug(getClass(), message);
     }
@@ -54,8 +54,7 @@ public class CardsCommand extends BaseCommand {
     @CommandPermission(Permissions.VERSION)
     @Description("Show the plugin version.")
     public void onVersion(final CommandSender sender) {
-        final String format = "%s %s API-%s";
-        ChatUtil.sendMessage(sender, String.format(format, plugin.getName(), plugin.getDescription().getVersion(), plugin.getDescription().getAPIVersion()));
+        ChatUtil.sendMessage(sender, InternalMessages.CardsCommand.VERSION.formatted(plugin.getName(), plugin.getDescription().getVersion(), plugin.getDescription().getAPIVersion()));
     }
 
     @Subcommand("reload")
@@ -71,7 +70,9 @@ public class CardsCommand extends BaseCommand {
     @CommandPermission(Permissions.RESOLVE)
     @Description("Shows a player's uuid")
     public void onResolve(final CommandSender sender, final @NotNull Player player) {
-        ChatUtil.sendMessage(sender, plugin.getMessagesConfig().resolveMsg().replace(PlaceholderUtil.NAME, player.getName()).replace(PlaceholderUtil.UUID, player.getUniqueId().toString()));
+        ChatUtil.sendMessage(sender,
+                plugin.getMessagesConfig().resolveMsg().replaceAll(PlaceholderUtil.DISPLAY_NAME.asRegex(),
+                        player.getName()).replaceAll(PlaceholderUtil.UUID.asRegex(), player.getUniqueId().toString()));
     }
 
     @Subcommand("toggle")
@@ -88,9 +89,9 @@ public class CardsCommand extends BaseCommand {
     }
 
 
-    private String getFormattedRarity(final String rarity) {
+    private String getFormattedRarity(final String rarityId) {
         for (final Rarity rarityKey : plugin.getRarityManager().getRarities()) {
-            if (rarityKey.getId().equalsIgnoreCase(rarity.replace("_", " "))) {
+            if (rarityKey.getId().equalsIgnoreCase(rarityId.replace("_", " "))) {
                 return rarityKey.getId();
             }
         }
@@ -101,17 +102,20 @@ public class CardsCommand extends BaseCommand {
     @CommandPermission(Permissions.GIVEAWAY_RARITY)
     @Description("Give away a random card by rarity to the server.")
     @CommandCompletion("@rarities")
-    public void onGiveawayRarity(final CommandSender sender, final String rarity) {
-        if (plugin.getRarityManager().getRarity(rarity) == null) {
+    public void onGiveawayRarity(final CommandSender sender, final String rarityId) {
+        if (plugin.getRarityManager().getRarity(rarityId) == null) {
             ChatUtil.sendPrefixedMessage(sender, messagesConfig.noRarity());
             return;
         }
 
-        Bukkit.broadcastMessage(plugin.getPrefixedMessage(messagesConfig.giveaway().replace(PlaceholderUtil.PLAYER, sender.getName()).replace(PlaceholderUtil.RARITY, getFormattedRarity(rarity))));
+        Bukkit.broadcastMessage(plugin.getPrefixedMessage(messagesConfig.giveaway()
+                .replaceAll(PlaceholderUtil.PLAYER.asRegex(), sender.getName())
+                .replaceAll(PlaceholderUtil.RARITY.asRegex(), getFormattedRarity(rarityId))));
         for (final Player p5 : Bukkit.getOnlinePlayers()) {
-            CardUtil.dropItem(p5, cardManager.getRandomCard(rarity).build(false));
+            CardUtil.dropItem(p5, cardManager.getRandomCard(rarityId).build(false));
         }
     }
+
 
     @Subcommand("giveaway entity")
     @CommandPermission(Permissions.GIVEAWAY_ENTITY)
@@ -135,21 +139,22 @@ public class CardsCommand extends BaseCommand {
         }
         final NBTItem nbtItem = new NBTItem(player.getInventory().getItemInMainHand());
         if (!CardUtil.isCard(nbtItem)) {
-            ChatUtil.sendPrefixedMessage(player, messagesConfig.notACard());
+            player.sendMessage(messagesConfig.notACard());
             return;
         }
 
         final String cardId = nbtItem.getString(NbtUtils.NBT_CARD_NAME);
         final String rarityId = nbtItem.getString(NbtUtils.NBT_RARITY);
-        debug("Card name=" + cardId + ", Card rarity=" + rarityId);
+        debug(InternalDebug.CardsCommand.CARD_RARITY_ID.formatted(cardId,rarityId));
 
         final TradingCard tradingCard = cardManager.getCard(cardId, rarityId, false);
         final double buyPrice = tradingCard.getBuyPrice();
         final double sellPrice = tradingCard.getSellPrice();
 
-        final String buyMessage = (buyPrice > 0.0D) ? messagesConfig.canBuy().replace(PlaceholderUtil.BUY_AMOUNT, String.valueOf(buyPrice)) : messagesConfig.canNotBuy();
-        final String sellMessage = (sellPrice > 0.0D) ? messagesConfig.canSell().replace(PlaceholderUtil.SELL_AMOUNT, String.valueOf(sellPrice)) : messagesConfig.canNotSell();
-        debug("buy=" + buyPrice + "|sell=" + sellPrice);
+        final String buyMessage = (buyPrice > 0.0D) ?
+                messagesConfig.canBuy().replaceAll(PlaceholderUtil.BUY_AMOUNT.asRegex(), String.valueOf(buyPrice)) : messagesConfig.canNotBuy();
+        final String sellMessage = (sellPrice > 0.0D) ? messagesConfig.canSell().replaceAll(PlaceholderUtil.SELL_AMOUNT.asRegex(), String.valueOf(sellPrice)) : messagesConfig.canNotSell();
+        debug(InternalDebug.CardsCommand.BUY_SELL_PRICE.formatted(buyPrice,sellPrice));
         ChatUtil.sendPrefixedMessage(player, buyMessage);
         ChatUtil.sendPrefixedMessage(player, sellMessage);
     }

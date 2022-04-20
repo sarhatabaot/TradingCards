@@ -13,7 +13,9 @@ import net.tinetwork.tradingcards.api.model.Pack;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.api.model.schedule.Mode;
-import net.tinetwork.tradingcards.tradingcardsplugin.Permissions;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalDebug;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalMessages;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.Permissions;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.Edit;
@@ -49,8 +51,6 @@ public class EditCommand extends BaseCommand {
     @CommandPermission(Permissions.EDIT)
     @Description("Edit any value.")
     public class EditSubCommand extends BaseCommand {
-        private static final String SERIES_NOT_FOUND_FORMAT = "A series named &4%s&r could not be found.";
-        private static final String NUMBER_NOT_FOUND_FORMAT = "Price must be higher than -1.";
 
         @Subcommand("card")
         @CommandPermission(Permissions.EDIT_CARD)
@@ -59,15 +59,15 @@ public class EditCommand extends BaseCommand {
             final String seriesId = series.getId();
             final String rarityId = rarity.getId();
             if (!plugin.getRarityManager().containsRarity(rarityId)) {
-                ChatUtil.sendPrefixedMessage(sender, String.format("A rarity named &4%s&r could not be found.", rarityId));
+                ChatUtil.sendPrefixedMessage(sender, InternalMessages.NO_RARITY.formatted(rarityId));
                 return;
             }
             if (!plugin.getSeriesManager().containsSeries(seriesId)) {
-                ChatUtil.sendPrefixedMessage(sender, String.format(SERIES_NOT_FOUND_FORMAT, seriesId));
+                ChatUtil.sendPrefixedMessage(sender, InternalMessages.NO_SERIES.formatted(seriesId));
                 return;
             }
             if (!plugin.getCardManager().containsCard(cardId, rarityId, seriesId)) {
-                ChatUtil.sendPrefixedMessage(sender, String.format("A card named &4%s&r could not be found.", StringUtils.join(List.of(cardId, rarityId, seriesId), "&r,&4 ")));
+                ChatUtil.sendPrefixedMessage(sender, InternalMessages.NO_CARD.formatted(StringUtils.join(List.of(cardId, rarityId, seriesId), "&r,&4 ")));
                 return;
             }
 
@@ -76,14 +76,14 @@ public class EditCommand extends BaseCommand {
                 case SELL_PRICE -> {
                     double sellPrice = getDoubleFromString(value);
                     if (sellPrice <= -1.00) {
-                        ChatUtil.sendPrefixedMessage(sender, NUMBER_NOT_FOUND_FORMAT);
+                        ChatUtil.sendPrefixedMessage(sender, InternalMessages.EditCommand.PRICE_INCORRECT);
                         return;
                     }
                     storage.editCardSellPrice(rarityId, cardId, seriesId, Double.parseDouble(value));
                 }
                 case TYPE -> {
                     if (!plugin.getDropTypeManager().containsType(value)) {
-                        ChatUtil.sendPrefixedMessage(sender, String.format("A type named &4%s&r could not be found.", value));
+                        ChatUtil.sendPrefixedMessage(sender, InternalMessages.NO_TYPE.formatted(value));
                         return;
                     }
 
@@ -93,7 +93,7 @@ public class EditCommand extends BaseCommand {
                 case CUSTOM_MODEL_DATA -> {
                     int customModelData = getIntFromString(value);
                     if (customModelData <= 0) {
-                        ChatUtil.sendPrefixedMessage(sender, "CustomModelData must be higher than 0.");
+                        ChatUtil.sendPrefixedMessage(sender, InternalMessages.EditCommand.CUSTOM_MODEL_DATA_INCORRECT);
                         return;
                     }
                     storage.editCardCustomModelData(rarityId, cardId, seriesId, Integer.parseInt(value));
@@ -101,7 +101,7 @@ public class EditCommand extends BaseCommand {
                 case INFO -> storage.editCardInfo(rarityId, cardId, seriesId, value);
                 case SERIES -> {
                     if (!plugin.getSeriesManager().containsSeries(value)) {
-                        ChatUtil.sendPrefixedMessage(sender, String.format(SERIES_NOT_FOUND_FORMAT, value));
+                        ChatUtil.sendPrefixedMessage(sender, InternalMessages.NO_SERIES.formatted(value));
                         return;
                     }
                     storage.editCardSeries(rarityId, cardId, seriesId, series);
@@ -109,7 +109,7 @@ public class EditCommand extends BaseCommand {
                 case BUY_PRICE -> {
                     double buyPrice = getDoubleFromString(value);
                     if (buyPrice <= -1.00) {
-                        ChatUtil.sendPrefixedMessage(sender, NUMBER_NOT_FOUND_FORMAT);
+                        ChatUtil.sendPrefixedMessage(sender, InternalMessages.EditCommand.PRICE_INCORRECT);
                         return;
                     }
                     storage.editCardBuyPrice(rarityId, cardId, seriesId, Double.parseDouble(value));
@@ -117,7 +117,7 @@ public class EditCommand extends BaseCommand {
             }
 
 
-            String setCardMessage = String.format("%s %s %s", cardId,rarityId,seriesId);
+            String setCardMessage = "%s %s %s".formatted(cardId,rarityId,seriesId);
             sendSetTypes(sender, setCardMessage, editCard, value);
         }
 
@@ -126,7 +126,7 @@ public class EditCommand extends BaseCommand {
         @CommandCompletion("@rarities @edit-rarity @edit-rarity-value")
         public void onEditRarity(final CommandSender sender, final String rarityId, final EditRarity editRarity, final String value) {
             if (!plugin.getRarityManager().containsRarity(rarityId)) {
-                ChatUtil.sendPrefixedMessage(sender, String.format("A rarity named &4%s&r could not be found.", rarityId));
+                ChatUtil.sendPrefixedMessage(sender, InternalMessages.NO_RARITY.formatted(rarityId));
                 return;
             }
 
@@ -134,7 +134,7 @@ public class EditCommand extends BaseCommand {
                 case BUY_PRICE -> {
                     double buyPrice = getDoubleFromString(value);
                     if (buyPrice <= -1.00) {
-                        ChatUtil.sendPrefixedMessage(sender, NUMBER_NOT_FOUND_FORMAT);
+                        ChatUtil.sendPrefixedMessage(sender,InternalMessages.EditCommand.PRICE_INCORRECT);
                         return;
                     }
                     storage.editRarityBuyPrice(rarityId, Double.parseDouble(value));
@@ -146,7 +146,7 @@ public class EditCommand extends BaseCommand {
                 case SELL_PRICE -> {
                     double sellPrice = getDoubleFromString(value);
                     if (sellPrice <= -1.00) {
-                        ChatUtil.sendPrefixedMessage(sender, NUMBER_NOT_FOUND_FORMAT);
+                        ChatUtil.sendPrefixedMessage(sender, InternalMessages.EditCommand.PRICE_INCORRECT);
                         return;
                     }
                     storage.editRaritySellPrice(rarityId, Double.parseDouble(value));
@@ -155,7 +155,7 @@ public class EditCommand extends BaseCommand {
                 case REMOVE_REWARD -> {
                     int rewardNumber = getIntFromString(value);
                     if (rewardNumber <= -1) {
-                        ChatUtil.sendPrefixedMessage(sender, NUMBER_NOT_FOUND_FORMAT);
+                        ChatUtil.sendPrefixedMessage(sender, InternalMessages.EditCommand.PRICE_INCORRECT);
                         return;
                     }
                     storage.editRarityRemoveReward(rarityId, Integer.parseInt(value));
@@ -173,15 +173,15 @@ public class EditCommand extends BaseCommand {
         //cards edit series <MODE|DISPLAY_NAME|COLORS> available-completion
         public void onEditSeries(final CommandSender sender, final String seriesId, final EditSeries editSeries, final String value) {
             if (!plugin.getSeriesManager().containsSeries(seriesId)) {
-                ChatUtil.sendPrefixedMessage(sender, String.format(SERIES_NOT_FOUND_FORMAT, seriesId));
+                ChatUtil.sendPrefixedMessage(sender, InternalMessages.NO_SERIES.formatted(seriesId));
                 return;
             }
             switch (editSeries) {
                 case DISPLAY_NAME -> storage.editSeriesDisplayName(seriesId, value);
                 case COLORS -> {
                     if (Util.COLORS.stream().noneMatch(value::contains)) {
-                        ChatUtil.sendPrefixedMessage(sender, "Could not find any arguments for colors.");
-                        ChatUtil.sendPrefixedMessage(sender, "Must have: " + Util.COLORS);
+                        ChatUtil.sendPrefixedMessage(sender, InternalMessages.EditCommand.NO_COLORS_ARGS);
+                        ChatUtil.sendPrefixedMessage(sender, InternalMessages.EditCommand.COLORS_HINT.formatted(Util.COLORS));
                         return;
                     }
 
@@ -198,7 +198,7 @@ public class EditCommand extends BaseCommand {
                             case "type=" -> type = string.split("=")[1];
                             case "series=" -> series = string.split("=")[1];
                             case "rarity" -> rarity = string.split("=")[1];
-                            default -> plugin.debug(EditCommand.class, "Unsupported argument: " + value);
+                            default -> plugin.debug(EditCommand.class, InternalDebug.EditCommand.UNSUPPORTED_ARG.formatted(value));
                         }
                     }
 
@@ -208,7 +208,7 @@ public class EditCommand extends BaseCommand {
                 case MODE -> {
                     Mode mode = Mode.getMode(value);
                     if (mode == null) {
-                        ChatUtil.sendPrefixedMessage(sender, "Mode must be one of " + Arrays.toString(Mode.values()));
+                        ChatUtil.sendPrefixedMessage(sender, InternalMessages.EditCommand.MODE_INCORRECT.formatted(Arrays.toString(Mode.values())));
                         return;
                     }
                     storage.editSeriesMode(seriesId, Mode.getMode(value));
@@ -225,27 +225,23 @@ public class EditCommand extends BaseCommand {
         @CommandPermission(Permissions.EDIT_PACK)
         public void onEditPack(final CommandSender sender, final String packId, final EditPack editType, final String value) {
             if (!plugin.getPackManager().containsPack(packId)) {
-                ChatUtil.sendPrefixedMessage(sender, String.format("A pack named &4%s&r could not be found.", packId));
+                ChatUtil.sendPrefixedMessage(sender, InternalMessages.NO_PACK.formatted(packId));
                 return;
             }
 
             switch (editType) {
                 case DISPLAY_NAME -> storage.editPackDisplayName(packId, value);
                 case CONTENTS -> {
-                    final String syntax = "lineNumber=rarity:cardname:amount:series";
-                    final String example = "0=common:zombie:1:default";
                     if (!value.contains("=")) {
-                        //send incorrect format
-                        ChatUtil.sendPrefixedMessage(sender, "Incorrect syntax use " + syntax);
-                        ChatUtil.sendPrefixedMessage(sender, "For example: " + example);
+                        ChatUtil.sendPrefixedMessage(sender, InternalMessages.EditCommand.CONTENTS_SYNTAX);
+                        ChatUtil.sendPrefixedMessage(sender, InternalMessages.EditCommand.CONTENTS_EXAMPLE);
                         return;
                     }
 
                     String[] split = value.split("=");
                     int lineNumber = getIntFromString(split[0]);
                     if (lineNumber == -1) {
-                        //send message to sender that the line number is improper
-                        ChatUtil.sendPrefixedMessage(sender, "Line number must be a number higher than -1");
+                        ChatUtil.sendPrefixedMessage(sender, InternalMessages.EditCommand.LINE_NUMBER_INCORRECT);
                         return;
                     }
                     String content = split[1];
@@ -263,7 +259,7 @@ public class EditCommand extends BaseCommand {
                     double packPrice = getDoubleFromString(value);
                     if (packPrice <= -1.00) {
                         //There was a problem getting the price
-                        ChatUtil.sendPrefixedMessage(sender, NUMBER_NOT_FOUND_FORMAT);
+                        ChatUtil.sendPrefixedMessage(sender, InternalMessages.EditCommand.PRICE_INCORRECT);
                         return;
                     }
                     storage.editPackPrice(packId, Double.parseDouble(value));
@@ -296,7 +292,7 @@ public class EditCommand extends BaseCommand {
         //If you want to add more than one word, quotations
         public void onEditType(final CommandSender sender, final String typeId, final EditType editType, @Single final String value) {
             if (!plugin.getDropTypeManager().containsType(typeId)) {
-                ChatUtil.sendPrefixedMessage(sender, String.format("A type named &4%s&r could not be found.", typeId));
+                ChatUtil.sendPrefixedMessage(sender, InternalMessages.NO_TYPE.formatted(typeId));
                 return;
             }
 
@@ -305,7 +301,7 @@ public class EditCommand extends BaseCommand {
                 case TYPE -> {
                     if (!plugin.getDropTypeManager().getDefaultTypes().stream().map(DropType::getId).toList().contains(value)) {
                         //You must set type to one of the types
-                        ChatUtil.sendPrefixedMessage(sender, "Type must be from " + plugin.getDropTypeManager().getDefaultTypes().stream().map(DropType::getId).toList().toString());
+                        ChatUtil.sendPrefixedMessage(sender, InternalMessages.TYPE_MUST_BE.formatted(plugin.getDropTypeManager().getDefaultTypes().stream().map(DropType::getId).toList().toString()));
                         return;
                     }
 

@@ -1,6 +1,6 @@
-package net.tinetwork.tradingcards.tradingcardsplugin;
+package net.tinetwork.tradingcards.tradingcardsplugin.messages;
 
-public class Permissions {
+public final class Permissions {
     public static final String USE_PACK = "cards.use.pack";
     public static final String USE_DECK = "cards.use.deck";
     public static final String RESOLVE = "cards.resolve";
@@ -13,7 +13,7 @@ public class Permissions {
     public static final String GIVE_CARD_PLAYER = "cards.give.card.player";
     public static final String GIVE_PACK = "cards.give.pack";
     public static final String GIVE_RANDOM_ENTITY = "cards.give.random.entity";
-    public static final String GIVE_RANDOM_RARITY = "cards.give.random.entity";
+    public static final String GIVE_RANDOM_RARITY = "cards.give.random.rarity";
     public static final String ADMIN_DEBUG_SHOW_CACHE = "cards.admin.debug.show_cache";
     public static final String ADMIN_DEBUG_MODULES = "cards.admin.debug.modules";
     public static final String ADMIN_DEBUG_PACKS = "cards.admin.debug.packs";
@@ -44,7 +44,8 @@ public class Permissions {
     public static final String EDIT_SERIES = "cards.edit.series";
     public static final String EDIT_CUSTOM_TYPE = "cards.edit.customtype";
     public static final String EDIT_PACK = "cards.edit.pack";
-    private Permissions () {
-        throw new UnsupportedOperationException();
+
+    private Permissions() {
+        throw new UnsupportedOperationException(InternalExceptions.UTIL_CLASS);
     }
 }

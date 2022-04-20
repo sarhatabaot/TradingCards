@@ -4,6 +4,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.StorageConfig;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalExceptions;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -78,12 +79,12 @@ public abstract class HikariConnectionFactory implements ConnectionFactory{
     @Override
     public Connection getConnection() throws SQLException {
         if (this.dataSource == null) {
-            throw new SQLException("Unable to get a connection from the pool. (datasource is null)");
+            throw new SQLException(InternalExceptions.DATA_SOURCE_NULL);
         }
 
         Connection connection = this.dataSource.getConnection();
         if (connection == null) {
-            throw new SQLException("Unable to get a connection from the pool. (getConnection returned null)");
+            throw new SQLException(InternalExceptions.GET_CONNECTION_NULL);
         }
 
         return connection;

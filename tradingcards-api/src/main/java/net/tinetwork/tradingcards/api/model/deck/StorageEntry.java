@@ -1,5 +1,7 @@
 package net.tinetwork.tradingcards.api.model.deck;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Objects;
 public class StorageEntry {
     private final String rarityId;
@@ -41,7 +43,7 @@ public class StorageEntry {
         return rarityId + "," + cardId + "," + amount + "," + isShiny+","+seriesId;
     }
 
-    public static StorageEntry fromString(final String string) {
+    public static @NotNull StorageEntry fromString(final @NotNull String string) {
         String[] split = string.split(",");
         final String rarity = split[0];
         final String card = split[1];

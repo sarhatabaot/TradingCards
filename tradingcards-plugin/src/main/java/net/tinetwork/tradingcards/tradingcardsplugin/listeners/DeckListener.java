@@ -8,6 +8,7 @@ import net.tinetwork.tradingcards.api.model.deck.StorageEntry;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingDeckManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalDebug;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.api.utils.NbtUtils;
@@ -56,13 +57,13 @@ public class DeckListener extends SimpleListener {
             if(!updateSimilarEntry(serializedEntries,entry))
                 serializedEntries.add(entry);
             debug(entry.toString());
-            debug("Added " + entry + " to serialized list.");
+            debug(InternalDebug.DeckListener.ADDED_ENTRY.formatted(entry));
         }
 
         final Deck deck = new Deck(player.getUniqueId(),deckNum,serializedEntries);
         deckStorage.saveDeck(player.getUniqueId(), deckNum, deck);
         deckManager.removeDeckViewer(e.getPlayer().getUniqueId());
-        debug("Deck closed");
+        debug(InternalDebug.DeckListener.DECK_CLOSED);
     }
 
     private boolean updateSimilarEntry(final List<StorageEntry> entries, final StorageEntry entryToCompare) {

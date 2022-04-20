@@ -41,6 +41,10 @@ import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingRarityManag
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingCardManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingDeckManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingSeriesManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalDebug;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalExceptions;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalLog;
+import net.tinetwork.tradingcards.tradingcardsplugin.placeholders.TradingCardsPlaceholderExpansion;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.StorageType;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local.YamlStorage;
@@ -49,6 +53,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.sql.Mar
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.sql.MySqlConnectionFactory;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
+import net.tinetwork.tradingcards.tradingcardsplugin.utils.MobGroupUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
 import net.tinetwork.tradingcards.tradingcardsplugin.whitelist.PlayerBlacklist;
 import net.tinetwork.tradingcards.tradingcardsplugin.whitelist.WorldBlacklist;
@@ -68,6 +73,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+import java.util.Set;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -75,13 +81,7 @@ import java.util.stream.Stream;
 public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private final Random random = new Random();
 
-    /* Mobs */
-    private ImmutableSet<EntityType> hostileMobs;
-    private ImmutableSet<EntityType> passiveMobs;
-    private ImmutableSet<EntityType> neutralMobs;
-    private ImmutableSet<EntityType> bossMobs;
-
-    /* Configs */
+    /* Storage */
     private Storage<TradingCard> storage;
 
     /* Local Settings */
@@ -101,6 +101,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     /* Hooks */
     private boolean hasVault;
     private Economy econ = null;
+    private boolean placeholderapi = false;
 
 
     /* Blacklists */
@@ -133,7 +134,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     public void onEnable() {
         Util.init(getLogger());
 
-        cacheMobs();
         initConfigs();
 
         initStorage();
@@ -145,6 +145,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         initCommands();
 
         hookVault();
+        hookPlaceholderApi();
         new Metrics(this, 12940);
     }
 
@@ -157,6 +158,17 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         this.storage.init(this);
     }
 
+
+    private void hookPlaceholderApi() {
+        if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new TradingCardsPlaceholderExpansion(this).register();
+            placeholderapi = true;
+        }
+    }
+
+    public boolean placeholderapi() {
+        return placeholderapi;
+    }
 
     public GeneralConfig getGeneralConfig() {
         return generalConfig;
@@ -207,7 +219,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     @Contract(" -> new")
     private @NotNull Storage<TradingCard> loadStorage() throws ConfigurateException {
         StorageType storageType = this.storageConfig.getType();
-        getLogger().info(() -> "Using storage " + storageType.name());
+        getLogger().info(() -> InternalLog.Init.USING_STORAGE.formatted(storageType.name()));
         return switch (storageType) {
             case MARIADB -> new SqlStorage(this,
                     this.storageConfig.getTablePrefix(),
@@ -227,6 +239,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     //The order is important. Decks & Packs must load after cards load.
     //Cards must load after rarity, droptype & series.
     private void initManagers() {
+        getLogger().info(() -> InternalLog.Init.MANAGERS);
         this.rarityManager = new TradingRarityManager(this);
         this.dropTypeManager = new DropTypeManager(this);
         this.seriesManager = new TradingSeriesManager(this);
@@ -239,9 +252,9 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private void initCommands() {
         var commandManager = new PaperCommandManager(this);
         commandManager.getCommandCompletions().registerCompletion("rarities", c -> rarityManager.getRarityIds());
-        commandManager.getCommandCompletions().registerCompletion("cards", c -> cardManager.getRarityCardListIds(c.getContextValueByName(String.class, "rarity")));
+        commandManager.getCommandCompletions().registerCompletion("cards", c -> cardManager.getRarityCardListIds(c.getContextValueByName(String.class, "rarityId")));
         commandManager.getCommandCompletions().registerCompletion("command-cards", c -> cardManager.getCardsInRarityAndSeriesIds(c.getContextValue(Rarity.class).getId(), c.getContextValue(Series.class).getId()));
-        commandManager.getCommandCompletions().registerCompletion("active-cards", c -> cardManager.getActiveRarityCardIds(c.getContextValueByName(String.class, "rarity")));
+        commandManager.getCommandCompletions().registerCompletion("active-cards", c -> cardManager.getActiveRarityCardIds(c.getContextValueByName(String.class, "rarityId")));
         commandManager.getCommandCompletions().registerCompletion("packs", c -> packManager.getPackIds());
         commandManager.getCommandCompletions().registerCompletion("default-types", c -> dropTypeManager.getDefaultTypes().stream().map(DropType::getId).toList());
         commandManager.getCommandCompletions().registerCompletion("custom-types", c -> dropTypeManager.getTypes().keySet());
@@ -290,7 +303,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         commandManager.getCommandContexts().registerContext(Rarity.class, c -> {
                     String rarityId = c.popFirstArg();
                     if (!getRarityManager().containsRarity(rarityId)) {
-                        throw new InvalidCommandArgument("No such rarity");
+                        throw new InvalidCommandArgument(InternalExceptions.NO_RARITY.formatted(rarityId));
                     }
 
                     return getRarityManager().getRarity(rarityId);
@@ -299,7 +312,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         commandManager.getCommandContexts().registerContext(Series.class, c -> {
             String seriesId = c.popFirstArg();
             if (!getSeriesManager().containsSeries(seriesId)) {
-                throw new InvalidCommandArgument("No such series");
+                throw new InvalidCommandArgument(InternalExceptions.NO_SERIES.formatted(seriesId));
             }
             return getSeriesManager().getSeries(seriesId);
         });
@@ -363,10 +376,10 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         if (this.generalConfig.vaultEnabled()) {
             if (this.getServer().getPluginManager().getPlugin("Vault") != null) {
                 this.setupEconomy();
-                getLogger().info("Vault hook successful!");
+                getLogger().info(() -> InternalLog.PluginStart.VAULT_HOOK_SUCCESS);
                 this.hasVault = true;
             } else {
-                getLogger().info("Vault not found, hook unsuccessful!");
+                getLogger().info(() -> InternalLog.PluginStart.VAULT_HOOK_FAIL);
             }
         }
     }
@@ -389,23 +402,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         pm.registerEvents(new DeckListener(this), this);
     }
 
-    private void cacheMobs() {
-        this.hostileMobs = ImmutableSet.<EntityType>builder().add(EntityType.SPIDER, EntityType.CAVE_SPIDER, EntityType.ZOMBIE, EntityType.SKELETON, EntityType.CREEPER,
-                EntityType.BLAZE, EntityType.SILVERFISH, EntityType.GHAST, EntityType.SLIME, EntityType.EVOKER, EntityType.VINDICATOR,
-                EntityType.VEX, EntityType.SHULKER, EntityType.GUARDIAN, EntityType.MAGMA_CUBE, EntityType.ELDER_GUARDIAN, EntityType.STRAY,
-                EntityType.HUSK, EntityType.DROWNED, EntityType.WITCH, EntityType.ZOMBIE_VILLAGER, EntityType.ENDERMITE, EntityType.PILLAGER, EntityType.RAVAGER,
-                EntityType.HOGLIN, EntityType.PIGLIN, EntityType.STRIDER, EntityType.ZOGLIN, EntityType.ZOMBIFIED_PIGLIN, EntityType.WITHER_SKELETON).build();
-
-        this.neutralMobs = ImmutableSet.<EntityType>builder().add(EntityType.ENDERMAN, EntityType.POLAR_BEAR, EntityType.LLAMA, EntityType.WOLF,
-                EntityType.DOLPHIN, EntityType.SNOWMAN, EntityType.IRON_GOLEM, EntityType.BEE, EntityType.PANDA, EntityType.FOX).build();
-
-        this.passiveMobs = ImmutableSet.<EntityType>builder().add(EntityType.DONKEY, EntityType.MULE, EntityType.SKELETON_HORSE, EntityType.CHICKEN, EntityType.COW,
-                EntityType.SQUID, EntityType.TURTLE, EntityType.TROPICAL_FISH, EntityType.PUFFERFISH, EntityType.SHEEP, EntityType.PIG,
-                EntityType.PHANTOM, EntityType.SALMON, EntityType.COD, EntityType.RABBIT, EntityType.VILLAGER, EntityType.BAT,
-                EntityType.PARROT, EntityType.HORSE, EntityType.WANDERING_TRADER, EntityType.CAT, EntityType.MUSHROOM_COW, EntityType.TRADER_LLAMA).build();
-        this.bossMobs = ImmutableSet.<EntityType>builder().add(EntityType.ENDER_DRAGON, EntityType.WITHER).build();
-    }
-
 
     private boolean setupEconomy() {
         if (this.getServer().getPluginManager().getPlugin("Vault") == null) {
@@ -422,40 +418,36 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     }
 
     public boolean isMobHostile(EntityType e) {
-        return this.hostileMobs.contains(e);
+        return MobGroupUtil.isMobHostile(e);
     }
 
     public boolean isMobNeutral(EntityType e) {
-        return this.neutralMobs.contains(e);
+        return MobGroupUtil.isMobNeutral(e);
     }
 
     public boolean isMobPassive(EntityType e) {
-        return this.passiveMobs.contains(e);
+        return MobGroupUtil.isMobPassive(e);
     }
 
     public boolean isMobBoss(EntityType e) {
-        return this.bossMobs.contains(e);
+        return MobGroupUtil.isMobBoss(e);
+
     }
 
     @Override
     public boolean isMob(@NotNull String input) {
-        try {
-            EntityType type = EntityType.valueOf(input.toUpperCase());
-            return isMob(type);
-        } catch (IllegalArgumentException e) {
-            return false;
-        }
+        return MobGroupUtil.isMob(input);
     }
 
     @Override
     public boolean isMob(EntityType type) {
-        return this.hostileMobs.contains(type) || this.neutralMobs.contains(type) || this.passiveMobs.contains(type) || this.bossMobs.contains(type);
+        return MobGroupUtil.isMob(type);
     }
 
     @Override
     public void debug(final Class<?> className, final String message) {
         if (getGeneralConfig().debugMode()) {
-            getLogger().info(() -> "DEBUG " + className.getSimpleName() + " " + message);
+            getLogger().info(() -> InternalDebug.BASE_DEBUG_FORMAT.formatted(className.getSimpleName(),message));
         }
     }
 
@@ -498,4 +490,5 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     public MigrateCommand getMigrateCommand() {
         return migrateCommand;
     }
+
 }

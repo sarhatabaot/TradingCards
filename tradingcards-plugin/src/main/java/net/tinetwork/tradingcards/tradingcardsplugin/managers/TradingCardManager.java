@@ -9,6 +9,8 @@ import net.tinetwork.tradingcards.api.model.chance.EmptyChance;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalDebug;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalLog;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -46,6 +48,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
     public TradingCardManager(final TradingCards plugin) {
         this.plugin = plugin;
         initValues();
+        this.plugin.getLogger().info(() -> InternalLog.CardManager.LOAD);
     }
 
     public List<String> getCardsInRarityAndSeriesIds(final String rarityId, final String seriesId) {
@@ -56,17 +59,20 @@ public class TradingCardManager implements CardManager<TradingCard> {
         loadAllCards();
         loadActiveCards();
         loadCardsInRaritiesAndSeriesIds();
-        plugin.getLogger().info(() -> String.format("Loaded %d cards.", cards.size()));
-        plugin.getLogger().info(() -> String.format("Loaded %d rarities", rarityCardMap.keySet().size()));
+        plugin.getLogger().info(() -> InternalLog.CardManager.LOAD_CARDS.formatted(cards.size()));
+        plugin.getLogger().info(() -> InternalLog.CardManager.LOAD_RARITIES.formatted(rarityCardMap.keySet().size()));
         plugin.debug(TradingCardManager.class,StringUtils.join(rarityCardMap.keySet(), ","));
         plugin.debug(TradingCardManager.class,StringUtils.join(cards.keySet(), ","));
     }
 
     private void loadCardsInRaritiesAndSeriesIds() {
         cardsInRarityAndSeriesIds = new HashMap<>();
+        plugin.debug(TradingCardManager.class, InternalDebug.CardsManager.LOAD_RARITY_CARDS_IDS);
         for(String rarityId: plugin.getRarityManager().getRarityIds()) {
             cardsInRarityAndSeriesIds.putIfAbsent(rarityId, new HashMap<>());
+            plugin.debug(TradingCardManager.class,InternalDebug.CardsManager.RARITY_ID.formatted(rarityId));
             for(String seriesId: plugin.getSeriesManager().getSeriesIds()) {
+                plugin.debug(TradingCardManager.class,InternalDebug.CardsManager.SERIES_ID.formatted(seriesId));
                 cardsInRarityAndSeriesIds.get(rarityId).putIfAbsent(seriesId,new ArrayList<>());
                 Stream<String> cardIdInRarityAndSeries = plugin.getStorage().getCardsInRarityAndSeries(rarityId,seriesId).stream().map(TradingCard::getCardId);
                 cardsInRarityAndSeriesIds.get(rarityId).get(seriesId).addAll(cardIdInRarityAndSeries.toList());
@@ -114,7 +120,8 @@ public class TradingCardManager implements CardManager<TradingCard> {
     private void loadRarityCardNames(){
         this.rarityCardMap = new HashMap<>();
         for(Rarity rarity: plugin.getRarityManager().getRarities()) {
-            rarityCardMap.put(rarity.getId(),plugin.getStorage().getCardsInRarity(rarity.getId()).stream().map(TradingCard::getCardId).toList());
+            rarityCardMap.put(rarity.getId(),
+                    plugin.getStorage().getCardsInRarity(rarity.getId()).stream().map(TradingCard::getCardId).toList());
         }
     }
 
@@ -169,7 +176,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
 
     public TradingCard getCard(final String cardId, final String rarityId) {
         final String cardKey = cardKey(rarityId,cardId);
-        plugin.debug(TradingCardManager.class,"CardKey="+cardKey);
+        plugin.debug(TradingCardManager.class,InternalDebug.CARD_KEY.formatted(cardKey));
         if (cards.containsKey(cardKey)) {
             return cards.get(cardKey).get();
         }
@@ -200,7 +207,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
 
     @Override
     public TradingCard getRandomCard(final String rarityId) {
-        plugin.debug(TradingCardManager.class,"getRandomCard(),rarity=" + rarityId);
+        plugin.debug(TradingCardManager.class,InternalDebug.CardsManager.RANDOM_CARD.formatted(rarityId));
         var cardIndex = plugin.getRandom().nextInt(getRarityCardList(rarityId).size());
         String randomCardName = getRarityCardList(rarityId).get(cardIndex).getCardId();
         return getCard(randomCardName, rarityId);
@@ -213,7 +220,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
 
     @Override
     public TradingCard getRandomCard(final String rarityId, final boolean forcedShiny) {
-        plugin.debug(TradingCardManager.class,"getRandomCard(),rarity=" + rarityId);
+        plugin.debug(TradingCardManager.class,InternalDebug.CardsManager.RANDOM_CARD.formatted(rarityId));
         var cardIndex = plugin.getRandom().nextInt(getRarityCardList(rarityId).size());
         String randomCardName = getRarityCardList(rarityId).get(cardIndex).getCardId();
         return getCard(randomCardName, rarityId, forcedShiny);
@@ -236,7 +243,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
     @Override
     public TradingCard getRandomActiveCard(final String rarityId, final boolean forcedShiny) {
         if (activeCards.isEmpty()) {
-            plugin.debug(TradingCardManager.class,"There are no cards in the active series. Not dropping anything.");
+            plugin.debug(TradingCardManager.class,InternalDebug.CardsManager.EMPTY_ACTIVE_SERIES);
             return NULL_CARD;
         }
 
@@ -256,17 +263,16 @@ public class TradingCardManager implements CardManager<TradingCard> {
         };
     }
 
-    //TODO Should return a rarity.
     public String getRandomRarity(DropType dropType, boolean alwaysDrop) {
         int randomDropChance = plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1;
         int mobDropChance = getGeneralMobChance(dropType);
-        plugin.debug(TradingCardManager.class,"DropChance=" + randomDropChance +" AlwaysDrop=" + alwaysDrop +" MobType="+ dropType +" MobDropChance="+mobDropChance);
+        plugin.debug(TradingCardManager.class,InternalDebug.CardsManager.DROP_CHANCE.formatted(randomDropChance,alwaysDrop,dropType,mobDropChance));
         if (!alwaysDrop && randomDropChance > mobDropChance) {
             return "None";
         }
 
         int randomRarityChance = plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1;
-        plugin.debug(TradingCardManager.class,"RarityChance=" + randomRarityChance);
+        plugin.debug(TradingCardManager.class,InternalDebug.CardsManager.RARITY_CHANCE.formatted(randomRarityChance));
 
         TreeSet<String> rarityKeys = new TreeSet<>(plugin.getCardManager().getRarityNames());
         for (String rarity : rarityKeys.descendingSet()) {

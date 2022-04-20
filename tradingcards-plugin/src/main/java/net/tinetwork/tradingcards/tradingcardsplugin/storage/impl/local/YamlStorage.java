@@ -13,6 +13,8 @@ import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.DropTypeManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingCardManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalDebug;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalLog;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.StorageType;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
@@ -23,6 +25,7 @@ import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -151,6 +154,11 @@ public class YamlStorage implements Storage<TradingCard> {
     }
 
     @Override
+    public boolean containsSeries(final String seriesId) {
+        return seriesConfig.series().containsKey(seriesId);
+    }
+
+    @Override
     public void reload() {
         this.raritiesConfig.reloadConfig();
         this.seriesConfig.reloadConfig();
@@ -215,7 +223,7 @@ public class YamlStorage implements Storage<TradingCard> {
                 for (Map.Entry<Object, ? extends ConfigurationNode> nodeEntry : cardNodes) {
                     final String cardName = nodeEntry.getValue().key().toString();
                     final String cardKey = cardKey(rarity.getId(), cardName);
-                    plugin.debug(TradingCardManager.class,"CardKey="+cardKey);
+                    plugin.debug(YamlStorage.class, InternalDebug.CARD_KEY.formatted(cardKey));
                     cards.put(cardKey, generateCard(simpleCardsConfig, cardName, rarity.getId()));
                 }
             }
@@ -266,32 +274,32 @@ public class YamlStorage implements Storage<TradingCard> {
 
     @Override
     public List<TradingCard> getCardsInRarity(final String rarityId) {
-        return rarityCardList.get(rarityId);
+        return rarityCardList.getOrDefault(rarityId, Collections.emptyList());
     }
 
     @Override
     public List<TradingCard> getCardsInSeries(final String seriesId) {
-        return seriesCardList.get(seriesId);
+        return seriesCardList.getOrDefault(seriesId, Collections.emptyList());
     }
 
     @Override
     public List<TradingCard> getCardsInRarityAndSeries(final String rarityId, final String seriesId) {
-        return raritySeriesCardList.get(rarityId).get(seriesId);
+        return raritySeriesCardList.get(rarityId).getOrDefault(seriesId, Collections.emptyList());
     }
 
-    //todo
     private void loadRaritySeriesCardList() {
         this.raritySeriesCardList = new HashMap<>();
         for(final Rarity rarity : plugin.getStorage().getRarities()) {
             this.raritySeriesCardList.putIfAbsent(rarity.getId(),new HashMap<>());
-            Map<String,List<TradingCard>> seriesCardList = this.raritySeriesCardList.get(rarity.getId());
+            Map<String,List<TradingCard>> seriesCardMap = this.raritySeriesCardList.get(rarity.getId());
             if(rarityCardList.get(rarity.getId()) == null)
                 continue;
             for(TradingCard tradingCard: rarityCardList.get(rarity.getId())) {
                 String series = tradingCard.getSeries().getId();
-                seriesCardList.putIfAbsent(series,new ArrayList<>());
-                seriesCardList.get(series).add(tradingCard);
+                seriesCardMap.putIfAbsent(series,new ArrayList<>());
+                seriesCardMap.get(series).add(tradingCard);
             }
+            this.raritySeriesCardList.put(rarity.getId(),seriesCardMap);
         }
     }
 

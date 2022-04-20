@@ -1,0 +1,54 @@
+{
+  "base-debug-format": "DEBUG %s %s",
+  "load-pack": "Loaded pack: %s",
+  "whitelist-mode": "Whitelist Mode= %s",
+  "no-rarity": "No such rarity %s",
+  "no-series": "No such series %s",
+  "card-key": "CardKey= %s",
+  "could-add-type": "Could not add %s",
+  "cards-manager": {
+    "load-rarity-cards-ids": "Loading Rarity & Series card ids:",
+    "rarity-id": "%s - Rarity Id",
+    "series-id": "%s - Series Id",
+    "random-card": "getRandomCard(),rarity= %s",
+    "empty-active-series": "There are no cards in the active series. Not dropping anything.",
+    "drop-chance": "DropChance= %d AlwaysDrop= %s MobType= %s MobDropChance= %d",
+    "rarity-chance": "RarityChance= %d"
+  },
+  "loaded-into-cache": "Loaded into cache for %s",
+  "decks-manager": {
+    "has-migration": "Just ran migration? %s",
+    "player-uuid": "Deck UUID: %s",
+    "added-deck-uuid-number": "Added uuid %s deck #%d to deck viewer map.",
+    "removed-deck-uuid": "Removed uuid %s from deck viewer map."
+  },
+  "drop-listener": {
+    "entity-type": "EntityType= %s",
+    "mob-type": "MobType= %s",
+    "added-card": "Added card %s",
+    "null-rarity-key": "rarityKey is null"
+  },
+  "deck-listener": {
+    "added-entry": "Added %s to serialized list.",
+    "deck-closed": "Deck closed."
+  },
+  "deck-event-listener": {
+    "no-items-of-type": "Doesn't contain any items of this type, ignoring.",
+    "not-a-player": "Not a player entity, ignoring.",
+    "not-our-gui": "Not our gui, ignoring. UUID: %s",
+    "deck-player": "deck: %d, player: %s, uuid: %s"
+  },
+  "sql": {
+    "could-not-find-deck": "Could not find a deck for uuid= %s,decknumber= %d",
+    "update": "(UPDATE) %s",
+    "remove": "(REMOVE) %s",
+    "empty-result": "Empty result for %s"
+  },
+  "cards-command": {
+    "card-rarity-id": "CardId= %s, RarityId= %s",
+    "buy-sell-price": "BuyPrice= %s, SellPrice= %s"
+  },
+  "edit-command": {
+    "unsupported-arg": "Unsupported argument: %s"
+  }
+}

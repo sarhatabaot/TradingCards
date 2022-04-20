@@ -101,6 +101,12 @@ public interface Storage<T extends Card<T>> {
     Series getSeries(final String seriesId);
 
     /**
+     * @param seriesId The seriesId
+     * @return Returns if the series exists.
+     */
+    boolean containsSeries(final String seriesId);
+
+    /**
      * @return Returns a collection of all series
      */
     Collection<Series> getAllSeries();
@@ -135,6 +141,7 @@ public interface Storage<T extends Card<T>> {
      */
     List<T> getCardsInSeries(final String seriesId);
 
+    @Nullable
     List<T> getCardsInRarityAndSeries(final String rarityId, final String seriesId);
 
     /**

@@ -1,12 +1,13 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.managers;
 
-import com.google.common.collect.ImmutableList;
 import de.tr7zw.nbtapi.NBTItem;
 import net.tinetwork.tradingcards.api.manager.PackManager;
 import net.tinetwork.tradingcards.api.model.Pack;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.utils.NbtUtils;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalDebug;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalLog;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -32,6 +33,7 @@ public class BoosterPackManager implements PackManager {
         this.plugin = plugin;
         this.blankPack = new ItemStack(plugin.getGeneralConfig().packMaterial());
         initValues();
+        plugin.getLogger().info(() -> InternalLog.Init.LOAD_PACK_MANAGER);
     }
 
     public void initValues() {
@@ -43,7 +45,7 @@ public class BoosterPackManager implements PackManager {
         for (Pack pack : plugin.getStorage().getPacks()) {
             loadPack(pack.id());
         }
-        plugin.getLogger().info(() -> "Loaded " + packsItemStackCache.size() + " packs.");
+        plugin.getLogger().info(() -> InternalLog.Init.LOAD_PACKS_AMOUNT.formatted(packsItemStackCache.size()));
         plugin.debug(BoosterPackManager.class, packsItemStackCache.keySet().toString());
         for(ItemStack itemStack: packsItemStackCache.values()) {
             plugin.debug(BoosterPackManager.class,itemStack.toString());
@@ -59,7 +61,7 @@ public class BoosterPackManager implements PackManager {
     private void loadPack(final String packName) {
         try {
             packsItemStackCache.put(packName, generatePack(packName));
-            plugin.debug(BoosterPackManager.class,"Loaded pack: " + packName);
+            plugin.debug(BoosterPackManager.class, InternalDebug.LOAD_PACK.formatted(packName));
         } catch (SerializationException e) {
             plugin.getLogger().severe(e.getMessage());
         }

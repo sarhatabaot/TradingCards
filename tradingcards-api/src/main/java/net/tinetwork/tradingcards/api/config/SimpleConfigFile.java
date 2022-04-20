@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
@@ -16,84 +17,88 @@ import java.nio.charset.StandardCharsets;
  * Simple class to initialize, reload & save config files
  */
 public class SimpleConfigFile {
-	private String resourcePath = "";
-	protected final TradingCardsPlugin<? extends Card<?>>  plugin;
-	protected final String fileName;
-	protected final File folder;
+    private String resourcePath = "";
+    protected final TradingCardsPlugin<? extends Card<?>> plugin;
+    protected final String fileName;
+    protected final File folder;
 
-	protected File file;
-	protected FileConfiguration config;
+    protected File file;
+    protected FileConfiguration config;
 
-	public SimpleConfigFile(final @NotNull TradingCardsPlugin<? extends Card<?>>  plugin, final String resourcePath, final String fileName, final String folder) {
-		this.plugin = plugin;
-		this.fileName = fileName;
-		this.resourcePath = resourcePath;
-		this.folder = new File(plugin.getDataFolder().getPath()+File.separator+folder);
-	}
+    public SimpleConfigFile(final @NotNull TradingCardsPlugin<? extends Card<?>> plugin, final String resourcePath, final String fileName, final String folder) {
+        this.plugin = plugin;
+        this.fileName = fileName;
+        this.resourcePath = resourcePath;
+        this.folder = new File(plugin.getDataFolder().getPath() + File.separator + folder);
+    }
 
-	public SimpleConfigFile(final @NotNull TradingCardsPlugin<? extends Card<?>> plugin, final String fileName) {
-		this.plugin = plugin;
-		this.fileName = fileName;
-		this.folder = plugin.getDataFolder();
-	}
+    public SimpleConfigFile(final @NotNull TradingCardsPlugin<? extends Card<?>> plugin, final String fileName) {
+        this.plugin = plugin;
+        this.fileName = fileName;
+        this.folder = plugin.getDataFolder();
+    }
 
-	public void saveDefaultConfig() {
-		if (this.file == null) {
-			this.file = new File(folder, fileName);
-		}
+    public void saveDefaultConfig() {
+        if (this.file == null) {
+            this.file = new File(folder, fileName);
+        }
 
-		if (!this.file.exists()) {
-			plugin.saveResource(resourcePath + fileName, false);
-		}
+        if (!this.file.exists()) {
+            plugin.saveResource(resourcePath + fileName, false);
+        }
 
-		reloadConfig();
-	}
+        reloadConfig();
+    }
 
-	public void saveConfig(){
-		if(this.config == null)
-			return;
+    public void saveConfig() {
+        if (this.config == null)
+            return;
 
-		if(file == null)
-			return;
+        if (file == null)
+            return;
 
-		try {
-			config.save(file);
-		} catch (IOException ex) {
-			plugin.getLogger().warning(ex.getMessage());
-		}
-	}
+        try {
+            config.save(file);
+        } catch (IOException ex) {
+            plugin.getLogger().warning(ex.getMessage());
+        }
+    }
 
 
-	public void reloadConfig(){
-		if (file == null) {
-			file = new File(folder, fileName);
-		}
+    public void reloadConfig() {
+        if (file == null) {
+            file = new File(folder, fileName);
+        }
 
-		config = YamlConfiguration.loadConfiguration(file);
-	}
+        config = YamlConfiguration.loadConfiguration(file);
+    }
 
-	public void reloadDefaultConfig(){
-		if (file == null) {
-			file = new File(folder, fileName);
-		}
+    public void reloadDefaultConfig() {
+        if (file == null) {
+            file = new File(folder, fileName);
+        }
 
-		if(!file.exists()) {
-			config = YamlConfiguration.loadConfiguration(file);
-			Reader defConfigStream;
-			defConfigStream = new InputStreamReader(plugin.getResource(resourcePath + fileName), StandardCharsets.UTF_8);
-			if (defConfigStream != null) {
-				YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-				config.setDefaults(defConfig);
-			}
-		}
-	}
+        if (!file.exists()) {
+            config = YamlConfiguration.loadConfiguration(file);
+            try (InputStream resource = plugin.getResource(resourcePath + fileName)) {
+                if (resource != null) {
+                    try (Reader defConfigStream = new InputStreamReader(resource, StandardCharsets.UTF_8)) {
+                        YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
+                        config.setDefaults(defConfig);
+                    }
+                }
+            } catch (IOException e) {
+                plugin.getLogger().severe(e::getMessage);
+            }
+        }
+    }
 
-	@NotNull
-	public FileConfiguration getConfig(){
-		if(config==null){
-			reloadConfig();
-		}
-		return this.config;
-	}
+    @NotNull
+    public FileConfiguration getConfig() {
+        if (config == null) {
+            reloadConfig();
+        }
+        return this.config;
+    }
 
 }

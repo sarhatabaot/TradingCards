@@ -1,5 +1,8 @@
 package net.tinetwork.tradingcards.api.config;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Objects;
 
 public final class ColorSeries {
@@ -59,8 +62,9 @@ public final class ColorSeries {
         this.rarity = rarity;
     }
 
+    @Contract(pure = true)
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return "ColorSeries{" +
                 "series='" + series + '\'' +
                 ", type='" + type + '\'' +

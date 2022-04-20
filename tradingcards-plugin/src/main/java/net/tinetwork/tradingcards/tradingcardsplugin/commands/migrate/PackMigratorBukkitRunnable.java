@@ -3,6 +3,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.commands.migrate;
 import net.tinetwork.tradingcards.api.model.Pack;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalMessages;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
 import org.bukkit.command.CommandSender;
@@ -29,7 +30,7 @@ public class PackMigratorBukkitRunnable extends MigratorBukkitRunnable{
     @Override
     public void onExecute() throws ConfigurateException {
         for(Pack pack: source.getPacks()) {
-            Util.logAndMessage(sender,"Started conversion for "+pack.id());
+            Util.logAndMessage(sender, InternalMessages.STARTED_CONVERSION_FOR.formatted(pack.id()));
             plugin.getStorage().createPack(pack.id());
             plugin.getStorage().editPackPrice(pack.id(),pack.getBuyPrice());
             plugin.getStorage().editPackPermission(pack.id(),pack.getPermission());

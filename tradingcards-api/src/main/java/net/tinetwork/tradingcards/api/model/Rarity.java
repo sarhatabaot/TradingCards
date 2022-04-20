@@ -1,5 +1,8 @@
 package net.tinetwork.tradingcards.api.model;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -57,8 +60,9 @@ public final class Rarity {
         this.sellPrice = sellPrice;
     }
 
+    @Contract(pure = true)
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return "Rarity{" +
                 "name='" + id + '\'' +
                 ", displayName='" + displayName + '\'' +

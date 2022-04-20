@@ -1,0 +1,29 @@
+{
+  "plugin-start": {
+    "vault-hook-success": "Vault hook successful!",
+    "vault-hook-fail": "Vault not found, hook unsuccessful!"
+  },
+  "init": {
+    "managers": "Initializing managers...",
+    "using-storage": "Using storage %s",
+    "load-pack-manager": "Loaded PackManager.",
+    "load-packs-amount": "Loaded %d packs.",
+    "load-droptype-manager": "Loaded DropTypeManager.",
+    "load-series-manager": "Loaded SeriesManager.",
+    "load-rarity-manager": "Loaded RarityManager.",
+    "load-deck-manager": "Loaded DeckManager."
+  },
+  "card-manager": {
+    "load": "Loaded CardManager.",
+    "load-cards": "Loaded %d cards.",
+    "load-rarities": "Loaded %d rarities."
+  },
+  "drop-type": {
+    "could-not-get-type": "Could not get the type for %s reason: %s",
+    "default": "Defaulting to passive."
+  },
+  "reload": {
+    "addons": "Reloaded %d addons.",
+    "sql": "We have detected a reload. Shutting down connection to database and reconnecting.."
+  }
+}

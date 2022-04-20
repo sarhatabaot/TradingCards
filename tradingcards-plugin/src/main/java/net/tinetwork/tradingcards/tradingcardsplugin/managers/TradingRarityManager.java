@@ -6,6 +6,8 @@ import com.google.common.cache.LoadingCache;
 import net.tinetwork.tradingcards.api.manager.RarityManager;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalDebug;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalLog;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -26,6 +28,7 @@ public class TradingRarityManager implements RarityManager {
 
         this.rarityCache = loadCache();
         preLoadCache();
+        this.plugin.getLogger().info(() -> InternalLog.Init.LOAD_RARITY_MANAGER);
     }
     @Contract(" -> new")
     private @NotNull LoadingCache<String, Rarity> loadCache() {
@@ -35,7 +38,7 @@ public class TradingRarityManager implements RarityManager {
                 .build(new CacheLoader<>() {
                     @Override
                     public Rarity load(final String key) {
-                        plugin.debug(TradingCardManager.class,"Loaded into cache for "+key);
+                        plugin.debug(TradingCardManager.class, InternalDebug.LOADED_INTO_CACHE.formatted(key));
                         return plugin.getStorage().getRarityById(key);
                     }
                 });

@@ -11,7 +11,8 @@ import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import net.tinetwork.tradingcards.api.model.Pack;
 import net.tinetwork.tradingcards.api.model.Rarity;
-import net.tinetwork.tradingcards.tradingcardsplugin.Permissions;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalMessages;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.Permissions;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
@@ -40,21 +41,21 @@ public class ListCommand extends BaseCommand {
 
         @Default
         @CommandCompletion("@rarities")
-        public void onList(final CommandSender sender, @Single @Optional final String rarity) {
-            onListPlayer(sender, sender.getName(), rarity);
+        public void onList(final CommandSender sender, @Single @Optional final String rarityId) {
+            onListPlayer(sender, sender.getName(), rarityId);
         }
 
         @Subcommand("player")
         @CommandPermission(Permissions.LIST_PLAYER)
         @CommandCompletion("@players @rarities")
         @Description("Lists all cards by a player.")
-        public void onListPlayer(final CommandSender sender, @Single final String playerName, @Single @Optional final String rarity) {
+        public void onListPlayer(final CommandSender sender, @Single final String playerName, @Single @Optional final String rarityId) {
             Player target = Bukkit.getPlayerExact(playerName);
             if (target == null) {
-                ChatUtil.sendPrefixedMessage(sender, CardsCommand.PLAYER_NOT_ONLINE);
+                ChatUtil.sendPrefixedMessage(sender, InternalMessages.CardsCommand.PLAYER_OFFLINE);
                 return;
             }
-            if (rarity == null) {
+            if (rarityId == null) {
                 final String sectionFormat = String.format(plugin.getMessagesConfig().sectionFormatPlayer(), target.getName());
                 ChatUtil.sendMessage(sender, String.format(sectionFormat, target.getName()));
                 for (Rarity rarityKey : plugin.getRarityManager().getRarities()) {
@@ -63,12 +64,12 @@ public class ListCommand extends BaseCommand {
                 return;
             }
 
-            if (!plugin.getRarityManager().containsRarity(rarity)) {
+            if (!plugin.getRarityManager().containsRarity(rarityId)) {
                 ChatUtil.sendMessage(sender, plugin.getMessagesConfig().noRarity());
                 return;
             }
 
-            listRarity(sender, target, rarity);
+            listRarity(sender, target, rarityId);
         }
 
         private boolean canBuyPack(final String name) {
@@ -96,8 +97,8 @@ public class ListCommand extends BaseCommand {
             }
         }
 
-        private TradingCard getCard(final String id, final String rarity) {
-            return plugin.getCardManager().getCard(id, rarity, false);
+        private TradingCard getCard(final String cardId, final String rarityId) {
+            return plugin.getCardManager().getCard(cardId, rarityId, false);
         }
 
         private @NotNull String generateRarityCardList(final Player target, final String rarityId) {
@@ -160,25 +161,25 @@ public class ListCommand extends BaseCommand {
             return rarityCardList.size();
         }
 
-        private int countPlayerCardsInRarity(final Player player, final String rarity) {
-            final List<String> rarityCardList = plugin.getCardManager().getRarityCardListIds(rarity);
+        private int countPlayerCardsInRarity(final Player player, final String rarityId) {
+            final List<String> rarityCardList = plugin.getCardManager().getRarityCardListIds(rarityId);
             int cardCounter = 0;
             if (rarityCardList == null || rarityCardList.isEmpty())
                 return cardCounter;
 
             for (String cardId : rarityCardList) {
-                if (plugin.getDeckManager().hasCard(player, cardId, rarity)) {
+                if (plugin.getDeckManager().hasCard(player, cardId, rarityId)) {
                     cardCounter++;
                 }
             }
             return cardCounter;
         }
 
-        private int countShinyPlayerCardsInRarity(final Player player, final String rarity) {
-            final List<String> rarityCardList = plugin.getCardManager().getRarityCardListIds(rarity);
+        private int countShinyPlayerCardsInRarity(final Player player, final String rarityId) {
+            final List<String> rarityCardList = plugin.getCardManager().getRarityCardListIds(rarityId);
             int cardCounter = 0;
             for (String cardId : rarityCardList) {
-                if (plugin.getDeckManager().hasShinyCard(player, cardId, rarity)) {
+                if (plugin.getDeckManager().hasShinyCard(player, cardId, rarityId)) {
                     cardCounter++;
                 }
             }
