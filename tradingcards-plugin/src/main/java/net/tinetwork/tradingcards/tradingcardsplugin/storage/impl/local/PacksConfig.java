@@ -116,7 +116,7 @@ public class PacksConfig extends SimpleConfigurate {
     public static class PackSerializer implements TypeSerializer<Pack> {
         public static final PackSerializer INSTANCE = new PackSerializer();
         private static final String CONTENT = "content";
-        private static final String PRICE = "prices";
+        private static final String PRICE = "price";
         private static final String PERMISSION = "permission";
         private static final String DISPLAY_NAME = "display-name";
 

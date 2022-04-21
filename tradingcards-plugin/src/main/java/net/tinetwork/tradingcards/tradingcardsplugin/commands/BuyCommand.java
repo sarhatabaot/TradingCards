@@ -38,6 +38,7 @@ public class BuyCommand extends BaseCommand {
         public void onBuyPack(final Player player, final String packId) {
             if (!CardUtil.hasVault(player))
                 return;
+
             if (plugin.getPackManager().getPack(packId) == null) {
                 player.sendMessage(plugin.getMessagesConfig().packDoesntExist());
                 return;
