@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS `{prefix}decks` (
     rarity_id      VARCHAR(200)       NOT NULL,
     amount         INT                NOT NULL,
     is_shiny       BOOL               NOT NULL,
+    series_id      VARCHAR(200)       NOT NULL,
     PRIMARY KEY (id)
 ) DEFAULT CHARSET = utf8mb4;
 

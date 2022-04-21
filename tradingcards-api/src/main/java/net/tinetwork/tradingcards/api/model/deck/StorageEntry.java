@@ -6,9 +6,10 @@ import java.util.Objects;
 public class StorageEntry {
     private final String rarityId;
     private final String cardId;
+    private final String seriesId;
+
     private int amount;
     private final boolean isShiny;
-    private final String seriesId;
 
     public String getRarityId() {
         return rarityId;
