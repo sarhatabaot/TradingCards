@@ -7,27 +7,20 @@ import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.StorageConf
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalExceptions;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.FlywayException;
-import org.flywaydb.core.api.MigrationInfo;
-import org.flywaydb.core.api.ResourceProvider;
-import org.flywaydb.core.api.configuration.FluentConfiguration;
-import org.flywaydb.core.api.resource.LoadableResource;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.Reader;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-public abstract class HikariConnectionFactory implements ConnectionFactory{
+public abstract class HikariConnectionFactory implements ConnectionFactory {
     private final StorageConfig storageConfig;
     protected HikariDataSource dataSource;
-    protected FluentConfiguration flywayConfig;
+    private final Logger logger = LoggerFactory.getLogger(HikariConnectionFactory.class);
 
     protected HikariConnectionFactory(final StorageConfig storageConfig) {
         this.storageConfig = storageConfig;
@@ -35,12 +28,13 @@ public abstract class HikariConnectionFactory implements ConnectionFactory{
 
     /**
      * This may be different with every database type.
-     * @param config hikari config
-     * @param address address
-     * @param port port
+     *
+     * @param config       hikari config
+     * @param address      address
+     * @param port         port
      * @param databaseName databaseName
-     * @param username username
-     * @param password password
+     * @param username     username
+     * @param password     password
      */
     protected abstract void configureDatabase(HikariConfig config, String address, String port, String databaseName, String username, String password);
 
@@ -49,44 +43,42 @@ public abstract class HikariConnectionFactory implements ConnectionFactory{
         HikariConfig config = new HikariConfig();
         config.setPoolName("tradingcards-hikari");
 
-        configureDatabase(config,storageConfig.getAddress(),storageConfig.getPort(),storageConfig.getDatabase(),storageConfig.getUsername(),storageConfig.getPassword());
+        configureDatabase(config, storageConfig.getAddress(), storageConfig.getPort(), storageConfig.getDatabase(), storageConfig.getUsername(), storageConfig.getPassword());
         config.setInitializationFailTimeout(-1);
 
-        Map<String,String> properties = new HashMap<>();
+        Map<String, String> properties = new HashMap<>();
 
         overrideProperties(properties);
-        setProperties(config,properties);
+        setProperties(config, properties);
 
         this.dataSource = new HikariDataSource(config);
-        LoggerFactory.getLogger(HikariConnectionFactory.class).info("Connected to database!");
+        logger.info("Connected to database!");
 
-
-        Flyway flyway = Flyway.configure()
-                .dataSource(dataSource)
-                .locations("classpath:db/migration")
-                .placeholders(Map.of("prefix",storageConfig.getTablePrefix(), "default_series_id",storageConfig.getDefaultSeriesId()))
-                .load();
-
-        try {
-            flyway.baseline();
-            LoggerFactory.getLogger(HikariConnectionFactory.class).info(Arrays.stream(flyway.info().all()).toString());
-            flyway.migrate();
-        } catch (FlywayException e) {
-            LoggerFactory.getLogger(HikariConnectionFactory.class).error("FlywayError" ,e);
-        }
         postInitialize();
     }
 
     /**
      * Called after the pool has been initialised
      */
-    @SuppressWarnings("EmptyMethod")
     protected void postInitialize() {
-        //can be empty
+        Flyway flyway = Flyway.configure(getClass().getClassLoader())
+                .dataSource(dataSource)
+                .baselineVersion("0")
+                .baselineOnMigrate(true)
+                .locations("classpath:db/migration")
+                .target("2")
+                .placeholders(Map.of("prefix", storageConfig.getTablePrefix(), "default_series_id", storageConfig.getDefaultSeriesId()))
+                .load();
+
+        try {
+            flyway.migrate();
+        } catch (FlywayException e) {
+            logger.error("There was a problem migrating to the latest database version. You may experience issues.", e);
+        }
     }
 
     //LP
-    protected void overrideProperties(@NotNull Map<String,String> properties) {
+    protected void overrideProperties(@NotNull Map<String, String> properties) {
         properties.putIfAbsent("socketTimeout", String.valueOf(TimeUnit.SECONDS.toMillis(30)));
     }
 
