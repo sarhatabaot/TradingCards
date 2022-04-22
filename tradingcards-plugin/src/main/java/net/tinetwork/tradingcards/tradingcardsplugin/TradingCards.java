@@ -160,7 +160,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
 
     private void hookPlaceholderApi() {
-        if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new TradingCardsPlaceholderExpansion(this).register();
             placeholderapi = true;
         }
@@ -447,7 +447,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     @Override
     public void debug(final Class<?> className, final String message) {
         if (getGeneralConfig().debugMode()) {
-            getLogger().info(() -> InternalDebug.BASE_DEBUG_FORMAT.formatted(className.getSimpleName(),message));
+            getLogger().info(() -> InternalDebug.BASE_DEBUG_FORMAT.formatted(className.getSimpleName(), message));
         }
     }
 
