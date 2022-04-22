@@ -11,7 +11,7 @@
     <parent>
         <groupId>net.tinetwork.tradingcards</groupId>
         <artifactId>tradingcards-parent</artifactId>
-        <version>5.6.2</version>
+        <version>5.7.0</version>
     </parent>
     <properties>
         <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
@@ -34,7 +34,7 @@
 
         <!-- DB -->
         <hikaricp.version>5.0.1</hikaricp.version>
-        <flyway.version>8.5.7</flyway.version>
+        <flyway.version>8.5.9</flyway.version>
         <jooq.version>3.16.6</jooq.version>
         <!-- Others -->
         <zip4j.version>2.10.0</zip4j.version>
@@ -356,12 +356,19 @@
             <version>${zip4j.version}</version>
             <scope>compile</scope>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.flywaydb</groupId>-->
+<!--            <artifactId>flyway-core</artifactId>-->
+<!--            <version>${flyway.version}</version>-->
+<!--            <scope>compile</scope>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.flywaydb</groupId>
-            <artifactId>flyway-core</artifactId>
+            <artifactId>flyway-mysql</artifactId>
             <version>${flyway.version}</version>
             <scope>compile</scope>
         </dependency>
+
     </dependencies>
 
 </project>

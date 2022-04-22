@@ -5,17 +5,29 @@ import com.zaxxer.hikari.HikariDataSource;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.StorageConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalExceptions;
+import org.flywaydb.core.Flyway;
+import org.flywaydb.core.api.FlywayException;
+import org.flywaydb.core.api.MigrationInfo;
+import org.flywaydb.core.api.ResourceProvider;
+import org.flywaydb.core.api.configuration.FluentConfiguration;
+import org.flywaydb.core.api.resource.LoadableResource;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.Reader;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public abstract class HikariConnectionFactory implements ConnectionFactory{
     private final StorageConfig storageConfig;
-    private HikariDataSource dataSource;
+    protected HikariDataSource dataSource;
+    protected FluentConfiguration flywayConfig;
 
     protected HikariConnectionFactory(final StorageConfig storageConfig) {
         this.storageConfig = storageConfig;
@@ -46,6 +58,22 @@ public abstract class HikariConnectionFactory implements ConnectionFactory{
         setProperties(config,properties);
 
         this.dataSource = new HikariDataSource(config);
+        LoggerFactory.getLogger(HikariConnectionFactory.class).info("Connected to database!");
+
+
+        Flyway flyway = Flyway.configure()
+                .dataSource(dataSource)
+                .locations("classpath:db/migration")
+                .placeholders(Map.of("prefix",storageConfig.getTablePrefix(), "default_series_id",storageConfig.getDefaultSeriesId()))
+                .load();
+
+        try {
+            flyway.baseline();
+            LoggerFactory.getLogger(HikariConnectionFactory.class).info(Arrays.stream(flyway.info().all()).toString());
+            flyway.migrate();
+        } catch (FlywayException e) {
+            LoggerFactory.getLogger(HikariConnectionFactory.class).error("FlywayError" ,e);
+        }
         postInitialize();
     }
 
