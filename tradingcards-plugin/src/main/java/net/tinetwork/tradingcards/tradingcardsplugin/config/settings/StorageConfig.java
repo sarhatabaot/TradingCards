@@ -22,6 +22,8 @@ public class StorageConfig extends SimpleConfigurate {
 
     private String tablePrefix;
 
+    private String defaultSeriesId;
+
 
     public StorageConfig(final TradingCards plugin) throws ConfigurateException {
         super(plugin, "settings" + File.separator, "storage.yml", "settings");
@@ -38,6 +40,9 @@ public class StorageConfig extends SimpleConfigurate {
         this.username = dataNode.node("username").getString("username");
         this.password = dataNode.node("password").getString();
         this.tablePrefix = dataNode.node("table-prefix").getString("tradingcards_");
+
+        final ConfigurationNode dbMigration = rootNode.node("database-migration");
+        this.defaultSeriesId = dbMigration.node("default-series-id").getString("default");
     }
 
     @Override
@@ -71,5 +76,9 @@ public class StorageConfig extends SimpleConfigurate {
 
     public String getTablePrefix() {
         return tablePrefix;
+    }
+
+    public String getDefaultSeriesId() {
+        return defaultSeriesId;
     }
 }

@@ -73,7 +73,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
-import java.util.Set;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -160,7 +159,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
 
     private void hookPlaceholderApi() {
-        if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new TradingCardsPlaceholderExpansion(this).register();
             placeholderapi = true;
         }
@@ -297,6 +296,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
                 "edit-card-value", c -> switch (c.getContextValueByName(EditCard.class, "editCard")) {
                     case DISPLAY_NAME, SELL_PRICE, BUY_PRICE, INFO, CUSTOM_MODEL_DATA -> Collections.singleton("");
                     case SERIES -> seriesManager.getSeriesIds();
+                    case HAS_SHINY -> List.of("true","false");
                     case TYPE -> Stream.concat(dropTypeManager.getDefaultTypes().stream().map(DropType::getId), dropTypeManager.getTypes().keySet().stream()).toList();
                 }
         );
@@ -447,7 +447,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     @Override
     public void debug(final Class<?> className, final String message) {
         if (getGeneralConfig().debugMode()) {
-            getLogger().info(() -> InternalDebug.BASE_DEBUG_FORMAT.formatted(className.getSimpleName(),message));
+            getLogger().info(() -> InternalDebug.BASE_DEBUG_FORMAT.formatted(className.getSimpleName(), message));
         }
     }
 

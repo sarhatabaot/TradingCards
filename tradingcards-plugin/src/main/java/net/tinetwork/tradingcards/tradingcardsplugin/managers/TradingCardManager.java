@@ -174,13 +174,22 @@ public class TradingCardManager implements CardManager<TradingCard> {
         return NULL_CARD;
     }
 
-    public TradingCard getCard(final String cardId, final String rarityId) {
-        final String cardKey = cardKey(rarityId,cardId);
-        plugin.debug(TradingCardManager.class,InternalDebug.CARD_KEY.formatted(cardKey));
-        if (cards.containsKey(cardKey)) {
-            return cards.get(cardKey).get();
+    public TradingCard getCard(final String cardId, final String rarityId, final String seriesId, final boolean forcedShiny) {
+        final String oldCardKey = cardKey(rarityId,cardId);
+        final String newCardKey = cardKey(rarityId,cardId,seriesId);
+
+        if(cards.containsKey(newCardKey)) {
+            return cards.get(newCardKey).isShiny(forcedShiny).get();
         }
+
+        if(cards.containsKey(oldCardKey)) {
+            return cards.get(oldCardKey).isShiny(forcedShiny).get();
+        }
+
         return NULL_CARD;
+    }
+    public TradingCard getCard(final String cardId, final String rarityId) {
+        return getCard(cardId ,rarityId,false);
     }
 
     @Override

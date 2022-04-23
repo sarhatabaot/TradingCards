@@ -14,6 +14,7 @@ import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row7;
+import org.jooq.Row8;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -79,6 +80,11 @@ public class Decks extends TableImpl<DecksRecord> {
      * The column <code>minecraft.decks.is_shiny</code>.
      */
     public final TableField<DecksRecord, Byte> IS_SHINY = createField(DSL.name("is_shiny"), SQLDataType.TINYINT.nullable(false), this, "");
+
+    /**
+     * The column <code>minecraft.decks.series_id</code>
+     */
+    public final TableField<DecksRecord, String> SERIES_ID = createField(DSL.name("series_id"),SQLDataType.VARCHAR(200).nullable(false),this,"");
 
     private Decks(Name alias, Table<DecksRecord> aliased) {
         this(alias, aliased, null);
@@ -159,7 +165,7 @@ public class Decks extends TableImpl<DecksRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<Integer, String, Integer, String, String, Integer, Byte> fieldsRow() {
-        return (Row7) super.fieldsRow();
+    public Row8<Integer, String, Integer, String, String, Integer, Byte,String> fieldsRow() {
+        return (Row8) super.fieldsRow();
     }
 }

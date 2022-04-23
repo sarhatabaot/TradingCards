@@ -74,7 +74,8 @@ public class JooqRecordUtil {
             final String rarityId = recordResult.getValue(Decks.DECKS.RARITY_ID);
             final boolean isShiny = recordResult.getValue(Decks.DECKS.IS_SHINY) != 0;
             final int amount = recordResult.getValue(Decks.DECKS.AMOUNT);
-            entries.add(new StorageEntry(rarityId, cardId, amount, isShiny));
+            final String seriesId = recordResult.getValue(Decks.DECKS.SERIES_ID);
+            entries.add(new StorageEntry(rarityId, cardId, amount, isShiny,seriesId));
         }
         return new Deck(UUID.fromString(playerUuid), deckNumber, entries);
     }
