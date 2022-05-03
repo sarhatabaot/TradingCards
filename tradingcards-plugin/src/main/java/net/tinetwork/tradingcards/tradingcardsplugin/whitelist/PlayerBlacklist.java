@@ -1,9 +1,9 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.whitelist;
 
+import com.github.sarhatabaot.kraken.core.config.ConfigurateFile;
 import net.tinetwork.tradingcards.api.blacklist.Blacklist;
 import net.tinetwork.tradingcards.api.blacklist.WhitelistMode;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.api.config.SimpleConfigurate;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalDebug;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * @author ketelsb
  */
-public class PlayerBlacklist extends SimpleConfigurate implements Blacklist<Player> {
+public class PlayerBlacklist extends ConfigurateFile<TradingCards> implements Blacklist<Player> {
     private static final String LISTED_PLAYERS_NAME = "players";
     private static final String WHITELIST_MODE = "whitelist-mode";
     private List<String> listedPlayers;

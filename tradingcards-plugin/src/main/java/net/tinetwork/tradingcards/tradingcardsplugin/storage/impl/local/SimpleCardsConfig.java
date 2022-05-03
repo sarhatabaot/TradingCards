@@ -1,8 +1,8 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local;
 
+import com.github.sarhatabaot.kraken.core.config.ConfigurateFile;
 import net.tinetwork.tradingcards.api.TradingCardsPlugin;
 import net.tinetwork.tradingcards.api.card.Card;
-import net.tinetwork.tradingcards.api.config.SimpleConfigurate;
 import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
@@ -28,7 +28,7 @@ import java.util.Map;
 /**
  * @author sarhatabaot
  */
-public class SimpleCardsConfig extends SimpleConfigurate {
+public class SimpleCardsConfig extends ConfigurateFile<TradingCards> {
     private ConfigurationNode cardsNode;
     private static YamlStorage yamlStorage;
 

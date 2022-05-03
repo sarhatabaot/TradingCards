@@ -32,6 +32,7 @@
         <adventure.version>4.10.1</adventure.version>
         <junit.jupiter.version>5.8.2</junit.jupiter.version>
         <slf4j.api.version>2.0.0-alpha7</slf4j.api.version>
+        <kraken.version>1.1.2</kraken.version>
     </properties>
 
     <modules>
@@ -48,10 +49,7 @@
             <id>vault-repo</id>
             <url>https://nexus.hc.to/content/repositories/pub_releases</url>
         </repository>
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
+
         <repository>
             <id>aikar</id>
             <url>https://repo.aikar.co/content/groups/aikar/</url>
@@ -65,7 +63,10 @@
             <url>https://repo.codemc.org/repository/maven-public/</url>
             <layout>default</layout>
         </repository>
-
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -117,6 +118,11 @@
             <version>${slf4j.api.version}</version>
             <scope>compile</scope>
         </dependency>
-
+        <dependency>
+            <groupId>com.github.sarhatabaot</groupId>
+            <artifactId>krakencore</artifactId>
+            <version>${kraken.version}</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 </project>

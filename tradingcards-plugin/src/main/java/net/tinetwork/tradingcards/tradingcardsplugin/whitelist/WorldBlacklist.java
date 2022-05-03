@@ -1,9 +1,9 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.whitelist;
 
+import com.github.sarhatabaot.kraken.core.config.ConfigurateFile;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.api.blacklist.WhitelistMode;
 import net.tinetwork.tradingcards.api.blacklist.Blacklist;
-import net.tinetwork.tradingcards.api.config.SimpleConfigurate;
 import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurateException;
@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * @author ketelsb
  */
-public class WorldBlacklist extends SimpleConfigurate implements Blacklist<World> {
+public class WorldBlacklist extends ConfigurateFile<TradingCards> implements Blacklist<World> {
     private static final String LISTED_WORLDS_NAME = "worlds";
     private static final String WHITELIST_MODE_NAME = "whitelist-mode";
     private ConfigurationNode worldNode;

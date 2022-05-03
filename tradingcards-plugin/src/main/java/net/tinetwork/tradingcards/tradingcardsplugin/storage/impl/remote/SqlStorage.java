@@ -678,7 +678,7 @@ public class SqlStorage implements Storage<TradingCard> {
         final String cardId = recordResult.getValue(Cards.CARDS.CARD_ID);
         final String displayName = recordResult.getValue(Cards.CARDS.DISPLAY_NAME);
         final Rarity rarity = getRarityById(recordResult.getValue(Cards.CARDS.RARITY_ID));
-        final boolean hasShiny = toBoolean(recordResult.getValue(Cards.CARDS.HAS_SHINY));
+        final boolean hasShiny = toBoolean(recordResult.get(Cards.CARDS.HAS_SHINY));
         final Series series = getSeries(recordResult.getValue(Cards.CARDS.SERIES_ID));
         final String info = recordResult.getValue(Cards.CARDS.INFO);
         final int customModelData = recordResult.getValue(Cards.CARDS.CUSTOM_MODEL_DATA);

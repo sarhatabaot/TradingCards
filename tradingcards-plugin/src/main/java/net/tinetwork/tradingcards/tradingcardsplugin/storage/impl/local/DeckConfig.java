@@ -1,6 +1,6 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local;
 
-import net.tinetwork.tradingcards.api.config.SimpleConfigurate;
+import com.github.sarhatabaot.kraken.core.config.ConfigurateFile;
 import net.tinetwork.tradingcards.api.model.deck.Deck;
 import net.tinetwork.tradingcards.api.model.deck.StorageEntry;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class DeckConfig extends SimpleConfigurate {
+public class DeckConfig extends ConfigurateFile<TradingCards> {
     private static final String INVENTORY_PATH = "decks.inventories.";
     private CommentedConfigurationNode inventoriesNode;
 

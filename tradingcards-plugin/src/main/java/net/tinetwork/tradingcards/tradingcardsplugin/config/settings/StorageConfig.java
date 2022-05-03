@@ -1,6 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
 
-import net.tinetwork.tradingcards.api.config.SimpleConfigurate;
+import com.github.sarhatabaot.kraken.core.config.ConfigurateFile;
+import net.tinetwork.tradingcards.api.TradingCardsPlugin;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.StorageType;
 import org.spongepowered.configurate.ConfigurateException;
@@ -11,7 +12,7 @@ import java.io.File;
 /**
  * @author sarhatabaot
  */
-public class StorageConfig extends SimpleConfigurate {
+public class StorageConfig extends ConfigurateFile<TradingCards> {
     private StorageType type;
     private String address;
     private String port;
