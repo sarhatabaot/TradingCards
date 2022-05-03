@@ -208,7 +208,7 @@ public class CardUtil {
         }
 
         final String rarityName = ChatUtil.color(rarity.replace('_', ' '));
-        lore.add(getShinyFormat(isShiny, rarityFormat, rarityName));
+        lore.add(ChatUtil.color(getShinyFormat(isShiny, rarityFormat, rarityName)));
         if (plugin.placeholderapi()) {
             lore.forEach(s -> PlaceholderAPI.setPlaceholders(null, s));
         }

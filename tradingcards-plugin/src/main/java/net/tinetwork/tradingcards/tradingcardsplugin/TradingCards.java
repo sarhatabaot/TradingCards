@@ -2,7 +2,6 @@ package net.tinetwork.tradingcards.tradingcardsplugin;
 
 import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.PaperCommandManager;
-import com.google.common.collect.ImmutableSet;
 import net.milkbowl.vault.economy.Economy;
 import net.tinetwork.tradingcards.api.TradingCardsPlugin;
 import net.tinetwork.tradingcards.api.manager.PackManager;
