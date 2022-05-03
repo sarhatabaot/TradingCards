@@ -34,7 +34,7 @@
 
         <!-- DB -->
         <hikaricp.version>5.0.1</hikaricp.version>
-        <flyway.version>8.5.9</flyway.version>
+        <flyway.version>8.5.10</flyway.version>
         <jooq.version>3.16.6</jooq.version>
         <!-- Others -->
         <zip4j.version>2.10.0</zip4j.version>
