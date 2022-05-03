@@ -26,7 +26,6 @@ public interface CardManager<T extends Card<T>> {
      */
     T getCard(final String cardId, final String rarityId, final boolean forcedShiny);
 
-    T getCard(final String cardId, final String rarityId, final String seriesId, final boolean forcedShiny);
     /**
      * @param cardId The card id.
      * @param rarityId The rarity id.

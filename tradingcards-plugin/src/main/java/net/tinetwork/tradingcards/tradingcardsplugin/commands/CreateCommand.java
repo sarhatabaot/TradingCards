@@ -31,8 +31,7 @@ public class CreateCommand extends BaseCommand{
     public class CreateSubCommand extends BaseCommand {
         private void sendCreatedMessage(final @NotNull CommandSender sender, final String type, final String id) {
             sender.sendMessage(InternalMessages.CreateCommand.CREATED_TYPE.formatted(type,id));
-            final String editId = id.replace("cardId:","").replace("rarityId:","").replace("seriesId:","");
-            sender.sendMessage(InternalMessages.CreateCommand.CREATED_TYPE_EDIT.formatted(id,type,editId));
+            sender.sendMessage(InternalMessages.CreateCommand.CREATED_TYPE_EDIT.formatted(id,type,id));
         }
 
         @Subcommand("rarity")
@@ -67,8 +66,7 @@ public class CreateCommand extends BaseCommand{
                 return;
             }
 
-            final String createCardFormat = " cardId: %s, rarityId: %s, seriesId: %s".formatted(cardId,rarityId,seriesId);
-            sendCreatedMessage(sender,"card",createCardFormat);
+            sendCreatedMessage(sender,"card","card-id: "+cardId +"rarity-id:"+ rarityId +"series-id" + seriesId);
             plugin.getStorage().createCard(cardId, rarityId, seriesId);
         }
 

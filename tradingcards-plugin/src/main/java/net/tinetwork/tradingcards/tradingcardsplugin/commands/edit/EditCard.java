@@ -10,7 +10,6 @@ public enum EditCard implements Edit{
     SELL_PRICE,
     INFO,
     SERIES,
-    HAS_SHINY,
     TYPE;
 
 

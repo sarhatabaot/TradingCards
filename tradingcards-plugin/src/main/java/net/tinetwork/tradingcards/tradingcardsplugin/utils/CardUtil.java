@@ -208,7 +208,7 @@ public class CardUtil {
         }
 
         final String rarityName = ChatUtil.color(rarity.replace('_', ' '));
-        lore.add(getShinyFormat(isShiny, rarityFormat, rarityName));
+        lore.add(ChatUtil.color(getShinyFormat(isShiny, rarityFormat, rarityName)));
         if (plugin.placeholderapi()) {
             lore.forEach(s -> PlaceholderAPI.setPlaceholders(null, s));
         }
@@ -225,18 +225,8 @@ public class CardUtil {
 
 
     @Contract(pure = true)
-    @Deprecated
-    /**
-     * @since 5.7.0
-     * @forRemoval
-     */
     public static @NotNull String cardKey(@NotNull final String rarityId, @NotNull final String cardId) {
         return rarityId + "." + cardId;
-    }
-
-    @Contract(pure = true)
-    public static @NotNull String cardKey(@NotNull final String rarityId, @NotNull final String cardId, @NotNull final String seriesId) {
-        return rarityId + "." + cardId+"."+seriesId;
     }
 
     public static boolean calculateIfShiny(boolean forcedShiny) {

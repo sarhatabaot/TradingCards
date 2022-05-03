@@ -122,9 +122,8 @@ public class TradingDeckManager implements DeckManager {
 
             final String cardId = deckEntry.getCardId();
             final String rarityId = deckEntry.getRarityId();
-            final String seriesId = deckEntry.getSeriesId();
 
-            TradingCard card = cardManager.getCard(cardId, rarityId, seriesId,false);
+            TradingCard card = cardManager.getCard(cardId, rarityId);
             if (card instanceof EmptyCard) {
                 plugin.debug(getClass(), "Card is not in a cards storage, skipping.");
                 continue;

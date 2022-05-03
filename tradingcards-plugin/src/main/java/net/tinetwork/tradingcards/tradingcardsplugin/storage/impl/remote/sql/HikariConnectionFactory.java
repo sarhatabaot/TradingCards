@@ -5,11 +5,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.StorageConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalExceptions;
-import org.flywaydb.core.Flyway;
-import org.flywaydb.core.api.FlywayException;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -17,10 +13,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-public abstract class HikariConnectionFactory implements ConnectionFactory {
+public abstract class HikariConnectionFactory implements ConnectionFactory{
     private final StorageConfig storageConfig;
-    protected HikariDataSource dataSource;
-    private final Logger logger = LoggerFactory.getLogger(HikariConnectionFactory.class);
+    private HikariDataSource dataSource;
 
     protected HikariConnectionFactory(final StorageConfig storageConfig) {
         this.storageConfig = storageConfig;
@@ -28,13 +23,12 @@ public abstract class HikariConnectionFactory implements ConnectionFactory {
 
     /**
      * This may be different with every database type.
-     *
-     * @param config       hikari config
-     * @param address      address
-     * @param port         port
+     * @param config hikari config
+     * @param address address
+     * @param port port
      * @param databaseName databaseName
-     * @param username     username
-     * @param password     password
+     * @param username username
+     * @param password password
      */
     protected abstract void configureDatabase(HikariConfig config, String address, String port, String databaseName, String username, String password);
 
@@ -43,42 +37,28 @@ public abstract class HikariConnectionFactory implements ConnectionFactory {
         HikariConfig config = new HikariConfig();
         config.setPoolName("tradingcards-hikari");
 
-        configureDatabase(config, storageConfig.getAddress(), storageConfig.getPort(), storageConfig.getDatabase(), storageConfig.getUsername(), storageConfig.getPassword());
+        configureDatabase(config,storageConfig.getAddress(),storageConfig.getPort(),storageConfig.getDatabase(),storageConfig.getUsername(),storageConfig.getPassword());
         config.setInitializationFailTimeout(-1);
 
-        Map<String, String> properties = new HashMap<>();
+        Map<String,String> properties = new HashMap<>();
 
         overrideProperties(properties);
-        setProperties(config, properties);
+        setProperties(config,properties);
 
         this.dataSource = new HikariDataSource(config);
-        logger.info("Connected to database!");
-
         postInitialize();
     }
 
     /**
      * Called after the pool has been initialised
      */
+    @SuppressWarnings("EmptyMethod")
     protected void postInitialize() {
-        Flyway flyway = Flyway.configure(getClass().getClassLoader())
-                .dataSource(dataSource)
-                .baselineVersion("0")
-                .baselineOnMigrate(true)
-                .locations("classpath:db/migration")
-                .target("2")
-                .placeholders(Map.of("prefix", storageConfig.getTablePrefix(), "default_series_id", storageConfig.getDefaultSeriesId()))
-                .load();
-
-        try {
-            flyway.migrate();
-        } catch (FlywayException e) {
-            logger.error("There was a problem migrating to the latest database version. You may experience issues.", e);
-        }
+        //can be empty
     }
 
     //LP
-    protected void overrideProperties(@NotNull Map<String, String> properties) {
+    protected void overrideProperties(@NotNull Map<String,String> properties) {
         properties.putIfAbsent("socketTimeout", String.valueOf(TimeUnit.SECONDS.toMillis(30)));
     }
 

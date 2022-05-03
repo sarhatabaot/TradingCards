@@ -1,13 +1,13 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
 
-import com.github.sarhatabaot.kraken.core.config.ConfigurateFile;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
+import net.tinetwork.tradingcards.api.config.SimpleConfigurate;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import org.spongepowered.configurate.ConfigurateException;
 
 import java.io.File;
 
-public class MessagesConfig extends ConfigurateFile<TradingCards> {
+public class MessagesConfig extends SimpleConfigurate {
     private String prefix;
     private Message reload;
     private Message noCard; //p

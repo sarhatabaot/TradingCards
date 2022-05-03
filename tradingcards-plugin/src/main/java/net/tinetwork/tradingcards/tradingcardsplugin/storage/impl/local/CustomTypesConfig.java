@@ -1,8 +1,8 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local;
 
-import com.github.sarhatabaot.kraken.core.config.ConfigurateFile;
 import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
+import net.tinetwork.tradingcards.api.config.SimpleConfigurate;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
@@ -20,7 +20,7 @@ import java.util.Set;
 /**
  * @author sarhatabaot
  */
-public class CustomTypesConfig extends ConfigurateFile<TradingCards> {
+public class CustomTypesConfig extends SimpleConfigurate {
     private Set<DropType> dropTypes;
 
     public CustomTypesConfig(final TradingCards plugin) throws ConfigurateException {

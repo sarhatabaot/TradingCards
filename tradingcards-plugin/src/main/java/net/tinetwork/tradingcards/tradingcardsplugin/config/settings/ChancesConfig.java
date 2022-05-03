@@ -1,9 +1,9 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
 
-import com.github.sarhatabaot.kraken.core.config.ConfigurateFile;
 import net.tinetwork.tradingcards.api.model.chance.Chance;
 import net.tinetwork.tradingcards.api.model.chance.EmptyChance;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
+import net.tinetwork.tradingcards.api.config.SimpleConfigurate;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalExceptions;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.configurate.ConfigurateException;
@@ -14,7 +14,7 @@ import org.spongepowered.configurate.serialize.TypeSerializer;
 import java.io.File;
 import java.lang.reflect.Type;
 
-public class ChancesConfig extends ConfigurateFile<TradingCards> {
+public class ChancesConfig extends SimpleConfigurate {
     private int hostileChance;
     private int neutralChance;
     private int passiveChance;

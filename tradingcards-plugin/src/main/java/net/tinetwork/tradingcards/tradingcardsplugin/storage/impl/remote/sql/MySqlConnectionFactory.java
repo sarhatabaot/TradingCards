@@ -1,9 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.sql;
 
 import com.zaxxer.hikari.HikariConfig;
-import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.StorageConfig;
-import org.flywaydb.core.Flyway;
 import org.slf4j.LoggerFactory;
 
 import java.util.Map;
@@ -50,4 +48,8 @@ public class MySqlConnectionFactory extends HikariConnectionFactory{
         super.overrideProperties(properties);
     }
 
+    @Override
+    protected void postInitialize() {
+        LoggerFactory.getLogger(MySqlConnectionFactory.class).info("Connected to database!");
+    }
 }

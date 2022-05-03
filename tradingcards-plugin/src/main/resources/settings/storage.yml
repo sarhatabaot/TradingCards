@@ -1,6 +1,8 @@
 # Available options: YAML (MYSQL, MARIADB NOT IMPLEMENTED YET)
 storage-type: YAML
 
+
+# Currently only support Decks more will be added in the future!
 database:
   # Address and port for the database.
   address: localhost
@@ -15,6 +17,3 @@ database:
   password: ''
 
   table-prefix: 'tradingcards_'
-
-database-migration:
-  default-series-id: "default"

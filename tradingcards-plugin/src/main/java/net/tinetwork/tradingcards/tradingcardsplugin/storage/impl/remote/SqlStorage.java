@@ -492,7 +492,7 @@ public class SqlStorage implements Storage<TradingCard> {
     private void applySchema() throws IOException, SQLException {
         List<String> statements;
 
-        String schemaFileName = "db/base/" + this.connectionFactory.getType().toLowerCase(Locale.ROOT) + ".sql";
+        String schemaFileName = "schema/" + this.connectionFactory.getType().toLowerCase(Locale.ROOT) + ".sql";
         try (InputStream is = this.plugin.getResource(schemaFileName)) {
             if (is == null) {
                 throw new IOException(InternalExceptions.NO_SCHEMA.formatted(this.connectionFactory.getType()));
@@ -502,6 +502,8 @@ public class SqlStorage implements Storage<TradingCard> {
                     .map(this.statementProcessor::applyPrefix)
                     .toList();
         }
+
+        statements.forEach(s -> plugin.debug(SqlStorage.class, s));
 
         try (Connection connection = this.connectionFactory.getConnection()) {
             boolean utf8mb4Unsupported = false;
@@ -678,7 +680,7 @@ public class SqlStorage implements Storage<TradingCard> {
         final String cardId = recordResult.getValue(Cards.CARDS.CARD_ID);
         final String displayName = recordResult.getValue(Cards.CARDS.DISPLAY_NAME);
         final Rarity rarity = getRarityById(recordResult.getValue(Cards.CARDS.RARITY_ID));
-        final boolean hasShiny = toBoolean(recordResult.get(Cards.CARDS.HAS_SHINY));
+        final boolean hasShiny = toBoolean(recordResult.getValue(Cards.CARDS.HAS_SHINY));
         final Series series = getSeries(recordResult.getValue(Cards.CARDS.SERIES_ID));
         final String info = recordResult.getValue(Cards.CARDS.INFO);
         final int customModelData = recordResult.getValue(Cards.CARDS.CUSTOM_MODEL_DATA);

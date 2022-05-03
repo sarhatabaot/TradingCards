@@ -114,10 +114,6 @@ public class EditCommand extends BaseCommand {
                     }
                     storage.editCardBuyPrice(rarityId, cardId, seriesId, Double.parseDouble(value));
                 }
-                case HAS_SHINY -> {
-                    boolean hasShiny = Boolean.parseBoolean(value);
-                    storage.editCardHasShiny(rarityId,cardId,seriesId,hasShiny);
-                }
             }
 
 

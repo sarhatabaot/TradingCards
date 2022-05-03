@@ -1,8 +1,8 @@
 package net.tinetwork.tradingcards.api.config.settings;
 
-import com.github.sarhatabaot.kraken.core.config.ConfigurateFile;
 import net.tinetwork.tradingcards.api.TradingCardsPlugin;
 import net.tinetwork.tradingcards.api.card.Card;
+import net.tinetwork.tradingcards.api.config.SimpleConfigurate;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.spongepowered.configurate.ConfigurateException;
@@ -10,7 +10,7 @@ import org.spongepowered.configurate.ConfigurateException;
 /**
  * @author sarhatabaot
  */
-public abstract class GeneralConfigurate extends ConfigurateFile<TradingCardsPlugin<?>> {
+public abstract class GeneralConfigurate extends SimpleConfigurate {
     public GeneralConfigurate(final TradingCardsPlugin<? extends Card<?>> plugin, final String resourcePath, final String fileName, final String folder) throws ConfigurateException {
         super(plugin, resourcePath, fileName, folder);
     }
