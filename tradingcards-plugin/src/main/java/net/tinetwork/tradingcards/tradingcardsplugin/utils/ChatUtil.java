@@ -27,7 +27,7 @@ public class ChatUtil {
 	}
 
 	public static void sendMessage(final @NotNull CommandSender toWhom, final String message) {
-		toWhom.sendMessage(ChatColor.translateAlternateColorCodes(ALT_COLOR_CHAR, message));
+		toWhom.sendMessage(color(message));
 	}
 
 	public static @NotNull String color(Component component) {
@@ -36,7 +36,7 @@ public class ChatUtil {
 
 	@Contract("_ -> new")
 	public static @NotNull String color(String text) {
-		return ChatColor.translateAlternateColorCodes(ALT_COLOR_CHAR,text);
+		return com.github.sarhatabaot.kraken.core.chat.ChatUtil.color(text);
 	}
 
 	public static @NotNull List<String> wrapString(@NotNull String s) {

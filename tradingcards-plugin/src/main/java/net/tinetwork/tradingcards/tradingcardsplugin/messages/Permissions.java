@@ -21,6 +21,7 @@ public final class Permissions {
     public static final String ADMIN_DEBUG_RARITIES_SERIES = "cards.admin.debug.rarities.series";
     public static final String ADMIN_DEBUG_EXISTS = "cards.admin.debug.exists";
     public static final String ADMIN_DEBUG_ZIP = "cards.admin.debug.zip";
+    public static final String ADMIN_DEBUG = "cards.admin.debug";
     public static final String ADMIN_MIGRATE = "cards.admin.migrate";
     public static final String LIST = "cards.list";
     public static final String LIST_PLAYER = "cards.list.player";

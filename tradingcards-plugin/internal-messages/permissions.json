@@ -19,6 +19,7 @@
   "admin-debug-rarities-series": "cards.admin.debug.rarities.series",
   "admin-debug-exists": "cards.admin.debug.exists",
   "admin-debug-zip": "cards.admin.debug.zip",
+  "admin-debug": "cards.admin.debug",
   "admin-migrate": "cards.admin.migrate",
   "list": "cards.list",
   "list-player": "cards.list.player",

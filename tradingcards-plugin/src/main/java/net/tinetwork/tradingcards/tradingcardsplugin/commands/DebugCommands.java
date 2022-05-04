@@ -42,7 +42,7 @@ public class DebugCommands extends BaseCommand {
     }
 
     @Subcommand("debug")
-    @CommandPermission("cards.admin.debug")
+    @CommandPermission(Permissions.ADMIN_DEBUG)
     public class DebugSubCommands extends BaseCommand {
 
         public class ZipBukkitRunnable extends BukkitRunnable {

@@ -111,8 +111,8 @@ public class CardsCommand extends BaseCommand {
         Bukkit.broadcastMessage(plugin.getPrefixedMessage(messagesConfig.giveaway()
                 .replaceAll(PlaceholderUtil.PLAYER.asRegex(), sender.getName())
                 .replaceAll(PlaceholderUtil.RARITY.asRegex(), getFormattedRarity(rarityId))));
-        for (final Player p5 : Bukkit.getOnlinePlayers()) {
-            CardUtil.dropItem(p5, cardManager.getRandomCard(rarityId).build(false));
+        for (final Player player : Bukkit.getOnlinePlayers()) {
+            CardUtil.dropItem(player, cardManager.getRandomCard(rarityId).build(false));
         }
     }
 
