@@ -79,4 +79,10 @@ public class JooqRecordUtil {
         }
         return new Deck(UUID.fromString(playerUuid), deckNumber, entries);
     }
+
+    public static <T> T getOrDefault(T value, T defaultValue) {
+        if (value == null)
+            return defaultValue;
+        return value;
+    }
 }

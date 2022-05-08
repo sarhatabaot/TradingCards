@@ -491,8 +491,8 @@ public class SqlStorage implements Storage<TradingCard> {
     //From LuckPerms.
     private void applySchema() throws IOException, SQLException {
         List<String> statements;
-
-        String schemaFileName = "db/base/" + this.connectionFactory.getType().toLowerCase(Locale.ROOT) + ".sql";
+        //TODO, this should be applied via flyway and not using the schema reader.
+        String schemaFileName = "db/base/V0_" + this.connectionFactory.getType().toLowerCase(Locale.ROOT) + ".sql";
         try (InputStream is = this.plugin.getResource(schemaFileName)) {
             if (is == null) {
                 throw new IOException(InternalExceptions.NO_SCHEMA.formatted(this.connectionFactory.getType()));
@@ -678,13 +678,13 @@ public class SqlStorage implements Storage<TradingCard> {
         final String cardId = recordResult.getValue(Cards.CARDS.CARD_ID);
         final String displayName = recordResult.getValue(Cards.CARDS.DISPLAY_NAME);
         final Rarity rarity = getRarityById(recordResult.getValue(Cards.CARDS.RARITY_ID));
-        final boolean hasShiny = toBoolean(recordResult.get(Cards.CARDS.HAS_SHINY));
+        final boolean hasShiny = toBoolean(JooqRecordUtil.getOrDefault(recordResult.get(Cards.CARDS.HAS_SHINY),(byte) 0));
         final Series series = getSeries(recordResult.getValue(Cards.CARDS.SERIES_ID));
         final String info = recordResult.getValue(Cards.CARDS.INFO);
-        final int customModelData = recordResult.getValue(Cards.CARDS.CUSTOM_MODEL_DATA);
-        final double buyPrice = recordResult.getValue(Cards.CARDS.BUY_PRICE);
-        final double sellPrice = recordResult.getValue(Cards.CARDS.SELL_PRICE);
-        final DropType dropType = plugin.getDropTypeManager().getType(recordResult.get(Cards.CARDS.TYPE_ID));
+        final int customModelData = JooqRecordUtil.getOrDefault(recordResult.getValue(Cards.CARDS.CUSTOM_MODEL_DATA),0);
+        final double buyPrice = JooqRecordUtil.getOrDefault(recordResult.getValue(Cards.CARDS.BUY_PRICE),0D);
+        final double sellPrice = JooqRecordUtil.getOrDefault(recordResult.getValue(Cards.CARDS.SELL_PRICE),0D);
+        final DropType dropType = plugin.getDropTypeManager().getType(JooqRecordUtil.getOrDefault(recordResult.get(Cards.CARDS.TYPE_ID),"passive"));
         final TradingCard card = new TradingCard(cardId,plugin.getGeneralConfig().cardMaterial());
         card.displayName(displayName)
                 .rarity(rarity)
@@ -697,6 +697,8 @@ public class SqlStorage implements Storage<TradingCard> {
                 .sellPrice(sellPrice);
         return card;
     }
+
+
 
     @Override
     public List<TradingCard> getCards() {
