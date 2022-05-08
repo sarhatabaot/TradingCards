@@ -6,6 +6,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.genera
 
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.Keys;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.Minecraft;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.records.DecksRecord;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.records.RaritiesRecord;
 
 import org.jooq.Field;
@@ -13,6 +14,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row5;
+import org.jooq.Row6;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -68,6 +70,11 @@ public class Rarities extends TableImpl<RaritiesRecord> {
      * The column <code>minecraft.rarities.sell_price</code>.
      */
     public final TableField<RaritiesRecord, Double> SELL_PRICE = createField(DSL.name("sell_price"), SQLDataType.DOUBLE, this, "");
+
+    /**
+     * The column <code>minecraft.rarities.custom_order</code>.
+     */
+    public final TableField<RaritiesRecord, Integer> CUSTOM_ORDER = createField(DSL.name("custom_order"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private Rarities(Name alias, Table<RaritiesRecord> aliased) {
         this(alias, aliased, null);
@@ -143,7 +150,7 @@ public class Rarities extends TableImpl<RaritiesRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row5<String, String, String, Double, Double> fieldsRow() {
-        return (Row5) super.fieldsRow();
+    public Row6<String, String, String, Double, Double,Integer> fieldsRow() {
+        return (Row6) super.fieldsRow();
     }
 }

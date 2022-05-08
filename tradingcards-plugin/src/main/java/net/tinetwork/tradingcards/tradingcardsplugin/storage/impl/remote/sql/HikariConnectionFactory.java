@@ -66,7 +66,7 @@ public abstract class HikariConnectionFactory implements ConnectionFactory {
                 .baselineVersion("0")
                 .baselineOnMigrate(true)
                 .locations("classpath:db/migration")
-                .target("2")
+                .target("4")
                 .placeholders(Map.of("prefix", storageConfig.getTablePrefix(), "default_series_id", storageConfig.getDefaultSeriesId()))
                 .load();
 
