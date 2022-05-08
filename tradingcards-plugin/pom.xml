@@ -36,6 +36,7 @@
         <hikaricp.version>5.0.1</hikaricp.version>
         <flyway.version>8.5.10</flyway.version>
         <jooq.version>3.16.6</jooq.version>
+        <mariadb.version>2.7.4</mariadb.version>
         <!-- Others -->
         <zip4j.version>2.10.0</zip4j.version>
 
@@ -302,7 +303,7 @@
             <groupId>net.kyori</groupId>
             <artifactId>adventure-platform-bukkit</artifactId>
             <version>${adventure.bukkit.version}</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>me.clip</groupId>
@@ -329,38 +330,38 @@
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
             <version>${hikaricp.version}</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jooq</groupId>
             <artifactId>jooq</artifactId>
             <version>${jooq.version}</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jooq</groupId>
             <artifactId>jooq-meta</artifactId>
             <version>${jooq.version}</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jooq</groupId>
             <artifactId>jooq-codegen</artifactId>
             <version>${jooq.version}</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <!-- Others -->
         <dependency>
             <groupId>net.lingala.zip4j</groupId>
             <artifactId>zip4j</artifactId>
             <version>${zip4j.version}</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-mysql</artifactId>
             <version>${flyway.version}</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
 
     </dependencies>

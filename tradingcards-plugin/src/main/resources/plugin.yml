@@ -5,4 +5,14 @@ softdepend: [Vault,PlaceholderAPI]
 authors: [Xenoyia, sarhatabaot, TreasureIslandMC]
 api-version: "1.17"
 libraries:
-  - org.mariadb.jdbc:mariadb-java-client:2.7.4
+  - org.slf4j:slf4j-api:${slf4j.api.version}
+  - org.spongepowered:configurate-yaml:${configurate.version}
+  - net.kyori:adventure-api:${adventure.version}
+  - net.kyori:adventure-platform-bukkit:${adventure.bukkit.version}
+  - org.mariadb.jdbc:mariadb-java-client:${mariadb.version}
+  - com.zaxxer:HikariCP:${hikaricp.version}
+  - org.jooq:jooq:${jooq.version}
+  - org.jooq:jooq-meta:${jooq.version}
+  - org.jooq:jooq-codegen:${jooq.version}
+  - net.lingala.zip4j:zip4j:${zip4j.version}
+  - org.flywaydb:flyway-mysql:${flyway.version}
