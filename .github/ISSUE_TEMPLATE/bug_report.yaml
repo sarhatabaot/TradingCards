@@ -73,6 +73,15 @@ body:
       description: 'Please select the software your Server is running on'
       placeholder: Purpur version git-Purpur-1489
 
+  - id: tradingcards-version
+    type: textarea
+    validations:
+      required: true
+    attributes:
+      label: 'TradingCards version'
+      description: 'You can run /cards version to see what version you are running. If you are using a snapshot, please specify that as well.'
+      placeholder: TradingCards 5.7.0 API-1.17
+
   - id: minecraft-version
     type: dropdown
     validations:
