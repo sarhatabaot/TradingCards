@@ -13,7 +13,8 @@ public enum EditRarity implements Edit{
     SELL_PRICE,
     ADD_REWARD,
     REMOVE_REWARD,
-    REMOVE_ALL_REWARDS;
+    REMOVE_ALL_REWARDS,
+    CUSTOM_ORDER;
 
 
     @Contract(pure = true)

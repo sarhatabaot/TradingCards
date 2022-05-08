@@ -463,6 +463,11 @@ public class YamlStorage implements Storage<TradingCard> {
     }
 
     @Override
+    public void editRarityCustomOrder(final String rarityId, final int customOrder) {
+        throw new UnsupportedOperationException("In yaml mode, this is done by ordering the rarities in the file.");
+    }
+
+    @Override
     public void editSeriesDisplayName(final String seriesId, final String displayName) {
         seriesConfig.editDisplayName(seriesId,displayName);
     }
@@ -537,5 +542,10 @@ public class YamlStorage implements Storage<TradingCard> {
     @Override
     public int getCardsInRarityAndSeriesCount(final String rarityId, final String seriesId) {
         return getCardsInRarityAndSeries(rarityId,seriesId).size();
+    }
+
+    @Override
+    public int getRarityCustomOrder(final String rarityId) {
+        return getRarities().indexOf(getRarityById(rarityId));
     }
 }

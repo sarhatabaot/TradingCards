@@ -287,6 +287,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         commandManager.getCommandCompletions().registerCompletion(
                 "edit-rarity-value", c -> switch (c.getContextValueByName(EditRarity.class, "editRarity")) {
                     case BUY_PRICE, SELL_PRICE, DEFAULT_COLOR, DISPLAY_NAME, REMOVE_ALL_REWARDS -> Collections.singleton("");
+                    case CUSTOM_ORDER -> IntStream.rangeClosed(0, 99).boxed().map(String::valueOf).toList();
                     case ADD_REWARD, REMOVE_REWARD -> IntStream.rangeClosed(0, Objects.requireNonNullElse(rarityManager.getRarity(c.getContextValueByName(String.class, "rarityId")), TradingRarityManager.EMPTY_RARITY).getRewards().size() - 1)
                             .boxed().map(String::valueOf).toList();
                 }

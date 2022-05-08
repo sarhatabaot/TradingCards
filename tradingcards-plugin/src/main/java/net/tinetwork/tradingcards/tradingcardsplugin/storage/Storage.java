@@ -207,6 +207,8 @@ public interface Storage<T extends Card<T>> {
     void editRaritySellPrice(final String rarityId, final double sellPrice);
     void editRarityRemoveAllRewards(final String rarityId);
     void editRarityRemoveReward(final String rarityId, final int rewardNumber);
+    void editRarityCustomOrder(final String rarityId, final int customOrder);
+    int getRarityCustomOrder(final String rarityId);
     // Edit Series
     void editSeriesDisplayName(final String seriesId, final String displayName);
     void editSeriesColors(final String seriesId, final ColorSeries colors);

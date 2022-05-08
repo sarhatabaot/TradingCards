@@ -540,7 +540,9 @@ public class SqlStorage implements Storage<TradingCard> {
         return new ExecuteQuery<List<Rarity>, Result<Record>>(this, jooqSettings) {
             @Override
             public List<Rarity> onRunQuery(final DSLContext dslContext) {
-                Result<Record> result = dslContext.select().from(Rarities.RARITIES).fetch();
+                Result<Record> result = dslContext.select()
+                        .from(Rarities.RARITIES)
+                        .orderBy(Rarities.RARITIES.CUSTOM_ORDER).fetch();
                 if (result.isEmpty()) {
                     return empty();
                 }
@@ -969,6 +971,32 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
     @Override
+    public int getRarityCustomOrder(final String rarityId) {
+        return new ExecuteQuery<Integer,Result<Record>>(this,jooqSettings){
+            @Override
+            public Integer onRunQuery(final DSLContext dslContext) throws SQLException {
+                return getQuery(dslContext.select()
+                        .from(Rarities.RARITIES)
+                        .where(Rarities.RARITIES.RARITY_ID.eq(rarityId))
+                        .fetch());
+            }
+
+            @Override
+            public Integer getQuery(final @NotNull Result<Record> result) throws SQLException {
+                if(result.isEmpty())
+                    return empty();
+
+                return result.get(0).get(Rarities.RARITIES.CUSTOM_ORDER);
+            }
+
+            @Override
+            public Integer empty() {
+                return 0;
+            }
+        }.prepareAndRunQuery();
+    }
+
+    @Override
     public Set<DropType> getDropTypes() {
         return new ExecuteQuery<Set<DropType>, Result<Record>>(this, jooqSettings) {
             @Override
@@ -1315,6 +1343,20 @@ public class SqlStorage implements Storage<TradingCard> {
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.update(Rarities.RARITIES)
                         .set(Rarities.RARITIES.SELL_PRICE, sellPrice)
+                        .where(Rarities.RARITIES.RARITY_ID.eq(rarityId))
+                        .execute();
+            }
+        }.executeUpdate();
+    }
+
+
+    @Override
+    public void editRarityCustomOrder(final String rarityId, final int customOrder) {
+        new ExecuteUpdate(this,jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.update(Rarities.RARITIES)
+                        .set(Rarities.RARITIES.CUSTOM_ORDER, customOrder)
                         .where(Rarities.RARITIES.RARITY_ID.eq(rarityId))
                         .execute();
             }
