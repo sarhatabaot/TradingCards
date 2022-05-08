@@ -2,26 +2,17 @@
 -- Alter Table `${prefix}cards`
 -- -------------------------------
 ALTER TABLE `${prefix}cards`
-    ADD CONSTRAINT DF_CARDS_SHINY
-    DEFAULT 0
-    FOR is_shiny;
+    ALTER has_shiny
+    SET DEFAULT 0;
 
 ALTER TABLE `${prefix}cards`
-    ADD CONSTRAINT DF_CARDS_BUY
-    DEFAULT 0.0
-    FOR buy_price;
+    ALTER buy_price
+    SET DEFAULT 0.0;
 
 ALTER TABLE `${prefix}cards`
-    ADD CONSTRAINT DF_CARDS_SELL
-    DEFAULT 0.0
-    FOR sell_price;
+    ALTER sell_price
+    SET DEFAULT 0.0;
 
 ALTER TABLE `${prefix}cards`
-    ADD CONTRAINT DF_CARDS_INFO
-    DEFAULT ""
-    FOR info;
-
-ALTER TABLE `${prefix}cards`
-    ADD CONTRAINT DF_CARDS_CUSTOM_MODEL
-    DEFAULT 100000
-    FOR custom_model_data;
+    ALTER custom_model_data
+    SET DEFAULT 100000;
