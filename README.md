@@ -42,3 +42,14 @@ For support, you need to install additional addons:
 [Addons](https://github.com/sarhatabaot/TradingCards/wiki/Tradingcards-Addons)
 
 These are normal plugins, to install just place in your plugins folder.
+
+## Building TradingCards
+```
+mvn clean package
+```
+
+Any class files in the "messages" package are automatically generated from the "internal-messages" folder.
+To generate them run `messages:generate` & `formatter:format`.
+You should probably add these as a compound configuration in your ide.
+See more info about the usage [https://github.com/sarhatabaot/messages-core](https://github.com/sarhatabaot/messages-core)
+
