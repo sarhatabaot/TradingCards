@@ -27,7 +27,7 @@ public class ChatUtil {
 	}
 
 	public static void sendMessage(final @NotNull CommandSender toWhom, final String message) {
-		toWhom.sendMessage(color(message));
+		com.github.sarhatabaot.kraken.core.chat.ChatUtil.sendMessage(toWhom,message);
 	}
 
 	public static @NotNull String color(Component component) {
