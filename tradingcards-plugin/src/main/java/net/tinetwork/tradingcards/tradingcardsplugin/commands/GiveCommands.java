@@ -120,7 +120,7 @@ public class GiveCommands extends BaseCommand {
             try {
                 String rare = plugin.getCardManager().getRandomRarity(CardUtil.getMobType(entityType), true);
                 plugin.debug(getClass(), "RarityId: " + rare);
-                ChatUtil.sendPrefixedMessage(sender,
+                ChatUtil.sendMessage(sender,
                         plugin.getMessagesConfig().giveRandomCardMsg().replaceAll(PlaceholderUtil.PLAYER.asRegex(), player.getName()));
                 CardUtil.dropItem(player, plugin.getCardManager().getRandomCard(rare).build(false));
             } catch (IllegalArgumentException exception) {

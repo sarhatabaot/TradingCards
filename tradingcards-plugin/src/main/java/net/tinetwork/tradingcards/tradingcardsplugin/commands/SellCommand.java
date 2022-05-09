@@ -41,7 +41,7 @@ public class SellCommand extends BaseCommand {
 
             final NBTItem nbtItem = new NBTItem(player.getInventory().getItemInMainHand());
             if (!CardUtil.isCard(nbtItem)) {
-                ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().notACard());
+                ChatUtil.sendMessage(player, plugin.getMessagesConfig().notACard());
                 return;
             }
 

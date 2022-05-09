@@ -43,7 +43,7 @@ public class DeckCommand extends BaseCommand {
 		}
 
 		if(!plugin.getGeneralConfig().deckInCreative() && player.getGameMode() == GameMode.CREATIVE) {
-			ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().deckCreativeError());
+			ChatUtil.sendMessage(player, plugin.getMessagesConfig().deckCreativeError());
 			return;
 		}
 
@@ -54,7 +54,7 @@ public class DeckCommand extends BaseCommand {
 		if (!deckManager.hasDeckItem(player, deckNumber)) {
 			CardUtil.dropItem(player, deckManager.getNbtItem(player, deckNumber));
 		} else {
-			ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().alreadyHaveDeck());
+			ChatUtil.sendMessage(player, plugin.getMessagesConfig().alreadyHaveDeck());
 		}
 	}
 }

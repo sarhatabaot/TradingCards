@@ -250,7 +250,7 @@ public class CardUtil {
 
     public static boolean hasVault(final CommandSender player) {
         if (!plugin.isHasVault()) {
-            ChatUtil.sendPrefixedMessage(player, plugin.getMessagesConfig().noVault());
+            ChatUtil.sendMessage(player, plugin.getMessagesConfig().noVault());
             return false;
         }
         return true;

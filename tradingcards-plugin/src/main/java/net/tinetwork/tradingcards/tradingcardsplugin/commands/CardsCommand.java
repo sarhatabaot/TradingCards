@@ -61,7 +61,7 @@ public class CardsCommand extends BaseCommand {
     @CommandPermission(Permissions.RELOAD)
     @Description("Reloads all the configs.")
     public void onReload(final CommandSender sender) {
-        ChatUtil.sendPrefixedMessage(sender, messagesConfig.reload());
+        ChatUtil.sendMessage(sender, messagesConfig.reload());
         plugin.reloadPlugin();
     }
 

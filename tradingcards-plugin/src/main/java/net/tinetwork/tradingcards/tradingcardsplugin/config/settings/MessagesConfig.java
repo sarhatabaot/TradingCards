@@ -11,12 +11,12 @@ import java.io.File;
 public class MessagesConfig extends ConfigurateFile<TradingCards> {
     private String prefix;
     private Message reload;
-    private Message noCard; //p
-    private Message noPlayer; //p
+    private Message noCard;
+    private Message noPlayer;
     private Message noCmd;
-    private Message noEntity; //p
-    private Message noCreative; //p
-    private Message noRarity; //p
+    private Message noEntity;
+    private Message noCreative;
+    private Message noRarity;
     private Message noBoosterPack;
     private String scheduledGiveaway;
     private String giveaway;
@@ -32,35 +32,35 @@ public class MessagesConfig extends ConfigurateFile<TradingCards> {
     private String giveawayNaturalNoPlayer;
     private Message giveRandomCard;
     private Message giveRandomCardMsg;
-    private Message boosterPackMsg; //p
+    private Message boosterPackMsg;
     private String openBoosterPack;
     private String listError;
-    private Message canBuy; //p
-    private Message canNotBuy; //p
-    private Message canSell; //p
-    private Message canNotSell; //p
+    private Message canBuy;
+    private Message canNotBuy;
+    private Message canSell;
+    private Message canNotSell;
     private String chooseCard;
     private String chooseRarity;
     private String choosePack;
-    private Message cannotBeBought; //p
-    private Message notEnoughMoney; //p
-    private Message boughtCard; //p
-    private Message notACard; //p
-    private Message cardDoesntExist; //p
-    private Message packDoesntExist; //p
-    private Message noVault; //p
-    private Message deckCreativeError; //p
-    private Message giveDeck; //p
-    private Message giveCard; //p
-    private Message givePack; //p
-    private Message alreadyHaveDeck; //p
+    private Message cannotBeBought;
+    private Message notEnoughMoney;
+    private Message boughtCard;
+    private Message notACard;
+    private Message cardDoesntExist;
+    private Message packDoesntExist;
+    private Message noVault;
+    private Message deckCreativeError;
+    private Message giveDeck;
+    private Message giveCard;
+    private Message givePack;
+    private Message alreadyHaveDeck;
     private String maxDecks;
     private String createNoName;
     private String createExists;
     private String createSuccess;
     private String timerMessage;
-    private String toggleEnabled;
-    private String toggleDisabled;
+    private Message toggleEnabled;
+    private Message toggleDisabled;
     private String resolveMsg;
     private String resolveError;
     private String rewardError;
@@ -74,7 +74,7 @@ public class MessagesConfig extends ConfigurateFile<TradingCards> {
     private String sectionFormatComplete;
     private String packSection;
 
-    private String deckInventoryTitle;
+    private Message deckInventoryTitle;
 
 
     public MessagesConfig(TradingCards plugin) throws ConfigurateException {
@@ -132,8 +132,8 @@ public class MessagesConfig extends ConfigurateFile<TradingCards> {
         this.createExists = rootNode.node("create-exists").getString(Messages.CREATE_EXISTS);
         this.createSuccess = rootNode.node("create-success").getString(Messages.CREATE_SUCCESS);
         this.timerMessage = rootNode.node("timer-message").getString(Messages.TIMER_MESSAGE);
-        this.toggleEnabled = rootNode.node("toggle-enabled").getString(Messages.TOGGLE_ENABLED);
-        this.toggleDisabled = rootNode.node("toggle-disabled").getString(Messages.TOGGLE_DISABLED);
+        this.toggleEnabled = new Message(true, rootNode.node("toggle-enabled").getString(Messages.TOGGLE_ENABLED));
+        this.toggleDisabled = new Message(true, rootNode.node("toggle-disabled").getString(Messages.TOGGLE_DISABLED));
         this.resolveMsg = rootNode.node("resolve-msg").getString(Messages.RESOLVE_MSG);
         this.resolveError = rootNode.node("resolve-error").getString(Messages.RESOLVE_ERROR);
         this.rewardError = rootNode.node("reward-error").getString(Messages.REWARD_ERROR);
@@ -146,7 +146,7 @@ public class MessagesConfig extends ConfigurateFile<TradingCards> {
         this.packSection = rootNode.node("pack-section").getString(Messages.PACK_SECTION);
         this.sectionFormatPlayer = rootNode.node("section-format-player").getString(Messages.SECTION_FORMAT_PLAYER);
 
-        this.deckInventoryTitle = rootNode.node("deck-inventory-title").getString(Messages.DECK_INVENTORY_TITLE);
+        this.deckInventoryTitle = new Message(false, rootNode.node("deck-inventory-title").getString(Messages.DECK_INVENTORY_TITLE));
         this.givePack = new Message(true, rootNode.node("give-booster-pack-msg").getString(Messages.GIVE_BOOSTER_PACK_MSG));
     }
 
@@ -363,11 +363,11 @@ public class MessagesConfig extends ConfigurateFile<TradingCards> {
     }
 
     public String toggleEnabled() {
-        return toggleEnabled;
+        return toggleEnabled.getFormatted();
     }
 
     public String toggleDisabled() {
-        return toggleDisabled;
+        return toggleDisabled.getFormatted();
     }
 
     public String resolveMsg() {
@@ -403,7 +403,7 @@ public class MessagesConfig extends ConfigurateFile<TradingCards> {
     }
 
     public String deckInventoryTitle(){
-        return deckInventoryTitle;
+        return deckInventoryTitle.getFormatted();
     }
 
     public String givePack() {
