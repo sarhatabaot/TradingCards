@@ -104,7 +104,7 @@ public class CardsCommand extends BaseCommand {
     @CommandCompletion("@rarities")
     public void onGiveawayRarity(final CommandSender sender, final String rarityId) {
         if (plugin.getRarityManager().getRarity(rarityId) == null) {
-            ChatUtil.sendPrefixedMessage(sender, messagesConfig.noRarity());
+            ChatUtil.sendMessage(sender, messagesConfig.noRarity());
             return;
         }
 
@@ -155,8 +155,8 @@ public class CardsCommand extends BaseCommand {
                 messagesConfig.canBuy().replaceAll(PlaceholderUtil.BUY_AMOUNT.asRegex(), String.valueOf(buyPrice)) : messagesConfig.canNotBuy();
         final String sellMessage = (sellPrice > 0.0D) ? messagesConfig.canSell().replaceAll(PlaceholderUtil.SELL_AMOUNT.asRegex(), String.valueOf(sellPrice)) : messagesConfig.canNotSell();
         debug(InternalDebug.CardsCommand.BUY_SELL_PRICE.formatted(buyPrice,sellPrice));
-        ChatUtil.sendPrefixedMessage(player, buyMessage);
-        ChatUtil.sendPrefixedMessage(player, sellMessage);
+        ChatUtil.sendMessage(player, buyMessage);
+        ChatUtil.sendMessage(player, sellMessage);
     }
 
 }
