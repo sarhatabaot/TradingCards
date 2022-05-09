@@ -46,11 +46,11 @@ public interface Storage<T extends Card<T>> {
     /**
      *
      * @param playerUuid Player UUID
-     * @param card The card id
-     * @param rarity The rarity id
+     * @param cardId The card id
+     * @param rarityId The rarity id
      * @return Returns if the player has this card in a deck. Will return true if the card is shiny.
      */
-    boolean hasCard(UUID playerUuid, String card, String rarity);
+    boolean hasCard(UUID playerUuid, String cardId, String rarityId, String seriesId);
 
     /**
      *
@@ -59,7 +59,7 @@ public interface Storage<T extends Card<T>> {
      * @param rarity The rarity id
      * @return Returns if the player has this shiny card in a deck.
      */
-    boolean hasShinyCard(UUID playerUuid, String card, String rarity);
+    boolean hasShinyCard(UUID playerUuid, String card, String rarity, String seriesId);
 
     /**
      * Returns the storage type used.

@@ -395,15 +395,16 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
     @Override
-    public boolean hasCard(final UUID playerUuid, final String card, final String rarity) {
+    public boolean hasCard(final UUID playerUuid, final String cardId, final String rarityId, final String seriesId) {
         return new ExecuteQuery<Boolean, Result<Record>>(this, jooqSettings) {
             @Override
             public Boolean onRunQuery(final DSLContext dslContext) {
                 return getQuery(dslContext.select()
                         .from(Decks.DECKS)
                         .where(Decks.DECKS.UUID.eq(playerUuid.toString())
-                                .and(Decks.DECKS.CARD_ID.eq(card)
-                                        .and(Decks.DECKS.RARITY_ID.eq(rarity))
+                                .and(Decks.DECKS.CARD_ID.eq(cardId)
+                                        .and(Decks.DECKS.RARITY_ID.eq(rarityId))
+                                        .and(Decks.DECKS.SERIES_ID.eq(seriesId))
                                         .and(Decks.DECKS.IS_SHINY.eq((byte) 0))))
                         .fetch());
             }
@@ -421,15 +422,16 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
     @Override
-    public boolean hasShinyCard(final UUID playerUuid, final String card, final String rarity) {
+    public boolean hasShinyCard(final UUID playerUuid, final String cardId, final String rarityId,final String seriesId) {
         return new ExecuteQuery<Boolean, Result<Record>>(this, jooqSettings) {
             @Override
             public Boolean onRunQuery(final DSLContext dslContext) {
                 return getQuery(dslContext.select()
                         .from(Decks.DECKS)
                         .where(Decks.DECKS.UUID.eq(playerUuid.toString())
-                                .and(Decks.DECKS.CARD_ID.eq(card)
-                                        .and(Decks.DECKS.RARITY_ID.eq(rarity))
+                                .and(Decks.DECKS.CARD_ID.eq(cardId)
+                                        .and(Decks.DECKS.RARITY_ID.eq(rarityId))
+                                        .and(Decks.DECKS.SERIES_ID.eq(seriesId))
                                         .and(Decks.DECKS.IS_SHINY.eq((byte) 1))))
                         .fetch());
             }

@@ -114,12 +114,12 @@ public class YamlStorage implements Storage<TradingCard> {
     }
 
     @Override
-    public boolean hasCard(final UUID playerUuid, final String card, final String rarity) {
-        return deckConfig.containsCard(playerUuid,card,rarity);
+    public boolean hasCard(final UUID playerUuid, final String cardId, final String rarityId,final String seriesId) {
+        return deckConfig.containsCard(playerUuid, cardId, rarityId);
     }
 
     @Override
-    public boolean hasShinyCard(final UUID playerUuid, final String card, final String rarity) {
+    public boolean hasShinyCard(final UUID playerUuid, final String card, final String rarity,final String seriesId) {
         return deckConfig.containsShinyCard(playerUuid,card,rarity);
     }
 

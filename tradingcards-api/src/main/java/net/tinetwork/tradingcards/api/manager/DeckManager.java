@@ -18,7 +18,6 @@ public interface DeckManager {
     void openDeck(@NotNull final Player player, final int deckNum);
 
     /**
-     *
      * @param player
      * @param deckNumber
      * @return
@@ -59,7 +58,7 @@ public interface DeckManager {
      * @param rarityId
      * @return
      */
-    boolean hasCard(final Player player,final  String cardId,final  String rarityId);
+    boolean hasCard(final Player player, final String cardId, final String rarityId, final String seriesId);
 
     /**
      * @param player
@@ -67,7 +66,7 @@ public interface DeckManager {
      * @param rarityId
      * @return
      */
-    boolean hasShinyCard(final Player player, final  String cardId, final  String rarityId);
+    boolean hasShinyCard(final Player player, final String cardId, final String rarityId, final String seriesId);
 
     /**
      * @param uuid
