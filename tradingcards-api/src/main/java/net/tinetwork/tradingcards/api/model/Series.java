@@ -39,6 +39,8 @@ public class Series {
     }
 
     public String getDisplayName() {
+        if(displayName == null || displayName.isEmpty())
+            return id.replace("_"," ");
         return displayName;
     }
     
