@@ -2,6 +2,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
 
 import com.github.sarhatabaot.kraken.core.config.ConfigurateFile;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.Messages;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import org.spongepowered.configurate.ConfigurateException;
 
@@ -82,15 +83,15 @@ public class MessagesConfig extends ConfigurateFile<TradingCards> {
 
     @Override
     protected void initValues() throws ConfigurateException {
-        this.prefix = rootNode.node("prefix").getString("Cards > ");
-        this.reload = new Message(true, rootNode.node("reload").getString("Reloaded config."));
-        this.noCard = new Message(true, rootNode.node("no-card").getString("No such card exists! make sure to use the exact card name!"));
-        this.noPlayer = new Message(true, rootNode.node("no-player").getString("That player does not exist!"));
-        this.noCmd = new Message(true, rootNode.node("no-cmd").getString("Invalid command!"));
-        this.noEntity = new Message(true, rootNode.node("no-entity").getString("that entity/mob does not exist!"));
-        this.noCreative = new Message(true, rootNode.node("no-creative").getString("you cannot open booster packs in creative!"));
-        this.noRarity = new Message(true, rootNode.node("no-rarity").getString("that rarity does not exist!"));
-        this.noBoosterPack = new Message(true, rootNode.node("no-booster-pack").getString("that booster pack does not exist!"));
+        this.prefix = rootNode.node("prefix").getString(Messages.PREFIX);
+        this.reload = new Message(true, rootNode.node("reload").getString(Messages.RELOAD));
+        this.noCard = new Message(true, rootNode.node("no-card").getString(Messages.NO_CARD));
+        this.noPlayer = new Message(true, rootNode.node("no-player").getString(Messages.NO_PLAYER));
+        this.noCmd = new Message(true, rootNode.node("no-cmd").getString(Messages.NO_CMD));
+        this.noEntity = new Message(true, rootNode.node("no-entity").getString(Messages.NO_ENTITY));
+        this.noCreative = new Message(true, rootNode.node("no-creative").getString(Messages.NO_CREATIVE));
+        this.noRarity = new Message(true, rootNode.node("no-rarity").getString(Messages.NO_RARITY));
+        this.noBoosterPack = new Message(true, rootNode.node("no-booster-pack").getString(Messages.NO_BOOSTER_PACK));
         this.scheduledGiveaway = rootNode.node("scheduled-giveaway").getString();
         this.giveaway = rootNode.node("giveaway").getString();
         this.giveawayNatural = rootNode.node("giveaway-natural").getString();
