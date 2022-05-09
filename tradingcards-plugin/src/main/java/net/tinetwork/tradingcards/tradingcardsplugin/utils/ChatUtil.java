@@ -22,12 +22,12 @@ public class ChatUtil {
 		ChatUtil.plugin = plugin;
 	}
 
-	public static void sendPrefixedMessage(final CommandSender toWhom, final String message) {
-		sendMessage(toWhom, plugin.getPrefixedMessage(message));
+	public static void sendPrefixedMessage(final CommandSender target, final String message) {
+		sendMessage(target, plugin.getPrefixedMessage(message));
 	}
 
-	public static void sendMessage(final @NotNull CommandSender toWhom, final String message) {
-		com.github.sarhatabaot.kraken.core.chat.ChatUtil.sendMessage(toWhom,message);
+	public static void sendMessage(final @NotNull CommandSender target, final String message) {
+		com.github.sarhatabaot.kraken.core.chat.ChatUtil.sendMessage(target,message);
 	}
 
 	public static @NotNull String color(Component component) {
