@@ -42,15 +42,15 @@ public class GiveCommands extends BaseCommand {
         public class CardSubCommand extends BaseCommand {
             @Default
             @Description("Gives yourself a card.")
-            public void onDefault(final Player player, @Single final String rarityId, @Single final String cardId) {
-                onPlayer(player, player.getName(), rarityId, cardId, false);
+            public void onDefault(final Player player, @Single final String rarityId, @Single final String cardId, @Single final String seriesId) {
+                onPlayer(player, player.getName(), rarityId, cardId, seriesId, false);
             }
 
             @Subcommand("player")
             @CommandPermission(Permissions.GIVE_CARD_PLAYER)
             @CommandCompletion("@players @rarities @cards")
-            public void onPlayer(final CommandSender sender, @Single final String playerName, @Single final String rarityId, @Single final String cardId, @Single final boolean shiny) {
-                TradingCard card = plugin.getCardManager().getCard(cardId, rarityId, shiny);
+            public void onPlayer(final CommandSender sender, @Single final String playerName, @Single final String rarityId, @Single final String cardId, @Single final String seriesId, @Single final boolean shiny) {
+                TradingCard card = plugin.getCardManager().getCard(cardId, rarityId, seriesId, shiny);
                 if (shiny && !card.hasShiny()) {
                     ChatUtil.sendPrefixedMessage(sender, "This card does not have a shiny version.");
                     return;
@@ -79,8 +79,8 @@ public class GiveCommands extends BaseCommand {
             @CommandPermission(Permissions.GIVE_CARD_SHINY)
             @CommandCompletion("@rarities @cards")
             @Description("Gives a shiny card.")
-            public void onShiny(final Player player, @Single final String rarityId, @Single final String cardId) {
-                onPlayer(player, player.getName(), rarityId, cardId, true);
+            public void onShiny(final Player player, @Single final String rarityId, @Single final String cardId,@Single final String seriesId) {
+                onPlayer(player, player.getName(), rarityId, cardId, seriesId,true);
             }
         }
 
