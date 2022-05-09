@@ -26,6 +26,9 @@ public class PlaceholderUtil {
     public static final InternalPlaceholder SHINY_PREFIX = new InternalPlaceholder("%shiny_prefix%");
     public static final InternalPlaceholder SHINY_PREFIX_ALT = new InternalPlaceholder("%shinyprefix%");
     public static final InternalPlaceholder AMOUNT = new InternalPlaceholder("%amount%");
+    public static final InternalPlaceholder CARDS_OWNED = new InternalPlaceholder("%cards_owned%");
+    public static final InternalPlaceholder SHINY_CARDS_OWNED = new InternalPlaceholder("%shiny_cards_owned%");
+    public static final InternalPlaceholder CARDS_TOTAL = new InternalPlaceholder("%cards_total%");
 
     public record InternalPlaceholder(String placeholder) {
         @Contract(pure = true)
