@@ -1,7 +1,5 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.messages.settings;
 
-import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalExceptions;
-
 public final class Messages {
     public static final String PREFIX = "&7[&fCards&7]&7 ";
     public static final String RELOAD = "Successfully reloaded config!";
@@ -12,6 +10,7 @@ public final class Messages {
     public static final String NO_CREATIVE = "you cannot open booster packs in creative!";
     public static final String NO_RARITY = "That rarity does not exist!";
     public static final String NO_BOOSTER_PACK = "That booster pack does not exist!";
+    public static final String NO_SERIES = "That series does not exist!";
     public static final String SCHEDULED_GIVEAWAY = "A card has been given to everyone on the server!";
     public static final String GIVEAWAY = "%player% has given everyone a random card of rarity %rarity%!";
     public static final String GIVEAWAY_NATURAL = "%player% has given everyone a random card!";

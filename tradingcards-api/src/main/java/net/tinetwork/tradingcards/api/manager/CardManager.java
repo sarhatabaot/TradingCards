@@ -24,6 +24,7 @@ public interface CardManager<T extends Card<T>> {
      * @param forcedShiny Force the card to be shiny.
      * @return The card.
      */
+    @Deprecated
     T getCard(final String cardId, final String rarityId, final boolean forcedShiny);
 
     T getCard(final String cardId, final String rarityId, final String seriesId, final boolean forcedShiny);
@@ -33,6 +34,8 @@ public interface CardManager<T extends Card<T>> {
      * @param forcedShiny Force the card to be shiny.
      * @return The card.
      */
+    //We should reconsider this method all together.
+    //We can get the active series and get the cards from that. Is there really a need for this method?
     T getActiveCard(final String cardId, final String rarityId, final boolean forcedShiny);
     /**
      * @param cardId The card id.
@@ -46,26 +49,28 @@ public interface CardManager<T extends Card<T>> {
      * @param forcedShiny  Force the card to be shiny.
      * @return A random card from a rarity.
      */
-    T getRandomCard(final String rarityId, final boolean forcedShiny);
+    T getRandomCardByRarity(final String rarityId, final boolean forcedShiny);
 
     /**
      * @param rarityId The rarity id.
      * @return A random card from a rarity.
      */
-    T getRandomCard(final String rarityId);
+    T getRandomCardByRarity(final String rarityId);
+
+    T getRandomCardBySeries(final String seriesId);
 
     /**
      * @param rarityId The rarity id.
      * @param forcedShiny  Force the card to be shiny.
      * @return A random active card.
      */
-    T getRandomActiveCard(final String rarityId, final boolean forcedShiny);
+    T getRandomActiveCardByRarity(final String rarityId, final boolean forcedShiny);
 
     /**
      * @param rarityId The rarity id.
      * @return A random active card.
      */
-    T getRandomActiveCard(final String rarityId);
+    T getRandomActiveCardByRarity(final String rarityId);
 
 
     /**
@@ -73,14 +78,16 @@ public interface CardManager<T extends Card<T>> {
      * @param alwaysDrop Should the card always drop.
      * @return A random rarity
      */
+    //We might want to get a Rarity object from this.
     String getRandomRarity(final DropType dropType, boolean alwaysDrop);
 
     /**
      * @param rarityId The rarity id
      * @return returns a list of cards from a rarity.
      */
+    //this should be cached
     List<T> getRarityCardList(final String rarityId);
-
+    List<T> getSeriesCardList(final String seriesId);
     /**
      * @param rarityId The rarity id
      * @return returns a list of cards names from a rarity.

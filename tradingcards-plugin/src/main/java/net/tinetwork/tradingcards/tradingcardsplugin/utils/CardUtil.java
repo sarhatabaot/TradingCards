@@ -11,7 +11,6 @@ import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.DropTypeManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingCardManager;
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.World;
@@ -97,7 +96,7 @@ public class CardUtil {
         broadcastPrefixedMessage(getGiveawayMessage(mob, sender));
         for (final Player p : Bukkit.getOnlinePlayers()) {
             String rare = cardManager.getRandomRarity(CardUtil.getMobType(mob), true);
-            CardUtil.dropItem(p, cardManager.getRandomCard(rare).build(false));
+            CardUtil.dropItem(p, cardManager.getRandomCardByRarity(rare).build(false));
         }
     }
 

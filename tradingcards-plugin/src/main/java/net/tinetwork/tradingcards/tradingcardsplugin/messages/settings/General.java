@@ -1,7 +1,5 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.messages.settings;
 
-import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalExceptions;
-
 public final class General {
     public static final Boolean DEBUG_MODE = false;
     public static final Boolean USE_DEFAULT_CARDS_FILE = true;

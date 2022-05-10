@@ -80,7 +80,7 @@ public class PackListener extends SimpleListener {
         if (amount <= 0)
             return;
         for (var i = 0; i < amount; i++) {
-            TradingCard randomCard = plugin.getCardManager().getRandomCard(rarity,series);
+            TradingCard randomCard = plugin.getCardManager().getRandomCardByRarityAndSeries(rarity,series);
             boolean isShiny = randomCard.hasShiny() && CardUtil.calculateIfShiny(false);
             CardUtil.dropItem(player, randomCard.build(isShiny));
         }

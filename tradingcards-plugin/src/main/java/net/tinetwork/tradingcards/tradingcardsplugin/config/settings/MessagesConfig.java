@@ -18,6 +18,7 @@ public class MessagesConfig extends ConfigurateFile<TradingCards> {
     private Message noCreative;
     private Message noRarity;
     private Message noBoosterPack;
+    private Message noSeries;
     private String scheduledGiveaway;
     private String giveaway;
     private String giveawayNatural;
@@ -92,6 +93,7 @@ public class MessagesConfig extends ConfigurateFile<TradingCards> {
         this.noCreative = new Message(true, rootNode.node("no-creative").getString(Messages.NO_CREATIVE));
         this.noRarity = new Message(true, rootNode.node("no-rarity").getString(Messages.NO_RARITY));
         this.noBoosterPack = new Message(true, rootNode.node("no-booster-pack").getString(Messages.NO_BOOSTER_PACK));
+        this.noSeries = new Message(true,rootNode.node("no-series").getString(Messages.NO_SERIES));
         this.scheduledGiveaway = rootNode.node("scheduled-giveaway").getString(Messages.SCHEDULED_GIVEAWAY);
         this.giveaway = rootNode.node("giveaway").getString(Messages.GIVEAWAY);
         this.giveawayNatural = rootNode.node("giveaway-natural").getString(Messages.GIVEAWAY_NATURAL);
@@ -188,6 +190,10 @@ public class MessagesConfig extends ConfigurateFile<TradingCards> {
 
     public String noCmd() {
         return noCmd.getFormatted();
+    }
+
+    public String noSeries() {
+        return noSeries.getFormatted();
     }
 
     public String noEntity() {

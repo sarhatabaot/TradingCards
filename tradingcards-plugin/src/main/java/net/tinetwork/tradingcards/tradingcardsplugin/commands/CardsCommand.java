@@ -88,48 +88,6 @@ public class CardsCommand extends BaseCommand {
         }
     }
 
-
-    private String getFormattedRarity(final String rarityId) {
-        for (final Rarity rarityKey : plugin.getRarityManager().getRarities()) {
-            if (rarityKey.getId().equalsIgnoreCase(rarityId.replace("_", " "))) {
-                return rarityKey.getId();
-            }
-        }
-        return "";
-    }
-
-    @Subcommand("giveaway rarity")
-    @CommandPermission(Permissions.GIVEAWAY_RARITY)
-    @Description("Give away a random card by rarity to the server.")
-    @CommandCompletion("@rarities")
-    public void onGiveawayRarity(final CommandSender sender, final String rarityId) {
-        if (plugin.getRarityManager().getRarity(rarityId) == null) {
-            ChatUtil.sendMessage(sender, messagesConfig.noRarity());
-            return;
-        }
-
-        Bukkit.broadcastMessage(plugin.getPrefixedMessage(messagesConfig.giveaway()
-                .replaceAll(PlaceholderUtil.PLAYER.asRegex(), sender.getName())
-                .replaceAll(PlaceholderUtil.RARITY.asRegex(), getFormattedRarity(rarityId))));
-        for (final Player player : Bukkit.getOnlinePlayers()) {
-            CardUtil.dropItem(player, cardManager.getRandomCard(rarityId).build(false));
-        }
-    }
-
-
-    @Subcommand("giveaway entity")
-    @CommandPermission(Permissions.GIVEAWAY_ENTITY)
-    @Description("Give away a random card by entity to the server.")
-    public void onGiveawayMob(final CommandSender sender, final String entity) {
-        if (plugin.isMob(entity)) {
-            if (sender instanceof ConsoleCommandSender) {
-                CardUtil.giveawayNatural(EntityType.valueOf(entity.toUpperCase()), null);
-            } else {
-                CardUtil.giveawayNatural(EntityType.valueOf(entity.toUpperCase()), (Player) sender);
-            }
-        }
-    }
-
     @Subcommand("worth")
     @CommandPermission(Permissions.WORTH)
     @Description("Shows a card's worth.")

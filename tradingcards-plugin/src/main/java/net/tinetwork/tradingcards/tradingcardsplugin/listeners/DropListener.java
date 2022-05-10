@@ -82,7 +82,7 @@ public class DropListener extends SimpleListener {
             return;
 
         //Get the card
-        TradingCard randomCard = plugin.getCardManager().getRandomActiveCard(rarityName);
+        TradingCard randomCard = plugin.getCardManager().getRandomActiveCardByRarity(rarityName);
         if (randomCard instanceof EmptyCard) {
             return;
         }

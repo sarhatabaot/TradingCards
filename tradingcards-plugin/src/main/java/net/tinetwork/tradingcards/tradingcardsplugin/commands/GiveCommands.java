@@ -48,7 +48,7 @@ public class GiveCommands extends BaseCommand {
 
             @Subcommand("player")
             @CommandPermission(Permissions.GIVE_CARD_PLAYER)
-            @CommandCompletion("@players @rarities @cards")
+            @CommandCompletion("@players @rarities @cards @series")
             public void onPlayer(final CommandSender sender, @Single final String playerName, @Single final String rarityId, @Single final String cardId, @Single final String seriesId, @Single final boolean shiny) {
                 TradingCard card = plugin.getCardManager().getCard(cardId, rarityId, seriesId, shiny);
                 if (shiny && !card.hasShiny()) {
@@ -122,7 +122,7 @@ public class GiveCommands extends BaseCommand {
                 plugin.debug(getClass(), "RarityId: " + rare);
                 ChatUtil.sendMessage(sender,
                         plugin.getMessagesConfig().giveRandomCardMsg().replaceAll(PlaceholderUtil.PLAYER.asRegex(), player.getName()));
-                CardUtil.dropItem(player, plugin.getCardManager().getRandomCard(rare).build(false));
+                CardUtil.dropItem(player, plugin.getCardManager().getRandomCardByRarity(rare).build(false));
             } catch (IllegalArgumentException exception) {
                 player.sendMessage(plugin.getMessagesConfig().noEntity());
             }
@@ -142,7 +142,7 @@ public class GiveCommands extends BaseCommand {
 
             plugin.debug(GiveCommands.class, "RarityId: " + rarityId);
             sender.sendMessage(plugin.getMessagesConfig().giveRandomCardMsg().replaceAll(PlaceholderUtil.PLAYER.asRegex(), player.getName()));
-            CardUtil.dropItem(player, plugin.getCardManager().getRandomCard(rarityId).build(false));
+            CardUtil.dropItem(player, plugin.getCardManager().getRandomCardByRarity(rarityId).build(false));
         }
     }
 }
