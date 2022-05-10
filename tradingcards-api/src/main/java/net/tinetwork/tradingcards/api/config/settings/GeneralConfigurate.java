@@ -61,8 +61,6 @@ public abstract class GeneralConfigurate extends ConfigurateFile<TradingCardsPlu
 
     public abstract boolean useDeckItem();
 
-    public abstract boolean useLargeDecks();
-
     public abstract boolean debugMode();
 
     public abstract String cardPrefix();

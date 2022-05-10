@@ -3,6 +3,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
 import com.github.sarhatabaot.kraken.core.config.ConfigurateFile;
 import net.tinetwork.tradingcards.api.TradingCardsPlugin;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.settings.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.StorageType;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
@@ -15,7 +16,7 @@ import java.io.File;
 public class StorageConfig extends ConfigurateFile<TradingCards> {
     private StorageType type;
     private String address;
-    private String port;
+    private int port;
     private String database;
 
     private String username;
@@ -32,18 +33,18 @@ public class StorageConfig extends ConfigurateFile<TradingCards> {
 
     @Override
     protected void initValues() throws ConfigurateException {
-        this.type = StorageType.valueOf(rootNode.node("storage-type").getString("YAML"));
+        this.type = StorageType.valueOf(rootNode.node("storage-type").getString(Storage.STORAGE_TYPE));
 
         final ConfigurationNode dataNode = rootNode.node("database");
-        this.address = dataNode.node("address").getString("localhost");
-        this.port = dataNode.node("port").getString("3306");
-        this.database = dataNode.node("database").getString("minecraft");
-        this.username = dataNode.node("username").getString("username");
-        this.password = dataNode.node("password").getString();
-        this.tablePrefix = dataNode.node("table-prefix").getString("tradingcards_");
+        this.address = dataNode.node("address").getString(Storage.Database.ADDRESS);
+        this.port = dataNode.node("port").getInt(Storage.Database.PORT);
+        this.database = dataNode.node("database").getString(Storage.Database.DATABASE);
+        this.username = dataNode.node("username").getString(Storage.Database.USERNAME);
+        this.password = dataNode.node("password").getString(Storage.Database.PASSWORD);
+        this.tablePrefix = dataNode.node("table-prefix").getString(Storage.Database.TABLE_PREFIX);
 
         final ConfigurationNode dbMigration = rootNode.node("database-migration");
-        this.defaultSeriesId = dbMigration.node("default-series-id").getString("default");
+        this.defaultSeriesId = dbMigration.node("default-series-id").getString(Storage.DatabaseMigration.DEFAULT_SERIES_ID);
     }
 
     @Override
@@ -59,7 +60,7 @@ public class StorageConfig extends ConfigurateFile<TradingCards> {
         return address;
     }
 
-    public String getPort() {
+    public int getPort() {
         return port;
     }
 

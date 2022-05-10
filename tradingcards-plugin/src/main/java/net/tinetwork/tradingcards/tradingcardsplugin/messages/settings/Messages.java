@@ -1,4 +1,6 @@
-package net.tinetwork.tradingcards.tradingcardsplugin.messages;
+package net.tinetwork.tradingcards.tradingcardsplugin.messages.settings;
+
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalExceptions;
 
 public final class Messages {
     public static final String PREFIX = "&7[&fCards&7]&7 ";

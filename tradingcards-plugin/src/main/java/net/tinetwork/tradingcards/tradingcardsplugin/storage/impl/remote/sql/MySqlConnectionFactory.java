@@ -17,7 +17,7 @@ public class MySqlConnectionFactory extends HikariConnectionFactory{
     }
 
     @Override
-    protected void configureDatabase(final HikariConfig config, final String address, final String port, final String databaseName, final String username, final String password) {
+    protected void configureDatabase(final HikariConfig config, final String address, final int port, final String databaseName, final String username, final String password) {
         config.setJdbcUrl("jdbc:mysql://"+address+":"+port+"/"+databaseName);
         config.setUsername(username);
         config.setPassword(password);

@@ -1,7 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.card;
 
 import net.tinetwork.tradingcards.api.card.Card;
-import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalExceptions;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalExceptions;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;

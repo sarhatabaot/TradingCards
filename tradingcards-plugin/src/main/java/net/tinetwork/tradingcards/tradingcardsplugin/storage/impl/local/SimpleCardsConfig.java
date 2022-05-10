@@ -10,7 +10,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.DropTypeManager;
-import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalLog;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalLog;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local.card.EditCardConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
 import org.bukkit.Material;

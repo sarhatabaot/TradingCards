@@ -4,7 +4,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.StorageConfig;
-import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalExceptions;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalExceptions;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.FlywayException;
 import org.jetbrains.annotations.NotNull;
@@ -36,7 +36,7 @@ public abstract class HikariConnectionFactory implements ConnectionFactory {
      * @param username     username
      * @param password     password
      */
-    protected abstract void configureDatabase(HikariConfig config, String address, String port, String databaseName, String username, String password);
+    protected abstract void configureDatabase(HikariConfig config, String address, int port, String databaseName, String username, String password);
 
     @Override
     public void init(final TradingCards plugin) {

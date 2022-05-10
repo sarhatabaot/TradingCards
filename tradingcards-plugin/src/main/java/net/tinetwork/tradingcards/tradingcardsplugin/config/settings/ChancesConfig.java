@@ -4,7 +4,8 @@ import com.github.sarhatabaot.kraken.core.config.ConfigurateFile;
 import net.tinetwork.tradingcards.api.model.chance.Chance;
 import net.tinetwork.tradingcards.api.model.chance.EmptyChance;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalExceptions;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalExceptions;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.settings.Chances;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
@@ -29,13 +30,13 @@ public class ChancesConfig extends ConfigurateFile<TradingCards> {
 
     @Override
     protected void initValues() throws ConfigurateException {
-        this.hostileChance = rootNode.node("hostile-chance").getInt(20000);
-        this.neutralChance = rootNode.node("neutral-chance").getInt(5000);
-        this.passiveChance = rootNode.node("passive-chance").getInt(1000);
-        this.bossChance = rootNode.node("boss-chance").getInt(100000);
-        this.bossDrop = rootNode.node("boss-drop").getBoolean(false);
-        this.bossDropRarity = rootNode.node("boss-drop-rarity").getInt(5000);
-        this.shinyVersionChance = rootNode.node("shiny-version-chance").getInt(1000);
+        this.hostileChance = rootNode.node("hostile-chance").getInt(Chances.HOSTILE_CHANCE);
+        this.neutralChance = rootNode.node("neutral-chance").getInt(Chances.NEUTRAL_CHANCE);
+        this.passiveChance = rootNode.node("passive-chance").getInt(Chances.PASSIVE_CHANCE);
+        this.bossChance = rootNode.node("boss-chance").getInt(Chances.BOSS_CHANCE);
+        this.bossDrop = rootNode.node("boss-drop").getBoolean(Chances.BOSS_DROP);
+        this.bossDropRarity = rootNode.node("boss-drop-rarity").getInt(Chances.BOSS_DROP_RARITY);
+        this.shinyVersionChance = rootNode.node("shiny-version-chance").getInt(Chances.SHINY_VERSION_CHANCE);
     }
 
     @Override

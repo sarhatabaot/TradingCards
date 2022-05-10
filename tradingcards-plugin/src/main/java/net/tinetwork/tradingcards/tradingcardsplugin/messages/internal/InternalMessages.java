@@ -1,4 +1,4 @@
-package net.tinetwork.tradingcards.tradingcardsplugin.messages;
+package net.tinetwork.tradingcards.tradingcardsplugin.messages.internal;
 
 public final class InternalMessages {
     public static final String STARTED_CONVERSION_FOR = "Started conversion for %s";

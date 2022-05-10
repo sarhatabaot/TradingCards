@@ -4,7 +4,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.managers;
 import net.tinetwork.tradingcards.api.manager.TypeManager;
 import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalLog;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalLog;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import org.bukkit.entity.EntityType;
 

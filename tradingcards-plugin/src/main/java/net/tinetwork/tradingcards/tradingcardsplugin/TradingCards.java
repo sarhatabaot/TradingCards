@@ -40,9 +40,9 @@ import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingRarityManag
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingCardManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingDeckManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingSeriesManager;
-import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalDebug;
-import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalExceptions;
-import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalLog;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalDebug;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalExceptions;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalLog;
 import net.tinetwork.tradingcards.tradingcardsplugin.placeholders.TradingCardsPlaceholderExpansion;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.StorageType;

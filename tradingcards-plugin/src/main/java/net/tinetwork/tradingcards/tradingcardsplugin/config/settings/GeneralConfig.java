@@ -2,6 +2,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
 
 import net.tinetwork.tradingcards.api.config.settings.GeneralConfigurate;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.settings.General;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.spongepowered.configurate.ConfigurateException;
@@ -22,7 +23,6 @@ public class GeneralConfig extends GeneralConfigurate {
     //Decks
     private boolean deckInCreative;
     private boolean useDeckItem;
-    private boolean useLargeDecks;
     private Material deckMaterial;
     private String deckPrefix;
     private boolean dropDeckItems;
@@ -79,73 +79,73 @@ public class GeneralConfig extends GeneralConfigurate {
 
     @Override
     protected void initValues() throws ConfigurateException {
-        this.debugMode = rootNode.node("debug-mode").getBoolean(false);
+        this.debugMode = rootNode.node("debug-mode").getBoolean(General.DEBUG_MODE);
 
-        this.useDefaultCardsFile = rootNode.node("use-default-cards-file").getBoolean(true);
+        this.useDefaultCardsFile = rootNode.node("use-default-cards-file").getBoolean(General.USE_DEFAULT_CARDS_FILE);
 
         //Cards
         this.cardMaterial= rootNode.node("card-material").get(Material.class, Material.PAPER);
-        this.cardPrefix = rootNode.node("card-prefix").getString("Card ");
-        this.shinyName = rootNode.node("shiny-name").getString("Shiny");
+        this.cardPrefix = rootNode.node("card-prefix").getString(General.CARD_PREFIX);
+        this.shinyName = rootNode.node("shiny-name").getString(General.SHINY_NAME);
 
         //Decks
-        this.deckInCreative = rootNode.node("decks-in-creative").getBoolean(false);
-        this.useDeckItem = rootNode.node("use-deck-item").getBoolean(true);
-        //We should change this to deck size, or num of rows in deck
-        this.useLargeDecks = rootNode.node("use-large-decks").getBoolean(false);
-        this.deckRows = rootNode.node("deck-rows").getInt(6);
+        this.deckInCreative = rootNode.node("decks-in-creative").getBoolean(General.DECKS_IN_CREATIVE);
+        this.useDeckItem = rootNode.node("use-deck-item").getBoolean(General.USE_DECK_ITEM);
+
+        this.deckRows = rootNode.node("deck-rows").getInt(General.DECK_ROWS);
 
         this.deckMaterial = rootNode.node("deck-material").get(Material.class, Material.BOOK);
-        this.deckPrefix = rootNode.node("deck-prefix").getString("&7[&fDeck&7]&f ");
-        this.dropDeckItems = rootNode.node("drop-deck-items").getBoolean(true);
+        this.deckPrefix = rootNode.node("deck-prefix").getString(General.DECK_PREFIX);
+        this.dropDeckItems = rootNode.node("drop-deck-items").getBoolean(General.DROP_DECK_ITEMS);
 
         //Packs
         this.packMaterial = rootNode.node("booster-pack-material").get(Material.class, Material.BOOK);
-        this.packPrefix = rootNode.node("booster-pack-prefix").getString("&7[&fPack&7]&f ");
+        this.packPrefix = rootNode.node("booster-pack-prefix").getString(General.BOOSTER_PACK_PREFIX);
 
         //Player Drops
-        this.playerOpRarity = rootNode.node("player-op-rarity").getString("Legendary");
-        this.playerSeries = rootNode.node("player-series").getString("Legacy");
-        this.playerType = rootNode.node("player-type").getString("Player");
-        this.playerHasShinyVersion = rootNode.node("player-has-shiny-version").getBoolean(true);
-        this.playerDropsCard = rootNode.node("player-drops-card").getBoolean(true);
-        this.playerDropsCardRarity = rootNode.node("player-drops-card-rarity").getInt(1000000);
+        this.playerOpRarity = rootNode.node("player-op-rarity").getString(General.PLAYER_OP_RARITY);
+        this.playerSeries = rootNode.node("player-series").getString(General.PLAYER_SERIES);
+        this.playerType = rootNode.node("player-type").getString(General.PLAYER_TYPE);
+        this.playerHasShinyVersion = rootNode.node("player-has-shiny-version").getBoolean(General.PLAYER_HAS_SHINY_VERSION);
+        this.playerDropsCard = rootNode.node("player-drops-card").getBoolean(General.PLAYER_DROPS_CARD);
+        this.playerDropsCardRarity = rootNode.node("player-drops-card-rarity").getInt(General.PLAYER_DROPS_CARD_RARITY);
         //Rewards
-        this.allowRewards = rootNode.node("allow-rewards").getBoolean(true);
-        this.rewardBroadcast = rootNode.node("reward-broadcast").getBoolean(true);
-        this.eatShinyCards = rootNode.node("eat-shiny-cards").getBoolean(false);
+        this.allowRewards = rootNode.node("allow-rewards").getBoolean(General.ALLOW_REWARDS);
+        this.rewardBroadcast = rootNode.node("reward-broadcast").getBoolean(General.REWARD_BROADCAST);
+        this.eatShinyCards = rootNode.node("eat-shiny-cards").getBoolean(General.EAT_SHINY_CARDS);
 
         //Vault
-        this.vaultEnabled = rootNode.node("vault-enabled").getBoolean(true);
-        this.closedEconomy = rootNode.node("closed-economy").getBoolean(false);
-        this.serverAccount = rootNode.node("server-account").getString("TradingCards-Bank");
+        this.vaultEnabled = rootNode.node("vault-enabled").getBoolean(General.PluginSupport.Vault.VAULT_ENABLED);
+        this.closedEconomy = rootNode.node("closed-economy").getBoolean(General.PluginSupport.Vault.CLOSED_ECONOMY);
+        this.serverAccount = rootNode.node("server-account").getString(General.PluginSupport.Vault.SERVER_ACCOUNT);
 
         //Misc
-        this.spawnerBlock = rootNode.node("spawner-block").getBoolean(true);
-        this.spawnerMobName = rootNode.node("spawner-mob-name").getString("Spawned Mob");
-        this.infoLineLength = rootNode.node("info-line-length").getInt(25);
+        //todo, we should add a tag to the animals instead of renaming them
+        this.spawnerBlock = rootNode.node("spawner-block").getBoolean(General.SPAWNER_BLOCK);
+        this.spawnerMobName = rootNode.node("spawner-mob-name").getString(General.SPAWNER_MOB_NAME);
+        this.infoLineLength = rootNode.node("info-line-length").getInt(General.INFO_LINE_LENGTH);
 
         final ConfigurationNode colorNode = rootNode.node("colors");
         //Colors
         //colors-packs
         final ConfigurationNode colorPacksNode = colorNode.node("packs");
-        this.colorPackName = colorPacksNode.node("booster-pack-name").getString();
-        this.colorPackLore = colorPacksNode.node("booster-pack-lore").getString();
-        this.colorPackNormal = colorPacksNode.node("booster-pack-normal-cards").getString();
+        this.colorPackName = colorPacksNode.node("booster-pack-name").getString(General.Colors.Packs.BOOSTER_PACK_NAME);
+        this.colorPackLore = colorPacksNode.node("booster-pack-lore").getString(General.Colors.Packs.BOOSTER_PACK_LORE);
+        this.colorPackNormal = colorPacksNode.node("booster-pack-normal-cards").getString(General.Colors.Packs.BOOSTER_PACK_NORMAL_CARDS);
         //colors-lists
         final ConfigurationNode colorListsNode = colorNode.node("lists");
-        this.colorListHaveCard = colorListsNode.node("list-have-card").getString();
-        this.colorListHaveCardShiny = colorListsNode.node("list-have-shiny-card").getString();
-        this.colorRarityCompleted = colorListsNode.node("list-rarity-complete").getString();
+        this.colorListHaveCard = colorListsNode.node("list-have-card").getString(General.Colors.Lists.LIST_HAVE_CARD);
+        this.colorListHaveCardShiny = colorListsNode.node("list-have-shiny-card").getString(General.Colors.Lists.LIST_HAVE_SHINY_CARD);
+        this.colorRarityCompleted = colorListsNode.node("list-rarity-complete").getString(General.Colors.Lists.LIST_RARITY_COMPLETE);
 
         //Display
         final ConfigurationNode displayNode = rootNode.node("display");
-        this.displayTitle = displayNode.node("title").getString();
-        this.displayShinyTitle = displayNode.node("shiny-title").getString();
-        this.displaySeries = displayNode.node("series").getString();
-        this.displayType = displayNode.node("type").getString();
-        this.displayInfo = displayNode.node("info").getString();
-        this.displayAbout = displayNode.node("about").getString();
+        this.displayTitle = displayNode.node("title").getString(General.Display.TITLE);
+        this.displayShinyTitle = displayNode.node("shiny-title").getString(General.Display.SHINY_TITLE);
+        this.displaySeries = displayNode.node("series").getString(General.Display.SERIES);
+        this.displayType = displayNode.node("type").getString(General.Display.TYPE);
+        this.displayInfo = displayNode.node("info").getString(General.Display.INFO);
+        this.displayAbout = displayNode.node("about").getString(General.Display.ABOUT);
     }
 
 
@@ -250,10 +250,6 @@ public class GeneralConfig extends GeneralConfigurate {
 
     public boolean useDeckItem() {
         return useDeckItem;
-    }
-
-    public boolean useLargeDecks() {
-        return useLargeDecks;
     }
 
     public boolean debugMode() {

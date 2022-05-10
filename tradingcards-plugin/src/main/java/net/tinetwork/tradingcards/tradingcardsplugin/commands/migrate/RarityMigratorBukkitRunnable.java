@@ -3,7 +3,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.commands.migrate;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
-import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalMessages;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalMessages;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
 import org.bukkit.command.CommandSender;

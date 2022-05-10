@@ -20,7 +20,7 @@
         <jacoco.version>0.8.8</jacoco.version>
         <maven.shade.version>3.3.0</maven.shade.version>
         <maven.surefire.version>3.0.0-M6</maven.surefire.version>
-        <messages.version>1.2.0</messages.version>
+        <messages.plugin.version>1.2.2</messages.plugin.version>
         <formatter.version>2.18.0</formatter.version>
 
         <!-- Bukkit Libs -->
@@ -246,7 +246,7 @@
             <plugin>
                 <groupId>com.github.sarhatabaot</groupId>
                 <artifactId>messages-maven-plugin</artifactId>
-                <version>${messages.version}</version>
+                <version>${messages.plugin.version}</version>
                 <executions>
                     <execution>
                         <id>json</id>
@@ -254,7 +254,7 @@
                             <fileType>JSON</fileType>
                             <overwriteClasses>true</overwriteClasses>
                             <sourceFolder>internal-messages</sourceFolder>
-                            <targetPackage>net.tinetwork.tradingcards.tradingcardsplugin.messages</targetPackage>
+                            <targetPackage>net.tinetwork.tradingcards.tradingcardsplugin.messages.internal</targetPackage>
                             <privateConstructor>InternalExceptions.UTIL_CLASS</privateConstructor>
                         </configuration>
                     </execution>
@@ -263,8 +263,8 @@
                         <configuration>
                             <fileType>YAML</fileType>
                             <overwriteClasses>true</overwriteClasses>
-                            <sourceFolder>${project.basedir}/src/main/resources/settings/messages.yml</sourceFolder>
-                            <targetPackage>net.tinetwork.tradingcards.tradingcardsplugin.messages</targetPackage>
+                            <sourceFolder>${project.basedir}/src/main/resources/settings</sourceFolder>
+                            <targetPackage>net.tinetwork.tradingcards.tradingcardsplugin.messages.settings</targetPackage>
                             <privateConstructor>InternalExceptions.UTIL_CLASS</privateConstructor>
                         </configuration>
                     </execution>

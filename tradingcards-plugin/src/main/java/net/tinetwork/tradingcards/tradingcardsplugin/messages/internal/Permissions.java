@@ -1,4 +1,4 @@
-package net.tinetwork.tradingcards.tradingcardsplugin.messages;
+package net.tinetwork.tradingcards.tradingcardsplugin.messages.internal;
 
 public final class Permissions {
     public static final String USE_PACK = "cards.use.pack";

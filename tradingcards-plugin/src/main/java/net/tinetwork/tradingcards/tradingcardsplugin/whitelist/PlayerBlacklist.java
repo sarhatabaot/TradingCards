@@ -4,7 +4,7 @@ import com.github.sarhatabaot.kraken.core.config.ConfigurateFile;
 import net.tinetwork.tradingcards.api.blacklist.Blacklist;
 import net.tinetwork.tradingcards.api.blacklist.WhitelistMode;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalDebug;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalDebug;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;

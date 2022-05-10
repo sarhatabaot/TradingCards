@@ -1,4 +1,4 @@
-package net.tinetwork.tradingcards.tradingcardsplugin.messages;
+package net.tinetwork.tradingcards.tradingcardsplugin.messages.internal;
 
 public final class InternalDebug {
     public static final String BASE_DEBUG_FORMAT = "DEBUG %s %s";

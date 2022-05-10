@@ -1,4 +1,4 @@
-package net.tinetwork.tradingcards.tradingcardsplugin.messages;
+package net.tinetwork.tradingcards.tradingcardsplugin.messages.internal;
 
 public final class InternalLog {
     public static class PluginStart {

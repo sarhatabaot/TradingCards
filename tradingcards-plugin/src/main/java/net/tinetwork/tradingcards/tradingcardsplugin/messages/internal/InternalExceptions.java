@@ -1,4 +1,4 @@
-package net.tinetwork.tradingcards.tradingcardsplugin.messages;
+package net.tinetwork.tradingcards.tradingcardsplugin.messages.internal;
 
 public final class InternalExceptions {
     public static final String NO_ITEM_META = "Could not get ItemMeta for this item.";

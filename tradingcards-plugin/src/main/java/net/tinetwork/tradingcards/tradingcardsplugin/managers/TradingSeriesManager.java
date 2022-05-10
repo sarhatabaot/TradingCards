@@ -3,7 +3,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.managers;
 import net.tinetwork.tradingcards.api.manager.SeriesManager;
 import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.tradingcardsplugin.messages.InternalLog;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalLog;
 
 import java.util.Collection;
 import java.util.List;
