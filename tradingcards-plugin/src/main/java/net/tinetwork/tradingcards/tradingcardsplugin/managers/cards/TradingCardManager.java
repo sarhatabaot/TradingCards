@@ -1,4 +1,4 @@
-package net.tinetwork.tradingcards.tradingcardsplugin.managers;
+package net.tinetwork.tradingcards.tradingcardsplugin.managers.cards;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -17,9 +17,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalD
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalLog;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import org.apache.commons.lang.StringUtils;
-import org.checkerframework.checker.units.qual.C;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;

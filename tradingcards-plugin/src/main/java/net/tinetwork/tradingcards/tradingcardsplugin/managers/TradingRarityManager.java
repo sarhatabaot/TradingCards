@@ -7,6 +7,7 @@ import net.tinetwork.tradingcards.api.manager.Cacheable;
 import net.tinetwork.tradingcards.api.manager.RarityManager;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.TradingCardManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalDebug;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalLog;
 import org.jetbrains.annotations.Contract;

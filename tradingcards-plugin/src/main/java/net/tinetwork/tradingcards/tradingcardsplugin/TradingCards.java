@@ -37,7 +37,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.listeners.PackListener;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.BoosterPackManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.DropTypeManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingRarityManager;
-import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingCardManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.TradingCardManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingDeckManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingSeriesManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalDebug;

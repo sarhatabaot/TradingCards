@@ -4,7 +4,6 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
 import de.tr7zw.nbtapi.NBTItem;
-import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.utils.NbtUtils;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalDebug;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalMessages;
@@ -12,15 +11,12 @@ import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.Permissio
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.MessagesConfig;
-import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingCardManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.TradingCardManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.PlaceholderUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.whitelist.PlayerBlacklist;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 

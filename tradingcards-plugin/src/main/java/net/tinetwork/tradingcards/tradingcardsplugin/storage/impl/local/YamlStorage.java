@@ -12,7 +12,7 @@ import net.tinetwork.tradingcards.api.model.schedule.Mode;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.DropTypeManager;
-import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingCardManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.TradingCardManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalDebug;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.StorageType;

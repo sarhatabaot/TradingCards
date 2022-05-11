@@ -10,7 +10,7 @@ import net.tinetwork.tradingcards.api.utils.NbtUtils;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.DropTypeManager;
-import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingCardManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.TradingCardManager;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.World;

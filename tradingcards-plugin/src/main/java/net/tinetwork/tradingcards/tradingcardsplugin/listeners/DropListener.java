@@ -4,7 +4,7 @@ import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
-import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingCardManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.TradingCardManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalDebug;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.whitelist.PlayerBlacklist;
