@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-public class TradingRarityManager implements RarityManager, Cacheable<Rarity> {
+public class TradingRarityManager implements RarityManager, Cacheable<String,Rarity> {
     private final LoadingCache<String,Rarity> rarityCache;
     private final TradingCards plugin;
     private final List<String> rarityIds;

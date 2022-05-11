@@ -5,7 +5,7 @@ import com.google.common.cache.LoadingCache;
 /**
  * @author sarhatabaot
  */
-public interface Cacheable<T> {
-    LoadingCache<String,T> loadCache();
+public interface Cacheable<R,T> {
+    LoadingCache<R,T> loadCache();
     void preLoadCache();
 }

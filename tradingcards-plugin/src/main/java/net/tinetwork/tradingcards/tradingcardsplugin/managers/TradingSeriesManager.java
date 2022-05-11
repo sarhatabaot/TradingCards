@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author sarhatabaot
  */
-public class TradingSeriesManager implements SeriesManager, Cacheable<Series> {
+public class TradingSeriesManager implements SeriesManager, Cacheable<String,Series> {
     private final LoadingCache <String,Series> seriesCache;
     private final TradingCards plugin;
     private final List<String> seriesIds;

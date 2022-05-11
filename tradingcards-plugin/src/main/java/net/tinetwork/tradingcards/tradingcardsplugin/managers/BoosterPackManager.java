@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-public class BoosterPackManager implements PackManager, Cacheable<Pack> {
+public class BoosterPackManager implements PackManager, Cacheable<String,Pack> {
     private final LoadingCache <String,Pack> packsCache;
     private final ItemStack blankPack;
     private final TradingCards plugin;
