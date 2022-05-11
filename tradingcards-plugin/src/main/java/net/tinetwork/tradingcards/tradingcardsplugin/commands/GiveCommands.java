@@ -79,7 +79,7 @@ public class GiveCommands extends BaseCommand {
             @CommandPermission(Permissions.GIVE_CARD_SHINY)
             @CommandCompletion("@rarities @cards")
             @Description("Gives a shiny card.")
-            public void onShiny(final Player player, @Single final String rarityId, @Single final String cardId,@Single final String seriesId) {
+            public void onShiny(final Player player, @Single final String rarityId, @Single final String cardId, @Single final String seriesId) {
                 onPlayer(player, player.getName(), rarityId, cardId, seriesId,true);
             }
         }
@@ -107,42 +107,73 @@ public class GiveCommands extends BaseCommand {
             return player == null;
         }
 
-        @Subcommand("random entity")
-        @Description("Gives a random card to a player.")
-        @CommandPermission(Permissions.GIVE_RANDOM_ENTITY)
-        public void onGiveRandomCard(final CommandSender sender, @Single final String playerName, final EntityType entityType) {
-            Player player = Bukkit.getPlayerExact(playerName);
-            if (isOnline(player)) {
-                ChatUtil.sendPrefixedMessage(sender, InternalMessages.CardsCommand.PLAYER_OFFLINE);
-                return;
+
+        @Subcommand("random")
+        public class RandomSubCommand extends BaseCommand {
+
+            @Subcommand("entity")
+            @Description("Gives a random card to a player.")
+            @CommandPermission(Permissions.GIVE_RANDOM_ENTITY)
+            public void onGiveRandomCard(final CommandSender sender, @Single final String playerName, final EntityType entityType) {
+                Player player = Bukkit.getPlayerExact(playerName);
+                if (isOnline(player)) {
+                    ChatUtil.sendPrefixedMessage(sender, InternalMessages.CardsCommand.PLAYER_OFFLINE);
+                    return;
+                }
+
+                try {
+                    String rare = plugin.getCardManager().getRandomRarity(CardUtil.getMobType(entityType), true);
+                    plugin.debug(getClass(), "RarityId: " + rare);
+                    ChatUtil.sendMessage(sender,
+                            plugin.getMessagesConfig().giveRandomCardMsg().replaceAll(PlaceholderUtil.PLAYER.asRegex(), player.getName()));
+                    CardUtil.dropItem(player, plugin.getCardManager().getRandomCardByRarity(rare).build(false));
+                } catch (IllegalArgumentException exception) {
+                    player.sendMessage(plugin.getMessagesConfig().noEntity());
+                }
             }
 
-            try {
-                String rare = plugin.getCardManager().getRandomRarity(CardUtil.getMobType(entityType), true);
-                plugin.debug(getClass(), "RarityId: " + rare);
-                ChatUtil.sendMessage(sender,
-                        plugin.getMessagesConfig().giveRandomCardMsg().replaceAll(PlaceholderUtil.PLAYER.asRegex(), player.getName()));
-                CardUtil.dropItem(player, plugin.getCardManager().getRandomCardByRarity(rare).build(false));
-            } catch (IllegalArgumentException exception) {
-                player.sendMessage(plugin.getMessagesConfig().noEntity());
+            @Subcommand("rarity")
+            @Description("Gives a random card to a player. Specify rarity.")
+            @CommandCompletion("@players @rarities")
+            @CommandPermission(Permissions.GIVE_RANDOM_RARITY)
+            public void onGiveRandomCardByRarity(final CommandSender sender, @Single final String playerName, @Single final String rarityId) {
+                Player player = Bukkit.getPlayerExact(playerName);
+                if (isOnline(player)) {
+                    ChatUtil.sendPrefixedMessage(sender, InternalMessages.CardsCommand.PLAYER_OFFLINE);
+                    return;
+                }
+
+                if(!plugin.getRarityManager().containsRarity(rarityId)) {
+                    ChatUtil.sendMessage(sender,plugin.getMessagesConfig().noRarity());
+                    return;
+                }
+
+                plugin.debug(GiveCommands.class, "RarityId: " + rarityId);
+                sender.sendMessage(plugin.getMessagesConfig().giveRandomCardMsg().replaceAll(PlaceholderUtil.PLAYER.asRegex(), player.getName()));
+                CardUtil.dropItem(player, plugin.getCardManager().getRandomCardByRarity(rarityId).build(false));
             }
+
+            @Subcommand("series")
+            @Description("Gives a random card to a player. Specify series.")
+            @CommandCompletion("@players @series")
+            public void onGiveRandomCardBySeries(final CommandSender sender, @Single final String playerName, @Single final String seriesId) {
+                Player player = Bukkit.getPlayerExact(playerName);
+                if (isOnline(player)) {
+                    ChatUtil.sendPrefixedMessage(sender, InternalMessages.CardsCommand.PLAYER_OFFLINE);
+                    return;
+                }
+
+                if(!plugin.getSeriesManager().containsSeries(seriesId)) {
+                    ChatUtil.sendMessage(sender,plugin.getMessagesConfig().noSeries());
+                    return;
+                }
+                plugin.debug(GiveCommands.class, "SeriesId: " + seriesId);
+                sender.sendMessage(plugin.getMessagesConfig().giveRandomCardMsg().replaceAll(PlaceholderUtil.PLAYER.asRegex(), player.getName()));
+                CardUtil.dropItem(player, plugin.getCardManager().getRandomCardBySeries(seriesId).build(false));
+            }
+
         }
 
-        @Subcommand("random rarity")
-        @Description("Gives a random card to a player. Specify rarity.")
-        @CommandCompletion("@players @rarities")
-        @CommandPermission(Permissions.GIVE_RANDOM_RARITY)
-        public void onGiveRandomCard(final CommandSender sender, @Single final String playerName, @Single final String rarityId) {
-            Player player = Bukkit.getPlayerExact(playerName);
-            if (isOnline(player)) {
-                ChatUtil.sendPrefixedMessage(sender, InternalMessages.CardsCommand.PLAYER_OFFLINE);
-                return;
-            }
 
-
-            plugin.debug(GiveCommands.class, "RarityId: " + rarityId);
-            sender.sendMessage(plugin.getMessagesConfig().giveRandomCardMsg().replaceAll(PlaceholderUtil.PLAYER.asRegex(), player.getName()));
-            CardUtil.dropItem(player, plugin.getCardManager().getRandomCardByRarity(rarityId).build(false));
-        }
     }
 }
