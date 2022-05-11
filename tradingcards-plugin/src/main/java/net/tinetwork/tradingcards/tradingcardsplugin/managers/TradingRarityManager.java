@@ -3,6 +3,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.managers;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import net.tinetwork.tradingcards.api.manager.Cacheable;
 import net.tinetwork.tradingcards.api.manager.RarityManager;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
@@ -17,7 +18,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-public class TradingRarityManager implements RarityManager {
+public class TradingRarityManager implements RarityManager, Cacheable<Rarity> {
     private final LoadingCache<String,Rarity> rarityCache;
     private final TradingCards plugin;
     private final List<String> rarityIds;
@@ -32,7 +33,7 @@ public class TradingRarityManager implements RarityManager {
     }
 
     @Contract(" -> new")
-    private @NotNull LoadingCache<String, Rarity> loadCache() {
+    public @NotNull LoadingCache<String, Rarity> loadCache() {
         return CacheBuilder.newBuilder()
                 .maximumSize(50)
                 .refreshAfterWrite(5, TimeUnit.MINUTES)
@@ -45,7 +46,7 @@ public class TradingRarityManager implements RarityManager {
                 });
     }
 
-    private void preLoadCache() {
+    public void preLoadCache() {
         try {
             this.rarityCache.getAll(rarityIds);
         } catch (ExecutionException e){

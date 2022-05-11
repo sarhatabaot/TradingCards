@@ -3,6 +3,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.managers;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import net.tinetwork.tradingcards.api.manager.Cacheable;
 import net.tinetwork.tradingcards.api.manager.SeriesManager;
 import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
@@ -19,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author sarhatabaot
  */
-public class TradingSeriesManager implements SeriesManager {
+public class TradingSeriesManager implements SeriesManager, Cacheable<Series> {
     private final LoadingCache <String,Series> seriesCache;
     private final TradingCards plugin;
     private final List<String> seriesIds;
@@ -33,7 +34,7 @@ public class TradingSeriesManager implements SeriesManager {
     }
 
     @Contract(" -> new")
-    private @NotNull LoadingCache<String,Series> loadCache() {
+    public @NotNull LoadingCache<String,Series> loadCache() {
         return CacheBuilder.newBuilder()
                 .maximumSize(50)
                 .refreshAfterWrite(5, TimeUnit.MINUTES)
@@ -46,7 +47,7 @@ public class TradingSeriesManager implements SeriesManager {
                 });
     }
 
-    private void preLoadCache() {
+    public void preLoadCache() {
         try {
             this.seriesCache.getAll(seriesIds);
         } catch (ExecutionException e) {
