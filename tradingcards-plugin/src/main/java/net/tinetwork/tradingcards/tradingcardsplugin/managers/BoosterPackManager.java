@@ -1,6 +1,10 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.managers;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import de.tr7zw.nbtapi.NBTItem;
+import net.tinetwork.tradingcards.api.manager.Cacheable;
 import net.tinetwork.tradingcards.api.manager.PackManager;
 import net.tinetwork.tradingcards.api.model.Pack;
 import net.tinetwork.tradingcards.api.model.Rarity;
@@ -20,8 +24,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
-public class BoosterPackManager implements PackManager {
+public class BoosterPackManager implements PackManager, Cacheable<Pack> {
+    private final LoadingCache <String,Pack> packsCache;
     private final ItemStack blankPack;
     private final TradingCards plugin;
     private List<String> packNames;
@@ -32,16 +39,37 @@ public class BoosterPackManager implements PackManager {
     public BoosterPackManager(@NotNull TradingCards plugin) {
         this.plugin = plugin;
         this.blankPack = new ItemStack(plugin.getGeneralConfig().packMaterial());
-        initValues();
+        this.packNames = plugin.getStorage().getPacks().stream().map(Pack::id).toList();
+        this.packsCache = loadCache();
+        loadPacksItemStacks();
         plugin.getLogger().info(() -> InternalLog.Init.LOAD_PACK_MANAGER);
     }
 
-    public void initValues() {
-        this.packsItemStackCache = new HashMap<>();
-        loadPacks();
+    @Override
+    public LoadingCache<String,Pack> loadCache() {
+        return CacheBuilder.newBuilder()
+                .maximumSize(100)
+                .refreshAfterWrite(5, TimeUnit.MINUTES)
+                .build(new CacheLoader<>() {
+                    @Override
+                    public Pack load(final String key) throws Exception {
+                        plugin.debug(TradingCardManager.class, InternalDebug.LOADED_INTO_CACHE.formatted(key));
+                        return plugin.getStorage().getPack(key);
+                    }
+                });
     }
 
-    private void loadPacks() {
+    @Override
+    public void preLoadCache() {
+        try {
+            this.packsCache.getAll(packNames);
+        } catch (ExecutionException e) {
+            //ignored
+        }
+    }
+
+    private void loadPacksItemStacks() {
+        this.packsItemStackCache = new HashMap<>();
         for (Pack pack : plugin.getStorage().getPacks()) {
             loadPack(pack.id());
         }
@@ -50,7 +78,7 @@ public class BoosterPackManager implements PackManager {
         for(ItemStack itemStack: packsItemStackCache.values()) {
             plugin.debug(BoosterPackManager.class,itemStack.toString());
         }
-        packNames = plugin.getStorage().getPacks().stream().map(Pack::id).toList();
+        this.packNames = plugin.getStorage().getPacks().stream().map(Pack::id).toList();
     }
 
     @Override
@@ -104,18 +132,18 @@ public class BoosterPackManager implements PackManager {
     }
 
     @Override
-    public ItemStack getPackItem(final String name) {
-        return packsItemStackCache.get(name).clone();
+    public ItemStack getPackItem(final String packId) {
+        return packsItemStackCache.get(packId).clone();
     }
 
     @Override
     public Pack getPack(final String packId) {
-        return plugin.getStorage().getPack(packId);
+        return packsCache.getUnchecked(packId);
     }
 
     @Override
     public List<Pack> getPacks() {
-        return plugin.getStorage().getPacks();
+        return packsCache.asMap().values().stream().toList();
     }
 
     @Override
