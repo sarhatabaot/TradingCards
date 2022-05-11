@@ -41,6 +41,7 @@ public class BoosterPackManager implements PackManager, Cacheable<String,Pack> {
         this.blankPack = new ItemStack(plugin.getGeneralConfig().packMaterial());
         this.packNames = plugin.getStorage().getPacks().stream().map(Pack::id).toList();
         this.packsCache = loadCache();
+        preLoadCache(packNames);
         loadPacksItemStacks();
         plugin.getLogger().info(() -> InternalLog.Init.LOAD_PACK_MANAGER);
     }
@@ -60,7 +61,7 @@ public class BoosterPackManager implements PackManager, Cacheable<String,Pack> {
     }
 
     @Override
-    public void preLoadCache() {
+    public void preLoadCache(List<String> packNames) {
         try {
             this.packsCache.getAll(packNames);
         } catch (ExecutionException e) {

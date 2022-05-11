@@ -29,7 +29,7 @@ public class TradingSeriesManager implements SeriesManager, Cacheable<String,Ser
         this.plugin = plugin;
         this.seriesIds = getAllSeries().stream().map(Series::getId).toList();
         this.seriesCache = loadCache();
-        preLoadCache();
+        preLoadCache(seriesIds);
         this.plugin.getLogger().info(() -> InternalLog.Init.LOAD_SERIES_MANAGER);
     }
 
@@ -47,7 +47,7 @@ public class TradingSeriesManager implements SeriesManager, Cacheable<String,Ser
                 });
     }
 
-    public void preLoadCache() {
+    public void preLoadCache(List<String> seriesIds) {
         try {
             this.seriesCache.getAll(seriesIds);
         } catch (ExecutionException e) {

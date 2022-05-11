@@ -156,7 +156,7 @@ public interface Storage<T extends Card<T>> {
      */
     Card<T> getCard(final String cardId, final String rarityId);
 
-
+    Card<T> getCard(final String cardId, final String rarityId, final String seriesId);
     /**
      * @param packsId The pack id.
      * @return Returns the pack. Will return null if it doesn't exist.

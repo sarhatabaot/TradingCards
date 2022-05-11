@@ -28,7 +28,7 @@ public class TradingRarityManager implements RarityManager, Cacheable<String,Rar
         this.rarityIds = getRarities().stream().map(Rarity::getId).toList();
 
         this.rarityCache = loadCache();
-        preLoadCache();
+        preLoadCache(rarityIds);
         this.plugin.getLogger().info(() -> InternalLog.Init.LOAD_RARITY_MANAGER);
     }
 
@@ -46,7 +46,7 @@ public class TradingRarityManager implements RarityManager, Cacheable<String,Rar
                 });
     }
 
-    public void preLoadCache() {
+    public void preLoadCache(List<String> rarityIds) {
         try {
             this.rarityCache.getAll(rarityIds);
         } catch (ExecutionException e){
