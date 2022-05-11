@@ -1,5 +1,9 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.managers;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import net.tinetwork.tradingcards.api.manager.Cacheable;
 import net.tinetwork.tradingcards.api.manager.CardManager;
 import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.api.model.Rarity;
@@ -13,6 +17,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalD
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalLog;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import org.apache.commons.lang.StringUtils;
+import org.checkerframework.checker.units.qual.C;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,16 +27,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 import static net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil.cardKey;
 
-public class TradingCardManager implements CardManager<TradingCard> {
+public class TradingCardManager implements CardManager<TradingCard>, Cacheable<CompositeCardKey,TradingCard> {
     private final TradingCards plugin;
+
     public static final EmptyCard NULL_CARD = new EmptyCard();
 
+    private final LoadingCache<CompositeCardKey,TradingCard> cardsCache;
     //CardKey,Card<TradingCard>
     //This should be entirely in storage
+    @Deprecated
     private Map<String, TradingCard> cards;
     private List<String> activeCards;
 
@@ -47,10 +57,42 @@ public class TradingCardManager implements CardManager<TradingCard> {
 
     public TradingCardManager(final TradingCards plugin) {
         this.plugin = plugin;
+        this.cardsCache = loadCache();
+        List<CompositeCardKey> cardKeys = loadCompositeKeys();
+        preLoadCache(cardKeys);
         initValues();
         this.plugin.getLogger().info(() -> InternalLog.CardManager.LOAD);
     }
 
+    @Override
+    public LoadingCache<CompositeCardKey, TradingCard> loadCache() {
+        return CacheBuilder.newBuilder()
+                .maximumSize(3000)
+                .refreshAfterWrite(5, TimeUnit.MINUTES)
+                .build(new CacheLoader<>() {
+                           @Override
+                           public TradingCard load(final CompositeCardKey key) throws Exception {
+                               return plugin.getStorage().getCard(key.cardId(), key.rarityId(), key.seriesId()).get();
+                           }
+                       }
+                );
+    }
+
+    @Override
+    public void preLoadCache(List<CompositeCardKey> compositeCardKeys) {
+        try {
+            this.cardsCache.getAll(compositeCardKeys);
+        }catch (ExecutionException e) {
+            //ignored
+        }
+    }
+    private @NotNull List<CompositeCardKey> loadCompositeKeys() {
+        final List<CompositeCardKey> keys = new ArrayList<>();
+        for(TradingCard card: plugin.getStorage().getCards()) {
+            keys.add(new CompositeCardKey(card.getRarity().getId(),card.getSeries().getId(),card.getCardId()));
+        }
+        return keys;
+    }
     @Override
     public List<String> getCardsIdsInRarityAndSeries(final String rarityId, final String seriesId) {
         return this.cardsInRarityAndSeriesIds.get(rarityId).get(seriesId);
@@ -178,6 +220,7 @@ public class TradingCardManager implements CardManager<TradingCard> {
         return NULL_CARD;
     }
 
+    @Override
     public TradingCard getCard(final String cardId, final String rarityId, final String seriesId, final boolean forcedShiny) {
         final String oldCardKey = cardKey(rarityId,cardId);
         final String newCardKey = cardKey(rarityId,cardId,seriesId);
