@@ -36,11 +36,11 @@ public class TradingCardManager implements CardManager<TradingCard> {
     private List<String> activeCards;
 
     //This stores the ids of cards from a single rarity, over multiple files
-    //rarity, card-list-id
+    //rarity, list-card-id
     private Map<String, List<String>> rarityCardMap;
 
     //active series rarity list see plugin.getStorage().getCardsInRarityAndSeries()
-    //rarity, card-list-id
+    //rarity, list-card-id
     private Map<String, List<String>> activeRarityCardMap;
 
     private Map<String, Map<String, List<String>>> cardsInRarityAndSeriesIds;
@@ -51,7 +51,8 @@ public class TradingCardManager implements CardManager<TradingCard> {
         this.plugin.getLogger().info(() -> InternalLog.CardManager.LOAD);
     }
 
-    public List<String> getCardsInRarityAndSeriesIds(final String rarityId, final String seriesId) {
+    @Override
+    public List<String> getCardsIdsInRarityAndSeries(final String rarityId, final String seriesId) {
         return this.cardsInRarityAndSeriesIds.get(rarityId).get(seriesId);
     }
 

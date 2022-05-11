@@ -30,6 +30,7 @@ public class TradingRarityManager implements RarityManager {
         preLoadCache();
         this.plugin.getLogger().info(() -> InternalLog.Init.LOAD_RARITY_MANAGER);
     }
+
     @Contract(" -> new")
     private @NotNull LoadingCache<String, Rarity> loadCache() {
         return CacheBuilder.newBuilder()

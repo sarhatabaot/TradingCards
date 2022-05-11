@@ -35,6 +35,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
+//Implement cache as needed
 public class TradingDeckManager implements DeckManager {
     private final TradingCards plugin;
     private final TradingCardManager cardManager;
