@@ -1,64 +1,85 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.managers;
 
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import net.tinetwork.tradingcards.api.manager.TypeManager;
 import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalLog;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import org.bukkit.entity.EntityType;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class DropTypeManager implements TypeManager {
-    private final TradingCards plugin;
-    private final List<String> allTypesIds;
+public class DropTypeManager extends Manager<String, DropType> implements TypeManager {
+    public static final Map<String,DropType> DEFAULT_MOB_TYPES = Map.of(
+            "hostile", new DropType("hostile","Hostile","hostile"),
+            "neutral", new DropType("neutral", "Neutral", "neutral"),
+            "passive", new DropType("passive", "Passive", "passive"),
+            "boss", new DropType("boss", "Boss", "boss"),
+            "all", new DropType("all","All","all")
+    );
 
-    public static final DropType HOSTILE = new DropType("hostile","Hostile","hostile");
-    public static final DropType NEUTRAL = new DropType("neutral", "Neutral", "neutral");
-    public static final DropType PASSIVE = new DropType("passive", "Passive", "passive");
-    public static final DropType BOSS = new DropType("boss", "Boss", "boss");
-    public static final DropType ALL = new DropType("all","All","all");
-    public static final List<DropType> DEFAULT_TYPES = List.of(HOSTILE,NEUTRAL,PASSIVE,BOSS,ALL);
+    public static final DropType HOSTILE = DEFAULT_MOB_TYPES.get("hostile");
+    public static final DropType NEUTRAL = DEFAULT_MOB_TYPES.get("neutral");
+    public static final DropType PASSIVE = DEFAULT_MOB_TYPES.get("passive");
+    public static final DropType BOSS = DEFAULT_MOB_TYPES.get("boss");
+    public static final DropType ALL = DEFAULT_MOB_TYPES.get("all");
 
-    private Map<String, DropType> mobTypes;
 
     public DropTypeManager(final TradingCards plugin) {
-        this.plugin = plugin;
-        loadTypes();
-        this.allTypesIds = Stream.concat(getDefaultTypes().stream().map(DropType::getId), getTypes().keySet().stream()).toList();
+        super(plugin);
         this.plugin.getLogger().info(() -> InternalLog.Init.LOAD_DROPTYPE_MANAGER);
     }
 
     @Override
-    public DropType getType(final String type) {
-        if(!mobTypes.containsKey(type)) {
-            return switch (type.toLowerCase()) {
-                case "boss" -> BOSS;
-                case "hostile" -> HOSTILE;
-                case "neutral" -> NEUTRAL;
-                case "passive" -> PASSIVE;
-                case "all" -> ALL;
-                default -> mobTypes.get(type);
-            };
-        }
-        return mobTypes.get(type);
+    public DropType getType(final @NotNull String type) {
+        return cache.getUnchecked(type.toLowerCase());
     }
 
     @Override
-    public void loadTypes() {
-        this.mobTypes = new HashMap<>();
-        for(DropType dropType: plugin.getStorage().getDropTypes()) {
-            mobTypes.put(dropType.getId(),dropType);
-        }
+    public LoadingCache<String, DropType> loadCache() {
+        return CacheBuilder.newBuilder()
+                .maximumSize(100)
+                .refreshAfterWrite(5, TimeUnit.MINUTES)
+                .build(new CacheLoader<>() {
+                    @Override
+                    public DropType load(final String key) throws Exception {
+                        return plugin.getStorage().getDropType(key);
+                    }
+                });
+    }
+
+    @Override
+    public void preLoadCache() {
+        super.preLoadCache();
+        cache.putAll(DEFAULT_MOB_TYPES);
+    }
+
+    @Override
+    public void forceCacheRefresh() {
+        super.forceCacheRefresh();
+        cache.putAll(DEFAULT_MOB_TYPES);
+    }
+
+    @Override
+    public List<String> getKeys() {
+        return plugin.getStorage().getDropTypes().stream().map(DropType::getId).toList();
     }
 
     @Override
     public Map<String, DropType> getTypes() {
-        return mobTypes;
+        return cache.asMap();
     }
 
     @Override
@@ -68,18 +89,15 @@ public class DropTypeManager implements TypeManager {
 
     @Override
     public boolean containsType(final String typeId) {
-        if(DEFAULT_TYPES.stream().map(DropType::getId).toList().contains(typeId)) {
-            return true;
-        }
-        return mobTypes.containsKey(typeId);
+        return cache.getIfPresent(typeId) != null;
     }
 
     @Override
     public List<DropType> getDefaultTypes() {
-        return DEFAULT_TYPES;
+        return DEFAULT_MOB_TYPES.values().stream().toList();
     }
 
-    public List<String> getAllTypesIds() {
-        return allTypesIds;
+    public Set<String> getAllTypesIds() {
+        return new HashSet<>(getKeys());
     }
 }
