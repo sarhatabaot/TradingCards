@@ -10,7 +10,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.api.events.DeckLoadEvent;
-import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.TradingCardManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.AllCardManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalDebug;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalLog;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
@@ -39,7 +39,7 @@ import java.util.UUID;
 //Implement cache as needed
 public class TradingDeckManager implements DeckManager {
     private final TradingCards plugin;
-    private final TradingCardManager cardManager;
+    private final AllCardManager cardManager;
     private final Storage<TradingCard> storage;
     private final Map<UUID, Integer> playerDeckViewingMap;
 

@@ -7,7 +7,7 @@ import net.tinetwork.tradingcards.api.manager.Cacheable;
 import net.tinetwork.tradingcards.api.manager.RarityManager;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.TradingCardManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.AllCardManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalDebug;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalLog;
 import org.jetbrains.annotations.Contract;
@@ -41,7 +41,7 @@ public class TradingRarityManager implements RarityManager, Cacheable<String,Rar
                 .build(new CacheLoader<>() {
                     @Override
                     public Rarity load(final String key) {
-                        plugin.debug(TradingCardManager.class, InternalDebug.LOADED_INTO_CACHE.formatted(key));
+                        plugin.debug(AllCardManager.class, InternalDebug.LOADED_INTO_CACHE.formatted(key));
                         return plugin.getStorage().getRarityById(key);
                     }
                 });

@@ -11,7 +11,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.Permissio
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.MessagesConfig;
-import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.TradingCardManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.AllCardManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.PlaceholderUtil;
@@ -23,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
 @CommandAlias("cards")
 public class CardsCommand extends BaseCommand {
     private final TradingCards plugin;
-    private final TradingCardManager cardManager;
+    private final AllCardManager cardManager;
     private final PlayerBlacklist playerBlacklist;
 
     private final MessagesConfig messagesConfig;

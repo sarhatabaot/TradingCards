@@ -7,7 +7,7 @@ import net.tinetwork.tradingcards.api.manager.Cacheable;
 import net.tinetwork.tradingcards.api.manager.SeriesManager;
 import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.TradingCardManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.AllCardManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalDebug;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalLog;
 import org.jetbrains.annotations.Contract;
@@ -42,7 +42,7 @@ public class TradingSeriesManager implements SeriesManager, Cacheable<String,Ser
                 .build(new CacheLoader<>() {
                     @Override
                     public Series load(final String key) throws Exception {
-                        plugin.debug(TradingCardManager.class, InternalDebug.LOADED_INTO_CACHE.formatted(key));
+                        plugin.debug(AllCardManager.class, InternalDebug.LOADED_INTO_CACHE.formatted(key));
                         return plugin.getStorage().getSeries(key);
                     }
                 });

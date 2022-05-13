@@ -122,7 +122,7 @@ public class GiveCommands extends BaseCommand {
                 }
 
                 try {
-                    String rare = plugin.getCardManager().getRandomRarity(CardUtil.getMobType(entityType), true);
+                    String rare = plugin.getCardManager().getRandomRarityId(CardUtil.getMobType(entityType), true);
                     plugin.debug(getClass(), "RarityId: " + rare);
                     ChatUtil.sendMessage(sender,
                             plugin.getMessagesConfig().giveRandomCardMsg().replaceAll(PlaceholderUtil.PLAYER.asRegex(), player.getName()));

@@ -12,7 +12,7 @@ import net.tinetwork.tradingcards.api.model.schedule.Mode;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.DropTypeManager;
-import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.TradingCardManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.AllCardManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalDebug;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.StorageType;
@@ -208,7 +208,7 @@ public class YamlStorage implements Storage<TradingCard> {
 
     public TradingCard generateCard(final SimpleCardsConfig simpleCardsConfig, final String cardId, final String rarityId) {
         if ("none".equalsIgnoreCase(rarityId)) {
-            return TradingCardManager.NULL_CARD;
+            return AllCardManager.NULL_CARD;
         }
 
         return simpleCardsConfig.getCard(rarityId, cardId).get();

@@ -37,7 +37,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.listeners.PackListener;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.BoosterPackManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.DropTypeManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingRarityManager;
-import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.TradingCardManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.AllCardManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingDeckManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingSeriesManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalDebug;
@@ -89,7 +89,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private ChancesConfig chancesConfig;
 
     /* Managers */
-    private TradingCardManager cardManager;
+    private AllCardManager cardManager;
     private BoosterPackManager packManager;
     private TradingDeckManager deckManager;
     private DropTypeManager dropTypeManager;
@@ -242,7 +242,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         this.dropTypeManager = new DropTypeManager(this);
         this.seriesManager = new TradingSeriesManager(this);
 
-        this.cardManager = new TradingCardManager(this);
+        this.cardManager = new AllCardManager(this);
         this.packManager = new BoosterPackManager(this);
         this.deckManager = new TradingDeckManager(this);
     }
@@ -351,7 +351,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     }
 
     @Override
-    public TradingCardManager getCardManager() {
+    public AllCardManager getCardManager() {
         return cardManager;
     }
 

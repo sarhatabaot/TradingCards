@@ -10,7 +10,7 @@ import net.tinetwork.tradingcards.api.utils.NbtUtils;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.DropTypeManager;
-import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.TradingCardManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.AllCardManager;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.World;
@@ -28,7 +28,7 @@ import java.util.*;
  */
 public class CardUtil {
     private static TradingCards plugin;
-    private static TradingCardManager cardManager;
+    private static AllCardManager cardManager;
     public static final int RANDOM_MAX = 100000;
     public static ItemStack BLANK_CARD;
 
@@ -95,7 +95,7 @@ public class CardUtil {
     public static void giveawayNatural(EntityType mob, Player sender) {
         broadcastPrefixedMessage(getGiveawayMessage(mob, sender));
         for (final Player p : Bukkit.getOnlinePlayers()) {
-            String rare = cardManager.getRandomRarity(CardUtil.getMobType(mob), true);
+            String rare = cardManager.getRandomRarityId(CardUtil.getMobType(mob), true);
             CardUtil.dropItem(p, cardManager.getRandomCardByRarity(rare).build(false));
         }
     }
@@ -243,7 +243,7 @@ public class CardUtil {
             return true;
         int shinyRandom = plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1;
         boolean isShiny = shinyRandom <= plugin.getChancesConfig().shinyVersionChance();
-        plugin.debug(TradingCardManager.class, "Shiny=" + isShiny + ", Value=" + shinyRandom + ", ShinyChance=" + plugin.getChancesConfig().shinyVersionChance());
+        plugin.debug(AllCardManager.class, "Shiny=" + isShiny + ", Value=" + shinyRandom + ", ShinyChance=" + plugin.getChancesConfig().shinyVersionChance());
         return isShiny;
     }
 

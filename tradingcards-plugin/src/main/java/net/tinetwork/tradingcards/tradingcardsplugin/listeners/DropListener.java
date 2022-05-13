@@ -4,7 +4,8 @@ import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
-import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.TradingCardManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.AllCardManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.CompositeCardKey;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalDebug;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.whitelist.PlayerBlacklist;
@@ -26,7 +27,7 @@ import static net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil.cardK
 public class DropListener extends SimpleListener {
     private final PlayerBlacklist playerBlacklist;
     private final WorldBlacklist worldBlacklist;
-    private final TradingCardManager cardManager;
+    private final AllCardManager cardManager;
 
     public DropListener(final TradingCards plugin) {
         super(plugin);
@@ -77,7 +78,7 @@ public class DropListener extends SimpleListener {
         debug(InternalDebug.DropListener.ENTITY_TYPE.formatted(killedEntity.getType()));
         debug(InternalDebug.DropListener.MOB_TYPE.formatted(CardUtil.getMobType(killedEntity.getType())));
 
-        String rarityName = cardManager.getRandomRarity(CardUtil.getMobType(killedEntity.getType()), false);
+        String rarityName = cardManager.getRandomRarityId(CardUtil.getMobType(killedEntity.getType()), false);
         if (rarityName.equalsIgnoreCase("None"))
             return;
 
@@ -88,7 +89,7 @@ public class DropListener extends SimpleListener {
         }
 
         boolean isShiny = randomCard.hasShiny() && CardUtil.calculateIfShiny(false);
-        debug(InternalDebug.DropListener.ADDED_CARD.formatted(cardKey(randomCard.getRarity().getId(),randomCard.getCardId())));
+        debug(InternalDebug.DropListener.ADDED_CARD.formatted(CompositeCardKey.fromCard(randomCard)));
         //Add the card to the killedEntity drops
         e.getDrops().add(randomCard.build(isShiny));
     }
