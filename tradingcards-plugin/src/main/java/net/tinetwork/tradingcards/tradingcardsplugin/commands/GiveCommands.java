@@ -50,7 +50,7 @@ public class GiveCommands extends BaseCommand {
             @CommandPermission(Permissions.GIVE_CARD_PLAYER)
             @CommandCompletion("@players @rarities @cards @series")
             public void onPlayer(final CommandSender sender, @Single final String playerName, @Single final String rarityId, @Single final String cardId, @Single final String seriesId, @Single final boolean shiny) {
-                TradingCard card = plugin.getCardManager().getCard(cardId, rarityId, seriesId, shiny);
+                TradingCard card = plugin.getCardManager().getCard(cardId, rarityId, seriesId).isShiny(shiny).get();
                 if (shiny && !card.hasShiny()) {
                     ChatUtil.sendPrefixedMessage(sender, "This card does not have a shiny version.");
                     return;

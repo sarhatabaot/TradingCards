@@ -49,9 +49,10 @@ public class SellCommand extends BaseCommand {
             final int itemInHandSlot = player.getInventory().getHeldItemSlot();
             final String cardId = nbtItem.getString(NbtUtils.NBT_CARD_NAME);
             final String rarityId = nbtItem.getString(NbtUtils.NBT_RARITY);
+            final String seriesId = nbtItem.getString(NbtUtils.NBT_CARD_SERIES);
             plugin.debug(SellSubCommand.class, InternalDebug.CardsCommand.CARD_RARITY_ID.formatted(cardId,rarityId));
 
-            final TradingCard tradingCard = plugin.getCardManager().getCard(cardId, rarityId, false);
+            final TradingCard tradingCard = plugin.getCardManager().getCard(cardId, rarityId, seriesId);
             if (tradingCard.isShiny()) {
                 ChatUtil.sendPrefixedMessage(player, InternalMessages.SellCommand.CANNOT_SELL_SHINY);
                 return;

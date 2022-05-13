@@ -239,4 +239,9 @@ public class AllCardManager extends TradingCardManager implements CardManager<Tr
         }
         return keys;
     }
+
+    @Override
+    public List<String> getCards() {
+        return getKeys().stream().map(CompositeCardKey::toString).toList();
+    }
 }

@@ -104,5 +104,15 @@ public abstract class TradingCardManager extends Manager<CompositeCardKey, Tradi
 
     public abstract void preLoadSeriesCache();
 
+    public LoadingCache<String, List<TradingCard>> getRarityCardCache() {
+        return rarityCardCache;
+    }
 
+    public LoadingCache<String, List<TradingCard>> getSeriesCardCache() {
+        return seriesCardCache;
+    }
+
+    public LoadingCache<CompositeRaritySeriesKey, List<TradingCard>> getRarityAndSeriesCardCache() {
+        return rarityAndSeriesCardCache;
+    }
 }

@@ -62,7 +62,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -539,8 +538,8 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
     @Override
-    public Set<Rarity> getRarities() {
-        return new TreeSet<>(new ExecuteQuery<List<Rarity>, Result<Record>>(this, jooqSettings) {
+    public List<Rarity> getRarities() {
+        return new ExecuteQuery<List<Rarity>, Result<Record>>(this, jooqSettings) {
             @Override
             public List<Rarity> onRunQuery(final DSLContext dslContext) {
                 Result<Record> result = dslContext.select()
@@ -572,7 +571,7 @@ public class SqlStorage implements Storage<TradingCard> {
             public @NotNull @Unmodifiable List<Rarity> empty() {
                 return Collections.emptyList();
             }
-        }.prepareAndRunQuery());
+        }.prepareAndRunQuery();
     }
 
 
@@ -665,18 +664,6 @@ public class SqlStorage implements Storage<TradingCard> {
                 return Collections.emptySet();
             }
         }.prepareAndRunQuery();
-    }
-
-    @Override
-    public Map<String, TradingCard> getCardsMap() {
-        Map<String, TradingCard> cardsMap = new HashMap<>();
-        for (TradingCard tradingCard : getCards()) {
-            final String cardId = tradingCard.getCardId();
-            final String rarityId = tradingCard.getRarity().getId();
-            final String cardKey = CardUtil.cardKey(rarityId, cardId);
-            cardsMap.put(cardKey, tradingCard);
-        }
-        return cardsMap;
     }
 
     private @NotNull TradingCard getTradingCardFromRecord(@NotNull Record recordResult) {

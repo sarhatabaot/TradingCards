@@ -35,4 +35,8 @@ public abstract class Manager<R,T> implements Cacheable<R,T> {
     }
 
     public abstract List<R> getKeys();
+
+    public LoadingCache<R, T> getCache() {
+        return cache;
+    }
 }

@@ -13,6 +13,8 @@ public interface CardManager<T extends Card<T>> {
      */
     List<String> getActiveCards();
 
+    List<String> getCards();
+
     T getCard(final String cardId, final String rarityId, final String seriesId);
 
     /**

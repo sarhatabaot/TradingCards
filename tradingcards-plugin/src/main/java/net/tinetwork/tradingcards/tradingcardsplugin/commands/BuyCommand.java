@@ -69,16 +69,16 @@ public class BuyCommand extends BaseCommand {
         @CommandPermission(Permissions.BUY_CARD)
         @Description("Buy a card.")
         @CommandCompletion("@rarities @cards")
-        public void onBuyCard(final Player player, @NotNull final String rarity, @NotNull final String card) {
+        public void onBuyCard(final Player player, @NotNull final String rarityId, @NotNull final String cardId, @NotNull final String seriesId) {
             if (!CardUtil.hasVault(player))
                 return;
 
-            if (plugin.getCardManager().getCard(card, rarity, false) instanceof EmptyCard) {
+            if (plugin.getCardManager().getCard(cardId, rarityId, seriesId) instanceof EmptyCard) {
                 player.sendMessage(plugin.getMessagesConfig().cardDoesntExist());
                 return;
             }
 
-            final TradingCard tradingCard = plugin.getCardManager().getCard(card, rarity, false);
+            final TradingCard tradingCard = plugin.getCardManager().getCard(cardId, rarityId, seriesId);
             double buyPrice = tradingCard.getBuyPrice();
 
             EconomyResponse economyResponse = plugin.getEcon().withdrawPlayer(player, buyPrice);
