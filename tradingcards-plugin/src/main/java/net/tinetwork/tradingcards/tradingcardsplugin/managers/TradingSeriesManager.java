@@ -21,16 +21,10 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author sarhatabaot
  */
-public class TradingSeriesManager implements SeriesManager, Cacheable<String,Series> {
-    private final LoadingCache <String,Series> seriesCache;
-    private final TradingCards plugin;
-    private final List<String> seriesIds;
+public class TradingSeriesManager extends Manager<String,Series> implements SeriesManager{
 
     public TradingSeriesManager(final TradingCards plugin) {
-        this.plugin = plugin;
-        this.seriesIds = getAllSeries().stream().map(Series::getId).toList();
-        this.seriesCache = loadCache();
-        preLoadCache(seriesIds);
+        super(plugin);
         this.plugin.getLogger().info(() -> InternalLog.Init.LOAD_SERIES_MANAGER);
     }
 
@@ -48,22 +42,15 @@ public class TradingSeriesManager implements SeriesManager, Cacheable<String,Ser
                 });
     }
 
-    public void preLoadCache(List<String> seriesIds) {
-        try {
-            this.seriesCache.getAll(seriesIds);
-        } catch (ExecutionException e) {
-            //ignored
-        }
-    }
 
     @Override
     public Series getSeries(final String seriesId) {
-        return seriesCache.getUnchecked(seriesId);
+        return cache.getUnchecked(seriesId);
     }
 
     @Override
     public Collection<Series> getAllSeries() {
-        return seriesCache.asMap().values();
+        return cache.asMap().values();
     }
 
     @Override
@@ -72,6 +59,11 @@ public class TradingSeriesManager implements SeriesManager, Cacheable<String,Ser
     }
 
     public List<String> getSeriesIds() {
-        return this.seriesIds;
+        return getKeys();
+    }
+
+    @Override
+    public List<String> getKeys() {
+        return plugin.getStorage().getAllSeries().stream().map(Series::getId).toList();
     }
 }
