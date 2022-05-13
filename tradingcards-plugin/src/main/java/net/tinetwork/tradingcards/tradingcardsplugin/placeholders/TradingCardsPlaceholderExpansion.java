@@ -70,14 +70,14 @@ public class TradingCardsPlaceholderExpansion extends PlaceholderExpansion {
                 protected String onPlaceholderValue() {
                     final String rarityId = id.split("\\.")[0];
                     final String cardId = id.split("\\.")[1];
-                    //final String seriesId = id.split("\\.")[2];
+                    final String seriesId = id.split("\\.")[2];
                     return switch (type) {
-                        case "display-name" -> plugin.getCardManager().getCard(cardId, rarityId).getDisplayName();
-                        case "buy-price" -> String.valueOf(plugin.getCardManager().getCard(cardId, rarityId).getBuyPrice());
-                        case "sell-price" -> String.valueOf(plugin.getCardManager().getCard(cardId, rarityId).getSellPrice());
-                        case "info" -> plugin.getCardManager().getCard(cardId, rarityId).getInfo();
-                        case "about" -> plugin.getCardManager().getCard(cardId, rarityId).getAbout();
-                        case "type" -> plugin.getCardManager().getCard(cardId, rarityId).getType().getId();
+                        case "display-name" -> plugin.getCardManager().getCard(cardId, rarityId,seriesId).getDisplayName();
+                        case "buy-price" -> String.valueOf(plugin.getCardManager().getCard(cardId, rarityId,seriesId).getBuyPrice());
+                        case "sell-price" -> String.valueOf(plugin.getCardManager().getCard(cardId, rarityId,seriesId).getSellPrice());
+                        case "info" -> plugin.getCardManager().getCard(cardId, rarityId,seriesId).getInfo();
+                        case "about" -> plugin.getCardManager().getCard(cardId, rarityId,seriesId).getAbout();
+                        case "type" -> plugin.getCardManager().getCard(cardId, rarityId,seriesId).getType().getId();
                         default -> null;
                     };
                 }

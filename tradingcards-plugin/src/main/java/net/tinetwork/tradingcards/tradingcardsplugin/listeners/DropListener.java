@@ -21,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Set;
 
 import static net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil.cardKey;
 
@@ -96,7 +97,7 @@ public class DropListener extends SimpleListener {
 
     //Gets the rarity key for the appropriate player card.
     private @Nullable String getRarityKey(Player player) {
-        List<Rarity> rarities = plugin.getRarityManager().getRarities();
+        Set<Rarity> rarities = plugin.getRarityManager().getRarities();
         if (rarities == null)
             return null;
 

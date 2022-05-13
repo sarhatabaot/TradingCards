@@ -13,6 +13,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.DropTypeManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.AllCardManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.CompositeCardKey;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalDebug;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.StorageType;
@@ -47,8 +48,8 @@ public class YamlStorage implements Storage<TradingCard> {
     private final CustomTypesConfig customTypesConfig;
 
     //String is CardKey (rarity_id.card_id) We should just have it as a class..
-    private final Map<String, TradingCard> cards;
-    private final Map<String, TradingCard> activeCards;
+    private final Map<CompositeCardKey, TradingCard> cards;
+    private final Map<CompositeCardKey, TradingCard> activeCards;
     private final Map<String, List<TradingCard>> rarityCardList;
     private final Map<String, List<TradingCard>> seriesCardList;
     private Map<String,Map<String,List<TradingCard>>> raritySeriesCardList;
@@ -171,14 +172,11 @@ public class YamlStorage implements Storage<TradingCard> {
         return this.raritiesConfig.rarities();
     }
 
+
+
     @Override
     public Collection<Series> getAllSeries() {
         return this.seriesConfig.series().values();
-    }
-
-    @Override
-    public Map<String, TradingCard> getCardsMap() {
-        return this.cards;
     }
 
     @Override
@@ -220,10 +218,11 @@ public class YamlStorage implements Storage<TradingCard> {
                 var cardNodes = simpleCardsConfig.getCards(rarity.getId()).entrySet();
 
                 for (Map.Entry<Object, ? extends ConfigurationNode> nodeEntry : cardNodes) {
-                    final String cardName = nodeEntry.getValue().key().toString();
-                    final String cardKey = cardKey(rarity.getId(), cardName);
+                    final String cardId = nodeEntry.getValue().key().toString();
+                    final String seriesId = nodeEntry.getValue().node("series").getString("default");
+                    final CompositeCardKey cardKey = new CompositeCardKey(rarity.getId(),seriesId,cardId);
                     plugin.debug(YamlStorage.class, InternalDebug.CARD_KEY.formatted(cardKey));
-                    cards.put(cardKey, generateCard(simpleCardsConfig, cardName, rarity.getId()));
+                    cards.put(cardKey, generateCard(simpleCardsConfig, cardId, rarity.getId()));
                 }
             }
         }
@@ -238,7 +237,7 @@ public class YamlStorage implements Storage<TradingCard> {
     }
 
     private void loadRarityCards() {
-        for(Map.Entry<String,TradingCard> entry: cards.entrySet()) {
+        for(Map.Entry<CompositeCardKey,TradingCard> entry: cards.entrySet()) {
             final TradingCard card = entry.getValue();
             final Rarity rarity = card.getRarity();
             rarityCardList.putIfAbsent(rarity.getId(),new ArrayList<>());
@@ -248,7 +247,7 @@ public class YamlStorage implements Storage<TradingCard> {
 
 
     private void loadSeriesCards() {
-        for(Map.Entry<String,TradingCard> entry: cards.entrySet()) {
+        for(Map.Entry<CompositeCardKey,TradingCard> entry: cards.entrySet()) {
             final TradingCard card = entry.getValue();
             final Series series = card.getSeries();
             seriesCardList.putIfAbsent(series.getId(),new ArrayList<>());
@@ -261,7 +260,7 @@ public class YamlStorage implements Storage<TradingCard> {
         for(TradingCard card: getCards()) {
             //This only loads on startup, that means that it doesn't update. But only on restarts/reloads TODO
             if(card.getSeries().isActive()) {
-                activeCards.put(cardKey(card.getRarity().getId(),card.getCardId()), card);
+                activeCards.put(CompositeCardKey.fromCard(card),card);
             }
         }
     }
@@ -310,6 +309,11 @@ public class YamlStorage implements Storage<TradingCard> {
     @Override
     public Card<TradingCard> getCard(final String cardId, final String rarityId) {
         return cards.get(cardKey(rarityId,cardId));
+    }
+
+    @Override
+    public Card<TradingCard> getCard(final String cardId, final String rarityId, final String seriesId) {
+        return cards.get(new CompositeCardKey(rarityId,seriesId,cardId));
     }
 
     @Override

@@ -17,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
@@ -54,7 +55,7 @@ public class TradingRarityManager extends Manager<String,Rarity> implements Rari
 
     @Override
     public Set<Rarity> getRarities() {
-        return plugin.getStorage().getRarities();
+        return new TreeSet<>(plugin.getStorage().getRarities());
     }
 
     @Override

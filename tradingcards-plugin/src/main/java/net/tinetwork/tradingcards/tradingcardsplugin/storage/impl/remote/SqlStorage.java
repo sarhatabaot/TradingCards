@@ -62,6 +62,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -538,8 +539,8 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
     @Override
-    public List<Rarity> getRarities() {
-        return new ExecuteQuery<List<Rarity>, Result<Record>>(this, jooqSettings) {
+    public Set<Rarity> getRarities() {
+        return new TreeSet<>(new ExecuteQuery<List<Rarity>, Result<Record>>(this, jooqSettings) {
             @Override
             public List<Rarity> onRunQuery(final DSLContext dslContext) {
                 Result<Record> result = dslContext.select()
@@ -571,7 +572,7 @@ public class SqlStorage implements Storage<TradingCard> {
             public @NotNull @Unmodifiable List<Rarity> empty() {
                 return Collections.emptyList();
             }
-        }.prepareAndRunQuery();
+        }.prepareAndRunQuery());
     }
 
 
@@ -856,6 +857,38 @@ public class SqlStorage implements Storage<TradingCard> {
                         .from(Cards.CARDS)
                         .where(Cards.CARDS.CARD_ID.eq(cardId)
                                 .and(Cards.CARDS.RARITY_ID.eq(rarityId)))
+                        .limit(1)
+                        .fetch());
+            }
+
+            @Override
+            public TradingCard getQuery(final @NotNull Result<Record> result) {
+                if (result.isEmpty()) {
+                    return empty();
+                }
+
+                Record recordResult = result.get(0);
+                return getTradingCardFromRecord(recordResult);
+            }
+
+            @Contract(" -> new")
+            @Override
+            public @NotNull TradingCard empty() {
+                return new EmptyCard();
+            }
+        }.prepareAndRunQuery();
+    }
+
+    @Override
+    public Card<TradingCard> getCard(final String cardId, final String rarityId, final String seriesId) {
+        return new ExecuteQuery<TradingCard, Result<Record>>(this, jooqSettings) {
+            @Override
+            public TradingCard onRunQuery(final DSLContext dslContext) {
+                return getQuery(dslContext.select()
+                        .from(Cards.CARDS)
+                        .where(Cards.CARDS.CARD_ID.eq(cardId)
+                                .and(Cards.CARDS.RARITY_ID.eq(rarityId))
+                                .and(Cards.CARDS.SERIES_ID.eq(seriesId)))
                         .limit(1)
                         .fetch());
             }
