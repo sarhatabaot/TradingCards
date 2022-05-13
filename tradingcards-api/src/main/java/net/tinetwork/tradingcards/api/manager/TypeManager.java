@@ -11,7 +11,6 @@ import java.util.Map;
  */
 public interface TypeManager {
     DropType getType(final String type);
-    void loadTypes();
     Map<String, DropType> getTypes();
 
     DropType getMobType(final EntityType type);
