@@ -9,7 +9,10 @@ import net.tinetwork.tradingcards.tradingcardsplugin.managers.Manager;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -18,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 public abstract class TradingCardManager extends Manager<CompositeCardKey, TradingCard> {
     protected final LoadingCache<String, List<TradingCard>> rarityCardCache;
     protected final LoadingCache<String, List<TradingCard>> seriesCardCache;
+    protected final LoadingCache<CompositeRaritySeriesKey,List<TradingCard>> rarityAndSeriesCardCache;
 
     protected TradingCardManager(final TradingCards plugin) {
         super(plugin);
@@ -25,6 +29,9 @@ public abstract class TradingCardManager extends Manager<CompositeCardKey, Tradi
         this.seriesCardCache = loadSeriesCardCache();
         preLoadRarityCache();
         preLoadSeriesCache();
+
+        this.rarityAndSeriesCardCache = loadRarityAndSeriesCardCache();
+        preLoadRarityAndSeriesCache();
     }
 
     @Override
@@ -41,20 +48,7 @@ public abstract class TradingCardManager extends Manager<CompositeCardKey, Tradi
                 );
     }
 
-    protected abstract LoadingCache<String, List<TradingCard>> loadRarityCardCache();
-//    @Contract(" -> new")
-//    protected @NotNull LoadingCache<String, List<TradingCard>> loadRarityCardCache() {
-//        return CacheBuilder.newBuilder()
-//                .maximumSize(3000)
-//                .refreshAfterWrite(5, TimeUnit.MINUTES)
-//                .build(new CacheLoader<>() {
-//                           @Override
-//                           public List<TradingCard> load(final String key) throws Exception {
-//                               return plugin.getStorage().getCardsInRarity(key);
-//                           }
-//                       }
-//                );
-//    }
+
 
     @Contract(" -> new")
     private @NotNull LoadingCache<String, List<TradingCard>> loadSeriesCardCache() {
@@ -69,6 +63,42 @@ public abstract class TradingCardManager extends Manager<CompositeCardKey, Tradi
                        }
                 );
     }
+
+    private @NotNull LoadingCache<CompositeRaritySeriesKey,List<TradingCard>> loadRarityAndSeriesCardCache() {
+        return CacheBuilder.newBuilder()
+                .maximumSize(3000)
+                .refreshAfterWrite(5,TimeUnit.MINUTES)
+                .build(new CacheLoader<>() {
+                    @Override
+                    public List<TradingCard> load(final CompositeRaritySeriesKey key) throws Exception {
+                        List<TradingCard> cardList = plugin.getStorage().getCardsInRarityAndSeries(key.rarityId(),key.seriesId());
+                        if(cardList == null)
+                            return Collections.emptyList();
+
+                        return cardList;
+                    }
+                });
+    }
+
+    private void preLoadRarityAndSeriesCache() {
+        try {
+            this.rarityAndSeriesCardCache.getAll(loadRaritySeriesKeys());
+        } catch (ExecutionException e) {
+            //ignored
+        }
+    }
+
+    private @NotNull List<CompositeRaritySeriesKey> loadRaritySeriesKeys() {
+        List<CompositeRaritySeriesKey> keyList = new ArrayList<>();
+        for (String seriesId: seriesCardCache.asMap().keySet()) {
+            for(String rarityId: rarityCardCache.asMap().keySet()) {
+                keyList.add(new CompositeRaritySeriesKey(rarityId,seriesId));
+            }
+        }
+        return keyList;
+    }
+
+    protected abstract LoadingCache<String, List<TradingCard>> loadRarityCardCache();
 
     public abstract void preLoadRarityCache();
 
