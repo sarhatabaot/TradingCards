@@ -211,8 +211,7 @@ public class AllCardManager extends TradingCardManager implements CardManager<Tr
         int randomRarityChance = plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1;
         plugin.debug(AllCardManager.class,InternalDebug.CardsManager.RARITY_CHANCE.formatted(randomRarityChance));
 
-        TreeSet<String> rarityKeys = new TreeSet<>(plugin.getRarityManager().getRarityIds());
-        for (String rarity : rarityKeys.descendingSet()) { //todo This should be ordered out of storage, we shouldn't have to order it here.
+        for (String rarity : plugin.getRarityManager().getRarityIds()) {
             Chance chance = plugin.getChancesConfig().getChance(rarity);
             if (chance instanceof EmptyChance)
                 return "None";
