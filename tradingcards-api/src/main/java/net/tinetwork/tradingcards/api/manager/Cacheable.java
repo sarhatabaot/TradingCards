@@ -10,4 +10,5 @@ import java.util.List;
 public interface Cacheable<R,T> {
     LoadingCache<R,T> loadCache();
     void preLoadCache();
+    void forceCacheRefresh();
 }
