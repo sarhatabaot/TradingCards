@@ -55,7 +55,7 @@ public class DropTypeManager extends Manager<String, DropType> implements TypeMa
                 .build(new CacheLoader<>() {
                     @Override
                     public DropType load(final String key) throws Exception {
-                        return plugin.getStorage().getDropType(key);
+                        return plugin.getStorage().getCustomType(key);
                     }
                 });
     }
