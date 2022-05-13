@@ -28,5 +28,11 @@ public abstract class Manager<R,T> implements Cacheable<R,T> {
         }
     }
 
+    @Override
+    public void forceCacheRefresh() {
+        this.cache.invalidateAll();
+        preLoadCache();
+    }
+
     public abstract List<R> getKeys();
 }
