@@ -50,7 +50,6 @@ public interface CardManager<T extends Card<T>> {
      * @param rarityId The rarity id
      * @return returns a list of cards from a rarity.
      */
-    //this should be cached
     List<T> getRarityCardList(final String rarityId);
 
     List<T> getSeriesCardList(final String seriesId);
@@ -67,10 +66,6 @@ public interface CardManager<T extends Card<T>> {
     List<String> getActiveRarityCardIds(final String rarity);
 
     List<String> getCardsIdsInRarityAndSeries(final String rarityId, final String seriesId);
-    /**
-     * @return A set of all rarity names.
-     */
-    Set<String> getRarityNames();
 
     /**
      * @return A set of active rarity names.
