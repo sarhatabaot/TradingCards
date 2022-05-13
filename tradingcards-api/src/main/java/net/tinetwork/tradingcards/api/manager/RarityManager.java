@@ -12,6 +12,10 @@ public interface RarityManager {
     Rarity getRarity(final String rarityId);
     List<Rarity> getRarities();
     boolean containsRarity(final String rarityId);
+
+    /**
+     * @return returns an ordered list of rarityIds.
+     */
     List<String> getRarityIds();
     LoadingCache<String,Rarity> getRarityCache();
 }
