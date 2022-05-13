@@ -334,9 +334,10 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
     public void reloadManagers() {
         this.cardManager.initValues();
-        this.packManager.initValues();
+        this.cardManager.forceCacheRefresh();
+        this.packManager.forceCacheRefresh();
         this.deckManager = new TradingDeckManager(this);
-        this.dropTypeManager.loadTypes();
+        this.dropTypeManager.forceCacheRefresh();
     }
 
     @Override
