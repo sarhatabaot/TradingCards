@@ -1,5 +1,6 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.managers.cards;
 
+import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,5 +17,10 @@ public record CompositeCardKey (String rarityId, String seriesId, String cardId)
     @Contract(pure = true)
     public @NotNull String toString() {
         return rarityId+"."+seriesId+"."+cardId;
+    }
+
+    @Contract("_ -> new")
+    public static @NotNull CompositeCardKey fromCard(@NotNull TradingCard card) {
+        return new CompositeCardKey(card.getRarity().getId(),card.getSeries().getId(),card.getCardId());
     }
 }
