@@ -16,21 +16,21 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-public class TradingRarityManager implements RarityManager, Cacheable<String,Rarity> {
-    private final LoadingCache<String,Rarity> rarityCache;
-    private final TradingCards plugin;
-    private final List<String> rarityIds;
+public class TradingRarityManager extends Manager<String,Rarity> implements RarityManager, Cacheable<String,Rarity> {
     public static final Rarity EMPTY_RARITY = new Rarity("empty","empty","",0.00,0.00, Collections.singletonList(""));
     public TradingRarityManager(final TradingCards plugin) {
-        this.plugin = plugin;
-        this.rarityIds = getRarities().stream().map(Rarity::getId).toList();
+        super(plugin);
 
-        this.rarityCache = loadCache();
-        preLoadCache(rarityIds);
         this.plugin.getLogger().info(() -> InternalLog.Init.LOAD_RARITY_MANAGER);
+    }
+
+    @Override
+    public List<String> getKeys() {
+        return getRarities().stream().map(Rarity::getId).toList();
     }
 
     @Contract(" -> new")
@@ -47,20 +47,13 @@ public class TradingRarityManager implements RarityManager, Cacheable<String,Rar
                 });
     }
 
-    public void preLoadCache(List<String> rarityIds) {
-        try {
-            this.rarityCache.getAll(rarityIds);
-        } catch (ExecutionException e){
-            //ignored.
-        }
-    }
     @Nullable
     public Rarity getRarity(final String id) {
-        return this.rarityCache.getUnchecked(id);
+        return this.cache.getUnchecked(id);
     }
 
     @Override
-    public List<Rarity> getRarities() {
+    public Set<Rarity> getRarities() {
         return plugin.getStorage().getRarities();
     }
 
@@ -74,10 +67,10 @@ public class TradingRarityManager implements RarityManager, Cacheable<String,Rar
     }
 
     public List<String> getRarityIds() {
-        return rarityIds;
+        return getKeys();
     }
 
     public LoadingCache<String,Rarity> getRarityCache(){
-        return this.rarityCache;
+        return this.cache;
     }
 }
