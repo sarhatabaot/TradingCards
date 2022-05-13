@@ -39,6 +39,9 @@ public class DropListener extends SimpleListener {
 
 
     //When a player is killed, he can drop a card
+    //Possibly this should be removed, or we have a setting: "player-series: "player"
+    //That way we have something set ahead of time.
+    //todo temp def "player"
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent e) {
         boolean canPlayerDropCards = plugin.getGeneralConfig().playerDropsCard();
@@ -60,7 +63,7 @@ public class DropListener extends SimpleListener {
         if (rarityKey == null)
             return;
 
-        ItemStack playerCard = cardManager.getActiveCard(killedPlayer.getName(), rarityKey).build(false);
+        ItemStack playerCard = cardManager.getActiveCard(killedPlayer.getName(), rarityKey, "player").build(false);
         e.getDrops().add(playerCard);
         debug(e.getDrops().toString());
     }
@@ -103,7 +106,7 @@ public class DropListener extends SimpleListener {
 
 
         for (final Rarity rarity : rarities) {
-            if (!(cardManager.getCard(player.getName(), rarity.getId(), false) instanceof EmptyCard)) {
+            if (!(cardManager.getCard(player.getName(), rarity.getId(), "player") instanceof EmptyCard)) {
                 debug(rarity.getId());
                 return rarity.getId();
             }
