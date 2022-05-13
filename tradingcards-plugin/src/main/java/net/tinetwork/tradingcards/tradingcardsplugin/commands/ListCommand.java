@@ -230,7 +230,7 @@ public class ListCommand extends BaseCommand {
                 return "";
 
             for(final TradingCard card: rarityCardList) {
-                plugin.debug(ListSubCommand.class, "rarityId=" + rarityId + ",cardId=" + card.getCardId());
+                plugin.debug(ListSubCommand.class, "rarityId=" + rarityId );
                 plugin.debug(ListSubCommand.class, card.toString());
 
                 final String color = plugin.getGeneralConfig().colorListHaveCard();
