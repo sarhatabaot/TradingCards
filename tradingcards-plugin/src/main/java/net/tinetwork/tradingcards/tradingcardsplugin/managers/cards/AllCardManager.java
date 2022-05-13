@@ -38,13 +38,6 @@ public class AllCardManager extends TradingCardManager implements CardManager<Tr
 
     private final ActiveCardManager activeCardManager;
 
-    //This stores the ids of cards from a single rarity, over multiple files
-    //rarity, list-card-id
-    private Map<String, List<String>> rarityCardMap;
-
-
-    private Map<String, Map<String, List<String>>> cardsInRarityAndSeriesIds;
-
     public AllCardManager(final TradingCards plugin) {
         super(plugin);
         this.activeCardManager = new ActiveCardManager(plugin);
@@ -101,58 +94,14 @@ public class AllCardManager extends TradingCardManager implements CardManager<Tr
     }
 
 
-
-    private @NotNull List<CompositeCardKey> loadCompositeKeys() {
-        final List<CompositeCardKey> keys = new ArrayList<>();
-        for(TradingCard card: plugin.getStorage().getCards()) {
-            keys.add(new CompositeCardKey(card.getRarity().getId(),card.getSeries().getId(),card.getCardId()));
-        }
-        return keys;
-    }
     @Override
     public List<String> getCardsIdsInRarityAndSeries(final String rarityId, final String seriesId) {
-        return this.cardsInRarityAndSeriesIds.get(rarityId).get(seriesId);
+        return this.rarityAndSeriesCardCache.getUnchecked(CompositeRaritySeriesKey.of(rarityId,seriesId)).stream().map(TradingCard::getCardId).toList();
     }
 
     public void initValues() {
-        loadAllCards();
-        loadCardsInRaritiesAndSeriesIds();
         plugin.getLogger().info(() -> InternalLog.CardManager.LOAD_CARDS.formatted(cache.asMap().keySet().size()));
-        plugin.getLogger().info(() -> InternalLog.CardManager.LOAD_RARITIES.formatted(rarityCardMap.keySet().size()));
-        plugin.debug(AllCardManager.class,StringUtils.join(rarityCardMap.keySet(), ","));
         plugin.debug(AllCardManager.class,StringUtils.join(cache.asMap().keySet(), ","));
-    }
-
-    private void loadCardsInRaritiesAndSeriesIds() {
-        cardsInRarityAndSeriesIds = new HashMap<>();
-        plugin.debug(AllCardManager.class, InternalDebug.CardsManager.LOAD_RARITY_CARDS_IDS);
-        for(String rarityId: plugin.getRarityManager().getRarityIds()) {
-            cardsInRarityAndSeriesIds.putIfAbsent(rarityId, new HashMap<>());
-            plugin.debug(AllCardManager.class,InternalDebug.CardsManager.RARITY_ID.formatted(rarityId));
-            for(String seriesId: plugin.getSeriesManager().getSeriesIds()) {
-                plugin.debug(AllCardManager.class,InternalDebug.CardsManager.SERIES_ID.formatted(seriesId));
-                cardsInRarityAndSeriesIds.get(rarityId).putIfAbsent(seriesId,new ArrayList<>());
-                Stream<String> cardIdInRarityAndSeries = plugin.getStorage().getCardsInRarityAndSeries(rarityId,seriesId).stream().map(TradingCard::getCardId);
-                cardsInRarityAndSeriesIds.get(rarityId).get(seriesId).addAll(cardIdInRarityAndSeries.toList());
-            }
-        }
-
-    }
-
-
-    /**
-     * Pre-loads all existing cards.
-     */
-    private void loadAllCards() {
-        loadRarityCardNames();
-    }
-
-    private void loadRarityCardNames(){
-        this.rarityCardMap = new HashMap<>();
-        for(Rarity rarity: plugin.getRarityManager().getRarities()) {
-            rarityCardMap.put(rarity.getId(),
-                    plugin.getStorage().getCardsInRarity(rarity.getId()).stream().map(TradingCard::getCardId).toList());
-        }
     }
 
     @Override
@@ -166,7 +115,10 @@ public class AllCardManager extends TradingCardManager implements CardManager<Tr
 
     @Override
     public List<String> getRarityCardListIds(final String rarityId) {
-        return this.rarityCardMap.get(rarityId);
+        if(this.rarityCardCache.getIfPresent(rarityId) == null)
+            return Collections.emptyList();
+
+        return this.rarityCardCache.getUnchecked(rarityId).stream().map(TradingCard::getCardId).toList();
     }
 
     @Override
@@ -184,13 +136,8 @@ public class AllCardManager extends TradingCardManager implements CardManager<Tr
     }
 
     @Override
-    public Set<String> getRarityNames() {
-        return rarityCardMap.keySet();
-    }
-
-    @Override
     public Set<String> getActiveRarityIds() {
-        return rarityCardCache.asMap().keySet();
+        return activeCardManager.rarityCardCache.asMap().keySet();
     }
 
     @Override
