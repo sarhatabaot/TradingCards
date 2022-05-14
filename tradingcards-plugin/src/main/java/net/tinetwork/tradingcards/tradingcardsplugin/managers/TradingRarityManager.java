@@ -42,7 +42,7 @@ public class TradingRarityManager extends Manager<String,Rarity> implements Rari
                 .build(new CacheLoader<>() {
                     @Override
                     public Rarity load(final String key) {
-                        plugin.debug(AllCardManager.class, InternalDebug.LOADED_INTO_CACHE.formatted(key));
+                        plugin.debug(TradingRarityManager.class, InternalDebug.LOADED_INTO_CACHE.formatted(key));
                         return plugin.getStorage().getRarityById(key);
                     }
                 });

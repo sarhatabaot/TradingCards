@@ -49,7 +49,7 @@ public class BoosterPackManager extends Manager<String, Pack> implements PackMan
     public LoadingCache<String, Pack> loadCache() {
         return CacheBuilder.newBuilder()
                 .maximumSize(100)
-                .refreshAfterWrite(5, TimeUnit.MINUTES)
+                .refreshAfterWrite(5, TimeUnit.MINUTES) //TODO, should never be refreshed unless edited.
                 .build(new CacheLoader<>() {
                     @Override
                     public Pack load(final String key) throws Exception {
@@ -158,12 +158,6 @@ public class BoosterPackManager extends Manager<String, Pack> implements PackMan
     @Override
     public List<String> getPackIds() {
         return getKeys();
-    }
-
-    @Override
-    public void preLoadCache() {
-        super.preLoadCache();
-        preLoadItemStackCache();
     }
 
     @Override

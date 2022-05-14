@@ -2,8 +2,6 @@ package net.tinetwork.tradingcards.api.manager;
 
 import com.google.common.cache.LoadingCache;
 
-import java.util.List;
-
 /**
  * @author sarhatabaot
  */
