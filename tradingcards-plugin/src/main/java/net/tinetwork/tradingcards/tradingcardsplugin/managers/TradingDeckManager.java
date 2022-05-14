@@ -52,6 +52,7 @@ public class TradingDeckManager implements DeckManager {
     }
 
 
+    @Override
     public void openDeck(@NotNull Player player, int deckNum) {
         //Checks, if in SQL mode a migration has been done.
         if (plugin.getStorage().getType() != StorageType.YAML
