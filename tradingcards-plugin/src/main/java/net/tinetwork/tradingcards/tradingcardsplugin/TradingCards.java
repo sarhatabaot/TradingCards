@@ -250,7 +250,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private void initCommands() {
         var commandManager = new PaperCommandManager(this);
         commandManager.getCommandCompletions().registerCompletion("rarities", c -> rarityManager.getRarityIds());
-        commandManager.getCommandCompletions().registerCompletion("cards", c -> cardManager.getRarityCardListIds(c.getContextValueByName(String.class, "rarityId")));
+        commandManager.getCommandCompletions().registerCompletion("cards", c ->cardManager.getCardsIdsInRarityAndSeries(c.getContextValue(Rarity.class).getId(), c.getContextValue(Series.class).getId()));
         commandManager.getCommandCompletions().registerCompletion("command-cards", c -> cardManager.getCardsIdsInRarityAndSeries(c.getContextValue(Rarity.class).getId(), c.getContextValue(Series.class).getId()));
         commandManager.getCommandCompletions().registerCompletion("active-cards", c -> cardManager.getActiveRarityCardIds(c.getContextValueByName(String.class, "rarityId")));
         commandManager.getCommandCompletions().registerCompletion("packs", c -> packManager.getPackIds());
@@ -357,7 +357,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     }
 
     @Override
-    public PackManager getPackManager() {
+    public BoosterPackManager getPackManager() {
         return packManager;
     }
 
@@ -484,6 +484,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         return random;
     }
 
+    @Override
     public TradingSeriesManager getSeriesManager() {
         return seriesManager;
     }
