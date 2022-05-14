@@ -39,4 +39,6 @@ public abstract class Manager<R,T> implements Cacheable<R,T> {
     public LoadingCache<R, T> getCache() {
         return cache;
     }
+
+
 }

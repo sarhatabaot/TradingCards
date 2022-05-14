@@ -11,7 +11,7 @@ import java.util.Set;
  */
 public interface RarityManager {
     Rarity getRarity(final String rarityId);
-    Set<Rarity> getRarities();
+    List<Rarity> getRarities();
     boolean containsRarity(final String rarityId);
 
     /**

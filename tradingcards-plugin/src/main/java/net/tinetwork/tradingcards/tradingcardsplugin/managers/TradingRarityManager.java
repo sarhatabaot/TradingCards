@@ -54,8 +54,8 @@ public class TradingRarityManager extends Manager<String,Rarity> implements Rari
     }
 
     @Override
-    public Set<Rarity> getRarities() {
-        return new TreeSet<>(plugin.getStorage().getRarities());
+    public List<Rarity> getRarities() {
+        return plugin.getStorage().getRarities();
     }
 
     @Override
