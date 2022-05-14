@@ -8,6 +8,8 @@ import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
+import net.tinetwork.tradingcards.api.model.Rarity;
+import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalMessages;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.Permissions;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
@@ -20,6 +22,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+
+import java.net.ServerSocket;
 
 /**
  * @author sarhatabaot
@@ -42,15 +47,15 @@ public class GiveCommands extends BaseCommand {
         public class CardSubCommand extends BaseCommand {
             @Default
             @Description("Gives yourself a card.")
-            public void onDefault(final Player player, @Single final String rarityId, @Single final String cardId, @Single final String seriesId) {
-                onPlayer(player, player.getName(), rarityId, cardId, seriesId, false);
+            public void onDefault(final Player player, @Single final Rarity rarity, @Single final Series series, @Single final String cardId) {
+                onPlayer(player, player.getName(), rarity, series, cardId, false);
             }
 
             @Subcommand("player")
             @CommandPermission(Permissions.GIVE_CARD_PLAYER)
-            @CommandCompletion("@players @rarities @cards @series")
-            public void onPlayer(final CommandSender sender, @Single final String playerName, @Single final String rarityId, @Single final String cardId, @Single final String seriesId, @Single final boolean shiny) {
-                TradingCard card = plugin.getCardManager().getCard(cardId, rarityId, seriesId).isShiny(shiny).get();
+            @CommandCompletion("@players @rarities @series @cards")
+            public void onPlayer(final CommandSender sender, @Single final String playerName, @Single final @NotNull Rarity rarity, @Single final @NotNull Series series, @Single final String cardId, @Single final boolean shiny) {
+                TradingCard card = plugin.getCardManager().getCard(cardId, rarity.getId(), series.getId()).isShiny(shiny).get();
                 if (shiny && !card.hasShiny()) {
                     ChatUtil.sendPrefixedMessage(sender, "This card does not have a shiny version.");
                     return;
@@ -70,7 +75,7 @@ public class GiveCommands extends BaseCommand {
 
                 target.sendMessage(plugin.getMessagesConfig().giveCard()
                         .replaceAll(PlaceholderUtil.PLAYER.asRegex(), target.getName())
-                        .replaceAll(PlaceholderUtil.CARD.asRegex(), rarityId + " " + cardId));
+                        .replaceAll(PlaceholderUtil.CARD.asRegex(), rarity + " " + cardId));
 
                 target.getInventory().addItem(card.build(shiny));
             }
@@ -79,8 +84,8 @@ public class GiveCommands extends BaseCommand {
             @CommandPermission(Permissions.GIVE_CARD_SHINY)
             @CommandCompletion("@rarities @cards")
             @Description("Gives a shiny card.")
-            public void onShiny(final Player player, @Single final String rarityId, @Single final String cardId, @Single final String seriesId) {
-                onPlayer(player, player.getName(), rarityId, cardId, seriesId,true);
+            public void onShiny(final Player player, @Single final Rarity rarity, @Single final Series series, @Single final String cardId) {
+                onPlayer(player, player.getName(), rarity, series,cardId,true);
             }
         }
 
