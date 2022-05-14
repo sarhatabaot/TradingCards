@@ -4,7 +4,6 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import de.tr7zw.nbtapi.NBTItem;
-import net.tinetwork.tradingcards.api.manager.Cacheable;
 import net.tinetwork.tradingcards.api.manager.PackManager;
 import net.tinetwork.tradingcards.api.model.Pack;
 import net.tinetwork.tradingcards.api.model.Rarity;
@@ -21,10 +20,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -56,7 +53,7 @@ public class BoosterPackManager extends Manager<String, Pack> implements PackMan
                 .build(new CacheLoader<>() {
                     @Override
                     public Pack load(final String key) throws Exception {
-                        plugin.debug(AllCardManager.class, InternalDebug.LOADED_INTO_CACHE.formatted(key));
+                        plugin.debug(BoosterPackManager.class, InternalDebug.LOADED_INTO_CACHE.formatted(key));
                         return plugin.getStorage().getPack(key);
                     }
                 });
@@ -166,6 +163,12 @@ public class BoosterPackManager extends Manager<String, Pack> implements PackMan
     @Override
     public void preLoadCache() {
         super.preLoadCache();
+        preLoadItemStackCache();
+    }
+
+    @Override
+    public void forceCacheRefresh() {
+        super.forceCacheRefresh();
         this.packsItemStackCache.invalidateAll();
         preLoadItemStackCache();
     }
