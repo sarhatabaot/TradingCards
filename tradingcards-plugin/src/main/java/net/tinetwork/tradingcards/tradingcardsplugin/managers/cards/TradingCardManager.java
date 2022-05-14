@@ -37,8 +37,8 @@ public abstract class TradingCardManager extends Manager<CompositeCardKey, Tradi
     @Override
     public LoadingCache<CompositeCardKey, TradingCard> loadCache() {
         return CacheBuilder.newBuilder()
-                .maximumSize(3000)
-                .refreshAfterWrite(5, TimeUnit.MINUTES)
+                .maximumSize(plugin.getAdvancedConfig().getCards().maxCacheSize())
+                .refreshAfterWrite(plugin.getAdvancedConfig().getCards().refreshAfterWrite(), TimeUnit.MINUTES)
                 .build(new CacheLoader<>() {
                            @Override
                            public TradingCard load(final CompositeCardKey key) throws Exception {
@@ -53,8 +53,8 @@ public abstract class TradingCardManager extends Manager<CompositeCardKey, Tradi
     @Contract(" -> new")
     private @NotNull LoadingCache<String, List<TradingCard>> loadSeriesCardCache() {
         return CacheBuilder.newBuilder()
-                .maximumSize(3000)
-                .refreshAfterWrite(5, TimeUnit.MINUTES)
+                .maximumSize(plugin.getAdvancedConfig().getCards().maxCacheSize())
+                .refreshAfterWrite(plugin.getAdvancedConfig().getCards().refreshAfterWrite(), TimeUnit.MINUTES)
                 .build(new CacheLoader<>() {
                            @Override
                            public List<TradingCard> load(final String key) throws Exception {
@@ -66,8 +66,8 @@ public abstract class TradingCardManager extends Manager<CompositeCardKey, Tradi
 
     private @NotNull LoadingCache<CompositeRaritySeriesKey,List<TradingCard>> loadRarityAndSeriesCardCache() {
         return CacheBuilder.newBuilder()
-                .maximumSize(3000)
-                .refreshAfterWrite(5,TimeUnit.MINUTES)
+                .maximumSize(plugin.getAdvancedConfig().getCards().maxCacheSize())
+                .refreshAfterWrite(plugin.getAdvancedConfig().getCards().refreshAfterWrite(),TimeUnit.MINUTES)
                 .build(new CacheLoader<>() {
                     @Override
                     public List<TradingCard> load(final CompositeRaritySeriesKey key) throws Exception {

@@ -12,14 +12,11 @@ import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import org.bukkit.entity.EntityType;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class DropTypeManager extends Manager<String, DropType> implements TypeManager {
     public static final Map<String,DropType> DEFAULT_MOB_TYPES = Map.of(
@@ -50,8 +47,8 @@ public class DropTypeManager extends Manager<String, DropType> implements TypeMa
     @Override
     public LoadingCache<String, DropType> loadCache() {
         return CacheBuilder.newBuilder()
-                .maximumSize(100)
-                .refreshAfterWrite(5, TimeUnit.MINUTES)
+                .maximumSize(plugin.getAdvancedConfig().getTypes().maxCacheSize())
+                .refreshAfterWrite(plugin.getAdvancedConfig().getTypes().refreshAfterWrite(), TimeUnit.MINUTES)
                 .build(new CacheLoader<>() {
                     @Override
                     public DropType load(final String key) throws Exception {

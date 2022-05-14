@@ -26,6 +26,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.EditPack;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.EditRarity;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.EditSeries;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.EditType;
+import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.AdvancedConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.ChancesConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.GeneralConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.MessagesConfig;
@@ -87,6 +88,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private GeneralConfig generalConfig;
     private MessagesConfig messagesConfig;
     private ChancesConfig chancesConfig;
+    private AdvancedConfig advancedConfig;
 
     /* Managers */
     private AllCardManager cardManager;
@@ -209,6 +211,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
             this.chancesConfig = new ChancesConfig(this);
             this.messagesConfig = new MessagesConfig(this);
             this.storageConfig = new StorageConfig(this);
+            this.advancedConfig = new AdvancedConfig(this);
         } catch (ConfigurateException e) {
             getLogger().severe(e.getMessage());
         }
@@ -493,4 +496,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         return migrateCommand;
     }
 
+    public AdvancedConfig getAdvancedConfig() {
+        return advancedConfig;
+    }
 }

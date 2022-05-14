@@ -35,8 +35,8 @@ public class ActiveCardManager extends TradingCardManager {
     @Override
     protected LoadingCache<String, List<TradingCard>> loadRarityCardCache() {
         return CacheBuilder.newBuilder()
-               .maximumSize(3000)
-                .refreshAfterWrite(5, TimeUnit.MINUTES)
+               .maximumSize(plugin.getAdvancedConfig().getCards().maxCacheSize())
+                .refreshAfterWrite(plugin.getAdvancedConfig().getCards().refreshAfterWrite(), TimeUnit.MINUTES)
                 .build(new CacheLoader<>() {
                            @Override
                            public List<TradingCard> load(final String key) throws Exception {

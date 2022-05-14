@@ -31,8 +31,8 @@ public class TradingSeriesManager extends Manager<String,Series> implements Seri
     @Contract(" -> new")
     public @NotNull LoadingCache<String,Series> loadCache() {
         return CacheBuilder.newBuilder()
-                .maximumSize(50)
-                .refreshAfterWrite(5, TimeUnit.MINUTES)
+                .maximumSize(plugin.getAdvancedConfig().getSeries().maxCacheSize())
+                .refreshAfterWrite(plugin.getAdvancedConfig().getSeries().refreshAfterWrite(), TimeUnit.MINUTES)
                 .build(new CacheLoader<>() {
                     @Override
                     public Series load(final String key) throws Exception {

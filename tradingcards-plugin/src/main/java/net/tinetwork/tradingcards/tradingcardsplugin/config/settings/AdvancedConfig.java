@@ -1,7 +1,6 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
 
 import com.github.sarhatabaot.kraken.core.config.ConfigurateFile;
-import net.tinetwork.tradingcards.api.model.chance.Chance;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.settings.Advanced;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -63,5 +62,25 @@ public class AdvancedConfig extends ConfigurateFile<TradingCards> {
         public void serialize(final Type type, @Nullable final ConfigCache obj, final ConfigurationNode node) throws SerializationException {
             //This is a read only config. It must be changed through the setting files.
         }
+    }
+
+    public ConfigCache getRarity() {
+        return rarity;
+    }
+
+    public ConfigCache getSeries() {
+        return series;
+    }
+
+    public ConfigCache getCards() {
+        return cards;
+    }
+
+    public ConfigCache getTypes() {
+        return types;
+    }
+
+    public ConfigCache getPacks() {
+        return packs;
     }
 }

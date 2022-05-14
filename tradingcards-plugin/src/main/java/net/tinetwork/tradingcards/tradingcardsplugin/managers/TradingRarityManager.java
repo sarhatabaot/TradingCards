@@ -15,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class TradingRarityManager extends Manager<String,Rarity> implements RarityManager, Cacheable<String,Rarity> {
     public static final Rarity EMPTY_RARITY = new Rarity("empty","empty","",0.00,0.00, Collections.singletonList(""));
@@ -32,7 +33,8 @@ public class TradingRarityManager extends Manager<String,Rarity> implements Rari
     @Contract(" -> new")
     public @NotNull LoadingCache<String, Rarity> loadCache() {
         return CacheBuilder.newBuilder()
-                .maximumSize(50)
+                .maximumSize(plugin.getAdvancedConfig().getRarity().maxCacheSize())
+                .refreshAfterWrite(plugin.getAdvancedConfig().getRarity().refreshAfterWrite(), TimeUnit.MINUTES)
                 .build(new CacheLoader<>() {
                     @Override
                     public Rarity load(final String key) {

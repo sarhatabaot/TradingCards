@@ -48,8 +48,8 @@ public class BoosterPackManager extends Manager<String, Pack> implements PackMan
     @Override
     public LoadingCache<String, Pack> loadCache() {
         return CacheBuilder.newBuilder()
-                .maximumSize(100)
-                .refreshAfterWrite(5, TimeUnit.MINUTES) //TODO, should never be refreshed unless edited.
+                .maximumSize(plugin.getAdvancedConfig().getPacks().maxCacheSize())
+                .refreshAfterWrite(plugin.getAdvancedConfig().getPacks().refreshAfterWrite(), TimeUnit.MINUTES)
                 .build(new CacheLoader<>() {
                     @Override
                     public Pack load(final String key) throws Exception {

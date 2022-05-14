@@ -49,8 +49,8 @@ public class AllCardManager extends TradingCardManager implements CardManager<Tr
     @Override
     public LoadingCache<CompositeCardKey, TradingCard> loadCache() {
         return CacheBuilder.newBuilder()
-                .maximumSize(3000)
-                .refreshAfterWrite(5, TimeUnit.MINUTES)
+                .maximumSize(plugin.getAdvancedConfig().getCards().maxCacheSize())
+                .refreshAfterWrite(plugin.getAdvancedConfig().getCards().refreshAfterWrite(), TimeUnit.MINUTES)
                 .build(new CacheLoader<>() {
                            @Override
                            public TradingCard load(final CompositeCardKey key) throws Exception {
@@ -63,8 +63,8 @@ public class AllCardManager extends TradingCardManager implements CardManager<Tr
     @Override
     protected LoadingCache<String, List<TradingCard>> loadRarityCardCache() {
         return CacheBuilder.newBuilder()
-                .maximumSize(3000)
-                .refreshAfterWrite(5, TimeUnit.MINUTES)
+                .maximumSize(plugin.getAdvancedConfig().getCards().maxCacheSize())
+                .refreshAfterWrite(plugin.getAdvancedConfig().getCards().refreshAfterWrite(), TimeUnit.MINUTES)
                 .build(new CacheLoader<>() {
                            @Override
                            public List<TradingCard> load(final String key) throws Exception {
