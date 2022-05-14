@@ -147,8 +147,8 @@ public class ListCommand extends BaseCommand {
                 return;
             }
             if (rarityId == null) {
-                final String sectionFormat = String.format(plugin.getMessagesConfig().sectionFormatPlayer(), target.getName());
-                ChatUtil.sendMessage(sender, String.format(sectionFormat, target.getName()));
+                final String sectionFormat = plugin.getMessagesConfig().sectionFormatPlayer().replaceAll(PlaceholderUtil.PLAYER.asRegex(), target.getName());
+                ChatUtil.sendMessage(sender, sectionFormat);
                 for (Rarity rarityKey : plugin.getRarityManager().getRarities()) {
                     listRarity(sender, target, rarityKey.getId());
                 }
