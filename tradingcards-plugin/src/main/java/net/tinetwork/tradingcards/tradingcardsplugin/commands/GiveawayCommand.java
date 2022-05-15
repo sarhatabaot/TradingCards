@@ -5,6 +5,8 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Optional;
+import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.Permissions;
@@ -50,19 +52,29 @@ public class GiveawayCommand extends BaseCommand {
 
         @Subcommand("series")
         @CommandPermission(Permissions.GIVEAWAY_RARITY)
-        @Description("Give away a random card by rarity to the server.")
-        @CommandCompletion("@series")
-        public void onSeries(final CommandSender sender, final String seriesId) {
+        @Description("Give away a random card by series to the server. Optionally also specify the rarity.")
+        @CommandCompletion("@series @rarities")
+        public void onSeries(final CommandSender sender,@Single final String seriesId,@Optional @Single final String rarityId) {
             if(!plugin.getSeriesManager().containsSeries(seriesId)) {
                 ChatUtil.sendMessage(sender, plugin.getMessagesConfig().noSeries());
+                return;
+            }
+            if(rarityId == null) {
+                Bukkit.broadcastMessage(plugin.getPrefixedMessage(plugin.getMessagesConfig().giveaway()
+                        .replaceAll(PlaceholderUtil.PLAYER.asRegex(), sender.getName())
+                        .replaceAll(PlaceholderUtil.SERIES.asRegex(), plugin.getSeriesManager().getSeries(seriesId).getDisplayName())));
+                for (final Player player : Bukkit.getOnlinePlayers()) {
+                    CardUtil.dropItem(player, plugin.getCardManager().getRandomCardBySeries(seriesId).build(false));
+                }
                 return;
             }
 
             Bukkit.broadcastMessage(plugin.getPrefixedMessage(plugin.getMessagesConfig().giveaway()
                     .replaceAll(PlaceholderUtil.PLAYER.asRegex(), sender.getName())
-                    .replaceAll(PlaceholderUtil.RARITY.asRegex(), plugin.getSeriesManager().getSeries(seriesId).getDisplayName())));
+                    .replaceAll(PlaceholderUtil.SERIES.asRegex(), plugin.getSeriesManager().getSeries(seriesId).getDisplayName()
+                            .replaceAll(PlaceholderUtil.RARITY.asRegex(), plugin.getRarityManager().getRarity(rarityId).getDisplayName()))));
             for (final Player player : Bukkit.getOnlinePlayers()) {
-                CardUtil.dropItem(player, plugin.getCardManager().getRandomCardBySeries(seriesId).build(false));
+                CardUtil.dropItem(player, plugin.getCardManager().getRandomCardByRarityAndSeries(rarityId,seriesId).build(false));
             }
         }
 
