@@ -112,5 +112,4 @@ public final class Rarity {
     public int hashCode() {
         return Objects.hash(id, displayName, defaultColor, buyPrice, sellPrice, rewards);
     }
-
 }

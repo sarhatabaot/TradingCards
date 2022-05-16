@@ -14,6 +14,8 @@ public interface PackManager {
 
     ItemStack generatePack(String name) throws SerializationException;
 
+    ItemStack generatePack(Pack pack) throws SerializationException;
+
     boolean isPack(final ItemStack item);
 
     Pack getPack(final String id);

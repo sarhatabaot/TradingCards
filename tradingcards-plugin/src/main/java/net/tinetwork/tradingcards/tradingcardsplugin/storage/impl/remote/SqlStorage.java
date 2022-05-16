@@ -666,18 +666,6 @@ public class SqlStorage implements Storage<TradingCard> {
         }.prepareAndRunQuery();
     }
 
-    @Override
-    public Map<String, TradingCard> getCardsMap() {
-        Map<String, TradingCard> cardsMap = new HashMap<>();
-        for (TradingCard tradingCard : getCards()) {
-            final String cardId = tradingCard.getCardId();
-            final String rarityId = tradingCard.getRarity().getId();
-            final String cardKey = CardUtil.cardKey(rarityId, cardId);
-            cardsMap.put(cardKey, tradingCard);
-        }
-        return cardsMap;
-    }
-
     private @NotNull TradingCard getTradingCardFromRecord(@NotNull Record recordResult) {
         final String cardId = recordResult.getValue(Cards.CARDS.CARD_ID);
         final String displayName = recordResult.getValue(Cards.CARDS.DISPLAY_NAME);
@@ -856,6 +844,38 @@ public class SqlStorage implements Storage<TradingCard> {
                         .from(Cards.CARDS)
                         .where(Cards.CARDS.CARD_ID.eq(cardId)
                                 .and(Cards.CARDS.RARITY_ID.eq(rarityId)))
+                        .limit(1)
+                        .fetch());
+            }
+
+            @Override
+            public TradingCard getQuery(final @NotNull Result<Record> result) {
+                if (result.isEmpty()) {
+                    return empty();
+                }
+
+                Record recordResult = result.get(0);
+                return getTradingCardFromRecord(recordResult);
+            }
+
+            @Contract(" -> new")
+            @Override
+            public @NotNull TradingCard empty() {
+                return new EmptyCard();
+            }
+        }.prepareAndRunQuery();
+    }
+
+    @Override
+    public Card<TradingCard> getCard(final String cardId, final String rarityId, final String seriesId) {
+        return new ExecuteQuery<TradingCard, Result<Record>>(this, jooqSettings) {
+            @Override
+            public TradingCard onRunQuery(final DSLContext dslContext) {
+                return getQuery(dslContext.select()
+                        .from(Cards.CARDS)
+                        .where(Cards.CARDS.CARD_ID.eq(cardId)
+                                .and(Cards.CARDS.RARITY_ID.eq(rarityId))
+                                .and(Cards.CARDS.SERIES_ID.eq(seriesId)))
                         .limit(1)
                         .fetch());
             }

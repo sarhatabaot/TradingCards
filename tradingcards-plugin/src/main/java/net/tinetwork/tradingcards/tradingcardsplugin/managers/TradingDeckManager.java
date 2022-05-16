@@ -10,6 +10,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.api.events.DeckLoadEvent;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.AllCardManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalDebug;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalLog;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
@@ -35,9 +36,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
+//Implement cache as needed
 public class TradingDeckManager implements DeckManager {
     private final TradingCards plugin;
-    private final TradingCardManager cardManager;
+    private final AllCardManager cardManager;
     private final Storage<TradingCard> storage;
     private final Map<UUID, Integer> playerDeckViewingMap;
 
@@ -50,6 +52,7 @@ public class TradingDeckManager implements DeckManager {
     }
 
 
+    @Override
     public void openDeck(@NotNull Player player, int deckNum) {
         //Checks, if in SQL mode a migration has been done.
         if (plugin.getStorage().getType() != StorageType.YAML
@@ -124,7 +127,7 @@ public class TradingDeckManager implements DeckManager {
             final String rarityId = deckEntry.getRarityId();
             final String seriesId = deckEntry.getSeriesId();
 
-            TradingCard card = cardManager.getCard(cardId, rarityId, seriesId,false);
+            TradingCard card = cardManager.getCard(cardId, rarityId, seriesId);
             if (card instanceof EmptyCard) {
                 plugin.debug(getClass(), "Card is not in a cards storage, skipping.");
                 continue;

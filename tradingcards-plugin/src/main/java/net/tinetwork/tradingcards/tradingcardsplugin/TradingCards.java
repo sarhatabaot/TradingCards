@@ -26,6 +26,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.EditPack;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.EditRarity;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.EditSeries;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.EditType;
+import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.AdvancedConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.ChancesConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.GeneralConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.MessagesConfig;
@@ -37,7 +38,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.listeners.PackListener;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.BoosterPackManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.DropTypeManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingRarityManager;
-import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingCardManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.AllCardManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingDeckManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingSeriesManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalDebug;
@@ -87,9 +88,10 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private GeneralConfig generalConfig;
     private MessagesConfig messagesConfig;
     private ChancesConfig chancesConfig;
+    private AdvancedConfig advancedConfig;
 
     /* Managers */
-    private TradingCardManager cardManager;
+    private AllCardManager cardManager;
     private BoosterPackManager packManager;
     private TradingDeckManager deckManager;
     private DropTypeManager dropTypeManager;
@@ -209,6 +211,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
             this.chancesConfig = new ChancesConfig(this);
             this.messagesConfig = new MessagesConfig(this);
             this.storageConfig = new StorageConfig(this);
+            this.advancedConfig = new AdvancedConfig(this);
         } catch (ConfigurateException e) {
             getLogger().severe(e.getMessage());
         }
@@ -242,7 +245,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         this.dropTypeManager = new DropTypeManager(this);
         this.seriesManager = new TradingSeriesManager(this);
 
-        this.cardManager = new TradingCardManager(this);
+        this.cardManager = new AllCardManager(this);
         this.packManager = new BoosterPackManager(this);
         this.deckManager = new TradingDeckManager(this);
     }
@@ -250,8 +253,8 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private void initCommands() {
         var commandManager = new PaperCommandManager(this);
         commandManager.getCommandCompletions().registerCompletion("rarities", c -> rarityManager.getRarityIds());
-        commandManager.getCommandCompletions().registerCompletion("cards", c -> cardManager.getRarityCardListIds(c.getContextValueByName(String.class, "rarityId")));
-        commandManager.getCommandCompletions().registerCompletion("command-cards", c -> cardManager.getCardsInRarityAndSeriesIds(c.getContextValue(Rarity.class).getId(), c.getContextValue(Series.class).getId()));
+        commandManager.getCommandCompletions().registerCompletion("cards", c ->cardManager.getCardsIdsInRarityAndSeries(c.getContextValue(Rarity.class).getId(), c.getContextValue(Series.class).getId()));
+        commandManager.getCommandCompletions().registerCompletion("command-cards", c -> cardManager.getCardsIdsInRarityAndSeries(c.getContextValue(Rarity.class).getId(), c.getContextValue(Series.class).getId()));
         commandManager.getCommandCompletions().registerCompletion("active-cards", c -> cardManager.getActiveRarityCardIds(c.getContextValueByName(String.class, "rarityId")));
         commandManager.getCommandCompletions().registerCompletion("packs", c -> packManager.getPackIds());
         commandManager.getCommandCompletions().registerCompletion("default-types", c -> dropTypeManager.getDefaultTypes().stream().map(DropType::getId).toList());
@@ -334,9 +337,10 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
     public void reloadManagers() {
         this.cardManager.initValues();
-        this.packManager.initValues();
+        this.cardManager.forceCacheRefresh();
+        this.packManager.forceCacheRefresh();
         this.deckManager = new TradingDeckManager(this);
-        this.dropTypeManager.loadTypes();
+        this.dropTypeManager.forceCacheRefresh();
     }
 
     @Override
@@ -351,12 +355,12 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     }
 
     @Override
-    public TradingCardManager getCardManager() {
+    public AllCardManager getCardManager() {
         return cardManager;
     }
 
     @Override
-    public PackManager getPackManager() {
+    public BoosterPackManager getPackManager() {
         return packManager;
     }
 
@@ -483,6 +487,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         return random;
     }
 
+    @Override
     public TradingSeriesManager getSeriesManager() {
         return seriesManager;
     }
@@ -491,4 +496,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         return migrateCommand;
     }
 
+    public AdvancedConfig getAdvancedConfig() {
+        return advancedConfig;
+    }
 }

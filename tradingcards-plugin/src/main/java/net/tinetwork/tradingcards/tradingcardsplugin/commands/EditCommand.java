@@ -13,6 +13,7 @@ import net.tinetwork.tradingcards.api.model.Pack;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.api.model.schedule.Mode;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.CompositeCardKey;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalDebug;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalMessages;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.Permissions;
@@ -120,7 +121,7 @@ public class EditCommand extends BaseCommand {
                 }
             }
 
-
+            plugin.getCardManager().getCache().refresh(new CompositeCardKey(rarityId,seriesId,cardId));
             String setCardMessage = "%s %s %s".formatted(cardId,rarityId,seriesId);
             sendSetTypes(sender, setCardMessage, editCard, value);
         }
@@ -222,6 +223,7 @@ public class EditCommand extends BaseCommand {
                 }
             }
 
+            plugin.getSeriesManager().getCache().refresh(seriesId);
             sendSetTypes(sender, seriesId, editSeries, value);
         }
 
@@ -273,6 +275,7 @@ public class EditCommand extends BaseCommand {
                 }
             }
 
+            plugin.getPackManager().getCache().refresh(packId);
             sendSetTypes(sender, packId, editType, value);
         }
 
@@ -315,6 +318,7 @@ public class EditCommand extends BaseCommand {
                     storage.editCustomTypeType(typeId, value);
                 }
             }
+            plugin.getDropTypeManager().getCache().refresh(typeId);
             sendSetTypes(sender, typeId, editType, value);
         }
 

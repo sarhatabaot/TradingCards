@@ -1,10 +1,13 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.messages.settings;
 
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalExceptions;
+
 public final class Chances {
     public static final Integer HOSTILE_CHANCE = 20000;
     public static final Integer NEUTRAL_CHANCE = 5000;
     public static final Integer PASSIVE_CHANCE = 1000;
     public static final Integer BOSS_CHANCE = 100000;
+    public static final Integer ALL_CHANCE = 5000;
     public static final Boolean BOSS_DROP = false;
     public static final Integer BOSS_DROP_RARITY = 5000;
     public static final Integer SHINY_VERSION_CHANCE = 1000;

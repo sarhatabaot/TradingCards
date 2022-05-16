@@ -1,0 +1,19 @@
+# Advanced settings.
+# max-cache-entries
+# refresh-after-write, in minutes 0=never
+cache:
+  rarity:
+    max-cache-entries: 100
+    refresh-after-write: 0
+  series:
+    max-cache-entries: 100
+    refresh-after-write: 0
+  cards:
+    max-cache-entries: 500
+    refresh-after-write: 0
+  types:
+    max-cache-entries: 100
+    refresh-after-write: 0
+  packs:
+    max-cache-entries: 100
+    refresh-after-write: 0

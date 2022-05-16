@@ -1,100 +1,128 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.managers;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import de.tr7zw.nbtapi.NBTItem;
 import net.tinetwork.tradingcards.api.manager.PackManager;
 import net.tinetwork.tradingcards.api.model.Pack;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.utils.NbtUtils;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.AllCardManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalDebug;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalLog;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
+import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
-public class BoosterPackManager implements PackManager {
+public class BoosterPackManager extends Manager<String, Pack> implements PackManager {
     private final ItemStack blankPack;
-    private final TradingCards plugin;
-    private List<String> packNames;
 
-    private Map<String, ItemStack> packsItemStackCache;
-
+    private final LoadingCache<String, ItemStack> packsItemStackCache;
 
     public BoosterPackManager(@NotNull TradingCards plugin) {
-        this.plugin = plugin;
+        super(plugin);
         this.blankPack = new ItemStack(plugin.getGeneralConfig().packMaterial());
-        initValues();
+        this.packsItemStackCache = loadItemStackCache();
+        preLoadItemStackCache();
         plugin.getLogger().info(() -> InternalLog.Init.LOAD_PACK_MANAGER);
     }
 
-    public void initValues() {
-        this.packsItemStackCache = new HashMap<>();
-        loadPacks();
+    @Override
+    public List<String> getKeys() {
+        return plugin.getStorage().getPacks().stream().map(Pack::id).toList();
     }
 
-    private void loadPacks() {
-        for (Pack pack : plugin.getStorage().getPacks()) {
-            loadPack(pack.id());
-        }
-        plugin.getLogger().info(() -> InternalLog.Init.LOAD_PACKS_AMOUNT.formatted(packsItemStackCache.size()));
-        plugin.debug(BoosterPackManager.class, packsItemStackCache.keySet().toString());
-        for(ItemStack itemStack: packsItemStackCache.values()) {
-            plugin.debug(BoosterPackManager.class,itemStack.toString());
-        }
-        packNames = plugin.getStorage().getPacks().stream().map(Pack::id).toList();
+    @Override
+    public LoadingCache<String, Pack> loadCache() {
+        return CacheBuilder.newBuilder()
+                .maximumSize(plugin.getAdvancedConfig().getPacks().maxCacheSize())
+                .refreshAfterWrite(plugin.getAdvancedConfig().getPacks().refreshAfterWrite(), TimeUnit.MINUTES)
+                .build(new CacheLoader<>() {
+                    @Override
+                    public Pack load(final String key) throws Exception {
+                        plugin.debug(BoosterPackManager.class, InternalDebug.LOADED_INTO_CACHE.formatted(key));
+                        return plugin.getStorage().getPack(key);
+                    }
+                });
     }
+
+    @Contract(" -> new")
+    private @NotNull LoadingCache<String,ItemStack> loadItemStackCache() {
+        return CacheBuilder.newBuilder()
+                .maximumSize(100)
+                .refreshAfterWrite(5, TimeUnit.MINUTES)
+                .build(new CacheLoader<>() {
+                    @Override
+                    public ItemStack load(final String key) throws Exception {
+                        return generatePack(key);
+                    }
+                });
+    }
+
+    private void preLoadItemStackCache() {
+        try {
+            this.packsItemStackCache.getAll(getKeys());
+        } catch (ExecutionException e) {
+            plugin.debug(getClass(),e.getMessage());
+        }
+    }
+
 
     @Override
     public Map<String, ItemStack> getCachedPacksItemStacks() {
-        return packsItemStackCache;
+        return packsItemStackCache.asMap();
     }
 
-    private void loadPack(final String packName) {
-        try {
-            packsItemStackCache.put(packName, generatePack(packName));
-            plugin.debug(BoosterPackManager.class, InternalDebug.LOAD_PACK.formatted(packName));
-        } catch (SerializationException e) {
-            plugin.getLogger().severe(e.getMessage());
+
+    @Override
+    public ItemStack generatePack(final String name) {
+        final Pack pack = plugin.getStorage().getPack(name);
+        if (pack == null) {
+            plugin.getLogger().warning("Could not get pack %s".formatted(name));
+            return new ItemStack(Material.AIR);
         }
+
+        return generatePack(pack);
     }
 
     @Override
-    public ItemStack generatePack(final String name) throws SerializationException {
-        final Pack pack = plugin.getStorage().getPack(name);
-
+    public ItemStack generatePack(final @NotNull Pack pack) {
         ItemStack itemPack = blankPack.clone();
         ItemMeta itemPackMeta = itemPack.getItemMeta();
         itemPackMeta.setDisplayName(ChatUtil.color(plugin.getGeneralConfig().packPrefix()
-                        + plugin.getGeneralConfig().colorPackName())
-                        + pack.getDisplayName().replace("_", " "));
+                + plugin.getGeneralConfig().colorPackName())
+                + pack.getDisplayName().replace("_", " "));
         List<String> lore = new ArrayList<>();
 
-        for(Pack.PackEntry entry: pack.getPackEntryList()) {
+        for (Pack.PackEntry entry : pack.getPackEntryList()) {
             final Rarity rarity = plugin.getRarityManager().getRarity(entry.getRarityId());
             lore.add(ChatUtil.color(plugin.getGeneralConfig().colorPackNormal()
-                    +entry.getAmount()
-                    +" "
-                    +plugin.getGeneralConfig().colorPackLore()
-                    +rarity.getDisplayName()));
+                    + entry.getAmount()
+                    + " "
+                    + plugin.getGeneralConfig().colorPackLore()
+                    + rarity.getDisplayName()));
         }
         itemPackMeta.setLore(lore);
-
 
 
         itemPack.addUnsafeEnchantment(Enchantment.ARROW_INFINITE, 10);
         itemPackMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         itemPack.setItemMeta(itemPackMeta);
         NBTItem nbtItem = new NBTItem(itemPack);
-        nbtItem.setString(NbtUtils.NBT_PACK_ID, name);
+        nbtItem.setString(NbtUtils.NBT_PACK_ID, pack.id());
         nbtItem.setBoolean(NbtUtils.NBT_PACK, true);
         return nbtItem.getItem();
     }
@@ -104,24 +132,24 @@ public class BoosterPackManager implements PackManager {
     }
 
     @Override
-    public ItemStack getPackItem(final String name) {
-        return packsItemStackCache.get(name).clone();
+    public ItemStack getPackItem(final String packId) {
+        return packsItemStackCache.getUnchecked(packId).clone();
     }
 
     @Override
     public Pack getPack(final String packId) {
-        return plugin.getStorage().getPack(packId);
+        return cache.getUnchecked(packId);
     }
 
     @Override
     public List<Pack> getPacks() {
-        return plugin.getStorage().getPacks();
+        return cache.asMap().values().stream().toList();
     }
 
     @Override
     public boolean containsPack(final String packId) {
-        for(Pack pack: getPacks()) {
-            if(pack.id().equals(packId))
+        for (Pack pack : getPacks()) {
+            if (pack.id().equals(packId))
                 return true;
         }
         return false;
@@ -129,6 +157,13 @@ public class BoosterPackManager implements PackManager {
 
     @Override
     public List<String> getPackIds() {
-        return packNames;
+        return getKeys();
+    }
+
+    @Override
+    public void forceCacheRefresh() {
+        super.forceCacheRefresh();
+        this.packsItemStackCache.invalidateAll();
+        preLoadItemStackCache();
     }
 }

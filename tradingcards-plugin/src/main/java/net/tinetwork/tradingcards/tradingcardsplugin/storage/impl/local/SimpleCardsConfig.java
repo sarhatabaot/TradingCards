@@ -239,7 +239,7 @@ public class SimpleCardsConfig extends ConfigurateFile<TradingCards> {
 
                 DropType dropType = yamlStorage.getCustomTypesConfig().getCustomType(typeId);
                 if(dropType == null) {
-                    dropType = DropTypeManager.DEFAULT_TYPES
+                    dropType = DropTypeManager.DEFAULT_MOB_TYPES.values()
                             .stream()
                             .filter(type -> typeId.equals(type.getId())).toList().get(0);
                     if (dropType != null)

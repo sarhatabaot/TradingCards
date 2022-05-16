@@ -116,13 +116,6 @@ public interface Storage<T extends Card<T>> {
      */
     Set<Series> getActiveSeries();
 
-    /* TODO
-     *  @return Returns a <CardsKey, Card> map CardsKey should only be for yaml
-     *  This is effectively a cache with a composite key.
-     *  This should be used only in yaml storage, and via getCard();
-     */
-    @Deprecated
-    Map<String, T> getCardsMap();
 
     /**
      * @return A list of all cards.
@@ -154,9 +147,10 @@ public interface Storage<T extends Card<T>> {
      * @param rarityId The rarity id.
      * @return Returns a card.
      */
+    @Deprecated
     Card<T> getCard(final String cardId, final String rarityId);
 
-
+    Card<T> getCard(final String cardId, final String rarityId, final String seriesId);
     /**
      * @param packsId The pack id.
      * @return Returns the pack. Will return null if it doesn't exist.

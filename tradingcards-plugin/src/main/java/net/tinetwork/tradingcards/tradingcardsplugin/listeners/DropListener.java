@@ -4,7 +4,9 @@ import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
-import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingCardManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingRarityManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.AllCardManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.CompositeCardKey;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalDebug;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.whitelist.PlayerBlacklist;
@@ -20,13 +22,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Set;
 
 import static net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil.cardKey;
 
 public class DropListener extends SimpleListener {
     private final PlayerBlacklist playerBlacklist;
     private final WorldBlacklist worldBlacklist;
-    private final TradingCardManager cardManager;
+    private final AllCardManager cardManager;
 
     public DropListener(final TradingCards plugin) {
         super(plugin);
@@ -37,6 +40,9 @@ public class DropListener extends SimpleListener {
 
 
     //When a player is killed, he can drop a card
+    //Possibly this should be removed, or we have a setting: "player-series: "player"
+    //That way we have something set ahead of time.
+    //todo temp def "player"
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent e) {
         boolean canPlayerDropCards = plugin.getGeneralConfig().playerDropsCard();
@@ -58,7 +64,7 @@ public class DropListener extends SimpleListener {
         if (rarityKey == null)
             return;
 
-        ItemStack playerCard = cardManager.getActiveCard(killedPlayer.getName(), rarityKey).build(false);
+        ItemStack playerCard = cardManager.getActiveCard(killedPlayer.getName(), rarityKey, "player").build(false);
         e.getDrops().add(playerCard);
         debug(e.getDrops().toString());
     }
@@ -77,8 +83,8 @@ public class DropListener extends SimpleListener {
         debug(InternalDebug.DropListener.ENTITY_TYPE.formatted(killedEntity.getType()));
         debug(InternalDebug.DropListener.MOB_TYPE.formatted(CardUtil.getMobType(killedEntity.getType())));
 
-        String rarityName = cardManager.getRandomRarity(CardUtil.getMobType(killedEntity.getType()), false);
-        if (rarityName.equalsIgnoreCase("None"))
+        String rarityName = cardManager.getRandomRarityId(CardUtil.getMobType(killedEntity.getType()), false);
+        if (rarityName.equalsIgnoreCase(TradingRarityManager.EMPTY_RARITY.getId()))
             return;
 
         //Get the card
@@ -88,7 +94,7 @@ public class DropListener extends SimpleListener {
         }
 
         boolean isShiny = randomCard.hasShiny() && CardUtil.calculateIfShiny(false);
-        debug(InternalDebug.DropListener.ADDED_CARD.formatted(cardKey(randomCard.getRarity().getId(),randomCard.getCardId())));
+        debug(InternalDebug.DropListener.ADDED_CARD.formatted(CompositeCardKey.fromCard(randomCard)));
         //Add the card to the killedEntity drops
         e.getDrops().add(randomCard.build(isShiny));
     }
@@ -101,7 +107,7 @@ public class DropListener extends SimpleListener {
 
 
         for (final Rarity rarity : rarities) {
-            if (!(cardManager.getCard(player.getName(), rarity.getId(), false) instanceof EmptyCard)) {
+            if (!(cardManager.getCard(player.getName(), rarity.getId(), "player") instanceof EmptyCard)) {
                 debug(rarity.getId());
                 return rarity.getId();
             }

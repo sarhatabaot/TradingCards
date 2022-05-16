@@ -147,8 +147,8 @@ public class ListCommand extends BaseCommand {
                 return;
             }
             if (rarityId == null) {
-                final String sectionFormat = String.format(plugin.getMessagesConfig().sectionFormatPlayer(), target.getName());
-                ChatUtil.sendMessage(sender, String.format(sectionFormat, target.getName()));
+                final String sectionFormat = plugin.getMessagesConfig().sectionFormatPlayer().replaceAll(PlaceholderUtil.PLAYER.asRegex(), target.getName());
+                ChatUtil.sendMessage(sender, sectionFormat);
                 for (Rarity rarityKey : plugin.getRarityManager().getRarities()) {
                     listRarity(sender, target, rarityKey.getId());
                 }
@@ -188,8 +188,8 @@ public class ListCommand extends BaseCommand {
             }
         }
 
-        private TradingCard getCard(final String cardId, final String rarityId) {
-            return plugin.getCardManager().getCard(cardId, rarityId, false);
+        private TradingCard getCard(final String cardId, final String rarityId, final String seriesId) {
+            return plugin.getCardManager().getCard(cardId, rarityId, seriesId);
         }
 
         private @NotNull String generateSeriesCardList(final Player target, final String seriesId) {
@@ -225,13 +225,12 @@ public class ListCommand extends BaseCommand {
         private @NotNull String generateRarityCardList(final Player target, final String rarityId) {
             final StringBuilder stringBuilder = new StringBuilder();
             String prefix = "";
-            final List<String> rarityCardListName = plugin.getCardManager().getRarityCardListIds(rarityId);
-            if (rarityCardListName == null || rarityCardListName.isEmpty())
+            final List<TradingCard> rarityCardList = plugin.getCardManager().getRarityCardCache().getIfPresent(rarityId);
+            if (rarityCardList == null)
                 return "";
 
-            for (final String cardId : plugin.getCardManager().getRarityCardListIds(rarityId)) {
-                plugin.debug(ListSubCommand.class, "rarityId=" + rarityId + ",cardId=" + cardId);
-                TradingCard card = getCard(cardId, rarityId);
+            for(final TradingCard card: rarityCardList) {
+                plugin.debug(ListSubCommand.class, "rarityId=" + rarityId );
                 plugin.debug(ListSubCommand.class, card.toString());
 
                 final String color = plugin.getGeneralConfig().colorListHaveCard();
@@ -239,9 +238,9 @@ public class ListCommand extends BaseCommand {
 
                 stringBuilder.append(prefix);
                 final String cardDisplayName = card.getDisplayName().replace("_", " ");
-                if (plugin.getDeckManager().hasShinyCard(target, cardId, rarityId, card.getSeries().getId())) {
+                if (plugin.getDeckManager().hasShinyCard(target, card.getCardId(), rarityId, card.getSeries().getId())) {
                     stringBuilder.append(shinyColor);
-                } else if (plugin.getDeckManager().hasCard(target, cardId, rarityId, card.getSeries().getId())) {
+                } else if (plugin.getDeckManager().hasCard(target, card.getCardId(), rarityId, card.getSeries().getId())) {
                     stringBuilder.append(color);
                 } else {
                     stringBuilder.append("&7");

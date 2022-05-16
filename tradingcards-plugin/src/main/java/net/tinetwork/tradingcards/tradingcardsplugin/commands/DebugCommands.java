@@ -12,6 +12,7 @@ import net.lingala.zip4j.model.ZipParameters;
 import net.lingala.zip4j.progress.ProgressMonitor;
 import net.tinetwork.tradingcards.api.addons.TradingCardsAddon;
 import net.tinetwork.tradingcards.api.model.Rarity;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.CompositeCardKey;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalMessages;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.Permissions;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
@@ -90,7 +91,7 @@ public class DebugCommands extends BaseCommand {
         @CommandPermission(Permissions.ADMIN_DEBUG_SHOW_CACHE)
         @Description("Shows the card cache")
         public void showCacheAll(final @NotNull CommandSender sender) {
-            sender.sendMessage(StringUtils.join(plugin.getCardManager().getCards().keySet(), ","));
+            sender.sendMessage(StringUtils.join(plugin.getCardManager().getCards(), ","));
         }
 
         @Subcommand("showcache active")
@@ -145,12 +146,12 @@ public class DebugCommands extends BaseCommand {
         @Subcommand("exists")
         @CommandPermission(Permissions.ADMIN_DEBUG_EXISTS)
         @Description("Shows if a card exists or not.")
-        public void onExists(final CommandSender sender, final String card, final String rarity) {
-            if (plugin.getCardManager().getCards().containsKey(rarity + "." + card)) {
-                sender.sendMessage(String.format("Card %s.%s exists", rarity, card));
+        public void onExists(final CommandSender sender, final String cardId, final String rarityId,final String seriesId) {
+            if (plugin.getCardManager().getCards().contains(new CompositeCardKey(rarityId,seriesId,cardId).toString())) {
+                sender.sendMessage(String.format("Card %s.%s exists", rarityId, cardId));
                 return;
             }
-            sender.sendMessage(String.format("Card %s.%s does not exist", rarity, card));
+            sender.sendMessage(String.format("Card %s.%s does not exist", rarityId, cardId));
         }
 
         @Subcommand("rarities-series")

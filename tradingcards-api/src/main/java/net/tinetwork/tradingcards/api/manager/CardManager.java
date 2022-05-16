@@ -4,52 +4,25 @@ import net.tinetwork.tradingcards.api.card.Card;
 import net.tinetwork.tradingcards.api.model.DropType;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public interface CardManager<T extends Card<T>> {
-    /**
-     * @return a map of cards and names.
-     */
-    Map<String, T> getCards();
 
     /**
      * @return a list of active cards.
      */
     List<String> getActiveCards();
 
-    /**
-     * @param cardId The card id.
-     * @param rarityId The rarity id.
-     * @param forcedShiny Force the card to be shiny.
-     * @return The card.
-     */
-    @Deprecated
-    T getCard(final String cardId, final String rarityId, final boolean forcedShiny);
+    List<String> getCards();
 
-    T getCard(final String cardId, final String rarityId, final String seriesId, final boolean forcedShiny);
-    /**
-     * @param cardId The card id.
-     * @param rarityId The rarity id.
-     * @param forcedShiny Force the card to be shiny.
-     * @return The card.
-     */
-    //We should reconsider this method all together.
-    //We can get the active series and get the cards from that. Is there really a need for this method?
-    T getActiveCard(final String cardId, final String rarityId, final boolean forcedShiny);
-    /**
-     * @param cardId The card id.
-     * @param rarityId The rarity id.
-     * @return The card.
-     */
-    T getActiveCard(final String cardId, final String rarityId);
+    T getCard(final String cardId, final String rarityId, final String seriesId);
 
     /**
+     * @param cardId The card id.
      * @param rarityId The rarity id.
-     * @param forcedShiny  Force the card to be shiny.
-     * @return A random card from a rarity.
+     * @return The card.
      */
-    T getRandomCardByRarity(final String rarityId, final boolean forcedShiny);
+    T getActiveCard(final String cardId, final String rarityId, final String seriesId);
 
     /**
      * @param rarityId The rarity id.
@@ -59,12 +32,6 @@ public interface CardManager<T extends Card<T>> {
 
     T getRandomCardBySeries(final String seriesId);
 
-    /**
-     * @param rarityId The rarity id.
-     * @param forcedShiny  Force the card to be shiny.
-     * @return A random active card.
-     */
-    T getRandomActiveCardByRarity(final String rarityId, final boolean forcedShiny);
 
     /**
      * @param rarityId The rarity id.
@@ -79,14 +46,14 @@ public interface CardManager<T extends Card<T>> {
      * @return A random rarity
      */
     //We might want to get a Rarity object from this.
-    String getRandomRarity(final DropType dropType, boolean alwaysDrop);
+    String getRandomRarityId(final DropType dropType, boolean alwaysDrop);
 
     /**
      * @param rarityId The rarity id
      * @return returns a list of cards from a rarity.
      */
-    //this should be cached
     List<T> getRarityCardList(final String rarityId);
+
     List<T> getSeriesCardList(final String seriesId);
     /**
      * @param rarityId The rarity id
@@ -100,16 +67,12 @@ public interface CardManager<T extends Card<T>> {
      */
     List<String> getActiveRarityCardIds(final String rarity);
 
-    List<String> getCardsInRarityAndSeriesIds(final String rarityId, final String seriesId);
-    /**
-     * @return A set of all rarity names.
-     */
-    Set<String> getRarityNames();
+    List<String> getCardsIdsInRarityAndSeries(final String rarityId, final String seriesId);
 
     /**
      * @return A set of active rarity names.
      */
-    Set<String> getActiveRarityNames();
+    Set<String> getActiveRarityIds();
 
     boolean containsCard(final String rarityId, final String cardId, final String seriesId);
 }

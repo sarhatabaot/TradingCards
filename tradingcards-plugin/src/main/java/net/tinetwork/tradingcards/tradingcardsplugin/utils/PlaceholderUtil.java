@@ -17,6 +17,7 @@ public class PlaceholderUtil {
     public static final InternalPlaceholder DISPLAY_NAME = new InternalPlaceholder("%name%");
     public static final InternalPlaceholder UUID = new InternalPlaceholder("%uuid%");
     public static final InternalPlaceholder RARITY = new InternalPlaceholder("%rarity%");
+    public static final InternalPlaceholder SERIES = new InternalPlaceholder("%series%");
     public static final InternalPlaceholder BUY_AMOUNT = new InternalPlaceholder("%buyamount%");
     public static final InternalPlaceholder SELL_AMOUNT = new InternalPlaceholder("%sellamount%");
     public static final InternalPlaceholder PREFIX = new InternalPlaceholder("%prefix%");
