@@ -10,6 +10,7 @@ import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingRarityManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalMessages;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.Permissions;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
@@ -128,6 +129,8 @@ public class GiveCommands extends BaseCommand {
 
                 try {
                     String rare = plugin.getCardManager().getRandomRarityId(CardUtil.getMobType(entityType), true);
+                    if(rare.equalsIgnoreCase(TradingRarityManager.EMPTY_RARITY.getId()))
+                        return;
                     plugin.debug(getClass(), "RarityId: " + rare);
                     ChatUtil.sendMessage(sender,
                             plugin.getMessagesConfig().giveRandomCardMsg().replaceAll(PlaceholderUtil.PLAYER.asRegex(), player.getName()));

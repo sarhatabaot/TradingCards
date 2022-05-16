@@ -4,6 +4,7 @@ import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingRarityManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.AllCardManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.CompositeCardKey;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalDebug;
@@ -83,7 +84,7 @@ public class DropListener extends SimpleListener {
         debug(InternalDebug.DropListener.MOB_TYPE.formatted(CardUtil.getMobType(killedEntity.getType())));
 
         String rarityName = cardManager.getRandomRarityId(CardUtil.getMobType(killedEntity.getType()), false);
-        if (rarityName.equalsIgnoreCase("None"))
+        if (rarityName.equalsIgnoreCase(TradingRarityManager.EMPTY_RARITY.getId()))
             return;
 
         //Get the card

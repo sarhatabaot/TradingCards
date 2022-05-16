@@ -69,6 +69,11 @@ public class GiveawayCommand extends BaseCommand {
                 return;
             }
 
+            if(!plugin.getRarityManager().containsRarity(rarityId)) {
+                ChatUtil.sendMessage(sender, plugin.getMessagesConfig().noRarity());
+                return;
+            }
+
             Bukkit.broadcastMessage(plugin.getPrefixedMessage(plugin.getMessagesConfig().giveaway()
                     .replaceAll(PlaceholderUtil.PLAYER.asRegex(), sender.getName())
                     .replaceAll(PlaceholderUtil.SERIES.asRegex(), plugin.getSeriesManager().getSeries(seriesId).getDisplayName()

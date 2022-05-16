@@ -4,6 +4,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import net.tinetwork.tradingcards.api.manager.CardManager;
+import net.tinetwork.tradingcards.api.manager.RarityManager;
 import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
@@ -13,6 +14,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.Manager;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingRarityManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalDebug;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalLog;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
@@ -167,7 +169,7 @@ public class AllCardManager extends TradingCardManager implements CardManager<Tr
     @Override
     public TradingCard getRandomCardByRarity(final String rarityId) {
         plugin.debug(AllCardManager.class,InternalDebug.CardsManager.RANDOM_CARD.formatted(rarityId));
-        var cardIndex = plugin.getRandom().nextInt(getRarityCardList(rarityId).size());
+        int cardIndex = plugin.getRandom().nextInt(getRarityCardList(rarityId).size());
         return getRarityCardList(rarityId).get(cardIndex);
     }
 
@@ -195,6 +197,7 @@ public class AllCardManager extends TradingCardManager implements CardManager<Tr
             case "hostile" -> plugin.getChancesConfig().hostileChance();
             case "neutral" -> plugin.getChancesConfig().neutralChance();
             case "passive" -> plugin.getChancesConfig().passiveChance();
+            case "all" -> plugin.getChancesConfig().allChance();
             default -> 0;
         };
     }
@@ -205,7 +208,7 @@ public class AllCardManager extends TradingCardManager implements CardManager<Tr
         int mobDropChance = getGeneralMobChance(dropType);
         plugin.debug(AllCardManager.class,InternalDebug.CardsManager.DROP_CHANCE.formatted(randomDropChance,alwaysDrop,dropType,mobDropChance));
         if (!alwaysDrop && randomDropChance > mobDropChance) {
-            return "None";
+            return TradingRarityManager.EMPTY_RARITY.getId();
         }
 
         int randomRarityChance = plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1;
@@ -214,13 +217,13 @@ public class AllCardManager extends TradingCardManager implements CardManager<Tr
         for (String rarity : plugin.getRarityManager().getRarityIds()) {
             Chance chance = plugin.getChancesConfig().getChance(rarity);
             if (chance instanceof EmptyChance)
-                return "None";
+                return TradingRarityManager.EMPTY_RARITY.getId();
 
             int chanceInt = chance.getFromMobType(dropType);
             if (randomRarityChance < chanceInt)
                 return rarity;
         }
-        return "None";
+        return TradingRarityManager.EMPTY_RARITY.getId();
     }
 
 

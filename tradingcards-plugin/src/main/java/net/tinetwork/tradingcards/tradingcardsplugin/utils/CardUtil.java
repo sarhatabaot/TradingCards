@@ -10,6 +10,7 @@ import net.tinetwork.tradingcards.api.utils.NbtUtils;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.DropTypeManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingRarityManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.AllCardManager;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -96,6 +97,8 @@ public class CardUtil {
         broadcastPrefixedMessage(getGiveawayMessage(mob, sender));
         for (final Player p : Bukkit.getOnlinePlayers()) {
             String rare = cardManager.getRandomRarityId(CardUtil.getMobType(mob), true);
+            if(rare.equalsIgnoreCase(TradingRarityManager.EMPTY_RARITY.getId()))
+                continue;
             CardUtil.dropItem(p, cardManager.getRandomCardByRarity(rare).build(false));
         }
     }
