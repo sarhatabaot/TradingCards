@@ -3,6 +3,7 @@ hostile-chance: 20000
 neutral-chance: 5000
 passive-chance: 1000
 boss-chance: 100000
+all-chance: 5000
 # should bosses always drop a certain rarity?
 boss-drop: false
 boss-drop-rarity: 5000

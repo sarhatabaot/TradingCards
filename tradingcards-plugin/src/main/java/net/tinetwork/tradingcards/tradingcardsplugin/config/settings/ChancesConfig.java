@@ -23,6 +23,7 @@ public class ChancesConfig extends ConfigurateFile<TradingCards> {
     private boolean bossDrop;
     private int bossDropRarity;
     private int shinyVersionChance;
+    private int allChance;
 
     public ChancesConfig(TradingCards plugin) throws ConfigurateException {
         super(plugin, "settings" + File.separator, "chances.yml", "settings");
@@ -37,6 +38,7 @@ public class ChancesConfig extends ConfigurateFile<TradingCards> {
         this.bossDrop = rootNode.node("boss-drop").getBoolean(Chances.BOSS_DROP);
         this.bossDropRarity = rootNode.node("boss-drop-rarity").getInt(Chances.BOSS_DROP_RARITY);
         this.shinyVersionChance = rootNode.node("shiny-version-chance").getInt(Chances.SHINY_VERSION_CHANCE);
+        this.allChance = rootNode.node("all-chance").getInt(Chances.ALL_CHANCE);
     }
 
     @Override
@@ -71,6 +73,10 @@ public class ChancesConfig extends ConfigurateFile<TradingCards> {
 
     public int shinyVersionChance() {
         return shinyVersionChance;
+    }
+
+    public int allChance() {
+        return allChance;
     }
 
     public Chance getChance(final String rarityId) {
