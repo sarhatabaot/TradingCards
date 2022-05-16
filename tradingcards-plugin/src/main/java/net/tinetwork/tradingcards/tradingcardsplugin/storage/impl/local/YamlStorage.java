@@ -305,12 +305,7 @@ public class YamlStorage implements Storage<TradingCard> {
     public List<TradingCard> getActiveCards() {
         return activeCards.values().stream().toList();
     }
-
-    @Override
-    public Card<TradingCard> getCard(final String cardId, final String rarityId) {
-        return cards.get(cardKey(rarityId,cardId));
-    }
-
+    
     @Override
     public Card<TradingCard> getCard(final String cardId, final String rarityId, final String seriesId) {
         return cards.get(new CompositeCardKey(rarityId,seriesId,cardId));

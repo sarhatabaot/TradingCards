@@ -142,13 +142,6 @@ public interface Storage<T extends Card<T>> {
      */
     List<T> getActiveCards();
 
-    /**
-     * @param cardId The card id.
-     * @param rarityId The rarity id.
-     * @return Returns a card.
-     */
-    @Deprecated
-    Card<T> getCard(final String cardId, final String rarityId);
 
     Card<T> getCard(final String cardId, final String rarityId, final String seriesId);
     /**
