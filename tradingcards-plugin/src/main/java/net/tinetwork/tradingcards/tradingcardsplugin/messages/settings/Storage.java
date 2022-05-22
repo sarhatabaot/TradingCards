@@ -1,9 +1,15 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.messages.settings;
 
-import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalExceptions;
-
 public final class Storage {
     public static final String STORAGE_TYPE = "YAML";
+
+    public static class Yaml {
+        public static final String DEFAULT_FILE = "cards.yml";
+
+        private Yaml() {
+            throw new UnsupportedOperationException(InternalExceptions.UTIL_CLASS);
+        }
+    }
 
     public static class Database {
         public static final String ADDRESS = "localhost";

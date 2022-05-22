@@ -33,8 +33,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import static net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil.cardKey;
-
 /**
  * @author sarhatabaot
  */
@@ -213,16 +211,16 @@ public class YamlStorage implements Storage<TradingCard> {
     }
 
     private void loadCards() {
-        for (SimpleCardsConfig simpleCardsConfig : cardsConfig.getCardConfigs()) {
+        for (Map.Entry<String,SimpleCardsConfig> entry: cardsConfig.getCardConfigs().entrySet()) {
             for (final Rarity rarity : raritiesConfig.rarities()) {
-                var cardNodes = simpleCardsConfig.getCards(rarity.getId()).entrySet();
+                var cardNodes = entry.getValue().getCards(rarity.getId()).entrySet();
 
                 for (Map.Entry<Object, ? extends ConfigurationNode> nodeEntry : cardNodes) {
                     final String cardId = nodeEntry.getValue().key().toString();
                     final String seriesId = nodeEntry.getValue().node("series").getString("default");
                     final CompositeCardKey cardKey = new CompositeCardKey(rarity.getId(),seriesId,cardId);
                     plugin.debug(YamlStorage.class, InternalDebug.CARD_KEY.formatted(cardKey));
-                    cards.put(cardKey, generateCard(simpleCardsConfig, cardId, rarity.getId()));
+                    cards.put(cardKey, generateCard(entry.getValue(), cardId, rarity.getId()));
                 }
             }
         }
@@ -305,7 +303,7 @@ public class YamlStorage implements Storage<TradingCard> {
     public List<TradingCard> getActiveCards() {
         return activeCards.values().stream().toList();
     }
-    
+
     @Override
     public Card<TradingCard> getCard(final String cardId, final String rarityId, final String seriesId) {
         return cards.get(new CompositeCardKey(rarityId,seriesId,cardId));
@@ -313,8 +311,7 @@ public class YamlStorage implements Storage<TradingCard> {
 
     @Override
     public void createCard(final String cardId, final String rarityId, final String seriesId) {
-        //use the first available config to create new cards, perhaps this should be configurable.
-        SimpleCardsConfig config = cardsConfig.getCardConfigs().get(0);
+        SimpleCardsConfig config = cardsConfig.getCardConfigs().get(plugin.getStorageConfig().getDefaultCardsFile());
         config.createCard(cardId,rarityId,seriesId);
     }
 

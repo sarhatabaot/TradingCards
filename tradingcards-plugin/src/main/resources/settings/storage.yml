@@ -1,6 +1,10 @@
 # Available options: YAML (MYSQL, MARIADB NOT IMPLEMENTED YET)
 storage-type: YAML
 
+yaml:
+  # Default file to create new cards in.
+  default-file: "cards.yml"
+
 database:
   # Address and port for the database.
   address: localhost

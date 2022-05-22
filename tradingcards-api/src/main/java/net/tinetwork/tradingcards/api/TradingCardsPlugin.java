@@ -3,6 +3,7 @@ package net.tinetwork.tradingcards.api;
 import net.tinetwork.tradingcards.api.blacklist.Blacklist;
 import net.tinetwork.tradingcards.api.card.Card;
 import net.tinetwork.tradingcards.api.config.settings.GeneralConfigurate;
+import net.tinetwork.tradingcards.api.config.settings.StorageConfigurate;
 import net.tinetwork.tradingcards.api.manager.CardManager;
 import net.tinetwork.tradingcards.api.manager.DeckManager;
 import net.tinetwork.tradingcards.api.manager.PackManager;
@@ -89,6 +90,7 @@ public abstract class TradingCardsPlugin<T extends Card<T>> extends JavaPlugin {
 
     public abstract GeneralConfigurate getGeneralConfig();
 
+    public abstract StorageConfigurate getStorageConfig();
 
     public abstract TypeManager getDropTypeManager();
 

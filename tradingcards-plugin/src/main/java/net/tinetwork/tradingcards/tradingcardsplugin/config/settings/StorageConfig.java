@@ -1,7 +1,6 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
 
-import com.github.sarhatabaot.kraken.core.config.ConfigurateFile;
-import net.tinetwork.tradingcards.api.TradingCardsPlugin;
+import net.tinetwork.tradingcards.api.config.settings.StorageConfigurate;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.settings.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.StorageType;
@@ -13,7 +12,7 @@ import java.io.File;
 /**
  * @author sarhatabaot
  */
-public class StorageConfig extends ConfigurateFile<TradingCards> {
+public class StorageConfig extends StorageConfigurate {
     private StorageType type;
     private String address;
     private int port;
@@ -25,6 +24,8 @@ public class StorageConfig extends ConfigurateFile<TradingCards> {
     private String tablePrefix;
 
     private String defaultSeriesId;
+
+    private String defaultCardsFile;
 
 
     public StorageConfig(final TradingCards plugin) throws ConfigurateException {
@@ -42,6 +43,9 @@ public class StorageConfig extends ConfigurateFile<TradingCards> {
         this.username = dataNode.node("username").getString(Storage.Database.USERNAME);
         this.password = dataNode.node("password").getString(Storage.Database.PASSWORD);
         this.tablePrefix = dataNode.node("table-prefix").getString(Storage.Database.TABLE_PREFIX);
+
+        final ConfigurationNode yaml = rootNode.node("yaml");
+        this.defaultCardsFile = yaml.node("default-file").getString(Storage.Yaml.DEFAULT_FILE);
 
         final ConfigurationNode dbMigration = rootNode.node("database-migration");
         this.defaultSeriesId = dbMigration.node("default-series-id").getString(Storage.DatabaseMigration.DEFAULT_SERIES_ID);
@@ -82,5 +86,10 @@ public class StorageConfig extends ConfigurateFile<TradingCards> {
 
     public String getDefaultSeriesId() {
         return defaultSeriesId;
+    }
+
+    @Override
+    public String getDefaultCardsFile() {
+        return defaultCardsFile;
     }
 }

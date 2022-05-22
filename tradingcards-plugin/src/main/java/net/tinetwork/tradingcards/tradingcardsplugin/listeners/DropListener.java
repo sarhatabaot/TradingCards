@@ -22,9 +22,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Set;
-
-import static net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil.cardKey;
 
 public class DropListener extends SimpleListener {
     private final PlayerBlacklist playerBlacklist;
