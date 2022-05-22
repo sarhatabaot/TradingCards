@@ -5,7 +5,6 @@ import co.aikar.commands.PaperCommandManager;
 import net.milkbowl.vault.economy.Economy;
 import net.tinetwork.tradingcards.api.TradingCardsPlugin;
 import net.tinetwork.tradingcards.api.config.settings.StorageConfigurate;
-import net.tinetwork.tradingcards.api.manager.PackManager;
 import net.tinetwork.tradingcards.api.manager.RarityManager;
 import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.api.model.Rarity;

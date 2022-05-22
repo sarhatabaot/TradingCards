@@ -3,11 +3,9 @@ package net.tinetwork.tradingcards.tradingcardsplugin.managers;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import net.tinetwork.tradingcards.api.manager.Cacheable;
 import net.tinetwork.tradingcards.api.manager.SeriesManager;
 import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.AllCardManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalDebug;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalLog;
 import org.jetbrains.annotations.Contract;
@@ -15,7 +13,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 /**

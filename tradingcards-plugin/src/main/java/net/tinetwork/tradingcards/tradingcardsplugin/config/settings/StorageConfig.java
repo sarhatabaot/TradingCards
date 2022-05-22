@@ -1,7 +1,5 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
 
-import com.github.sarhatabaot.kraken.core.config.ConfigurateFile;
-import net.tinetwork.tradingcards.api.TradingCardsPlugin;
 import net.tinetwork.tradingcards.api.config.settings.StorageConfigurate;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.settings.Storage;

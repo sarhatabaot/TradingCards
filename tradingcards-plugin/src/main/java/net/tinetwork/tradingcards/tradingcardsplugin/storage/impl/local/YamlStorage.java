@@ -33,8 +33,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import static net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil.cardKey;
-
 /**
  * @author sarhatabaot
  */
