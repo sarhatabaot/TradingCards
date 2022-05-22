@@ -13,7 +13,6 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row7;
 import org.jooq.Row8;
 import org.jooq.Schema;
 import org.jooq.Table;

@@ -165,9 +165,8 @@ public class EditCommand extends BaseCommand {
                     }
                     storage.editRarityRemoveReward(rarityId, Integer.parseInt(value));
                 }
-                case CUSTOM_ORDER -> {
-                    storage.editRarityCustomOrder(rarityId,Integer.parseInt(value));
-                }
+                case CUSTOM_ORDER -> storage.editRarityCustomOrder(rarityId,Integer.parseInt(value));
+
             }
 
             plugin.getRarityManager().getRarityCache().refresh(rarityId);
