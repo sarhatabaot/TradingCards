@@ -90,7 +90,7 @@ public class BoosterPackManager extends Manager<String, Pack> implements PackMan
     public ItemStack generatePack(final String name) {
         final Pack pack = plugin.getStorage().getPack(name);
         if (pack == null) {
-            plugin.getLogger().warning("Could not get pack %s".formatted(name));
+            plugin.getLogger().warning(() -> "Could not get pack %s".formatted(name));
             return new ItemStack(Material.AIR);
         }
 
