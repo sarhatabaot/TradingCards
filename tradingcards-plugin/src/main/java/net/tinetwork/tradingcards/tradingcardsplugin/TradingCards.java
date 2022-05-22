@@ -4,6 +4,7 @@ import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.PaperCommandManager;
 import net.milkbowl.vault.economy.Economy;
 import net.tinetwork.tradingcards.api.TradingCardsPlugin;
+import net.tinetwork.tradingcards.api.config.settings.StorageConfigurate;
 import net.tinetwork.tradingcards.api.manager.PackManager;
 import net.tinetwork.tradingcards.api.manager.RarityManager;
 import net.tinetwork.tradingcards.api.model.DropType;
@@ -498,5 +499,10 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
     public AdvancedConfig getAdvancedConfig() {
         return advancedConfig;
+    }
+
+    @Override
+    public StorageConfigurate getStorageConfig() {
+        return storageConfig;
     }
 }

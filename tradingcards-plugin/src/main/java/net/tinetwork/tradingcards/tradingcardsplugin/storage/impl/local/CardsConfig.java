@@ -6,14 +6,14 @@ import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurateException;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CardsConfig {
     private final File cardsFolder;
     private final TradingCards plugin;
     private final YamlStorage yamlStorage;
-    private List<SimpleCardsConfig> cardConfigs;
+    private Map<String,SimpleCardsConfig> cardConfigs;
     public CardsConfig(final TradingCards plugin, YamlStorage yamlStorage) {
         this.plugin = plugin;
 
@@ -27,7 +27,7 @@ public class CardsConfig {
     }
 
     public void initValues() {
-        this.cardConfigs = new ArrayList<>();
+        this.cardConfigs = new HashMap<>();
         if(cardsFolder.listFiles() == null) {
             plugin.getLogger().warning("There are no files in the cards folder.");
             return;
@@ -37,7 +37,7 @@ public class CardsConfig {
             plugin.debug(CardsConfig.class,"File name: " + file.getName());
             if (file.getName().endsWith(".yml")) {
                 try {
-                    cardConfigs.add(new SimpleCardsConfig(plugin, file.getName(), yamlStorage));
+                    cardConfigs.put(file.getName(),new SimpleCardsConfig(plugin, file.getName(), yamlStorage));
                     plugin.debug(CardsConfig.class,"Added: " + file.getName());
                 } catch (ConfigurateException e) {
                     plugin.getLogger().severe(e.getMessage());
@@ -60,7 +60,7 @@ public class CardsConfig {
         }
     }
 
-    public List<SimpleCardsConfig> getCardConfigs() {
+    public Map<String,SimpleCardsConfig> getCardConfigs() {
         return cardConfigs;
     }
 }
