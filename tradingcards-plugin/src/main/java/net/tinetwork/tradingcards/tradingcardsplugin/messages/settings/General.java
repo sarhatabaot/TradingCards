@@ -1,6 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.messages.settings;
 
 public final class General {
+    public static final Integer CONFIG_VERSION = 1;
     public static final Boolean DEBUG_MODE = false;
     public static final Boolean USE_DEFAULT_CARDS_FILE = true;
 

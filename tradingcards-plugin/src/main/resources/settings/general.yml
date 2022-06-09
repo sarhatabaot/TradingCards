@@ -1,3 +1,5 @@
+config-version: 1
+
 # Show debug messages?
 debug-mode: false
 
