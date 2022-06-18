@@ -54,7 +54,7 @@ public class AdvancedConfig extends ConfigurateFile<TradingCards> {
         @Override
         public ConfigCache deserialize(final Type type, final @NotNull ConfigurationNode node) throws SerializationException {
             final int maxCacheEntries = node.node(MAX_CACHE_ENTRIES).getInt(1000);
-            final int refreshAfterWrite = node.node(REFRESH_AFTER_WRITE).getInt(0);
+            final int refreshAfterWrite = node.node(REFRESH_AFTER_WRITE).getInt(1);
             return new ConfigCache(maxCacheEntries,refreshAfterWrite);
         }
 
