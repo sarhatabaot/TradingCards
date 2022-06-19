@@ -832,7 +832,6 @@ public class SqlStorage implements Storage<TradingCard> {
         return activeCards;
     }
 
-    @Override
     public Card<TradingCard> getCard(final String cardId, final String rarityId) {
         return new ExecuteQuery<TradingCard, Result<Record>>(this, jooqSettings) {
             @Override
