@@ -45,7 +45,6 @@ public class YamlStorage implements Storage<TradingCard> {
     private final PacksConfig packsConfig;
     private final CustomTypesConfig customTypesConfig;
 
-    //String is CardKey (rarity_id.card_id) We should just have it as a class..
     private final Map<CompositeCardKey, TradingCard> cards;
     private final Map<CompositeCardKey, TradingCard> activeCards;
     private final Map<String, List<TradingCard>> rarityCardList;

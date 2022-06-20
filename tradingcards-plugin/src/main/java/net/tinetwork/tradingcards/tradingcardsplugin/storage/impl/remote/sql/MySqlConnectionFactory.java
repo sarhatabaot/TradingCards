@@ -2,6 +2,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.sql;
 
 import com.zaxxer.hikari.HikariConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.StorageConfig;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
@@ -27,7 +28,7 @@ public class MySqlConnectionFactory extends HikariConnectionFactory{
     }
 
     @Override
-    protected void overrideProperties(final Map<String, String> properties) {
+    protected void overrideProperties(final @NotNull Map<String, String> properties) {
         properties.putIfAbsent("cachePrepStmts", "true");
         properties.putIfAbsent("prepStmtCacheSize", "250");
         properties.putIfAbsent("prepStmtCacheSqlLimit", "2048");

@@ -21,6 +21,9 @@ public class DeckEntrySerializer implements TypeSerializer<StorageEntry> {
     @Override
     public StorageEntry deserialize(final Type type, final @NotNull ConfigurationNode node) throws SerializationException {
         final String content = node.getString();
+        if(content == null)
+            throw new NullPointerException();
+
         return StorageEntry.fromString(content);
     }
 

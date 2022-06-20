@@ -174,6 +174,9 @@ public class AllCardManager extends TradingCardManager implements CardManager<Tr
 
     public TradingCard getRandomCardByRarityAndSeries(final String rarityId, final String seriesId) {
         List<TradingCard> raritySeries = plugin.getStorage().getCardsInRarityAndSeries(rarityId,seriesId);
+        if(raritySeries== null || raritySeries.isEmpty())
+            return NULL_CARD;
+
         int cardIndex = plugin.getRandom().nextInt(raritySeries.size());
         return raritySeries.get(cardIndex);
     }

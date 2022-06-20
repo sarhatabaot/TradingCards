@@ -2,6 +2,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.sql;
 
 import com.zaxxer.hikari.HikariConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.StorageConfig;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
@@ -29,7 +30,7 @@ public class MariaDbConnectionFactory extends HikariConnectionFactory {
     }
 
     @Override
-    protected void overrideProperties(final Map<String, String> properties) {
+    protected void overrideProperties(final @NotNull @NotNull Map<String, String> properties) {
         //don't override anything
     }
 }

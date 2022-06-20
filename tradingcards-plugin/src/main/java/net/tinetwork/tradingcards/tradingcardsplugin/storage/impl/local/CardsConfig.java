@@ -28,12 +28,13 @@ public class CardsConfig {
 
     public void initValues() {
         this.cardConfigs = new HashMap<>();
-        if(cardsFolder.listFiles() == null) {
+        File[] files = cardsFolder.listFiles();
+        if(files == null) {
             plugin.getLogger().warning("There are no files in the cards folder.");
             return;
         }
 
-        for (File file : cardsFolder.listFiles()) {
+        for (File file : files) {
             plugin.debug(CardsConfig.class,"File name: " + file.getName());
             if (file.getName().endsWith(".yml")) {
                 try {

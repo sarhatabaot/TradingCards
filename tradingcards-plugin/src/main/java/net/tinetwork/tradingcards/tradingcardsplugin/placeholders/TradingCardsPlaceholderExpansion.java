@@ -162,8 +162,8 @@ public class TradingCardsPlaceholderExpansion extends PlaceholderExpansion {
 
 
     public abstract static class PlaceholderQuery {
-        protected String id;
-        protected String type;
+        protected final String id;
+        protected final String type;
 
         protected PlaceholderQuery(@NotNull String params) {
             this.id = params.split("_")[1];

@@ -11,8 +11,8 @@ import java.util.concurrent.ExecutionException;
  * @author sarhatabaot
  */
 public abstract class Manager<R,T> implements Cacheable<R,T> {
-    protected TradingCards plugin;
-    protected LoadingCache<R,T> cache;
+    protected final TradingCards plugin;
+    protected final LoadingCache<R,T> cache;
 
     protected Manager(final TradingCards plugin) {
         this.plugin = plugin;

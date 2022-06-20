@@ -84,7 +84,7 @@ public class ChancesConfig extends YamlConfigurateFile<TradingCards> {
     public Chance getChance(final String rarityId) {
         try {
             return rootNode.node(rarityId).get(Chance.class);
-        } catch (SerializationException e){
+        } catch (SerializationException e) {
             plugin.getLogger().severe(e.getMessage());
         }
         return new EmptyChance();
@@ -111,13 +111,17 @@ public class ChancesConfig extends YamlConfigurateFile<TradingCards> {
             final ConfigurationNode passiveNode = node.node(PASSIVE);
             final ConfigurationNode bossNode = node.node(BOSS);
 
-            final String id = node.key().toString();
+            final Object nodeKey = node.key();
+            if (nodeKey == null)
+                throw new SerializationException();
+
+            final String id = nodeKey.toString();
             final int hostile = hostileNode.getInt(0);
             final int neutral = neutralNode.getInt(0);
             final int passive = passiveNode.getInt(0);
             final int boss = bossNode.getInt(0);
 
-            validateChance(hostileNode,hostile, HOSTILE);
+            validateChance(hostileNode, hostile, HOSTILE);
             validateChance(neutralNode, neutral, NEUTRAL);
             validateChance(passiveNode, passive, PASSIVE);
             validateChance(bossNode, boss, BOSS);
@@ -128,7 +132,7 @@ public class ChancesConfig extends YamlConfigurateFile<TradingCards> {
         //Only implemented this since it's required. We don't actually use this feature yet.
         @Override
         public void serialize(Type type, @Nullable Chance chance, ConfigurationNode target) throws SerializationException {
-            if(chance == null) {
+            if (chance == null) {
                 target.raw(null);
                 return;
             }
@@ -139,9 +143,9 @@ public class ChancesConfig extends YamlConfigurateFile<TradingCards> {
             target.node(BOSS).set(chance.getBoss());
         }
 
-        private void validateChance(final ConfigurationNode node, final int chance, final String name) throws SerializationException{
+        private void validateChance(final ConfigurationNode node, final int chance, final String name) throws SerializationException {
             if (chance > MAX_CHANCE || chance < 0) {
-                throw new SerializationException(node, int.class, InternalExceptions.INVALID_CHANCE.formatted(name,chance));
+                throw new SerializationException(node, int.class, InternalExceptions.INVALID_CHANCE.formatted(name, chance));
             }
         }
 
