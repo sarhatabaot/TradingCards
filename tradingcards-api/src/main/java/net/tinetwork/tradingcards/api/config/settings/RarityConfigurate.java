@@ -12,7 +12,7 @@ import org.spongepowered.configurate.serialize.SerializationException;
  */
 public abstract class RarityConfigurate extends YamlConfigurateFile<TradingCardsPlugin<?>> {
 
-    public RarityConfigurate(final TradingCardsPlugin<? extends Card<?>> plugin, final String resourcePath, final String fileName, final String folder) throws ConfigurateException {
+    protected RarityConfigurate(final TradingCardsPlugin<? extends Card<?>> plugin, final String resourcePath, final String fileName, final String folder) throws ConfigurateException {
         super(plugin, resourcePath, fileName, folder);
     }
 

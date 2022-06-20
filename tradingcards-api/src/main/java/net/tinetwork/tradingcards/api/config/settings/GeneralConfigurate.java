@@ -11,7 +11,7 @@ import org.spongepowered.configurate.ConfigurateException;
  * @author sarhatabaot
  */
 public abstract class GeneralConfigurate extends YamlConfigurateFile<TradingCardsPlugin<?>> {
-    public GeneralConfigurate(final TradingCardsPlugin<? extends Card<?>> plugin, final String resourcePath, final String fileName, final String folder) throws ConfigurateException {
+    protected GeneralConfigurate(final TradingCardsPlugin<? extends Card<?>> plugin, final String resourcePath, final String fileName, final String folder) throws ConfigurateException {
         super(plugin, resourcePath, fileName, folder);
     }
 

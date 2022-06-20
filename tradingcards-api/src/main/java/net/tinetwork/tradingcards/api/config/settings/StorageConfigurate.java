@@ -10,7 +10,7 @@ import org.spongepowered.configurate.ConfigurateException;
  */
 public abstract class StorageConfigurate extends YamlConfigurateFile<TradingCardsPlugin<?>> {
 
-    public StorageConfigurate(@NotNull final TradingCardsPlugin<?> plugin, final String resourcePath, final String fileName, final String folder) throws ConfigurateException {
+    protected StorageConfigurate(@NotNull final TradingCardsPlugin<?> plugin, final String resourcePath, final String fileName, final String folder) throws ConfigurateException {
         super(plugin, resourcePath, fileName, folder);
     }
 

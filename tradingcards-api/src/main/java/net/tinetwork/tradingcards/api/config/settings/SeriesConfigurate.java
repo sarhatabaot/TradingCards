@@ -13,7 +13,7 @@ import java.util.Map;
  */
 public abstract class SeriesConfigurate extends YamlConfigurateFile<TradingCardsPlugin<?>> {
 
-    public SeriesConfigurate(final TradingCardsPlugin<? extends Card<?>> plugin, final String resourcePath, final String fileName, final String folder) throws ConfigurateException {
+    protected SeriesConfigurate(final TradingCardsPlugin<? extends Card<?>> plugin, final String resourcePath, final String fileName, final String folder) throws ConfigurateException {
         super(plugin, resourcePath, fileName, folder);
     }
 
