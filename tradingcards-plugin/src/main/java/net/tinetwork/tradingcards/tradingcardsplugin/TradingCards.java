@@ -252,6 +252,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
     private void initCommands() {
         var commandManager = new PaperCommandManager(this);
+        commandManager.getCommandCompletions().registerCompletion("bool", c -> List.of("false","true"));
         commandManager.getCommandCompletions().registerCompletion("rarities", c -> rarityManager.getRarityIds());
         commandManager.getCommandCompletions().registerCompletion("cards", c ->cardManager.getCardsIdsInRarityAndSeries(c.getContextValue(Rarity.class).getId(), c.getContextValue(Series.class).getId()));
         commandManager.getCommandCompletions().registerCompletion("command-cards", c -> cardManager.getCardsIdsInRarityAndSeries(c.getContextValue(Rarity.class).getId(), c.getContextValue(Series.class).getId()));
