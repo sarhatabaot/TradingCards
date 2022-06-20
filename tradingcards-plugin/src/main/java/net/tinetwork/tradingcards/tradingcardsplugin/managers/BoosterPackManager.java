@@ -99,7 +99,6 @@ public class BoosterPackManager extends Manager<String, Pack> implements PackMan
     }
 
     @Override
-    //todo nbt compound
     public ItemStack generatePack(final @NotNull Pack pack) {
         ItemStack itemPack = blankPack.clone();
         ItemMeta itemPackMeta = itemPack.getItemMeta();
