@@ -51,7 +51,7 @@ public class CardUtil {
      */
     public static void dropItem(final @NotNull Player player, final ItemStack item) {
         NBTItem nbtItem = new NBTItem(item);
-        final String debugItem = "name:" + nbtItem.getString(NbtUtils.NBT_CARD_NAME) + " rarity:" + nbtItem.getString(NbtUtils.NBT_RARITY);
+        final String debugItem = "name:" + nbtItem.getString(NbtUtils.Legacy.NBT_CARD_NAME) + " rarity:" + nbtItem.getString(NbtUtils.Legacy.NBT_RARITY);
         if (player.getInventory().firstEmpty() != -1) {
             player.getInventory().addItem(item);
             plugin.debug(CardUtil.class, "Added item " + debugItem + " to " + player.getName());
@@ -86,7 +86,7 @@ public class CardUtil {
     }
 
     public static boolean isCard(final @NotNull NBTItem nbtItem) {
-        return nbtItem.getBoolean(NbtUtils.NBT_IS_CARD);
+        return NbtUtils.Card.isCard(nbtItem);
     }
 
     private static void broadcastPrefixedMessage(final String message) {

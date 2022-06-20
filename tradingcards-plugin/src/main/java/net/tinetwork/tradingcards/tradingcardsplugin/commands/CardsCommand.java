@@ -97,9 +97,9 @@ public class CardsCommand extends BaseCommand {
             return;
         }
 
-        final String cardId = nbtItem.getString(NbtUtils.NBT_CARD_NAME);
-        final String rarityId = nbtItem.getString(NbtUtils.NBT_RARITY);
-        final String seriesId = nbtItem.getString(NbtUtils.NBT_CARD_SERIES);
+        final String cardId = NbtUtils.Card.getCardId(nbtItem);
+        final String rarityId = NbtUtils.Card.getRarityId(nbtItem);
+        final String seriesId = NbtUtils.Card.getSeriesId(nbtItem);
         debug(InternalDebug.CardsCommand.CARD_RARITY_ID.formatted(cardId,rarityId));
 
         final TradingCard tradingCard = cardManager.getCard(cardId, rarityId, seriesId);

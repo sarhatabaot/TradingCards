@@ -61,7 +61,7 @@ public class PackListener extends SimpleListener {
             return;
         }
         NBTItem nbtPackItem = new NBTItem(itemInMainHand);
-        final String packId = nbtPackItem.getString(NbtUtils.NBT_PACK_ID);
+        final String packId = NbtUtils.Pack.getPackId(nbtPackItem);
         if(packId == null) {
             return;
         }

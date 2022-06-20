@@ -1,5 +1,6 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.managers;
 
+import de.tr7zw.nbtapi.NBTCompound;
 import de.tr7zw.nbtapi.NBTItem;
 import net.tinetwork.tradingcards.api.events.DeckCloseEvent;
 import net.tinetwork.tradingcards.api.events.DeckOpenEvent;
@@ -163,10 +164,12 @@ public class TradingDeckManager implements DeckManager {
 
     @NotNull
     @Override
+    //todo nbtcompound
     public ItemStack getNbtItem(@NotNull final Player player, final int deckNumber) {
         NBTItem nbtItem = new NBTItem(createDeckItem(player, deckNumber));
-        nbtItem.setBoolean(NbtUtils.NBT_IS_DECK, true);
-        nbtItem.setInteger(NbtUtils.NBT_DECK_NUMBER, deckNumber);
+        NBTCompound nbtCompound = nbtItem.getOrCreateCompound(NbtUtils.NBT_TRADING_CARDS_COMPOUND);
+        nbtCompound.setBoolean(NbtUtils.Legacy.NBT_IS_DECK, true);
+        nbtCompound.setInteger(NbtUtils.Legacy.NBT_DECK_NUMBER, deckNumber);
         return nbtItem.getItem();
     }
 
@@ -178,13 +181,13 @@ public class TradingDeckManager implements DeckManager {
     public boolean isDeck(final @NotNull ItemStack item) {
         if (item.getType() == Material.AIR)
             return false;
-        return new NBTItem(item).getBoolean(NbtUtils.NBT_IS_DECK);
+        return NbtUtils.Deck.isDeck(new NBTItem(item));
     }
 
     public int getDeckNumber(final ItemStack item) {
         NBTItem nbtItem = new NBTItem(item);
-        if (nbtItem.hasKey(NbtUtils.NBT_DECK_NUMBER))
-            return nbtItem.getInteger(NbtUtils.NBT_DECK_NUMBER);
+        if(NbtUtils.Deck.isDeck(nbtItem))
+            return NbtUtils.Deck.getDeckNumber(nbtItem);
 
         String[] nameSplit = item.getItemMeta().getDisplayName().split("#");
         return Integer.parseInt(nameSplit[1]);

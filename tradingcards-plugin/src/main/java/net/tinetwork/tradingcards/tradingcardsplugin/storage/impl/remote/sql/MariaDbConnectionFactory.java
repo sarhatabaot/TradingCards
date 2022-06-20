@@ -30,7 +30,7 @@ public class MariaDbConnectionFactory extends HikariConnectionFactory {
     }
 
     @Override
-    protected void overrideProperties(final @NotNull @NotNull Map<String, String> properties) {
+    protected void overrideProperties(final @NotNull Map<String, String> properties) {
         //don't override anything
     }
 }
