@@ -45,14 +45,16 @@ public class GiveCommands extends BaseCommand {
         @Description("Gives a card.")
         public class CardSubCommand extends BaseCommand {
             @Default
+            @Subcommand("self")
+            @CommandCompletion("@rarities @series @cards @bool")
             @Description("Gives yourself a card.")
-            public void onDefault(final Player player, @Single final Rarity rarity, @Single final Series series, @Single final String cardId) {
-                onPlayer(player, player.getName(), rarity, series, cardId, false);
+            public void onDefault(final Player player, @Single final Rarity rarity, @Single final Series series, @Single final String cardId, @Single final boolean shiny) {
+                onPlayer(player, player.getName(), rarity, series, cardId, shiny);
             }
 
             @Subcommand("player")
             @CommandPermission(Permissions.GIVE_CARD_PLAYER)
-            @CommandCompletion("@players @rarities @series @cards")
+            @CommandCompletion("@players @rarities @series @cards @bool")
             public void onPlayer(final CommandSender sender, @Single final String playerName, @Single final @NotNull Rarity rarity, @Single final @NotNull Series series, @Single final String cardId, @Single final boolean shiny) {
                 TradingCard card = plugin.getCardManager().getCard(cardId, rarity.getId(), series.getId()).isShiny(shiny).get();
                 if (shiny && !card.hasShiny()) {
