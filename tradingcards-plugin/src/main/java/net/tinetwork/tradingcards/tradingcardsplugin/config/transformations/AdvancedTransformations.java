@@ -23,7 +23,6 @@ public class AdvancedTransformations extends Transformation {
                 .build();
     }
 
-    //todo we want to set every child of cache to a refresh after write value of 5
     private ConfigurationTransformation updateDefaultRefreshAfterWrite() {
         return ConfigurationTransformation.builder()
                 .addAction(path("cache", ConfigurationTransformation.WILDCARD_OBJECT), (path, value) -> {

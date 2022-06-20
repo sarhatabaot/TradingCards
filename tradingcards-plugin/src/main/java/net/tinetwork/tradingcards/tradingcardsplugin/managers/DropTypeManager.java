@@ -22,8 +22,8 @@ public class DropTypeManager extends Manager<String, DropType> implements TypeMa
     private static final String HOSTILE_ID  = "hostile";
     private static final String NEUTRAL_ID = "neutral";
     private static final String PASSIVE_ID = "passive";
-    private static final String BOSS_ID = "bossId";
-    private static final String ALL_ID = "allId";
+    private static final String BOSS_ID = "boss";
+    private static final String ALL_ID = "all";
 
     public static final Map<String,DropType> DEFAULT_MOB_TYPES = Map.of(
             HOSTILE_ID, new DropType(HOSTILE_ID,"Hostile", HOSTILE_ID),

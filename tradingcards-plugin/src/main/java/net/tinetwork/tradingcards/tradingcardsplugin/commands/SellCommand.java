@@ -47,9 +47,9 @@ public class SellCommand extends BaseCommand {
 
             final ItemStack itemInHand = player.getInventory().getItemInMainHand();
             final int itemInHandSlot = player.getInventory().getHeldItemSlot();
-            final String cardId = nbtItem.getString(NbtUtils.NBT_CARD_NAME);
-            final String rarityId = nbtItem.getString(NbtUtils.NBT_RARITY);
-            final String seriesId = nbtItem.getString(NbtUtils.NBT_CARD_SERIES);
+            final String cardId = NbtUtils.Card.getCardId(nbtItem);
+            final String rarityId = NbtUtils.Card.getRarityId(nbtItem);
+            final String seriesId = NbtUtils.Card.getSeriesId(nbtItem);
             plugin.debug(SellSubCommand.class, InternalDebug.CardsCommand.CARD_RARITY_ID.formatted(cardId,rarityId));
 
             final TradingCard tradingCard = plugin.getCardManager().getCard(cardId, rarityId, seriesId);

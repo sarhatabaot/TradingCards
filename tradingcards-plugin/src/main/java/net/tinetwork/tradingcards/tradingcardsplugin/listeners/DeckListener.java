@@ -80,10 +80,10 @@ public class DeckListener extends SimpleListener {
 
     private @NotNull StorageEntry formatEntryString(final ItemStack itemStack) {
         NBTItem nbtItem = new NBTItem(itemStack);
-        final String cardId = nbtItem.getString(NbtUtils.NBT_CARD_NAME);
-        final String rarity = nbtItem.getString(NbtUtils.NBT_RARITY);
-        final boolean shiny = nbtItem.getBoolean(NbtUtils.NBT_CARD_SHINY);
-        final String seriesId = nbtItem.getString(NbtUtils.NBT_CARD_SERIES);
+        final String cardId = NbtUtils.Card.getCardId(nbtItem);
+        final String rarity = NbtUtils.Card.getRarityId(nbtItem);
+        final boolean shiny = NbtUtils.Card.isShiny(nbtItem);
+        final String seriesId = NbtUtils.Card.getSeriesId(nbtItem);
         return new StorageEntry(rarity, cardId, itemStack.getAmount(), shiny,seriesId);
     }
 }

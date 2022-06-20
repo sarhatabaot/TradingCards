@@ -3,6 +3,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.managers;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import de.tr7zw.nbtapi.NBTCompound;
 import de.tr7zw.nbtapi.NBTItem;
 import net.tinetwork.tradingcards.api.manager.PackManager;
 import net.tinetwork.tradingcards.api.model.Pack;
@@ -121,13 +122,14 @@ public class BoosterPackManager extends Manager<String, Pack> implements PackMan
         itemPackMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         itemPack.setItemMeta(itemPackMeta);
         NBTItem nbtItem = new NBTItem(itemPack);
-        nbtItem.setString(NbtUtils.NBT_PACK_ID, pack.id());
-        nbtItem.setBoolean(NbtUtils.NBT_PACK, true);
+        NBTCompound compound = nbtItem.getOrCreateCompound(NbtUtils.NBT_TRADING_CARDS_COMPOUND);
+        compound.setString(NbtUtils.Legacy.NBT_PACK_ID, pack.id());
+        compound.setBoolean(NbtUtils.Legacy.NBT_PACK,true);
         return nbtItem.getItem();
     }
 
     public boolean isPack(final ItemStack item) {
-        return new NBTItem(item).getBoolean(NbtUtils.NBT_PACK);
+        return NbtUtils.Pack.isPack(new NBTItem(item));
     }
 
     @Override

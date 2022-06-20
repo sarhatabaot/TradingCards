@@ -1,5 +1,6 @@
 package net.tinetwork.tradingcards.api.card;
 
+import de.tr7zw.nbtapi.NBTCompound;
 import de.tr7zw.nbtapi.NBTItem;
 import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.api.model.Rarity;
@@ -71,7 +72,7 @@ public abstract class Card<T>{
      * @param data custom model nbt
      * @return Builder
      */
-    public Card<T> customModelNbt(final int data) {
+    public Card<T> customModelNbt(final Integer data) {
         this.cardMeta.setCustomModelNbt(data);
         return this;
     }
@@ -179,12 +180,17 @@ public abstract class Card<T>{
 
     public NBTItem buildNBTItem(boolean shiny) {
         NBTItem nbtItem = new NBTItem(buildItem(shiny));
-        nbtItem.setString(NbtUtils.NBT_CARD_NAME, cardId);
-        nbtItem.setString(NbtUtils.NBT_RARITY,rarity.getId());
-        nbtItem.setBoolean(NbtUtils.NBT_IS_CARD, true);
-        nbtItem.setBoolean(NbtUtils.NBT_CARD_SHINY, shiny);
-        nbtItem.setString(NbtUtils.NBT_CARD_SERIES,series.getId());
-        nbtItem.setInteger(NbtUtils.NBT_CARD_CUSTOM_MODEL, this.cardMeta.getCustomModelNbt());
+        NBTCompound nbtCompound = nbtItem.getOrCreateCompound(NbtUtils.NBT_TRADING_CARDS_COMPOUND);
+        nbtCompound.setString(NbtUtils.Legacy.NBT_CARD_NAME, cardId);
+        nbtCompound.setString(NbtUtils.Legacy.NBT_RARITY,rarity.getId());
+        nbtCompound.setBoolean(NbtUtils.Legacy.NBT_IS_CARD, true);
+        nbtCompound.setBoolean(NbtUtils.Legacy.NBT_CARD_SHINY, shiny);
+        nbtCompound.setString(NbtUtils.Legacy.NBT_CARD_SERIES,series.getId());
+
+        if(getCustomModelNbt() != 0) {
+            nbtItem.setInteger(NbtUtils.Legacy.NBT_CARD_CUSTOM_MODEL, this.cardMeta.getCustomModelNbt());
+        }
+
         return nbtItem;
     }
 
