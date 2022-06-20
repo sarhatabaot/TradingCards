@@ -2,7 +2,7 @@
 storage-type: YAML
 
 yaml:
-  # Default file to create new cards in.
+  # Default file to create & edit cards in.
   default-file: "cards.yml"
 
 database:

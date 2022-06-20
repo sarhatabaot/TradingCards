@@ -375,51 +375,55 @@ public class YamlStorage implements Storage<TradingCard> {
         return customTypesConfig;
     }
 
+    private String getDefaultEditCardFile() {
+        return plugin.getStorageConfig().getDefaultCardsFile();
+    }
+
     @Override
     public void editCardDisplayName(final String rarityId, final String cardId, final String seriesId, final String displayName) {
-        SimpleCardsConfig simpleCardsConfig = cardsConfig.getCardConfigs().get(0);
+        SimpleCardsConfig simpleCardsConfig = cardsConfig.getCardConfigs().get(getDefaultEditCardFile());
         simpleCardsConfig.editDisplayName(rarityId,cardId,seriesId,displayName);
     }
 
     @Override
     public void editCardSeries(final String rarityId, final String cardId, final String seriesId, final Series value) {
-        SimpleCardsConfig simpleCardsConfig = cardsConfig.getCardConfigs().get(0);
+        SimpleCardsConfig simpleCardsConfig = cardsConfig.getCardConfigs().get(getDefaultEditCardFile());
         simpleCardsConfig.editSeries(rarityId,cardId,seriesId,value);
     }
 
     @Override
     public void editCardSellPrice(final String rarityId, final String cardId, final String seriesId, final double value) {
-        SimpleCardsConfig simpleCardsConfig = cardsConfig.getCardConfigs().get(0);
+        SimpleCardsConfig simpleCardsConfig = cardsConfig.getCardConfigs().get(getDefaultEditCardFile());
         simpleCardsConfig.editSellPrice(rarityId,cardId,seriesId,value);
     }
 
     @Override
     public void editCardType(final String rarityId, final String cardId, final String seriesId, final DropType value) {
-        SimpleCardsConfig simpleCardsConfig = cardsConfig.getCardConfigs().get(0);
+        SimpleCardsConfig simpleCardsConfig = cardsConfig.getCardConfigs().get(getDefaultEditCardFile());
         simpleCardsConfig.editType(rarityId,cardId,seriesId,value);
     }
 
     @Override
     public void editCardInfo(final String rarityId, final String cardId, final String seriesId, final String value) {
-        SimpleCardsConfig simpleCardsConfig = cardsConfig.getCardConfigs().get(0);
+        SimpleCardsConfig simpleCardsConfig = cardsConfig.getCardConfigs().get(getDefaultEditCardFile());
         simpleCardsConfig.editInfo(rarityId,cardId,seriesId,value);
     }
 
     @Override
     public void editCardCustomModelData(final String rarityId, final String cardId, final String seriesId, final int value) {
-        SimpleCardsConfig simpleCardsConfig = cardsConfig.getCardConfigs().get(0);
+        SimpleCardsConfig simpleCardsConfig = cardsConfig.getCardConfigs().get(getDefaultEditCardFile());
         simpleCardsConfig.editModelData(rarityId,cardId,seriesId,value);
     }
 
     @Override
     public void editCardBuyPrice(final String rarityId, final String cardId, final String seriesId, final double value) {
-        SimpleCardsConfig simpleCardsConfig = cardsConfig.getCardConfigs().get(0);
+        SimpleCardsConfig simpleCardsConfig = cardsConfig.getCardConfigs().get(getDefaultEditCardFile());
         simpleCardsConfig.editBuyPrice(rarityId,cardId,seriesId,value);
     }
 
     @Override
     public void editCardHasShiny(final String rarityId, final String cardId, final String seriesId, final boolean value) {
-        SimpleCardsConfig simpleCardsConfig = cardsConfig.getCardConfigs().get(0);
+        SimpleCardsConfig simpleCardsConfig = cardsConfig.getCardConfigs().get(getDefaultEditCardFile());
         simpleCardsConfig.editHasShiny(rarityId,cardId,seriesId,value);
     }
     @Override
