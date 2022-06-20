@@ -9,7 +9,6 @@ import net.tinetwork.tradingcards.api.utils.NbtUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public abstract class Card<T>{
     private final String cardId;

@@ -1,7 +1,6 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.managers;
 
 
-import com.github.sarhatabaot.kraken.core.logging.LoggerUtil;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -17,7 +16,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 public class DropTypeManager extends Manager<String, DropType> implements TypeManager {

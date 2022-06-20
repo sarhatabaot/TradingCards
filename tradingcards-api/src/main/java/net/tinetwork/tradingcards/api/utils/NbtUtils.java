@@ -15,6 +15,10 @@ import java.util.Objects;
 public class NbtUtils {
     public static final String NBT_TRADING_CARDS_COMPOUND = "trading_cards";
 
+    private NbtUtils() {
+        throw new UnsupportedOperationException();
+    }
+
     public static class Legacy {
         //Deck Item
         public static final String NBT_DECK_NUMBER = "deckNumber";
@@ -32,6 +36,9 @@ public class NbtUtils {
         public static final String NBT_PACK = "pack";
         public static final String NBT_PACK_ID = "packId";
 
+        private Legacy() {
+            throw new UnsupportedOperationException();
+        }
 
         //Compare 2 "legacy" cards items
         public static boolean isCardSimilarLegacy(final @NotNull NBTItem item1, final @NotNull NBTItem item2) {
@@ -43,6 +50,9 @@ public class NbtUtils {
     }
 
     public static class Deck {
+        private Deck() {
+            throw new UnsupportedOperationException();
+        }
         public static int getDeckNumber(final @NotNull NBTItem item) {
             if(isLegacy(item)) {
                 return item.getInteger(Legacy.NBT_DECK_NUMBER);
@@ -58,6 +68,10 @@ public class NbtUtils {
     }
 
     public static class Card {
+        private Card() {
+            throw new UnsupportedOperationException();
+        }
+
         public static String getCardId(final @NotNull NBTItem item) {
             if(isLegacy(item))
                 return item.getString(Legacy.NBT_CARD_NAME);
@@ -90,6 +104,10 @@ public class NbtUtils {
     }
 
     public static class Pack {
+        private Pack() {
+            throw new UnsupportedOperationException();
+        }
+
         public static String getPackId(final @NotNull NBTItem item) {
             if(isLegacy(item))
                 return item.getString(Legacy.NBT_PACK_ID);
