@@ -1,7 +1,9 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
 
+import com.github.sarhatabaot.kraken.core.config.Transformation;
 import net.tinetwork.tradingcards.api.config.settings.GeneralConfigurate;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
+import net.tinetwork.tradingcards.tradingcardsplugin.config.transformations.GeneralTransformations;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.settings.General;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -150,8 +152,13 @@ public class GeneralConfig extends GeneralConfigurate {
 
 
     @Override
-    protected void preLoaderBuild() {
+    protected void builderOptions() {
         //nothing to add
+    }
+
+    @Override
+    protected Transformation getTransformation() {
+        return new GeneralTransformations();
     }
 
     public ItemStack blankCard() {

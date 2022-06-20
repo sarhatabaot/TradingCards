@@ -1,3 +1,5 @@
+config-version: 1
+
 # Show debug messages?
 debug-mode: false
 
@@ -117,3 +119,5 @@ spawner-block: true
 spawner-mob-name: 'Spawned Mob'
 # How 'long' should each line of the card's info be?
 info-line-length: 25
+
+config-version: 1

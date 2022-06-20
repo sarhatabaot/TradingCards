@@ -19,7 +19,7 @@ public abstract class ExecuteUpdate {
         this.sqlStorage = sqlStorage;
         this.settings = settings;
     }
-
+    //todo future
     public void executeUpdate() {
         try (Connection connection = sqlStorage.getConnectionFactory().getConnection()) {
             DSLContext dslContext = DSL.using(connection, sqlStorage.getType().getDialect(), settings);

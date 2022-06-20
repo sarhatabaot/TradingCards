@@ -20,7 +20,7 @@
         <maven.compiler.version>3.10.1</maven.compiler.version>
 
         <!-- Bukkit Libs -->
-        <item.nbt.version>2.9.2</item.nbt.version>
+        <item.nbt.version>2.10.0</item.nbt.version>
         <acf.version>0.5.1-SNAPSHOT</acf.version>
 
         <!-- Versions -->
@@ -32,7 +32,7 @@
         <adventure.version>4.10.1</adventure.version>
         <junit.jupiter.version>5.8.2</junit.jupiter.version>
         <slf4j.api.version>2.0.0-alpha7</slf4j.api.version>
-        <kraken.version>1.1.3</kraken.version>
+        <kraken.version>1.3.0</kraken.version>
     </properties>
 
     <modules>
@@ -41,6 +41,7 @@
     </modules>
 
     <repositories>
+
         <repository>
             <id>papermc</id>
             <url>https://papermc.io/repo/repository/maven-public/</url>
@@ -76,12 +77,7 @@
             <version>${spigot.version}</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>com.github.MilkBowl</groupId>
-            <artifactId>VaultAPI</artifactId>
-            <version>${vault.api.version}</version>
-            <scope>provided</scope>
-        </dependency>
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -123,6 +119,12 @@
             <artifactId>krakencore</artifactId>
             <version>${kraken.version}</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.MilkBowl</groupId>
+            <artifactId>VaultAPI</artifactId>
+            <version>${vault.api.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

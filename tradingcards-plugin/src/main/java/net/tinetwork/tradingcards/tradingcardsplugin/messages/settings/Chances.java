@@ -59,6 +59,8 @@ public final class Chances {
         }
     }
 
+    public static final Integer CONFIG_VERSION = 1;
+
     private Chances() {
         throw new UnsupportedOperationException(InternalExceptions.UTIL_CLASS);
     }

@@ -1,7 +1,9 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
 
-import com.github.sarhatabaot.kraken.core.config.ConfigurateFile;
+import com.github.sarhatabaot.kraken.core.config.Transformation;
+import com.github.sarhatabaot.kraken.core.config.YamlConfigurateFile;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
+import net.tinetwork.tradingcards.tradingcardsplugin.config.transformations.AdvancedTransformations;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.settings.Advanced;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
@@ -16,7 +18,7 @@ import java.lang.reflect.Type;
 /**
  * @author sarhatabaot
  */
-public class AdvancedConfig extends ConfigurateFile<TradingCards> {
+public class AdvancedConfig extends YamlConfigurateFile<TradingCards> {
     private ConfigCache rarity;
     private ConfigCache series;
     private ConfigCache cards;
@@ -31,14 +33,14 @@ public class AdvancedConfig extends ConfigurateFile<TradingCards> {
     @Override
     protected void initValues() throws ConfigurateException {
         this.rarity = rootNode.node("rarity").get(ConfigCache.class, new ConfigCache(Advanced.Cache.Rarity.MAX_CACHE_ENTRIES,Advanced.Cache.Rarity.REFRESH_AFTER_WRITE));
-        this.rarity = rootNode.node("series").get(ConfigCache.class, new ConfigCache(Advanced.Cache.Series.MAX_CACHE_ENTRIES,Advanced.Cache.Series.REFRESH_AFTER_WRITE));
-        this.rarity = rootNode.node("cards").get(ConfigCache.class, new ConfigCache(Advanced.Cache.Cards.MAX_CACHE_ENTRIES,Advanced.Cache.Cards.REFRESH_AFTER_WRITE));
-        this.rarity = rootNode.node("types").get(ConfigCache.class, new ConfigCache(Advanced.Cache.Types.MAX_CACHE_ENTRIES,Advanced.Cache.Types.REFRESH_AFTER_WRITE));
-        this.rarity = rootNode.node("packs").get(ConfigCache.class, new ConfigCache(Advanced.Cache.Packs.MAX_CACHE_ENTRIES,Advanced.Cache.Packs.REFRESH_AFTER_WRITE));
+        this.series = rootNode.node("series").get(ConfigCache.class, new ConfigCache(Advanced.Cache.Series.MAX_CACHE_ENTRIES,Advanced.Cache.Series.REFRESH_AFTER_WRITE));
+        this.cards = rootNode.node("cards").get(ConfigCache.class, new ConfigCache(Advanced.Cache.Cards.MAX_CACHE_ENTRIES,Advanced.Cache.Cards.REFRESH_AFTER_WRITE));
+        this.types = rootNode.node("types").get(ConfigCache.class, new ConfigCache(Advanced.Cache.Types.MAX_CACHE_ENTRIES,Advanced.Cache.Types.REFRESH_AFTER_WRITE));
+        this.packs = rootNode.node("packs").get(ConfigCache.class, new ConfigCache(Advanced.Cache.Packs.MAX_CACHE_ENTRIES,Advanced.Cache.Packs.REFRESH_AFTER_WRITE));
     }
 
     @Override
-    protected void preLoaderBuild() {
+    protected void builderOptions() {
         loaderBuilder.defaultOptions(opts -> opts.serializers(builder ->
                 builder.registerExact(ConfigCache.class,  ConfigCacheSerializer.INSTANCE)));
     }
@@ -54,7 +56,7 @@ public class AdvancedConfig extends ConfigurateFile<TradingCards> {
         @Override
         public ConfigCache deserialize(final Type type, final @NotNull ConfigurationNode node) throws SerializationException {
             final int maxCacheEntries = node.node(MAX_CACHE_ENTRIES).getInt(1000);
-            final int refreshAfterWrite = node.node(REFRESH_AFTER_WRITE).getInt(0);
+            final int refreshAfterWrite = node.node(REFRESH_AFTER_WRITE).getInt(1);
             return new ConfigCache(maxCacheEntries,refreshAfterWrite);
         }
 
@@ -82,5 +84,10 @@ public class AdvancedConfig extends ConfigurateFile<TradingCards> {
 
     public ConfigCache getPacks() {
         return packs;
+    }
+
+    @Override
+    protected Transformation getTransformation() {
+        return new AdvancedTransformations();
     }
 }

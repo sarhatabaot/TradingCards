@@ -7,6 +7,7 @@ api-version: "1.17"
 libraries:
   - org.slf4j:slf4j-api:${slf4j.api.version}
   - org.spongepowered:configurate-yaml:${configurate.version}
+  - org.spongepowered:configurate-hocon:${configurate.version}
   - net.kyori:adventure-api:${adventure.version}
   - net.kyori:adventure-platform-bukkit:${adventure.bukkit.version}
   - org.mariadb.jdbc:mariadb-java-client:${mariadb.version}

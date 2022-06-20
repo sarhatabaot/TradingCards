@@ -6,6 +6,7 @@
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=TreasureIslandMC_TradingCards&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=TreasureIslandMC_TradingCards)
 
 
+[![](https://jitpack.io/v/sarhatabaot/KrakenCore.svg)](https://jitpack.io/#sarhatabaot/KrakenCore)
 [![Java CI with Maven](https://github.com/TreasureIslandMC/TradingCards/actions/workflows/maven.yml/badge.svg)](https://github.com/TreasureIslandMC/TradingCards/actions/workflows/maven.yml)
 [![](https://img.shields.io/discord/881610309637398538?color=%235865F2&label=support&logo=Discord&logoColor=white&style=for-the-badge)](https://discord.gg/4v9gsBCgg8)
 

@@ -1,5 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.messages.settings;
 
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalExceptions;
+
 public final class Storage {
     public static final String STORAGE_TYPE = "YAML";
 
@@ -31,6 +33,8 @@ public final class Storage {
             throw new UnsupportedOperationException(InternalExceptions.UTIL_CLASS);
         }
     }
+
+    public static final Integer CONFIG_VERSION = 1;
 
     private Storage() {
         throw new UnsupportedOperationException(InternalExceptions.UTIL_CLASS);

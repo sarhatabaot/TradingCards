@@ -1,7 +1,9 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
 
+import com.github.sarhatabaot.kraken.core.config.Transformation;
 import net.tinetwork.tradingcards.api.config.settings.StorageConfigurate;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
+import net.tinetwork.tradingcards.tradingcardsplugin.config.transformations.StorageTransformations;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.settings.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.StorageType;
 import org.spongepowered.configurate.ConfigurateException;
@@ -52,8 +54,13 @@ public class StorageConfig extends StorageConfigurate {
     }
 
     @Override
-    protected void preLoaderBuild() {
+    protected void builderOptions() {
 
+    }
+
+    @Override
+    protected Transformation getTransformation() {
+        return new StorageTransformations();
     }
 
     public StorageType getType() {

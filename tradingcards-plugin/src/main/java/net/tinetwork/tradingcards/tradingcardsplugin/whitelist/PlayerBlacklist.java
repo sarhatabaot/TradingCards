@@ -1,6 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.whitelist;
 
-import com.github.sarhatabaot.kraken.core.config.ConfigurateFile;
+import com.github.sarhatabaot.kraken.core.config.Transformation;
+import com.github.sarhatabaot.kraken.core.config.YamlConfigurateFile;
 import net.tinetwork.tradingcards.api.blacklist.Blacklist;
 import net.tinetwork.tradingcards.api.blacklist.WhitelistMode;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
@@ -18,7 +19,7 @@ import java.util.List;
 /**
  * @author ketelsb
  */
-public class PlayerBlacklist extends ConfigurateFile<TradingCards> implements Blacklist<Player> {
+public class PlayerBlacklist extends YamlConfigurateFile<TradingCards> implements Blacklist<Player> {
     private static final String LISTED_PLAYERS_NAME = "players";
     private static final String WHITELIST_MODE = "whitelist-mode";
     private List<String> listedPlayers;
@@ -36,7 +37,7 @@ public class PlayerBlacklist extends ConfigurateFile<TradingCards> implements Bl
     }
 
     @Override
-    protected void preLoaderBuild() {
+    protected void builderOptions() {
         //No custom type serializer to register
     }
 
@@ -98,5 +99,10 @@ public class PlayerBlacklist extends ConfigurateFile<TradingCards> implements Bl
     @Override
     public WhitelistMode getMode() {
         return whitelistMode;
+    }
+
+    @Override
+    protected Transformation getTransformation() {
+        return null;
     }
 }
