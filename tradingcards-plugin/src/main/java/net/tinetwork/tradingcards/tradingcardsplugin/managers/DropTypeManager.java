@@ -19,19 +19,25 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public class DropTypeManager extends Manager<String, DropType> implements TypeManager {
+    private static final String HOSTILE_ID  = "hostile";
+    private static final String NEUTRAL_ID = "neutral";
+    private static final String PASSIVE_ID = "passive";
+    private static final String BOSS_ID = "bossId";
+    private static final String ALL_ID = "allId";
+
     public static final Map<String,DropType> DEFAULT_MOB_TYPES = Map.of(
-            "hostile", new DropType("hostile","Hostile","hostile"),
-            "neutral", new DropType("neutral", "Neutral", "neutral"),
-            "passive", new DropType("passive", "Passive", "passive"),
-            "boss", new DropType("boss", "Boss", "boss"),
-            "all", new DropType("all","All","all")
+            HOSTILE_ID, new DropType(HOSTILE_ID,"Hostile", HOSTILE_ID),
+            NEUTRAL_ID, new DropType(NEUTRAL_ID, "Neutral", NEUTRAL_ID),
+            PASSIVE_ID, new DropType(PASSIVE_ID, "Passive", PASSIVE_ID),
+            BOSS_ID, new DropType(BOSS_ID, "Boss", BOSS_ID),
+            ALL_ID, new DropType(ALL_ID,"All", ALL_ID)
     );
 
-    public static final DropType HOSTILE = DEFAULT_MOB_TYPES.get("hostile");
-    public static final DropType NEUTRAL = DEFAULT_MOB_TYPES.get("neutral");
-    public static final DropType PASSIVE = DEFAULT_MOB_TYPES.get("passive");
-    public static final DropType BOSS = DEFAULT_MOB_TYPES.get("boss");
-    public static final DropType ALL = DEFAULT_MOB_TYPES.get("all");
+    public static final DropType HOSTILE = DEFAULT_MOB_TYPES.get(HOSTILE_ID);
+    public static final DropType NEUTRAL = DEFAULT_MOB_TYPES.get(NEUTRAL_ID);
+    public static final DropType PASSIVE = DEFAULT_MOB_TYPES.get(PASSIVE_ID);
+    public static final DropType BOSS = DEFAULT_MOB_TYPES.get(BOSS_ID);
+    public static final DropType ALL = DEFAULT_MOB_TYPES.get(ALL_ID);
 
 
     public DropTypeManager(final TradingCards plugin) {
