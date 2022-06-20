@@ -1,6 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.whitelist;
 
-import com.github.sarhatabaot.kraken.core.config.ConfigurateFile;
+import com.github.sarhatabaot.kraken.core.config.Transformation;
+import com.github.sarhatabaot.kraken.core.config.YamlConfigurateFile;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.api.blacklist.WhitelistMode;
 import net.tinetwork.tradingcards.api.blacklist.Blacklist;
@@ -16,7 +17,7 @@ import java.util.List;
 /**
  * @author ketelsb
  */
-public class WorldBlacklist extends ConfigurateFile<TradingCards> implements Blacklist<World> {
+public class WorldBlacklist extends YamlConfigurateFile<TradingCards> implements Blacklist<World> {
     private static final String LISTED_WORLDS_NAME = "worlds";
     private static final String WHITELIST_MODE_NAME = "whitelist-mode";
     private ConfigurationNode worldNode;
@@ -35,7 +36,7 @@ public class WorldBlacklist extends ConfigurateFile<TradingCards> implements Bla
     }
 
     @Override
-    protected void preLoaderBuild() {
+    protected void builderOptions() {
         //No custom type serializer to register
     }
 
@@ -94,5 +95,10 @@ public class WorldBlacklist extends ConfigurateFile<TradingCards> implements Bla
     @Override
     public WhitelistMode getMode() {
         return whitelistMode;
+    }
+
+    @Override
+    protected Transformation getTransformation() {
+        return null;
     }
 }

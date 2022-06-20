@@ -1,5 +1,6 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local;
 
+import com.github.sarhatabaot.kraken.core.config.Transformation;
 import net.tinetwork.tradingcards.api.config.ColorSeries;
 import net.tinetwork.tradingcards.api.config.settings.SeriesConfigurate;
 import net.tinetwork.tradingcards.api.model.Series;
@@ -108,7 +109,7 @@ public class SeriesConfig extends SeriesConfigurate {
     }
 
     @Override
-    protected void preLoaderBuild() {
+    protected void builderOptions() {
         loaderBuilder.defaultOptions(opts -> opts.serializers(builder ->
                 builder.registerExact(DateScheduleSerializer.TYPE, DateScheduleSerializer.INSTANCE)
                         .registerExact(SeriesSerializer.TYPE, SeriesSerializer.INSTANCE)
@@ -229,4 +230,8 @@ public class SeriesConfig extends SeriesConfigurate {
         }
     }
 
+    @Override
+    protected Transformation getTransformation() {
+        return null;
+    }
 }

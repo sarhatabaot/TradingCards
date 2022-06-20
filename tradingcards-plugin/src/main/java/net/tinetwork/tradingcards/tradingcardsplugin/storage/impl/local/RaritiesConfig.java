@@ -1,5 +1,6 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local;
 
+import com.github.sarhatabaot.kraken.core.config.Transformation;
 import net.tinetwork.tradingcards.api.config.settings.RarityConfigurate;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
@@ -33,9 +34,14 @@ public class RaritiesConfig extends RarityConfigurate{
     }
 
     @Override
-    protected void preLoaderBuild() {
+    protected void builderOptions() {
         loaderBuilder.defaultOptions(opts -> opts.serializers(builder ->
                 builder.registerExact(RaritySerializer.TYPE, RaritySerializer.INSTANCE)));
+    }
+
+    @Override
+    protected Transformation getTransformation() {
+        return null;
     }
 
     public Rarity getRarity(final String id) throws SerializationException {

@@ -1,7 +1,8 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.messages.settings;
 
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalExceptions;
+
 public final class General {
-    public static final Integer CONFIG_VERSION = 1;
     public static final Boolean DEBUG_MODE = false;
     public static final Boolean USE_DEFAULT_CARDS_FILE = true;
 
@@ -85,6 +86,7 @@ public final class General {
     public static final Boolean SPAWNER_BLOCK = true;
     public static final String SPAWNER_MOB_NAME = "Spawned Mob";
     public static final Integer INFO_LINE_LENGTH = 25;
+    public static final Integer CONFIG_VERSION = 1;
 
     private General() {
         throw new UnsupportedOperationException(InternalExceptions.UTIL_CLASS);

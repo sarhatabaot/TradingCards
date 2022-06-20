@@ -1,6 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local;
 
-import com.github.sarhatabaot.kraken.core.config.ConfigurateFile;
+import com.github.sarhatabaot.kraken.core.config.Transformation;
+import com.github.sarhatabaot.kraken.core.config.YamlConfigurateFile;
 import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
@@ -20,7 +21,7 @@ import java.util.Set;
 /**
  * @author sarhatabaot
  */
-public class CustomTypesConfig extends ConfigurateFile<TradingCards> {
+public class CustomTypesConfig extends YamlConfigurateFile<TradingCards> {
     private Set<DropType> dropTypes;
 
     public CustomTypesConfig(final TradingCards plugin) throws ConfigurateException {
@@ -74,7 +75,7 @@ public class CustomTypesConfig extends ConfigurateFile<TradingCards> {
 
 
     @Override
-    protected void preLoaderBuild() {
+    protected void builderOptions() {
         loaderBuilder.defaultOptions(opts -> opts.serializers(builder ->
                 builder.registerExact(DropTypeSerializer.TYPE, DropTypeSerializer.INSTANCE)));
     }
@@ -120,5 +121,10 @@ public class CustomTypesConfig extends ConfigurateFile<TradingCards> {
             target.node(DISPLAY_NAME).set(obj.getDisplayName());
             target.node(DROP_TYPE).set(obj.getType());
         }
+    }
+
+    @Override
+    protected Transformation getTransformation() {
+        return null;
     }
 }

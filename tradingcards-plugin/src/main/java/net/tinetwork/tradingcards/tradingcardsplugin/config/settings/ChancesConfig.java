@@ -1,9 +1,11 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
 
-import com.github.sarhatabaot.kraken.core.config.ConfigurateFile;
+import com.github.sarhatabaot.kraken.core.config.Transformation;
+import com.github.sarhatabaot.kraken.core.config.YamlConfigurateFile;
 import net.tinetwork.tradingcards.api.model.chance.Chance;
 import net.tinetwork.tradingcards.api.model.chance.EmptyChance;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
+import net.tinetwork.tradingcards.tradingcardsplugin.config.transformations.ChancesTransformations;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalExceptions;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.settings.Chances;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -15,7 +17,7 @@ import org.spongepowered.configurate.serialize.TypeSerializer;
 import java.io.File;
 import java.lang.reflect.Type;
 
-public class ChancesConfig extends ConfigurateFile<TradingCards> {
+public class ChancesConfig extends YamlConfigurateFile<TradingCards> {
     private int hostileChance;
     private int neutralChance;
     private int passiveChance;
@@ -42,7 +44,7 @@ public class ChancesConfig extends ConfigurateFile<TradingCards> {
     }
 
     @Override
-    protected void preLoaderBuild() {
+    protected void builderOptions() {
         loaderBuilder.defaultOptions(opts -> opts.serializers(builder ->
                 builder.registerExact(Chance.class, ChanceSerializer.INSTANCE)));
     }
@@ -86,6 +88,11 @@ public class ChancesConfig extends ConfigurateFile<TradingCards> {
             plugin.getLogger().severe(e.getMessage());
         }
         return new EmptyChance();
+    }
+
+    @Override
+    protected Transformation getTransformation() {
+        return new ChancesTransformations();
     }
 
     public static final class ChanceSerializer implements TypeSerializer<Chance> {

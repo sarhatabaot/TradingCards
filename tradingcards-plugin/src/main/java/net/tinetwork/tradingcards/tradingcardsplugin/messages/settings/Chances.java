@@ -1,5 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.messages.settings;
 
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalExceptions;
+
 public final class Chances {
     public static final Integer HOSTILE_CHANCE = 20000;
     public static final Integer NEUTRAL_CHANCE = 5000;
@@ -56,6 +58,8 @@ public final class Chances {
             throw new UnsupportedOperationException(InternalExceptions.UTIL_CLASS);
         }
     }
+
+    public static final Integer CONFIG_VERSION = 1;
 
     private Chances() {
         throw new UnsupportedOperationException(InternalExceptions.UTIL_CLASS);

@@ -1,14 +1,16 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
 
-import com.github.sarhatabaot.kraken.core.config.ConfigurateFile;
+import com.github.sarhatabaot.kraken.core.config.Transformation;
+import com.github.sarhatabaot.kraken.core.config.YamlConfigurateFile;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
+import net.tinetwork.tradingcards.tradingcardsplugin.config.transformations.MessagesTransformations;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.settings.Messages;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import org.spongepowered.configurate.ConfigurateException;
 
 import java.io.File;
 
-public class MessagesConfig extends ConfigurateFile<TradingCards> {
+public class MessagesConfig extends YamlConfigurateFile<TradingCards> {
     private String prefix;
     private Message reload;
     private Message noCard;
@@ -153,9 +155,15 @@ public class MessagesConfig extends ConfigurateFile<TradingCards> {
     }
 
     @Override
-    protected void preLoaderBuild() {
+    protected void builderOptions() {
         //No custom type serializer to register
     }
+
+    @Override
+    protected Transformation getTransformation() {
+        return new MessagesTransformations();
+    }
+
     public String packSection() {
         return packSection;
     }

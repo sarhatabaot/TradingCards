@@ -34,6 +34,8 @@ public final class Storage {
         }
     }
 
+    public static final Integer CONFIG_VERSION = 1;
+
     private Storage() {
         throw new UnsupportedOperationException(InternalExceptions.UTIL_CLASS);
     }

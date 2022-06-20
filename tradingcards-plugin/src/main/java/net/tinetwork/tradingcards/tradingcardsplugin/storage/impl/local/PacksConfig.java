@@ -1,6 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local;
 
-import com.github.sarhatabaot.kraken.core.config.ConfigurateFile;
+import com.github.sarhatabaot.kraken.core.config.Transformation;
+import com.github.sarhatabaot.kraken.core.config.YamlConfigurateFile;
 import net.tinetwork.tradingcards.api.model.Pack;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
@@ -16,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class PacksConfig extends ConfigurateFile<TradingCards> {
+public class PacksConfig extends YamlConfigurateFile<TradingCards> {
     private List<String> packNames;
     private List<Pack> packs;
     public PacksConfig(TradingCards plugin) throws ConfigurateException {
@@ -96,7 +97,7 @@ public class PacksConfig extends ConfigurateFile<TradingCards> {
     }
 
     @Override
-    protected void preLoaderBuild() {
+    protected void builderOptions() {
         loaderBuilder.defaultOptions(opts -> opts.serializers(builder ->
                 builder.registerExact(Pack.class, PackSerializer.INSTANCE)));
     }
@@ -164,5 +165,10 @@ public class PacksConfig extends ConfigurateFile<TradingCards> {
             target.node(PRICE).set(pack.getBuyPrice());
             target.node(PERMISSION).set(pack.getPermission());
         }
+    }
+
+    @Override
+    protected Transformation getTransformation() {
+        return null;
     }
 }

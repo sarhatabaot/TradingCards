@@ -1,6 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local;
 
-import com.github.sarhatabaot.kraken.core.config.ConfigurateFile;
+import com.github.sarhatabaot.kraken.core.config.Transformation;
+import com.github.sarhatabaot.kraken.core.config.YamlConfigurateFile;
 import net.tinetwork.tradingcards.api.TradingCardsPlugin;
 import net.tinetwork.tradingcards.api.card.Card;
 import net.tinetwork.tradingcards.api.model.DropType;
@@ -28,7 +29,7 @@ import java.util.Map;
 /**
  * @author sarhatabaot
  */
-public class SimpleCardsConfig extends ConfigurateFile<TradingCards> {
+public class SimpleCardsConfig extends YamlConfigurateFile<TradingCards> {
     private ConfigurationNode cardsNode;
     private static YamlStorage yamlStorage;
 
@@ -39,7 +40,7 @@ public class SimpleCardsConfig extends ConfigurateFile<TradingCards> {
     }
 
     @Override
-    protected void preLoaderBuild() {
+    protected void builderOptions() {
         CardSerializer.init(plugin);
         loaderBuilder.defaultOptions(opts -> opts.serializers(builder ->
                 builder.registerExact(TradingCard.class, CardSerializer.INSTANCE).
@@ -281,4 +282,8 @@ public class SimpleCardsConfig extends ConfigurateFile<TradingCards> {
         return cardsNode.node(rarity).childrenMap();
     }
 
+    @Override
+    protected Transformation getTransformation() {
+        return null;
+    }
 }
