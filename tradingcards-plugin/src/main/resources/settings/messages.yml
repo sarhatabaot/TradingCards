@@ -66,3 +66,5 @@ section-format-player: '&e&l------- &7(&6&l%player%''s Collection&7)&e&l -------
 section-format-complete: '&6--- %s &7(&6%shiny_cards_owned%&f/%sComplete&7)&6 ---'
 pack-section: '&6--- Packs ---'
 deck-inventory-title: "&c%player%'s Deck #%deck_num%"
+
+config-version: 1

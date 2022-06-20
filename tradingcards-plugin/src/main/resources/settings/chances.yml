@@ -33,3 +33,5 @@ very-rare:
 legendary:
   hostile: 1
   boss: 50000
+
+config-version: 1

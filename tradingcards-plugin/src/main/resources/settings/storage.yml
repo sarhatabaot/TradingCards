@@ -22,3 +22,5 @@ database:
 
 database-migration:
   default-series-id: "default"
+
+config-version: 1
