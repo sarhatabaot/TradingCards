@@ -13,14 +13,19 @@ import java.util.Objects;
  properly anymore.!!
  */
 public class NbtUtils {
+    //Deck Item
     public static final String NBT_DECK_NUMBER = "deckNumber";
     public static final String NBT_IS_DECK = "isDeck";
+
+    //Card Item
     public static final String NBT_IS_CARD = "isCard";
     public static final String NBT_CARD_NAME = "name";
     public static final String NBT_RARITY = "rarity";
     public static final String NBT_CARD_SHINY = "shiny";
     public static final String NBT_CARD_SERIES = "series";
     public static final String NBT_CARD_CUSTOM_MODEL = "CustomModelData";
+
+    //Pack Item
     public static final String NBT_PACK = "pack";
     public static final String NBT_PACK_ID = "packId";
 
