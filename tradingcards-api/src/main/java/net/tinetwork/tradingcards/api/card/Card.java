@@ -188,7 +188,7 @@ public abstract class Card<T>{
         nbtCompound.setString(NbtUtils.Legacy.NBT_CARD_SERIES,series.getId());
 
         if(getCustomModelNbt() != 0) {
-            nbtItem.setInteger(NbtUtils.Legacy.NBT_CARD_CUSTOM_MODEL, this.cardMeta.getCustomModelNbt());
+            nbtItem.setInteger(NbtUtils.NBT_CARD_CUSTOM_MODEL, this.cardMeta.getCustomModelNbt());
         }
 
         return nbtItem;
