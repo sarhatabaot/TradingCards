@@ -182,7 +182,7 @@ public abstract class Card<T> {
 
     public NBTItem buildNBTItem(boolean shiny) {
         NBTItem nbtItem = new NBTItem(buildItem(shiny));
-        NBTCompound nbtCompound = nbtItem.getOrCreateCompound(NbtUtils.NBT_TRADING_CARDS_COMPOUND);
+        NBTCompound nbtCompound = nbtItem.getOrCreateCompound(NbtUtils.TC_COMPOUND);
         nbtCompound.setString(NbtUtils.TC_CARD_ID, cardId);
         nbtCompound.setString(NbtUtils.TC_CARD_RARITY, rarity.getId());
         nbtCompound.setBoolean(NbtUtils.TC_CARD_SHINY, shiny);

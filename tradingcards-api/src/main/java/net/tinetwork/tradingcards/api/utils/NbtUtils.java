@@ -13,8 +13,8 @@ import java.util.Objects;
  properly anymore.!!
  */
 public class NbtUtils {
-    public static final String NBT_TRADING_CARDS_COMPOUND = "trading-cards";
     public static final String NBT_CARD_CUSTOM_MODEL = "CustomModelData";
+    public static final String TC_COMPOUND = "trading-cards";
 
     // Deck Stuff
     public static final String TC_DECK_NUMBER = "tc-deck-number";
@@ -69,13 +69,13 @@ public class NbtUtils {
             if (isLegacy(item)) {
                 return item.getInteger(Legacy.NBT_DECK_NUMBER);
             }
-            return item.getCompound(NBT_TRADING_CARDS_COMPOUND).getInteger(TC_DECK_NUMBER);
+            return item.getCompound(TC_COMPOUND).getInteger(TC_DECK_NUMBER);
         }
 
         public static boolean isDeck(final @NotNull NBTItem item) {
             if (isLegacy(item))
                 return item.hasKey(Legacy.NBT_IS_DECK);
-            return item.getCompound(NBT_TRADING_CARDS_COMPOUND).hasKey(TC_DECK_NUMBER);
+            return item.getCompound(TC_COMPOUND).hasKey(TC_DECK_NUMBER);
         }
     }
 
@@ -87,31 +87,31 @@ public class NbtUtils {
         public static String getCardId(final @NotNull NBTItem item) {
             if (isLegacy(item))
                 return item.getString(Legacy.NBT_CARD_NAME);
-            return item.getCompound(NBT_TRADING_CARDS_COMPOUND).getString(TC_CARD_ID);
+            return item.getCompound(TC_COMPOUND).getString(TC_CARD_ID);
         }
 
         public static String getRarityId(final @NotNull NBTItem item) {
             if (isLegacy(item))
                 return item.getString(Legacy.NBT_RARITY);
-            return item.getCompound(NBT_TRADING_CARDS_COMPOUND).getString(TC_CARD_RARITY);
+            return item.getCompound(TC_COMPOUND).getString(TC_CARD_RARITY);
         }
 
         public static String getSeriesId(final @NotNull NBTItem item) {
             if (isLegacy(item))
                 return item.getString(Legacy.NBT_CARD_SERIES);
-            return item.getCompound(NBT_TRADING_CARDS_COMPOUND).getString(TC_CARD_SERIES);
+            return item.getCompound(TC_COMPOUND).getString(TC_CARD_SERIES);
         }
 
         public static boolean isShiny(final @NotNull NBTItem item) {
             if (isLegacy(item))
                 return item.getBoolean(Legacy.NBT_CARD_SHINY);
-            return item.getCompound(NBT_TRADING_CARDS_COMPOUND).getBoolean(TC_CARD_SHINY);
+            return item.getCompound(TC_COMPOUND).getBoolean(TC_CARD_SHINY);
         }
 
         public static boolean isCard(final @NotNull NBTItem item) {
             if (isLegacy(item))
                 return item.getBoolean(Legacy.NBT_IS_CARD);
-            return item.getCompound(NBT_TRADING_CARDS_COMPOUND).hasKey(TC_CARD_ID);
+            return item.getCompound(TC_COMPOUND).hasKey(TC_CARD_ID);
         }
     }
 
@@ -123,18 +123,18 @@ public class NbtUtils {
         public static String getPackId(final @NotNull NBTItem item) {
             if (isLegacy(item))
                 return item.getString(Legacy.NBT_PACK_ID);
-            return item.getCompound(NBT_TRADING_CARDS_COMPOUND).getString(TC_PACK_ID);
+            return item.getCompound(TC_COMPOUND).getString(TC_PACK_ID);
         }
 
         public static boolean isPack(final @NotNull NBTItem item) {
             if (isLegacy(item))
                 return item.getBoolean(Legacy.NBT_PACK);
-            return item.getCompound(NBT_TRADING_CARDS_COMPOUND).hasKey(TC_PACK_ID);
+            return item.getCompound(TC_COMPOUND).hasKey(TC_PACK_ID);
         }
     }
 
 
     public static boolean isLegacy(final @NotNull NBTItem item) {
-        return !item.hasKey(NBT_TRADING_CARDS_COMPOUND);
+        return !item.hasKey(TC_COMPOUND);
     }
 }
