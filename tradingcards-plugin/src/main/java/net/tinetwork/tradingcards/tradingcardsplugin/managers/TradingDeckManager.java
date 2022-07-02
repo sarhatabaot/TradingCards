@@ -166,9 +166,8 @@ public class TradingDeckManager implements DeckManager {
     @Override
     public ItemStack getNbtItem(@NotNull final Player player, final int deckNumber) {
         NBTItem nbtItem = new NBTItem(createDeckItem(player, deckNumber));
-        NBTCompound nbtCompound = nbtItem.getOrCreateCompound(NbtUtils.NBT_TRADING_CARDS_COMPOUND);
-        nbtCompound.setBoolean(NbtUtils.Legacy.NBT_IS_DECK, true);
-        nbtCompound.setInteger(NbtUtils.Legacy.NBT_DECK_NUMBER, deckNumber);
+        NBTCompound nbtCompound = nbtItem.getOrCreateCompound(NbtUtils.TC_COMPOUND);
+        nbtCompound.setInteger(NbtUtils.TC_DECK_NUMBER, deckNumber);
         return nbtItem.getItem();
     }
 
