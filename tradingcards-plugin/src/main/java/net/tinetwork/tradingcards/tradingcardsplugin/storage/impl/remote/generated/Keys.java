@@ -12,6 +12,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generat
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Rarities;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Rewards;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Series;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Users;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.SeriesColors;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.records.CardsRecord;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.records.CustomTypesRecord;
@@ -23,6 +24,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generat
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.records.SeriesColorsRecord;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.records.SeriesRecord;
 
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.records.UsersRecord;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
@@ -49,4 +51,5 @@ public class Keys {
     public static final UniqueKey<RewardsRecord> KEY_REWARDS_PRIMARY = Internal.createUniqueKey(Rewards.REWARDS, DSL.name("KEY_rewards_PRIMARY"), new TableField[] { Rewards.REWARDS.RARITY_ID }, true);
     public static final UniqueKey<SeriesRecord> KEY_SERIES_PRIMARY = Internal.createUniqueKey(Series.SERIES, DSL.name("KEY_series_PRIMARY"), new TableField[] { Series.SERIES.SERIES_ID }, true);
     public static final UniqueKey<SeriesColorsRecord> KEY_SERIES_COLORS_PRIMARY = Internal.createUniqueKey(SeriesColors.SERIES_COLORS, DSL.name("KEY_series_colors_PRIMARY"), new TableField[] { SeriesColors.SERIES_COLORS.SERIES_ID }, true);
+    public static final UniqueKey<UsersRecord> KEY_USERS_PRIMARY = Internal.createUniqueKey(Users.USERS, DSL.name("KEY_users_PRIMARY"), new TableField[] { Users.USERS.ID }, true);
 }

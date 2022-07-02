@@ -13,6 +13,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generat
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Rewards;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Series;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.SeriesColors;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Users;
 
 
 /**
@@ -65,4 +66,9 @@ public class Tables {
      * The table <code>minecraft.series_colors</code>.
      */
     public static final SeriesColors SERIES_COLORS = SeriesColors.SERIES_COLORS;
+
+    /**
+     * The table <code>minecraft.users</code>.
+     */
+    public static final Users USERS = Users.USERS;
 }
