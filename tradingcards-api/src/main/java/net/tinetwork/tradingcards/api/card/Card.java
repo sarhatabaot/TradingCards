@@ -10,7 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class Card<T>{
+public abstract class Card<T> {
     private final String cardId;
 
     private Material material;
@@ -41,6 +41,7 @@ public abstract class Card<T>{
 
     /**
      * Set if a card is shiny
+     *
      * @param isShiny isShiny
      * @return if the card is shiny
      */
@@ -62,13 +63,14 @@ public abstract class Card<T>{
     }
 
     public String getDisplayName() {
-        if(this.cardMeta.getDisplayName() == null || this.cardMeta.getDisplayName().isEmpty())
-            return cardId.replace("_"," ");
+        if (this.cardMeta.getDisplayName() == null || this.cardMeta.getDisplayName().isEmpty())
+            return cardId.replace("_", " ");
         return this.cardMeta.getDisplayName();
     }
 
     /**
      * Set custom model nbt
+     *
      * @param data custom model nbt
      * @return Builder
      */
@@ -88,38 +90,38 @@ public abstract class Card<T>{
         return this;
     }
 
-    public Card<T>  about(String about) {
+    public Card<T> about(String about) {
         this.cardMeta.setAbout(about);
         return this;
     }
 
-    public Card<T>  type(DropType dropType) {
+    public Card<T> type(DropType dropType) {
         this.type = dropType;
         return this;
     }
 
-    public Card<T>  info(String info) {
+    public Card<T> info(String info) {
         this.cardMeta.setInfo(info);
         return this;
     }
 
 
-    public Card<T>  buyPrice(double buyPrice) {
+    public Card<T> buyPrice(double buyPrice) {
         this.cardMeta.setBuyPrice(buyPrice);
         return this;
     }
 
-    public Card<T>  sellPrice(double sellPrice) {
+    public Card<T> sellPrice(double sellPrice) {
         this.cardMeta.setSellPrice(sellPrice);
         return this;
     }
 
-    public Card<T>  rarity(Rarity rarity) {
+    public Card<T> rarity(Rarity rarity) {
         this.rarity = rarity;
         return this;
     }
 
-    public Card<T>  isPlayerCard(boolean isPlayerCard) {
+    public Card<T> isPlayerCard(boolean isPlayerCard) {
         this.cardMeta.setPlayerCard(isPlayerCard);
         return this;
     }
@@ -180,15 +182,14 @@ public abstract class Card<T>{
 
     public NBTItem buildNBTItem(boolean shiny) {
         NBTItem nbtItem = new NBTItem(buildItem(shiny));
-        NBTCompound nbtCompound = nbtItem.getOrCreateCompound(NbtUtils.NBT_TRADING_CARDS_COMPOUND);
-        nbtCompound.setString(NbtUtils.Legacy.NBT_CARD_NAME, cardId);
-        nbtCompound.setString(NbtUtils.Legacy.NBT_RARITY,rarity.getId());
-        nbtCompound.setBoolean(NbtUtils.Legacy.NBT_IS_CARD, true);
-        nbtCompound.setBoolean(NbtUtils.Legacy.NBT_CARD_SHINY, shiny);
-        nbtCompound.setString(NbtUtils.Legacy.NBT_CARD_SERIES,series.getId());
+        NBTCompound nbtCompound = nbtItem.getOrCreateCompound(NbtUtils.TC_COMPOUND);
+        nbtCompound.setString(NbtUtils.TC_CARD_ID, cardId);
+        nbtCompound.setString(NbtUtils.TC_CARD_RARITY, rarity.getId());
+        nbtCompound.setBoolean(NbtUtils.TC_CARD_SHINY, shiny);
+        nbtCompound.setString(NbtUtils.TC_CARD_SERIES, series.getId());
 
-        if(getCustomModelNbt() != 0) {
-            nbtItem.setInteger(NbtUtils.Legacy.NBT_CARD_CUSTOM_MODEL, this.cardMeta.getCustomModelNbt());
+        if (getCustomModelNbt() != 0) {
+            nbtItem.setInteger(NbtUtils.NBT_CARD_CUSTOM_MODEL, this.cardMeta.getCustomModelNbt());
         }
 
         return nbtItem;

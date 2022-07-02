@@ -122,9 +122,8 @@ public class BoosterPackManager extends Manager<String, Pack> implements PackMan
         itemPackMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         itemPack.setItemMeta(itemPackMeta);
         NBTItem nbtItem = new NBTItem(itemPack);
-        NBTCompound compound = nbtItem.getOrCreateCompound(NbtUtils.NBT_TRADING_CARDS_COMPOUND);
-        compound.setString(NbtUtils.Legacy.NBT_PACK_ID, pack.id());
-        compound.setBoolean(NbtUtils.Legacy.NBT_PACK,true);
+        NBTCompound compound = nbtItem.getOrCreateCompound(NbtUtils.TC_COMPOUND);
+        compound.setString(NbtUtils.TC_PACK_ID, pack.id());
         return nbtItem.getItem();
     }
 
