@@ -36,7 +36,7 @@ public class BuyCommand extends BaseCommand {
         @CommandCompletion("@packs")
         @Description("Buy a pack.")
         public void onBuyPack(final Player player, final String packId) {
-            if (!CardUtil.hasVault(player))
+            if (CardUtil.noVault(player))
                 return;
 
             if (plugin.getPackManager().getPack(packId) == null) {
@@ -70,7 +70,7 @@ public class BuyCommand extends BaseCommand {
         @Description("Buy a card.")
         @CommandCompletion("@rarities @cards")
         public void onBuyCard(final Player player, @NotNull final String rarityId, @NotNull final String cardId, @NotNull final String seriesId) {
-            if (!CardUtil.hasVault(player))
+            if (CardUtil.noVault(player))
                 return;
 
             if (plugin.getCardManager().getCard(cardId, rarityId, seriesId) instanceof EmptyCard) {

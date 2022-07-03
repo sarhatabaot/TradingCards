@@ -7,6 +7,7 @@ import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +40,7 @@ public class ActiveCardManager extends TradingCardManager {
                 .refreshAfterWrite(plugin.getAdvancedConfig().getCards().refreshAfterWrite(), TimeUnit.MINUTES)
                 .build(new CacheLoader<>() {
                            @Override
-                           public List<TradingCard> load(final String key) throws Exception {
+                           public @NotNull List<TradingCard> load(final @NotNull String key) throws Exception {
                                List<TradingCard> cardList = new ArrayList<>();
                                for(Series series: plugin.getStorage().getActiveSeries()) {
                                    if(plugin.getStorage().getCardsInRarityAndSeriesCount(key,series.getId()) > 0) {

@@ -13,6 +13,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalDebug;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalLog;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -24,6 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
@@ -52,7 +54,7 @@ public class BoosterPackManager extends Manager<String, Pack> implements PackMan
                 .refreshAfterWrite(plugin.getAdvancedConfig().getPacks().refreshAfterWrite(), TimeUnit.MINUTES)
                 .build(new CacheLoader<>() {
                     @Override
-                    public Pack load(final String key) throws Exception {
+                    public @NotNull Pack load(final @NotNull String key) throws Exception {
                         plugin.debug(BoosterPackManager.class, InternalDebug.LOADED_INTO_CACHE.formatted(key));
                         return plugin.getStorage().getPack(key);
                     }
@@ -66,7 +68,7 @@ public class BoosterPackManager extends Manager<String, Pack> implements PackMan
                 .refreshAfterWrite(5, TimeUnit.MINUTES)
                 .build(new CacheLoader<>() {
                     @Override
-                    public ItemStack load(final String key) throws Exception {
+                    public @NotNull ItemStack load(final @NotNull String key) throws Exception {
                         return generatePack(key);
                     }
                 });
@@ -102,7 +104,7 @@ public class BoosterPackManager extends Manager<String, Pack> implements PackMan
     public ItemStack generatePack(final @NotNull Pack pack) {
         ItemStack itemPack = blankPack.clone();
         ItemMeta itemPackMeta = itemPack.getItemMeta();
-        itemPackMeta.setDisplayName(ChatUtil.color(plugin.getGeneralConfig().packPrefix()
+        Objects.requireNonNull(itemPackMeta).setDisplayName(ChatUtil.color(plugin.getGeneralConfig().packPrefix()
                 + plugin.getGeneralConfig().colorPackName())
                 + pack.getDisplayName().replace("_", " "));
         List<String> lore = new ArrayList<>();

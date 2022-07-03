@@ -36,7 +36,7 @@ public class SellCommand extends BaseCommand {
         @Default
         @Description("Sells the card in your main hand.")
         public void onSell(final Player player) {
-            if (!CardUtil.hasVault(player))
+            if (CardUtil.noVault(player))
                 return;
 
             final NBTItem nbtItem = new NBTItem(player.getInventory().getItemInMainHand());

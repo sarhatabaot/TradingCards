@@ -88,7 +88,7 @@ public class CardsCommand extends BaseCommand {
     @CommandPermission(Permissions.WORTH)
     @Description("Shows a card's worth.")
     public void onWorth(final Player player) {
-        if (!CardUtil.hasVault(player)) {
+        if (CardUtil.noVault(player)) {
             return;
         }
         final NBTItem nbtItem = new NBTItem(player.getInventory().getItemInMainHand());

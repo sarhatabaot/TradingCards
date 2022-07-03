@@ -225,22 +225,6 @@ public class CardUtil {
         return format + name;
     }
 
-
-    @Contract(pure = true)
-    @Deprecated
-    /**
-     * @since 5.7.0
-     * @forRemoval
-     */
-    public static @NotNull String cardKey(@NotNull final String rarityId, @NotNull final String cardId) {
-        return rarityId + "." + cardId;
-    }
-
-    @Contract(pure = true)
-    public static @NotNull String cardKey(@NotNull final String rarityId, @NotNull final String cardId, @NotNull final String seriesId) {
-        return rarityId + "." + cardId+"."+seriesId;
-    }
-
     public static boolean calculateIfShiny(boolean forcedShiny) {
         if (forcedShiny)
             return true;
@@ -250,11 +234,11 @@ public class CardUtil {
         return isShiny;
     }
 
-    public static boolean hasVault(final CommandSender player) {
+    public static boolean noVault(final CommandSender player) {
         if (!plugin.isHasVault()) {
             ChatUtil.sendMessage(player, plugin.getMessagesConfig().noVault());
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 }

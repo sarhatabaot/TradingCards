@@ -57,7 +57,7 @@ public class DropTypeManager extends Manager<String, DropType> implements TypeMa
                 .refreshAfterWrite(plugin.getAdvancedConfig().getTypes().refreshAfterWrite(), TimeUnit.MINUTES)
                 .build(new CacheLoader<>() {
                     @Override
-                    public DropType load(final String key) throws Exception {
+                    public @NotNull DropType load(final @NotNull String key) throws Exception {
                         return plugin.getStorage().getCustomType(key);
                     }
                 });

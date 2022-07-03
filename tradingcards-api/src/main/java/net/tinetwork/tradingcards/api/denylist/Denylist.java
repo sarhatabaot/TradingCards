@@ -4,7 +4,7 @@ public interface Denylist<T> {
     /**
      * Return if the value is allowed.
      * @param value value
-     * @return
+     * @return if the value is allowed
      */
     boolean isAllowed(T value);
 

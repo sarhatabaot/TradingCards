@@ -41,7 +41,7 @@ public abstract class TradingCardManager extends Manager<CompositeCardKey, Tradi
                 .refreshAfterWrite(plugin.getAdvancedConfig().getCards().refreshAfterWrite(), TimeUnit.MINUTES)
                 .build(new CacheLoader<>() {
                            @Override
-                           public TradingCard load(final CompositeCardKey key) throws Exception {
+                           public @NotNull TradingCard load(final @NotNull CompositeCardKey key) throws Exception {
                                return plugin.getStorage().getCard(key.cardId(), key.rarityId(), key.seriesId()).get();
                            }
                        }
@@ -57,7 +57,7 @@ public abstract class TradingCardManager extends Manager<CompositeCardKey, Tradi
                 .refreshAfterWrite(plugin.getAdvancedConfig().getCards().refreshAfterWrite(), TimeUnit.MINUTES)
                 .build(new CacheLoader<>() {
                            @Override
-                           public List<TradingCard> load(final String key) throws Exception {
+                           public @NotNull List<TradingCard> load(final @NotNull String key) throws Exception {
                                return plugin.getStorage().getCardsInSeries(key);
                            }
                        }
@@ -70,7 +70,7 @@ public abstract class TradingCardManager extends Manager<CompositeCardKey, Tradi
                 .refreshAfterWrite(plugin.getAdvancedConfig().getCards().refreshAfterWrite(),TimeUnit.MINUTES)
                 .build(new CacheLoader<>() {
                     @Override
-                    public List<TradingCard> load(final CompositeRaritySeriesKey key) throws Exception {
+                    public @NotNull List<TradingCard> load(final @NotNull CompositeRaritySeriesKey key) throws Exception {
                         List<TradingCard> cardList = plugin.getStorage().getCardsInRarityAndSeries(key.rarityId(),key.seriesId());
                         if(cardList == null)
                             return Collections.emptyList();

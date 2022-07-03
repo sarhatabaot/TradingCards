@@ -66,7 +66,7 @@ public class DeckListener extends SimpleListener {
         debug(InternalDebug.DeckListener.DECK_CLOSED);
     }
 
-    private boolean updateSimilarEntry(final List<StorageEntry> entries, final StorageEntry entryToCompare) {
+    private boolean updateSimilarEntry(final @NotNull List<StorageEntry> entries, final StorageEntry entryToCompare) {
         boolean wasChanged = false;
         for(StorageEntry storageEntry: entries) {
             if(storageEntry.isSimilar(entryToCompare)) {

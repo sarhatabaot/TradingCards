@@ -32,7 +32,7 @@ public class TradingSeriesManager extends Manager<String,Series> implements Seri
                 .refreshAfterWrite(plugin.getAdvancedConfig().getSeries().refreshAfterWrite(), TimeUnit.MINUTES)
                 .build(new CacheLoader<>() {
                     @Override
-                    public Series load(final String key) throws Exception {
+                    public @NotNull Series load(final @NotNull String key) throws Exception {
                         plugin.debug(TradingSeriesManager.class, InternalDebug.LOADED_INTO_CACHE.formatted(key));
                         return plugin.getStorage().getSeries(key);
                     }

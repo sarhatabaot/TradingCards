@@ -37,7 +37,7 @@ public class TradingRarityManager extends Manager<String,Rarity> implements Rari
                 .refreshAfterWrite(plugin.getAdvancedConfig().getRarity().refreshAfterWrite(), TimeUnit.MINUTES)
                 .build(new CacheLoader<>() {
                     @Override
-                    public Rarity load(final String key) {
+                    public @NotNull Rarity load(final @NotNull String key) {
                         plugin.debug(TradingRarityManager.class, InternalDebug.LOADED_INTO_CACHE.formatted(key));
                         return plugin.getStorage().getRarityById(key);
                     }

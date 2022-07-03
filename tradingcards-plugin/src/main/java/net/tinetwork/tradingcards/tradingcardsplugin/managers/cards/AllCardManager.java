@@ -47,7 +47,7 @@ public class AllCardManager extends TradingCardManager implements CardManager<Tr
                 .refreshAfterWrite(plugin.getAdvancedConfig().getCards().refreshAfterWrite(), TimeUnit.MINUTES)
                 .build(new CacheLoader<>() {
                            @Override
-                           public TradingCard load(final CompositeCardKey key) throws Exception {
+                           public @NotNull TradingCard load(final @NotNull CompositeCardKey key) throws Exception {
                                return plugin.getStorage().getCard(key.cardId(), key.rarityId(), key.seriesId()).get();
                            }
                        }
@@ -61,7 +61,7 @@ public class AllCardManager extends TradingCardManager implements CardManager<Tr
                 .refreshAfterWrite(plugin.getAdvancedConfig().getCards().refreshAfterWrite(), TimeUnit.MINUTES)
                 .build(new CacheLoader<>() {
                            @Override
-                           public List<TradingCard> load(final String key) throws Exception {
+                           public @NotNull List<TradingCard> load(final @NotNull String key) throws Exception {
                                return plugin.getStorage().getCardsInRarity(key);
                            }
                        }
