@@ -1,6 +1,6 @@
 package net.tinetwork.tradingcards.api;
 
-import net.tinetwork.tradingcards.api.blacklist.Blacklist;
+import net.tinetwork.tradingcards.api.denylist.Denylist;
 import net.tinetwork.tradingcards.api.card.Card;
 import net.tinetwork.tradingcards.api.config.settings.GeneralConfigurate;
 import net.tinetwork.tradingcards.api.config.settings.StorageConfigurate;
@@ -72,14 +72,14 @@ public abstract class TradingCardsPlugin<T extends Card<T>> extends JavaPlugin {
      *
      * @return Player blacklist
      */
-    public abstract Blacklist<Player> getPlayerBlacklist();
+    public abstract Denylist<Player> getPlayerBlacklist();
 
 
     /**
      *
      * @return The world blacklist
      */
-    public abstract Blacklist<World> getWorldBlacklist();
+    public abstract Denylist<World> getWorldBlacklist();
 
 
     /**

@@ -9,8 +9,8 @@ import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.AllCardManag
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.CompositeCardKey;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalDebug;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
-import net.tinetwork.tradingcards.tradingcardsplugin.whitelist.PlayerBlacklist;
-import net.tinetwork.tradingcards.tradingcardsplugin.whitelist.WorldBlacklist;
+import net.tinetwork.tradingcards.tradingcardsplugin.denylist.PlayerDenylist;
+import net.tinetwork.tradingcards.tradingcardsplugin.denylist.WorldDenylist;
 import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -24,8 +24,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class DropListener extends SimpleListener {
-    private final PlayerBlacklist playerBlacklist;
-    private final WorldBlacklist worldBlacklist;
+    private final PlayerDenylist playerBlacklist;
+    private final WorldDenylist worldBlacklist;
     private final AllCardManager cardManager;
 
     public DropListener(final TradingCards plugin) {
