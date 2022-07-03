@@ -24,7 +24,7 @@
         <acf.version>0.5.1-SNAPSHOT</acf.version>
 
         <!-- Versions -->
-        <spigot.version>1.17.1-R0.1-SNAPSHOT</spigot.version>
+        <spigot.version>1.18.2-R0.1-SNAPSHOT</spigot.version>
         <vault.api.version>1.7.1</vault.api.version>
         <lombok.version>1.18.24</lombok.version>
         <jetbrains.annotations.version>23.0.0</jetbrains.annotations.version>
@@ -32,7 +32,7 @@
         <adventure.version>4.11.0</adventure.version>
         <junit.jupiter.version>5.8.2</junit.jupiter.version>
         <slf4j.api.version>2.0.0-alpha7</slf4j.api.version>
-        <kraken.version>1.3.0</kraken.version>
+        <kraken.version>1.4.2</kraken.version>
     </properties>
 
     <modules>
