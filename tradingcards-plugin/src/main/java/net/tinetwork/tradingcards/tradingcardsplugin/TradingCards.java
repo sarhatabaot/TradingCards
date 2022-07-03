@@ -55,8 +55,8 @@ import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.MobGroupUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
-import net.tinetwork.tradingcards.tradingcardsplugin.whitelist.PlayerBlacklist;
-import net.tinetwork.tradingcards.tradingcardsplugin.whitelist.WorldBlacklist;
+import net.tinetwork.tradingcards.tradingcardsplugin.denylist.PlayerDenylist;
+import net.tinetwork.tradingcards.tradingcardsplugin.denylist.WorldDenylist;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
@@ -105,8 +105,8 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
 
     /* Blacklists */
-    private PlayerBlacklist playerBlacklist;
-    private WorldBlacklist worldBlacklist;
+    private PlayerDenylist playerBlacklist;
+    private WorldDenylist worldBlacklist;
 
     /* Commands */
     private MigrateCommand migrateCommand;
@@ -198,8 +198,8 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
     private void initBlacklist() {
         try {
-            this.playerBlacklist = new PlayerBlacklist(this);
-            this.worldBlacklist = new WorldBlacklist(this);
+            this.playerBlacklist = new PlayerDenylist(this);
+            this.worldBlacklist = new WorldDenylist(this);
         } catch (ConfigurateException e) {
             getLogger().severe(e.getMessage());
         }
@@ -390,12 +390,12 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     }
 
     @Override
-    public PlayerBlacklist getPlayerBlacklist() {
+    public PlayerDenylist getPlayerBlacklist() {
         return playerBlacklist;
     }
 
     @Override
-    public WorldBlacklist getWorldBlacklist() {
+    public WorldDenylist getWorldBlacklist() {
         return worldBlacklist;
     }
 

@@ -1,9 +1,9 @@
-package net.tinetwork.tradingcards.tradingcardsplugin.whitelist;
+package net.tinetwork.tradingcards.tradingcardsplugin.denylist;
 
 import com.github.sarhatabaot.kraken.core.config.Transformation;
 import com.github.sarhatabaot.kraken.core.config.YamlConfigurateFile;
-import net.tinetwork.tradingcards.api.blacklist.Blacklist;
-import net.tinetwork.tradingcards.api.blacklist.WhitelistMode;
+import net.tinetwork.tradingcards.api.denylist.Denylist;
+import net.tinetwork.tradingcards.api.denylist.AllowlistMode;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalDebug;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -19,13 +19,13 @@ import java.util.List;
 /**
  * @author ketelsb
  */
-public class PlayerBlacklist extends YamlConfigurateFile<TradingCards> implements Blacklist<Player> {
+public class PlayerDenylist extends YamlConfigurateFile<TradingCards> implements Denylist<Player> {
     private static final String LISTED_PLAYERS_NAME = "players";
     private static final String WHITELIST_MODE = "whitelist-mode";
     private List<String> listedPlayers;
-    private WhitelistMode whitelistMode;
+    private AllowlistMode allowlistMode;
 
-    public PlayerBlacklist(TradingCards plugin) throws ConfigurateException {
+    public PlayerDenylist(TradingCards plugin) throws ConfigurateException {
         super(plugin, "lists" + File.separator, "player-blacklist.yml", "lists");
     }
 
@@ -60,11 +60,11 @@ public class PlayerBlacklist extends YamlConfigurateFile<TradingCards> implement
     private void setWhitelistMode() {
         boolean isWhitelist = rootNode.node(WHITELIST_MODE).getBoolean();
         if (isWhitelist)
-            this.whitelistMode = WhitelistMode.WHITELIST;
+            this.allowlistMode = AllowlistMode.WHITELIST;
         else
-            this.whitelistMode = WhitelistMode.BLACKLIST;
+            this.allowlistMode = AllowlistMode.BLACKLIST;
 
-        plugin.debug(getClass(), InternalDebug.WHITELIST_MODE.formatted(whitelistMode));
+        plugin.debug(getClass(), InternalDebug.WHITELIST_MODE.formatted(allowlistMode));
     }
 
     @Override
@@ -72,12 +72,12 @@ public class PlayerBlacklist extends YamlConfigurateFile<TradingCards> implement
         boolean isOnList = listedPlayers.contains(p.getName());
 
         //If you're not on the blacklist, you're allowed
-        if (this.whitelistMode == WhitelistMode.BLACKLIST) {
+        if (this.allowlistMode == AllowlistMode.BLACKLIST) {
             return !isOnList;
         }
 
         //If you're on the whitelist, you're allowed
-        if (this.whitelistMode == WhitelistMode.WHITELIST) {
+        if (this.allowlistMode == AllowlistMode.WHITELIST) {
             return isOnList;
         }
 
@@ -97,8 +97,8 @@ public class PlayerBlacklist extends YamlConfigurateFile<TradingCards> implement
     }
 
     @Override
-    public WhitelistMode getMode() {
-        return whitelistMode;
+    public AllowlistMode getMode() {
+        return allowlistMode;
     }
 
     @Override

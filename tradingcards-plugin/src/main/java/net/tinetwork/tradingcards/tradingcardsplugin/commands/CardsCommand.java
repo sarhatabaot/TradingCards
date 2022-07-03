@@ -15,7 +15,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.AllCardManag
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.PlaceholderUtil;
-import net.tinetwork.tradingcards.tradingcardsplugin.whitelist.PlayerBlacklist;
+import net.tinetwork.tradingcards.tradingcardsplugin.denylist.PlayerDenylist;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -24,11 +24,11 @@ import org.jetbrains.annotations.NotNull;
 public class CardsCommand extends BaseCommand {
     private final TradingCards plugin;
     private final AllCardManager cardManager;
-    private final PlayerBlacklist playerBlacklist;
+    private final PlayerDenylist playerBlacklist;
 
     private final MessagesConfig messagesConfig;
 
-    public CardsCommand(final @NotNull TradingCards plugin, final PlayerBlacklist playerBlacklist) {
+    public CardsCommand(final @NotNull TradingCards plugin, final PlayerDenylist playerBlacklist) {
         this.plugin = plugin;
         this.playerBlacklist = playerBlacklist;
         this.cardManager = plugin.getCardManager();

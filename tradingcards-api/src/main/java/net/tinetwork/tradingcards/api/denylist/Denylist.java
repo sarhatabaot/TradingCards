@@ -1,6 +1,6 @@
-package net.tinetwork.tradingcards.api.blacklist;
+package net.tinetwork.tradingcards.api.denylist;
 
-public interface Blacklist<T> {
+public interface Denylist<T> {
     /**
      * Return if the value is allowed.
      * @param value value
@@ -24,5 +24,5 @@ public interface Blacklist<T> {
      * Returns the mode the whitelist is in.
      * @return mode
      */
-    WhitelistMode getMode();
+    AllowlistMode getMode();
 }

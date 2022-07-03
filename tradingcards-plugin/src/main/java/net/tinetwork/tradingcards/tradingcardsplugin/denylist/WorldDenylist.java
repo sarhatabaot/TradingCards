@@ -1,10 +1,10 @@
-package net.tinetwork.tradingcards.tradingcardsplugin.whitelist;
+package net.tinetwork.tradingcards.tradingcardsplugin.denylist;
 
 import com.github.sarhatabaot.kraken.core.config.Transformation;
 import com.github.sarhatabaot.kraken.core.config.YamlConfigurateFile;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.api.blacklist.WhitelistMode;
-import net.tinetwork.tradingcards.api.blacklist.Blacklist;
+import net.tinetwork.tradingcards.api.denylist.AllowlistMode;
+import net.tinetwork.tradingcards.api.denylist.Denylist;
 import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurateException;
@@ -17,12 +17,12 @@ import java.util.List;
 /**
  * @author ketelsb
  */
-public class WorldBlacklist extends YamlConfigurateFile<TradingCards> implements Blacklist<World> {
+public class WorldDenylist extends YamlConfigurateFile<TradingCards> implements Denylist<World> {
     private static final String LISTED_WORLDS_NAME = "worlds";
     private static final String WHITELIST_MODE_NAME = "whitelist-mode";
     private ConfigurationNode worldNode;
     private List<String> listedWorlds;
-    private WhitelistMode whitelistMode;
+    private AllowlistMode allowlistMode;
 
     @Override
     protected void initValues() throws ConfigurateException {
@@ -31,7 +31,7 @@ public class WorldBlacklist extends YamlConfigurateFile<TradingCards> implements
         setWhitelistMode();
     }
 
-    public WorldBlacklist(TradingCards plugin) throws ConfigurateException {
+    public WorldDenylist(TradingCards plugin) throws ConfigurateException {
         super(plugin, "lists"+ File.separator, "world-blacklist.yml", "lists");
     }
 
@@ -47,9 +47,9 @@ public class WorldBlacklist extends YamlConfigurateFile<TradingCards> implements
     private void setWhitelistMode() {
         boolean isWhitelist = rootNode.node(WHITELIST_MODE_NAME).getBoolean();
         if (isWhitelist)
-            this.whitelistMode = WhitelistMode.WHITELIST;
+            this.allowlistMode = AllowlistMode.WHITELIST;
         else
-            this.whitelistMode = WhitelistMode.BLACKLIST;
+            this.allowlistMode = AllowlistMode.BLACKLIST;
     }
 
     @Override
@@ -57,12 +57,12 @@ public class WorldBlacklist extends YamlConfigurateFile<TradingCards> implements
         boolean isOnList = listedWorlds.contains(w.getName());
 
         //If you're not on the blacklist, you're allowed
-        if (this.whitelistMode == WhitelistMode.BLACKLIST) {
+        if (this.allowlistMode == AllowlistMode.BLACKLIST) {
             return !isOnList;
         }
 
         //If you're on the whitelist, you're allowed
-        if (this.whitelistMode == WhitelistMode.WHITELIST) {
+        if (this.allowlistMode == AllowlistMode.WHITELIST) {
             return isOnList;
         }
         return false;
@@ -93,8 +93,8 @@ public class WorldBlacklist extends YamlConfigurateFile<TradingCards> implements
     }
 
     @Override
-    public WhitelistMode getMode() {
-        return whitelistMode;
+    public AllowlistMode getMode() {
+        return allowlistMode;
     }
 
     @Override
