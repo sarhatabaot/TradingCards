@@ -30,6 +30,14 @@ public class NbtUtils {
         throw new UnsupportedOperationException();
     }
 
+    public static boolean isCardSimilar(final @NotNull NBTItem item1, final @NotNull NBTItem item2) {
+        return Objects.equals(Card.isShiny(item1), Card.isShiny(item2)) &&
+                Card.getCardId(item1).equals(Card.getCardId(item2)) &&
+                Card.getRarityId(item1).equals(Card.getRarityId(item2)) &&
+                Card.getSeriesId(item1).equals(Card.getSeriesId(item2));
+    }
+
+
     public static class Legacy {
         //Deck Item
         public static final String NBT_DECK_NUMBER = "deckNumber";
@@ -49,14 +57,6 @@ public class NbtUtils {
 
         private Legacy() {
             throw new UnsupportedOperationException();
-        }
-
-        //Compare 2 "legacy" cards items
-        public static boolean isCardSimilarLegacy(final @NotNull NBTItem item1, final @NotNull NBTItem item2) {
-            return Objects.equals(item1.getBoolean(NBT_CARD_SHINY), item2.getBoolean(NBT_CARD_SHINY)) &&
-                    item1.getString(NBT_CARD_NAME).equals(item2.getString(NBT_CARD_NAME)) &&
-                    item1.getString(NBT_RARITY).equals(item2.getString(NBT_RARITY)) &&
-                    item1.getString(NBT_CARD_SERIES).equals(item2.getString(NBT_CARD_SERIES));
         }
     }
 

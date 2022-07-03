@@ -80,7 +80,7 @@ public class DeckEventListener extends SimpleListener {
         int amount = 0;
         for(ItemStack itemStack: inventory.getContents()) {
             NBTItem currentItem = new NBTItem(itemStack);
-            if(NbtUtils.Legacy.isCardSimilarLegacy(currentItem,nbtItem)) {
+            if(NbtUtils.isCardSimilar(currentItem,nbtItem)) {
                 amount += currentItem.getItem().getAmount();
             }
         }
