@@ -101,7 +101,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
     /* Hooks */
     private boolean hasVault;
-    private Economy econ = null;
+    private Economy vaultEconomy = null;
     private boolean placeholderapi = false;
 
 
@@ -347,7 +347,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
     @Override
     public void onDisable() {
-        econ = null;
+        vaultEconomy = null;
         deckManager.closeAllOpenViews();
         try {
             this.getStorage().shutdown();
@@ -370,8 +370,8 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         return hasVault;
     }
 
-    public Economy getEcon() {
-        return econ;
+    public Economy getVaultEconomy() {
+        return vaultEconomy;
     }
 
     public Storage<TradingCard> getStorage() {
@@ -422,8 +422,8 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
             return false;
         }
 
-        econ = rsp.getProvider();
-        return econ != null;
+        vaultEconomy = rsp.getProvider();
+        return vaultEconomy != null;
     }
 
     public boolean isMobHostile(EntityType e) {

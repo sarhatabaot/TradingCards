@@ -51,10 +51,10 @@ public class BuyCommand extends BaseCommand {
                 return;
             }
 
-            EconomyResponse economyResponse = plugin.getEcon().withdrawPlayer(player, pack.getBuyPrice());
+            EconomyResponse economyResponse = plugin.getVaultEconomy().withdrawPlayer(player, pack.getBuyPrice());
             if (economyResponse.transactionSuccess()) {
                 if (plugin.getGeneralConfig().closedEconomy()) {
-                    plugin.getEcon().bankDeposit(plugin.getGeneralConfig().serverAccount(), pack.getBuyPrice());
+                    plugin.getVaultEconomy().bankDeposit(plugin.getGeneralConfig().serverAccount(), pack.getBuyPrice());
                 }
                 player.sendMessage(plugin.getMessagesConfig().boughtCard().replaceAll(PlaceholderUtil.AMOUNT.asRegex(), String.valueOf(pack.getBuyPrice())));
                 CardUtil.dropItem(player, plugin.getPackManager().getPackItem(packId));
@@ -81,10 +81,10 @@ public class BuyCommand extends BaseCommand {
             final TradingCard tradingCard = plugin.getCardManager().getCard(cardId, rarityId, seriesId);
             double buyPrice = tradingCard.getBuyPrice();
 
-            EconomyResponse economyResponse = plugin.getEcon().withdrawPlayer(player, buyPrice);
+            EconomyResponse economyResponse = plugin.getVaultEconomy().withdrawPlayer(player, buyPrice);
             if (economyResponse.transactionSuccess()) {
                 if (plugin.getGeneralConfig().closedEconomy()) {
-                    plugin.getEcon().bankDeposit(plugin.getGeneralConfig().serverAccount(), buyPrice);
+                    plugin.getVaultEconomy().bankDeposit(plugin.getGeneralConfig().serverAccount(), buyPrice);
                 }
                 CardUtil.dropItem(player, tradingCard.build(false));
                 player.sendMessage(plugin.getMessagesConfig().boughtCard().replaceAll(PlaceholderUtil.AMOUNT.asRegex(), String.valueOf(buyPrice)));

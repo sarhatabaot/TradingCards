@@ -65,7 +65,7 @@ public class SellCommand extends BaseCommand {
 
             PlayerInventory inventory = player.getInventory();
             double sellAmount = tradingCard.getSellPrice() * itemInHand.getAmount();
-            EconomyResponse economyResponse = plugin.getEcon().depositPlayer(player, sellAmount);
+            EconomyResponse economyResponse = plugin.getVaultEconomy().depositPlayer(player, sellAmount);
             if (economyResponse.transactionSuccess()) {
                 ChatUtil.sendPrefixedMessage(player, InternalMessages.SellCommand.SOLD_CARD.formatted(itemInHand.getAmount(), (rarityId + " " + cardId), sellAmount));
                 inventory.setItem(itemInHandSlot, null);
