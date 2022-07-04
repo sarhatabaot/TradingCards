@@ -10,7 +10,7 @@ public abstract class SimpleListener implements Listener {
 	protected final TradingCards plugin;
 	private final Logger logger;
 
-	public SimpleListener(final @NotNull TradingCards plugin) {
+	protected SimpleListener(final @NotNull TradingCards plugin) {
 		this.plugin = plugin;
 		this.logger = plugin.getLogger();
 

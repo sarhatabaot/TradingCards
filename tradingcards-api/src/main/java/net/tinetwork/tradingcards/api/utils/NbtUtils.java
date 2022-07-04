@@ -26,6 +26,8 @@ public class NbtUtils {
 
     public static final String TC_PACK_ID = "tc-pack-id";
 
+    public static final String TC_SPAWNER_MOB = "tc-spawner-mob";
+
     private NbtUtils() {
         throw new UnsupportedOperationException();
     }

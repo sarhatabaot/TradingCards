@@ -82,7 +82,7 @@ drop-deck-items: true
 # Default Player Drop Settings
 # ##############################
 player-op-rarity: Legendary
-player-series: "2020"
+player-series: "player"
 player-type: "Player"
 player-has-shiny-version: true
 # Should the player drop their own card if they're killed in PvP?
@@ -115,7 +115,6 @@ plugin-support:
 # ##############################
 # Should we block cards for mobs from monster spawners?
 spawner-block: true
-# In the case of 'true', what should we name the monster with to identify it's from a spawner?
-spawner-mob-name: 'Spawned Mob'
+
 # How 'long' should each line of the card's info be?
 info-line-length: 25

@@ -1,6 +1,8 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.listeners;
 
+import de.tr7zw.nbtapi.NBTEntity;
 import net.tinetwork.tradingcards.api.model.Rarity;
+import net.tinetwork.tradingcards.api.utils.NbtUtils;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
@@ -36,10 +38,6 @@ public class DropListener extends SimpleListener {
     }
 
 
-    //When a player is killed, he can drop a card
-    //Possibly this should be removed, or we have a setting: "player-series: "player"
-    //That way we have something set ahead of time.
-    //todo temp def "player"
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent e) {
         boolean canPlayerDropCards = plugin.getGeneralConfig().playerDropsCard();
@@ -61,7 +59,7 @@ public class DropListener extends SimpleListener {
         if (rarityKey == null)
             return;
 
-        ItemStack playerCard = cardManager.getActiveCard(killedPlayer.getName(), rarityKey, "player").build(false);
+        ItemStack playerCard = cardManager.getActiveCard(killedPlayer.getName(), rarityKey, plugin.getGeneralConfig().playerSeries()).build(false);
         e.getDrops().add(playerCard);
         debug(e.getDrops().toString());
     }
@@ -76,6 +74,13 @@ public class DropListener extends SimpleListener {
         if (killer == null) return;
         if (!this.playerBlacklist.isAllowed(killer)) return;
         if (!this.worldBlacklist.isAllowed(world)) return;
+
+        NBTEntity nbtEntity = new NBTEntity(killedEntity);
+        if(nbtEntity.hasKey(NbtUtils.TC_COMPOUND) && nbtEntity.getCompound(NbtUtils.TC_COMPOUND).hasKey(NbtUtils.TC_SPAWNER_MOB)) {
+            debug("Entity %s is marked as a spawner entity, not dropping card.".formatted(killedEntity.getType()));
+            return;
+        }
+
         //Get card rarity
         debug(InternalDebug.DropListener.ENTITY_TYPE.formatted(killedEntity.getType()));
         debug(InternalDebug.DropListener.MOB_TYPE.formatted(CardUtil.getMobType(killedEntity.getType())));
@@ -104,7 +109,7 @@ public class DropListener extends SimpleListener {
 
 
         for (final Rarity rarity : rarities) {
-            if (!(cardManager.getCard(player.getName(), rarity.getId(), "player") instanceof EmptyCard)) {
+            if (!(cardManager.getCard(player.getName(), rarity.getId(), plugin.getGeneralConfig().playerSeries()) instanceof EmptyCard)) {
                 debug(rarity.getId());
                 return rarity.getId();
             }
