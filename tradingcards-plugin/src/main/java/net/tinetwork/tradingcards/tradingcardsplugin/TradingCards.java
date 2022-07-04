@@ -280,7 +280,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
                 });
         commandManager.getCommandCompletions().registerCompletion(
                 "edit-pack-value", c -> switch (c.getContextValueByName(EditPack.class, "editPack")) {
-                    case PRICE, PERMISSION, DISPLAY_NAME -> Collections.singleton("");
+                    case PRICE, PERMISSION, DISPLAY_NAME, CURRENCY_ID -> Collections.singleton("");
                     case CONTENTS -> IntStream.rangeClosed(0, packManager.getPack(c.getContextValueByName(String.class, "packId")).getPackEntryList().size() - 1)
                             .boxed().map(String::valueOf).toList();
 
@@ -303,7 +303,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         );
         commandManager.getCommandCompletions().registerCompletion(
                 "edit-card-value", c -> switch (c.getContextValueByName(EditCard.class, "editCard")) {
-                    case DISPLAY_NAME, SELL_PRICE, BUY_PRICE, INFO, CUSTOM_MODEL_DATA -> Collections.singleton("");
+                    case DISPLAY_NAME, SELL_PRICE, BUY_PRICE, INFO, CUSTOM_MODEL_DATA, CURRENCY_ID -> Collections.singleton("");
                     case SERIES -> seriesManager.getSeriesIds();
                     case HAS_SHINY -> List.of("true","false");
                     case TYPE -> Stream.concat(dropTypeManager.getDefaultTypes().stream().map(DropType::getId), dropTypeManager.getTypes().keySet().stream()).toList();

@@ -85,6 +85,18 @@ public class PacksConfig extends YamlConfigurateFile<TradingCards> {
         }
     }
 
+    public void editCurrencyId(final String packId, final String currencyId) {
+        ConfigurationNode packNode = rootNode.node(packId);
+        try {
+            Pack pack = getPack(packId);
+            pack.setCurrencyId(currencyId);
+            packNode.set(pack);
+            loader.save(rootNode);
+        } catch (ConfigurateException e) {
+            Util.logSevereException(e);
+        }
+    }
+
 
     public void createPack(final String packId){
         try {

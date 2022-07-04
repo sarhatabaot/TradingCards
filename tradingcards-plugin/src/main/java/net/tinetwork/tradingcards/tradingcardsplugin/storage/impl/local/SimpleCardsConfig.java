@@ -151,6 +151,15 @@ public class SimpleCardsConfig extends YamlConfigurateFile<TradingCards> {
         }.updateValue(rarityId,cardId,seriesId,hasShiny);
     }
 
+    public void editCurrencyId(final String rarityId, final String cardId, final String seriesId, final String currencyId) {
+        new EditCardConfig<String>(rootNode, cardsNode, loader, this) {
+            @Override
+            protected void onUpdate(final TradingCard card, final String value) {
+                card.currencyId(value);
+            }
+        }.updateValue(rarityId,cardId,seriesId,currencyId);
+    }
+
     public static class CardSerializer implements TypeSerializer<TradingCard> {
         @SuppressWarnings("rawtypes")
         private static TradingCardsPlugin<? extends Card> plugin;
