@@ -3,10 +3,8 @@ package net.tinetwork.tradingcards.api.economy.vault;
 import net.milkbowl.vault.economy.Economy;
 import net.tinetwork.tradingcards.api.economy.EconomyWrapper;
 import net.tinetwork.tradingcards.api.economy.ResponseWrapper;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.UUID;
 
 /**
  * @author sarhatabaot

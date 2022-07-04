@@ -2,8 +2,6 @@ package net.tinetwork.tradingcards.api.economy;
 
 import org.bukkit.entity.Player;
 
-import java.util.UUID;
-
 /**
  * @author sarhatabaot
  * EconomyWrapper for Vault/Treasury
