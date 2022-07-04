@@ -22,6 +22,15 @@ halloween:
     info: "&e"
     about: "&c"
     rarity: "&6"
+player:
+  display-name: "&6Player"
+  mode: DISABLED
+  colors:
+    series: "&a"
+    type: "&b"
+    info: "&e"
+    about: "&c"
+    rarity: "&6"
 scheduled:
   display-name: "Scheduled"
   # Mode: ACTIVE, DISABLED, SCHEDULED
