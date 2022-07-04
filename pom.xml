@@ -33,6 +33,7 @@
         <junit.jupiter.version>5.8.2</junit.jupiter.version>
         <slf4j.api.version>2.0.0-alpha7</slf4j.api.version>
         <kraken.version>1.4.2</kraken.version>
+        <treasury.version>1.2.0</treasury.version>
     </properties>
 
     <modules>
@@ -124,6 +125,12 @@
             <groupId>com.github.MilkBowl</groupId>
             <artifactId>VaultAPI</artifactId>
             <version>${vault.api.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>me.lokka30</groupId>
+            <artifactId>treasury-api</artifactId>
+            <version>${treasury.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

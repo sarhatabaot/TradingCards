@@ -4,6 +4,8 @@ public final class InternalLog {
     public static class PluginStart {
         public static final String VAULT_HOOK_SUCCESS = "Vault hook successful!";
         public static final String VAULT_HOOK_FAIL = "Vault not found, hook unsuccessful!";
+        public static final String TREASURY_HOOK_SUCCESS = "TreasuryAPI hook successful";
+        public static final String TREASURY_HOOK_FAIL = "TreasureAPI not found, hook unsuccessful!";
 
         private PluginStart() {
             throw new UnsupportedOperationException(InternalExceptions.UTIL_CLASS);

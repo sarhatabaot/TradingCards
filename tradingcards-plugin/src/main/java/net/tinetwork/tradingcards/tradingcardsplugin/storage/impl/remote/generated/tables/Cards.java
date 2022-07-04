@@ -13,6 +13,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row11;
+import org.jooq.Row12;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -99,6 +100,8 @@ public class Cards extends TableImpl<CardsRecord> {
      */
     public final TableField<CardsRecord, String> TYPE_ID = createField(DSL.name("type_id"), SQLDataType.VARCHAR(200).nullable(false), this, "");
 
+    public final TableField<CardsRecord, String> CURRENCY_ID = createField(DSL.name("currency_id"), SQLDataType.VARCHAR(30).nullable(false), this, "");
+
     private Cards(Name alias, Table<CardsRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -169,11 +172,11 @@ public class Cards extends TableImpl<CardsRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row11 type methods
+    // Row12 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row11<Integer, String, String, String, Byte, String, String, Integer, Double, Double, String> fieldsRow() {
-        return (Row11) super.fieldsRow();
+    public Row12<Integer, String, String, String, Byte, String, String, Integer, Double, Double, String, String> fieldsRow() {
+        return (Row12) super.fieldsRow();
     }
 }

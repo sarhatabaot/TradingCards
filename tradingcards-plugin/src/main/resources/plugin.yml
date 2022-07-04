@@ -1,9 +1,9 @@
 name: TradingCards
 main: net.tinetwork.tradingcards.tradingcardsplugin.TradingCards
 version: ${project.version}
-softdepend: [Vault,PlaceholderAPI]
+softdepend: [Vault,PlaceholderAPI, TreasuryAPI]
 authors: [Xenoyia, sarhatabaot, TreasureIslandMC]
-api-version: "1.17"
+api-version: "1.18"
 libraries:
   - org.slf4j:slf4j-api:${slf4j.api.version}
   - org.spongepowered:configurate-yaml:${configurate.version}

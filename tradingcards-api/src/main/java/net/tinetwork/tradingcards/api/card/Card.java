@@ -121,6 +121,11 @@ public abstract class Card<T> {
         return this;
     }
 
+    public Card<T> currencyId(final String currencyId) {
+        this.cardMeta.setCurrencyId(currencyId);
+        return this;
+    }
+
     public Card<T> isPlayerCard(boolean isPlayerCard) {
         this.cardMeta.setPlayerCard(isPlayerCard);
         return this;
@@ -168,6 +173,10 @@ public abstract class Card<T> {
 
     public double getSellPrice() {
         return this.cardMeta.getSellPrice();
+    }
+
+    public String getCurrencyId() {
+        return this.cardMeta.getCurrencyId();
     }
 
     public Material getMaterial() {

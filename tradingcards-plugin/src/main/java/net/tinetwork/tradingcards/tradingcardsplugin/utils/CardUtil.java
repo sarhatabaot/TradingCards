@@ -19,7 +19,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -234,9 +233,9 @@ public class CardUtil {
         return isShiny;
     }
 
-    public static boolean noVault(final CommandSender player) {
-        if (!plugin.isHasVault()) {
-            ChatUtil.sendMessage(player, plugin.getMessagesConfig().noVault());
+    public static boolean noEconomy(final CommandSender player) {
+        if (plugin.getEconomyWrapper() == null) {
+            ChatUtil.sendMessage(player, plugin.getMessagesConfig().noEconomy());
             return true;
         }
         return false;

@@ -254,7 +254,8 @@
                             <fileType>JSON</fileType>
                             <overwriteClasses>true</overwriteClasses>
                             <sourceFolder>internal-messages</sourceFolder>
-                            <targetPackage>net.tinetwork.tradingcards.tradingcardsplugin.messages.internal</targetPackage>
+                            <targetPackage>net.tinetwork.tradingcards.tradingcardsplugin.messages.internal
+                            </targetPackage>
                             <privateConstructor>InternalExceptions.UTIL_CLASS</privateConstructor>
                         </configuration>
                     </execution>
@@ -264,7 +265,8 @@
                             <fileType>YAML</fileType>
                             <overwriteClasses>true</overwriteClasses>
                             <sourceFolder>${project.basedir}/src/main/resources/settings</sourceFolder>
-                            <targetPackage>net.tinetwork.tradingcards.tradingcardsplugin.messages.settings</targetPackage>
+                            <targetPackage>net.tinetwork.tradingcards.tradingcardsplugin.messages.settings
+                            </targetPackage>
                             <privateConstructor>InternalExceptions.UTIL_CLASS</privateConstructor>
                         </configuration>
                     </execution>

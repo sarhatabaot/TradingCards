@@ -7,6 +7,7 @@ import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
 import net.milkbowl.vault.economy.EconomyResponse;
+import net.tinetwork.tradingcards.api.economy.ResponseWrapper;
 import net.tinetwork.tradingcards.api.model.Pack;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.Permissions;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
@@ -36,7 +37,7 @@ public class BuyCommand extends BaseCommand {
         @CommandCompletion("@packs")
         @Description("Buy a pack.")
         public void onBuyPack(final Player player, final String packId) {
-            if (CardUtil.noVault(player))
+            if (CardUtil.noEconomy(player))
                 return;
 
             if (plugin.getPackManager().getPack(packId) == null) {
@@ -51,10 +52,10 @@ public class BuyCommand extends BaseCommand {
                 return;
             }
 
-            EconomyResponse economyResponse = plugin.getVaultEconomy().withdrawPlayer(player, pack.getBuyPrice());
-            if (economyResponse.transactionSuccess()) {
+            ResponseWrapper economyResponse = plugin.getEconomyWrapper().withdraw(player, pack.getCurrencyId(), pack.getBuyPrice());
+            if (economyResponse.success()) {
                 if (plugin.getGeneralConfig().closedEconomy()) {
-                    plugin.getVaultEconomy().bankDeposit(plugin.getGeneralConfig().serverAccount(), pack.getBuyPrice());
+                    plugin.getEconomyWrapper().depositAccount(plugin.getGeneralConfig().serverAccount(),pack.getCurrencyId(),pack.getBuyPrice());
                 }
                 player.sendMessage(plugin.getMessagesConfig().boughtCard().replaceAll(PlaceholderUtil.AMOUNT.asRegex(), String.valueOf(pack.getBuyPrice())));
                 CardUtil.dropItem(player, plugin.getPackManager().getPackItem(packId));
@@ -70,7 +71,7 @@ public class BuyCommand extends BaseCommand {
         @Description("Buy a card.")
         @CommandCompletion("@rarities @cards")
         public void onBuyCard(final Player player, @NotNull final String rarityId, @NotNull final String cardId, @NotNull final String seriesId) {
-            if (CardUtil.noVault(player))
+            if (CardUtil.noEconomy(player))
                 return;
 
             if (plugin.getCardManager().getCard(cardId, rarityId, seriesId) instanceof EmptyCard) {
@@ -79,12 +80,13 @@ public class BuyCommand extends BaseCommand {
             }
 
             final TradingCard tradingCard = plugin.getCardManager().getCard(cardId, rarityId, seriesId);
-            double buyPrice = tradingCard.getBuyPrice();
+            final double buyPrice = tradingCard.getBuyPrice();
+            final String currencyId = tradingCard.getCurrencyId();
 
-            EconomyResponse economyResponse = plugin.getVaultEconomy().withdrawPlayer(player, buyPrice);
-            if (economyResponse.transactionSuccess()) {
+            ResponseWrapper economyResponse = plugin.getEconomyWrapper().withdraw(player, currencyId,buyPrice);
+            if (economyResponse.success()) {
                 if (plugin.getGeneralConfig().closedEconomy()) {
-                    plugin.getVaultEconomy().bankDeposit(plugin.getGeneralConfig().serverAccount(), buyPrice);
+                    plugin.getEconomyWrapper().depositAccount(plugin.getGeneralConfig().serverAccount(), currencyId,buyPrice);
                 }
                 CardUtil.dropItem(player, tradingCard.build(false));
                 player.sendMessage(plugin.getMessagesConfig().boughtCard().replaceAll(PlaceholderUtil.AMOUNT.asRegex(), String.valueOf(buyPrice)));

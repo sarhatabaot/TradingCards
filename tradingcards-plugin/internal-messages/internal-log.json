@@ -1,7 +1,9 @@
 {
   "plugin-start": {
     "vault-hook-success": "Vault hook successful!",
-    "vault-hook-fail": "Vault not found, hook unsuccessful!"
+    "vault-hook-fail": "Vault not found, hook unsuccessful!",
+    "treasury-hook-success": "TreasuryAPI hook successful",
+    "treasury-hook-fail": "TreasureAPI not found, hook unsuccessful!"
   },
   "init": {
     "managers": "Initializing managers...",
