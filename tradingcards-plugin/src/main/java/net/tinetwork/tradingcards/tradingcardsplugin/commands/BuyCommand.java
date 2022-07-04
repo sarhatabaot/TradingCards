@@ -6,7 +6,6 @@ import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
-import net.milkbowl.vault.economy.EconomyResponse;
 import net.tinetwork.tradingcards.api.economy.ResponseWrapper;
 import net.tinetwork.tradingcards.api.model.Pack;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.Permissions;
