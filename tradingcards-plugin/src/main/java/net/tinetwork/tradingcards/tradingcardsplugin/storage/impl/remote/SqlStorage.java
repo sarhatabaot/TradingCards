@@ -3,6 +3,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote;
 import net.tinetwork.tradingcards.api.card.Card;
 import net.tinetwork.tradingcards.api.config.ColorSeries;
 import net.tinetwork.tradingcards.api.model.DropType;
+import net.tinetwork.tradingcards.api.model.EmptyPack;
 import net.tinetwork.tradingcards.api.model.Pack;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
@@ -895,7 +896,7 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
     @Override
-    public @Nullable Pack getPack(final String packsId) {
+    public Pack getPack(final String packsId) {
         return new ExecuteQuery<Pack, Result<Record>>(this, jooqSettings) {
             @Override
             public Pack onRunQuery(final DSLContext dslContext) {
@@ -917,8 +918,8 @@ public class SqlStorage implements Storage<TradingCard> {
 
             @Contract(pure = true)
             @Override
-            public @Nullable Pack empty() {
-                return null;
+            public @NotNull Pack empty() {
+                return EmptyPack.emptyPack();
             }
         }.prepareAndRunQuery();
     }

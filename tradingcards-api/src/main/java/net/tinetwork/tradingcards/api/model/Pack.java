@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Objects;
 
-public final class Pack {
+public class Pack {
     private final String id;
     private final List<PackEntry> packEntryList;
     private String displayName;

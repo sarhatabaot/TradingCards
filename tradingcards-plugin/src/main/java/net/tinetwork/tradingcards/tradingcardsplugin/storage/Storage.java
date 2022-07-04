@@ -147,7 +147,6 @@ public interface Storage<T extends Card<T>> {
      * @param packsId The pack id.
      * @return Returns the pack. Will return null if it doesn't exist.
      */
-    @Nullable
     Pack getPack(final String packsId);
 
     /**

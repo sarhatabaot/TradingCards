@@ -10,7 +10,7 @@ public class EmptyCard extends TradingCard {
     public static final ItemStack AIR = new ItemStack(Material.AIR);
 
     public EmptyCard() {
-        super("nullCard", Material.AIR);
+        super("tc-internal-null-card", Material.AIR);
     }
 
     @Override
