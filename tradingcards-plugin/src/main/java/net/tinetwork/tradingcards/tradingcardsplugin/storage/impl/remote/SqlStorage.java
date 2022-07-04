@@ -1302,6 +1302,21 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
     @Override
+    public void editCardCurrencyId(final String rarityId, final String cardId, final String seriesId, final String value) {
+        new ExecuteUpdate(this,jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.update(Cards.CARDS)
+                        .set(Cards.CARDS.CURRENCY_ID,value)
+                        .where(Cards.CARDS.RARITY_ID.eq(rarityId))
+                        .and(Cards.CARDS.CARD_ID.eq(cardId))
+                        .and(Cards.CARDS.SERIES_ID.eq(seriesId))
+                        .execute();
+            }
+        }.executeUpdate();
+    }
+
+    @Override
     public void editRarityBuyPrice(final String rarityId, final double buyPrice) {
         new ExecuteUpdate(this, jooqSettings) {
             @Override
@@ -1552,6 +1567,19 @@ public class SqlStorage implements Storage<TradingCard> {
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.update(Packs.PACKS)
                         .set(Packs.PACKS.BUY_PRICE, price)
+                        .where(Packs.PACKS.PACK_ID.eq(packId))
+                        .execute();
+            }
+        }.executeUpdate();
+    }
+
+    @Override
+    public void editPackCurrencyId(final String packId, final String currencyId) {
+        new ExecuteUpdate(this,jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.update(Packs.PACKS)
+                        .set(Packs.PACKS.CURRENCY_ID, currencyId)
                         .where(Packs.PACKS.PACK_ID.eq(packId))
                         .execute();
             }

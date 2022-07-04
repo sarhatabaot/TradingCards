@@ -184,6 +184,7 @@ public interface Storage<T extends Card<T>> {
     void editCardCustomModelData(final String rarityId,final String cardId,final String seriesId, final int value);
     void editCardBuyPrice(final String rarityId,final String cardId, final String seriesId,final double value);
     void editCardHasShiny(final String rarityId,final String cardId, final String seriesId,final boolean value);
+    void editCardCurrencyId(final String rarityId,final String cardId, final String seriesId, final String value);
     // Edit Rarity
     void editRarityBuyPrice(final String rarityId, final double buyPrice);
     void editRarityAddReward(final String rarityId, final String reward);
@@ -210,6 +211,7 @@ public interface Storage<T extends Card<T>> {
     void editPackContentsDelete(final String packId, final int lineNumber);
     void editPackPermission(final String packId, final String permission);
     void editPackPrice(final String packId,final double price);
+    void editPackCurrencyId(final String packId, final String currencyId);
 
     /**
      * @return The total amount of cards.

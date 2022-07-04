@@ -119,6 +119,9 @@ public class EditCommand extends BaseCommand {
                     boolean hasShiny = Boolean.parseBoolean(value);
                     storage.editCardHasShiny(rarityId,cardId,seriesId,hasShiny);
                 }
+                case CURRENCY_ID -> {
+                    storage.editCardCurrencyId(rarityId,cardId,seriesId, value);
+                }
             }
 
             plugin.getCardManager().getCache().refresh(new CompositeCardKey(rarityId,seriesId,cardId));
@@ -271,6 +274,9 @@ public class EditCommand extends BaseCommand {
                         return;
                     }
                     storage.editPackPrice(packId, Double.parseDouble(value));
+                }
+                case CURRENCY_ID -> {
+                    storage.editPackCurrencyId(packId, value);
                 }
             }
 
