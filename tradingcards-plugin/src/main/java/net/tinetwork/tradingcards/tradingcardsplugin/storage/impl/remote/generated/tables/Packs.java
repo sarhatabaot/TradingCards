@@ -13,6 +13,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row4;
+import org.jooq.Row5;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -63,6 +64,8 @@ public class Packs extends TableImpl<PacksRecord> {
      * The column <code>minecraft.packs.permission</code>.
      */
     public final TableField<PacksRecord, String> PERMISSION = createField(DSL.name("permission"), SQLDataType.VARCHAR(200), this, "");
+
+    public final TableField<PacksRecord, String> CURRENCY_ID = createField(DSL.name("currency_id"), SQLDataType.VARCHAR(30), this, "");
 
     private Packs(Name alias, Table<PacksRecord> aliased) {
         this(alias, aliased, null);
@@ -138,7 +141,7 @@ public class Packs extends TableImpl<PacksRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row4<String, String, Double, String> fieldsRow() {
-        return (Row4) super.fieldsRow();
+    public Row5<String, String, Double, String, String> fieldsRow() {
+        return (Row5) super.fieldsRow();
     }
 }

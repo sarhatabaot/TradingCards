@@ -4,6 +4,7 @@ import net.tinetwork.tradingcards.api.denylist.Denylist;
 import net.tinetwork.tradingcards.api.card.Card;
 import net.tinetwork.tradingcards.api.config.settings.GeneralConfigurate;
 import net.tinetwork.tradingcards.api.config.settings.StorageConfigurate;
+import net.tinetwork.tradingcards.api.economy.EconomyWrapper;
 import net.tinetwork.tradingcards.api.manager.CardManager;
 import net.tinetwork.tradingcards.api.manager.DeckManager;
 import net.tinetwork.tradingcards.api.manager.PackManager;
@@ -97,4 +98,6 @@ public abstract class TradingCardsPlugin<T extends Card<T>> extends JavaPlugin {
     public abstract RarityManager getRarityManager();
 
     public abstract SeriesManager getSeriesManager();
+
+    public abstract EconomyWrapper getEconomyWrapper();
 }

@@ -2,9 +2,13 @@ package net.tinetwork.tradingcards.tradingcardsplugin;
 
 import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.PaperCommandManager;
+import me.lokka30.treasury.api.economy.EconomyProvider;
 import net.milkbowl.vault.economy.Economy;
 import net.tinetwork.tradingcards.api.TradingCardsPlugin;
 import net.tinetwork.tradingcards.api.config.settings.StorageConfigurate;
+import net.tinetwork.tradingcards.api.economy.EconomyWrapper;
+import net.tinetwork.tradingcards.api.economy.treasury.TreasuryEconomy;
+import net.tinetwork.tradingcards.api.economy.vault.VaultEconomy;
 import net.tinetwork.tradingcards.api.manager.RarityManager;
 import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.api.model.Rarity;
@@ -101,7 +105,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
     /* Hooks */
     private boolean hasVault;
-    private Economy vaultEconomy = null;
+    private EconomyWrapper economyWrapper = null;
     private boolean placeholderapi = false;
 
 
@@ -145,7 +149,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         initUtils();
         initCommands();
 
-        hookVault();
+        hookEconomy();
         hookPlaceholderApi();
         new Metrics(this, 12940);
     }
@@ -276,7 +280,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
                 });
         commandManager.getCommandCompletions().registerCompletion(
                 "edit-pack-value", c -> switch (c.getContextValueByName(EditPack.class, "editPack")) {
-                    case PRICE, PERMISSION, DISPLAY_NAME -> Collections.singleton("");
+                    case PRICE, PERMISSION, DISPLAY_NAME, CURRENCY_ID -> Collections.singleton("");
                     case CONTENTS -> IntStream.rangeClosed(0, packManager.getPack(c.getContextValueByName(String.class, "packId")).getPackEntryList().size() - 1)
                             .boxed().map(String::valueOf).toList();
 
@@ -299,7 +303,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         );
         commandManager.getCommandCompletions().registerCompletion(
                 "edit-card-value", c -> switch (c.getContextValueByName(EditCard.class, "editCard")) {
-                    case DISPLAY_NAME, SELL_PRICE, BUY_PRICE, INFO, CUSTOM_MODEL_DATA -> Collections.singleton("");
+                    case DISPLAY_NAME, SELL_PRICE, BUY_PRICE, INFO, CUSTOM_MODEL_DATA, CURRENCY_ID -> Collections.singleton("");
                     case SERIES -> seriesManager.getSeriesIds();
                     case HAS_SHINY -> List.of("true","false");
                     case TYPE -> Stream.concat(dropTypeManager.getDefaultTypes().stream().map(DropType::getId), dropTypeManager.getTypes().keySet().stream()).toList();
@@ -347,7 +351,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
     @Override
     public void onDisable() {
-        vaultEconomy = null;
+        economyWrapper = null;
         deckManager.closeAllOpenViews();
         try {
             this.getStorage().shutdown();
@@ -370,22 +374,28 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         return hasVault;
     }
 
-    public Economy getVaultEconomy() {
-        return vaultEconomy;
+    public EconomyWrapper getEconomyWrapper() {
+        return economyWrapper;
     }
 
     public Storage<TradingCard> getStorage() {
         return storage;
     }
 
-    private void hookVault() {
+    private void hookEconomy() {
         if (this.generalConfig.vaultEnabled()) {
-            if (this.getServer().getPluginManager().getPlugin("Vault") != null) {
-                this.setupEconomy();
+            if (this.setupVaultEconomy()) {
                 getLogger().info(() -> InternalLog.PluginStart.VAULT_HOOK_SUCCESS);
                 this.hasVault = true;
             } else {
                 getLogger().info(() -> InternalLog.PluginStart.VAULT_HOOK_FAIL);
+            }
+        }
+        if(this.generalConfig.treasuryEnabled()) {
+            if (this.setupTreasuryEconomy()) {
+                getLogger().info(() -> InternalLog.PluginStart.TREASURY_HOOK_SUCCESS);
+            } else {
+                getLogger().info(() -> InternalLog.PluginStart.TREASURY_HOOK_FAIL);
             }
         }
     }
@@ -412,7 +422,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     }
 
 
-    private boolean setupEconomy() {
+    private boolean setupVaultEconomy() {
         if (this.getServer().getPluginManager().getPlugin("Vault") == null) {
             return false;
         }
@@ -422,8 +432,22 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
             return false;
         }
 
-        vaultEconomy = rsp.getProvider();
-        return vaultEconomy != null;
+        economyWrapper = new VaultEconomy(rsp.getProvider());
+        return economyWrapper != null;
+    }
+
+    private boolean setupTreasuryEconomy() {
+        if (this.getServer().getPluginManager().getPlugin("TreasuryAPI") == null) {
+            return false;
+        }
+
+        RegisteredServiceProvider<EconomyProvider> rsp = Bukkit.getServicesManager().getRegistration(EconomyProvider.class);
+        if (rsp == null) {
+            return false;
+        }
+
+        economyWrapper = new TreasuryEconomy(rsp.getProvider());
+        return economyWrapper != null;
     }
 
     public boolean isMobHostile(EntityType e) {

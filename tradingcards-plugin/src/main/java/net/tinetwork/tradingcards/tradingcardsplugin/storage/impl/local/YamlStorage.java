@@ -426,6 +426,13 @@ public class YamlStorage implements Storage<TradingCard> {
         SimpleCardsConfig simpleCardsConfig = cardsConfig.getCardConfigs().get(getDefaultEditCardFile());
         simpleCardsConfig.editHasShiny(rarityId,cardId,seriesId,value);
     }
+
+    @Override
+    public void editCardCurrencyId(final String rarityId, final String cardId, final String seriesId, final String value) {
+        SimpleCardsConfig simpleCardsConfig = cardsConfig.getCardConfigs().get(getDefaultEditCardFile());
+        simpleCardsConfig.editCurrencyId(rarityId,cardId,seriesId,value);
+    }
+
     @Override
     public void editRarityBuyPrice(final String rarityId, final double buyPrice) {
         raritiesConfig.editBuyPrice(rarityId,buyPrice);
@@ -526,6 +533,11 @@ public class YamlStorage implements Storage<TradingCard> {
     @Override
     public void editPackPrice(final String packId, final double price) {
         packsConfig.editPrice(packId,price);
+    }
+
+    @Override
+    public void editPackCurrencyId(final String packId, final String currencyId) {
+        packsConfig.editCurrencyId(packId,currencyId);
     }
 
     @Override

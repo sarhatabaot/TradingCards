@@ -340,7 +340,7 @@ public class MessagesConfig extends YamlConfigurateFile<TradingCards> {
         return packDoesntExist.getFormatted();
     }
 
-    public String noVault() {
+    public String noEconomy() {
         return noVault.getFormatted();
     }
 

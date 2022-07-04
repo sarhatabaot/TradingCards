@@ -11,13 +11,15 @@ public class Pack {
     private final List<PackEntry> packEntryList;
     private String displayName;
     private double buyPrice;
+    private String currencyId;
     private String permission;
 
-    public Pack(String id, List<PackEntry> packEntryList, String displayName, double buyPrice, String permission) {
+    public Pack(final String id, final List<PackEntry> packEntryList, final String displayName, final double buyPrice, final String currencyId, final String permission) {
         this.id = id;
         this.packEntryList = packEntryList;
         this.displayName = displayName;
         this.buyPrice = buyPrice;
+        this.currencyId = currencyId;
         this.permission = permission;
     }
 
@@ -37,6 +39,14 @@ public class Pack {
 
     public List<PackEntry> getPackEntryList() {
         return packEntryList;
+    }
+
+    public String getCurrencyId() {
+        return currencyId;
+    }
+
+    public void setCurrencyId(final String currencyId) {
+        this.currencyId = currencyId;
     }
 
     public String id() {

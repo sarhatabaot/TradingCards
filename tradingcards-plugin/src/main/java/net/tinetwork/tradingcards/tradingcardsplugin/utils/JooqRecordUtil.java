@@ -44,7 +44,8 @@ public class JooqRecordUtil {
         final String displayName = recordResult.getValue(Packs.PACKS.DISPLAY_NAME);
         final double price = (recordResult.getValue(Packs.PACKS.BUY_PRICE) == null) ? 0.00D : recordResult.getValue(Packs.PACKS.BUY_PRICE);
         final String permission = recordResult.getValue(Packs.PACKS.PERMISSION);
-        return new Pack(packId, entries, displayName, price, permission);
+        final String currencyId = recordResult.getValue(Packs.PACKS.CURRENCY_ID);
+        return new Pack(packId, entries, displayName, price, currencyId,permission);
     }
     public static @NotNull ColorSeries getColorSeriesFromRecord(@NotNull Record recordResult) {
         final String about = recordResult.getValue(SeriesColors.SERIES_COLORS.ABOUT);

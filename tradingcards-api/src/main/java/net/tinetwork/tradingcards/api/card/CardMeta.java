@@ -13,6 +13,7 @@ public class CardMeta {
     private int customModelNbt;
     private double buyPrice;
     private double sellPrice;
+    private String currencyId;
 
     private boolean shiny;
 
@@ -93,6 +94,14 @@ public class CardMeta {
 
     public boolean isShiny() {
         return shiny;
+    }
+
+    public void setCurrencyId(final String currencyId) {
+        this.currencyId = currencyId;
+    }
+
+    public String getCurrencyId() {
+        return currencyId;
     }
 
     @Override

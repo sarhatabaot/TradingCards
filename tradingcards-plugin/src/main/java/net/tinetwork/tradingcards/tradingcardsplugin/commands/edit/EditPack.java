@@ -10,7 +10,8 @@ public enum EditPack implements Edit{
     PRICE,
     PERMISSION,
     DISPLAY_NAME,
-    CONTENTS;
+    CONTENTS,
+    CURRENCY_ID;
 
     @Contract(pure = true)
     @Override

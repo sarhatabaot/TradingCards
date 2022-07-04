@@ -7,7 +7,7 @@ import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
 import de.tr7zw.nbtapi.NBTItem;
-import net.milkbowl.vault.economy.EconomyResponse;
+import net.tinetwork.tradingcards.api.economy.ResponseWrapper;
 import net.tinetwork.tradingcards.api.utils.NbtUtils;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalDebug;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalMessages;
@@ -36,7 +36,7 @@ public class SellCommand extends BaseCommand {
         @Default
         @Description("Sells the card in your main hand.")
         public void onSell(final Player player) {
-            if (CardUtil.noVault(player))
+            if (CardUtil.noEconomy(player))
                 return;
 
             final NBTItem nbtItem = new NBTItem(player.getInventory().getItemInMainHand());
@@ -65,8 +65,8 @@ public class SellCommand extends BaseCommand {
 
             PlayerInventory inventory = player.getInventory();
             double sellAmount = tradingCard.getSellPrice() * itemInHand.getAmount();
-            EconomyResponse economyResponse = plugin.getVaultEconomy().depositPlayer(player, sellAmount);
-            if (economyResponse.transactionSuccess()) {
+            ResponseWrapper economyResponse = plugin.getEconomyWrapper().deposit(player, tradingCard.getCurrencyId(),sellAmount);
+            if (economyResponse.success()) {
                 ChatUtil.sendPrefixedMessage(player, InternalMessages.SellCommand.SOLD_CARD.formatted(itemInHand.getAmount(), (rarityId + " " + cardId), sellAmount));
                 inventory.setItem(itemInHandSlot, null);
             }

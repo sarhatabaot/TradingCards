@@ -3,6 +3,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.messages.settings;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalExceptions;
 
 public final class General {
+    public static final Integer CONFIG_VERSION = 1;
     public static final Boolean DEBUG_MODE = false;
     public static final Boolean USE_DEFAULT_CARDS_FILE = true;
 
@@ -58,7 +59,7 @@ public final class General {
     public static final String DECK_PREFIX = "&7[&fDeck&7]&f ";
     public static final Boolean DROP_DECK_ITEMS = true;
     public static final String PLAYER_OP_RARITY = "Legendary";
-    public static final String PLAYER_SERIES = "2020";
+    public static final String PLAYER_SERIES = "player";
     public static final String PLAYER_TYPE = "Player";
     public static final Boolean PLAYER_HAS_SHINY_VERSION = true;
     public static final Boolean PLAYER_DROPS_CARD = true;
@@ -84,9 +85,7 @@ public final class General {
     }
 
     public static final Boolean SPAWNER_BLOCK = true;
-    public static final String SPAWNER_MOB_NAME = "Spawned Mob";
     public static final Integer INFO_LINE_LENGTH = 25;
-    public static final Integer CONFIG_VERSION = 1;
 
     private General() {
         throw new UnsupportedOperationException(InternalExceptions.UTIL_CLASS);

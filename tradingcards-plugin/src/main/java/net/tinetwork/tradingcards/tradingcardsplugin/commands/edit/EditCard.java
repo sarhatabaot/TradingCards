@@ -11,7 +11,8 @@ public enum EditCard implements Edit{
     INFO,
     SERIES,
     HAS_SHINY,
-    TYPE;
+    TYPE,
+    CURRENCY_ID;
 
 
     @Contract(pure = true)

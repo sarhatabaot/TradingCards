@@ -85,10 +85,22 @@ public class PacksConfig extends YamlConfigurateFile<TradingCards> {
         }
     }
 
+    public void editCurrencyId(final String packId, final String currencyId) {
+        ConfigurationNode packNode = rootNode.node(packId);
+        try {
+            Pack pack = getPack(packId);
+            pack.setCurrencyId(currencyId);
+            packNode.set(pack);
+            loader.save(rootNode);
+        } catch (ConfigurateException e) {
+            Util.logSevereException(e);
+        }
+    }
+
 
     public void createPack(final String packId){
         try {
-            rootNode.node(packId).set(new Pack(packId,new ArrayList<>(),packId,100.0,"cards.packs."+packId));
+            rootNode.node(packId).set(new Pack(packId,new ArrayList<>(),packId,100.0,"","cards.packs."+packId));
             loader.save(rootNode);
             reloadConfig();
         } catch (ConfigurateException e) {
@@ -120,6 +132,7 @@ public class PacksConfig extends YamlConfigurateFile<TradingCards> {
         private static final String PRICE = "price";
         private static final String PERMISSION = "permission";
         private static final String DISPLAY_NAME = "display-name";
+        private static final String CURRENCY_ID = "currency-id";
 
         private PackSerializer() {
         }
@@ -130,6 +143,7 @@ public class PacksConfig extends YamlConfigurateFile<TradingCards> {
             final ConfigurationNode priceNode = node.node(PRICE);
             final ConfigurationNode permissionsNode = node.node(PERMISSION);
             final ConfigurationNode displayNameNode = node.node(DISPLAY_NAME);
+            final String currencyId = node.node(CURRENCY_ID).getString("tc-internal-default");
             final String id = node.key().toString();
 
             final List<String> contentStringList = contentNode.getList(String.class);
@@ -141,7 +155,7 @@ public class PacksConfig extends YamlConfigurateFile<TradingCards> {
             final String permissions = permissionsNode.getString();
             final String displayName = getDisplayName(displayNameNode.getString(),node);
 
-            return new Pack(id,packEntryList,displayName, price,permissions);
+            return new Pack(id,packEntryList,displayName, price,currencyId,permissions);
         }
 
         private String getDisplayName(final String displayName, final ConfigurationNode node) {

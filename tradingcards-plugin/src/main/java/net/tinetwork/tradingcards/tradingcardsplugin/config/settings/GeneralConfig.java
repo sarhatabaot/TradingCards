@@ -53,6 +53,8 @@ public class GeneralConfig extends GeneralConfigurate {
     private boolean closedEconomy;
     private String serverAccount;
 
+    private boolean treasuryEnabled;
+
     private boolean spawnerBlock;
     private String spawnerMobName;
     private int infoLineLength;
@@ -124,7 +126,7 @@ public class GeneralConfig extends GeneralConfigurate {
         //Misc
         //todo, we should add a tag to the animals instead of renaming them
         this.spawnerBlock = rootNode.node("spawner-block").getBoolean(General.SPAWNER_BLOCK);
-        this.spawnerMobName = rootNode.node("spawner-mob-name").getString(General.SPAWNER_MOB_NAME);
+
         this.infoLineLength = rootNode.node("info-line-length").getInt(General.INFO_LINE_LENGTH);
 
         final ConfigurationNode colorNode = rootNode.node("colors");
@@ -337,5 +339,9 @@ public class GeneralConfig extends GeneralConfigurate {
 
     public int deckRows() {
         return deckRows;
+    }
+
+    public boolean treasuryEnabled() {
+        return treasuryEnabled;
     }
 }

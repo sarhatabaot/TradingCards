@@ -151,6 +151,15 @@ public class SimpleCardsConfig extends YamlConfigurateFile<TradingCards> {
         }.updateValue(rarityId,cardId,seriesId,hasShiny);
     }
 
+    public void editCurrencyId(final String rarityId, final String cardId, final String seriesId, final String currencyId) {
+        new EditCardConfig<String>(rootNode, cardsNode, loader, this) {
+            @Override
+            protected void onUpdate(final TradingCard card, final String value) {
+                card.currencyId(value);
+            }
+        }.updateValue(rarityId,cardId,seriesId,currencyId);
+    }
+
     public static class CardSerializer implements TypeSerializer<TradingCard> {
         @SuppressWarnings("rawtypes")
         private static TradingCardsPlugin<? extends Card> plugin;
@@ -165,6 +174,7 @@ public class SimpleCardsConfig extends YamlConfigurateFile<TradingCards> {
         private static final String SELL_PRICE = "sell-price";
         private static final String CUSTOM_MODEL_DATA = "custom-model-data";
         private static final String MATERIAL = "material";
+        private static final String CURRENCY_ID = "currency-id";
 
         @SuppressWarnings("rawtypes")
         public static void init(TradingCardsPlugin<? extends Card> plugin) {
@@ -192,6 +202,7 @@ public class SimpleCardsConfig extends YamlConfigurateFile<TradingCards> {
             final double sellPrice = getSellPrice(node, rarity);
 
             final Series series = yamlStorage.getSeriesConfig().series().get(seriesId);
+            final String currencyId = node.node(CURRENCY_ID).getString(plugin.getEconomyWrapper().getPrimaryCurrencyId());
             TradingCard card = new TradingCard(id,plugin.getGeneralConfig().cardMaterial());
             return card.material(material)
                     .rarity(rarity)
@@ -203,6 +214,7 @@ public class SimpleCardsConfig extends YamlConfigurateFile<TradingCards> {
                     .about(about)
                     .buyPrice(buyPrice)
                     .sellPrice(sellPrice)
+                    .currencyId(currencyId)
                     .customModelNbt(customModelData).get();
         }
 
