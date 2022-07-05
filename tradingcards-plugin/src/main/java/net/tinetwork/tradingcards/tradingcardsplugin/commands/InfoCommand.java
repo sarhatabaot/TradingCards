@@ -17,7 +17,6 @@ import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.Permissio
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 /**
