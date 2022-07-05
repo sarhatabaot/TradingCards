@@ -22,6 +22,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.commands.DebugCommands;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.DeckCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.EditCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.GiveCommands;
+import net.tinetwork.tradingcards.tradingcardsplugin.commands.InfoCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.ListCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.MigrateCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.SellCommand;
@@ -337,6 +338,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         commandManager.registerCommand(this.migrateCommand);
         commandManager.registerCommand(new SellCommand(this));
         commandManager.registerCommand(new DeckCommand(this));
+        commandManager.registerCommand(new InfoCommand(this));
         commandManager.enableUnstableAPI("help");
         commandManager.enableUnstableAPI("brigadier");
     }

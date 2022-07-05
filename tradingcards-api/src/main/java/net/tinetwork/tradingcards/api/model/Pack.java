@@ -49,10 +49,9 @@ public class Pack {
         this.currencyId = currencyId;
     }
 
-    public String id() {
+    public String getId() {
         return id;
     }
-
 
     public void setDisplayName(final String displayName) {
         this.displayName = displayName;

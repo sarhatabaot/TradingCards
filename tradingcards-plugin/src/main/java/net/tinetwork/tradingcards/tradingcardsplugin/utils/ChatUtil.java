@@ -10,48 +10,66 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class ChatUtil {
-	private static final char ALT_COLOR_CHAR = '&';
-	private static TradingCards plugin;
-	private ChatUtil() {
-		throw new UnsupportedOperationException();
-	}
-	public static void init(final TradingCards plugin){
-		ChatUtil.plugin = plugin;
-	}
+    private static final char ALT_COLOR_CHAR = '&';
+    private static TradingCards plugin;
 
-	public static void sendPrefixedMessage(final CommandSender target, final String message) {
-		sendMessage(target, plugin.getPrefixedMessage(message));
-	}
+    private ChatUtil() {
+        throw new UnsupportedOperationException();
+    }
 
-	public static void sendMessage(final @NotNull CommandSender target, final String message) {
-		com.github.sarhatabaot.kraken.core.chat.ChatUtil.sendMessage(target,message);
-	}
+    public static void init(final TradingCards plugin) {
+        ChatUtil.plugin = plugin;
+    }
 
-	public static @NotNull String color(Component component) {
-		return LegacyComponentSerializer.builder().character(ALT_COLOR_CHAR).build().serialize(component);
-	}
+    public static void sendPrefixedMessage(final CommandSender target, final String message) {
+        sendMessage(target, plugin.getPrefixedMessage(message));
+    }
 
-	@Contract("_ -> new")
-	public static @NotNull String color(String text) {
-		return com.github.sarhatabaot.kraken.core.chat.ChatUtil.color(text);
-	}
+    public static void sendMessage(final @NotNull CommandSender target, final String message) {
+        com.github.sarhatabaot.kraken.core.chat.ChatUtil.sendMessage(target, message);
+    }
 
-	public static @NotNull List<String> wrapString(@NotNull String s) {
-		String parsedString = ChatColor.stripColor(s);
-		String addedString = WordUtils.wrap(parsedString, plugin.getGeneralConfig().infoLineLength(), "\n", true);
-		String[] splitString = addedString.split("\n");
-		List<String> finalArray = new ArrayList<>();
+    public static void sendPrefixedMessages(final CommandSender target, final String... messages) {
+        List<String> prefixedMessages = new ArrayList<>();
+        Arrays.stream(messages).forEach(message -> prefixedMessages.add(plugin.getPrefixedMessage(message)));
+        com.github.sarhatabaot.kraken.core.chat.ChatUtil.sendMessage(target, prefixedMessages.toArray(new String[0]));
+    }
 
-		for (String ss : splitString) {
-			finalArray.add(ChatUtil.color("&f &7- &f" + ss));
-		}
+    //We assume that the length of messages & args are the same, we should figure out a way to add a warning about this in intellij
+    public static void sendPrefixedMessages(final CommandSender target, final String @NotNull [] messages, Object... args) {
+        for (int i = 0; i < messages.length; i++) {
+            sendPrefixedMessage(target, messages[i].formatted(args[i]));
+        }
+    }
 
-		return finalArray;
-	}
-	public static void sendMessage(final @NotNull CommandSender target, final Component text) {
-		target.sendMessage(color(text));
-	}
+    public static @NotNull String color(Component component) {
+        return LegacyComponentSerializer.builder().character(ALT_COLOR_CHAR).build().serialize(component);
+    }
+
+    @Contract("_ -> new")
+    public static @NotNull String color(String text) {
+        return com.github.sarhatabaot.kraken.core.chat.ChatUtil.color(text);
+    }
+
+    public static @NotNull List<String> wrapString(@NotNull String s) {
+        String parsedString = ChatColor.stripColor(s);
+        String addedString = WordUtils.wrap(parsedString, plugin.getGeneralConfig().infoLineLength(), "\n", true);
+        String[] splitString = addedString.split("\n");
+        List<String> finalArray = new ArrayList<>();
+
+        for (String ss : splitString) {
+            finalArray.add(ChatUtil.color("&f &7- &f" + ss));
+        }
+
+        return finalArray;
+    }
+
+    public static void sendMessage(final @NotNull CommandSender target, final Component text) {
+        target.sendMessage(color(text));
+    }
 }

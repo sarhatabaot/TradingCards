@@ -42,5 +42,12 @@
   "edit-rarity": "cards.edit.rarity",
   "edit-series": "cards.edit.series",
   "edit-custom-type": "cards.edit.customtype",
-  "edit-pack": "cards.edit.pack"
+  "edit-pack": "cards.edit.pack",
+  "info": "cards.info",
+  "info-card":"cards.info.card",
+  "info-rarity": "cards.info.rarity",
+  "info-type": "cards.info.type",
+  "info-series": "cards.info.series",
+  "info-mob": "cards.info.mob",
+  "info-pack": "cards.info.pack"
 }

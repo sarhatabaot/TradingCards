@@ -24,8 +24,8 @@ public class RarityMigratorBukkitRunnable extends MigratorBukkitRunnable{
         for(final Rarity rarity: source.getRarities()) {
             Util.logAndMessage(sender, InternalMessages.STARTED_CONVERSION_FOR.formatted(rarity.getId()));
             plugin.getStorage().createRarity(rarity.getId());
-            plugin.getStorage().editRaritySellPrice(rarity.getId(),rarity.sellPrice());
-            plugin.getStorage().editRarityBuyPrice(rarity.getId(),rarity.buyPrice());
+            plugin.getStorage().editRaritySellPrice(rarity.getId(),rarity.getSellPrice());
+            plugin.getStorage().editRarityBuyPrice(rarity.getId(),rarity.getBuyPrice());
             plugin.getStorage().editRarityDefaultColor(rarity.getId(), rarity.getDefaultColor());
             plugin.getStorage().editRarityDisplayName(rarity.getId(),rarity.getDisplayName());
 

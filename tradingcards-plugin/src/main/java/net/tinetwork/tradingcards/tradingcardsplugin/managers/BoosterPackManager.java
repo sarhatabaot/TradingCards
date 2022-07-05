@@ -43,7 +43,7 @@ public class BoosterPackManager extends Manager<String, Pack> implements PackMan
 
     @Override
     public List<String> getKeys() {
-        return plugin.getStorage().getPacks().stream().map(Pack::id).toList();
+        return plugin.getStorage().getPacks().stream().map(Pack::getId).toList();
     }
 
     @Override
@@ -124,7 +124,7 @@ public class BoosterPackManager extends Manager<String, Pack> implements PackMan
         itemPack.setItemMeta(itemPackMeta);
         NBTItem nbtItem = new NBTItem(itemPack);
         NBTCompound compound = nbtItem.getOrCreateCompound(NbtUtils.TC_COMPOUND);
-        compound.setString(NbtUtils.TC_PACK_ID, pack.id());
+        compound.setString(NbtUtils.TC_PACK_ID, pack.getId());
         return nbtItem.getItem();
     }
 
@@ -150,7 +150,7 @@ public class BoosterPackManager extends Manager<String, Pack> implements PackMan
     @Override
     public boolean containsPack(final String packId) {
         for (Pack pack : getPacks()) {
-            if (pack.id().equals(packId))
+            if (pack.getId().equals(packId))
                 return true;
         }
         return false;
