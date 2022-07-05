@@ -71,28 +71,12 @@ public final class Rarity {
                 '}';
     }
 
-    public String name() {
-        return id;
-    }
-
-    public String displayName() {
-        return displayName;
-    }
-
-    public String defaultColor() {
-        return defaultColor;
-    }
-
-    public double buyPrice() {
+    public double getBuyPrice() {
         return buyPrice;
     }
 
-    public double sellPrice() {
+    public double getSellPrice() {
         return sellPrice;
-    }
-
-    public List<String> rewards() {
-        return rewards;
     }
 
     @Override

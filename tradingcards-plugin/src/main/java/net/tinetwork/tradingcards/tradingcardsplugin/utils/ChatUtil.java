@@ -10,7 +10,9 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class ChatUtil {
 	private static final char ALT_COLOR_CHAR = '&';
@@ -28,6 +30,12 @@ public class ChatUtil {
 
 	public static void sendMessage(final @NotNull CommandSender target, final String message) {
 		com.github.sarhatabaot.kraken.core.chat.ChatUtil.sendMessage(target,message);
+	}
+
+	public static void sendPrefixedMessages(final CommandSender target, final String... messages) {
+		List<String> prefixedMessages =  new ArrayList<>();
+		Arrays.stream(messages).forEach(message -> prefixedMessages.add(plugin.getPrefixedMessage(message)));
+		com.github.sarhatabaot.kraken.core.chat.ChatUtil.sendMessage(target, prefixedMessages.toArray(new String[0]));
 	}
 
 	public static @NotNull String color(Component component) {

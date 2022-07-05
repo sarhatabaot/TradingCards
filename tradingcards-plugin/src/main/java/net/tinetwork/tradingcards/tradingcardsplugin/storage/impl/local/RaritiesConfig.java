@@ -223,8 +223,8 @@ public class RaritiesConfig extends RarityConfigurate{
             target.node(DISPLAY_NAME).set(rarity.getDisplayName());
             target.node(DEFAULT_COLOR).set(rarity.getDefaultColor());
             target.node(REWARDS).set(rarity.getRewards());
-            target.node(BUY_PRICE).set(rarity.buyPrice());
-            target.node(SELL_PRICE).set(rarity.sellPrice());
+            target.node(BUY_PRICE).set(rarity.getBuyPrice());
+            target.node(SELL_PRICE).set(rarity.getSellPrice());
         }
     }
 

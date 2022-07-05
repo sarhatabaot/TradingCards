@@ -116,10 +116,10 @@ public class TradingCardsPlaceholderExpansion extends PlaceholderExpansion {
                 @Override
                 protected String onPlaceholderValue() {
                     return switch (type) {
-                        case "default-color" -> plugin.getRarityManager().getRarity(id).defaultColor();
-                        case "display-name" -> plugin.getRarityManager().getRarity(id).displayName();
-                        case "buy-price" -> String.valueOf(plugin.getRarityManager().getRarity(id).buyPrice());
-                        case "sell-price" -> String.valueOf(plugin.getRarityManager().getRarity(id).sellPrice());
+                        case "default-color" -> plugin.getRarityManager().getRarity(id).getDefaultColor();
+                        case "display-name" -> plugin.getRarityManager().getRarity(id).getDisplayName();
+                        case "buy-price" -> String.valueOf(plugin.getRarityManager().getRarity(id).getBuyPrice());
+                        case "sell-price" -> String.valueOf(plugin.getRarityManager().getRarity(id).getSellPrice());
                         default -> null;
                     };
                 }

@@ -220,7 +220,7 @@ public class SimpleCardsConfig extends YamlConfigurateFile<TradingCards> {
 
         private double getBuyPrice(@NotNull ConfigurationNode node, Rarity rarity) {
             if(node.node(BUY_PRICE).isNull()) {
-                return rarity.buyPrice();
+                return rarity.getBuyPrice();
             } else {
                 return node.node(BUY_PRICE).getDouble(0.0D);
             }
@@ -228,7 +228,7 @@ public class SimpleCardsConfig extends YamlConfigurateFile<TradingCards> {
 
         private double getSellPrice(@NotNull ConfigurationNode node, Rarity rarity){
             if(node.node(SELL_PRICE).isNull()) {
-                return rarity.sellPrice();
+                return rarity.getSellPrice();
             } else {
                 return node.node(SELL_PRICE).getDouble(0.0D);
             }

@@ -30,14 +30,15 @@ public class PackMigratorBukkitRunnable extends MigratorBukkitRunnable{
     @Override
     public void onExecute() throws ConfigurateException {
         for(Pack pack: source.getPacks()) {
-            Util.logAndMessage(sender, InternalMessages.STARTED_CONVERSION_FOR.formatted(pack.id()));
-            plugin.getStorage().createPack(pack.id());
-            plugin.getStorage().editPackPrice(pack.id(),pack.getBuyPrice());
-            plugin.getStorage().editPackPermission(pack.id(),pack.getPermission());
-            plugin.getStorage().editPackDisplayName(pack.id(), pack.getDisplayName());
+            final String packId = pack.getId();
+            Util.logAndMessage(sender, InternalMessages.STARTED_CONVERSION_FOR.formatted(packId));
+            plugin.getStorage().createPack(packId);
+            plugin.getStorage().editPackPrice(packId,pack.getBuyPrice());
+            plugin.getStorage().editPackPermission(packId,pack.getPermission());
+            plugin.getStorage().editPackDisplayName(packId, pack.getDisplayName());
 
             for(final Pack.PackEntry entry:pack.getPackEntryList()){
-                plugin.getStorage().editPackContentsAdd(pack.id(),entry);
+                plugin.getStorage().editPackContentsAdd(packId,entry);
             }
         }
     }

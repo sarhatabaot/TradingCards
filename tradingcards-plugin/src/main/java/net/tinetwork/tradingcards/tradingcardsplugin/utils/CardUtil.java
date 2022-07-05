@@ -32,6 +32,8 @@ public class CardUtil {
     public static final int RANDOM_MAX = 100000;
     public static ItemStack BLANK_CARD;
 
+    private static final DropType EMPTY_TYPE = new DropType("tc-internal-empty", "", "empty");
+
     private CardUtil() {
         throw new UnsupportedOperationException();
     }
@@ -74,7 +76,10 @@ public class CardUtil {
         if (plugin.isMobPassive(e)) {
             return DropTypeManager.PASSIVE;
         }
-        return DropTypeManager.BOSS;
+        if(plugin.isMobBoss(e))
+            return DropTypeManager.BOSS;
+
+        return EMPTY_TYPE;
     }
 
     public static boolean isCard(final ItemStack itemStack) {
