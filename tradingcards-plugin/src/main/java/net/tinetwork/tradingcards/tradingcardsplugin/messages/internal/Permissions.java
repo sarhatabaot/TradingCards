@@ -45,6 +45,13 @@ public final class Permissions {
     public static final String EDIT_SERIES = "cards.edit.series";
     public static final String EDIT_CUSTOM_TYPE = "cards.edit.customtype";
     public static final String EDIT_PACK = "cards.edit.pack";
+    public static final String INFO = "cards.info";
+    public static final String INFO_CARD = "cards.info.card";
+    public static final String INFO_RARITY = "cards.info.rarity";
+    public static final String INFO_TYPE = "cards.info.type";
+    public static final String INFO_SERIES = "cards.info.series";
+    public static final String INFO_MOB = "cards.info.mob";
+    public static final String INFO_PACK = "cards.info.pack";
 
     private Permissions() {
         throw new UnsupportedOperationException(InternalExceptions.UTIL_CLASS);

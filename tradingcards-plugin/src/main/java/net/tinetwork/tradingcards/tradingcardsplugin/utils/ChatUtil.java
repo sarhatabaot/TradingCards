@@ -43,7 +43,7 @@ public class ChatUtil {
     //We assume that the length of messages & args are the same, we should figure out a way to add a warning about this in intellij
     public static void sendPrefixedMessages(final CommandSender target, final String @NotNull [] messages, Object... args) {
         for (int i = 0; i < messages.length; i++) {
-            sendMessage(target, messages[i].formatted(args[i]));
+            sendPrefixedMessage(target, messages[i].formatted(args[i]));
         }
     }
 

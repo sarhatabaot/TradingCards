@@ -3,6 +3,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.commands;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
+import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
 import net.tinetwork.tradingcards.api.model.DropType;
@@ -12,7 +13,9 @@ import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalMessages;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.Permissions;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -21,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
  * @author sarhatabaot
  */
 @CommandAlias("cards")
+
 public class InfoCommand extends BaseCommand {
     private final TradingCards plugin;
 
@@ -29,11 +33,13 @@ public class InfoCommand extends BaseCommand {
     }
 
     @Subcommand("info")
+    @CommandPermission(Permissions.INFO)
     public class InfoSubCommand extends BaseCommand {
 
         @Subcommand("card")
         @CommandCompletion("@rarities @series @cards")
-        public void onCard(final Player sender, final @NotNull Rarity rarity, final @NotNull Series series, final String cardId) {
+        @CommandPermission(Permissions.INFO_CARD)
+        public void onCard(final CommandSender sender, final @NotNull Rarity rarity, final @NotNull Series series, final String cardId) {
             if (!plugin.getCardManager().containsCard(cardId, rarity.getId(), series.getId())) {
                 sender.sendMessage(plugin.getMessagesConfig().noCard());
                 return;
@@ -49,7 +55,8 @@ public class InfoCommand extends BaseCommand {
 
         @Subcommand("pack")
         @CommandCompletion("@packs")
-        public void onPack(final Player sender, final String packId) {
+        @CommandPermission(Permissions.INFO_PACK)
+        public void onPack(final CommandSender sender, final String packId) {
             if(!plugin.getPackManager().containsPack(packId)) {
                 sender.sendMessage(plugin.getMessagesConfig().noBoosterPack());
                 return;
@@ -65,7 +72,8 @@ public class InfoCommand extends BaseCommand {
 
         @Subcommand("type")
         @CommandCompletion("@all-types")
-        public void onType(final Player sender, final String typeId) {
+        @CommandPermission(Permissions.INFO_TYPE)
+        public void onType(final CommandSender sender, final String typeId) {
             if(!plugin.getDropTypeManager().containsType(typeId)) {
                 ChatUtil.sendPrefixedMessage(sender,"No type %s".formatted(typeId));
                 return;
@@ -79,7 +87,8 @@ public class InfoCommand extends BaseCommand {
 
         @Subcommand("series")
         @CommandCompletion("@series")
-        public void onSeries(final Player sender, final @NotNull Series series) {
+        @CommandPermission(Permissions.INFO_SERIES)
+        public void onSeries(final CommandSender sender, final @NotNull Series series) {
             ChatUtil.sendPrefixedMessages(sender,
                     InternalMessages.InfoCommand.SERIES_FORMAT,
                     series.getId(), series.getDisplayName(), series.getMode(),
@@ -88,7 +97,8 @@ public class InfoCommand extends BaseCommand {
 
         @Subcommand("rarity")
         @CommandCompletion("@rarities")
-        public void onRarity(final Player sender, final @NotNull Rarity rarity) {
+        @CommandPermission(Permissions.INFO_PACK)
+        public void onRarity(final CommandSender sender, final @NotNull Rarity rarity) {
             ChatUtil.sendPrefixedMessages(sender,
                     InternalMessages.InfoCommand.RARITY_FORMAT,
                     rarity.getId(),rarity.getDisplayName(), rarity.getDefaultColor(),
@@ -97,7 +107,8 @@ public class InfoCommand extends BaseCommand {
 
         @Subcommand("mob")
         @Description("Display the mob group for this entity.")
-        public void onMobInfo(final Player sender, final EntityType entityType) {
+        @CommandPermission(Permissions.INFO_MOB)
+        public void onMobInfo(final CommandSender sender, final EntityType entityType) {
             final DropType dropType = plugin.getDropTypeManager().getMobType(entityType);
             ChatUtil.sendPrefixedMessage(sender, InternalMessages.InfoCommand.MOB_FORMAT.formatted(entityType.name(), dropType.getType()));
         }

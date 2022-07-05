@@ -328,11 +328,11 @@ public class EditCommand extends BaseCommand {
         //set edit.toString() to value for id
         private void sendSetTypes(final CommandSender sender, final String id, final @NotNull Edit edit, final String value) {
             if (edit instanceof EditRarity editRarity && editRarity == EditRarity.DEFAULT_COLOR) {
-                String partialFormat = String.format("&7Set &b%s &7to &b{value} &7for &b%s", edit, id);
+                String partialFormat = "&7Set &b%s &7to &b{value} &7for &b%s".formatted(edit, id);
                 sender.sendMessage(ChatUtil.color(plugin.prefixed(partialFormat)).replace("{value}", value));
                 return;
             }
-            ChatUtil.sendPrefixedMessage(sender, String.format("&7Set &b%s &7to &b%s &7for &b%s", edit, value, id));
+            ChatUtil.sendPrefixedMessage(sender, "&7Set &b%s &7to &b%s &7for &b%s".formatted(edit, value, id));
         }
     }
 

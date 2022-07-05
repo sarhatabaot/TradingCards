@@ -63,42 +63,42 @@
   },
   "info-command": {
     "card-format": [
-      "Id: %s",
-      "Series: %s",
-      "Rarity: %s",
-      "Display Name: %s",
-      "Buy Price: %.2f",
-      "Sell Price: %.2f",
-      "Currency Id: %s",
-      "About: %s",
-      "Info: %s"
+      "&bCard:&f %s",
+      "&bSeries:&f %s",
+      "&bRarity:&f %s",
+      "&bDisplay Name:&f %s",
+      "&bBuy Price:&f %.2f",
+      "&bSell Price:&f %.2f",
+      "&bCurrency:&f %s",
+      "&bAbout:&f %s",
+      "&bInfo:&f %s"
     ],
     "pack-format": [
-      "Id: %s",
-      "Display Name: %s",
-      "Content: %s",
-      "Currency Id: %s",
-      "Buy Price: %s"
+      "&bPack:&f %s",
+      "&bDisplay Name:&f %s",
+      "&bContent:&f %s",
+      "&bCurrency:&f %s",
+      "&bBuy Price:&f %s"
     ],
     "type-format": [
-      "Id: %s",
-      "Display Name: %s",
-      "Mob Type: %s"
+      "&bType:&f %s",
+      "&bDisplay Name:&f %s",
+      "&bMob Type:&f %s"
     ],
     "series-format": [
-      "Id: %s",
-      "Display Name: %s",
-      "Mode: %s",
-      "Colors: %s"
+      "&bSeries:&f %s",
+      "&bDisplay Name:&f '%s'",
+      "&bMode:&f %s",
+      "&bColors:&f %s"
     ],
     "rarity-format": [
-      "Id: %s",
-      "Display Name: %s",
-      "Default Color: %s",
-      "Buy Price: %.2f",
-      "Sell Price: %.2f",
-      "Currency Id: %s",
-      "Rewards: %s"
+      "&bRarity:&f %s",
+      "&bDisplay Name:&f '%s'",
+      "&bDefault Color:&f %s",
+      "&bBuy Price:&f %.2f",
+      "&bSell Price:&f %.2f",
+      "&bCurrency Id:&f %s",
+      "&bRewards:&f %s"
     ],
     "mob-format": "Entity %s is %s"
   },
