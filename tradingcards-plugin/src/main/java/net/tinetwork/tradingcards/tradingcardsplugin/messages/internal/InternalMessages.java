@@ -105,6 +105,23 @@ public final class InternalMessages {
         }
     }
 
+    public static class InfoCommand {
+        public static final String[] CARD_FORMAT = new String[] { "Id: %s", "Series: %s", "Rarity: %s",
+                "Display Name: %s", "Buy Price: %.2f", "Sell Price: %.2f", "Currency Id: %s", "About: %s", "Info: %s" };
+        public static final String[] PACK_FORMAT = new String[] { "Id: %s", "Display Name: %s", "Content: %s",
+                "Currency Id: %s", "Buy Price: %s" };
+        public static final String[] TYPE_FORMAT = new String[] { "Id: %s", "Display Name: %s", "Mob Type: %s" };
+        public static final String[] SERIES_FORMAT = new String[] { "Id: %s", "Display Name: %s", "Mode: %s",
+                "Colors: %s" };
+        public static final String[] RARITY_FORMAT = new String[] { "Id: %s", "Display Name: %s", "Default Color: %s",
+                "Buy Price: %.2f", "Sell Price: %.2f", "Currency Id: %s", "Rewards: %s" };
+        public static final String MOB_FORMAT = "Entity %s is %s";
+
+        private InfoCommand() {
+            throw new UnsupportedOperationException(InternalExceptions.UTIL_CLASS);
+        }
+    }
+
     public static final String CANNOT_HAVE_MORE_THAN_A_STACK = "Cannot have more than a stack of this card per deck.";
 
     private InternalMessages() {

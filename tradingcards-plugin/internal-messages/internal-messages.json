@@ -61,5 +61,46 @@
     "cannot-sell-shiny": "Cannot sell shiny card.",
     "sold-card": "You have sold %dx%s for %.2f"
   },
+  "info-command": {
+    "card-format": [
+      "Id: %s",
+      "Series: %s",
+      "Rarity: %s",
+      "Display Name: %s",
+      "Buy Price: %.2f",
+      "Sell Price: %.2f",
+      "Currency Id: %s",
+      "About: %s",
+      "Info: %s"
+    ],
+    "pack-format": [
+      "Id: %s",
+      "Display Name: %s",
+      "Content: %s",
+      "Currency Id: %s",
+      "Buy Price: %s"
+    ],
+    "type-format": [
+      "Id: %s",
+      "Display Name: %s",
+      "Mob Type: %s"
+    ],
+    "series-format": [
+      "Id: %s",
+      "Display Name: %s",
+      "Mode: %s",
+      "Colors: %s"
+    ],
+    "rarity-format": [
+      "Id: %s",
+      "Display Name: %s",
+      "Default Color: %s",
+      "Buy Price: %.2f",
+      "Sell Price: %.2f",
+      "Currency Id: %s",
+      "Rewards: %s"
+    ],
+    "mob-format": "Entity %s is %s"
+  },
   "cannot-have-more-than-a-stack": "Cannot have more than a stack of this card per deck."
 }
