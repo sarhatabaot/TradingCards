@@ -197,7 +197,8 @@ public class SqlStorage implements Storage<TradingCard> {
                 final List<String> rewards = getRewards(rarityId);
                 final double buyPrice = result.getValue(Rarities.RARITIES.BUY_PRICE);
                 final double sellPrice = result.getValue(Rarities.RARITIES.SELL_PRICE);
-                return new Rarity(rarityId, displayName, defaultColor, buyPrice, sellPrice, rewards);
+                final String currencyId = result.getValue(Rarities.RARITIES.CURRENCY_ID);
+                return new Rarity(rarityId, displayName, defaultColor, buyPrice, sellPrice, rewards, currencyId);
             }
 
             @Contract(pure = true)
@@ -559,7 +560,8 @@ public class SqlStorage implements Storage<TradingCard> {
                     final double buyPrice = (recordResult.getValue(Rarities.RARITIES.BUY_PRICE) == null ? 0.00D : recordResult.getValue(Rarities.RARITIES.BUY_PRICE));
                     final double sellPrice = (recordResult.getValue(Rarities.RARITIES.SELL_PRICE) == null ? 0.00D : recordResult.getValue(Rarities.RARITIES.SELL_PRICE));
                     final List<String> rewards = getRewards(rarityId);
-                    rarities.add(new Rarity(rarityId, displayName, defaultColor, buyPrice, sellPrice, rewards));
+                    final String currencyId = recordResult.getValue(Rarities.RARITIES.CURRENCY_ID);
+                    rarities.add(new Rarity(rarityId, displayName, defaultColor, buyPrice, sellPrice, rewards, currencyId));
                 }
                 return rarities;
             }

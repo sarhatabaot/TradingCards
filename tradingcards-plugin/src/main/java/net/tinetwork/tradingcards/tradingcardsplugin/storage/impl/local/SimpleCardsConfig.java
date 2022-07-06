@@ -202,7 +202,7 @@ public class SimpleCardsConfig extends YamlConfigurateFile<TradingCards> {
             final double sellPrice = getSellPrice(node, rarity);
 
             final Series series = yamlStorage.getSeriesConfig().series().get(seriesId);
-            final String currencyId = node.node(CURRENCY_ID).getString(plugin.getEconomyWrapper().getPrimaryCurrencyId());
+            final String currencyId = getCurrencyId(node,rarity);
             TradingCard card = new TradingCard(id,plugin.getGeneralConfig().cardMaterial());
             return card.material(material)
                     .rarity(rarity)
@@ -231,6 +231,14 @@ public class SimpleCardsConfig extends YamlConfigurateFile<TradingCards> {
                 return rarity.getSellPrice();
             } else {
                 return node.node(SELL_PRICE).getDouble(0.0D);
+            }
+        }
+
+        private String getCurrencyId(@NotNull ConfigurationNode node, Rarity rarity) {
+            if(node.node(CURRENCY_ID).isNull()) {
+                return rarity.getCurrencyId();
+            } else {
+                return node.node(CURRENCY_ID).getString(plugin.getEconomyWrapper().getPrimaryCurrencyId());
             }
         }
 
@@ -283,6 +291,7 @@ public class SimpleCardsConfig extends YamlConfigurateFile<TradingCards> {
             target.node(BUY_PRICE).set(card.getBuyPrice());
             target.node(SELL_PRICE).set(card.getSellPrice());
             target.node(CUSTOM_MODEL_DATA).set(card.getCustomModelNbt());
+            target.node(CURRENCY_ID).set(card.getCurrencyId());
         }
     }
 

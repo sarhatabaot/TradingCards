@@ -5,6 +5,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.StorageConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalExceptions;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.MigrationSettings;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.FlywayException;
 import org.jetbrains.annotations.NotNull;
@@ -66,7 +67,7 @@ public abstract class HikariConnectionFactory implements ConnectionFactory {
                 .baselineVersion("0")
                 .baselineOnMigrate(true)
                 .locations("classpath:db/migration")
-                .target("5")
+                .target(MigrationSettings.LATEST_DB_VERSION)
                 .placeholders(Map.of("prefix", storageConfig.getTablePrefix(), "default_series_id", storageConfig.getDefaultSeriesId()))
                 .load();
 

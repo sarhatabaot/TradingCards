@@ -1,5 +1,6 @@
 package net.tinetwork.tradingcards.api.model;
 
+
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,16 +13,18 @@ public final class Rarity {
     private String defaultColor;
     private double buyPrice;
     private double sellPrice;
+    private String currencyId;
     private List<String> rewards;
 
     public Rarity(String id, String displayName, String defaultColor,
-                  double buyPrice, double sellPrice, List<String> rewards) {
+                  double buyPrice, double sellPrice, List<String> rewards, String currencyId) {
         this.id = id;
         this.displayName = displayName;
         this.defaultColor = defaultColor;
         this.buyPrice = buyPrice;
         this.sellPrice = sellPrice;
         this.rewards = rewards;
+        this.currencyId = currencyId;
     }
 
     public String getId() {
@@ -60,13 +63,24 @@ public final class Rarity {
         this.sellPrice = sellPrice;
     }
 
+    public String getCurrencyId() {
+        return currencyId;
+    }
+
+    public void setCurrencyId(final String currencyId) {
+        this.currencyId = currencyId;
+    }
+
     @Contract(pure = true)
     @Override
     public @NotNull String toString() {
         return "Rarity{" +
-                "name='" + id + '\'' +
+                "id='" + id + '\'' +
                 ", displayName='" + displayName + '\'' +
                 ", defaultColor='" + defaultColor + '\'' +
+                ", buyPrice=" + buyPrice +
+                ", sellPrice=" + sellPrice +
+                ", currencyId='" + currencyId + '\'' +
                 ", rewards=" + rewards +
                 '}';
     }
@@ -89,11 +103,12 @@ public final class Rarity {
                 Objects.equals(this.defaultColor, that.defaultColor) &&
                 Double.doubleToLongBits(this.buyPrice) == Double.doubleToLongBits(that.buyPrice) &&
                 Double.doubleToLongBits(this.sellPrice) == Double.doubleToLongBits(that.sellPrice) &&
-                Objects.equals(this.rewards, that.rewards);
+                Objects.equals(this.rewards, that.rewards) &&
+                Objects.equals(this.currencyId, that.currencyId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, displayName, defaultColor, buyPrice, sellPrice, rewards);
+        return Objects.hash(id, displayName, defaultColor, buyPrice, sellPrice, rewards,currencyId);
     }
 }

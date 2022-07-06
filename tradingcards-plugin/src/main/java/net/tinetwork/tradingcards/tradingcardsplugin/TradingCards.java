@@ -105,7 +105,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private TradingSeriesManager seriesManager;
 
     /* Hooks */
-    private boolean hasVault;
     private EconomyWrapper economyWrapper = null;
     private boolean placeholderapi = false;
 
@@ -145,12 +144,13 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         initStorage();
         initBlacklist();
 
+        hookEconomy();
+
         initManagers();
         initListeners();
         initUtils();
         initCommands();
 
-        hookEconomy();
         hookPlaceholderApi();
         new Metrics(this, 12940);
     }
@@ -372,10 +372,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         return packManager;
     }
 
-    public boolean isHasVault() {
-        return hasVault;
-    }
-
     public EconomyWrapper getEconomyWrapper() {
         return economyWrapper;
     }
@@ -388,17 +384,20 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         if (this.generalConfig.vaultEnabled()) {
             if (this.setupVaultEconomy()) {
                 getLogger().info(() -> InternalLog.PluginStart.VAULT_HOOK_SUCCESS);
-                this.hasVault = true;
-            } else {
-                getLogger().info(() -> InternalLog.PluginStart.VAULT_HOOK_FAIL);
+                return;
             }
+
+            getLogger().info(() -> InternalLog.PluginStart.VAULT_HOOK_FAIL);
+            return;
         }
+
         if(this.generalConfig.treasuryEnabled()) {
             if (this.setupTreasuryEconomy()) {
                 getLogger().info(() -> InternalLog.PluginStart.TREASURY_HOOK_SUCCESS);
-            } else {
-                getLogger().info(() -> InternalLog.PluginStart.TREASURY_HOOK_FAIL);
+                return;
             }
+
+            getLogger().info(() -> InternalLog.PluginStart.TREASURY_HOOK_FAIL);
         }
     }
 

@@ -13,6 +13,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row6;
+import org.jooq.Row7;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -74,6 +75,7 @@ public class Rarities extends TableImpl<RaritiesRecord> {
      */
     public final TableField<RaritiesRecord, Integer> CUSTOM_ORDER = createField(DSL.name("custom_order"), SQLDataType.INTEGER.nullable(false), this, "");
 
+    public final TableField<RaritiesRecord, String> CURRENCY_ID = createField(DSL.name("currency_id"), SQLDataType.VARCHAR(30).nullable(true), this, "");
     private Rarities(Name alias, Table<RaritiesRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -144,11 +146,11 @@ public class Rarities extends TableImpl<RaritiesRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row5 type methods
+    // Row7 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<String, String, String, Double, Double,Integer> fieldsRow() {
-        return (Row6) super.fieldsRow();
+    public Row7<String, String, String, Double, Double,Integer,String> fieldsRow() {
+        return (Row7) super.fieldsRow();
     }
 }

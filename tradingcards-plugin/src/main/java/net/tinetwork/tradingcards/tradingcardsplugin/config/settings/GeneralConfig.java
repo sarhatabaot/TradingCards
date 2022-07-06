@@ -123,6 +123,7 @@ public class GeneralConfig extends GeneralConfigurate {
         this.closedEconomy = rootNode.node("closed-economy").getBoolean(General.PluginSupport.Vault.CLOSED_ECONOMY);
         this.serverAccount = rootNode.node("server-account").getString(General.PluginSupport.Vault.SERVER_ACCOUNT);
 
+        this.treasuryEnabled = rootNode.node("treasury-enabled").getBoolean(false);
         //Misc
         //todo, we should add a tag to the animals instead of renaming them
         this.spawnerBlock = rootNode.node("spawner-block").getBoolean(General.SPAWNER_BLOCK);

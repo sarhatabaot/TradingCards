@@ -163,7 +163,7 @@ public class RaritiesConfig extends RarityConfigurate{
 
     public void createRarity(final String rarityId) {
         try {
-            Rarity rarity = new Rarity(rarityId,rarityId,"",0,0,new ArrayList<>());
+            Rarity rarity = new Rarity(rarityId,rarityId,"",0,0,new ArrayList<>(),null);
             raritiesNode.node(rarityId).set(rarity);
             loader.save(rootNode);
             reloadConfig();
@@ -181,6 +181,7 @@ public class RaritiesConfig extends RarityConfigurate{
         private static final String REWARDS = "rewards";
         private static final String BUY_PRICE = "buy-price";
         private static final String SELL_PRICE = "sell-price";
+        private static final String CURRENCY_ID = "currency-id";
 
         private RaritySerializer() {
         }
@@ -207,8 +208,9 @@ public class RaritiesConfig extends RarityConfigurate{
             final List<String> rewards = rewardsNode.getList(String.class);
             final double buyPrice = buyNode.getDouble(0.0D);
             final double sellPrice = sellNode.getDouble(0.0D);
+            final String currencyId = node.node(CURRENCY_ID).getString();
 
-            return new Rarity(name,displayName,defaultColor,buyPrice,sellPrice,rewards);
+            return new Rarity(name,displayName,defaultColor,buyPrice,sellPrice,rewards,currencyId);
         }
 
         //Only implemented this since it's required. We don't actually use this feature yet.
