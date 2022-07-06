@@ -105,7 +105,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private TradingSeriesManager seriesManager;
 
     /* Hooks */
-    private boolean hasVault;
     private EconomyWrapper economyWrapper = null;
     private boolean placeholderapi = false;
 
@@ -385,7 +384,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         if (this.generalConfig.vaultEnabled()) {
             if (this.setupVaultEconomy()) {
                 getLogger().info(() -> InternalLog.PluginStart.VAULT_HOOK_SUCCESS);
-                this.hasVault = true;
                 return;
             }
 
