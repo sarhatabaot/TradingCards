@@ -26,7 +26,7 @@ public interface TradingCardsAddon {
 	}
 
 	/**
-	 * @return the addons' config file
+	 * @return the addons config file
 	 */
 	HoconConfigurateFile<JavaPlugin> getConfig();
 
