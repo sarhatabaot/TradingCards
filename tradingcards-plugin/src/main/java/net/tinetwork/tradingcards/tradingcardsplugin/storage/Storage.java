@@ -3,12 +3,14 @@ package net.tinetwork.tradingcards.tradingcardsplugin.storage;
 import net.tinetwork.tradingcards.api.card.Card;
 import net.tinetwork.tradingcards.api.config.ColorSeries;
 import net.tinetwork.tradingcards.api.model.DropType;
+import net.tinetwork.tradingcards.api.model.MobGroup;
 import net.tinetwork.tradingcards.api.model.Pack;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.api.model.deck.Deck;
 import net.tinetwork.tradingcards.api.model.schedule.Mode;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
+import org.bukkit.entity.EntityType;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
@@ -167,6 +169,8 @@ public interface Storage<T extends Card<T>> {
 
     DropType getCustomType(final String typeId);
 
+    MobGroup getMobGroup(final String groupId);
+
     //Create
     void createCard(final String cardId, final String rarityId, final String seriesId);
     void createRarity(final String rarityId);
@@ -174,7 +178,15 @@ public interface Storage<T extends Card<T>> {
     void createColorSeries(final String seriesId);
     void createCustomType(final String typeId, final String type);
     void createPack(final String packId);
+    void createMobGroup(final String groupId);
     // Edit
+    // Edit MobGroup
+    void editMobGroupDisplayName(final String groupId, final String displayName);
+    void editMobGroupAddEntityType(final String groupId, final EntityType entityType);
+    void editMobGroupRemoveEntityType(final String groupId, final EntityType entityType);
+    void editMobGroupAddGroup(final String groupId, final String groupToAddId);
+    void editMobGroupRemoveGroup(final String groupId, final String groupToRemoveId);
+    void deleteMobGroup(final String groupId);
     // Edit Card
     void editCardDisplayName(final String rarityId, final String cardId, final String seriesId, final String displayName);
     void editCardSeries(final String rarityId, final String cardId, final String seriesId, final Series value);

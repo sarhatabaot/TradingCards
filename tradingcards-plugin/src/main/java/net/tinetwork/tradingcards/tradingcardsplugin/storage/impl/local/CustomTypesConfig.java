@@ -3,6 +3,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local;
 import com.github.sarhatabaot.kraken.core.config.Transformation;
 import com.github.sarhatabaot.kraken.core.config.YamlConfigurateFile;
 import net.tinetwork.tradingcards.api.model.DropType;
+import net.tinetwork.tradingcards.api.model.MobGroup;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -42,11 +43,11 @@ public class CustomTypesConfig extends YamlConfigurateFile<TradingCards> {
         }
         plugin.debug(CustomTypesConfig.class,"Total Custom Types="+dropTypes.size());
     }
-    public void editType(final String typeId, final String dropType) {
+    public void editType(final String typeId, final MobGroup dropType) {
         final ConfigurationNode dropTypeNode = rootNode.node(typeId);
         try {
             DropType selectedType = getCustomType(typeId);
-            selectedType.setType(dropType);
+            selectedType.setMobGroup(dropType);
             dropTypeNode.set(selectedType);
             loader.save(rootNode);
             reloadConfig();
@@ -77,14 +78,14 @@ public class CustomTypesConfig extends YamlConfigurateFile<TradingCards> {
     @Override
     protected void builderOptions() {
         loaderBuilder.defaultOptions(opts -> opts.serializers(builder ->
-                builder.registerExact(DropTypeSerializer.TYPE, DropTypeSerializer.INSTANCE)));
+                builder.registerExact(DropType.class, new DropTypeSerializer())));
     }
 
     public DropType getCustomType(final String typeId) throws SerializationException {
         return rootNode.node(typeId).get(DropType.class);
     }
 
-    public void createCustomType(final String typeId, final String type) {
+    public void createCustomType(final String typeId, final MobGroup type) {
         try {
             rootNode.node(typeId).set(new DropType(typeId,typeId,type));
             loader.save(rootNode);
@@ -94,10 +95,7 @@ public class CustomTypesConfig extends YamlConfigurateFile<TradingCards> {
         }
     }
 
-    public static class DropTypeSerializer implements TypeSerializer<DropType> {
-        public static final DropTypeSerializer INSTANCE = new DropTypeSerializer();
-        public static final Class<DropType> TYPE = DropType.class;
-
+    public class DropTypeSerializer implements TypeSerializer<DropType> {
         private static final String DISPLAY_NAME = "display-name";
         private static final String DROP_TYPE = "drop-type";
         private DropTypeSerializer(){
@@ -107,7 +105,8 @@ public class CustomTypesConfig extends YamlConfigurateFile<TradingCards> {
         public DropType deserialize(final Type type, final @NotNull ConfigurationNode node) throws SerializationException {
             final String id = node.key().toString();
             final String displayName = node.node(DISPLAY_NAME).getString();
-            final String dropType = node.node(DROP_TYPE).getString();
+            final String groupId = node.node(DROP_TYPE).getString();
+            final MobGroup dropType = plugin.getMobGroupManager().getMobGroup(groupId).get();
             return new DropType(id,displayName,dropType);
         }
 
@@ -119,7 +118,7 @@ public class CustomTypesConfig extends YamlConfigurateFile<TradingCards> {
             }
 
             target.node(DISPLAY_NAME).set(obj.getDisplayName());
-            target.node(DROP_TYPE).set(obj.getType());
+            target.node(DROP_TYPE).set(obj.getMobGroup());
         }
     }
 

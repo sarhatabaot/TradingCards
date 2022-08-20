@@ -81,7 +81,7 @@ public class InfoCommand extends BaseCommand {
             DropType type = plugin.getDropTypeManager().getType(typeId);
             ChatUtil.sendPrefixedMessages(sender,
                     InternalMessages.InfoCommand.TYPE_FORMAT,
-                    type.getId(),type.getDisplayName(),type.getType());
+                    type.getId(),type.getDisplayName(),type.getMobGroup());
         }
 
         @Subcommand("series")
@@ -109,7 +109,7 @@ public class InfoCommand extends BaseCommand {
         @CommandPermission(Permissions.INFO_MOB)
         public void onMobInfo(final CommandSender sender, final EntityType entityType) {
             final DropType dropType = plugin.getDropTypeManager().getMobType(entityType);
-            ChatUtil.sendPrefixedMessage(sender, InternalMessages.InfoCommand.MOB_FORMAT.formatted(entityType.name(), dropType.getType()));
+            ChatUtil.sendPrefixedMessage(sender, InternalMessages.InfoCommand.MOB_FORMAT.formatted(entityType.name(), dropType.getMobGroup()));
         }
     }
 }

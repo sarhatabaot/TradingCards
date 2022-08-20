@@ -187,7 +187,7 @@ public class AllCardManager extends TradingCardManager implements CardManager<Tr
     }
 
     private int getGeneralMobChance(@NotNull DropType dropType) {
-        return switch (dropType.getType()) {
+        return switch (dropType.getMobGroup()) {
             case "boss" -> plugin.getChancesConfig().bossChance();
             case "hostile" -> plugin.getChancesConfig().hostileChance();
             case "neutral" -> plugin.getChancesConfig().neutralChance();

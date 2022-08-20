@@ -52,7 +52,7 @@ public class TradingCardsPlaceholderExpansion extends PlaceholderExpansion {
                     }
 
                     if("type".equalsIgnoreCase(type)) {
-                        return plugin.getDropTypeManager().getType(type).getType();
+                        return plugin.getDropTypeManager().getType(type).getMobGroup();
                     }
                     return null;
                 }

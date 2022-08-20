@@ -3,12 +3,12 @@ package net.tinetwork.tradingcards.api.model;
 public class DropType {
     private final String id;
     private String displayName;
-    private String type;
+    private MobGroup mobGroup;
 
-    public DropType(final String id, final String displayName, final String type) {
+    public DropType(final String id, final String displayName, final MobGroup mobGroup) {
         this.id = id;
         this.displayName = displayName;
-        this.type = type;
+        this.mobGroup = mobGroup;
     }
 
     public String getId() {
@@ -19,16 +19,16 @@ public class DropType {
         return displayName;
     }
 
-    public String getType() {
-        return type;
+    public MobGroup getMobGroup() {
+        return mobGroup;
     }
 
     public void setDisplayName(final String displayName) {
         this.displayName = displayName;
     }
 
-    public void setType(final String type) {
-        this.type = type;
+    public void setMobGroup(final MobGroup mobGroup) {
+        this.mobGroup = mobGroup;
     }
 
     @Override
@@ -36,7 +36,7 @@ public class DropType {
         return "DropType{" +
                 "id='" + id + '\'' +
                 ", displayName='" + displayName + '\'' +
-                ", type='" + type + '\'' +
+                ", type='" + mobGroup + '\'' +
                 '}';
     }
 }

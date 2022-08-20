@@ -22,9 +22,7 @@ public class StorageConfig extends StorageConfigurate {
 
     private String username;
     private String password; //this should not be accessible anywhere except when the db initializes.
-
     private String tablePrefix;
-
     private String defaultSeriesId;
 
     private String defaultCardsFile;

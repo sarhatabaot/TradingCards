@@ -28,7 +28,7 @@ public class CustomDropTypeMigratorBukkitRunnable extends MigratorBukkitRunnable
     @Override
     public void onExecute() throws ConfigurateException {
         for(DropType dropType: source.getDropTypes()) {
-            plugin.getStorage().createCustomType(dropType.getId(),dropType.getType());
+            plugin.getStorage().createCustomType(dropType.getId(),dropType.getMobGroup());
             plugin.getStorage().editCustomTypeDisplayName(dropType.getId(),dropType.getDisplayName());
         }
     }

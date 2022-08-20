@@ -43,6 +43,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.listeners.PackListener;
 import net.tinetwork.tradingcards.tradingcardsplugin.listeners.SpawnerListener;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.BoosterPackManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.DropTypeManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.MobGroupManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingRarityManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.AllCardManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingDeckManager;
@@ -103,6 +104,8 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private DropTypeManager dropTypeManager;
     private TradingRarityManager rarityManager;
     private TradingSeriesManager seriesManager;
+
+    private MobGroupManager mobGroupManager;
 
     /* Hooks */
     private EconomyWrapper economyWrapper = null;
@@ -533,5 +536,9 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     @Override
     public StorageConfigurate getStorageConfig() {
         return storageConfig;
+    }
+
+    public MobGroupManager getMobGroupManager() {
+        return mobGroupManager;
     }
 }
