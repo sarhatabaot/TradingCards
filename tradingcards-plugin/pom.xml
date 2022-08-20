@@ -15,6 +15,7 @@
     </parent>
     <properties>
         <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
+        <build.number>${maven.build.timestamp}</build.number> <!-- overwritten if jenkins -->
 
         <!-- Maven Plugin -->
         <jacoco.version>0.8.8</jacoco.version>
@@ -78,7 +79,7 @@
         <profile>
             <id>development</id>
             <build>
-                <finalName>TradingCards-${project.version}-${maven.build.timestamp}</finalName>
+                <finalName>TradingCards-${project.version}-${build.number}</finalName>
             </build>
             <activation>
                 <activeByDefault>true</activeByDefault>
