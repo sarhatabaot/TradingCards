@@ -49,7 +49,7 @@ public class Chance {
     }
 
     public int getFromMobType(final @NotNull DropType dropType) {
-        return switch (dropType.getType()) {
+        return switch (dropType.getMobGroup()) {
             case "hostile" -> this.getHostile();
             case "neutral" -> this.getNeutral();
             case "passive"-> this.getPassive();
