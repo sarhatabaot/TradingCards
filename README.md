@@ -30,7 +30,7 @@ An updated version of TradingCards with improvements and new features.
 * Proper use of VaultAPI.
 * Improved deck format
 * Tab Completions for commands.
-* Better pack format. [Old format](https://github.com/sarhatabaot/TradingCards/blob/f24613e8c6238413f89085b9d5030afb7acb3afa/tradingcards-plugin/src/main/resources/settings/packs.yml), [New Format](https://github.com/sarhatabaot/TradingCards/blob/master/tradingcards-plugin/src/main/resources/settings/packs.yml)
+* Better pack format. [Old format](https://github.com/sarhatabaot/TradingCards/blob/f24613e8c6238413f89085b9d5030afb7acb3afa/tradingcards-plugin/src/main/resources/settings/packs.yml), [New Format](https://github.com/sarhatabaot/TradingCards/blob/master/tradingcards-plugin/src/main/resources/data/packs.yml)
 * Cached cards
 
 ### Unimplemented:
