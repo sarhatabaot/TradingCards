@@ -13,6 +13,8 @@
 Spigot plugin for Trading Cards.
 An updated version of TradingCards with improvements and new features.
 
+You can find dev builds on https://ci.codemc.io/job/sarhatabaot/job/TradingCards/
+
 ## [Coming from version 5.0.x? See how to migrate here.](https://github.com/sarhatabaot/TradingCards/wiki/Installing-TradingCards#migrating)
 
 ## New Features:
