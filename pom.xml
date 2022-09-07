@@ -30,7 +30,7 @@
         <jetbrains.annotations.version>23.0.0</jetbrains.annotations.version>
         <configurate.version>4.1.2</configurate.version>
         <adventure.version>4.11.0</adventure.version>
-        <junit.jupiter.version>5.8.2</junit.jupiter.version>
+        <junit.jupiter.version>5.9.0</junit.jupiter.version>
         <slf4j.api.version>2.0.0</slf4j.api.version>
         <kraken.version>1.4.2</kraken.version>
         <treasury.version>1.2.0</treasury.version>
