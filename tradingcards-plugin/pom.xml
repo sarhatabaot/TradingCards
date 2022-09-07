@@ -30,7 +30,7 @@
         <placeholderapi.version>2.11.2</placeholderapi.version>
 
         <!-- Tests -->
-        <mockito.version>4.7.0</mockito.version>
+        <mockito.version>4.8.0</mockito.version>
         <mockbukkit.version>2.85.2</mockbukkit.version>
 
         <!-- DB -->
