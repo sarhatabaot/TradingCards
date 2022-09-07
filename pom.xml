@@ -32,7 +32,7 @@
         <adventure.version>4.11.0</adventure.version>
         <junit.jupiter.version>5.9.0</junit.jupiter.version>
         <slf4j.api.version>2.0.0</slf4j.api.version>
-        <kraken.version>1.4.2</kraken.version>
+        <kraken.version>1.5.5</kraken.version>
         <treasury.version>1.2.0</treasury.version>
     </properties>
 
