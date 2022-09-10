@@ -37,6 +37,7 @@ public abstract class GeneralConfigurate extends YamlConfigurateFile<TradingCard
 
     public abstract boolean allowRewards();
 
+    public abstract int deckCustomModelData();
     public abstract boolean rewardBroadcast();
 
     public abstract boolean eatShinyCards();
