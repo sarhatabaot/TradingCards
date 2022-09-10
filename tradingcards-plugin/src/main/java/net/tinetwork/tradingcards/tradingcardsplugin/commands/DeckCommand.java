@@ -52,7 +52,7 @@ public class DeckCommand extends BaseCommand {
 
 	private void dropDeckItem(final Player player, int deckNumber){
 		if (!deckManager.hasDeckItem(player, deckNumber)) {
-			CardUtil.dropItem(player, deckManager.getNbtItem(player, deckNumber));
+			CardUtil.dropItem(player, deckManager.getDeckItem(player, deckNumber));
 		} else {
 			ChatUtil.sendMessage(player, plugin.getMessagesConfig().alreadyHaveDeck());
 		}

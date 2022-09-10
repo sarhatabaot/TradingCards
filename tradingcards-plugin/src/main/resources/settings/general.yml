@@ -77,8 +77,8 @@ deck-prefix: "&7[&fDeck&7]&f "
 # Should we drop items in decks that aren't cards? (if false, it will delete the item)
 drop-deck-items: true
 
-# Custom model for decks, set to -1 to disable
-deck-custom-model-data: -1
+# Custom model for decks, set to 0 to disable
+deck-custom-model-data: 0
 
 
 # ##############################
