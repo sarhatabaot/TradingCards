@@ -97,7 +97,7 @@ public class GeneralConfig extends GeneralConfigurate {
         //Decks
         this.deckInCreative = rootNode.node("decks-in-creative").getBoolean(General.DECKS_IN_CREATIVE);
         this.useDeckItem = rootNode.node("use-deck-item").getBoolean(General.USE_DECK_ITEM);
-        this.deckCustomModelData = rootNode.node("deck-custom-model-data").getInt(-1);
+        this.deckCustomModelData = rootNode.node("deck-custom-model-data").getInt(0);
 
         this.deckRows = rootNode.node("deck-rows").getInt(General.DECK_ROWS);
 

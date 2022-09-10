@@ -153,20 +153,12 @@ public class TradingDeckManager implements DeckManager {
     @Override
     public ItemStack createDeckItem(@NotNull final Player player, final int deckNumber) {
         ItemStack deck = plugin.getGeneralConfig().blankDeck();
-        int customModelData = plugin.getGeneralConfig().deckCustomModelData();
         ItemMeta deckMeta = deck.getItemMeta();
         //probably best to have this set somewhere
         deckMeta.setDisplayName(ChatUtil.color(plugin.getGeneralConfig().deckPrefix() + player.getName() + "'s Deck #" + deckNumber));
         deckMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         deck.setItemMeta(deckMeta);
         deck.addUnsafeEnchantment(Enchantment.DURABILITY, 10);
-
-        if(customModelData > -1) {
-            NBTItem nbtItem = new NBTItem(deck);
-            nbtItem.setInteger(NbtUtils.NBT_CARD_CUSTOM_MODEL,customModelData);
-            deck = nbtItem.getItem();
-        }
-
         return deck;
     }
 
@@ -176,6 +168,12 @@ public class TradingDeckManager implements DeckManager {
         NBTItem nbtItem = new NBTItem(createDeckItem(player, deckNumber));
         NBTCompound nbtCompound = nbtItem.getOrCreateCompound(NbtUtils.TC_COMPOUND);
         nbtCompound.setInteger(NbtUtils.TC_DECK_NUMBER, deckNumber);
+        int customModelData = plugin.getGeneralConfig().deckCustomModelData();
+
+        if(customModelData != 0) {
+            nbtItem.setInteger(NbtUtils.NBT_CARD_CUSTOM_MODEL,customModelData);
+        }
+
         return nbtItem.getItem();
     }
 
