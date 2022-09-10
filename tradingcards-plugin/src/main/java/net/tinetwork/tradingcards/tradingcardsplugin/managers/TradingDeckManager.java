@@ -158,7 +158,6 @@ public class TradingDeckManager implements DeckManager {
         deckMeta.setDisplayName(ChatUtil.color(plugin.getGeneralConfig().deckPrefix() + player.getName() + "'s Deck #" + deckNumber));
         deckMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         deck.setItemMeta(deckMeta);
-        deck.addUnsafeEnchantment(Enchantment.DURABILITY, 10);
         return deck;
     }
 
@@ -168,7 +167,24 @@ public class TradingDeckManager implements DeckManager {
         NBTItem nbtItem = new NBTItem(createDeckItem(player, deckNumber));
         NBTCompound nbtCompound = nbtItem.getOrCreateCompound(NbtUtils.TC_COMPOUND);
         nbtCompound.setInteger(NbtUtils.TC_DECK_NUMBER, deckNumber);
+        int customModelData = plugin.getGeneralConfig().deckCustomModelData();
+
+        plugin.debug(TradingDeckManager.class,"CustomModelData = "+customModelData);
+        if(customModelData != 0) {
+            nbtItem.setInteger(NbtUtils.NBT_CARD_CUSTOM_MODEL, customModelData);
+        }
+
         return nbtItem.getItem();
+    }
+
+    public ItemStack getDeckItem(@NotNull final Player player, final int deckNumber) {
+        final ItemStack deck = getNbtItem(player, deckNumber);
+
+        if(plugin.getGeneralConfig().deckCustomModelData() == 0) {
+            deck.addUnsafeEnchantment(Enchantment.DURABILITY, 10);
+        }
+
+        return deck;
     }
 
     public boolean isDeckMaterial(final Material material) {
