@@ -39,7 +39,7 @@
         <jooq.version>3.17.4</jooq.version>
         <mariadb.version>2.7.4</mariadb.version>
         <!-- Others -->
-        <zip4j.version>2.11.1</zip4j.version>
+        <zip4j.version>2.11.2</zip4j.version>
 
     </properties>
 
