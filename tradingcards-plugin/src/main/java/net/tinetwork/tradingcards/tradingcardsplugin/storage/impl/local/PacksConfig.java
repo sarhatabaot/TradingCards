@@ -100,7 +100,7 @@ public class PacksConfig extends YamlConfigurateFile<TradingCards> {
 
     public void createPack(final String packId){
         try {
-            rootNode.node(packId).set(new Pack(packId,new ArrayList<>(),packId,100.0,"","cards.packs."+packId));
+            rootNode.node(packId).set(new Pack(packId,new ArrayList<>(),packId,100.0,"","cards.packs."+packId, new ArrayList<>()));
             loader.save(rootNode);
             reloadConfig();
         } catch (ConfigurateException e) {
@@ -133,6 +133,7 @@ public class PacksConfig extends YamlConfigurateFile<TradingCards> {
         private static final String PERMISSION = "permission";
         private static final String DISPLAY_NAME = "display-name";
         private static final String CURRENCY_ID = "currency-id";
+        private static final String TRADE = "trade";
 
         private PackSerializer() {
         }
@@ -140,13 +141,14 @@ public class PacksConfig extends YamlConfigurateFile<TradingCards> {
         @Override
         public Pack deserialize(Type type, ConfigurationNode node) throws SerializationException {
             final ConfigurationNode contentNode = node.node(CONTENT);
+            final ConfigurationNode tradeNode = node.node(TRADE);
             final ConfigurationNode priceNode = node.node(PRICE);
             final ConfigurationNode permissionsNode = node.node(PERMISSION);
             final ConfigurationNode displayNameNode = node.node(DISPLAY_NAME);
             final String currencyId = node.node(CURRENCY_ID).getString("tc-internal-default");
             final String id = node.key().toString();
 
-            final List<String> contentStringList = contentNode.getList(String.class);
+            final List<String> contentStringList = contentNode.getList(String.class, new ArrayList<>());
             final List<Pack.PackEntry> packEntryList = new ArrayList<>();
             for(String entry: contentStringList) {
                 packEntryList.add(Pack.PackEntry.fromString(entry));
@@ -155,7 +157,13 @@ public class PacksConfig extends YamlConfigurateFile<TradingCards> {
             final String permissions = permissionsNode.getString();
             final String displayName = getDisplayName(displayNameNode.getString(),node);
 
-            return new Pack(id,packEntryList,displayName, price,currencyId,permissions);
+            final List<String> tradeStringList = tradeNode.getList(String.class, new ArrayList<>());
+            final List<Pack.PackEntry> tradeCardList = new ArrayList<>();
+            for(String entry: tradeStringList) {
+                tradeCardList.add(Pack.PackEntry.fromString(entry));
+            }
+
+            return new Pack(id,packEntryList,displayName, price,currencyId,permissions,tradeCardList);
         }
 
         private String getDisplayName(final String displayName, final ConfigurationNode node) {

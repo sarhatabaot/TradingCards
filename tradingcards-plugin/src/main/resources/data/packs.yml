@@ -13,6 +13,10 @@ advanced-pack:
     - "uncommon:6:default"
     - "rare:2:default"
   price: 150.00
+  # Using the same format as with content.
+  # You can leave this out if you don't want to use this feature.
+  trade:
+    - "common:18:default"
   permission: "cards.packs.advanced-pack"
 expert-pack:
   display-name: "Expert Pack"
