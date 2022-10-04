@@ -14,13 +14,16 @@ public class Pack {
     private String currencyId;
     private String permission;
 
-    public Pack(final String id, final List<PackEntry> packEntryList, final String displayName, final double buyPrice, final String currencyId, final String permission) {
+    private final List<PackEntry> tradeCards;
+
+    public Pack(final String id, final List<PackEntry> packEntryList, final String displayName, final double buyPrice, final String currencyId, final String permission, final List<PackEntry> tradeCards) {
         this.id = id;
         this.packEntryList = packEntryList;
         this.displayName = displayName;
         this.buyPrice = buyPrice;
         this.currencyId = currencyId;
         this.permission = permission;
+        this.tradeCards = tradeCards;
     }
 
     public String getDisplayName() {
@@ -39,6 +42,10 @@ public class Pack {
 
     public List<PackEntry> getPackEntryList() {
         return packEntryList;
+    }
+
+    public List<PackEntry> getTradeCards() {
+        return tradeCards;
     }
 
     public String getCurrencyId() {
@@ -82,17 +89,18 @@ public class Pack {
         return Objects.hash(id, packEntryList, displayName, buyPrice, permission);
     }
 
-    @Contract(pure = true)
     @Override
-    public @NotNull String toString() {
+    public String toString() {
         return "Pack[" +
-                "id=" + id + ", " +
-                "packEntryList=" + packEntryList + ", " +
-                "displayName=" + displayName + ", " +
-                "price=" + buyPrice + ", " +
-                "permissions=" + permission + ']';
+                "id='" + id + '\'' +
+                ", packEntryList=" + packEntryList +
+                ", displayName='" + displayName + '\'' +
+                ", buyPrice=" + buyPrice +
+                ", currencyId='" + currencyId + '\'' +
+                ", permission='" + permission + '\'' +
+                ", tradeCards=" + tradeCards +
+                ']';
     }
-
 
     public record PackEntry(String rarityId, int amount, String seriesId) {
 
