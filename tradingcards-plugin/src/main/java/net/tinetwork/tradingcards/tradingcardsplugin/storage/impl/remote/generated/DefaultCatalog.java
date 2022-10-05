@@ -26,9 +26,9 @@ public class DefaultCatalog extends CatalogImpl {
     public static final DefaultCatalog DEFAULT_CATALOG = new DefaultCatalog();
 
     /**
-     * The schema <code>minecraft</code>.
+     * The schema <code>DEFAULT_SCHEMA</code>.
      */
-    public final Minecraft MINECRAFT = Minecraft.MINECRAFT;
+    public final DefaultSchema DEFAULT_SCHEMA = DefaultSchema.DEFAULT_SCHEMA;
 
     /**
      * No further instances allowed
@@ -40,15 +40,15 @@ public class DefaultCatalog extends CatalogImpl {
     @Override
     public final List<Schema> getSchemas() {
         return Arrays.asList(
-            Minecraft.MINECRAFT
+            DefaultSchema.DEFAULT_SCHEMA
         );
     }
 
     /**
-     * A reference to the 3.16 minor release of the code generator. If this
+     * A reference to the 3.17 minor release of the code generator. If this
      * doesn't compile, it's because the runtime library uses an older minor
-     * release, namely: 3.16. You can turn off the generation of this reference
+     * release, namely: 3.17. You can turn off the generation of this reference
      * by specifying /configuration/generator/generate/jooqVersionReference
      */
-    private static final String REQUIRE_RUNTIME_JOOQ_VERSION = Constants.VERSION_3_16;
+    private static final String REQUIRE_RUNTIME_JOOQ_VERSION = Constants.VERSION_3_17;
 }

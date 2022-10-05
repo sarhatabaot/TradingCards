@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class EmptyPack extends Pack{
     private EmptyPack() {
-        super("tc-internal-null-pack", Collections.emptyList(), "", -1.0D, "","tc-internal.null-pack");
+        super("tc-internal-null-pack", Collections.emptyList(), "", -1.0D, "","tc-internal.null-pack", Collections.emptyList());
     }
 
     @Contract(" -> new")

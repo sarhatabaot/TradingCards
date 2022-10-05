@@ -4,17 +4,22 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables;
 
 
+import java.util.function.Function;
+
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.DefaultSchema;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.Keys;
-import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.Minecraft;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.enums.CustomTypesDropType;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.records.CustomTypesRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Function3;
 import org.jooq.Name;
 import org.jooq.Record;
+import org.jooq.Records;
 import org.jooq.Row3;
 import org.jooq.Schema;
+import org.jooq.SelectField;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
@@ -33,7 +38,7 @@ public class CustomTypes extends TableImpl<CustomTypesRecord> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * The reference instance of <code>minecraft.custom_types</code>
+     * The reference instance of <code>{prefix}custom_types</code>
      */
     public static final CustomTypes CUSTOM_TYPES = new CustomTypes();
 
@@ -46,19 +51,19 @@ public class CustomTypes extends TableImpl<CustomTypesRecord> {
     }
 
     /**
-     * The column <code>minecraft.custom_types.type_id</code>.
+     * The column <code>{prefix}custom_types.type_id</code>.
      */
     public final TableField<CustomTypesRecord, String> TYPE_ID = createField(DSL.name("type_id"), SQLDataType.VARCHAR(200).nullable(false), this, "");
 
     /**
-     * The column <code>minecraft.custom_types.display_name</code>.
+     * The column <code>{prefix}custom_types.display_name</code>.
      */
     public final TableField<CustomTypesRecord, String> DISPLAY_NAME = createField(DSL.name("display_name"), SQLDataType.CLOB, this, "");
 
     /**
-     * The column <code>minecraft.custom_types.drop_type</code>.
+     * The column <code>{prefix}custom_types.drop_type</code>.
      */
-    public final TableField<CustomTypesRecord, CustomTypesDropType> DROP_TYPE = createField(DSL.name("drop_type"), SQLDataType.VARCHAR(7).asEnumDataType(net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.enums.CustomTypesDropType.class), this, "");
+    public final TableField<CustomTypesRecord, CustomTypesDropType> DROP_TYPE = createField(DSL.name("drop_type"), SQLDataType.VARCHAR.asEnumDataType(net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.enums.CustomTypesDropType.class), this, "");
 
     private CustomTypes(Name alias, Table<CustomTypesRecord> aliased) {
         this(alias, aliased, null);
@@ -69,24 +74,24 @@ public class CustomTypes extends TableImpl<CustomTypesRecord> {
     }
 
     /**
-     * Create an aliased <code>minecraft.custom_types</code> table reference
+     * Create an aliased <code>{prefix}custom_types</code> table reference
      */
     public CustomTypes(String alias) {
         this(DSL.name(alias), CUSTOM_TYPES);
     }
 
     /**
-     * Create an aliased <code>minecraft.custom_types</code> table reference
+     * Create an aliased <code>{prefix}custom_types</code> table reference
      */
     public CustomTypes(Name alias) {
         this(alias, CUSTOM_TYPES);
     }
 
     /**
-     * Create a <code>minecraft.custom_types</code> table reference
+     * Create a <code>{prefix}custom_types</code> table reference
      */
     public CustomTypes() {
-        this(DSL.name("custom_types"), null);
+        this(DSL.name("{prefix}custom_types"), null);
     }
 
     public <O extends Record> CustomTypes(Table<O> child, ForeignKey<O, CustomTypesRecord> key) {
@@ -95,12 +100,12 @@ public class CustomTypes extends TableImpl<CustomTypesRecord> {
 
     @Override
     public Schema getSchema() {
-        return aliased() ? null : Minecraft.MINECRAFT;
+        return aliased() ? null : DefaultSchema.DEFAULT_SCHEMA;
     }
 
     @Override
     public UniqueKey<CustomTypesRecord> getPrimaryKey() {
-        return Keys.KEY_CUSTOM_TYPES_PRIMARY;
+        return Keys.CONSTRAINT_D;
     }
 
     @Override
@@ -111,6 +116,11 @@ public class CustomTypes extends TableImpl<CustomTypesRecord> {
     @Override
     public CustomTypes as(Name alias) {
         return new CustomTypes(alias, this);
+    }
+
+    @Override
+    public CustomTypes as(Table<?> alias) {
+        return new CustomTypes(alias.getQualifiedName(), this);
     }
 
     /**
@@ -129,6 +139,14 @@ public class CustomTypes extends TableImpl<CustomTypesRecord> {
         return new CustomTypes(name, null);
     }
 
+    /**
+     * Rename this table
+     */
+    @Override
+    public CustomTypes rename(Table<?> name) {
+        return new CustomTypes(name.getQualifiedName(), null);
+    }
+
     // -------------------------------------------------------------------------
     // Row3 type methods
     // -------------------------------------------------------------------------
@@ -136,5 +154,20 @@ public class CustomTypes extends TableImpl<CustomTypesRecord> {
     @Override
     public Row3<String, String, CustomTypesDropType> fieldsRow() {
         return (Row3) super.fieldsRow();
+    }
+
+    /**
+     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     */
+    public <U> SelectField<U> mapping(Function3<? super String, ? super String, ? super CustomTypesDropType, ? extends U> from) {
+        return convertFrom(Records.mapping(from));
+    }
+
+    /**
+     * Convenience mapping calling {@link SelectField#convertFrom(Class,
+     * Function)}.
+     */
+    public <U> SelectField<U> mapping(Class<U> toType, Function3<? super String, ? super String, ? super CustomTypesDropType, ? extends U> from) {
+        return convertFrom(toType, Records.mapping(from));
     }
 }

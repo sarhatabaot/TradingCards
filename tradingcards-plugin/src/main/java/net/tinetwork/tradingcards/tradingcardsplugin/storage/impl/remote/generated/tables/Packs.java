@@ -4,17 +4,21 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables;
 
 
+import java.util.function.Function;
+
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.DefaultSchema;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.Keys;
-import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.Minecraft;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.records.PacksRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Function5;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row4;
+import org.jooq.Records;
 import org.jooq.Row5;
 import org.jooq.Schema;
+import org.jooq.SelectField;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
@@ -33,7 +37,7 @@ public class Packs extends TableImpl<PacksRecord> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * The reference instance of <code>minecraft.packs</code>
+     * The reference instance of <code>{prefix}packs</code>
      */
     public static final Packs PACKS = new Packs();
 
@@ -46,26 +50,29 @@ public class Packs extends TableImpl<PacksRecord> {
     }
 
     /**
-     * The column <code>minecraft.packs.pack_id</code>.
+     * The column <code>{prefix}packs.pack_id</code>.
      */
     public final TableField<PacksRecord, String> PACK_ID = createField(DSL.name("pack_id"), SQLDataType.VARCHAR(200).nullable(false), this, "");
 
     /**
-     * The column <code>minecraft.packs.display_name</code>.
+     * The column <code>{prefix}packs.display_name</code>.
      */
     public final TableField<PacksRecord, String> DISPLAY_NAME = createField(DSL.name("display_name"), SQLDataType.CLOB, this, "");
 
     /**
-     * The column <code>minecraft.packs.buy_price</code>.
+     * The column <code>{prefix}packs.buy_price</code>.
      */
     public final TableField<PacksRecord, Double> BUY_PRICE = createField(DSL.name("buy_price"), SQLDataType.DOUBLE, this, "");
 
     /**
-     * The column <code>minecraft.packs.permission</code>.
+     * The column <code>{prefix}packs.permission</code>.
      */
     public final TableField<PacksRecord, String> PERMISSION = createField(DSL.name("permission"), SQLDataType.VARCHAR(200), this, "");
 
-    public final TableField<PacksRecord, String> CURRENCY_ID = createField(DSL.name("currency_id"), SQLDataType.VARCHAR(30), this, "");
+    /**
+     * The column <code>{prefix}packs.currency_id</code>.
+     */
+    public final TableField<PacksRecord, String> CURRENCY_ID = createField(DSL.name("currency_id"), SQLDataType.VARCHAR(30).defaultValue(DSL.field("'tc-internal-default'", SQLDataType.VARCHAR)), this, "");
 
     private Packs(Name alias, Table<PacksRecord> aliased) {
         this(alias, aliased, null);
@@ -76,24 +83,24 @@ public class Packs extends TableImpl<PacksRecord> {
     }
 
     /**
-     * Create an aliased <code>minecraft.packs</code> table reference
+     * Create an aliased <code>{prefix}packs</code> table reference
      */
     public Packs(String alias) {
         this(DSL.name(alias), PACKS);
     }
 
     /**
-     * Create an aliased <code>minecraft.packs</code> table reference
+     * Create an aliased <code>{prefix}packs</code> table reference
      */
     public Packs(Name alias) {
         this(alias, PACKS);
     }
 
     /**
-     * Create a <code>minecraft.packs</code> table reference
+     * Create a <code>{prefix}packs</code> table reference
      */
     public Packs() {
-        this(DSL.name("packs"), null);
+        this(DSL.name("{prefix}packs"), null);
     }
 
     public <O extends Record> Packs(Table<O> child, ForeignKey<O, PacksRecord> key) {
@@ -102,12 +109,12 @@ public class Packs extends TableImpl<PacksRecord> {
 
     @Override
     public Schema getSchema() {
-        return aliased() ? null : Minecraft.MINECRAFT;
+        return aliased() ? null : DefaultSchema.DEFAULT_SCHEMA;
     }
 
     @Override
     public UniqueKey<PacksRecord> getPrimaryKey() {
-        return Keys.KEY_PACKS_PRIMARY;
+        return Keys.CONSTRAINT_FB;
     }
 
     @Override
@@ -118,6 +125,11 @@ public class Packs extends TableImpl<PacksRecord> {
     @Override
     public Packs as(Name alias) {
         return new Packs(alias, this);
+    }
+
+    @Override
+    public Packs as(Table<?> alias) {
+        return new Packs(alias.getQualifiedName(), this);
     }
 
     /**
@@ -136,12 +148,35 @@ public class Packs extends TableImpl<PacksRecord> {
         return new Packs(name, null);
     }
 
+    /**
+     * Rename this table
+     */
+    @Override
+    public Packs rename(Table<?> name) {
+        return new Packs(name.getQualifiedName(), null);
+    }
+
     // -------------------------------------------------------------------------
-    // Row4 type methods
+    // Row5 type methods
     // -------------------------------------------------------------------------
 
     @Override
     public Row5<String, String, Double, String, String> fieldsRow() {
         return (Row5) super.fieldsRow();
+    }
+
+    /**
+     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     */
+    public <U> SelectField<U> mapping(Function5<? super String, ? super String, ? super Double, ? super String, ? super String, ? extends U> from) {
+        return convertFrom(Records.mapping(from));
+    }
+
+    /**
+     * Convenience mapping calling {@link SelectField#convertFrom(Class,
+     * Function)}.
+     */
+    public <U> SelectField<U> mapping(Class<U> toType, Function5<? super String, ? super String, ? super Double, ? super String, ? super String, ? extends U> from) {
+        return convertFrom(toType, Records.mapping(from));
     }
 }

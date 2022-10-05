@@ -22,42 +22,42 @@ public class RewardsRecord extends UpdatableRecordImpl<RewardsRecord> implements
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>minecraft.rewards.rarity_id</code>.
+     * Setter for <code>{prefix}rewards.rarity_id</code>.
      */
     public void setRarityId(String value) {
         set(0, value);
     }
 
     /**
-     * Getter for <code>minecraft.rewards.rarity_id</code>.
+     * Getter for <code>{prefix}rewards.rarity_id</code>.
      */
     public String getRarityId() {
         return (String) get(0);
     }
 
     /**
-     * Setter for <code>minecraft.rewards.command</code>.
+     * Setter for <code>{prefix}rewards.command</code>.
      */
     public void setCommand(String value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>minecraft.rewards.command</code>.
+     * Getter for <code>{prefix}rewards.command</code>.
      */
     public String getCommand() {
         return (String) get(1);
     }
 
     /**
-     * Setter for <code>minecraft.rewards.command_order</code>.
+     * Setter for <code>{prefix}rewards.command_order</code>.
      */
     public void setCommandOrder(Integer value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>minecraft.rewards.command_order</code>.
+     * Getter for <code>{prefix}rewards.command_order</code>.
      */
     public Integer getCommandOrder() {
         return (Integer) get(2);

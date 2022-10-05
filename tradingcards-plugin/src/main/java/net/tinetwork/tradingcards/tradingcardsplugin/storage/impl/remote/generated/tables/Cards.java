@@ -4,17 +4,22 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables;
 
 
+import java.util.function.Function;
+
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.DefaultSchema;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.Keys;
-import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.Minecraft;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.records.CardsRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Function12;
+import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row11;
+import org.jooq.Records;
 import org.jooq.Row12;
 import org.jooq.Schema;
+import org.jooq.SelectField;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
@@ -33,7 +38,7 @@ public class Cards extends TableImpl<CardsRecord> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * The reference instance of <code>minecraft.cards</code>
+     * The reference instance of <code>{prefix}cards</code>
      */
     public static final Cards CARDS = new Cards();
 
@@ -46,61 +51,64 @@ public class Cards extends TableImpl<CardsRecord> {
     }
 
     /**
-     * The column <code>minecraft.cards.id</code>.
+     * The column <code>{prefix}cards.id</code>.
      */
-    public final TableField<CardsRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<CardsRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>minecraft.cards.card_id</code>.
+     * The column <code>{prefix}cards.card_id</code>.
      */
     public final TableField<CardsRecord, String> CARD_ID = createField(DSL.name("card_id"), SQLDataType.VARCHAR(200).nullable(false), this, "");
 
     /**
-     * The column <code>minecraft.cards.display_name</code>.
+     * The column <code>{prefix}cards.display_name</code>.
      */
     public final TableField<CardsRecord, String> DISPLAY_NAME = createField(DSL.name("display_name"), SQLDataType.CLOB, this, "");
 
     /**
-     * The column <code>minecraft.cards.rarity_id</code>.
+     * The column <code>{prefix}cards.rarity_id</code>.
      */
     public final TableField<CardsRecord, String> RARITY_ID = createField(DSL.name("rarity_id"), SQLDataType.VARCHAR(200).nullable(false), this, "");
 
     /**
-     * The column <code>minecraft.cards.has_shiny</code>.
+     * The column <code>{prefix}cards.has_shiny</code>.
      */
-    public final TableField<CardsRecord, Byte> HAS_SHINY = createField(DSL.name("has_shiny"), SQLDataType.TINYINT.nullable(false), this, "");
+    public final TableField<CardsRecord, Boolean> HAS_SHINY = createField(DSL.name("has_shiny"), SQLDataType.BOOLEAN, this, "");
 
     /**
-     * The column <code>minecraft.cards.series_id</code>.
+     * The column <code>{prefix}cards.series_id</code>.
      */
     public final TableField<CardsRecord, String> SERIES_ID = createField(DSL.name("series_id"), SQLDataType.VARCHAR(200).nullable(false), this, "");
 
     /**
-     * The column <code>minecraft.cards.info</code>.
+     * The column <code>{prefix}cards.info</code>.
      */
     public final TableField<CardsRecord, String> INFO = createField(DSL.name("info"), SQLDataType.CLOB, this, "");
 
     /**
-     * The column <code>minecraft.cards.custom_model_data</code>.
+     * The column <code>{prefix}cards.custom_model_data</code>.
      */
     public final TableField<CardsRecord, Integer> CUSTOM_MODEL_DATA = createField(DSL.name("custom_model_data"), SQLDataType.INTEGER, this, "");
 
     /**
-     * The column <code>minecraft.cards.buy_price</code>.
+     * The column <code>{prefix}cards.buy_price</code>.
      */
     public final TableField<CardsRecord, Double> BUY_PRICE = createField(DSL.name("buy_price"), SQLDataType.DOUBLE, this, "");
 
     /**
-     * The column <code>minecraft.cards.sell_price</code>.
+     * The column <code>{prefix}cards.sell_price</code>.
      */
     public final TableField<CardsRecord, Double> SELL_PRICE = createField(DSL.name("sell_price"), SQLDataType.DOUBLE, this, "");
 
     /**
-     * The column <code>minecraft.cards.type_id</code>.
+     * The column <code>{prefix}cards.type_id</code>.
      */
-    public final TableField<CardsRecord, String> TYPE_ID = createField(DSL.name("type_id"), SQLDataType.VARCHAR(200).nullable(false), this, "");
+    public final TableField<CardsRecord, String> TYPE_ID = createField(DSL.name("type_id"), SQLDataType.VARCHAR(200), this, "");
 
-    public final TableField<CardsRecord, String> CURRENCY_ID = createField(DSL.name("currency_id"), SQLDataType.VARCHAR(30).nullable(false), this, "");
+    /**
+     * The column <code>{prefix}cards.currency_id</code>.
+     */
+    public final TableField<CardsRecord, String> CURRENCY_ID = createField(DSL.name("currency_id"), SQLDataType.VARCHAR(30).defaultValue(DSL.field("'tc-internal-default'", SQLDataType.VARCHAR)), this, "");
 
     private Cards(Name alias, Table<CardsRecord> aliased) {
         this(alias, aliased, null);
@@ -111,24 +119,24 @@ public class Cards extends TableImpl<CardsRecord> {
     }
 
     /**
-     * Create an aliased <code>minecraft.cards</code> table reference
+     * Create an aliased <code>{prefix}cards</code> table reference
      */
     public Cards(String alias) {
         this(DSL.name(alias), CARDS);
     }
 
     /**
-     * Create an aliased <code>minecraft.cards</code> table reference
+     * Create an aliased <code>{prefix}cards</code> table reference
      */
     public Cards(Name alias) {
         this(alias, CARDS);
     }
 
     /**
-     * Create a <code>minecraft.cards</code> table reference
+     * Create a <code>{prefix}cards</code> table reference
      */
     public Cards() {
-        this(DSL.name("cards"), null);
+        this(DSL.name("{prefix}cards"), null);
     }
 
     public <O extends Record> Cards(Table<O> child, ForeignKey<O, CardsRecord> key) {
@@ -137,12 +145,17 @@ public class Cards extends TableImpl<CardsRecord> {
 
     @Override
     public Schema getSchema() {
-        return aliased() ? null : Minecraft.MINECRAFT;
+        return aliased() ? null : DefaultSchema.DEFAULT_SCHEMA;
+    }
+
+    @Override
+    public Identity<CardsRecord, Integer> getIdentity() {
+        return (Identity<CardsRecord, Integer>) super.getIdentity();
     }
 
     @Override
     public UniqueKey<CardsRecord> getPrimaryKey() {
-        return Keys.KEY_CARDS_PRIMARY;
+        return Keys.CONSTRAINT_FA;
     }
 
     @Override
@@ -153,6 +166,11 @@ public class Cards extends TableImpl<CardsRecord> {
     @Override
     public Cards as(Name alias) {
         return new Cards(alias, this);
+    }
+
+    @Override
+    public Cards as(Table<?> alias) {
+        return new Cards(alias.getQualifiedName(), this);
     }
 
     /**
@@ -171,12 +189,35 @@ public class Cards extends TableImpl<CardsRecord> {
         return new Cards(name, null);
     }
 
+    /**
+     * Rename this table
+     */
+    @Override
+    public Cards rename(Table<?> name) {
+        return new Cards(name.getQualifiedName(), null);
+    }
+
     // -------------------------------------------------------------------------
     // Row12 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row12<Integer, String, String, String, Byte, String, String, Integer, Double, Double, String, String> fieldsRow() {
+    public Row12<Integer, String, String, String, Boolean, String, String, Integer, Double, Double, String, String> fieldsRow() {
         return (Row12) super.fieldsRow();
+    }
+
+    /**
+     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     */
+    public <U> SelectField<U> mapping(Function12<? super Integer, ? super String, ? super String, ? super String, ? super Boolean, ? super String, ? super String, ? super Integer, ? super Double, ? super Double, ? super String, ? super String, ? extends U> from) {
+        return convertFrom(Records.mapping(from));
+    }
+
+    /**
+     * Convenience mapping calling {@link SelectField#convertFrom(Class,
+     * Function)}.
+     */
+    public <U> SelectField<U> mapping(Class<U> toType, Function12<? super Integer, ? super String, ? super String, ? super String, ? super Boolean, ? super String, ? super String, ? super Integer, ? super Double, ? super Double, ? super String, ? super String, ? extends U> from) {
+        return convertFrom(toType, Records.mapping(from));
     }
 }
