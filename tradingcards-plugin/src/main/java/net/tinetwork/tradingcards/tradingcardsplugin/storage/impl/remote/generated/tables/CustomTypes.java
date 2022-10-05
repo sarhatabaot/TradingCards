@@ -51,19 +51,19 @@ public class CustomTypes extends TableImpl<CustomTypesRecord> {
     }
 
     /**
-     * The column <code>{prefix}custom_types.TYPE_ID</code>.
+     * The column <code>{prefix}custom_types.type_id</code>.
      */
-    public final TableField<CustomTypesRecord, String> TYPE_ID = createField(DSL.name("TYPE_ID"), SQLDataType.VARCHAR(200).nullable(false), this, "");
+    public final TableField<CustomTypesRecord, String> TYPE_ID = createField(DSL.name("type_id"), SQLDataType.VARCHAR(200).nullable(false), this, "");
 
     /**
-     * The column <code>{prefix}custom_types.DISPLAY_NAME</code>.
+     * The column <code>{prefix}custom_types.display_name</code>.
      */
-    public final TableField<CustomTypesRecord, String> DISPLAY_NAME = createField(DSL.name("DISPLAY_NAME"), SQLDataType.CLOB, this, "");
+    public final TableField<CustomTypesRecord, String> DISPLAY_NAME = createField(DSL.name("display_name"), SQLDataType.CLOB, this, "");
 
     /**
-     * The column <code>{prefix}custom_types.DROP_TYPE</code>.
+     * The column <code>{prefix}custom_types.drop_type</code>.
      */
-    public final TableField<CustomTypesRecord, CustomTypesDropType> DROP_TYPE = createField(DSL.name("DROP_TYPE"), SQLDataType.VARCHAR.asEnumDataType(net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.enums.CustomTypesDropType.class), this, "");
+    public final TableField<CustomTypesRecord, CustomTypesDropType> DROP_TYPE = createField(DSL.name("drop_type"), SQLDataType.VARCHAR.asEnumDataType(net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.enums.CustomTypesDropType.class), this, "");
 
     private CustomTypes(Name alias, Table<CustomTypesRecord> aliased) {
         this(alias, aliased, null);

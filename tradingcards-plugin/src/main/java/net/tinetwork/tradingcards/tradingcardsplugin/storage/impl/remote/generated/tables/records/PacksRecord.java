@@ -22,70 +22,70 @@ public class PacksRecord extends UpdatableRecordImpl<PacksRecord> implements Rec
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>{prefix}packs.PACK_ID</code>.
+     * Setter for <code>{prefix}packs.pack_id</code>.
      */
     public void setPackId(String value) {
         set(0, value);
     }
 
     /**
-     * Getter for <code>{prefix}packs.PACK_ID</code>.
+     * Getter for <code>{prefix}packs.pack_id</code>.
      */
     public String getPackId() {
         return (String) get(0);
     }
 
     /**
-     * Setter for <code>{prefix}packs.DISPLAY_NAME</code>.
+     * Setter for <code>{prefix}packs.display_name</code>.
      */
     public void setDisplayName(String value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>{prefix}packs.DISPLAY_NAME</code>.
+     * Getter for <code>{prefix}packs.display_name</code>.
      */
     public String getDisplayName() {
         return (String) get(1);
     }
 
     /**
-     * Setter for <code>{prefix}packs.BUY_PRICE</code>.
+     * Setter for <code>{prefix}packs.buy_price</code>.
      */
     public void setBuyPrice(Double value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>{prefix}packs.BUY_PRICE</code>.
+     * Getter for <code>{prefix}packs.buy_price</code>.
      */
     public Double getBuyPrice() {
         return (Double) get(2);
     }
 
     /**
-     * Setter for <code>{prefix}packs.PERMISSION</code>.
+     * Setter for <code>{prefix}packs.permission</code>.
      */
     public void setPermission(String value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>{prefix}packs.PERMISSION</code>.
+     * Getter for <code>{prefix}packs.permission</code>.
      */
     public String getPermission() {
         return (String) get(3);
     }
 
     /**
-     * Setter for <code>{prefix}packs.CURRENCY_ID</code>.
+     * Setter for <code>{prefix}packs.currency_id</code>.
      */
     public void setCurrencyId(String value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>{prefix}packs.CURRENCY_ID</code>.
+     * Getter for <code>{prefix}packs.currency_id</code>.
      */
     public String getCurrencyId() {
         return (String) get(4);

@@ -56,29 +56,29 @@ public class PacksTrade extends TableImpl<PacksTradeRecord> {
     public final TableField<PacksTradeRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>{prefix}packs_trade.LINE_NUMBER</code>.
+     * The column <code>{prefix}packs_trade.line_number</code>.
      */
-    public final TableField<PacksTradeRecord, Integer> LINE_NUMBER = createField(DSL.name("LINE_NUMBER"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<PacksTradeRecord, Integer> LINE_NUMBER = createField(DSL.name("line_number"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>{prefix}packs_trade.PACK_ID</code>.
+     * The column <code>{prefix}packs_trade.pack_id</code>.
      */
-    public final TableField<PacksTradeRecord, String> PACK_ID = createField(DSL.name("PACK_ID"), SQLDataType.VARCHAR(200).nullable(false), this, "");
+    public final TableField<PacksTradeRecord, String> PACK_ID = createField(DSL.name("pack_id"), SQLDataType.VARCHAR(200).nullable(false), this, "");
 
     /**
-     * The column <code>{prefix}packs_trade.RARITY_ID</code>.
+     * The column <code>{prefix}packs_trade.rarity_id</code>.
      */
-    public final TableField<PacksTradeRecord, String> RARITY_ID = createField(DSL.name("RARITY_ID"), SQLDataType.VARCHAR(200).nullable(false), this, "");
+    public final TableField<PacksTradeRecord, String> RARITY_ID = createField(DSL.name("rarity_id"), SQLDataType.VARCHAR(200).nullable(false), this, "");
 
     /**
-     * The column <code>{prefix}packs_trade.CARD_AMOUNT</code>.
+     * The column <code>{prefix}packs_trade.card_amount</code>.
      */
-    public final TableField<PacksTradeRecord, String> CARD_AMOUNT = createField(DSL.name("CARD_AMOUNT"), SQLDataType.VARCHAR(200).nullable(false), this, "");
+    public final TableField<PacksTradeRecord, String> CARD_AMOUNT = createField(DSL.name("card_amount"), SQLDataType.VARCHAR(200).nullable(false), this, "");
 
     /**
-     * The column <code>{prefix}packs_trade.SERIES_ID</code>.
+     * The column <code>{prefix}packs_trade.series_id</code>.
      */
-    public final TableField<PacksTradeRecord, String> SERIES_ID = createField(DSL.name("SERIES_ID"), SQLDataType.VARCHAR(200).nullable(false), this, "");
+    public final TableField<PacksTradeRecord, String> SERIES_ID = createField(DSL.name("series_id"), SQLDataType.VARCHAR(200).nullable(false), this, "");
 
     private PacksTrade(Name alias, Table<PacksTradeRecord> aliased) {
         this(alias, aliased, null);

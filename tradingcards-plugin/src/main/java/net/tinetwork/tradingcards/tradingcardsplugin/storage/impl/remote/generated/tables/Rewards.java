@@ -50,19 +50,19 @@ public class Rewards extends TableImpl<RewardsRecord> {
     }
 
     /**
-     * The column <code>{prefix}rewards.RARITY_ID</code>.
+     * The column <code>{prefix}rewards.rarity_id</code>.
      */
-    public final TableField<RewardsRecord, String> RARITY_ID = createField(DSL.name("RARITY_ID"), SQLDataType.VARCHAR(200).nullable(false), this, "");
+    public final TableField<RewardsRecord, String> RARITY_ID = createField(DSL.name("rarity_id"), SQLDataType.VARCHAR(200).nullable(false), this, "");
 
     /**
-     * The column <code>{prefix}rewards.COMMAND</code>.
+     * The column <code>{prefix}rewards.command</code>.
      */
-    public final TableField<RewardsRecord, String> COMMAND = createField(DSL.name("COMMAND"), SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<RewardsRecord, String> COMMAND = createField(DSL.name("command"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
-     * The column <code>{prefix}rewards.COMMAND_ORDER</code>.
+     * The column <code>{prefix}rewards.command_order</code>.
      */
-    public final TableField<RewardsRecord, Integer> COMMAND_ORDER = createField(DSL.name("COMMAND_ORDER"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<RewardsRecord, Integer> COMMAND_ORDER = createField(DSL.name("command_order"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private Rewards(Name alias, Table<RewardsRecord> aliased) {
         this(alias, aliased, null);

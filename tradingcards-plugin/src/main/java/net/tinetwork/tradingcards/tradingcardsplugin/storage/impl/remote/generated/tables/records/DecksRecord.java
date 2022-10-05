@@ -22,112 +22,112 @@ public class DecksRecord extends UpdatableRecordImpl<DecksRecord> implements Rec
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>{prefix}decks.ID</code>.
+     * Setter for <code>{prefix}decks.id</code>.
      */
     public void setId(Integer value) {
         set(0, value);
     }
 
     /**
-     * Getter for <code>{prefix}decks.ID</code>.
+     * Getter for <code>{prefix}decks.id</code>.
      */
     public Integer getId() {
         return (Integer) get(0);
     }
 
     /**
-     * Setter for <code>{prefix}decks.UUID</code>.
+     * Setter for <code>{prefix}decks.uuid</code>.
      */
     public void setUuid(String value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>{prefix}decks.UUID</code>.
+     * Getter for <code>{prefix}decks.uuid</code>.
      */
     public String getUuid() {
         return (String) get(1);
     }
 
     /**
-     * Setter for <code>{prefix}decks.DECK_NUMBER</code>.
+     * Setter for <code>{prefix}decks.deck_number</code>.
      */
     public void setDeckNumber(Integer value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>{prefix}decks.DECK_NUMBER</code>.
+     * Getter for <code>{prefix}decks.deck_number</code>.
      */
     public Integer getDeckNumber() {
         return (Integer) get(2);
     }
 
     /**
-     * Setter for <code>{prefix}decks.CARD_ID</code>.
+     * Setter for <code>{prefix}decks.card_id</code>.
      */
     public void setCardId(String value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>{prefix}decks.CARD_ID</code>.
+     * Getter for <code>{prefix}decks.card_id</code>.
      */
     public String getCardId() {
         return (String) get(3);
     }
 
     /**
-     * Setter for <code>{prefix}decks.RARITY_ID</code>.
+     * Setter for <code>{prefix}decks.rarity_id</code>.
      */
     public void setRarityId(String value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>{prefix}decks.RARITY_ID</code>.
+     * Getter for <code>{prefix}decks.rarity_id</code>.
      */
     public String getRarityId() {
         return (String) get(4);
     }
 
     /**
-     * Setter for <code>{prefix}decks.AMOUNT</code>.
+     * Setter for <code>{prefix}decks.amount</code>.
      */
     public void setAmount(Integer value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>{prefix}decks.AMOUNT</code>.
+     * Getter for <code>{prefix}decks.amount</code>.
      */
     public Integer getAmount() {
         return (Integer) get(5);
     }
 
     /**
-     * Setter for <code>{prefix}decks.IS_SHINY</code>.
+     * Setter for <code>{prefix}decks.is_shiny</code>.
      */
     public void setIsShiny(Boolean value) {
         set(6, value);
     }
 
     /**
-     * Getter for <code>{prefix}decks.IS_SHINY</code>.
+     * Getter for <code>{prefix}decks.is_shiny</code>.
      */
     public Boolean getIsShiny() {
         return (Boolean) get(6);
     }
 
     /**
-     * Setter for <code>{prefix}decks.SERIES_ID</code>.
+     * Setter for <code>{prefix}decks.series_id</code>.
      */
     public void setSeriesId(String value) {
         set(7, value);
     }
 
     /**
-     * Getter for <code>{prefix}decks.SERIES_ID</code>.
+     * Getter for <code>{prefix}decks.series_id</code>.
      */
     public String getSeriesId() {
         return (String) get(7);

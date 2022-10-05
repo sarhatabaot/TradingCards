@@ -50,29 +50,29 @@ public class Packs extends TableImpl<PacksRecord> {
     }
 
     /**
-     * The column <code>{prefix}packs.PACK_ID</code>.
+     * The column <code>{prefix}packs.pack_id</code>.
      */
-    public final TableField<PacksRecord, String> PACK_ID = createField(DSL.name("PACK_ID"), SQLDataType.VARCHAR(200).nullable(false), this, "");
+    public final TableField<PacksRecord, String> PACK_ID = createField(DSL.name("pack_id"), SQLDataType.VARCHAR(200).nullable(false), this, "");
 
     /**
-     * The column <code>{prefix}packs.DISPLAY_NAME</code>.
+     * The column <code>{prefix}packs.display_name</code>.
      */
-    public final TableField<PacksRecord, String> DISPLAY_NAME = createField(DSL.name("DISPLAY_NAME"), SQLDataType.CLOB, this, "");
+    public final TableField<PacksRecord, String> DISPLAY_NAME = createField(DSL.name("display_name"), SQLDataType.CLOB, this, "");
 
     /**
-     * The column <code>{prefix}packs.BUY_PRICE</code>.
+     * The column <code>{prefix}packs.buy_price</code>.
      */
-    public final TableField<PacksRecord, Double> BUY_PRICE = createField(DSL.name("BUY_PRICE"), SQLDataType.DOUBLE, this, "");
+    public final TableField<PacksRecord, Double> BUY_PRICE = createField(DSL.name("buy_price"), SQLDataType.DOUBLE, this, "");
 
     /**
-     * The column <code>{prefix}packs.PERMISSION</code>.
+     * The column <code>{prefix}packs.permission</code>.
      */
-    public final TableField<PacksRecord, String> PERMISSION = createField(DSL.name("PERMISSION"), SQLDataType.VARCHAR(200), this, "");
+    public final TableField<PacksRecord, String> PERMISSION = createField(DSL.name("permission"), SQLDataType.VARCHAR(200), this, "");
 
     /**
-     * The column <code>{prefix}packs.CURRENCY_ID</code>.
+     * The column <code>{prefix}packs.currency_id</code>.
      */
-    public final TableField<PacksRecord, String> CURRENCY_ID = createField(DSL.name("CURRENCY_ID"), SQLDataType.VARCHAR(30).defaultValue(DSL.field("'tc-internal-default'", SQLDataType.VARCHAR)), this, "");
+    public final TableField<PacksRecord, String> CURRENCY_ID = createField(DSL.name("currency_id"), SQLDataType.VARCHAR(30).defaultValue(DSL.field("'tc-internal-default'", SQLDataType.VARCHAR)), this, "");
 
     private Packs(Name alias, Table<PacksRecord> aliased) {
         this(alias, aliased, null);

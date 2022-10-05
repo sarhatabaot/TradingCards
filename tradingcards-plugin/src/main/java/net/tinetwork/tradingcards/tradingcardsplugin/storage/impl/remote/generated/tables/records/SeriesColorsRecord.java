@@ -22,14 +22,14 @@ public class SeriesColorsRecord extends UpdatableRecordImpl<SeriesColorsRecord> 
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>{prefix}series_colors.SERIES_ID</code>.
+     * Setter for <code>{prefix}series_colors.series_id</code>.
      */
     public void setSeriesId(String value) {
         set(0, value);
     }
 
     /**
-     * Getter for <code>{prefix}series_colors.SERIES_ID</code>.
+     * Getter for <code>{prefix}series_colors.series_id</code>.
      */
     public String getSeriesId() {
         return (String) get(0);
@@ -50,56 +50,56 @@ public class SeriesColorsRecord extends UpdatableRecordImpl<SeriesColorsRecord> 
     }
 
     /**
-     * Setter for <code>{prefix}series_colors.INFO</code>.
+     * Setter for <code>{prefix}series_colors.info</code>.
      */
     public void setInfo(String value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>{prefix}series_colors.INFO</code>.
+     * Getter for <code>{prefix}series_colors.info</code>.
      */
     public String getInfo() {
         return (String) get(2);
     }
 
     /**
-     * Setter for <code>{prefix}series_colors.ABOUT</code>.
+     * Setter for <code>{prefix}series_colors.about</code>.
      */
     public void setAbout(String value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>{prefix}series_colors.ABOUT</code>.
+     * Getter for <code>{prefix}series_colors.about</code>.
      */
     public String getAbout() {
         return (String) get(3);
     }
 
     /**
-     * Setter for <code>{prefix}series_colors.RARITY</code>.
+     * Setter for <code>{prefix}series_colors.rarity</code>.
      */
     public void setRarity(String value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>{prefix}series_colors.RARITY</code>.
+     * Getter for <code>{prefix}series_colors.rarity</code>.
      */
     public String getRarity() {
         return (String) get(4);
     }
 
     /**
-     * Setter for <code>{prefix}series_colors.SERIES</code>.
+     * Setter for <code>{prefix}series_colors.series</code>.
      */
     public void setSeries(String value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>{prefix}series_colors.SERIES</code>.
+     * Getter for <code>{prefix}series_colors.series</code>.
      */
     public String getSeries() {
         return (String) get(5);

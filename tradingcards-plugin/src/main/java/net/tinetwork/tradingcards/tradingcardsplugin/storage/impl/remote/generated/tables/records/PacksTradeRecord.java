@@ -36,70 +36,70 @@ public class PacksTradeRecord extends UpdatableRecordImpl<PacksTradeRecord> impl
     }
 
     /**
-     * Setter for <code>{prefix}packs_trade.LINE_NUMBER</code>.
+     * Setter for <code>{prefix}packs_trade.line_number</code>.
      */
     public void setLineNumber(Integer value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>{prefix}packs_trade.LINE_NUMBER</code>.
+     * Getter for <code>{prefix}packs_trade.line_number</code>.
      */
     public Integer getLineNumber() {
         return (Integer) get(1);
     }
 
     /**
-     * Setter for <code>{prefix}packs_trade.PACK_ID</code>.
+     * Setter for <code>{prefix}packs_trade.pack_id</code>.
      */
     public void setPackId(String value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>{prefix}packs_trade.PACK_ID</code>.
+     * Getter for <code>{prefix}packs_trade.pack_id</code>.
      */
     public String getPackId() {
         return (String) get(2);
     }
 
     /**
-     * Setter for <code>{prefix}packs_trade.RARITY_ID</code>.
+     * Setter for <code>{prefix}packs_trade.rarity_id</code>.
      */
     public void setRarityId(String value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>{prefix}packs_trade.RARITY_ID</code>.
+     * Getter for <code>{prefix}packs_trade.rarity_id</code>.
      */
     public String getRarityId() {
         return (String) get(3);
     }
 
     /**
-     * Setter for <code>{prefix}packs_trade.CARD_AMOUNT</code>.
+     * Setter for <code>{prefix}packs_trade.card_amount</code>.
      */
     public void setCardAmount(String value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>{prefix}packs_trade.CARD_AMOUNT</code>.
+     * Getter for <code>{prefix}packs_trade.card_amount</code>.
      */
     public String getCardAmount() {
         return (String) get(4);
     }
 
     /**
-     * Setter for <code>{prefix}packs_trade.SERIES_ID</code>.
+     * Setter for <code>{prefix}packs_trade.series_id</code>.
      */
     public void setSeriesId(String value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>{prefix}packs_trade.SERIES_ID</code>.
+     * Getter for <code>{prefix}packs_trade.series_id</code>.
      */
     public String getSeriesId() {
         return (String) get(5);

@@ -51,19 +51,19 @@ public class Series extends TableImpl<SeriesRecord> {
     }
 
     /**
-     * The column <code>{prefix}series.SERIES_ID</code>.
+     * The column <code>{prefix}series.series_id</code>.
      */
-    public final TableField<SeriesRecord, String> SERIES_ID = createField(DSL.name("SERIES_ID"), SQLDataType.VARCHAR(200).nullable(false), this, "");
+    public final TableField<SeriesRecord, String> SERIES_ID = createField(DSL.name("series_id"), SQLDataType.VARCHAR(200).nullable(false), this, "");
 
     /**
-     * The column <code>{prefix}series.DISPLAY_NAME</code>.
+     * The column <code>{prefix}series.display_name</code>.
      */
-    public final TableField<SeriesRecord, String> DISPLAY_NAME = createField(DSL.name("DISPLAY_NAME"), SQLDataType.CLOB, this, "");
+    public final TableField<SeriesRecord, String> DISPLAY_NAME = createField(DSL.name("display_name"), SQLDataType.CLOB, this, "");
 
     /**
-     * The column <code>{prefix}series.SERIES_MODE</code>.
+     * The column <code>{prefix}series.series_mode</code>.
      */
-    public final TableField<SeriesRecord, SeriesSeriesMode> SERIES_MODE = createField(DSL.name("SERIES_MODE"), SQLDataType.VARCHAR.asEnumDataType(net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.enums.SeriesSeriesMode.class), this, "");
+    public final TableField<SeriesRecord, SeriesSeriesMode> SERIES_MODE = createField(DSL.name("series_mode"), SQLDataType.VARCHAR.asEnumDataType(net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.enums.SeriesSeriesMode.class), this, "");
 
     private Series(Name alias, Table<SeriesRecord> aliased) {
         this(alias, aliased, null);

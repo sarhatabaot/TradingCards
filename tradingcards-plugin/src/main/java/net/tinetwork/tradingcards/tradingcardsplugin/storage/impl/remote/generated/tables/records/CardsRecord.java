@@ -36,154 +36,154 @@ public class CardsRecord extends UpdatableRecordImpl<CardsRecord> implements Rec
     }
 
     /**
-     * Setter for <code>{prefix}cards.CARD_ID</code>.
+     * Setter for <code>{prefix}cards.card_id</code>.
      */
     public void setCardId(String value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>{prefix}cards.CARD_ID</code>.
+     * Getter for <code>{prefix}cards.card_id</code>.
      */
     public String getCardId() {
         return (String) get(1);
     }
 
     /**
-     * Setter for <code>{prefix}cards.DISPLAY_NAME</code>.
+     * Setter for <code>{prefix}cards.display_name</code>.
      */
     public void setDisplayName(String value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>{prefix}cards.DISPLAY_NAME</code>.
+     * Getter for <code>{prefix}cards.display_name</code>.
      */
     public String getDisplayName() {
         return (String) get(2);
     }
 
     /**
-     * Setter for <code>{prefix}cards.RARITY_ID</code>.
+     * Setter for <code>{prefix}cards.rarity_id</code>.
      */
     public void setRarityId(String value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>{prefix}cards.RARITY_ID</code>.
+     * Getter for <code>{prefix}cards.rarity_id</code>.
      */
     public String getRarityId() {
         return (String) get(3);
     }
 
     /**
-     * Setter for <code>{prefix}cards.HAS_SHINY</code>.
+     * Setter for <code>{prefix}cards.has_shiny</code>.
      */
     public void setHasShiny(Boolean value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>{prefix}cards.HAS_SHINY</code>.
+     * Getter for <code>{prefix}cards.has_shiny</code>.
      */
     public Boolean getHasShiny() {
         return (Boolean) get(4);
     }
 
     /**
-     * Setter for <code>{prefix}cards.SERIES_ID</code>.
+     * Setter for <code>{prefix}cards.series_id</code>.
      */
     public void setSeriesId(String value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>{prefix}cards.SERIES_ID</code>.
+     * Getter for <code>{prefix}cards.series_id</code>.
      */
     public String getSeriesId() {
         return (String) get(5);
     }
 
     /**
-     * Setter for <code>{prefix}cards.INFO</code>.
+     * Setter for <code>{prefix}cards.info</code>.
      */
     public void setInfo(String value) {
         set(6, value);
     }
 
     /**
-     * Getter for <code>{prefix}cards.INFO</code>.
+     * Getter for <code>{prefix}cards.info</code>.
      */
     public String getInfo() {
         return (String) get(6);
     }
 
     /**
-     * Setter for <code>{prefix}cards.CUSTOM_MODEL_DATA</code>.
+     * Setter for <code>{prefix}cards.custom_model_data</code>.
      */
     public void setCustomModelData(Integer value) {
         set(7, value);
     }
 
     /**
-     * Getter for <code>{prefix}cards.CUSTOM_MODEL_DATA</code>.
+     * Getter for <code>{prefix}cards.custom_model_data</code>.
      */
     public Integer getCustomModelData() {
         return (Integer) get(7);
     }
 
     /**
-     * Setter for <code>{prefix}cards.BUY_PRICE</code>.
+     * Setter for <code>{prefix}cards.buy_price</code>.
      */
     public void setBuyPrice(Double value) {
         set(8, value);
     }
 
     /**
-     * Getter for <code>{prefix}cards.BUY_PRICE</code>.
+     * Getter for <code>{prefix}cards.buy_price</code>.
      */
     public Double getBuyPrice() {
         return (Double) get(8);
     }
 
     /**
-     * Setter for <code>{prefix}cards.SELL_PRICE</code>.
+     * Setter for <code>{prefix}cards.sell_price</code>.
      */
     public void setSellPrice(Double value) {
         set(9, value);
     }
 
     /**
-     * Getter for <code>{prefix}cards.SELL_PRICE</code>.
+     * Getter for <code>{prefix}cards.sell_price</code>.
      */
     public Double getSellPrice() {
         return (Double) get(9);
     }
 
     /**
-     * Setter for <code>{prefix}cards.TYPE_ID</code>.
+     * Setter for <code>{prefix}cards.type_id</code>.
      */
     public void setTypeId(String value) {
         set(10, value);
     }
 
     /**
-     * Getter for <code>{prefix}cards.TYPE_ID</code>.
+     * Getter for <code>{prefix}cards.type_id</code>.
      */
     public String getTypeId() {
         return (String) get(10);
     }
 
     /**
-     * Setter for <code>{prefix}cards.CURRENCY_ID</code>.
+     * Setter for <code>{prefix}cards.currency_id</code>.
      */
     public void setCurrencyId(String value) {
         set(11, value);
     }
 
     /**
-     * Getter for <code>{prefix}cards.CURRENCY_ID</code>.
+     * Getter for <code>{prefix}cards.currency_id</code>.
      */
     public String getCurrencyId() {
         return (String) get(11);

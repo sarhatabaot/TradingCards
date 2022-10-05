@@ -50,39 +50,39 @@ public class Rarities extends TableImpl<RaritiesRecord> {
     }
 
     /**
-     * The column <code>{prefix}rarities.RARITY_ID</code>.
+     * The column <code>{prefix}rarities.rarity_id</code>.
      */
-    public final TableField<RaritiesRecord, String> RARITY_ID = createField(DSL.name("RARITY_ID"), SQLDataType.VARCHAR(200).nullable(false), this, "");
+    public final TableField<RaritiesRecord, String> RARITY_ID = createField(DSL.name("rarity_id"), SQLDataType.VARCHAR(200).nullable(false), this, "");
 
     /**
-     * The column <code>{prefix}rarities.DISPLAY_NAME</code>.
+     * The column <code>{prefix}rarities.display_name</code>.
      */
-    public final TableField<RaritiesRecord, String> DISPLAY_NAME = createField(DSL.name("DISPLAY_NAME"), SQLDataType.CLOB, this, "");
+    public final TableField<RaritiesRecord, String> DISPLAY_NAME = createField(DSL.name("display_name"), SQLDataType.CLOB, this, "");
 
     /**
-     * The column <code>{prefix}rarities.DEFAULT_COLOR</code>.
+     * The column <code>{prefix}rarities.default_color</code>.
      */
-    public final TableField<RaritiesRecord, String> DEFAULT_COLOR = createField(DSL.name("DEFAULT_COLOR"), SQLDataType.VARCHAR(36), this, "");
+    public final TableField<RaritiesRecord, String> DEFAULT_COLOR = createField(DSL.name("default_color"), SQLDataType.VARCHAR(36), this, "");
 
     /**
-     * The column <code>{prefix}rarities.BUY_PRICE</code>.
+     * The column <code>{prefix}rarities.buy_price</code>.
      */
-    public final TableField<RaritiesRecord, Double> BUY_PRICE = createField(DSL.name("BUY_PRICE"), SQLDataType.DOUBLE, this, "");
+    public final TableField<RaritiesRecord, Double> BUY_PRICE = createField(DSL.name("buy_price"), SQLDataType.DOUBLE, this, "");
 
     /**
-     * The column <code>{prefix}rarities.SELL_PRICE</code>.
+     * The column <code>{prefix}rarities.sell_price</code>.
      */
-    public final TableField<RaritiesRecord, Double> SELL_PRICE = createField(DSL.name("SELL_PRICE"), SQLDataType.DOUBLE, this, "");
+    public final TableField<RaritiesRecord, Double> SELL_PRICE = createField(DSL.name("sell_price"), SQLDataType.DOUBLE, this, "");
 
     /**
-     * The column <code>{prefix}rarities.CURRENCY_ID</code>.
+     * The column <code>{prefix}rarities.currency_id</code>.
      */
-    public final TableField<RaritiesRecord, String> CURRENCY_ID = createField(DSL.name("CURRENCY_ID"), SQLDataType.VARCHAR(30).defaultValue(DSL.field("NULL", SQLDataType.VARCHAR)), this, "");
+    public final TableField<RaritiesRecord, String> CURRENCY_ID = createField(DSL.name("currency_id"), SQLDataType.VARCHAR(30).defaultValue(DSL.field("NULL", SQLDataType.VARCHAR)), this, "");
 
     /**
-     * The column <code>{prefix}rarities.CUSTOM_ORDER</code>.
+     * The column <code>{prefix}rarities.custom_order</code>.
      */
-    public final TableField<RaritiesRecord, Integer> CUSTOM_ORDER = createField(DSL.name("CUSTOM_ORDER"), SQLDataType.INTEGER.defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
+    public final TableField<RaritiesRecord, Integer> CUSTOM_ORDER = createField(DSL.name("custom_order"), SQLDataType.INTEGER.defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
 
     private Rarities(Name alias, Table<RaritiesRecord> aliased) {
         this(alias, aliased, null);

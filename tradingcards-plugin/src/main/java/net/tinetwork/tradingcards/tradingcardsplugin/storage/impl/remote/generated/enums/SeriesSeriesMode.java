@@ -39,7 +39,7 @@ public enum SeriesSeriesMode implements EnumType {
 
     @Override
     public String getName() {
-        return "{prefix}series_SERIES_MODE";
+        return "{prefix}series_series_mode";
     }
 
     @Override

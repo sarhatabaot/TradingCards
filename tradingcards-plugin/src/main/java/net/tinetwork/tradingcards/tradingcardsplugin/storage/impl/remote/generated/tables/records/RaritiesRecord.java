@@ -22,98 +22,98 @@ public class RaritiesRecord extends UpdatableRecordImpl<RaritiesRecord> implemen
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>{prefix}rarities.RARITY_ID</code>.
+     * Setter for <code>{prefix}rarities.rarity_id</code>.
      */
     public void setRarityId(String value) {
         set(0, value);
     }
 
     /**
-     * Getter for <code>{prefix}rarities.RARITY_ID</code>.
+     * Getter for <code>{prefix}rarities.rarity_id</code>.
      */
     public String getRarityId() {
         return (String) get(0);
     }
 
     /**
-     * Setter for <code>{prefix}rarities.DISPLAY_NAME</code>.
+     * Setter for <code>{prefix}rarities.display_name</code>.
      */
     public void setDisplayName(String value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>{prefix}rarities.DISPLAY_NAME</code>.
+     * Getter for <code>{prefix}rarities.display_name</code>.
      */
     public String getDisplayName() {
         return (String) get(1);
     }
 
     /**
-     * Setter for <code>{prefix}rarities.DEFAULT_COLOR</code>.
+     * Setter for <code>{prefix}rarities.default_color</code>.
      */
     public void setDefaultColor(String value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>{prefix}rarities.DEFAULT_COLOR</code>.
+     * Getter for <code>{prefix}rarities.default_color</code>.
      */
     public String getDefaultColor() {
         return (String) get(2);
     }
 
     /**
-     * Setter for <code>{prefix}rarities.BUY_PRICE</code>.
+     * Setter for <code>{prefix}rarities.buy_price</code>.
      */
     public void setBuyPrice(Double value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>{prefix}rarities.BUY_PRICE</code>.
+     * Getter for <code>{prefix}rarities.buy_price</code>.
      */
     public Double getBuyPrice() {
         return (Double) get(3);
     }
 
     /**
-     * Setter for <code>{prefix}rarities.SELL_PRICE</code>.
+     * Setter for <code>{prefix}rarities.sell_price</code>.
      */
     public void setSellPrice(Double value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>{prefix}rarities.SELL_PRICE</code>.
+     * Getter for <code>{prefix}rarities.sell_price</code>.
      */
     public Double getSellPrice() {
         return (Double) get(4);
     }
 
     /**
-     * Setter for <code>{prefix}rarities.CURRENCY_ID</code>.
+     * Setter for <code>{prefix}rarities.currency_id</code>.
      */
     public void setCurrencyId(String value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>{prefix}rarities.CURRENCY_ID</code>.
+     * Getter for <code>{prefix}rarities.currency_id</code>.
      */
     public String getCurrencyId() {
         return (String) get(5);
     }
 
     /**
-     * Setter for <code>{prefix}rarities.CUSTOM_ORDER</code>.
+     * Setter for <code>{prefix}rarities.custom_order</code>.
      */
     public void setCustomOrder(Integer value) {
         set(6, value);
     }
 
     /**
-     * Getter for <code>{prefix}rarities.CUSTOM_ORDER</code>.
+     * Getter for <code>{prefix}rarities.custom_order</code>.
      */
     public Integer getCustomOrder() {
         return (Integer) get(6);

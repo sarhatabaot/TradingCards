@@ -50,9 +50,9 @@ public class SeriesColors extends TableImpl<SeriesColorsRecord> {
     }
 
     /**
-     * The column <code>{prefix}series_colors.SERIES_ID</code>.
+     * The column <code>{prefix}series_colors.series_id</code>.
      */
-    public final TableField<SeriesColorsRecord, String> SERIES_ID = createField(DSL.name("SERIES_ID"), SQLDataType.VARCHAR(200).nullable(false), this, "");
+    public final TableField<SeriesColorsRecord, String> SERIES_ID = createField(DSL.name("series_id"), SQLDataType.VARCHAR(200).nullable(false), this, "");
 
     /**
      * The column <code>{prefix}series_colors.type</code>.
@@ -60,24 +60,24 @@ public class SeriesColors extends TableImpl<SeriesColorsRecord> {
     public final TableField<SeriesColorsRecord, String> TYPE = createField(DSL.name("type"), SQLDataType.VARCHAR(10).nullable(false), this, "");
 
     /**
-     * The column <code>{prefix}series_colors.INFO</code>.
+     * The column <code>{prefix}series_colors.info</code>.
      */
-    public final TableField<SeriesColorsRecord, String> INFO = createField(DSL.name("INFO"), SQLDataType.VARCHAR(10).nullable(false), this, "");
+    public final TableField<SeriesColorsRecord, String> INFO = createField(DSL.name("info"), SQLDataType.VARCHAR(10).nullable(false), this, "");
 
     /**
-     * The column <code>{prefix}series_colors.ABOUT</code>.
+     * The column <code>{prefix}series_colors.about</code>.
      */
-    public final TableField<SeriesColorsRecord, String> ABOUT = createField(DSL.name("ABOUT"), SQLDataType.VARCHAR(10).nullable(false), this, "");
+    public final TableField<SeriesColorsRecord, String> ABOUT = createField(DSL.name("about"), SQLDataType.VARCHAR(10).nullable(false), this, "");
 
     /**
-     * The column <code>{prefix}series_colors.RARITY</code>.
+     * The column <code>{prefix}series_colors.rarity</code>.
      */
-    public final TableField<SeriesColorsRecord, String> RARITY = createField(DSL.name("RARITY"), SQLDataType.VARCHAR(10).nullable(false), this, "");
+    public final TableField<SeriesColorsRecord, String> RARITY = createField(DSL.name("rarity"), SQLDataType.VARCHAR(10).nullable(false), this, "");
 
     /**
-     * The column <code>{prefix}series_colors.SERIES</code>.
+     * The column <code>{prefix}series_colors.series</code>.
      */
-    public final TableField<SeriesColorsRecord, String> SERIES = createField(DSL.name("SERIES"), SQLDataType.VARCHAR(10).nullable(false), this, "");
+    public final TableField<SeriesColorsRecord, String> SERIES = createField(DSL.name("series"), SQLDataType.VARCHAR(10).nullable(false), this, "");
 
     private SeriesColors(Name alias, Table<SeriesColorsRecord> aliased) {
         this(alias, aliased, null);

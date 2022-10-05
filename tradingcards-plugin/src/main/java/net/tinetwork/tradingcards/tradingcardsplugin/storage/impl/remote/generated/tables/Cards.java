@@ -56,59 +56,59 @@ public class Cards extends TableImpl<CardsRecord> {
     public final TableField<CardsRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>{prefix}cards.CARD_ID</code>.
+     * The column <code>{prefix}cards.card_id</code>.
      */
-    public final TableField<CardsRecord, String> CARD_ID = createField(DSL.name("CARD_ID"), SQLDataType.VARCHAR(200).nullable(false), this, "");
+    public final TableField<CardsRecord, String> CARD_ID = createField(DSL.name("card_id"), SQLDataType.VARCHAR(200).nullable(false), this, "");
 
     /**
-     * The column <code>{prefix}cards.DISPLAY_NAME</code>.
+     * The column <code>{prefix}cards.display_name</code>.
      */
-    public final TableField<CardsRecord, String> DISPLAY_NAME = createField(DSL.name("DISPLAY_NAME"), SQLDataType.CLOB, this, "");
+    public final TableField<CardsRecord, String> DISPLAY_NAME = createField(DSL.name("display_name"), SQLDataType.CLOB, this, "");
 
     /**
-     * The column <code>{prefix}cards.RARITY_ID</code>.
+     * The column <code>{prefix}cards.rarity_id</code>.
      */
-    public final TableField<CardsRecord, String> RARITY_ID = createField(DSL.name("RARITY_ID"), SQLDataType.VARCHAR(200).nullable(false), this, "");
+    public final TableField<CardsRecord, String> RARITY_ID = createField(DSL.name("rarity_id"), SQLDataType.VARCHAR(200).nullable(false), this, "");
 
     /**
-     * The column <code>{prefix}cards.HAS_SHINY</code>.
+     * The column <code>{prefix}cards.has_shiny</code>.
      */
-    public final TableField<CardsRecord, Boolean> HAS_SHINY = createField(DSL.name("HAS_SHINY"), SQLDataType.BOOLEAN, this, "");
+    public final TableField<CardsRecord, Boolean> HAS_SHINY = createField(DSL.name("has_shiny"), SQLDataType.BOOLEAN, this, "");
 
     /**
-     * The column <code>{prefix}cards.SERIES_ID</code>.
+     * The column <code>{prefix}cards.series_id</code>.
      */
-    public final TableField<CardsRecord, String> SERIES_ID = createField(DSL.name("SERIES_ID"), SQLDataType.VARCHAR(200).nullable(false), this, "");
+    public final TableField<CardsRecord, String> SERIES_ID = createField(DSL.name("series_id"), SQLDataType.VARCHAR(200).nullable(false), this, "");
 
     /**
-     * The column <code>{prefix}cards.INFO</code>.
+     * The column <code>{prefix}cards.info</code>.
      */
-    public final TableField<CardsRecord, String> INFO = createField(DSL.name("INFO"), SQLDataType.CLOB, this, "");
+    public final TableField<CardsRecord, String> INFO = createField(DSL.name("info"), SQLDataType.CLOB, this, "");
 
     /**
-     * The column <code>{prefix}cards.CUSTOM_MODEL_DATA</code>.
+     * The column <code>{prefix}cards.custom_model_data</code>.
      */
-    public final TableField<CardsRecord, Integer> CUSTOM_MODEL_DATA = createField(DSL.name("CUSTOM_MODEL_DATA"), SQLDataType.INTEGER, this, "");
+    public final TableField<CardsRecord, Integer> CUSTOM_MODEL_DATA = createField(DSL.name("custom_model_data"), SQLDataType.INTEGER, this, "");
 
     /**
-     * The column <code>{prefix}cards.BUY_PRICE</code>.
+     * The column <code>{prefix}cards.buy_price</code>.
      */
-    public final TableField<CardsRecord, Double> BUY_PRICE = createField(DSL.name("BUY_PRICE"), SQLDataType.DOUBLE, this, "");
+    public final TableField<CardsRecord, Double> BUY_PRICE = createField(DSL.name("buy_price"), SQLDataType.DOUBLE, this, "");
 
     /**
-     * The column <code>{prefix}cards.SELL_PRICE</code>.
+     * The column <code>{prefix}cards.sell_price</code>.
      */
-    public final TableField<CardsRecord, Double> SELL_PRICE = createField(DSL.name("SELL_PRICE"), SQLDataType.DOUBLE, this, "");
+    public final TableField<CardsRecord, Double> SELL_PRICE = createField(DSL.name("sell_price"), SQLDataType.DOUBLE, this, "");
 
     /**
-     * The column <code>{prefix}cards.TYPE_ID</code>.
+     * The column <code>{prefix}cards.type_id</code>.
      */
-    public final TableField<CardsRecord, String> TYPE_ID = createField(DSL.name("TYPE_ID"), SQLDataType.VARCHAR(200), this, "");
+    public final TableField<CardsRecord, String> TYPE_ID = createField(DSL.name("type_id"), SQLDataType.VARCHAR(200), this, "");
 
     /**
-     * The column <code>{prefix}cards.CURRENCY_ID</code>.
+     * The column <code>{prefix}cards.currency_id</code>.
      */
-    public final TableField<CardsRecord, String> CURRENCY_ID = createField(DSL.name("CURRENCY_ID"), SQLDataType.VARCHAR(30).defaultValue(DSL.field("'tc-internal-default'", SQLDataType.VARCHAR)), this, "");
+    public final TableField<CardsRecord, String> CURRENCY_ID = createField(DSL.name("currency_id"), SQLDataType.VARCHAR(30).defaultValue(DSL.field("'tc-internal-default'", SQLDataType.VARCHAR)), this, "");
 
     private Cards(Name alias, Table<CardsRecord> aliased) {
         this(alias, aliased, null);

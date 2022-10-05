@@ -51,44 +51,44 @@ public class Decks extends TableImpl<DecksRecord> {
     }
 
     /**
-     * The column <code>{prefix}decks.ID</code>.
+     * The column <code>{prefix}decks.id</code>.
      */
-    public final TableField<DecksRecord, Integer> ID = createField(DSL.name("ID"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
+    public final TableField<DecksRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>{prefix}decks.UUID</code>.
+     * The column <code>{prefix}decks.uuid</code>.
      */
-    public final TableField<DecksRecord, String> UUID = createField(DSL.name("UUID"), SQLDataType.VARCHAR(36).nullable(false), this, "");
+    public final TableField<DecksRecord, String> UUID = createField(DSL.name("uuid"), SQLDataType.VARCHAR(36).nullable(false), this, "");
 
     /**
-     * The column <code>{prefix}decks.DECK_NUMBER</code>.
+     * The column <code>{prefix}decks.deck_number</code>.
      */
-    public final TableField<DecksRecord, Integer> DECK_NUMBER = createField(DSL.name("DECK_NUMBER"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<DecksRecord, Integer> DECK_NUMBER = createField(DSL.name("deck_number"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>{prefix}decks.CARD_ID</code>.
+     * The column <code>{prefix}decks.card_id</code>.
      */
-    public final TableField<DecksRecord, String> CARD_ID = createField(DSL.name("CARD_ID"), SQLDataType.VARCHAR(200).nullable(false), this, "");
+    public final TableField<DecksRecord, String> CARD_ID = createField(DSL.name("card_id"), SQLDataType.VARCHAR(200).nullable(false), this, "");
 
     /**
-     * The column <code>{prefix}decks.RARITY_ID</code>.
+     * The column <code>{prefix}decks.rarity_id</code>.
      */
-    public final TableField<DecksRecord, String> RARITY_ID = createField(DSL.name("RARITY_ID"), SQLDataType.VARCHAR(200).nullable(false), this, "");
+    public final TableField<DecksRecord, String> RARITY_ID = createField(DSL.name("rarity_id"), SQLDataType.VARCHAR(200).nullable(false), this, "");
 
     /**
-     * The column <code>{prefix}decks.AMOUNT</code>.
+     * The column <code>{prefix}decks.amount</code>.
      */
-    public final TableField<DecksRecord, Integer> AMOUNT = createField(DSL.name("AMOUNT"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<DecksRecord, Integer> AMOUNT = createField(DSL.name("amount"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>{prefix}decks.IS_SHINY</code>.
+     * The column <code>{prefix}decks.is_shiny</code>.
      */
-    public final TableField<DecksRecord, Boolean> IS_SHINY = createField(DSL.name("IS_SHINY"), SQLDataType.BOOLEAN.nullable(false), this, "");
+    public final TableField<DecksRecord, Boolean> IS_SHINY = createField(DSL.name("is_shiny"), SQLDataType.BOOLEAN.nullable(false), this, "");
 
     /**
-     * The column <code>{prefix}decks.SERIES_ID</code>.
+     * The column <code>{prefix}decks.series_id</code>.
      */
-    public final TableField<DecksRecord, String> SERIES_ID = createField(DSL.name("SERIES_ID"), SQLDataType.VARCHAR(200).nullable(false).defaultValue(DSL.field("'${default_series_id}'", SQLDataType.VARCHAR)), this, "");
+    public final TableField<DecksRecord, String> SERIES_ID = createField(DSL.name("series_id"), SQLDataType.VARCHAR(200).nullable(false).defaultValue(DSL.field("'${default_series_id}'", SQLDataType.VARCHAR)), this, "");
 
     private Decks(Name alias, Table<DecksRecord> aliased) {
         this(alias, aliased, null);

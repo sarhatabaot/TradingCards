@@ -56,29 +56,29 @@ public class PacksContent extends TableImpl<PacksContentRecord> {
     public final TableField<PacksContentRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>{prefix}packs_content.LINE_NUMBER</code>.
+     * The column <code>{prefix}packs_content.line_number</code>.
      */
-    public final TableField<PacksContentRecord, Integer> LINE_NUMBER = createField(DSL.name("LINE_NUMBER"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<PacksContentRecord, Integer> LINE_NUMBER = createField(DSL.name("line_number"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>{prefix}packs_content.PACK_ID</code>.
+     * The column <code>{prefix}packs_content.pack_id</code>.
      */
-    public final TableField<PacksContentRecord, String> PACK_ID = createField(DSL.name("PACK_ID"), SQLDataType.VARCHAR(200).nullable(false), this, "");
+    public final TableField<PacksContentRecord, String> PACK_ID = createField(DSL.name("pack_id"), SQLDataType.VARCHAR(200).nullable(false), this, "");
 
     /**
-     * The column <code>{prefix}packs_content.RARITY_ID</code>.
+     * The column <code>{prefix}packs_content.rarity_id</code>.
      */
-    public final TableField<PacksContentRecord, String> RARITY_ID = createField(DSL.name("RARITY_ID"), SQLDataType.VARCHAR(200).nullable(false), this, "");
+    public final TableField<PacksContentRecord, String> RARITY_ID = createField(DSL.name("rarity_id"), SQLDataType.VARCHAR(200).nullable(false), this, "");
 
     /**
-     * The column <code>{prefix}packs_content.CARD_AMOUNT</code>.
+     * The column <code>{prefix}packs_content.card_amount</code>.
      */
-    public final TableField<PacksContentRecord, String> CARD_AMOUNT = createField(DSL.name("CARD_AMOUNT"), SQLDataType.VARCHAR(200).nullable(false), this, "");
+    public final TableField<PacksContentRecord, String> CARD_AMOUNT = createField(DSL.name("card_amount"), SQLDataType.VARCHAR(200).nullable(false), this, "");
 
     /**
-     * The column <code>{prefix}packs_content.SERIES_ID</code>.
+     * The column <code>{prefix}packs_content.series_id</code>.
      */
-    public final TableField<PacksContentRecord, String> SERIES_ID = createField(DSL.name("SERIES_ID"), SQLDataType.VARCHAR(200).nullable(false), this, "");
+    public final TableField<PacksContentRecord, String> SERIES_ID = createField(DSL.name("series_id"), SQLDataType.VARCHAR(200).nullable(false), this, "");
 
     private PacksContent(Name alias, Table<PacksContentRecord> aliased) {
         this(alias, aliased, null);
