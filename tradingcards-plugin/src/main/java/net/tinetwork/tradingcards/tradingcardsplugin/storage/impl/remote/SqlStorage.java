@@ -976,10 +976,15 @@ public class SqlStorage implements Storage<TradingCard> {
                 if (result.isEmpty()) {
                     return empty();
                 }
+
                 List<Pack.PackEntry> entries = new ArrayList<>();
                 for (Record recordResult : result) {
                     int lineNumber = recordResult.getValue(PacksContent.PACKS_CONTENT.LINE_NUMBER);
-                    entries.add(lineNumber, JooqRecordUtil.getPackEntryFromResult(recordResult));
+                    if(lineNumber >= entries.size()) {
+                        entries.add(JooqRecordUtil.getPackEntryFromResult(recordResult));
+                    } else {
+                        entries.add(lineNumber, JooqRecordUtil.getPackEntryFromResult(recordResult));
+                    }
                 }
                 return entries;
             }
@@ -1541,15 +1546,31 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void editPackContents(final String packId, final int lineNumber, final Pack.@NotNull PackEntry packEntry) {
+        if (getPackEntries(packId).isEmpty()) {
+            new ExecuteUpdate(this,jooqSettings) {
+                @Override
+                protected void onRunUpdate(final DSLContext dslContext) {
+                    dslContext.insertInto(PacksContent.PACKS_CONTENT)
+                            .set(PacksContent.PACKS_CONTENT.PACK_ID, packId)
+                            .set(PacksContent.PACKS_CONTENT.LINE_NUMBER, lineNumber)
+                            .set(PacksContent.PACKS_CONTENT.SERIES_ID, packEntry.seriesId())
+                            .set(PacksContent.PACKS_CONTENT.RARITY_ID, packEntry.getRarityId())
+                            .set(PacksContent.PACKS_CONTENT.CARD_AMOUNT, String.valueOf(packEntry.getAmount()))
+                            .execute();
+                }
+            }.executeUpdate();
+            return;
+        }
         new ExecuteUpdate(this, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.update(PacksContent.PACKS_CONTENT)
                         .set(PacksContent.PACKS_CONTENT.PACK_ID, packId)
-                        .set(PacksContent.PACKS_CONTENT.LINE_NUMBER, lineNumber)
                         .set(PacksContent.PACKS_CONTENT.SERIES_ID, packEntry.seriesId())
                         .set(PacksContent.PACKS_CONTENT.RARITY_ID, packEntry.getRarityId())
-                        .set(PacksContent.PACKS_CONTENT.CARD_AMOUNT, String.valueOf(packEntry.getAmount())).execute();
+                        .set(PacksContent.PACKS_CONTENT.CARD_AMOUNT, String.valueOf(packEntry.getAmount()))
+                        .where(PacksContent.PACKS_CONTENT.LINE_NUMBER.eq(lineNumber))
+                        .execute();
             }
         }.executeUpdate();
     }
@@ -1585,15 +1606,29 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void editPackTradeCards(final String packId, final int lineNumber, final Pack.PackEntry packEntry) {
+        if (getTradeEntries(packId).isEmpty()) {
+            new ExecuteUpdate(this, jooqSettings) {
+                @Override
+                protected void onRunUpdate(final DSLContext dslContext) {
+                    dslContext.insertInto(PacksTrade.PACKS_TRADE)
+                            .set(PacksTrade.PACKS_TRADE.PACK_ID, packId)
+                            .set(PacksTrade.PACKS_TRADE.LINE_NUMBER, lineNumber)
+                            .set(PacksTrade.PACKS_TRADE.SERIES_ID, packEntry.seriesId())
+                            .set(PacksTrade.PACKS_TRADE.RARITY_ID, packEntry.getRarityId())
+                            .set(PacksTrade.PACKS_TRADE.CARD_AMOUNT, String.valueOf(packEntry.getAmount())).execute();
+                }
+            }.executeUpdate();
+            return;
+        }
         new ExecuteUpdate(this, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.update(PacksTrade.PACKS_TRADE)
                         .set(PacksTrade.PACKS_TRADE.PACK_ID, packId)
-                        .set(PacksTrade.PACKS_TRADE.LINE_NUMBER, lineNumber)
                         .set(PacksTrade.PACKS_TRADE.SERIES_ID, packEntry.seriesId())
                         .set(PacksTrade.PACKS_TRADE.RARITY_ID, packEntry.getRarityId())
-                        .set(PacksTrade.PACKS_TRADE.CARD_AMOUNT, String.valueOf(packEntry.getAmount())).execute();
+                        .set(PacksTrade.PACKS_TRADE.CARD_AMOUNT, String.valueOf(packEntry.getAmount()))
+                        .where(PacksTrade.PACKS_TRADE.LINE_NUMBER.eq(lineNumber)).execute();
             }
         }.executeUpdate();
     }
