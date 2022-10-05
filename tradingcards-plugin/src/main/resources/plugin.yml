@@ -15,5 +15,6 @@ libraries:
   - org.jooq:jooq:${jooq.version}
   - org.jooq:jooq-meta:${jooq.version}
   - org.jooq:jooq-codegen:${jooq.version}
+  - org.jooq:jooq-meta-extension:${jooq.version}
   - net.lingala.zip4j:zip4j:${zip4j.version}
   - org.flywaydb:flyway-mysql:${flyway.version}
