@@ -4,16 +4,21 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables;
 
 
+import java.util.function.Function;
+
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.DefaultSchema;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.Keys;
-import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.Minecraft;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.records.SeriesColorsRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Function6;
 import org.jooq.Name;
 import org.jooq.Record;
+import org.jooq.Records;
 import org.jooq.Row6;
 import org.jooq.Schema;
+import org.jooq.SelectField;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
@@ -32,7 +37,7 @@ public class SeriesColors extends TableImpl<SeriesColorsRecord> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * The reference instance of <code>minecraft.series_colors</code>
+     * The reference instance of <code>{prefix}series_colors</code>
      */
     public static final SeriesColors SERIES_COLORS = new SeriesColors();
 
@@ -45,34 +50,34 @@ public class SeriesColors extends TableImpl<SeriesColorsRecord> {
     }
 
     /**
-     * The column <code>minecraft.series_colors.series_id</code>.
+     * The column <code>{prefix}series_colors.SERIES_ID</code>.
      */
-    public final TableField<SeriesColorsRecord, String> SERIES_ID = createField(DSL.name("series_id"), SQLDataType.VARCHAR(200).nullable(false), this, "");
+    public final TableField<SeriesColorsRecord, String> SERIES_ID = createField(DSL.name("SERIES_ID"), SQLDataType.VARCHAR(200).nullable(false), this, "");
 
     /**
-     * The column <code>minecraft.series_colors.type</code>.
+     * The column <code>{prefix}series_colors.type</code>.
      */
     public final TableField<SeriesColorsRecord, String> TYPE = createField(DSL.name("type"), SQLDataType.VARCHAR(10).nullable(false), this, "");
 
     /**
-     * The column <code>minecraft.series_colors.info</code>.
+     * The column <code>{prefix}series_colors.INFO</code>.
      */
-    public final TableField<SeriesColorsRecord, String> INFO = createField(DSL.name("info"), SQLDataType.VARCHAR(10).nullable(false), this, "");
+    public final TableField<SeriesColorsRecord, String> INFO = createField(DSL.name("INFO"), SQLDataType.VARCHAR(10).nullable(false), this, "");
 
     /**
-     * The column <code>minecraft.series_colors.about</code>.
+     * The column <code>{prefix}series_colors.ABOUT</code>.
      */
-    public final TableField<SeriesColorsRecord, String> ABOUT = createField(DSL.name("about"), SQLDataType.VARCHAR(10).nullable(false), this, "");
+    public final TableField<SeriesColorsRecord, String> ABOUT = createField(DSL.name("ABOUT"), SQLDataType.VARCHAR(10).nullable(false), this, "");
 
     /**
-     * The column <code>minecraft.series_colors.rarity</code>.
+     * The column <code>{prefix}series_colors.RARITY</code>.
      */
-    public final TableField<SeriesColorsRecord, String> RARITY = createField(DSL.name("rarity"), SQLDataType.VARCHAR(10).nullable(false), this, "");
+    public final TableField<SeriesColorsRecord, String> RARITY = createField(DSL.name("RARITY"), SQLDataType.VARCHAR(10).nullable(false), this, "");
 
     /**
-     * The column <code>minecraft.series_colors.series</code>.
+     * The column <code>{prefix}series_colors.SERIES</code>.
      */
-    public final TableField<SeriesColorsRecord, String> SERIES = createField(DSL.name("series"), SQLDataType.VARCHAR(10).nullable(false), this, "");
+    public final TableField<SeriesColorsRecord, String> SERIES = createField(DSL.name("SERIES"), SQLDataType.VARCHAR(10).nullable(false), this, "");
 
     private SeriesColors(Name alias, Table<SeriesColorsRecord> aliased) {
         this(alias, aliased, null);
@@ -83,24 +88,24 @@ public class SeriesColors extends TableImpl<SeriesColorsRecord> {
     }
 
     /**
-     * Create an aliased <code>minecraft.series_colors</code> table reference
+     * Create an aliased <code>{prefix}series_colors</code> table reference
      */
     public SeriesColors(String alias) {
         this(DSL.name(alias), SERIES_COLORS);
     }
 
     /**
-     * Create an aliased <code>minecraft.series_colors</code> table reference
+     * Create an aliased <code>{prefix}series_colors</code> table reference
      */
     public SeriesColors(Name alias) {
         this(alias, SERIES_COLORS);
     }
 
     /**
-     * Create a <code>minecraft.series_colors</code> table reference
+     * Create a <code>{prefix}series_colors</code> table reference
      */
     public SeriesColors() {
-        this(DSL.name("series_colors"), null);
+        this(DSL.name("{prefix}series_colors"), null);
     }
 
     public <O extends Record> SeriesColors(Table<O> child, ForeignKey<O, SeriesColorsRecord> key) {
@@ -109,12 +114,12 @@ public class SeriesColors extends TableImpl<SeriesColorsRecord> {
 
     @Override
     public Schema getSchema() {
-        return aliased() ? null : Minecraft.MINECRAFT;
+        return aliased() ? null : DefaultSchema.DEFAULT_SCHEMA;
     }
 
     @Override
     public UniqueKey<SeriesColorsRecord> getPrimaryKey() {
-        return Keys.KEY_SERIES_COLORS_PRIMARY;
+        return Keys.CONSTRAINT_C;
     }
 
     @Override
@@ -125,6 +130,11 @@ public class SeriesColors extends TableImpl<SeriesColorsRecord> {
     @Override
     public SeriesColors as(Name alias) {
         return new SeriesColors(alias, this);
+    }
+
+    @Override
+    public SeriesColors as(Table<?> alias) {
+        return new SeriesColors(alias.getQualifiedName(), this);
     }
 
     /**
@@ -143,6 +153,14 @@ public class SeriesColors extends TableImpl<SeriesColorsRecord> {
         return new SeriesColors(name, null);
     }
 
+    /**
+     * Rename this table
+     */
+    @Override
+    public SeriesColors rename(Table<?> name) {
+        return new SeriesColors(name.getQualifiedName(), null);
+    }
+
     // -------------------------------------------------------------------------
     // Row6 type methods
     // -------------------------------------------------------------------------
@@ -150,5 +168,20 @@ public class SeriesColors extends TableImpl<SeriesColorsRecord> {
     @Override
     public Row6<String, String, String, String, String, String> fieldsRow() {
         return (Row6) super.fieldsRow();
+    }
+
+    /**
+     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     */
+    public <U> SelectField<U> mapping(Function6<? super String, ? super String, ? super String, ? super String, ? super String, ? super String, ? extends U> from) {
+        return convertFrom(Records.mapping(from));
+    }
+
+    /**
+     * Convenience mapping calling {@link SelectField#convertFrom(Class,
+     * Function)}.
+     */
+    public <U> SelectField<U> mapping(Class<U> toType, Function6<? super String, ? super String, ? super String, ? super String, ? super String, ? super String, ? extends U> from) {
+        return convertFrom(toType, Records.mapping(from));
     }
 }

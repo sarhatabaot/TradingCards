@@ -219,7 +219,11 @@
                                 <shadedPattern>${project.groupId}.bstats</shadedPattern>
                             </relocation>
                         </relocations>
-
+                        <artifactSet>
+                        <excludes>
+                            <exclude>org.jooq:jooq-meta-extensions</exclude>
+                        </excludes>
+                        </artifactSet>
                         <filters>
                             <filter>
                                 <artifact>*:*</artifact>
@@ -421,6 +425,7 @@
             <groupId>org.jooq</groupId>
             <artifactId>jooq-meta-extensions</artifactId>
             <version>${jooq.version}</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>net.tinetwork.tradingcards</groupId>

@@ -4,17 +4,21 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables;
 
 
+import java.util.function.Function;
+
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.DefaultSchema;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.Keys;
-import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.Minecraft;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.records.RaritiesRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Function7;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row6;
+import org.jooq.Records;
 import org.jooq.Row7;
 import org.jooq.Schema;
+import org.jooq.SelectField;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
@@ -33,7 +37,7 @@ public class Rarities extends TableImpl<RaritiesRecord> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * The reference instance of <code>minecraft.rarities</code>
+     * The reference instance of <code>{prefix}rarities</code>
      */
     public static final Rarities RARITIES = new Rarities();
 
@@ -46,36 +50,40 @@ public class Rarities extends TableImpl<RaritiesRecord> {
     }
 
     /**
-     * The column <code>minecraft.rarities.rarity_id</code>.
+     * The column <code>{prefix}rarities.RARITY_ID</code>.
      */
-    public final TableField<RaritiesRecord, String> RARITY_ID = createField(DSL.name("rarity_id"), SQLDataType.VARCHAR(200).nullable(false), this, "");
+    public final TableField<RaritiesRecord, String> RARITY_ID = createField(DSL.name("RARITY_ID"), SQLDataType.VARCHAR(200).nullable(false), this, "");
 
     /**
-     * The column <code>minecraft.rarities.display_name</code>.
+     * The column <code>{prefix}rarities.DISPLAY_NAME</code>.
      */
-    public final TableField<RaritiesRecord, String> DISPLAY_NAME = createField(DSL.name("display_name"), SQLDataType.CLOB, this, "");
+    public final TableField<RaritiesRecord, String> DISPLAY_NAME = createField(DSL.name("DISPLAY_NAME"), SQLDataType.CLOB, this, "");
 
     /**
-     * The column <code>minecraft.rarities.default_color</code>.
+     * The column <code>{prefix}rarities.DEFAULT_COLOR</code>.
      */
-    public final TableField<RaritiesRecord, String> DEFAULT_COLOR = createField(DSL.name("default_color"), SQLDataType.VARCHAR(36), this, "");
+    public final TableField<RaritiesRecord, String> DEFAULT_COLOR = createField(DSL.name("DEFAULT_COLOR"), SQLDataType.VARCHAR(36), this, "");
 
     /**
-     * The column <code>minecraft.rarities.buy_price</code>.
+     * The column <code>{prefix}rarities.BUY_PRICE</code>.
      */
-    public final TableField<RaritiesRecord, Double> BUY_PRICE = createField(DSL.name("buy_price"), SQLDataType.DOUBLE, this, "");
+    public final TableField<RaritiesRecord, Double> BUY_PRICE = createField(DSL.name("BUY_PRICE"), SQLDataType.DOUBLE, this, "");
 
     /**
-     * The column <code>minecraft.rarities.sell_price</code>.
+     * The column <code>{prefix}rarities.SELL_PRICE</code>.
      */
-    public final TableField<RaritiesRecord, Double> SELL_PRICE = createField(DSL.name("sell_price"), SQLDataType.DOUBLE, this, "");
+    public final TableField<RaritiesRecord, Double> SELL_PRICE = createField(DSL.name("SELL_PRICE"), SQLDataType.DOUBLE, this, "");
 
     /**
-     * The column <code>minecraft.rarities.custom_order</code>.
+     * The column <code>{prefix}rarities.CURRENCY_ID</code>.
      */
-    public final TableField<RaritiesRecord, Integer> CUSTOM_ORDER = createField(DSL.name("custom_order"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<RaritiesRecord, String> CURRENCY_ID = createField(DSL.name("CURRENCY_ID"), SQLDataType.VARCHAR(30).defaultValue(DSL.field("NULL", SQLDataType.VARCHAR)), this, "");
 
-    public final TableField<RaritiesRecord, String> CURRENCY_ID = createField(DSL.name("currency_id"), SQLDataType.VARCHAR(30).nullable(true), this, "");
+    /**
+     * The column <code>{prefix}rarities.CUSTOM_ORDER</code>.
+     */
+    public final TableField<RaritiesRecord, Integer> CUSTOM_ORDER = createField(DSL.name("CUSTOM_ORDER"), SQLDataType.INTEGER.defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
+
     private Rarities(Name alias, Table<RaritiesRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -85,24 +93,24 @@ public class Rarities extends TableImpl<RaritiesRecord> {
     }
 
     /**
-     * Create an aliased <code>minecraft.rarities</code> table reference
+     * Create an aliased <code>{prefix}rarities</code> table reference
      */
     public Rarities(String alias) {
         this(DSL.name(alias), RARITIES);
     }
 
     /**
-     * Create an aliased <code>minecraft.rarities</code> table reference
+     * Create an aliased <code>{prefix}rarities</code> table reference
      */
     public Rarities(Name alias) {
         this(alias, RARITIES);
     }
 
     /**
-     * Create a <code>minecraft.rarities</code> table reference
+     * Create a <code>{prefix}rarities</code> table reference
      */
     public Rarities() {
-        this(DSL.name("rarities"), null);
+        this(DSL.name("{prefix}rarities"), null);
     }
 
     public <O extends Record> Rarities(Table<O> child, ForeignKey<O, RaritiesRecord> key) {
@@ -111,12 +119,12 @@ public class Rarities extends TableImpl<RaritiesRecord> {
 
     @Override
     public Schema getSchema() {
-        return aliased() ? null : Minecraft.MINECRAFT;
+        return aliased() ? null : DefaultSchema.DEFAULT_SCHEMA;
     }
 
     @Override
     public UniqueKey<RaritiesRecord> getPrimaryKey() {
-        return Keys.KEY_RARITIES_PRIMARY;
+        return Keys.CONSTRAINT_7;
     }
 
     @Override
@@ -127,6 +135,11 @@ public class Rarities extends TableImpl<RaritiesRecord> {
     @Override
     public Rarities as(Name alias) {
         return new Rarities(alias, this);
+    }
+
+    @Override
+    public Rarities as(Table<?> alias) {
+        return new Rarities(alias.getQualifiedName(), this);
     }
 
     /**
@@ -145,12 +158,35 @@ public class Rarities extends TableImpl<RaritiesRecord> {
         return new Rarities(name, null);
     }
 
+    /**
+     * Rename this table
+     */
+    @Override
+    public Rarities rename(Table<?> name) {
+        return new Rarities(name.getQualifiedName(), null);
+    }
+
     // -------------------------------------------------------------------------
     // Row7 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<String, String, String, Double, Double,Integer,String> fieldsRow() {
+    public Row7<String, String, String, Double, Double, String, Integer> fieldsRow() {
         return (Row7) super.fieldsRow();
+    }
+
+    /**
+     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     */
+    public <U> SelectField<U> mapping(Function7<? super String, ? super String, ? super String, ? super Double, ? super Double, ? super String, ? super Integer, ? extends U> from) {
+        return convertFrom(Records.mapping(from));
+    }
+
+    /**
+     * Convenience mapping calling {@link SelectField#convertFrom(Class,
+     * Function)}.
+     */
+    public <U> SelectField<U> mapping(Class<U> toType, Function7<? super String, ? super String, ? super String, ? super Double, ? super Double, ? super String, ? super Integer, ? extends U> from) {
+        return convertFrom(toType, Records.mapping(from));
     }
 }

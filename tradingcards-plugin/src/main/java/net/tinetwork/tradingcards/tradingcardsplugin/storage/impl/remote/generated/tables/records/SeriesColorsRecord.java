@@ -22,84 +22,84 @@ public class SeriesColorsRecord extends UpdatableRecordImpl<SeriesColorsRecord> 
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>minecraft.series_colors.series_id</code>.
+     * Setter for <code>{prefix}series_colors.SERIES_ID</code>.
      */
     public void setSeriesId(String value) {
         set(0, value);
     }
 
     /**
-     * Getter for <code>minecraft.series_colors.series_id</code>.
+     * Getter for <code>{prefix}series_colors.SERIES_ID</code>.
      */
     public String getSeriesId() {
         return (String) get(0);
     }
 
     /**
-     * Setter for <code>minecraft.series_colors.type</code>.
+     * Setter for <code>{prefix}series_colors.type</code>.
      */
     public void setType(String value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>minecraft.series_colors.type</code>.
+     * Getter for <code>{prefix}series_colors.type</code>.
      */
     public String getType() {
         return (String) get(1);
     }
 
     /**
-     * Setter for <code>minecraft.series_colors.info</code>.
+     * Setter for <code>{prefix}series_colors.INFO</code>.
      */
     public void setInfo(String value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>minecraft.series_colors.info</code>.
+     * Getter for <code>{prefix}series_colors.INFO</code>.
      */
     public String getInfo() {
         return (String) get(2);
     }
 
     /**
-     * Setter for <code>minecraft.series_colors.about</code>.
+     * Setter for <code>{prefix}series_colors.ABOUT</code>.
      */
     public void setAbout(String value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>minecraft.series_colors.about</code>.
+     * Getter for <code>{prefix}series_colors.ABOUT</code>.
      */
     public String getAbout() {
         return (String) get(3);
     }
 
     /**
-     * Setter for <code>minecraft.series_colors.rarity</code>.
+     * Setter for <code>{prefix}series_colors.RARITY</code>.
      */
     public void setRarity(String value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>minecraft.series_colors.rarity</code>.
+     * Getter for <code>{prefix}series_colors.RARITY</code>.
      */
     public String getRarity() {
         return (String) get(4);
     }
 
     /**
-     * Setter for <code>minecraft.series_colors.series</code>.
+     * Setter for <code>{prefix}series_colors.SERIES</code>.
      */
     public void setSeries(String value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>minecraft.series_colors.series</code>.
+     * Getter for <code>{prefix}series_colors.SERIES</code>.
      */
     public String getSeries() {
         return (String) get(5);

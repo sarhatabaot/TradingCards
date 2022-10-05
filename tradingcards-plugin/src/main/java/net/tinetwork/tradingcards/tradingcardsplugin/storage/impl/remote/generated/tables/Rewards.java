@@ -4,16 +4,21 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables;
 
 
+import java.util.function.Function;
+
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.DefaultSchema;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.Keys;
-import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.Minecraft;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.records.RewardsRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Function3;
 import org.jooq.Name;
 import org.jooq.Record;
+import org.jooq.Records;
 import org.jooq.Row3;
 import org.jooq.Schema;
+import org.jooq.SelectField;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
@@ -32,7 +37,7 @@ public class Rewards extends TableImpl<RewardsRecord> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * The reference instance of <code>minecraft.rewards</code>
+     * The reference instance of <code>{prefix}rewards</code>
      */
     public static final Rewards REWARDS = new Rewards();
 
@@ -45,19 +50,19 @@ public class Rewards extends TableImpl<RewardsRecord> {
     }
 
     /**
-     * The column <code>minecraft.rewards.rarity_id</code>.
+     * The column <code>{prefix}rewards.RARITY_ID</code>.
      */
-    public final TableField<RewardsRecord, String> RARITY_ID = createField(DSL.name("rarity_id"), SQLDataType.VARCHAR(200).nullable(false), this, "");
+    public final TableField<RewardsRecord, String> RARITY_ID = createField(DSL.name("RARITY_ID"), SQLDataType.VARCHAR(200).nullable(false), this, "");
 
     /**
-     * The column <code>minecraft.rewards.command</code>.
+     * The column <code>{prefix}rewards.COMMAND</code>.
      */
-    public final TableField<RewardsRecord, String> COMMAND = createField(DSL.name("command"), SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<RewardsRecord, String> COMMAND = createField(DSL.name("COMMAND"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
-     * The column <code>minecraft.rewards.command_order</code>.
+     * The column <code>{prefix}rewards.COMMAND_ORDER</code>.
      */
-    public final TableField<RewardsRecord, Integer> COMMAND_ORDER = createField(DSL.name("command_order"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<RewardsRecord, Integer> COMMAND_ORDER = createField(DSL.name("COMMAND_ORDER"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private Rewards(Name alias, Table<RewardsRecord> aliased) {
         this(alias, aliased, null);
@@ -68,24 +73,24 @@ public class Rewards extends TableImpl<RewardsRecord> {
     }
 
     /**
-     * Create an aliased <code>minecraft.rewards</code> table reference
+     * Create an aliased <code>{prefix}rewards</code> table reference
      */
     public Rewards(String alias) {
         this(DSL.name(alias), REWARDS);
     }
 
     /**
-     * Create an aliased <code>minecraft.rewards</code> table reference
+     * Create an aliased <code>{prefix}rewards</code> table reference
      */
     public Rewards(Name alias) {
         this(alias, REWARDS);
     }
 
     /**
-     * Create a <code>minecraft.rewards</code> table reference
+     * Create a <code>{prefix}rewards</code> table reference
      */
     public Rewards() {
-        this(DSL.name("rewards"), null);
+        this(DSL.name("{prefix}rewards"), null);
     }
 
     public <O extends Record> Rewards(Table<O> child, ForeignKey<O, RewardsRecord> key) {
@@ -94,12 +99,12 @@ public class Rewards extends TableImpl<RewardsRecord> {
 
     @Override
     public Schema getSchema() {
-        return aliased() ? null : Minecraft.MINECRAFT;
+        return aliased() ? null : DefaultSchema.DEFAULT_SCHEMA;
     }
 
     @Override
     public UniqueKey<RewardsRecord> getPrimaryKey() {
-        return Keys.KEY_REWARDS_PRIMARY;
+        return Keys.CONSTRAINT_3;
     }
 
     @Override
@@ -110,6 +115,11 @@ public class Rewards extends TableImpl<RewardsRecord> {
     @Override
     public Rewards as(Name alias) {
         return new Rewards(alias, this);
+    }
+
+    @Override
+    public Rewards as(Table<?> alias) {
+        return new Rewards(alias.getQualifiedName(), this);
     }
 
     /**
@@ -128,6 +138,14 @@ public class Rewards extends TableImpl<RewardsRecord> {
         return new Rewards(name, null);
     }
 
+    /**
+     * Rename this table
+     */
+    @Override
+    public Rewards rename(Table<?> name) {
+        return new Rewards(name.getQualifiedName(), null);
+    }
+
     // -------------------------------------------------------------------------
     // Row3 type methods
     // -------------------------------------------------------------------------
@@ -135,5 +153,20 @@ public class Rewards extends TableImpl<RewardsRecord> {
     @Override
     public Row3<String, String, Integer> fieldsRow() {
         return (Row3) super.fieldsRow();
+    }
+
+    /**
+     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     */
+    public <U> SelectField<U> mapping(Function3<? super String, ? super String, ? super Integer, ? extends U> from) {
+        return convertFrom(Records.mapping(from));
+    }
+
+    /**
+     * Convenience mapping calling {@link SelectField#convertFrom(Class,
+     * Function)}.
+     */
+    public <U> SelectField<U> mapping(Class<U> toType, Function3<? super String, ? super String, ? super Integer, ? extends U> from) {
+        return convertFrom(toType, Records.mapping(from));
     }
 }

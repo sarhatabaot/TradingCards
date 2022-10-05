@@ -23,42 +23,42 @@ public class CustomTypesRecord extends UpdatableRecordImpl<CustomTypesRecord> im
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>minecraft.custom_types.type_id</code>.
+     * Setter for <code>{prefix}custom_types.TYPE_ID</code>.
      */
     public void setTypeId(String value) {
         set(0, value);
     }
 
     /**
-     * Getter for <code>minecraft.custom_types.type_id</code>.
+     * Getter for <code>{prefix}custom_types.TYPE_ID</code>.
      */
     public String getTypeId() {
         return (String) get(0);
     }
 
     /**
-     * Setter for <code>minecraft.custom_types.display_name</code>.
+     * Setter for <code>{prefix}custom_types.DISPLAY_NAME</code>.
      */
     public void setDisplayName(String value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>minecraft.custom_types.display_name</code>.
+     * Getter for <code>{prefix}custom_types.DISPLAY_NAME</code>.
      */
     public String getDisplayName() {
         return (String) get(1);
     }
 
     /**
-     * Setter for <code>minecraft.custom_types.drop_type</code>.
+     * Setter for <code>{prefix}custom_types.DROP_TYPE</code>.
      */
     public void setDropType(CustomTypesDropType value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>minecraft.custom_types.drop_type</code>.
+     * Getter for <code>{prefix}custom_types.DROP_TYPE</code>.
      */
     public CustomTypesDropType getDropType() {
         return (CustomTypesDropType) get(2);
