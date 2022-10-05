@@ -17,6 +17,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.PlaceholderUtil;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -126,6 +127,9 @@ public class BuyCommand extends BaseCommand {
         }
 
         private boolean matchesEntry(final ItemStack itemStack, final Pack.PackEntry packEntry) {
+            if(itemStack == null || itemStack.getType() == Material.AIR)
+                return false;
+
             NBTItem nbtItem = new NBTItem(itemStack);
             if (!CardUtil.isCard(nbtItem)) {
                 return false;
