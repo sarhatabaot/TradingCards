@@ -1,10 +1,10 @@
 package net.tinetwork.tradingcards;
 
+import org.jetbrains.annotations.NotNull;
 import org.jooq.codegen.DefaultGeneratorStrategy;
 import org.jooq.meta.Definition;
 import org.jooq.tools.StringUtils;
 
-import java.util.logging.Logger;
 
 /**
  * @author sarhatabaot
@@ -24,7 +24,7 @@ public class PrefixNamingStrategy extends DefaultGeneratorStrategy {
     }
 
 
-    private String replacePrefix(final String name) {
+    private @NotNull String replacePrefix(final @NotNull String name) {
         return name.replace("{PREFIX}","").replace("{prefix}","").replace("_7bprefix_7d","").replace("_7bPREFIX_7d","");
     }
 

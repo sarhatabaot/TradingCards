@@ -37,9 +37,9 @@
     </properties>
 
     <modules>
+        <module>tradingcards-extras</module>
         <module>tradingcards-api</module>
         <module>tradingcards-plugin</module>
-        <module>tradingcards-extras</module>
     </modules>
 
     <repositories>
