@@ -1584,6 +1584,50 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
     @Override
+    public void editPackTradeCards(final String packId, final int lineNumber, final Pack.PackEntry packEntry) {
+        new ExecuteUpdate(this, jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.update(PacksTrade.PACKS_TRADE)
+                        .set(PacksTrade.PACKS_TRADE.PACK_ID, packId)
+                        .set(PacksTrade.PACKS_TRADE.LINE_NUMBER, lineNumber)
+                        .set(PacksTrade.PACKS_TRADE.SERIES_ID, packEntry.seriesId())
+                        .set(PacksTrade.PACKS_TRADE.RARITY_ID, packEntry.getRarityId())
+                        .set(PacksTrade.PACKS_TRADE.CARD_AMOUNT, String.valueOf(packEntry.getAmount())).execute();
+            }
+        }.executeUpdate();
+    }
+
+    @Override
+    public void editPackTradeCardsAdd(final String packId, final Pack.PackEntry packEntry) {
+        final int lineNumber = getTradeEntries(packId).size();
+        new ExecuteUpdate(this, jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.insertInto(PacksTrade.PACKS_TRADE)
+                        .set(PacksTrade.PACKS_TRADE.PACK_ID, packId)
+                        .set(PacksTrade.PACKS_TRADE.LINE_NUMBER, lineNumber)
+                        .set(PacksTrade.PACKS_TRADE.SERIES_ID, packEntry.seriesId())
+                        .set(PacksTrade.PACKS_TRADE.RARITY_ID, packEntry.getRarityId())
+                        .set(PacksTrade.PACKS_TRADE.CARD_AMOUNT, String.valueOf(packEntry.getAmount())).execute();
+            }
+        }.executeUpdate();
+    }
+
+    @Override
+    public void editPackTradeCardsDelete(final String packId, final int lineNumber) {
+        new ExecuteUpdate(this, jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.deleteFrom(PacksTrade.PACKS_TRADE)
+                        .where(PacksTrade.PACKS_TRADE.PACK_ID.eq(packId)
+                                .and(PacksTrade.PACKS_TRADE.LINE_NUMBER.eq(lineNumber)))
+                        .execute();
+            }
+        }.executeUpdate();
+    }
+
+    @Override
     public void editPackPermission(final String packId, final String permission) {
         new ExecuteUpdate(this, jooqSettings) {
             @Override

@@ -282,6 +282,8 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         commandManager.getCommandCompletions().registerCompletion(
                 "edit-pack-value", c -> switch (c.getContextValueByName(EditPack.class, "editPack")) {
                     case PRICE, PERMISSION, DISPLAY_NAME, CURRENCY_ID -> Collections.singleton("");
+                    case TRADE -> IntStream.rangeClosed(0, packManager.getPack(c.getContextValueByName(String.class, "packId")).getTradeCards().size() - 1)
+                            .boxed().map(String::valueOf).toList();
                     case CONTENTS -> IntStream.rangeClosed(0, packManager.getPack(c.getContextValueByName(String.class, "packId")).getPackEntryList().size() - 1)
                             .boxed().map(String::valueOf).toList();
 

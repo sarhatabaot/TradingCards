@@ -526,6 +526,23 @@ public class YamlStorage implements Storage<TradingCard> {
     }
 
     @Override
+    public void editPackTradeCards(final String packId, final int lineNumber, final Pack.PackEntry packEntry) {
+        packsConfig.editTradeCards(packId,lineNumber,packEntry);
+    }
+
+    @Override
+    public void editPackTradeCardsAdd(final String packId, final Pack.PackEntry packEntry) {
+        List<Pack.PackEntry> packEntries = getPack(packId).getTradeCards();
+        int lineNumber = (packEntries == null) ? 0 : packEntries.size() - 1;
+        packsConfig.editTradeCards(packId,lineNumber,packEntry);
+    }
+
+    @Override
+    public void editPackTradeCardsDelete(final String packId, final int lineNumber) {
+        packsConfig.editTradeCards(packId,lineNumber,null);
+    }
+
+    @Override
     public void editPackPermission(final String packId, final String permission) {
         packsConfig.editPermission(packId,permission);
     }

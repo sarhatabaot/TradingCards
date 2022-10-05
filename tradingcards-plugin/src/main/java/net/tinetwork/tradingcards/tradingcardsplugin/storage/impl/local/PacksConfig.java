@@ -61,6 +61,18 @@ public class PacksConfig extends YamlConfigurateFile<TradingCards> {
         }
     }
 
+    public void editTradeCards(final String packId, final int lineNumber, final Pack.PackEntry packEntry) {
+        ConfigurationNode packNode = rootNode.node(packId);
+        try {
+            Pack pack = getPack(packId);
+            pack.getTradeCards().set(lineNumber,packEntry);
+            packNode.set(pack);
+            loader.save(rootNode);
+        } catch (ConfigurateException e) {
+            Util.logSevereException(e);
+        }
+    }
+
     public void editPermission(final String packId, final String permission) {
         ConfigurationNode packNode = rootNode.node(packId);
         try {

@@ -241,6 +241,28 @@ public class EditCommand extends BaseCommand {
 
             switch (editType) {
                 case DISPLAY_NAME -> storage.editPackDisplayName(packId, value);
+                case TRADE -> {
+                    if (!value.contains("=")) {
+                        ChatUtil.sendPrefixedMessage(sender, InternalMessages.EditCommand.CONTENTS_SYNTAX);
+                        ChatUtil.sendPrefixedMessage(sender, InternalMessages.EditCommand.CONTENTS_EXAMPLE);
+                        return;
+                    }
+
+                    String[] split = value.split("=");
+                    int lineNumber = getIntFromString(split[0]);
+                    if (lineNumber == -1) {
+                        ChatUtil.sendPrefixedMessage(sender, InternalMessages.EditCommand.LINE_NUMBER_INCORRECT);
+                        return;
+                    }
+                    String content = split[1];
+                    if (content.equalsIgnoreCase("delete")) {
+                        storage.editPackTradeCardsDelete(packId, lineNumber);
+                        return;
+                    }
+
+                    Pack.PackEntry entry = Pack.PackEntry.fromString(content);
+                    storage.editPackTradeCards(packId, lineNumber, entry);
+                }
                 case CONTENTS -> {
                     if (!value.contains("=")) {
                         ChatUtil.sendPrefixedMessage(sender, InternalMessages.EditCommand.CONTENTS_SYNTAX);
