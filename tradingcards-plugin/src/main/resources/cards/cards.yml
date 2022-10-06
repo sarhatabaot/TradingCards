@@ -1,5 +1,12 @@
 cards:
   common:
+    jackolantern:
+      custom-model-data: 3200100
+      display-name: "Jack o Lantern"
+      has-shiny-version: true
+      info: none
+      series: halloween
+      type: passive
     bat:
       custom-model-data: 3200006
       display-name: "Bat"
@@ -138,7 +145,7 @@ cards:
       display-name: "Snow Fox"
       has-shiny-version: true
       info: none
-      series: default
+      series: winter
       type: passive
     horse_black:
       custom-model-data: 3200037
@@ -157,6 +164,34 @@ cards:
     horse_chestnut:
       custom-model-data: 3200039
       display-name: "Chestnut Horse"
+      has-shiny-version: true
+      info: none
+      series: default
+      type: passive
+    horse_darkbrown:
+      custom-model-data: 3200093
+      display-name: "Dark Brown Horse "
+      has-shiny-version: true
+      info: none
+      series: default
+      type: passive
+    horse_creamy:
+      custom-model-data: 3200094
+      display-name: "Creamy Horse"
+      has-shiny-version: true
+      info: none
+      series: default
+      type: passive
+    horse_gray:
+      custom-model-data: 3200095
+      display-name: "Gray Horse"
+      has-shiny-version: true
+      info: none
+      series: default
+      type: passive
+    horse_white:
+      custom-model-data: 3200096
+      display-name: "White Horse"
       has-shiny-version: true
       info: none
       series: default
@@ -294,7 +329,35 @@ cards:
       info: none
       series: default
       type: hostile
+    roses:
+      custom-model-data: 3200089
+      display-name: "Roses"
+      has-shiny-version: true
+      info: none
+      series: valentines
+      type: passive
+    tulips:
+      custom-model-data: 3200090
+      display-name: "Tuplis"
+      has-shiny-version: true
+      info: none
+      series: valentines
+      type: passive
+    snow_block:
+      custom-model-data: 3200091
+      display-name: "Snow Block"
+      has-shiny-version: true
+      info: none
+      series: winter
+      type: passive
   uncommon:
+    cobweb:
+      custom-model-data: 3200097
+      display-name: "Cobweb"
+      has-shiny-version: true
+      info: none
+      series: halloween
+      type: neutral
     bee:
       custom-model-data: 3200086
       display-name: "Bee"
@@ -412,7 +475,7 @@ cards:
       display-name: "Witch"
       has-shiny-version: true
       info: none
-      series: default
+      series: halloween
       type: hostile
     wolf:
       custom-model-data: 3200083
@@ -429,7 +492,21 @@ cards:
       series: default
       type: hostile
   rare:
-    Pufferfish:
+    christmas_chest:
+      custom-model-data: 3200098
+      display-name: "Christmas Chest"
+      has-shiny-version: true
+      info: none
+      series: winter
+      type: neutral  
+    cake:
+      custom-model-data: 3200086
+      display-name: "Cake"
+      has-shiny-version: true
+      info: none
+      series: valentines
+      type: passive
+    pufferfish:
       custom-model-data: 3200058
       display-name: "Pufferfish"
       has-shiny-version: true
@@ -504,7 +581,7 @@ cards:
       display-name: "Snow Golem"
       has-shiny-version: true
       info: none
-      series: default
+      series: winter
       type: neutral
     spider_jockey:
       custom-model-data: 3200075
@@ -514,13 +591,27 @@ cards:
       series: default
       type: hostile
     wither_skeleton:
-      custom-model-data: 3200076
+      custom-model-data: 3200082
       display-name: "Wither Skeleton"
       has-shiny-version: true
       info: none
       series: default
       type: hostile
   very-rare:
+    christmas_chest_lg:
+      custom-model-data: 3200086
+      display-name: "Large Christmas Chest"
+      has-shiny-version: true
+      info: none
+      series: winter
+      type: neutral
+    diamond:
+      custom-model-data: 3200099
+      display-name: "Diamond"
+      has-shiny-version: true
+      info: none
+      series: valentines
+      type: passive
     axolotl_cyan:
       custom-model-data: 3200002
       display-name: "Cyan Axolotl"
@@ -613,3 +704,17 @@ cards:
       info: none
       series: default
       type: boss
+    parrotsandbats:
+      custom-model-data: 3200088
+      display-name: "Parrots and the Bats"
+      has-shiny-version: true
+      info: none
+      series: valentines
+      type: passive    
+    firework:
+      custom-model-data: 3200092
+      display-name: "Firework"
+      has-shiny-version: true
+      info: none
+      series: winter
+      type: passive
