@@ -133,9 +133,9 @@ cards:
       info: none
       series: default
       type: hostile
-    fox_brown:
+    fox_red:
       custom-model-data: 3200030
-      display-name: "Brown Fox"
+      display-name: "Red Fox"
       has-shiny-version: true
       info: none
       series: default
