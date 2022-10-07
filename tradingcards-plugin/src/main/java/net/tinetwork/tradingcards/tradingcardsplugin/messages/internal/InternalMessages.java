@@ -110,7 +110,7 @@ public final class InternalMessages {
                 "&bDisplay Name:&f %s", "&bBuy Price:&f %.2f", "&bSell Price:&f %.2f", "&bCurrency:&f %s",
                 "&bAbout:&f %s", "&bInfo:&f %s" };
         public static final String[] PACK_FORMAT = new String[] { "&bPack:&f %s", "&bDisplay Name:&f %s",
-                "&bContent:&f %s", "&bCurrency:&f %s", "&bBuy Price:&f %s" };
+                "&bContent:&f %s", "&bTrade: &f %s", "&bCurrency:&f %s", "&bBuy Price:&f %s" };
         public static final String[] TYPE_FORMAT = new String[] { "&bType:&f %s", "&bDisplay Name:&f %s",
                 "&bMob Type:&f %s" };
         public static final String[] SERIES_FORMAT = new String[] { "&bSeries:&f %s", "&bDisplay Name:&f '%s'",

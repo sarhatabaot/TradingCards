@@ -284,7 +284,6 @@ public class EditCommand extends BaseCommand {
 
                     Pack.PackEntry entry = Pack.PackEntry.fromString(content);
                     storage.editPackContents(packId, lineNumber, entry);
-
                 }
                 case PERMISSION -> storage.editPackPermission(packId, value);
                 case PRICE -> {

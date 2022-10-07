@@ -66,7 +66,9 @@ public class InfoCommand extends BaseCommand {
                     InternalMessages.InfoCommand.PACK_FORMAT,
                     pack.getId(), pack.getDisplayName(),
                     pack.getPackEntryList().stream().map(Pack.PackEntry::toString).toList(),
-                    pack.getCurrencyId(), pack.getBuyPrice());
+                    pack.getTradeCards().stream().map(Pack.PackEntry::toString).toList(),
+                    pack.getCurrencyId(),
+                    pack.getBuyPrice());
         }
 
         @Subcommand("type")

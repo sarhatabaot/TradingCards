@@ -24,7 +24,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author sarhatabaot
@@ -75,7 +77,7 @@ public class BuyCommand extends BaseCommand {
                 }
 
                 if (!pack.getTradeCards().isEmpty()) {
-                    for (Pack.PackEntry packEntry : pack.getPackEntryList()) {
+                    for (Pack.PackEntry packEntry : pack.getTradeCards()) {
                         removeCardsMatchingEntry(player, packEntry);
                     }
                     //add bought for cards etc
@@ -92,15 +94,15 @@ public class BuyCommand extends BaseCommand {
 
         private void removeCardsMatchingEntry(final @NotNull Player player, final Pack.@NotNull PackEntry packEntry) {
             PlayerInventory inventory = player.getInventory();
-            /*
-            packentry: common:7:default
-            inventory:
-            zombie:common:2:default, skeleton:common:5:default
-             */
             int countLeftToRemove = packEntry.amount();
-            for (ItemStack itemStack: inventory.getContents()) {
-                if(matchesEntry(itemStack,packEntry)) {
-                    //accounts for zombie:common:10:default
+            for (ItemStack itemStack: Arrays.stream(inventory.getContents())
+                    .filter(Objects::nonNull)
+                    .filter(itemStack -> itemStack.getType() != Material.AIR)
+                    .toList()) {
+
+                boolean matchesEntry = matchesEntry(itemStack,packEntry);
+                if(matchesEntry) {
+                    //accounts for zombie:common:10:default when the entry is common:5:default
                     if(itemStack.getAmount() > countLeftToRemove) {
                         itemStack.setAmount(itemStack.getAmount() - countLeftToRemove);
                         plugin.debug(BuyCommand.class,"Removed %d from ItemStack %s, new amount: %s".formatted(countLeftToRemove, itemStack.toString(), itemStack.getAmount()));
@@ -108,10 +110,11 @@ public class BuyCommand extends BaseCommand {
                     }
 
                     countLeftToRemove -= itemStack.getAmount();
-                    inventory.remove(itemStack);
+                    player.getInventory().removeItem(itemStack);
                     plugin.debug(BuyCommand.class, "Removed ItemStack %s, amount left to remove %d".formatted(itemStack.toString(),countLeftToRemove));
                 }
             }
+
         }
 
         private int countCardsInInventory(final @NotNull Player player, final Pack.PackEntry packEntry) {
@@ -139,16 +142,20 @@ public class BuyCommand extends BaseCommand {
             NBTCompound tcCompound = nbtItem.getCompound(NbtUtils.TC_COMPOUND);
 
             //don't count if it's shiny.
-            if (tcCompound.getBoolean(NbtUtils.TC_CARD_SHINY))
+            if (tcCompound.getBoolean(NbtUtils.TC_CARD_SHINY)) {
                 return false;
+            }
 
             final String nbtRarity = tcCompound.getString(NbtUtils.TC_CARD_RARITY);
             final String nbtSeries = tcCompound.getString(NbtUtils.TC_CARD_SERIES);
-
+            
             return packEntry.seriesId().equals(nbtSeries) && packEntry.getRarityId().equals(nbtRarity);
         }
 
         private boolean hasCardsInInventory(final Player player, final @NotNull List<Pack.PackEntry> tradeCards) {
+            if(tradeCards.isEmpty())
+                return true;
+
             for (Pack.PackEntry packEntry : tradeCards) {
                 if (packEntry.amount() > countCardsInInventory(player, packEntry))
                     return false;

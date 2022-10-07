@@ -113,6 +113,7 @@ public class NbtUtils {
         public static boolean isCard(final @NotNull NBTItem item) {
             if (isLegacy(item))
                 return item.getBoolean(Legacy.NBT_IS_CARD);
+
             return item.getCompound(TC_COMPOUND).hasKey(TC_CARD_ID);
         }
     }

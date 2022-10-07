@@ -77,6 +77,7 @@
       "&bPack:&f %s",
       "&bDisplay Name:&f %s",
       "&bContent:&f %s",
+      "&bTrade: &f %s",
       "&bCurrency:&f %s",
       "&bBuy Price:&f %s"
     ],
