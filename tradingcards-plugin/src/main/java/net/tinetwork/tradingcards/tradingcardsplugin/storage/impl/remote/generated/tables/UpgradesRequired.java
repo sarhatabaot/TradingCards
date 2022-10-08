@@ -62,7 +62,7 @@ public class UpgradesRequired extends TableImpl<UpgradesRequiredRecord> {
     /**
      * The column <code>{prefix}upgrades_required.amount</code>.
      */
-    public final TableField<UpgradesRequiredRecord, String> AMOUNT = createField(DSL.name("amount"), SQLDataType.VARCHAR(200).nullable(false), this, "");
+    public final TableField<UpgradesRequiredRecord, Integer> AMOUNT = createField(DSL.name("amount"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>{prefix}upgrades_required.rarity_id</code>.
@@ -156,14 +156,14 @@ public class UpgradesRequired extends TableImpl<UpgradesRequiredRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row4<String, String, String, String> fieldsRow() {
+    public Row4<String, String, Integer, String> fieldsRow() {
         return (Row4) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function4<? super String, ? super String, ? super String, ? super String, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function4<? super String, ? super String, ? super Integer, ? super String, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -171,7 +171,7 @@ public class UpgradesRequired extends TableImpl<UpgradesRequiredRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function4<? super String, ? super String, ? super String, ? super String, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function4<? super String, ? super String, ? super Integer, ? super String, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }
