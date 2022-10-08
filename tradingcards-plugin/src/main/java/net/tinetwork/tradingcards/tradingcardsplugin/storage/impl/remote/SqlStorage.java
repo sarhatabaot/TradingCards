@@ -1876,22 +1876,85 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void editUpgradeRequired(final String upgradeId, final PackEntry required) {
-
+        new ExecuteUpdate(this, jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.update(UpgradesRequired.UPGRADES_REQUIRED
+                        .where(UpgradesRequired.UPGRADES_REQUIRED.UPGRADE_ID.eq(upgradeId)))
+                        .set(UpgradesRequired.UPGRADES_REQUIRED.RARITY_ID,required.rarityId())
+                        .set(UpgradesRequired.UPGRADES_REQUIRED.SERIES_ID,required.seriesId())
+                        .set(UpgradesRequired.UPGRADES_REQUIRED.AMOUNT, required.amount())
+                        .execute();
+            }
+        }.executeUpdate();
     }
 
     @Override
     public void editUpgradeResult(final String upgradeId, final PackEntry result) {
-
+        new ExecuteUpdate(this,jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.update(UpgradesResult.UPGRADES_RESULT
+                                .where(UpgradesResult.UPGRADES_RESULT.UPGRADE_ID.eq(upgradeId)))
+                        .set(UpgradesResult.UPGRADES_RESULT.RARITY_ID,result.rarityId())
+                        .set(UpgradesResult.UPGRADES_RESULT.SERIES_ID,result.seriesId())
+                        .set(UpgradesResult.UPGRADES_RESULT.AMOUNT, result.amount())
+                        .execute();
+            }
+        }.executeUpdate();
     }
 
     @Override
     public List<Upgrade> geUpgrades() {
-        return null;
+        return new ExecuteQuery<List<Upgrade>, Result<Record>>(this, jooqSettings) {
+            @Override
+            public List<Upgrade> onRunQuery(final DSLContext dslContext) throws SQLException {
+                Result<Record> result = dslContext.select()
+                        .from(Upgrades.UPGRADES)
+                        .fetch();
+                return getQuery(result);
+            }
+
+            @Override
+            public List<Upgrade> getQuery(final @NotNull Result<Record> result) throws SQLException {
+                if (result.isEmpty()) {
+                    return empty();
+                }
+
+                List<Upgrade> upgrades = new ArrayList<>();
+                for(Record recordResult: result) {
+                    final String upgradeId = recordResult.getValue(Upgrades.UPGRADES.UPGRADE_ID);
+                    Upgrade upgrade = new Upgrade(upgradeId,getRequiredEntry(upgradeId),getResultEntry(upgradeId));
+                    upgrades.add(upgrade);
+                }
+                return upgrades;
+            }
+
+            @Override
+            public List<Upgrade> empty() {
+                return Collections.emptyList();
+            }
+        }.prepareAndRunQuery();
     }
 
     @Override
     public void deleteUpgrade(final String upgradeId) {
+        new ExecuteUpdate(this, jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.deleteFrom(Upgrades.UPGRADES)
+                        .where(Upgrades.UPGRADES.UPGRADE_ID.eq(upgradeId))
+                        .execute();
 
+                dslContext.deleteFrom(UpgradesRequired.UPGRADES_REQUIRED)
+                        .where(UpgradesRequired.UPGRADES_REQUIRED.UPGRADE_ID.eq(upgradeId))
+                        .execute();
+
+                dslContext.deleteFrom(UpgradesResult.UPGRADES_RESULT)
+                        .where(UpgradesResult.UPGRADES_RESULT.UPGRADE_ID.eq(upgradeId))
+                        .execute();
+            }
+        }.executeUpdate();
     }
 
     @Override
