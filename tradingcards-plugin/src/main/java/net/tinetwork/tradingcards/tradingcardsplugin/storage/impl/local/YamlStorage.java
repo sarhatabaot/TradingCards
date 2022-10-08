@@ -593,7 +593,12 @@ public class YamlStorage implements Storage<TradingCard> {
 
     @Override
     public Upgrade getUpgrade(final String upgradeId) {
-        return upgradesConfig.getUpgrade(upgradeId);
+        try {
+            return upgradesConfig.getUpgrade(upgradeId);
+        } catch (SerializationException e){
+            Util.logSevereException(e);
+            return null;
+        }
     }
 
     @Override
