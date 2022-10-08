@@ -458,7 +458,6 @@ public class SqlStorage implements Storage<TradingCard> {
         final String cardId = entry.getCardId();
         final String rarityId = entry.getRarityId();
         final int amount = entry.getAmount();
-        final byte isShiny = toByte(entry.isShiny());
         new ExecuteUpdate(this, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
@@ -1704,10 +1703,6 @@ public class SqlStorage implements Storage<TradingCard> {
     @Contract(pure = true)
     private byte toByte(boolean value) {
         return (byte) (value ? 1 : 0);
-    }
-
-    private boolean toBoolean(byte value) {
-        return value != 0;
     }
 
     @Override
