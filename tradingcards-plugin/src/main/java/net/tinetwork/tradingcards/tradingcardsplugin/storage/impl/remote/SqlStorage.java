@@ -31,6 +31,9 @@ import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generat
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Rarities;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Rewards;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.SeriesColors;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Upgrades;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.UpgradesRequired;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.UpgradesResult;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.sql.ConnectionFactory;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.sql.SchemaReader;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.JooqRecordUtil;
@@ -1769,12 +1772,106 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void createUpgrade(final String upgradeId, final PackEntry required, final PackEntry result) {
+        new ExecuteUpdate(this, jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.insertInto(Upgrades.UPGRADES)
+                        .set(Upgrades.UPGRADES.UPGRADE_ID, upgradeId)
+                        .execute();
 
+                dslContext.insertInto(UpgradesRequired.UPGRADES_REQUIRED)
+                        .set(UpgradesRequired.UPGRADES_REQUIRED.UPGRADE_ID, upgradeId)
+                        .set(UpgradesRequired.UPGRADES_REQUIRED.RARITY_ID, required.rarityId())
+                        .set(UpgradesRequired.UPGRADES_REQUIRED.SERIES_ID, required.seriesId())
+                        .set(UpgradesRequired.UPGRADES_REQUIRED.AMOUNT, required.amount())
+                        .execute();
+
+                dslContext.insertInto(UpgradesResult.UPGRADES_RESULT)
+                        .set(UpgradesResult.UPGRADES_RESULT.UPGRADE_ID, upgradeId)
+                        .set(UpgradesResult.UPGRADES_RESULT.RARITY_ID, result.rarityId())
+                        .set(UpgradesResult.UPGRADES_RESULT.SERIES_ID, result.seriesId())
+                        .set(UpgradesResult.UPGRADES_RESULT.AMOUNT, result.amount())
+                        .execute();
+            }
+        }.executeUpdate();
     }
 
     @Override
     public Upgrade getUpgrade(final String upgradeId) {
-        return null;
+        return new ExecuteQuery<Upgrade, Result<Record>>(this, jooqSettings) {
+            @Override
+            public Upgrade onRunQuery(final DSLContext dslContext) {
+                return getQuery(dslContext.select()
+                        .from(Upgrades.UPGRADES)
+                        .where(Upgrades.UPGRADES.UPGRADE_ID.eq(upgradeId))
+                        .limit(1)
+                        .fetch());
+            }
+
+            @Override
+            public Upgrade getQuery(final @NotNull Result<Record> result) {
+                if (result.isEmpty()) {
+                    return empty();
+                }
+                Record recordResult = result.get(0);
+                final String upgradeId = recordResult.getValue(Upgrades.UPGRADES.UPGRADE_ID);
+                return new Upgrade(upgradeId,getRequiredEntry(upgradeId),getResultEntry(upgradeId));
+            }
+
+            @Contract(pure = true)
+            @Override
+            public Upgrade empty() {
+                return null;
+            }
+        }.prepareAndRunQuery();
+    }
+
+    private PackEntry getRequiredEntry(final String upgradeId) {
+        return new ExecuteQuery<PackEntry, Record>(this, jooqSettings) {
+            @Override
+            public PackEntry onRunQuery(final DSLContext dslContext) throws SQLException {
+                return getQuery(dslContext.select(UpgradesRequired.UPGRADES_REQUIRED)
+                        .where(UpgradesRequired.UPGRADES_REQUIRED.UPGRADE_ID.eq(upgradeId))
+                        .fetchOne());
+            }
+
+            @Override
+            public PackEntry getQuery(final @NotNull Record result) throws SQLException {
+                final String rarityId = result.get(UpgradesRequired.UPGRADES_REQUIRED.RARITY_ID);
+                final String seriesId = result.get(UpgradesRequired.UPGRADES_REQUIRED.SERIES_ID);
+                final int amount = result.get(UpgradesRequired.UPGRADES_REQUIRED.AMOUNT);
+                return new PackEntry(rarityId,amount,seriesId);
+            }
+
+            @Override
+            public PackEntry empty() {
+                return null;
+            }
+        }.prepareAndRunQuery();
+    }
+
+    private PackEntry getResultEntry(final String upgradeId) {
+        return new ExecuteQuery<PackEntry, Record>(this, jooqSettings) {
+            @Override
+            public PackEntry onRunQuery(final DSLContext dslContext) throws SQLException {
+                return getQuery(dslContext.select(UpgradesResult.UPGRADES_RESULT)
+                        .where(UpgradesResult.UPGRADES_RESULT.UPGRADE_ID.eq(upgradeId))
+                        .fetchOne());
+            }
+
+            @Override
+            public PackEntry getQuery(final @NotNull Record result) throws SQLException {
+                final String rarityId = result.get(UpgradesResult.UPGRADES_RESULT.RARITY_ID);
+                final String seriesId = result.get(UpgradesResult.UPGRADES_RESULT.SERIES_ID);
+                final int amount = result.get(UpgradesResult.UPGRADES_RESULT.AMOUNT);
+                return new PackEntry(rarityId,amount,seriesId);
+            }
+
+            @Override
+            public PackEntry empty() {
+                return null;
+            }
+        }.prepareAndRunQuery();
     }
 
     @Override
@@ -1784,6 +1881,16 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void editUpgradeResult(final String upgradeId, final PackEntry result) {
+
+    }
+
+    @Override
+    public List<Upgrade> geUpgrades() {
+        return null;
+    }
+
+    @Override
+    public void deleteUpgrade(final String upgradeId) {
 
     }
 

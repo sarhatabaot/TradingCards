@@ -178,6 +178,8 @@ public interface Storage<T extends Card<T>> {
 
     void editUpgradeResult(final String upgradeId, final PackEntry result);
 
+    void deleteUpgrade(final String upgradeId);
+
     //Create
     void createCard(final String cardId, final String rarityId, final String seriesId);
     void createRarity(final String rarityId);
