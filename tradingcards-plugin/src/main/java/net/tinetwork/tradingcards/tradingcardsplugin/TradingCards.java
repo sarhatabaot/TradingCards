@@ -31,6 +31,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.EditPack;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.EditRarity;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.EditSeries;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.EditType;
+import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.EditUpgrade;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.AdvancedConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.ChancesConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.GeneralConfig;
@@ -274,6 +275,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         commandManager.getCommandCompletions().registerCompletion("edit-series", c -> Stream.of(EditSeries.values()).map(Enum::name).toList());
         commandManager.getCommandCompletions().registerCompletion("edit-rarity", c -> Stream.of(EditRarity.values()).map(Enum::name).toList());
         commandManager.getCommandCompletions().registerCompletion("edit-card", c -> Stream.of(EditCard.values()).map(Enum::name).toList());
+        commandManager.getCommandCompletions().registerCompletion("edit-upgrade", c-> Stream.of(EditUpgrade.values()).map(Enum::name).toList());
         commandManager.getCommandCompletions().registerCompletion(
                 "edit-type-value", c -> switch (c.getContextValueByName(EditType.class, "editType")) {
                     case TYPE -> dropTypeManager.getDefaultTypes().stream().map(DropType::getId).toList();
@@ -286,7 +288,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
                             .boxed().map(String::valueOf).toList();
                     case CONTENTS -> IntStream.rangeClosed(0, packManager.getPack(c.getContextValueByName(String.class, "packId")).getPackEntryList().size() - 1)
                             .boxed().map(String::valueOf).toList();
-
                 }
         );
         commandManager.getCommandCompletions().registerCompletion(
