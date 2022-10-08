@@ -58,6 +58,7 @@ public final class InternalMessages {
     public static final String NO_CARD = "Card &4%s&r doesn't exist.";
     public static final String NO_TYPE = "Type &4%s&r doesn't exist.";
     public static final String NO_PACK = "Pack &4%s&r doesn't exist.";
+    public static final String NO_UPGRADE = "Upgrade &4%s&r doesn't exist";
     public static final String TYPE_MUST_BE = "Type must be: %s";
 
     public static class DebugCommand {

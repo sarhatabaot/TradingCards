@@ -24,6 +24,7 @@
   "list": "cards.list",
   "list-player": "cards.list.player",
   "list-pack": "cards.list.pack",
+  "list-upgrade": "cards.list.upgrade",
   "giveaway-rarity": "cards.giveaway.rarity",
   "giveaway-entity": "cards.giveaway.entity",
   "worth": "cards.worth",
@@ -51,5 +52,6 @@
   "info-type": "cards.info.type",
   "info-series": "cards.info.series",
   "info-mob": "cards.info.mob",
-  "info-pack": "cards.info.pack"
+  "info-pack": "cards.info.pack",
+  "info-upgrade": "cards.info.upgrade"
 }

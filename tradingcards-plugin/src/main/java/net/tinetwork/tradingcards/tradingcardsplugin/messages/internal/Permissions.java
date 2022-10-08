@@ -26,6 +26,7 @@ public final class Permissions {
     public static final String LIST = "cards.list";
     public static final String LIST_PLAYER = "cards.list.player";
     public static final String LIST_PACK = "cards.list.pack";
+    public static final String LIST_UPGRADE = "cards.list.upgrade";
     public static final String GIVEAWAY_RARITY = "cards.giveaway.rarity";
     public static final String GIVEAWAY_ENTITY = "cards.giveaway.entity";
     public static final String WORTH = "cards.worth";
@@ -54,6 +55,7 @@ public final class Permissions {
     public static final String INFO_SERIES = "cards.info.series";
     public static final String INFO_MOB = "cards.info.mob";
     public static final String INFO_PACK = "cards.info.pack";
+    public static final String INFO_UPGRADE = "cards.info.upgrade";
 
     private Permissions() {
         throw new UnsupportedOperationException(InternalExceptions.UTIL_CLASS);

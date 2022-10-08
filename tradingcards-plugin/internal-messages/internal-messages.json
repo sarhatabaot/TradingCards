@@ -35,6 +35,7 @@
   "no-card": "Card &4%s&r doesn't exist.",
   "no-type": "Type &4%s&r doesn't exist.",
   "no-pack": "Pack &4%s&r doesn't exist.",
+  "no-upgrade": "Upgrade &4%s&r doesn't exist",
   "type-must-be": "Type must be: %s",
   "debug-command": {
     "added-all-files": "Added all settings files to debug.zip.",
