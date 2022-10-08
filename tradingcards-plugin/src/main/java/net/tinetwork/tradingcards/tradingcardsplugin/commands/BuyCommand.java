@@ -25,8 +25,12 @@ import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author sarhatabaot
@@ -77,10 +81,17 @@ public class BuyCommand extends BaseCommand {
                 }
 
                 if (!pack.getTradeCards().isEmpty()) {
+                    Map<ItemStack, Integer> removedCardsMap = new HashMap<>();
                     for (Pack.PackEntry packEntry : pack.getTradeCards()) {
-                        removeCardsMatchingEntry(player, packEntry);
+                        Map<ItemStack, Integer> removedEntryItems = removeCardsMatchingEntry(player, packEntry);
+
+                        removedCardsMap = Stream.concat(removedCardsMap.entrySet().stream(), removedEntryItems.entrySet().stream()).collect(
+                                Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
                     }
-                    //add bought for cards etc
+
+                    final int totalCards = removedCardsMap.values().stream().mapToInt(Integer::intValue).sum();
+                    player.sendMessage("Traded %s cards for pack %s:".formatted(totalCards,packId));
+                    sendTradedCardsMessage(player, removedCardsMap);
                 }
 
                 player.sendMessage(plugin.getMessagesConfig().boughtCard().replaceAll(PlaceholderUtil.AMOUNT.asRegex(), String.valueOf(pack.getBuyPrice())));
@@ -92,7 +103,20 @@ public class BuyCommand extends BaseCommand {
             player.sendMessage(plugin.getMessagesConfig().notEnoughMoney());
         }
 
-        private void removeCardsMatchingEntry(final @NotNull Player player, final Pack.@NotNull PackEntry packEntry) {
+        private void sendTradedCardsMessage(final Player player, final @NotNull Map<ItemStack, Integer> removedCardsMap) {
+            for(Map.Entry<ItemStack, Integer> entry: removedCardsMap.entrySet()) {
+                NBTItem nbtItem = new NBTItem(entry.getKey());
+                final String rarityId = NbtUtils.Card.getRarityId(nbtItem);
+                final String cardId = NbtUtils.Card.getCardId(nbtItem);
+                final String seriesId = NbtUtils.Card.getSeriesId(nbtItem);
+
+                final String listObject = "- %s %s %s %s"; // - 6 rarity cardid seriesid
+                player.sendMessage(listObject.formatted(entry.getValue(),rarityId,cardId,seriesId));
+            }
+        }
+
+        private @NotNull Map<ItemStack, Integer> removeCardsMatchingEntry(final @NotNull Player player, final Pack.@NotNull PackEntry packEntry) {
+            Map<ItemStack, Integer> removedItemStacks = new HashMap<>();
             PlayerInventory inventory = player.getInventory();
             int countLeftToRemove = packEntry.amount();
             for (ItemStack itemStack: Arrays.stream(inventory.getContents())
@@ -110,11 +134,13 @@ public class BuyCommand extends BaseCommand {
                     }
 
                     countLeftToRemove -= itemStack.getAmount();
+                    removedItemStacks.put(itemStack, itemStack.getAmount());
                     player.getInventory().removeItem(itemStack);
                     plugin.debug(BuyCommand.class, "Removed ItemStack %s, amount left to remove %d".formatted(itemStack.toString(),countLeftToRemove));
                 }
             }
 
+            return removedItemStacks;
         }
 
         private int countCardsInInventory(final @NotNull Player player, final Pack.PackEntry packEntry) {
@@ -137,18 +163,15 @@ public class BuyCommand extends BaseCommand {
             if (!CardUtil.isCard(nbtItem)) {
                 return false;
             }
-
-
-            NBTCompound tcCompound = nbtItem.getCompound(NbtUtils.TC_COMPOUND);
-
+            
             //don't count if it's shiny.
-            if (tcCompound.getBoolean(NbtUtils.TC_CARD_SHINY)) {
+            if (NbtUtils.Card.isShiny(nbtItem)) {
                 return false;
             }
 
-            final String nbtRarity = tcCompound.getString(NbtUtils.TC_CARD_RARITY);
-            final String nbtSeries = tcCompound.getString(NbtUtils.TC_CARD_SERIES);
-            
+            final String nbtRarity = NbtUtils.Card.getRarityId(nbtItem);
+            final String nbtSeries = NbtUtils.Card.getSeriesId(nbtItem);
+
             return packEntry.seriesId().equals(nbtSeries) && packEntry.getRarityId().equals(nbtRarity);
         }
 
