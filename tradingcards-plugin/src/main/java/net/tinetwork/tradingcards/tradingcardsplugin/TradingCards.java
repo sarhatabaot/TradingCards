@@ -10,6 +10,7 @@ import net.tinetwork.tradingcards.api.economy.EconomyWrapper;
 import net.tinetwork.tradingcards.api.economy.treasury.TreasuryEconomy;
 import net.tinetwork.tradingcards.api.economy.vault.VaultEconomy;
 import net.tinetwork.tradingcards.api.manager.RarityManager;
+import net.tinetwork.tradingcards.api.manager.UpgradeManager;
 import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
@@ -45,6 +46,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.listeners.SpawnerListener;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.BoosterPackManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.DropTypeManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingRarityManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingUpgradeManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.AllCardManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingDeckManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingSeriesManager;
@@ -104,6 +106,8 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private DropTypeManager dropTypeManager;
     private TradingRarityManager rarityManager;
     private TradingSeriesManager seriesManager;
+
+    private TradingUpgradeManager upgradeManager;
 
     /* Hooks */
     private EconomyWrapper economyWrapper = null;
@@ -255,6 +259,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         this.cardManager = new AllCardManager(this);
         this.packManager = new BoosterPackManager(this);
         this.deckManager = new TradingDeckManager(this);
+        this.upgradeManager = new TradingUpgradeManager(this);
     }
 
     private void initCommands() {
@@ -536,5 +541,10 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     @Override
     public StorageConfigurate getStorageConfig() {
         return storageConfig;
+    }
+
+    @Override
+    public TradingUpgradeManager getUpgradeManager() {
+        return upgradeManager;
     }
 }
