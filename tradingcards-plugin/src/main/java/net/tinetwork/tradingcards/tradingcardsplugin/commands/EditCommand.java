@@ -13,6 +13,7 @@ import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.api.model.pack.PackEntry;
 import net.tinetwork.tradingcards.api.model.schedule.Mode;
+import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.EditUpgrade;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.CompositeCardKey;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalDebug;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalMessages;
@@ -348,6 +349,28 @@ public class EditCommand extends BaseCommand {
             plugin.getDropTypeManager().getCache().refresh(typeId);
             sendSetTypes(sender, typeId, editType, value);
         }
+
+        @Subcommand("upgrade")
+        @CommandPermission(Permissions.EDIT_UPGRADE)
+        @CommandCompletion("@upgrades @edit-upgrade @rarities @nothing @series")
+        public void onEditUpgrade(final CommandSender sender, final String upgradeId, final EditUpgrade editUpgrade, final String rarityId, final int amount, final String seriesId) {
+            if(!plugin.getUpgradeManager().containsUpgrade(upgradeId)) {
+                ChatUtil.sendPrefixedMessage(sender, InternalMessages.NO_UPGRADE.formatted(upgradeId));
+                return;
+            }
+
+            final PackEntry packEntry = new PackEntry(rarityId,amount,seriesId);
+            switch (editUpgrade) {
+                case RESULT -> storage.editUpgradeResult(upgradeId,packEntry);
+                case REQUIRED -> storage.editUpgradeRequired(upgradeId,packEntry);
+            }
+
+            plugin.getUpgradeManager().getCache().refresh(upgradeId);
+            String value = "%s %s %S".formatted(rarityId,amount,seriesId);
+            sendSetTypes(sender,upgradeId,editUpgrade,value);
+
+        }
+
 
         //set edit.toString() to value for id
         private void sendSetTypes(final CommandSender sender, final String id, final @NotNull Edit edit, final String value) {
