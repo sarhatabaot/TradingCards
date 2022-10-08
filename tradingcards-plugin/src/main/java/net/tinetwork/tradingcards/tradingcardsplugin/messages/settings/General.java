@@ -58,6 +58,7 @@ public final class General {
     public static final String DECK_MATERIAL = "BOOK";
     public static final String DECK_PREFIX = "&7[&fDeck&7]&f ";
     public static final Boolean DROP_DECK_ITEMS = true;
+    public static final Integer DECK_CUSTOM_MODEL_DATA = 0;
     public static final String PLAYER_OP_RARITY = "Legendary";
     public static final String PLAYER_SERIES = "player";
     public static final String PLAYER_TYPE = "Player";

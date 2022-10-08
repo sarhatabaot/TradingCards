@@ -40,6 +40,10 @@ public class PackMigratorBukkitRunnable extends MigratorBukkitRunnable{
             for(final Pack.PackEntry entry:pack.getPackEntryList()){
                 plugin.getStorage().editPackContentsAdd(packId,entry);
             }
+
+            for(final Pack.PackEntry entry: pack.getTradeCards()) {
+                plugin.getStorage().editPackTradeCardsAdd(packId,entry);
+            }
         }
     }
 }

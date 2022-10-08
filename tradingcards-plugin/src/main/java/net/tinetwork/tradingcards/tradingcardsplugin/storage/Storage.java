@@ -208,7 +208,11 @@ public interface Storage<T extends Card<T>> {
     void editPackDisplayName(final String packId, final String displayName);
     void editPackContents(final String packId, final int lineNumber, final Pack.PackEntry packEntry);
     void editPackContentsAdd(final String packId, final Pack.PackEntry packEntry);
+
     void editPackContentsDelete(final String packId, final int lineNumber);
+    void editPackTradeCards(final String packId, final int lineNumber, final Pack.PackEntry packEntry);
+    void editPackTradeCardsAdd(final String packId, final Pack.PackEntry packEntry);
+    void editPackTradeCardsDelete(final String packId, final int lineNumber);
     void editPackPermission(final String packId, final String permission);
     void editPackPrice(final String packId,final double price);
     void editPackCurrencyId(final String packId, final String currencyId);

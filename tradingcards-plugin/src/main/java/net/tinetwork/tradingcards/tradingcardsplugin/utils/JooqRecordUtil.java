@@ -39,13 +39,13 @@ public class JooqRecordUtil {
         return new Pack.PackEntry(rarityId, cardAmount, seriesId);
     }
 
-    public static @NotNull Pack getPackFromRecord(@NotNull Record recordResult, final List<Pack.PackEntry> entries) {
+    public static @NotNull Pack getPackFromRecord(@NotNull Record recordResult, final List<Pack.PackEntry> entries, final List<Pack.PackEntry> tradeEntries) {
         final String packId = recordResult.getValue(Packs.PACKS.PACK_ID);
         final String displayName = recordResult.getValue(Packs.PACKS.DISPLAY_NAME);
         final double price = (recordResult.getValue(Packs.PACKS.BUY_PRICE) == null) ? 0.00D : recordResult.getValue(Packs.PACKS.BUY_PRICE);
         final String permission = recordResult.getValue(Packs.PACKS.PERMISSION);
         final String currencyId = recordResult.getValue(Packs.PACKS.CURRENCY_ID);
-        return new Pack(packId, entries, displayName, price, currencyId,permission);
+        return new Pack(packId, entries, displayName, price, currencyId,permission, tradeEntries);
     }
     public static @NotNull ColorSeries getColorSeriesFromRecord(@NotNull Record recordResult) {
         final String about = recordResult.getValue(SeriesColors.SERIES_COLORS.ABOUT);
@@ -73,7 +73,7 @@ public class JooqRecordUtil {
         for(Record recordResult: result) {
             final String cardId = recordResult.getValue(Decks.DECKS.CARD_ID);
             final String rarityId = recordResult.getValue(Decks.DECKS.RARITY_ID);
-            final boolean isShiny = recordResult.getValue(Decks.DECKS.IS_SHINY) != 0;
+            final boolean isShiny = recordResult.getValue(Decks.DECKS.IS_SHINY);
             final int amount = recordResult.getValue(Decks.DECKS.AMOUNT);
             final String seriesId = recordResult.getValue(Decks.DECKS.SERIES_ID);
             entries.add(new StorageEntry(rarityId, cardId, amount, isShiny,seriesId));

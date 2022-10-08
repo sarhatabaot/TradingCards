@@ -8,9 +8,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generat
 
 import org.jooq.Field;
 import org.jooq.Record1;
-import org.jooq.Record4;
 import org.jooq.Record5;
-import org.jooq.Row4;
 import org.jooq.Row5;
 import org.jooq.impl.UpdatableRecordImpl;
 
@@ -24,65 +22,71 @@ public class PacksRecord extends UpdatableRecordImpl<PacksRecord> implements Rec
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>minecraft.packs.pack_id</code>.
+     * Setter for <code>{prefix}packs.pack_id</code>.
      */
     public void setPackId(String value) {
         set(0, value);
     }
 
     /**
-     * Getter for <code>minecraft.packs.pack_id</code>.
+     * Getter for <code>{prefix}packs.pack_id</code>.
      */
     public String getPackId() {
         return (String) get(0);
     }
 
     /**
-     * Setter for <code>minecraft.packs.display_name</code>.
+     * Setter for <code>{prefix}packs.display_name</code>.
      */
     public void setDisplayName(String value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>minecraft.packs.display_name</code>.
+     * Getter for <code>{prefix}packs.display_name</code>.
      */
     public String getDisplayName() {
         return (String) get(1);
     }
 
     /**
-     * Setter for <code>minecraft.packs.buy_price</code>.
+     * Setter for <code>{prefix}packs.buy_price</code>.
      */
     public void setBuyPrice(Double value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>minecraft.packs.buy_price</code>.
+     * Getter for <code>{prefix}packs.buy_price</code>.
      */
     public Double getBuyPrice() {
         return (Double) get(2);
     }
 
     /**
-     * Setter for <code>minecraft.packs.permission</code>.
+     * Setter for <code>{prefix}packs.permission</code>.
      */
     public void setPermission(String value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>minecraft.packs.permission</code>.
+     * Getter for <code>{prefix}packs.permission</code>.
      */
     public String getPermission() {
         return (String) get(3);
     }
 
+    /**
+     * Setter for <code>{prefix}packs.currency_id</code>.
+     */
     public void setCurrencyId(String value) {
-        set(4,value);
+        set(4, value);
     }
 
+    /**
+     * Getter for <code>{prefix}packs.currency_id</code>.
+     */
     public String getCurrencyId() {
         return (String) get(4);
     }
@@ -97,7 +101,7 @@ public class PacksRecord extends UpdatableRecordImpl<PacksRecord> implements Rec
     }
 
     // -------------------------------------------------------------------------
-    // Record4 type implementation
+    // Record5 type implementation
     // -------------------------------------------------------------------------
 
     @Override

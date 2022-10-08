@@ -74,9 +74,9 @@ public class GiveCommands extends BaseCommand {
                 }
 
 
-                target.sendMessage(plugin.getMessagesConfig().giveCard()
+                target.sendMessage(ChatUtil.color(plugin.getMessagesConfig().giveCard()
                         .replaceAll(PlaceholderUtil.PLAYER.asRegex(), target.getName())
-                        .replaceAll(PlaceholderUtil.CARD.asRegex(), rarity + " " + cardId));
+                        .replaceAll(PlaceholderUtil.CARD.asRegex(), rarity.getDisplayName() + " " + card.getDisplayName())));
 
                 target.getInventory().addItem(card.build(shiny));
             }

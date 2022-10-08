@@ -4,17 +4,22 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables;
 
 
+import java.util.function.Function;
+
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.DefaultSchema;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.Keys;
-import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.Minecraft;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.enums.SeriesSeriesMode;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.records.SeriesRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Function3;
 import org.jooq.Name;
 import org.jooq.Record;
+import org.jooq.Records;
 import org.jooq.Row3;
 import org.jooq.Schema;
+import org.jooq.SelectField;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
@@ -33,7 +38,7 @@ public class Series extends TableImpl<SeriesRecord> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * The reference instance of <code>minecraft.series</code>
+     * The reference instance of <code>{prefix}series</code>
      */
     public static final Series SERIES = new Series();
 
@@ -46,19 +51,19 @@ public class Series extends TableImpl<SeriesRecord> {
     }
 
     /**
-     * The column <code>minecraft.series.series_id</code>.
+     * The column <code>{prefix}series.series_id</code>.
      */
     public final TableField<SeriesRecord, String> SERIES_ID = createField(DSL.name("series_id"), SQLDataType.VARCHAR(200).nullable(false), this, "");
 
     /**
-     * The column <code>minecraft.series.display_name</code>.
+     * The column <code>{prefix}series.display_name</code>.
      */
     public final TableField<SeriesRecord, String> DISPLAY_NAME = createField(DSL.name("display_name"), SQLDataType.CLOB, this, "");
 
     /**
-     * The column <code>minecraft.series.series_mode</code>.
+     * The column <code>{prefix}series.series_mode</code>.
      */
-    public final TableField<SeriesRecord, SeriesSeriesMode> SERIES_MODE = createField(DSL.name("series_mode"), SQLDataType.VARCHAR(9).asEnumDataType(net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.enums.SeriesSeriesMode.class), this, "");
+    public final TableField<SeriesRecord, SeriesSeriesMode> SERIES_MODE = createField(DSL.name("series_mode"), SQLDataType.VARCHAR.asEnumDataType(net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.enums.SeriesSeriesMode.class), this, "");
 
     private Series(Name alias, Table<SeriesRecord> aliased) {
         this(alias, aliased, null);
@@ -69,24 +74,24 @@ public class Series extends TableImpl<SeriesRecord> {
     }
 
     /**
-     * Create an aliased <code>minecraft.series</code> table reference
+     * Create an aliased <code>{prefix}series</code> table reference
      */
     public Series(String alias) {
         this(DSL.name(alias), SERIES);
     }
 
     /**
-     * Create an aliased <code>minecraft.series</code> table reference
+     * Create an aliased <code>{prefix}series</code> table reference
      */
     public Series(Name alias) {
         this(alias, SERIES);
     }
 
     /**
-     * Create a <code>minecraft.series</code> table reference
+     * Create a <code>{prefix}series</code> table reference
      */
     public Series() {
-        this(DSL.name("series"), null);
+        this(DSL.name("{prefix}series"), null);
     }
 
     public <O extends Record> Series(Table<O> child, ForeignKey<O, SeriesRecord> key) {
@@ -95,12 +100,12 @@ public class Series extends TableImpl<SeriesRecord> {
 
     @Override
     public Schema getSchema() {
-        return aliased() ? null : Minecraft.MINECRAFT;
+        return aliased() ? null : DefaultSchema.DEFAULT_SCHEMA;
     }
 
     @Override
     public UniqueKey<SeriesRecord> getPrimaryKey() {
-        return Keys.KEY_SERIES_PRIMARY;
+        return Keys.CONSTRAINT_7F;
     }
 
     @Override
@@ -111,6 +116,11 @@ public class Series extends TableImpl<SeriesRecord> {
     @Override
     public Series as(Name alias) {
         return new Series(alias, this);
+    }
+
+    @Override
+    public Series as(Table<?> alias) {
+        return new Series(alias.getQualifiedName(), this);
     }
 
     /**
@@ -129,6 +139,14 @@ public class Series extends TableImpl<SeriesRecord> {
         return new Series(name, null);
     }
 
+    /**
+     * Rename this table
+     */
+    @Override
+    public Series rename(Table<?> name) {
+        return new Series(name.getQualifiedName(), null);
+    }
+
     // -------------------------------------------------------------------------
     // Row3 type methods
     // -------------------------------------------------------------------------
@@ -136,5 +154,20 @@ public class Series extends TableImpl<SeriesRecord> {
     @Override
     public Row3<String, String, SeriesSeriesMode> fieldsRow() {
         return (Row3) super.fieldsRow();
+    }
+
+    /**
+     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     */
+    public <U> SelectField<U> mapping(Function3<? super String, ? super String, ? super SeriesSeriesMode, ? extends U> from) {
+        return convertFrom(Records.mapping(from));
+    }
+
+    /**
+     * Convenience mapping calling {@link SelectField#convertFrom(Class,
+     * Function)}.
+     */
+    public <U> SelectField<U> mapping(Class<U> toType, Function3<? super String, ? super String, ? super SeriesSeriesMode, ? extends U> from) {
+        return convertFrom(toType, Records.mapping(from));
     }
 }
