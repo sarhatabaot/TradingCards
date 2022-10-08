@@ -17,6 +17,9 @@ import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generat
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Rewards;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Series;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.SeriesColors;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Upgrades;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.UpgradesRequired;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.UpgradesResult;
 
 import org.jooq.Catalog;
 import org.jooq.Table;
@@ -87,6 +90,21 @@ public class DefaultSchema extends SchemaImpl {
     public final SeriesColors SERIES_COLORS = SeriesColors.SERIES_COLORS;
 
     /**
+     * The table <code>{prefix}upgrades</code>.
+     */
+    public final Upgrades UPGRADES = Upgrades.UPGRADES;
+
+    /**
+     * The table <code>{prefix}upgrades_required</code>.
+     */
+    public final UpgradesRequired UPGRADES_REQUIRED = UpgradesRequired.UPGRADES_REQUIRED;
+
+    /**
+     * The table <code>{prefix}upgrades_result</code>.
+     */
+    public final UpgradesResult UPGRADES_RESULT = UpgradesResult.UPGRADES_RESULT;
+
+    /**
      * No further instances allowed
      */
     private DefaultSchema() {
@@ -111,7 +129,10 @@ public class DefaultSchema extends SchemaImpl {
             Rarities.RARITIES,
             Rewards.REWARDS,
             Series.SERIES,
-            SeriesColors.SERIES_COLORS
+            SeriesColors.SERIES_COLORS,
+            Upgrades.UPGRADES,
+            UpgradesRequired.UPGRADES_REQUIRED,
+            UpgradesResult.UPGRADES_RESULT
         );
     }
 }
