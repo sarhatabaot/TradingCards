@@ -9,6 +9,7 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
+import net.tinetwork.tradingcards.api.model.Upgrade;
 import net.tinetwork.tradingcards.api.model.pack.Pack;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
@@ -22,6 +23,7 @@ import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.checkerframework.checker.units.qual.C;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -187,6 +189,14 @@ public class ListCommand extends BaseCommand {
                 ChatUtil.sendMessage(sender, "  &7- &f&o" + packEntries);
             }
         }
+
+        @Subcommand("upgrades")
+        @CommandPermission(Permissions.LIST_UPGRADE)
+        @Description("List all upgrades.")
+        public void onListUpgrades(final CommandSender sender) {
+            ChatUtil.sendMessage(sender, StringUtils.join(plugin.getUpgradeManager().getUpgrades().stream().map(Upgrade::id).toList(), ","));
+        }
+
 
         private TradingCard getCard(final String cardId, final String rarityId, final String seriesId) {
             return plugin.getCardManager().getCard(cardId, rarityId, seriesId);
