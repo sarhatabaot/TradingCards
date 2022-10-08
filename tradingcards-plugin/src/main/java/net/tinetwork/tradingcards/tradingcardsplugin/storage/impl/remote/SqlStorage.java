@@ -3,12 +3,13 @@ package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote;
 import net.tinetwork.tradingcards.api.card.Card;
 import net.tinetwork.tradingcards.api.config.ColorSeries;
 import net.tinetwork.tradingcards.api.model.DropType;
-import net.tinetwork.tradingcards.api.model.EmptyPack;
-import net.tinetwork.tradingcards.api.model.Pack;
+import net.tinetwork.tradingcards.api.model.pack.EmptyPack;
+import net.tinetwork.tradingcards.api.model.pack.Pack;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.api.model.deck.Deck;
 import net.tinetwork.tradingcards.api.model.deck.StorageEntry;
+import net.tinetwork.tradingcards.api.model.pack.PackEntry;
 import net.tinetwork.tradingcards.api.model.schedule.Mode;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
@@ -926,11 +927,11 @@ public class SqlStorage implements Storage<TradingCard> {
         }.prepareAndRunQuery();
     }
 
-    private List<Pack.PackEntry> getTradeEntries(final String packId) {
-        return new ExecuteQuery<List<Pack.PackEntry>, Result<Record>>(this, jooqSettings) {
+    private List<PackEntry> getTradeEntries(final String packId) {
+        return new ExecuteQuery<List<PackEntry>, Result<Record>>(this, jooqSettings) {
 
             @Override
-            public List<Pack.PackEntry> onRunQuery(final DSLContext dslContext) {
+            public List<PackEntry> onRunQuery(final DSLContext dslContext) {
                 return getQuery(dslContext.select()
                         .from(PacksTrade.PACKS_TRADE)
                         .where(PacksTrade.PACKS_TRADE.PACK_ID.eq(packId))
@@ -938,11 +939,11 @@ public class SqlStorage implements Storage<TradingCard> {
             }
 
             @Override
-            public @NotNull List<Pack.PackEntry> getQuery(final @NotNull Result<Record> result) {
+            public @NotNull List<PackEntry> getQuery(final @NotNull Result<Record> result) {
                 if (result.isEmpty()) {
                     return empty();
                 }
-                List<Pack.PackEntry> entries = new ArrayList<>();
+                List<PackEntry> entries = new ArrayList<>();
                 for (Record recordResult : result) {
                     int lineNumber = recordResult.getValue(PacksTrade.PACKS_TRADE.LINE_NUMBER);
                     entries.add(lineNumber, JooqRecordUtil.getPackEntryFromResult(recordResult));
@@ -952,18 +953,18 @@ public class SqlStorage implements Storage<TradingCard> {
 
             @Contract(pure = true)
             @Override
-            public @NotNull @Unmodifiable List<Pack.PackEntry> empty() {
+            public @NotNull @Unmodifiable List<PackEntry> empty() {
                 return Collections.emptyList();
             }
         }.prepareAndRunQuery();
     }
 
 
-    private @NotNull @Unmodifiable List<Pack.PackEntry> getPackEntries(final String packId) {
-        return new ExecuteQuery<List<Pack.PackEntry>, Result<Record>>(this, jooqSettings) {
+    private @NotNull @Unmodifiable List<PackEntry> getPackEntries(final String packId) {
+        return new ExecuteQuery<List<PackEntry>, Result<Record>>(this, jooqSettings) {
 
             @Override
-            public List<Pack.PackEntry> onRunQuery(final DSLContext dslContext) {
+            public List<PackEntry> onRunQuery(final DSLContext dslContext) {
                 return getQuery(dslContext.select()
                         .from(PacksContent.PACKS_CONTENT)
                         .where(PacksContent.PACKS_CONTENT.PACK_ID.eq(packId))
@@ -971,12 +972,12 @@ public class SqlStorage implements Storage<TradingCard> {
             }
 
             @Override
-            public @NotNull List<Pack.PackEntry> getQuery(final @NotNull Result<Record> result) {
+            public @NotNull List<PackEntry> getQuery(final @NotNull Result<Record> result) {
                 if (result.isEmpty()) {
                     return empty();
                 }
 
-                List<Pack.PackEntry> entries = new ArrayList<>();
+                List<PackEntry> entries = new ArrayList<>();
                 for (Record recordResult : result) {
                     int lineNumber = recordResult.getValue(PacksContent.PACKS_CONTENT.LINE_NUMBER);
                     if(lineNumber >= entries.size()) {
@@ -990,7 +991,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
             @Contract(pure = true)
             @Override
-            public @NotNull @Unmodifiable List<Pack.PackEntry> empty() {
+            public @NotNull @Unmodifiable List<PackEntry> empty() {
                 return Collections.emptyList();
             }
         }.prepareAndRunQuery();
@@ -1544,7 +1545,7 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
     @Override
-    public void editPackContents(final String packId, final int lineNumber, final Pack.@NotNull PackEntry packEntry) {
+    public void editPackContents(final String packId, final int lineNumber, final @NotNull PackEntry packEntry) {
         if (getPackEntries(packId).isEmpty()) {
             new ExecuteUpdate(this,jooqSettings) {
                 @Override
@@ -1575,7 +1576,7 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
     @Override
-    public void editPackContentsAdd(final String packId, final Pack.@NotNull PackEntry packEntry) {
+    public void editPackContentsAdd(final String packId, final @NotNull PackEntry packEntry) {
         final int lineNumber = getPackEntries(packId).size();
         new ExecuteUpdate(this, jooqSettings) {
             @Override
@@ -1604,7 +1605,7 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
     @Override
-    public void editPackTradeCards(final String packId, final int lineNumber, final Pack.PackEntry packEntry) {
+    public void editPackTradeCards(final String packId, final int lineNumber, final PackEntry packEntry) {
         if (getTradeEntries(packId).isEmpty()) {
             new ExecuteUpdate(this, jooqSettings) {
                 @Override
@@ -1633,7 +1634,7 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
     @Override
-    public void editPackTradeCardsAdd(final String packId, final Pack.PackEntry packEntry) {
+    public void editPackTradeCardsAdd(final String packId, final PackEntry packEntry) {
         final int lineNumber = getTradeEntries(packId).size();
         new ExecuteUpdate(this, jooqSettings) {
             @Override

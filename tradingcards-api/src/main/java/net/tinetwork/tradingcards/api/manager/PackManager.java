@@ -1,6 +1,6 @@
 package net.tinetwork.tradingcards.api.manager;
 
-import net.tinetwork.tradingcards.api.model.Pack;
+import net.tinetwork.tradingcards.api.model.pack.Pack;
 import org.bukkit.inventory.ItemStack;
 import org.spongepowered.configurate.serialize.SerializationException;
 
