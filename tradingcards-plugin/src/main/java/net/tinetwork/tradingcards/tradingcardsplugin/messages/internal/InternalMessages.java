@@ -47,6 +47,7 @@ public final class InternalMessages {
         public static final String RARITY_EXISTS = "Rarity %s already exists. Cannot create a new one.";
         public static final String CARD_EXISTS = "Card %s already exists. Cannot create a new one.";
         public static final String PACK_EXISTS = "Pack %s already exists. Cannot create a new one.";
+        public static final String UPGRADE_EXISTS = "Upgrade %s already exists. Cannot create a new one.";
 
         private CreateCommand() {
             throw new UnsupportedOperationException(InternalExceptions.UTIL_CLASS);

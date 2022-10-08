@@ -8,6 +8,7 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import net.tinetwork.tradingcards.api.model.DropType;
+import net.tinetwork.tradingcards.api.model.pack.PackEntry;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalMessages;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.Permissions;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
@@ -109,6 +110,21 @@ public class CreateCommand extends BaseCommand{
             }
             sendCreatedMessage(sender,"customtype",typeId);
             plugin.getStorage().createCustomType(typeId, type);
+        }
+
+        @Subcommand("upgrade")
+        @CommandPermission(Permissions.CREATE_UPGRADE)
+        public void onUpgrade(final CommandSender sender, final String upgradeId, final String required, final String result) {
+            if (plugin.getUpgradeManager().containsUpgrade(upgradeId)) {
+                sender.sendMessage(InternalMessages.CreateCommand.UPGRADE_EXISTS.formatted(upgradeId));
+                return;
+            }
+
+            final PackEntry requiredEntry = PackEntry.fromString(required);
+            final PackEntry resultEntry = PackEntry.fromString(result);
+
+            sendCreatedMessage(sender,"upgrade",upgradeId);
+            plugin.getStorage().createUpgrade(upgradeId, requiredEntry, resultEntry);
         }
     }
 }
