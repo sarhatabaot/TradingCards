@@ -22,6 +22,24 @@ halloween:
     info: "&e"
     about: "&c"
     rarity: "&6"
+spring:
+  display-name: "Spring"
+  mode: DISABLED
+  colors:
+    series: "&a"
+    type: "&b"
+    info: "&e"
+    about: "&c"
+    rarity: "&6"
+summer:
+  display-name: "Summer"
+  mode: DISABLED
+  colors:
+    series: "&a"
+    type: "&b"
+    info: "&e"
+    about: "&c"
+    rarity: "&6"
 winter:
   display-name: "Winter"
   mode: DISABLED
