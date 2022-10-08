@@ -477,7 +477,7 @@ cards:
       info: none
       series: spring
       type: passive
-	  fish_salmon:
+    fish_salmon:
       custom-model-data: 32000102
       display-name: "Salmon"
       has-shiny-version: true
