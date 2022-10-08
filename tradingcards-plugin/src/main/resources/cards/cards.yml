@@ -13,7 +13,7 @@ cards:
       has-shiny-version: true
       info: none
       series: default
-      type: passive
+      type: neutral
     parrot_red:
       custom-model-data: 32000116
       display-name: "Red Parrot"
@@ -41,14 +41,14 @@ cards:
       has-shiny-version: true
       info: none
       series: spring
-      type: passive
+      type: neutral
     panda_weak:
       custom-model-data: 32000106
       display-name: "Weak Panda"
       has-shiny-version: true
       info: none
       series: spring
-      type: passive
+      type: neutral
     fish_cod:
       custom-model-data: 32000101
       display-name: "Cod"
@@ -407,6 +407,20 @@ cards:
       series: winter
       type: passive
   uncommon:
+    phantom:
+      custom-model-data: 3200130
+      display-name: "Phantom"
+      has-shiny-version: true
+      info: none
+      series: halloween
+      type: hostile
+    tadpole:
+      custom-model-data: 3200128
+      display-name: "Tadpole"
+      has-shiny-version: true
+      info: none
+      series: default
+      type: passive
     hoglin:
       custom-model-data: 3200127
       display-name: "Hoglin"
@@ -455,28 +469,28 @@ cards:
       has-shiny-version: true
       info: none
       series: spring
-      type: passive
+      type: neutral
     panda_worried:
       custom-model-data: 32000107
       display-name: "Worried Panda"
       has-shiny-version: true
       info: none
       series: spring
-      type: passive
+      type: neutral
     panda_Playful:
       custom-model-data: 32000108
       display-name: "Playful Panda"
       has-shiny-version: true
       info: none
       series: spring
-      type: passive	  
+      type: neutral	  
     panda_agressive:
       custom-model-data: 32000109
       display-name: "Aggressive Panda"
       has-shiny-version: true
       info: none
       series: spring
-      type: passive
+      type: neutral
     fish_salmon:
       custom-model-data: 32000102
       display-name: "Salmon"
@@ -553,7 +567,7 @@ cards:
       has-shiny-version: true
       info: none
       series: default
-      type: hostile
+      type: neutral
     piglin_brute:
       custom-model-data: 3200055
       display-name: "Piglin Brute"
@@ -625,6 +639,13 @@ cards:
       series: default
       type: hostile
   rare:
+      trader:
+      custom-model-data: 3200129
+      display-name: "Wandering Trader"
+      has-shiny-version: true
+      info: none
+      series: default
+      type: passive
     parrot_gray:
       custom-model-data: 32000120
       display-name: "Gray Parrot"
@@ -645,7 +666,7 @@ cards:
       has-shiny-version: true
       info: none
       series: spring
-      type: passive
+      type: neutral
     fish_tropical:
       custom-model-data: 32000103
       display-name: "Tropical Fish"
@@ -759,6 +780,20 @@ cards:
       series: default
       type: hostile
   very-rare:
+    vex:
+      custom-model-data: 3200132
+      display-name: "Vex"
+      has-shiny-version: true
+      info: none
+      series: default
+      type: hostile
+    turtle:
+      custom-model-data: 3200131
+      display-name: "Turtle"
+      has-shiny-version: true
+      info: none
+      series: summer
+      type: passive
     allay:
       custom-model-data: 3200123
       display-name: "Allay"
@@ -766,13 +801,13 @@ cards:
       info: none
       series: default
       type: passive
-   ravager:
+    ravager:
       custom-model-data: 32000115
       display-name: "Ravager"
       has-shiny-version: true
       info: none
       series: summer
-      type: boss
+      type: hostile
     christmas_chest_lg:
       custom-model-data: 3200086
       display-name: "Large Christmas Chest"
@@ -843,7 +878,7 @@ cards:
       has-shiny-version: true
       info: none
       series: default
-      type: boss
+      type: hostile
     illusioner:
       custom-model-data: 32000114
       display-name: "Illusioner"
@@ -871,14 +906,14 @@ cards:
       has-shiny-version: true
       info: none
       series: default
-      type: boss
+      type: hostile
     guardian_elder:
       custom-model-data: 3200036
       display-name: "Elder Guardian"
       has-shiny-version: true
       info: none
       series: default
-      type: boss
+      type: hostile
     mooshroom_brown:
       custom-model-data: 3200051
       display-name: "Brown Mooshroom"
