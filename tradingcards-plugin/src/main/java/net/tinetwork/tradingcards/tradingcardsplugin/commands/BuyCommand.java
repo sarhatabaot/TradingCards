@@ -8,7 +8,8 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
 import de.tr7zw.nbtapi.NBTItem;
 import net.tinetwork.tradingcards.api.economy.ResponseWrapper;
-import net.tinetwork.tradingcards.api.model.Pack;
+import net.tinetwork.tradingcards.api.model.pack.Pack;
+import net.tinetwork.tradingcards.api.model.pack.PackEntry;
 import net.tinetwork.tradingcards.api.utils.NbtUtils;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.Permissions;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
@@ -80,7 +81,7 @@ public class BuyCommand extends BaseCommand {
 
                 if (!pack.getTradeCards().isEmpty()) {
                     Map<ItemStack, Integer> removedCardsMap = new HashMap<>();
-                    for (Pack.PackEntry packEntry : pack.getTradeCards()) {
+                    for (PackEntry packEntry : pack.getTradeCards()) {
                         Map<ItemStack, Integer> removedEntryItems = removeCardsMatchingEntry(player, packEntry);
 
                         removedCardsMap = Stream.concat(removedCardsMap.entrySet().stream(), removedEntryItems.entrySet().stream()).collect(
@@ -112,7 +113,7 @@ public class BuyCommand extends BaseCommand {
             }
         }
 
-        private @NotNull Map<ItemStack, Integer> removeCardsMatchingEntry(final @NotNull Player player, final Pack.@NotNull PackEntry packEntry) {
+        private @NotNull Map<ItemStack, Integer> removeCardsMatchingEntry(final @NotNull Player player, final @NotNull PackEntry packEntry) {
             Map<ItemStack, Integer> removedItemStacks = new HashMap<>();
             PlayerInventory inventory = player.getInventory();
             int countLeftToRemove = packEntry.amount();
@@ -141,7 +142,7 @@ public class BuyCommand extends BaseCommand {
             return removedItemStacks;
         }
 
-        private int countCardsInInventory(final @NotNull Player player, final Pack.PackEntry packEntry) {
+        private int countCardsInInventory(final @NotNull Player player, final PackEntry packEntry) {
             int count = 0;
             PlayerInventory inventory = player.getInventory();
 
@@ -153,7 +154,7 @@ public class BuyCommand extends BaseCommand {
             return count;
         }
 
-        private boolean matchesEntry(final ItemStack itemStack, final Pack.PackEntry packEntry) {
+        private boolean matchesEntry(final ItemStack itemStack, final PackEntry packEntry) {
             if(itemStack == null || itemStack.getType() == Material.AIR)
                 return false;
 
@@ -173,11 +174,11 @@ public class BuyCommand extends BaseCommand {
             return packEntry.seriesId().equals(nbtSeries) && packEntry.getRarityId().equals(nbtRarity);
         }
 
-        private boolean hasCardsInInventory(final Player player, final @NotNull List<Pack.PackEntry> tradeCards) {
+        private boolean hasCardsInInventory(final Player player, final @NotNull List<PackEntry> tradeCards) {
             if(tradeCards.isEmpty())
                 return true;
 
-            for (Pack.PackEntry packEntry : tradeCards) {
+            for (PackEntry packEntry : tradeCards) {
                 if (packEntry.amount() > countCardsInInventory(player, packEntry))
                     return false;
             }

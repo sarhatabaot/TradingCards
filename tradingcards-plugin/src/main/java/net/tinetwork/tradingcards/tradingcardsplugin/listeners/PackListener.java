@@ -1,7 +1,8 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.listeners;
 
 import de.tr7zw.nbtapi.NBTItem;
-import net.tinetwork.tradingcards.api.model.Pack;
+import net.tinetwork.tradingcards.api.model.pack.Pack;
+import net.tinetwork.tradingcards.api.model.pack.PackEntry;
 import net.tinetwork.tradingcards.api.utils.NbtUtils;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.Permissions;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
@@ -67,7 +68,7 @@ public class PackListener extends SimpleListener {
         }
 
         Pack pack = plugin.getPackManager().getPack(packId);
-        for(Pack.PackEntry entry: pack.getPackEntryList()) {
+        for(PackEntry entry: pack.getPackEntryList()) {
             dropRandomCards(player, entry.getRarityId(), entry.getAmount(),entry.getSeries());
         }
 

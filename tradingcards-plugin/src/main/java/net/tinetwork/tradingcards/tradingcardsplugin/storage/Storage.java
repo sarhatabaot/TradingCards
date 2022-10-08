@@ -3,10 +3,11 @@ package net.tinetwork.tradingcards.tradingcardsplugin.storage;
 import net.tinetwork.tradingcards.api.card.Card;
 import net.tinetwork.tradingcards.api.config.ColorSeries;
 import net.tinetwork.tradingcards.api.model.DropType;
-import net.tinetwork.tradingcards.api.model.Pack;
+import net.tinetwork.tradingcards.api.model.pack.Pack;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.api.model.deck.Deck;
+import net.tinetwork.tradingcards.api.model.pack.PackEntry;
 import net.tinetwork.tradingcards.api.model.schedule.Mode;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import org.jetbrains.annotations.Nullable;
@@ -206,12 +207,12 @@ public interface Storage<T extends Card<T>> {
     void editCustomTypeType(final String typeId, final String type); //It has to be a default type.
     // Edit Pack
     void editPackDisplayName(final String packId, final String displayName);
-    void editPackContents(final String packId, final int lineNumber, final Pack.PackEntry packEntry);
-    void editPackContentsAdd(final String packId, final Pack.PackEntry packEntry);
+    void editPackContents(final String packId, final int lineNumber, final PackEntry packEntry);
+    void editPackContentsAdd(final String packId, final PackEntry packEntry);
 
     void editPackContentsDelete(final String packId, final int lineNumber);
-    void editPackTradeCards(final String packId, final int lineNumber, final Pack.PackEntry packEntry);
-    void editPackTradeCardsAdd(final String packId, final Pack.PackEntry packEntry);
+    void editPackTradeCards(final String packId, final int lineNumber, final PackEntry packEntry);
+    void editPackTradeCardsAdd(final String packId, final PackEntry packEntry);
     void editPackTradeCardsDelete(final String packId, final int lineNumber);
     void editPackPermission(final String packId, final String permission);
     void editPackPrice(final String packId,final double price);

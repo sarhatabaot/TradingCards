@@ -2,7 +2,8 @@ package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local;
 
 import com.github.sarhatabaot.kraken.core.config.Transformation;
 import com.github.sarhatabaot.kraken.core.config.YamlConfigurateFile;
-import net.tinetwork.tradingcards.api.model.Pack;
+import net.tinetwork.tradingcards.api.model.pack.Pack;
+import net.tinetwork.tradingcards.api.model.pack.PackEntry;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -49,7 +50,7 @@ public class PacksConfig extends YamlConfigurateFile<TradingCards> {
 
     }
 
-    public void editContents(final String packId, final int lineNumber, final Pack.PackEntry packEntry) {
+    public void editContents(final String packId, final int lineNumber, final PackEntry packEntry) {
         ConfigurationNode packNode = rootNode.node(packId);
         try {
             Pack pack = getPack(packId);
@@ -61,7 +62,7 @@ public class PacksConfig extends YamlConfigurateFile<TradingCards> {
         }
     }
 
-    public void editTradeCards(final String packId, final int lineNumber, final Pack.PackEntry packEntry) {
+    public void editTradeCards(final String packId, final int lineNumber, final PackEntry packEntry) {
         ConfigurationNode packNode = rootNode.node(packId);
         try {
             Pack pack = getPack(packId);
@@ -161,18 +162,18 @@ public class PacksConfig extends YamlConfigurateFile<TradingCards> {
             final String id = node.key().toString();
 
             final List<String> contentStringList = contentNode.getList(String.class, new ArrayList<>());
-            final List<Pack.PackEntry> packEntryList = new ArrayList<>();
+            final List<PackEntry> packEntryList = new ArrayList<>();
             for(String entry: contentStringList) {
-                packEntryList.add(Pack.PackEntry.fromString(entry));
+                packEntryList.add(PackEntry.fromString(entry));
             }
             final double price = priceNode.getDouble(0.0D);
             final String permissions = permissionsNode.getString();
             final String displayName = getDisplayName(displayNameNode.getString(),node);
 
             final List<String> tradeStringList = tradeNode.getList(String.class, new ArrayList<>());
-            final List<Pack.PackEntry> tradeCardList = new ArrayList<>();
+            final List<PackEntry> tradeCardList = new ArrayList<>();
             for(String entry: tradeStringList) {
-                tradeCardList.add(Pack.PackEntry.fromString(entry));
+                tradeCardList.add(PackEntry.fromString(entry));
             }
 
             return new Pack(id,packEntryList,displayName, price,currencyId,permissions,tradeCardList);

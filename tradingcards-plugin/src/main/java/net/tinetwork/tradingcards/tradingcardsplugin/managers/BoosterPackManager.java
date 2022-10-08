@@ -6,8 +6,9 @@ import com.google.common.cache.LoadingCache;
 import de.tr7zw.nbtapi.NBTCompound;
 import de.tr7zw.nbtapi.NBTItem;
 import net.tinetwork.tradingcards.api.manager.PackManager;
-import net.tinetwork.tradingcards.api.model.Pack;
+import net.tinetwork.tradingcards.api.model.pack.Pack;
 import net.tinetwork.tradingcards.api.model.Rarity;
+import net.tinetwork.tradingcards.api.model.pack.PackEntry;
 import net.tinetwork.tradingcards.api.utils.NbtUtils;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalDebug;
@@ -108,7 +109,7 @@ public class BoosterPackManager extends Manager<String, Pack> implements PackMan
                 + pack.getDisplayName().replace("_", " "));
         List<String> lore = new ArrayList<>();
 
-        for (Pack.PackEntry entry : pack.getPackEntryList()) {
+        for (PackEntry entry : pack.getPackEntryList()) {
             final Rarity rarity = plugin.getRarityManager().getRarity(entry.getRarityId());
             lore.add(ChatUtil.color(plugin.getGeneralConfig().colorPackNormal()
                     + entry.getAmount()

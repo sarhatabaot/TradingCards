@@ -3,12 +3,13 @@ package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local;
 import net.tinetwork.tradingcards.api.card.Card;
 import net.tinetwork.tradingcards.api.config.ColorSeries;
 import net.tinetwork.tradingcards.api.model.DropType;
-import net.tinetwork.tradingcards.api.model.EmptyPack;
-import net.tinetwork.tradingcards.api.model.Pack;
+import net.tinetwork.tradingcards.api.model.pack.EmptyPack;
+import net.tinetwork.tradingcards.api.model.pack.Pack;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.api.model.deck.Deck;
 import net.tinetwork.tradingcards.api.model.deck.StorageEntry;
+import net.tinetwork.tradingcards.api.model.pack.PackEntry;
 import net.tinetwork.tradingcards.api.model.schedule.Mode;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
@@ -509,13 +510,13 @@ public class YamlStorage implements Storage<TradingCard> {
     }
 
     @Override
-    public void editPackContents(final String packId, final int lineNumber, final Pack.PackEntry packEntry) {
+    public void editPackContents(final String packId, final int lineNumber, final PackEntry packEntry) {
         packsConfig.editContents(packId,lineNumber,packEntry);
     }
 
     @Override
-    public void editPackContentsAdd(final String packId, final Pack.PackEntry packEntry) {
-        List<Pack.PackEntry> packEntries = getPack(packId).getPackEntryList();
+    public void editPackContentsAdd(final String packId, final PackEntry packEntry) {
+        List<PackEntry> packEntries = getPack(packId).getPackEntryList();
         int lineNumber = (packEntries == null) ? 0 : packEntries.size() - 1;
         packsConfig.editContents(packId,lineNumber,packEntry);
     }
@@ -526,13 +527,13 @@ public class YamlStorage implements Storage<TradingCard> {
     }
 
     @Override
-    public void editPackTradeCards(final String packId, final int lineNumber, final Pack.PackEntry packEntry) {
+    public void editPackTradeCards(final String packId, final int lineNumber, final PackEntry packEntry) {
         packsConfig.editTradeCards(packId,lineNumber,packEntry);
     }
 
     @Override
-    public void editPackTradeCardsAdd(final String packId, final Pack.PackEntry packEntry) {
-        List<Pack.PackEntry> packEntries = getPack(packId).getTradeCards();
+    public void editPackTradeCardsAdd(final String packId, final PackEntry packEntry) {
+        List<PackEntry> packEntries = getPack(packId).getTradeCards();
         int lineNumber = (packEntries == null) ? 0 : packEntries.size() - 1;
         packsConfig.editTradeCards(packId,lineNumber,packEntry);
     }

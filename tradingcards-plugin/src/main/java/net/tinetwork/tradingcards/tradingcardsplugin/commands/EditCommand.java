@@ -9,9 +9,9 @@ import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import net.tinetwork.tradingcards.api.config.ColorSeries;
 import net.tinetwork.tradingcards.api.model.DropType;
-import net.tinetwork.tradingcards.api.model.Pack;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
+import net.tinetwork.tradingcards.api.model.pack.PackEntry;
 import net.tinetwork.tradingcards.api.model.schedule.Mode;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.CompositeCardKey;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalDebug;
@@ -269,7 +269,7 @@ public class EditCommand extends BaseCommand {
                         return;
                     }
                     
-                    Pack.PackEntry entry = Pack.PackEntry.fromString(content);
+                    PackEntry entry = PackEntry.fromString(content);
                     storage.editPackTradeCards(packId, lineNumber, entry);
                 }
                 case CONTENTS -> {
@@ -285,7 +285,7 @@ public class EditCommand extends BaseCommand {
                         return;
                     }
 
-                    Pack.PackEntry entry = Pack.PackEntry.fromString(content);
+                    PackEntry entry = PackEntry.fromString(content);
                     storage.editPackContents(packId, lineNumber, entry);
                 }
                 case PERMISSION -> storage.editPackPermission(packId, value);

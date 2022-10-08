@@ -7,9 +7,10 @@ import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
 import net.tinetwork.tradingcards.api.model.DropType;
-import net.tinetwork.tradingcards.api.model.Pack;
+import net.tinetwork.tradingcards.api.model.pack.Pack;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
+import net.tinetwork.tradingcards.api.model.pack.PackEntry;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalMessages;
@@ -65,8 +66,8 @@ public class InfoCommand extends BaseCommand {
             ChatUtil.sendPrefixedMessages(sender,
                     InternalMessages.InfoCommand.PACK_FORMAT,
                     pack.getId(), pack.getDisplayName(),
-                    pack.getPackEntryList().stream().map(Pack.PackEntry::toString).toList(),
-                    pack.getTradeCards().stream().map(Pack.PackEntry::toString).toList(),
+                    pack.getPackEntryList().stream().map(PackEntry::toString).toList(),
+                    pack.getTradeCards().stream().map(PackEntry::toString).toList(),
                     pack.getCurrencyId(),
                     pack.getBuyPrice());
         }

@@ -1,10 +1,9 @@
-package net.tinetwork.tradingcards.api.model;
+package net.tinetwork.tradingcards.api.model.pack;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
-import java.util.List;
 
 /**
  * @author sarhatabaot
