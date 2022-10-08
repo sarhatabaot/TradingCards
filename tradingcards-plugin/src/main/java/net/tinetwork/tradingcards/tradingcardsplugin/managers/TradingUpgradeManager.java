@@ -3,6 +3,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.managers;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import net.tinetwork.tradingcards.api.manager.UpgradeManager;
 import net.tinetwork.tradingcards.api.model.Upgrade;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalDebug;
@@ -14,8 +15,8 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author sarhatabaot
  */
-public class UpgradeManager extends Manager<String, Upgrade>{
-    public UpgradeManager(final TradingCards plugin) {
+public class TradingUpgradeManager extends Manager<String, Upgrade> implements UpgradeManager {
+    public TradingUpgradeManager(final TradingCards plugin) {
         super(plugin);
     }
 
