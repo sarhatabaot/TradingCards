@@ -40,9 +40,6 @@
         <mariadb.version>2.7.4</mariadb.version>
         <!-- Others -->
         <zip4j.version>2.11.2</zip4j.version>
-
-
-        <table.regex.matcher>^(\{prefix\})\w+_(.*)$</table.regex.matcher>
     </properties>
 
     <pluginRepositories>
