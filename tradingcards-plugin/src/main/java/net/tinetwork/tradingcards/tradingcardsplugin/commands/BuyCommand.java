@@ -6,7 +6,6 @@ import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
-import de.tr7zw.nbtapi.NBTCompound;
 import de.tr7zw.nbtapi.NBTItem;
 import net.tinetwork.tradingcards.api.economy.ResponseWrapper;
 import net.tinetwork.tradingcards.api.model.Pack;
@@ -19,7 +18,6 @@ import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.PlaceholderUtil;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.NotNull;
@@ -88,7 +86,6 @@ public class BuyCommand extends BaseCommand {
                         removedCardsMap = Stream.concat(removedCardsMap.entrySet().stream(), removedEntryItems.entrySet().stream()).collect(
                                 Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
                     }
-
                     final int totalCards = removedCardsMap.values().stream().mapToInt(Integer::intValue).sum();
                     player.sendMessage("Traded %s cards for pack %s:".formatted(totalCards,packId));
                     sendTradedCardsMessage(player, removedCardsMap);
@@ -129,6 +126,7 @@ public class BuyCommand extends BaseCommand {
                     //accounts for zombie:common:10:default when the entry is common:5:default
                     if(itemStack.getAmount() > countLeftToRemove) {
                         itemStack.setAmount(itemStack.getAmount() - countLeftToRemove);
+                        removedItemStacks.put(itemStack, countLeftToRemove);
                         plugin.debug(BuyCommand.class,"Removed %d from ItemStack %s, new amount: %s".formatted(countLeftToRemove, itemStack.toString(), itemStack.getAmount()));
                         break;
                     }
@@ -163,7 +161,7 @@ public class BuyCommand extends BaseCommand {
             if (!CardUtil.isCard(nbtItem)) {
                 return false;
             }
-            
+
             //don't count if it's shiny.
             if (NbtUtils.Card.isShiny(nbtItem)) {
                 return false;
