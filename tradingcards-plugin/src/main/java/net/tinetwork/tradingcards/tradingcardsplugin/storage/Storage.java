@@ -3,6 +3,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.storage;
 import net.tinetwork.tradingcards.api.card.Card;
 import net.tinetwork.tradingcards.api.config.ColorSeries;
 import net.tinetwork.tradingcards.api.model.DropType;
+import net.tinetwork.tradingcards.api.model.Upgrade;
 import net.tinetwork.tradingcards.api.model.pack.Pack;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
@@ -167,6 +168,15 @@ public interface Storage<T extends Card<T>> {
     void reload();
 
     DropType getCustomType(final String typeId);
+
+    List<Upgrade> geUpgrades();
+
+    void createUpgrade(final String upgradeId, final PackEntry required, final PackEntry result);
+    Upgrade getUpgrade(final String upgradeId);
+
+    void editUpgradeRequired(final String upgradeId, final PackEntry required);
+
+    void editUpgradeResult(final String upgradeId, final PackEntry result);
 
     //Create
     void createCard(final String cardId, final String rarityId, final String seriesId);

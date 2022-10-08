@@ -3,6 +3,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote;
 import net.tinetwork.tradingcards.api.card.Card;
 import net.tinetwork.tradingcards.api.config.ColorSeries;
 import net.tinetwork.tradingcards.api.model.DropType;
+import net.tinetwork.tradingcards.api.model.Upgrade;
 import net.tinetwork.tradingcards.api.model.pack.EmptyPack;
 import net.tinetwork.tradingcards.api.model.pack.Pack;
 import net.tinetwork.tradingcards.api.model.Rarity;
@@ -1764,6 +1765,26 @@ public class SqlStorage implements Storage<TradingCard> {
                 return 0;
             }
         }.prepareAndRunQuery();
+    }
+
+    @Override
+    public void createUpgrade(final String upgradeId, final PackEntry required, final PackEntry result) {
+
+    }
+
+    @Override
+    public Upgrade getUpgrade(final String upgradeId) {
+        return null;
+    }
+
+    @Override
+    public void editUpgradeRequired(final String upgradeId, final PackEntry required) {
+
+    }
+
+    @Override
+    public void editUpgradeResult(final String upgradeId, final PackEntry result) {
+
     }
 
     @Override
