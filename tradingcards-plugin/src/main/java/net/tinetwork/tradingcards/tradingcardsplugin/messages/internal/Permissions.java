@@ -39,12 +39,14 @@ public final class Permissions {
     public static final String CREATE_SERIES = "cards.create.series";
     public static final String CREATE_CARD = "cards.create.card";
     public static final String CREATE_CUSTOM_TYPE = "cards.create.customtype";
+    public static final String CREATE_UPGRADE = "cards.create.upgrade";
     public static final String EDIT = "cards.edit";
     public static final String EDIT_CARD = "cards.edit.card";
     public static final String EDIT_RARITY = "cards.edit.rarity";
     public static final String EDIT_SERIES = "cards.edit.series";
     public static final String EDIT_CUSTOM_TYPE = "cards.edit.customtype";
     public static final String EDIT_PACK = "cards.edit.pack";
+    public static final String EDIT_UPGRADE = "cards.edit.upgrade";
     public static final String INFO = "cards.info";
     public static final String INFO_CARD = "cards.info.card";
     public static final String INFO_RARITY = "cards.info.rarity";
