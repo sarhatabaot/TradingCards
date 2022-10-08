@@ -228,6 +228,21 @@ public class EditCommand extends BaseCommand {
             sendSetTypes(sender, seriesId, editSeries, value);
         }
 
+        private int checkCorrectPackEntryFormat(final CommandSender sender, final String value){
+            if (!value.contains("=")) {
+                ChatUtil.sendPrefixedMessage(sender, InternalMessages.EditCommand.CONTENTS_SYNTAX);
+                ChatUtil.sendPrefixedMessage(sender, InternalMessages.EditCommand.CONTENTS_EXAMPLE);
+                return -1;
+            }
+
+            String[] split = value.split("=");
+            int lineNumber = getIntFromString(split[0]);
+            if (lineNumber == -1) {
+                ChatUtil.sendPrefixedMessage(sender, InternalMessages.EditCommand.LINE_NUMBER_INCORRECT);
+                return -1;
+            }
+            return lineNumber;
+        }
 
         //cards edit pack <packId> [displayName|price|permission|contents] (typeCompletion or nothing)
         @Subcommand("pack")
@@ -242,40 +257,28 @@ public class EditCommand extends BaseCommand {
             switch (editType) {
                 case DISPLAY_NAME -> storage.editPackDisplayName(packId, value);
                 case TRADE -> {
-                    if (!value.contains("=")) {
-                        ChatUtil.sendPrefixedMessage(sender, InternalMessages.EditCommand.CONTENTS_SYNTAX);
-                        ChatUtil.sendPrefixedMessage(sender, InternalMessages.EditCommand.CONTENTS_EXAMPLE);
+                    int lineNumber = checkCorrectPackEntryFormat(sender,value);
+                    if(lineNumber == -1)
                         return;
-                    }
+
 
                     String[] split = value.split("=");
-                    int lineNumber = getIntFromString(split[0]);
-                    if (lineNumber == -1) {
-                        ChatUtil.sendPrefixedMessage(sender, InternalMessages.EditCommand.LINE_NUMBER_INCORRECT);
-                        return;
-                    }
                     String content = split[1];
                     if (content.equalsIgnoreCase("delete")) {
                         storage.editPackTradeCardsDelete(packId, lineNumber);
                         return;
                     }
-
+                    
                     Pack.PackEntry entry = Pack.PackEntry.fromString(content);
                     storage.editPackTradeCards(packId, lineNumber, entry);
                 }
                 case CONTENTS -> {
-                    if (!value.contains("=")) {
-                        ChatUtil.sendPrefixedMessage(sender, InternalMessages.EditCommand.CONTENTS_SYNTAX);
-                        ChatUtil.sendPrefixedMessage(sender, InternalMessages.EditCommand.CONTENTS_EXAMPLE);
+                    int lineNumber = checkCorrectPackEntryFormat(sender,value);
+                    if(lineNumber == -1)
                         return;
-                    }
+
 
                     String[] split = value.split("=");
-                    int lineNumber = getIntFromString(split[0]);
-                    if (lineNumber == -1) {
-                        ChatUtil.sendPrefixedMessage(sender, InternalMessages.EditCommand.LINE_NUMBER_INCORRECT);
-                        return;
-                    }
                     String content = split[1];
                     if (content.equalsIgnoreCase("delete")) {
                         storage.editPackContentsDelete(packId, lineNumber);
