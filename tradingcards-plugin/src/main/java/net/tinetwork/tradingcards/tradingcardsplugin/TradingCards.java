@@ -10,7 +10,6 @@ import net.tinetwork.tradingcards.api.economy.EconomyWrapper;
 import net.tinetwork.tradingcards.api.economy.treasury.TreasuryEconomy;
 import net.tinetwork.tradingcards.api.economy.vault.VaultEconomy;
 import net.tinetwork.tradingcards.api.manager.RarityManager;
-import net.tinetwork.tradingcards.api.manager.UpgradeManager;
 import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;

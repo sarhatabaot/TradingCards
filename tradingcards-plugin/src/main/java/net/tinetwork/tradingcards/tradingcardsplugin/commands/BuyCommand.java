@@ -6,28 +6,21 @@ import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
-import de.tr7zw.nbtapi.NBTItem;
 import net.tinetwork.tradingcards.api.economy.ResponseWrapper;
 import net.tinetwork.tradingcards.api.model.pack.Pack;
 import net.tinetwork.tradingcards.api.model.pack.PackEntry;
-import net.tinetwork.tradingcards.api.utils.NbtUtils;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.Permissions;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.PlaceholderUtil;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
