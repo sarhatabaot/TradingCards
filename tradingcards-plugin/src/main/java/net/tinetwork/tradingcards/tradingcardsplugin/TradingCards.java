@@ -1,5 +1,6 @@
 package net.tinetwork.tradingcards.tradingcardsplugin;
 
+import co.aikar.commands.ConditionFailedException;
 import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.PaperCommandManager;
 import me.lokka30.treasury.api.economy.EconomyProvider;
@@ -14,6 +15,7 @@ import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.api.model.Upgrade;
+import net.tinetwork.tradingcards.api.model.pack.PackEntry;
 import net.tinetwork.tradingcards.api.model.schedule.Mode;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.BuyCommand;
@@ -349,7 +351,13 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
             }
             return getUpgradeManager().getUpgrade(upgradeId);
         });
-
+        commandManager.getCommandContexts().registerContext(PackEntry.class, c -> {
+            String possibleEntry = c.popFirstArg().replace("\"","");
+            if(possibleEntry.split(":").length < 3) {
+                throw new ConditionFailedException("Not a pack entry. Use format rarityId:amount:seriesId");
+            }
+            return PackEntry.fromString(possibleEntry);
+        });
         commandManager.registerCommand(new CardsCommand(this, playerBlacklist));
         commandManager.registerCommand(new EditCommand(this));
         commandManager.registerCommand(new CreateCommand(this));
