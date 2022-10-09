@@ -40,7 +40,7 @@ public class TradingUpgradeManager extends Manager<String, Upgrade> implements U
     }
 
     public List<Upgrade> getUpgrades() {
-        return plugin.getStorage().geUpgrades();
+        return plugin.getStorage().getUpgrades();
     }
 
     public Upgrade getUpgrade(final String upgradeId) {
