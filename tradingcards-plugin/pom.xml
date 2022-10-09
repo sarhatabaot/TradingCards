@@ -11,7 +11,7 @@
     <parent>
         <groupId>net.tinetwork.tradingcards</groupId>
         <artifactId>tradingcards-parent</artifactId>
-        <version>5.7.0</version>
+        <version>5.7.1</version>
     </parent>
     <properties>
         <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
