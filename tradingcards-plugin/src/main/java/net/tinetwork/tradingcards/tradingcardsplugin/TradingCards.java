@@ -275,7 +275,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         commandManager.getCommandCompletions().registerCompletion("custom-types", c -> dropTypeManager.getTypes().keySet());
         commandManager.getCommandCompletions().registerCompletion("all-types", c -> dropTypeManager.getAllTypesIds());
         commandManager.getCommandCompletions().registerCompletion("series", c -> seriesManager.getSeriesIds());
-        commandManager.getCommandCompletions().registerCompletion("upgrades", c -> upgradeManager.getUpgrades().stream().map(Upgrade::id).toList())
+        commandManager.getCommandCompletions().registerCompletion("upgrades", c -> upgradeManager.getUpgrades().stream().map(Upgrade::id).toList());
         commandManager.getCommandCompletions().registerCompletion("series-colors", c -> List.of("info=", "about=", "type=", "series=", "rarity="));
         commandManager.getCommandCompletions().registerCompletion("edit-type", c -> Stream.of(EditType.values()).map(Enum::name).toList());
         commandManager.getCommandCompletions().registerCompletion("edit-pack", c -> Stream.of(EditPack.values()).map(Enum::name).toList());
