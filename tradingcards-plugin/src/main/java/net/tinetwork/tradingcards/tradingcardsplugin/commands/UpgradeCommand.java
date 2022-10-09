@@ -17,7 +17,10 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author sarhatabaot
@@ -50,7 +53,14 @@ public class UpgradeCommand extends BaseCommand {
                 return;
             }
 
-            Map<ItemStack, Integer> removedCards = CardUtil.removeCardsMatchingEntry(player,upgrade.required());
+            Map<ItemStack, Integer> removedCards = new HashMap<>();
+            for(int i = 0; i<amount;i++) {
+                removedCards = Stream.concat(removedCards.entrySet().stream(), CardUtil.removeCardsMatchingEntry(player,upgrade.required()).entrySet().stream())
+                        .collect(Collectors.toMap(
+                                Map.Entry::getKey,
+                                Map.Entry::getValue,
+                                Integer::sum));
+            }
             final int totalCards = removedCards.values().stream().mapToInt(Integer::intValue).sum();
             player.sendMessage("Upgraded %d %s cards to %d %s cards:"
                     .formatted(totalCards, upgrade.required().rarityId(),
@@ -96,7 +106,7 @@ public class UpgradeCommand extends BaseCommand {
             final String seriesId = NbtUtils.Card.getSeriesId(nbtItem);
             final String rarityId = NbtUtils.Card.getRarityId(nbtItem);
 
-            for (Upgrade upgrade : plugin.getStorage().geUpgrades()) {
+            for (Upgrade upgrade : plugin.getStorage().getUpgrades()) {
                 PackEntry required = upgrade.required();
 
                 if (required.seriesId().equals(seriesId) && required.rarityId().equals(rarityId)) {
@@ -111,7 +121,7 @@ public class UpgradeCommand extends BaseCommand {
         //Calc the correct amount
         private int calcMaxPossibleUpgrades(final Player player, PackEntry packEntry) {
             if (CardUtil.hasCardsInInventory(player, packEntry))
-                return CardUtil.countCardsInInventory(player, packEntry);
+                return CardUtil.countCardsInInventory(player, packEntry) / packEntry.amount();
             return 0;
         }
     }
