@@ -1,5 +1,68 @@
 cards:
   common:
+    frog_warm:
+      custom-model-data: 3200126
+      display-name: "Warm Frog"
+      has-shiny-version: true
+      info: none
+      series: default
+      type: passive
+    goat:
+      custom-model-data: 3200121
+      display-name: "Goat"
+      has-shiny-version: true
+      info: none
+      series: default
+      type: neutral
+    parrot_red:
+      custom-model-data: 32000116
+      display-name: "Red Parrot"
+      has-shiny-version: true
+      info: none
+      series: summer
+      type: passive
+    parrot_blue:
+      custom-model-data: 32000117
+      display-name: "Blue Parrot"
+      has-shiny-version: true
+      info: none
+      series: summer
+      type: passive
+    pillager:
+      custom-model-data: 32000111
+      display-name: "Pillager"
+      has-shiny-version: true
+      info: none
+      series: summer
+      type: hostile
+    panda_normal:
+      custom-model-data: 32000104
+      display-name: "Panda"
+      has-shiny-version: true
+      info: none
+      series: spring
+      type: neutral
+    panda_weak:
+      custom-model-data: 32000106
+      display-name: "Weak Panda"
+      has-shiny-version: true
+      info: none
+      series: spring
+      type: neutral
+    fish_cod:
+      custom-model-data: 32000101
+      display-name: "Cod"
+      has-shiny-version: true
+      info: none
+      series: spring
+      type: passive
+    jackolantern:
+      custom-model-data: 3200100
+      display-name: "Jack o Lantern"
+      has-shiny-version: true
+      info: none
+      series: halloween
+      type: passive
     bat:
       custom-model-data: 3200006
       display-name: "Bat"
@@ -126,9 +189,9 @@ cards:
       info: none
       series: default
       type: hostile
-    fox_brown:
+    fox_red:
       custom-model-data: 3200030
-      display-name: "Brown Fox"
+      display-name: "Red Fox"
       has-shiny-version: true
       info: none
       series: default
@@ -138,7 +201,7 @@ cards:
       display-name: "Snow Fox"
       has-shiny-version: true
       info: none
-      series: default
+      series: winter
       type: passive
     horse_black:
       custom-model-data: 3200037
@@ -157,6 +220,34 @@ cards:
     horse_chestnut:
       custom-model-data: 3200039
       display-name: "Chestnut Horse"
+      has-shiny-version: true
+      info: none
+      series: default
+      type: passive
+    horse_darkbrown:
+      custom-model-data: 3200093
+      display-name: "Dark Brown Horse "
+      has-shiny-version: true
+      info: none
+      series: default
+      type: passive
+    horse_creamy:
+      custom-model-data: 3200094
+      display-name: "Creamy Horse"
+      has-shiny-version: true
+      info: none
+      series: default
+      type: passive
+    horse_gray:
+      custom-model-data: 3200095
+      display-name: "Gray Horse"
+      has-shiny-version: true
+      info: none
+      series: default
+      type: passive
+    horse_white:
+      custom-model-data: 3200096
+      display-name: "White Horse"
       has-shiny-version: true
       info: none
       series: default
@@ -294,7 +385,126 @@ cards:
       info: none
       series: default
       type: hostile
+    roses:
+      custom-model-data: 3200089
+      display-name: "Roses"
+      has-shiny-version: true
+      info: none
+      series: valentines
+      type: passive
+    tulips:
+      custom-model-data: 3200090
+      display-name: "Tuplis"
+      has-shiny-version: true
+      info: none
+      series: valentines
+      type: passive
+    snow_block:
+      custom-model-data: 3200091
+      display-name: "Snow Block"
+      has-shiny-version: true
+      info: none
+      series: winter
+      type: passive
   uncommon:
+    phantom:
+      custom-model-data: 3200130
+      display-name: "Phantom"
+      has-shiny-version: true
+      info: none
+      series: halloween
+      type: hostile
+    tadpole:
+      custom-model-data: 3200128
+      display-name: "Tadpole"
+      has-shiny-version: true
+      info: none
+      series: default
+      type: passive
+    hoglin:
+      custom-model-data: 3200127
+      display-name: "Hoglin"
+      has-shiny-version: true
+      info: none
+      series: default
+      type: hostile
+    frog_temperate:
+      custom-model-data: 3200124
+      display-name: "Temperate Frog"
+      has-shiny-version: true
+      info: none
+      series: default
+      type: passive
+    frog_cold:
+      custom-model-data: 3200125
+      display-name: "Cold Frog"
+      has-shiny-version: true
+      info: none
+      series: default
+      type: passive
+    parrot_green:
+      custom-model-data: 32000118
+      display-name: "Green Parrot"
+      has-shiny-version: true
+      info: none
+      series: summer
+      type: passive
+    parrot_cyan:
+      custom-model-data: 32000119
+      display-name: "Cyan Parrot"
+      has-shiny-version: true
+      info: none
+      series: summer
+      type: passive
+    vindicator:
+      custom-model-data: 32000112
+      display-name: "Vindicator"
+      has-shiny-version: true
+      info: none
+      series: summer
+      type: hostile
+    panda_lazy:
+      custom-model-data: 32000105
+      display-name: "Lazy Panda"
+      has-shiny-version: true
+      info: none
+      series: spring
+      type: neutral
+    panda_worried:
+      custom-model-data: 32000107
+      display-name: "Worried Panda"
+      has-shiny-version: true
+      info: none
+      series: spring
+      type: neutral
+    panda_Playful:
+      custom-model-data: 32000108
+      display-name: "Playful Panda"
+      has-shiny-version: true
+      info: none
+      series: spring
+      type: neutral	  
+    panda_agressive:
+      custom-model-data: 32000109
+      display-name: "Aggressive Panda"
+      has-shiny-version: true
+      info: none
+      series: spring
+      type: neutral
+    fish_salmon:
+      custom-model-data: 32000102
+      display-name: "Salmon"
+      has-shiny-version: true
+      info: none
+      series: spring
+      type: passive
+    cobweb:
+      custom-model-data: 3200097
+      display-name: "Cobweb"
+      has-shiny-version: true
+      info: none
+      series: halloween
+      type: neutral
     bee:
       custom-model-data: 3200086
       display-name: "Bee"
@@ -357,7 +567,7 @@ cards:
       has-shiny-version: true
       info: none
       series: default
-      type: hostile
+      type: neutral
     piglin_brute:
       custom-model-data: 3200055
       display-name: "Piglin Brute"
@@ -412,7 +622,7 @@ cards:
       display-name: "Witch"
       has-shiny-version: true
       info: none
-      series: default
+      series: halloween
       type: hostile
     wolf:
       custom-model-data: 3200083
@@ -429,7 +639,56 @@ cards:
       series: default
       type: hostile
   rare:
-    Pufferfish:
+      trader:
+      custom-model-data: 3200129
+      display-name: "Wandering Trader"
+      has-shiny-version: true
+      info: none
+      series: default
+      type: passive
+    parrot_gray:
+      custom-model-data: 32000120
+      display-name: "Gray Parrot"
+      has-shiny-version: true
+      info: none
+      series: summer
+      type: passive
+    evoker:
+      custom-model-data: 32000113
+      display-name: "Evoker"
+      has-shiny-version: true
+      info: none
+      series: summer
+      type: hostile
+    panda_brown:
+      custom-model-data: 32000110
+      display-name: "Brown Panda"
+      has-shiny-version: true
+      info: none
+      series: spring
+      type: neutral
+    fish_tropical:
+      custom-model-data: 32000103
+      display-name: "Tropical Fish"
+      has-shiny-version: true
+      info: none
+      series: spring
+      type: passive
+    christmas_chest:
+      custom-model-data: 3200098
+      display-name: "Christmas Chest"
+      has-shiny-version: true
+      info: none
+      series: winter
+      type: neutral  
+    cake:
+      custom-model-data: 3200086
+      display-name: "Cake"
+      has-shiny-version: true
+      info: none
+      series: valentines
+      type: passive
+    pufferfish:
       custom-model-data: 3200058
       display-name: "Pufferfish"
       has-shiny-version: true
@@ -504,7 +763,7 @@ cards:
       display-name: "Snow Golem"
       has-shiny-version: true
       info: none
-      series: default
+      series: winter
       type: neutral
     spider_jockey:
       custom-model-data: 3200075
@@ -514,13 +773,55 @@ cards:
       series: default
       type: hostile
     wither_skeleton:
-      custom-model-data: 3200076
+      custom-model-data: 3200082
       display-name: "Wither Skeleton"
       has-shiny-version: true
       info: none
       series: default
       type: hostile
   very-rare:
+    vex:
+      custom-model-data: 3200132
+      display-name: "Vex"
+      has-shiny-version: true
+      info: none
+      series: default
+      type: hostile
+    turtle:
+      custom-model-data: 3200131
+      display-name: "Turtle"
+      has-shiny-version: true
+      info: none
+      series: summer
+      type: passive
+    allay:
+      custom-model-data: 3200123
+      display-name: "Allay"
+      has-shiny-version: true
+      info: none
+      series: default
+      type: passive
+    ravager:
+      custom-model-data: 32000115
+      display-name: "Ravager"
+      has-shiny-version: true
+      info: none
+      series: summer
+      type: hostile
+    christmas_chest_lg:
+      custom-model-data: 3200086
+      display-name: "Large Christmas Chest"
+      has-shiny-version: true
+      info: none
+      series: winter
+      type: neutral
+    diamond:
+      custom-model-data: 3200099
+      display-name: "Diamond"
+      has-shiny-version: true
+      info: none
+      series: valentines
+      type: passive
     axolotl_cyan:
       custom-model-data: 3200002
       display-name: "Cyan Axolotl"
@@ -571,6 +872,20 @@ cards:
       series: default
       type: hostile
   legendary:
+    warden:
+      custom-model-data: 3200122
+      display-name: "Warden"
+      has-shiny-version: true
+      info: none
+      series: default
+      type: hostile
+    illusioner:
+      custom-model-data: 32000114
+      display-name: "Illusioner"
+      has-shiny-version: true
+      info: none
+      series: summer
+      type: hostile
     axolotl_blue:
       custom-model-data: 3200001
       display-name: "Blue Axolotl"
@@ -591,14 +906,14 @@ cards:
       has-shiny-version: true
       info: none
       series: default
-      type: boss
+      type: hostile
     guardian_elder:
       custom-model-data: 3200036
       display-name: "Elder Guardian"
       has-shiny-version: true
       info: none
       series: default
-      type: boss
+      type: hostile
     mooshroom_brown:
       custom-model-data: 3200051
       display-name: "Brown Mooshroom"
@@ -613,3 +928,17 @@ cards:
       info: none
       series: default
       type: boss
+    parrotsandbats:
+      custom-model-data: 3200088
+      display-name: "Parrots and the Bats"
+      has-shiny-version: true
+      info: none
+      series: valentines
+      type: passive    
+    firework:
+      custom-model-data: 3200092
+      display-name: "Firework"
+      has-shiny-version: true
+      info: none
+      series: winter
+      type: passive
