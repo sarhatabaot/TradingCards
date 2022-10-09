@@ -118,7 +118,10 @@ public class SqlStorage implements Storage<TradingCard> {
                                         new MappedTable().withInput("{prefix}series").withOutput(tablePrefix + "series"),
                                         new MappedTable().withInput("{prefix}rewards").withOutput(tablePrefix + "rewards"),
                                         new MappedTable().withInput("{prefix}series_colors").withOutput(tablePrefix + "series_colors"),
-                                        new MappedTable().withInput("{prefix}decks").withOutput(tablePrefix + "decks")
+                                        new MappedTable().withInput("{prefix}decks").withOutput(tablePrefix + "decks"),
+                                        new MappedTable().withInput("{prefix}upgrades").withOutput(tablePrefix + "upgrades"),
+                                        new MappedTable().withInput("{prefix}upgrades_required").withOutput(tablePrefix + "upgrades_required"),
+                                        new MappedTable().withInput("{prefix}upgrades_result").withOutput(tablePrefix + "upgrades_result")
                                 )
                 )
         );
