@@ -3,6 +3,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote;
 import net.tinetwork.tradingcards.api.card.Card;
 import net.tinetwork.tradingcards.api.config.ColorSeries;
 import net.tinetwork.tradingcards.api.model.DropType;
+import net.tinetwork.tradingcards.api.model.Upgrade;
 import net.tinetwork.tradingcards.api.model.pack.EmptyPack;
 import net.tinetwork.tradingcards.api.model.pack.Pack;
 import net.tinetwork.tradingcards.api.model.Rarity;
@@ -30,6 +31,9 @@ import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generat
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Rarities;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Rewards;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.SeriesColors;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Upgrades;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.UpgradesRequired;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.UpgradesResult;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.sql.ConnectionFactory;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.sql.SchemaReader;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.JooqRecordUtil;
@@ -114,7 +118,10 @@ public class SqlStorage implements Storage<TradingCard> {
                                         new MappedTable().withInput("{prefix}series").withOutput(tablePrefix + "series"),
                                         new MappedTable().withInput("{prefix}rewards").withOutput(tablePrefix + "rewards"),
                                         new MappedTable().withInput("{prefix}series_colors").withOutput(tablePrefix + "series_colors"),
-                                        new MappedTable().withInput("{prefix}decks").withOutput(tablePrefix + "decks")
+                                        new MappedTable().withInput("{prefix}decks").withOutput(tablePrefix + "decks"),
+                                        new MappedTable().withInput("{prefix}upgrades").withOutput(tablePrefix + "upgrades"),
+                                        new MappedTable().withInput("{prefix}upgrades_required").withOutput(tablePrefix + "upgrades_required"),
+                                        new MappedTable().withInput("{prefix}upgrades_result").withOutput(tablePrefix + "upgrades_result")
                                 )
                 )
         );
@@ -1764,6 +1771,196 @@ public class SqlStorage implements Storage<TradingCard> {
                 return 0;
             }
         }.prepareAndRunQuery();
+    }
+
+    @Override
+    public void createUpgrade(final String upgradeId, final PackEntry required, final PackEntry result) {
+        new ExecuteUpdate(this, jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.insertInto(Upgrades.UPGRADES)
+                        .set(Upgrades.UPGRADES.UPGRADE_ID, upgradeId)
+                        .execute();
+
+                dslContext.insertInto(UpgradesRequired.UPGRADES_REQUIRED)
+                        .set(UpgradesRequired.UPGRADES_REQUIRED.UPGRADE_ID, upgradeId)
+                        .set(UpgradesRequired.UPGRADES_REQUIRED.RARITY_ID, required.rarityId())
+                        .set(UpgradesRequired.UPGRADES_REQUIRED.SERIES_ID, required.seriesId())
+                        .set(UpgradesRequired.UPGRADES_REQUIRED.AMOUNT, required.amount())
+                        .execute();
+
+                dslContext.insertInto(UpgradesResult.UPGRADES_RESULT)
+                        .set(UpgradesResult.UPGRADES_RESULT.UPGRADE_ID, upgradeId)
+                        .set(UpgradesResult.UPGRADES_RESULT.RARITY_ID, result.rarityId())
+                        .set(UpgradesResult.UPGRADES_RESULT.SERIES_ID, result.seriesId())
+                        .set(UpgradesResult.UPGRADES_RESULT.AMOUNT, result.amount())
+                        .execute();
+            }
+        }.executeUpdate();
+    }
+
+    @Override
+    public Upgrade getUpgrade(final String upgradeId) {
+        return new ExecuteQuery<Upgrade, Result<Record>>(this, jooqSettings) {
+            @Override
+            public Upgrade onRunQuery(final DSLContext dslContext) {
+                return getQuery(dslContext.select()
+                        .from(Upgrades.UPGRADES)
+                        .where(Upgrades.UPGRADES.UPGRADE_ID.eq(upgradeId))
+                        .limit(1)
+                        .fetch());
+            }
+
+            @Override
+            public Upgrade getQuery(final @NotNull Result<Record> result) {
+                if (result.isEmpty()) {
+                    return empty();
+                }
+
+                Record recordResult = result.get(0);
+                final String upgradeId = recordResult.getValue(Upgrades.UPGRADES.UPGRADE_ID);
+                return new Upgrade(upgradeId,getRequiredEntry(upgradeId),getResultEntry(upgradeId));
+            }
+
+            @Contract(pure = true)
+            @Override
+            public Upgrade empty() {
+                return null;
+            }
+        }.prepareAndRunQuery();
+    }
+
+    private PackEntry getRequiredEntry(final String upgradeId) {
+        return new ExecuteQuery<PackEntry, Record>(this, jooqSettings) {
+            @Override
+            public PackEntry onRunQuery(final DSLContext dslContext) throws SQLException {
+                return getQuery(dslContext.select()
+                        .from(UpgradesRequired.UPGRADES_REQUIRED)
+                        .where(UpgradesRequired.UPGRADES_REQUIRED.UPGRADE_ID.eq(upgradeId))
+                        .fetchOne());
+            }
+
+            @Override
+            public PackEntry getQuery(final @NotNull Record result) throws SQLException {
+                final String rarityId = result.get(UpgradesRequired.UPGRADES_REQUIRED.RARITY_ID);
+                final String seriesId = result.get(UpgradesRequired.UPGRADES_REQUIRED.SERIES_ID);
+                final int amount = result.get(UpgradesRequired.UPGRADES_REQUIRED.AMOUNT);
+                return new PackEntry(rarityId,amount,seriesId);
+            }
+
+            @Override
+            public PackEntry empty() {
+                return null;
+            }
+        }.prepareAndRunQuery();
+    }
+
+    private PackEntry getResultEntry(final String upgradeId) {
+        return new ExecuteQuery<PackEntry, Record>(this, jooqSettings) {
+            @Override
+            public PackEntry onRunQuery(final DSLContext dslContext) throws SQLException {
+                return getQuery(dslContext.select()
+                        .from(UpgradesResult.UPGRADES_RESULT)
+                        .where(UpgradesResult.UPGRADES_RESULT.UPGRADE_ID.eq(upgradeId))
+                        .fetchOne());
+            }
+
+            @Override
+            public PackEntry getQuery(final @NotNull Record result) throws SQLException {
+                final String rarityId = result.get(UpgradesResult.UPGRADES_RESULT.RARITY_ID);
+                final String seriesId = result.get(UpgradesResult.UPGRADES_RESULT.SERIES_ID);
+                final int amount = result.get(UpgradesResult.UPGRADES_RESULT.AMOUNT);
+                return new PackEntry(rarityId,amount,seriesId);
+            }
+
+            @Override
+            public PackEntry empty() {
+                return null;
+            }
+        }.prepareAndRunQuery();
+    }
+
+    @Override
+    public void editUpgradeRequired(final String upgradeId, final PackEntry required) {
+        new ExecuteUpdate(this, jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.update(UpgradesRequired.UPGRADES_REQUIRED
+                        .where(UpgradesRequired.UPGRADES_REQUIRED.UPGRADE_ID.eq(upgradeId)))
+                        .set(UpgradesRequired.UPGRADES_REQUIRED.RARITY_ID,required.rarityId())
+                        .set(UpgradesRequired.UPGRADES_REQUIRED.SERIES_ID,required.seriesId())
+                        .set(UpgradesRequired.UPGRADES_REQUIRED.AMOUNT, required.amount())
+                        .execute();
+            }
+        }.executeUpdate();
+    }
+
+    @Override
+    public void editUpgradeResult(final String upgradeId, final PackEntry result) {
+        new ExecuteUpdate(this,jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.update(UpgradesResult.UPGRADES_RESULT
+                                .where(UpgradesResult.UPGRADES_RESULT.UPGRADE_ID.eq(upgradeId)))
+                        .set(UpgradesResult.UPGRADES_RESULT.RARITY_ID,result.rarityId())
+                        .set(UpgradesResult.UPGRADES_RESULT.SERIES_ID,result.seriesId())
+                        .set(UpgradesResult.UPGRADES_RESULT.AMOUNT, result.amount())
+                        .execute();
+            }
+        }.executeUpdate();
+    }
+
+    @Override
+    public List<Upgrade> getUpgrades() {
+        return new ExecuteQuery<List<Upgrade>, Result<Record>>(this, jooqSettings) {
+            @Override
+            public List<Upgrade> onRunQuery(final DSLContext dslContext) throws SQLException {
+                Result<Record> result = dslContext.select()
+                        .from(Upgrades.UPGRADES)
+                        .fetch();
+                return getQuery(result);
+            }
+
+            @Override
+            public List<Upgrade> getQuery(final @NotNull Result<Record> result) throws SQLException {
+                if (result.isEmpty()) {
+                    return empty();
+                }
+
+                List<Upgrade> upgrades = new ArrayList<>();
+                for(Record recordResult: result) {
+                    final String upgradeId = recordResult.getValue(Upgrades.UPGRADES.UPGRADE_ID);
+                    Upgrade upgrade = new Upgrade(upgradeId,getRequiredEntry(upgradeId),getResultEntry(upgradeId));
+                    upgrades.add(upgrade);
+                }
+                return upgrades;
+            }
+
+            @Override
+            public List<Upgrade> empty() {
+                return Collections.emptyList();
+            }
+        }.prepareAndRunQuery();
+    }
+
+    @Override
+    public void deleteUpgrade(final String upgradeId) {
+        new ExecuteUpdate(this, jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.deleteFrom(Upgrades.UPGRADES)
+                        .where(Upgrades.UPGRADES.UPGRADE_ID.eq(upgradeId))
+                        .execute();
+
+                dslContext.deleteFrom(UpgradesRequired.UPGRADES_REQUIRED)
+                        .where(UpgradesRequired.UPGRADES_REQUIRED.UPGRADE_ID.eq(upgradeId))
+                        .execute();
+
+                dslContext.deleteFrom(UpgradesResult.UPGRADES_RESULT)
+                        .where(UpgradesResult.UPGRADES_RESULT.UPGRADE_ID.eq(upgradeId))
+                        .execute();
+            }
+        }.executeUpdate();
     }
 
     @Override

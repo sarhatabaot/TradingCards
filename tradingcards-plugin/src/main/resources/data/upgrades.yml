@@ -1,0 +1,12 @@
+upgrade-1:
+  required: common:9:default
+  result: uncommon:1:default
+upgrade-2:
+  required: uncommon:3:default
+  result: rare:1:default
+upgrade-3:
+  required: rare:3:default
+  result: very-rare:1:default
+upgrade-4:
+  required: very-rare:9:default
+  result: legendary:1:default

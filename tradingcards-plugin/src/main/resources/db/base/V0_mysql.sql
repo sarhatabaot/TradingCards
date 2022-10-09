@@ -1,7 +1,7 @@
 -- TradingCards MySql Schema
 
 CREATE TABLE IF NOT EXISTS `{prefix}decks` (
-    `id`            INT AUTO_INCREMENT NOT NULL,
+    `id`             INT AUTO_INCREMENT NOT NULL,
     `uuid`           VARCHAR(36)        NOT NULL,
     `deck_number`    INT                NOT NULL,
     `card_id`        VARCHAR(200)       NOT NULL,
@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS `{prefix}series` (
 
 CREATE TABLE IF NOT EXISTS `{prefix}series_colors` (
    `series_id`    VARCHAR(200)       NOT NULL,
-   `type`       VARCHAR(10)        NOT NULL,
+   `type`         VARCHAR(10)        NOT NULL,
    `info`         VARCHAR(10)        NOT NULL,
    `about`        VARCHAR(10)        NOT NULL,
    `rarity`       VARCHAR(10)        NOT NULL,
@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS `{prefix}packs` (
 ) DEFAULT CHARSET = utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `{prefix}packs_content` (
-    `id`             INT                NOT NULL AUTO_INCREMENT,
+    `id`               INT                NOT NULL AUTO_INCREMENT,
     `line_number`      INT                NOT NULL,
     `pack_id`          VARCHAR(200)       NOT NULL,
     `rarity_id`        VARCHAR(200)       NOT NULL,
@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS `{prefix}packs_content` (
 ) DEFAULT CHARSET = utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `{prefix}packs_trade` (
-    `id`            INT                 NOT NULL AUTO_INCREMENT,
+    `id`               INT                NOT NULL AUTO_INCREMENT,
     `line_number`      INT                NOT NULL,
     `pack_id`          VARCHAR(200)       NOT NULL,
     `rarity_id`        VARCHAR(200)       NOT NULL,
@@ -83,8 +83,29 @@ CREATE TABLE IF NOT EXISTS `{prefix}packs_trade` (
     PRIMARY KEY (`id`)
 ) DEFAULT CHARSET = utf8mb4;
 
+CREATE TABLE IF NOT EXISTS `{prefix}upgrades` (
+    `upgrade_id`       VARCHAR(200)       NOT NULL,
+    PRIMARY KEY (`upgrade_id`)
+) DEFAULT CHARSET = utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `{prefix}upgrades_required` (
+    `upgrade_id`       VARCHAR(200)       NOT NULL,
+    `series_id`        VARCHAR(200)       NOT NULL,
+    `amount`           INT                NOT NULL,
+    `rarity_id`        VARCHAR(200)       NOT NULL,
+    PRIMARY KEY (`upgrade_id`)
+) DEFAULT CHARSET = utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `{prefix}upgrades_result` (
+    `upgrade_id`       VARCHAR(200)       NOT NULL,
+    `series_id`        VARCHAR(200)       NOT NULL,
+    `amount`           INT                NOT NULL,
+    `rarity_id`        VARCHAR(200)       NOT NULL,
+    PRIMARY KEY (`upgrade_id`)
+) DEFAULT CHARSET = utf8mb4;
+
 CREATE TABLE IF NOT EXISTS `{prefix}cards` (
-    `id`                INT                 NOT NULL AUTO_INCREMENT,
+    `id`                  INT                 NOT NULL AUTO_INCREMENT,
     `card_id`             VARCHAR(200)        NOT NULL,
     `display_name`        TINYTEXT,
     `rarity_id`           VARCHAR(200)        NOT NULL,

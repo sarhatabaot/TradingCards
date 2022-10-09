@@ -3,6 +3,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local;
 import net.tinetwork.tradingcards.api.card.Card;
 import net.tinetwork.tradingcards.api.config.ColorSeries;
 import net.tinetwork.tradingcards.api.model.DropType;
+import net.tinetwork.tradingcards.api.model.Upgrade;
 import net.tinetwork.tradingcards.api.model.pack.EmptyPack;
 import net.tinetwork.tradingcards.api.model.pack.Pack;
 import net.tinetwork.tradingcards.api.model.Rarity;
@@ -46,6 +47,7 @@ public class YamlStorage implements Storage<TradingCard> {
     private final SeriesConfig seriesConfig;
     private final PacksConfig packsConfig;
     private final CustomTypesConfig customTypesConfig;
+    private final UpgradesConfig upgradesConfig;
 
     private final Map<CompositeCardKey, TradingCard> cards;
     private final Map<CompositeCardKey, TradingCard> activeCards;
@@ -70,6 +72,7 @@ public class YamlStorage implements Storage<TradingCard> {
         this.seriesConfig = new SeriesConfig(plugin);
         this.customTypesConfig = new CustomTypesConfig(plugin);
         this.cardsConfig = new CardsConfig(plugin,this);
+        this.upgradesConfig = new UpgradesConfig(plugin);
 
         this.cards = new HashMap<>();
         this.rarityCardList = new HashMap<>();
@@ -576,5 +579,40 @@ public class YamlStorage implements Storage<TradingCard> {
     @Override
     public int getRarityCustomOrder(final String rarityId) {
         return getRarities().indexOf(getRarityById(rarityId));
+    }
+
+    @Override
+    public List<Upgrade> getUpgrades() {
+        return upgradesConfig.getUpgrades();
+    }
+
+    @Override
+    public void createUpgrade(final String upgradeId, final PackEntry required, final PackEntry result) {
+        upgradesConfig.createUpgrade(upgradeId, required, result);
+    }
+
+    @Override
+    public Upgrade getUpgrade(final String upgradeId) {
+        try {
+            return upgradesConfig.getUpgrade(upgradeId);
+        } catch (SerializationException e){
+            Util.logSevereException(e);
+            return null;
+        }
+    }
+
+    @Override
+    public void editUpgradeRequired(final String upgradeId, final PackEntry required) {
+        upgradesConfig.editUpgradeRequired(upgradeId, required);
+    }
+
+    @Override
+    public void editUpgradeResult(final String upgradeId, final PackEntry result) {
+        upgradesConfig.editUpgradeResult(upgradeId, result);
+    }
+
+    @Override
+    public void deleteUpgrade(final String upgradeId) {
+        upgradesConfig.deleteUpgrade(upgradeId);
     }
 }

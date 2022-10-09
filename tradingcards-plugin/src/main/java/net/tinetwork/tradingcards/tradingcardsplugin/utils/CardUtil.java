@@ -6,19 +6,23 @@ import net.tinetwork.tradingcards.api.config.ColorSeries;
 import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
+import net.tinetwork.tradingcards.api.model.pack.PackEntry;
 import net.tinetwork.tradingcards.api.utils.NbtUtils;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
+import net.tinetwork.tradingcards.tradingcardsplugin.commands.BuyCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.DropTypeManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingRarityManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.AllCardManager;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -244,5 +248,103 @@ public class CardUtil {
             return true;
         }
         return false;
+    }
+
+    public static boolean hasCardsInInventory(final Player player, final @NotNull PackEntry packEntry) {
+        return hasCardsInInventory(player,packEntry,1);
+    }
+
+    public static boolean hasCardsInInventory(final Player player, final @NotNull PackEntry packEntry, int amount) {
+        return packEntry.amount() * amount <= countCardsInInventory(player, packEntry);
+    }
+
+    public static boolean hasCardsInInventory(final Player player, final @NotNull List<PackEntry> tradeCards) {
+        if(tradeCards.isEmpty())
+            return true;
+
+        for (PackEntry packEntry : tradeCards) {
+            if (packEntry.amount() > countCardsInInventory(player, packEntry))
+                return false;
+        }
+        return true;
+    }
+
+    public static int countCardsInInventory(final @NotNull Player player, final PackEntry packEntry) {
+        int count = 0;
+        PlayerInventory inventory = player.getInventory();
+
+        for (ItemStack itemStack : inventory.getContents()) {
+            if(matchesEntry(itemStack,packEntry)) {
+                count += itemStack.getAmount();
+            }
+        }
+        return count;
+    }
+
+    public static boolean matchesEntry(final ItemStack itemStack, final PackEntry packEntry) {
+        if(itemStack == null || itemStack.getType() == Material.AIR)
+            return false;
+
+        NBTItem nbtItem = new NBTItem(itemStack);
+        if (!CardUtil.isCard(nbtItem)) {
+            return false;
+        }
+
+        //don't count if it's shiny.
+        if (NbtUtils.Card.isShiny(nbtItem)) {
+            return false;
+        }
+
+        final String nbtRarity = NbtUtils.Card.getRarityId(nbtItem);
+        final String nbtSeries = NbtUtils.Card.getSeriesId(nbtItem);
+
+        return packEntry.seriesId().equals(nbtSeries) && packEntry.getRarityId().equals(nbtRarity);
+    }
+
+    /**
+     * @param player Player
+     * @param packEntry PackEntry
+     * @return A map of the ItemStacks removed and the amounts removed
+     */
+    public static @NotNull Map<ItemStack, Integer> removeCardsMatchingEntry(final @NotNull Player player, final @NotNull PackEntry packEntry) {
+        Map<ItemStack, Integer> removedItemStacks = new HashMap<>();
+        PlayerInventory inventory = player.getInventory();
+        int countLeftToRemove = packEntry.amount();
+        for (ItemStack itemStack: Arrays.stream(inventory.getContents())
+                .filter(Objects::nonNull)
+                .filter(itemStack -> itemStack.getType() != Material.AIR)
+                .toList()) {
+
+            boolean matchesEntry = CardUtil.matchesEntry(itemStack,packEntry);
+            if(matchesEntry) {
+                //accounts for zombie:common:10:default when the entry is common:5:default
+                if(itemStack.getAmount() > countLeftToRemove) {
+                    itemStack.setAmount(itemStack.getAmount() - countLeftToRemove);
+                    removedItemStacks.put(itemStack, countLeftToRemove);
+                    plugin.debug(BuyCommand.class,"Removed %d from ItemStack %s, new amount: %s".formatted(countLeftToRemove, itemStack.toString(), itemStack.getAmount()));
+                    break;
+                }
+
+                countLeftToRemove -= itemStack.getAmount();
+                removedItemStacks.put(itemStack, itemStack.getAmount());
+                player.getInventory().removeItem(itemStack);
+                plugin.debug(BuyCommand.class, "Removed ItemStack %s, amount left to remove %d".formatted(itemStack.toString(),countLeftToRemove));
+            }
+        }
+
+        return removedItemStacks;
+    }
+
+
+    public static void sendTradedCardsMessage(final Player player, final @NotNull Map<ItemStack, Integer> removedCardsMap) {
+        for(Map.Entry<ItemStack, Integer> entry: removedCardsMap.entrySet()) {
+            NBTItem nbtItem = new NBTItem(entry.getKey());
+            final String rarityId = NbtUtils.Card.getRarityId(nbtItem);
+            final String cardId = NbtUtils.Card.getCardId(nbtItem);
+            final String seriesId = NbtUtils.Card.getSeriesId(nbtItem);
+
+            final String listObject = "- %s %s %s %s"; // - 6 rarity cardid seriesid
+            player.sendMessage(listObject.formatted(entry.getValue(),rarityId,cardId,seriesId));
+        }
     }
 }

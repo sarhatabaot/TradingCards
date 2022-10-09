@@ -14,6 +14,9 @@ import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generat
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Rewards;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Series;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.SeriesColors;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Upgrades;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.UpgradesRequired;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.UpgradesResult;
 
 
 /**
@@ -71,4 +74,19 @@ public class Tables {
      * The table <code>{prefix}series_colors</code>.
      */
     public static final SeriesColors SERIES_COLORS = SeriesColors.SERIES_COLORS;
+
+    /**
+     * The table <code>{prefix}upgrades</code>.
+     */
+    public static final Upgrades UPGRADES = Upgrades.UPGRADES;
+
+    /**
+     * The table <code>{prefix}upgrades_required</code>.
+     */
+    public static final UpgradesRequired UPGRADES_REQUIRED = UpgradesRequired.UPGRADES_REQUIRED;
+
+    /**
+     * The table <code>{prefix}upgrades_result</code>.
+     */
+    public static final UpgradesResult UPGRADES_RESULT = UpgradesResult.UPGRADES_RESULT;
 }

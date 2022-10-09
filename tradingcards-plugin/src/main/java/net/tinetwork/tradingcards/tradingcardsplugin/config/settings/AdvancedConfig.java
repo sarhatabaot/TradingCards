@@ -25,6 +25,8 @@ public class AdvancedConfig extends YamlConfigurateFile<TradingCards> {
     private ConfigCache types;
     private ConfigCache packs;
 
+    private ConfigCache upgrades;
+
 
     public AdvancedConfig(@NotNull final TradingCards plugin) throws ConfigurateException {
         super(plugin, "settings" + File.separator, "advanced.yml", "settings");
@@ -37,6 +39,7 @@ public class AdvancedConfig extends YamlConfigurateFile<TradingCards> {
         this.cards = rootNode.node("cards").get(ConfigCache.class, new ConfigCache(Advanced.Cache.Cards.MAX_CACHE_ENTRIES,Advanced.Cache.Cards.REFRESH_AFTER_WRITE));
         this.types = rootNode.node("types").get(ConfigCache.class, new ConfigCache(Advanced.Cache.Types.MAX_CACHE_ENTRIES,Advanced.Cache.Types.REFRESH_AFTER_WRITE));
         this.packs = rootNode.node("packs").get(ConfigCache.class, new ConfigCache(Advanced.Cache.Packs.MAX_CACHE_ENTRIES,Advanced.Cache.Packs.REFRESH_AFTER_WRITE));
+        this.upgrades = rootNode.node("upgrades").get(ConfigCache.class, new ConfigCache(Advanced.Cache.Upgrades.MAX_CACHE_ENTRIES,Advanced.Cache.Upgrades.REFRESH_AFTER_WRITE));
     }
 
     @Override
@@ -84,6 +87,10 @@ public class AdvancedConfig extends YamlConfigurateFile<TradingCards> {
 
     public ConfigCache getPacks() {
         return packs;
+    }
+
+    public ConfigCache getUpgrades() {
+        return upgrades;
     }
 
     @Override

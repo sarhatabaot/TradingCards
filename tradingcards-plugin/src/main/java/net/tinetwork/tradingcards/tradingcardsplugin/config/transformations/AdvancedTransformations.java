@@ -11,7 +11,7 @@ import static org.spongepowered.configurate.NodePath.path;
 public class AdvancedTransformations extends Transformation {
     @Override
     public int getLatestVersion() {
-        return 1;
+        return 2;
     }
 
     @Override
@@ -20,6 +20,7 @@ public class AdvancedTransformations extends Transformation {
                 .versionKey("config-version")
                 .addVersion(0, initialTransformation())
                 .addVersion(1, updateDefaultRefreshAfterWrite())
+                .addVersion(2,addUpgradesSection())
                 .build();
     }
 
@@ -28,6 +29,16 @@ public class AdvancedTransformations extends Transformation {
                 .addAction(path("cache", ConfigurationTransformation.WILDCARD_OBJECT), (path, value) -> {
                     value.node("refresh-after-write").set(5);
 
+                    return null; // don't move the value
+                })
+                .build();
+    }
+
+    private ConfigurationTransformation addUpgradesSection() {
+        return ConfigurationTransformation.builder()
+                .addAction(path("cache", "upgrades"), (path, value) -> {
+                    value.node("max-cache-entries").set(100);
+                    value.node("refresh-after-write").set(5);
                     return null; // don't move the value
                 })
                 .build();

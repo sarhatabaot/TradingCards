@@ -14,6 +14,9 @@ import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generat
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Rewards;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Series;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.SeriesColors;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Upgrades;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.UpgradesRequired;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.UpgradesResult;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.records.CardsRecord;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.records.CustomTypesRecord;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.records.DecksRecord;
@@ -24,6 +27,9 @@ import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generat
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.records.RewardsRecord;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.records.SeriesColorsRecord;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.records.SeriesRecord;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.records.UpgradesRecord;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.records.UpgradesRequiredRecord;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.records.UpgradesResultRecord;
 
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
@@ -52,4 +58,7 @@ public class Keys {
     public static final UniqueKey<RewardsRecord> CONSTRAINT_3 = Internal.createUniqueKey(Rewards.REWARDS, DSL.name("CONSTRAINT_3"), new TableField[] { Rewards.REWARDS.RARITY_ID }, true);
     public static final UniqueKey<SeriesRecord> CONSTRAINT_7F = Internal.createUniqueKey(Series.SERIES, DSL.name("CONSTRAINT_7F"), new TableField[] { Series.SERIES.SERIES_ID }, true);
     public static final UniqueKey<SeriesColorsRecord> CONSTRAINT_C = Internal.createUniqueKey(SeriesColors.SERIES_COLORS, DSL.name("CONSTRAINT_C"), new TableField[] { SeriesColors.SERIES_COLORS.SERIES_ID }, true);
+    public static final UniqueKey<UpgradesRecord> CONSTRAINT_B = Internal.createUniqueKey(Upgrades.UPGRADES, DSL.name("CONSTRAINT_B"), new TableField[] { Upgrades.UPGRADES.UPGRADE_ID }, true);
+    public static final UniqueKey<UpgradesRequiredRecord> CONSTRAINT_5 = Internal.createUniqueKey(UpgradesRequired.UPGRADES_REQUIRED, DSL.name("CONSTRAINT_5"), new TableField[] { UpgradesRequired.UPGRADES_REQUIRED.UPGRADE_ID }, true);
+    public static final UniqueKey<UpgradesResultRecord> CONSTRAINT_B5 = Internal.createUniqueKey(UpgradesResult.UPGRADES_RESULT, DSL.name("CONSTRAINT_B5"), new TableField[] { UpgradesResult.UPGRADES_RESULT.UPGRADE_ID }, true);
 }
