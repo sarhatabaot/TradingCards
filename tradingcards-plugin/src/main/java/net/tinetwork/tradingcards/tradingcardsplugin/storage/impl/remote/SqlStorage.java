@@ -1911,7 +1911,7 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
     @Override
-    public List<Upgrade> geUpgrades() {
+    public List<Upgrade> getUpgrades() {
         return new ExecuteQuery<List<Upgrade>, Result<Record>>(this, jooqSettings) {
             @Override
             public List<Upgrade> onRunQuery(final DSLContext dslContext) throws SQLException {

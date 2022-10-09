@@ -582,7 +582,7 @@ public class YamlStorage implements Storage<TradingCard> {
     }
 
     @Override
-    public List<Upgrade> geUpgrades() {
+    public List<Upgrade> getUpgrades() {
         return upgradesConfig.getUpgrades();
     }
 

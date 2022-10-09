@@ -169,7 +169,7 @@ public interface Storage<T extends Card<T>> {
 
     DropType getCustomType(final String typeId);
 
-    List<Upgrade> geUpgrades();
+    List<Upgrade> getUpgrades();
 
     void createUpgrade(final String upgradeId, final PackEntry required, final PackEntry result);
     Upgrade getUpgrade(final String upgradeId);
