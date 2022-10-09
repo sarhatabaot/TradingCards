@@ -11,6 +11,7 @@ import net.tinetwork.tradingcards.api.model.pack.PackEntry;
 import net.tinetwork.tradingcards.api.utils.NbtUtils;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -88,6 +89,8 @@ public class UpgradeCommand extends BaseCommand {
          */
         private @Nullable Upgrade matchUpgrade(final @NotNull Player player) {
             final ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
+            if(itemInMainHand.getType() == Material.AIR)
+                return null;
 
             final NBTItem nbtItem = new NBTItem(itemInMainHand);
             final String seriesId = NbtUtils.Card.getSeriesId(nbtItem);
