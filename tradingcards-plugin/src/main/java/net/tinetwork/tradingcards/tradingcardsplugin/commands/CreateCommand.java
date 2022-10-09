@@ -1,10 +1,12 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.commands;
 
 import co.aikar.commands.BaseCommand;
+import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.HelpCommand;
 import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import net.tinetwork.tradingcards.api.model.DropType;
@@ -30,6 +32,7 @@ public class CreateCommand extends BaseCommand{
     @CommandPermission(Permissions.CREATE)
     @Description("Creates any type, without customization, edit later using /cards edit.")
     public class CreateSubCommand extends BaseCommand {
+
         private void sendCreatedMessage(final @NotNull CommandSender sender, final String type, final String id) {
             sender.sendMessage(InternalMessages.CreateCommand.CREATED_TYPE.formatted(type,id));
             final String editId = id.replace("cardId:","").replace("rarityId:","").replace("seriesId:","");
@@ -113,18 +116,17 @@ public class CreateCommand extends BaseCommand{
         }
 
         @Subcommand("upgrade")
+        @CommandCompletion("@nothing")
         @CommandPermission(Permissions.CREATE_UPGRADE)
-        public void onUpgrade(final CommandSender sender, final String upgradeId, final String required, final String result) {
+        public void onUpgrade(final CommandSender sender, @Single final String upgradeId, @Single final PackEntry required, @Single final PackEntry result) {
             if (plugin.getUpgradeManager().containsUpgrade(upgradeId)) {
                 sender.sendMessage(InternalMessages.CreateCommand.UPGRADE_EXISTS.formatted(upgradeId));
                 return;
             }
 
-            final PackEntry requiredEntry = PackEntry.fromString(required);
-            final PackEntry resultEntry = PackEntry.fromString(result);
 
             sendCreatedMessage(sender,"upgrade",upgradeId);
-            plugin.getStorage().createUpgrade(upgradeId, requiredEntry, resultEntry);
+            plugin.getStorage().createUpgrade(upgradeId, required, result);
         }
     }
 }
