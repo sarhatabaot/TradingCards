@@ -6,5 +6,6 @@
   "data-source-null": "Unable to get a connection from the pool. (datasource is null)",
   "get-connection-null": "Unable to get a connection from the pool. (getConnection returned null)",
   "no-series": "Series %s doesn't exist.",
-  "no-rarity": "Rarity %s doesn't exist"
+  "no-rarity": "Rarity %s doesn't exist.",
+  "no-upgrade": "Upgrade %s doesn't exist."
 }
