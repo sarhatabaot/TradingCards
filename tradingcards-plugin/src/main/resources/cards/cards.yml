@@ -483,7 +483,7 @@ cards:
       has-shiny-version: true
       info: none
       series: spring
-      type: neutral	  
+      type: neutral
     panda_agressive:
       custom-model-data: 32000109
       display-name: "Aggressive Panda"
@@ -639,7 +639,7 @@ cards:
       series: default
       type: hostile
   rare:
-      trader:
+    trader:
       custom-model-data: 3200129
       display-name: "Wandering Trader"
       has-shiny-version: true
@@ -680,7 +680,7 @@ cards:
       has-shiny-version: true
       info: none
       series: winter
-      type: neutral  
+      type: neutral
     cake:
       custom-model-data: 3200086
       display-name: "Cake"
@@ -934,7 +934,7 @@ cards:
       has-shiny-version: true
       info: none
       series: valentines
-      type: passive    
+      type: passive
     firework:
       custom-model-data: 3200092
       display-name: "Firework"

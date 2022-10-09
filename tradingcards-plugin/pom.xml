@@ -253,6 +253,7 @@
                         </relocations>
                         <artifactSet>
                         <excludes>
+                            <exclude>org.jooq:jooq-codegen-maven</exclude>
                             <exclude>org.jooq:jooq-meta-extensions</exclude>
                         </excludes>
                         </artifactSet>
