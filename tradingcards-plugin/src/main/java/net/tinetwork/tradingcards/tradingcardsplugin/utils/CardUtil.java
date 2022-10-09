@@ -251,7 +251,11 @@ public class CardUtil {
     }
 
     public static boolean hasCardsInInventory(final Player player, final @NotNull PackEntry packEntry) {
-        return packEntry.amount() <= countCardsInInventory(player, packEntry);
+        return hasCardsInInventory(player,packEntry,1);
+    }
+
+    public static boolean hasCardsInInventory(final Player player, final @NotNull PackEntry packEntry, int amount) {
+        return packEntry.amount() * amount <= countCardsInInventory(player, packEntry);
     }
 
     public static boolean hasCardsInInventory(final Player player, final @NotNull List<PackEntry> tradeCards) {
