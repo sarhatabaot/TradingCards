@@ -3,6 +3,7 @@
 -- --------------------------
 CREATE TABLE IF NOT EXISTS `{prefix}upgrades` (
     `upgrade_id`       VARCHAR(200)       NOT NULL,
+    PRIMARY KEY (`upgrade_id`)
 ) DEFAULT CHARSET = utf8mb4;
 
 -- --------------------------
