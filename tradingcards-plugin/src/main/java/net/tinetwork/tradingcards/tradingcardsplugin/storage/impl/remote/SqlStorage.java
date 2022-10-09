@@ -1816,6 +1816,7 @@ public class SqlStorage implements Storage<TradingCard> {
                 if (result.isEmpty()) {
                     return empty();
                 }
+
                 Record recordResult = result.get(0);
                 final String upgradeId = recordResult.getValue(Upgrades.UPGRADES.UPGRADE_ID);
                 return new Upgrade(upgradeId,getRequiredEntry(upgradeId),getResultEntry(upgradeId));
@@ -1833,7 +1834,8 @@ public class SqlStorage implements Storage<TradingCard> {
         return new ExecuteQuery<PackEntry, Record>(this, jooqSettings) {
             @Override
             public PackEntry onRunQuery(final DSLContext dslContext) throws SQLException {
-                return getQuery(dslContext.select(UpgradesRequired.UPGRADES_REQUIRED)
+                return getQuery(dslContext.select()
+                        .from(UpgradesRequired.UPGRADES_REQUIRED)
                         .where(UpgradesRequired.UPGRADES_REQUIRED.UPGRADE_ID.eq(upgradeId))
                         .fetchOne());
             }
@@ -1857,7 +1859,8 @@ public class SqlStorage implements Storage<TradingCard> {
         return new ExecuteQuery<PackEntry, Record>(this, jooqSettings) {
             @Override
             public PackEntry onRunQuery(final DSLContext dslContext) throws SQLException {
-                return getQuery(dslContext.select(UpgradesResult.UPGRADES_RESULT)
+                return getQuery(dslContext.select()
+                        .from(UpgradesResult.UPGRADES_RESULT)
                         .where(UpgradesResult.UPGRADES_RESULT.UPGRADE_ID.eq(upgradeId))
                         .fetchOne());
             }
