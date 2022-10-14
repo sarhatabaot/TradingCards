@@ -49,6 +49,15 @@ public final class Advanced {
             }
         }
 
+        public static class Upgrades {
+            public static final Integer MAX_CACHE_ENTRIES = 100;
+            public static final Integer REFRESH_AFTER_WRITE = 5;
+
+            private Upgrades() {
+                throw new UnsupportedOperationException(InternalExceptions.UTIL_CLASS);
+            }
+        }
+
         private Cache() {
             throw new UnsupportedOperationException(InternalExceptions.UTIL_CLASS);
         }

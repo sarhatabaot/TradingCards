@@ -3,12 +3,14 @@ package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote;
 import net.tinetwork.tradingcards.api.card.Card;
 import net.tinetwork.tradingcards.api.config.ColorSeries;
 import net.tinetwork.tradingcards.api.model.DropType;
-import net.tinetwork.tradingcards.api.model.EmptyPack;
-import net.tinetwork.tradingcards.api.model.Pack;
+import net.tinetwork.tradingcards.api.model.Upgrade;
+import net.tinetwork.tradingcards.api.model.pack.EmptyPack;
+import net.tinetwork.tradingcards.api.model.pack.Pack;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.api.model.deck.Deck;
 import net.tinetwork.tradingcards.api.model.deck.StorageEntry;
+import net.tinetwork.tradingcards.api.model.pack.PackEntry;
 import net.tinetwork.tradingcards.api.model.schedule.Mode;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
@@ -25,9 +27,13 @@ import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generat
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Decks;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Packs;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.PacksContent;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.PacksTrade;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Rarities;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Rewards;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.SeriesColors;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Upgrades;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.UpgradesRequired;
+import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.UpgradesResult;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.sql.ConnectionFactory;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.sql.SchemaReader;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.JooqRecordUtil;
@@ -100,18 +106,22 @@ public class SqlStorage implements Storage<TradingCard> {
         jooqSettings.setExecuteLogging(true);
         jooqSettings.withRenderMapping(
                 new RenderMapping().withSchemata(
-                        new MappedSchema().withInput("minecraft")
+                        new MappedSchema().withInput("")
                                 .withOutput(dbName)
                                 .withTables(
-                                        new MappedTable().withInput("cards").withOutput(tablePrefix + "cards"),
-                                        new MappedTable().withInput("rarities").withOutput(tablePrefix + "rarities"),
-                                        new MappedTable().withInput("custom_types").withOutput(tablePrefix + "custom_types"),
-                                        new MappedTable().withInput("packs").withOutput(tablePrefix + "packs"),
-                                        new MappedTable().withInput("packs_content").withOutput(tablePrefix + "packs_content"),
-                                        new MappedTable().withInput("series").withOutput(tablePrefix + "series"),
-                                        new MappedTable().withInput("rewards").withOutput(tablePrefix + "rewards"),
-                                        new MappedTable().withInput("series_colors").withOutput(tablePrefix + "series_colors"),
-                                        new MappedTable().withInput("decks").withOutput(tablePrefix + "decks")
+                                        new MappedTable().withInput("{prefix}cards").withOutput(tablePrefix + "cards"),
+                                        new MappedTable().withInput("{prefix}rarities").withOutput(tablePrefix + "rarities"),
+                                        new MappedTable().withInput("{prefix}custom_types").withOutput(tablePrefix + "custom_types"),
+                                        new MappedTable().withInput("{prefix}packs").withOutput(tablePrefix + "packs"),
+                                        new MappedTable().withInput("{prefix}packs_content").withOutput(tablePrefix + "packs_content"),
+                                        new MappedTable().withInput("{prefix}packs_trade").withOutput(tablePrefix + "packs_trade"),
+                                        new MappedTable().withInput("{prefix}series").withOutput(tablePrefix + "series"),
+                                        new MappedTable().withInput("{prefix}rewards").withOutput(tablePrefix + "rewards"),
+                                        new MappedTable().withInput("{prefix}series_colors").withOutput(tablePrefix + "series_colors"),
+                                        new MappedTable().withInput("{prefix}decks").withOutput(tablePrefix + "decks"),
+                                        new MappedTable().withInput("{prefix}upgrades").withOutput(tablePrefix + "upgrades"),
+                                        new MappedTable().withInput("{prefix}upgrades_required").withOutput(tablePrefix + "upgrades_required"),
+                                        new MappedTable().withInput("{prefix}upgrades_result").withOutput(tablePrefix + "upgrades_result")
                                 )
                 )
         );
@@ -158,7 +168,7 @@ public class SqlStorage implements Storage<TradingCard> {
             @Override
             public @NotNull Deck getQuery(final @NotNull Result<Record> recordResult) {
                 if (recordResult.isEmpty()) {
-                    plugin.debug(getClass(), InternalDebug.Sql.COULD_NOT_FIND_DECK.formatted(playerUuid,deckNumber));
+                    plugin.debug(getClass(), InternalDebug.Sql.COULD_NOT_FIND_DECK.formatted(playerUuid, deckNumber));
                     return new Deck(playerUuid, deckNumber, new ArrayList<>());
                 }
                 return JooqRecordUtil.getDeckFromRecord(recordResult);
@@ -218,7 +228,7 @@ public class SqlStorage implements Storage<TradingCard> {
                 boolean doesExist = dslContext.fetchExists(dslContext.select()
                         .from(Rewards.REWARDS)
                         .where(Rewards.REWARDS.RARITY_ID.eq(rarityId)));
-                if(!doesExist) {
+                if (!doesExist) {
                     return empty();
                 }
                 Result<Record> result = dslContext.select()
@@ -279,11 +289,11 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public boolean containsSeries(final String seriesId) {
-        return new ExecuteQuery<Boolean,Record>(this,jooqSettings) {
+        return new ExecuteQuery<Boolean, Record>(this, jooqSettings) {
             @Override
             public Boolean onRunQuery(final DSLContext dslContext) throws SQLException {
                 return dslContext.fetchExists(net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Series.SERIES
-                        ,net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Series.SERIES.SERIES_ID.eq(seriesId));
+                        , net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Series.SERIES.SERIES_ID.eq(seriesId));
             }
 
             @Override
@@ -373,20 +383,19 @@ public class SqlStorage implements Storage<TradingCard> {
 
 
     private void updateCard(final @NotNull UUID playerUuid, final int deckNumber, final @NotNull StorageEntry storageEntry) {
-        byte isShiny = toByte(storageEntry.isShiny());
         new ExecuteUpdate(this, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.update(Decks.DECKS)
                         .set(Decks.DECKS.CARD_ID, storageEntry.getCardId())
                         .set(Decks.DECKS.RARITY_ID, storageEntry.getRarityId())
-                        .set(Decks.DECKS.IS_SHINY, isShiny)
+                        .set(Decks.DECKS.IS_SHINY, storageEntry.isShiny())
                         .set(Decks.DECKS.AMOUNT, storageEntry.getAmount())
                         .where(Decks.DECKS.UUID.eq(playerUuid.toString()))
                         .and(Decks.DECKS.DECK_NUMBER.eq(deckNumber))
                         .and(Decks.DECKS.CARD_ID.eq(storageEntry.getCardId()))
                         .and(Decks.DECKS.RARITY_ID.eq(storageEntry.getRarityId()))
-                        .and(Decks.DECKS.IS_SHINY.eq(isShiny))
+                        .and(Decks.DECKS.IS_SHINY.eq(storageEntry.isShiny()))
                         .execute();
                 plugin.debug(SqlStorage.class, InternalDebug.Sql.UPDATE.formatted(storageEntry));
             }
@@ -404,7 +413,7 @@ public class SqlStorage implements Storage<TradingCard> {
                                 .and(Decks.DECKS.CARD_ID.eq(cardId)
                                         .and(Decks.DECKS.RARITY_ID.eq(rarityId))
                                         .and(Decks.DECKS.SERIES_ID.eq(seriesId))
-                                        .and(Decks.DECKS.IS_SHINY.eq((byte) 0))))
+                                        .and(Decks.DECKS.IS_SHINY.eq(false))))
                         .fetch());
             }
 
@@ -421,7 +430,7 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
     @Override
-    public boolean hasShinyCard(final UUID playerUuid, final String cardId, final String rarityId,final String seriesId) {
+    public boolean hasShinyCard(final UUID playerUuid, final String cardId, final String rarityId, final String seriesId) {
         return new ExecuteQuery<Boolean, Result<Record>>(this, jooqSettings) {
             @Override
             public Boolean onRunQuery(final DSLContext dslContext) {
@@ -431,7 +440,7 @@ public class SqlStorage implements Storage<TradingCard> {
                                 .and(Decks.DECKS.CARD_ID.eq(cardId)
                                         .and(Decks.DECKS.RARITY_ID.eq(rarityId))
                                         .and(Decks.DECKS.SERIES_ID.eq(seriesId))
-                                        .and(Decks.DECKS.IS_SHINY.eq((byte) 1))))
+                                        .and(Decks.DECKS.IS_SHINY.eq(true))))
                         .fetch());
             }
 
@@ -457,7 +466,6 @@ public class SqlStorage implements Storage<TradingCard> {
         final String cardId = entry.getCardId();
         final String rarityId = entry.getRarityId();
         final int amount = entry.getAmount();
-        final byte isShiny = toByte(entry.isShiny());
         new ExecuteUpdate(this, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
@@ -467,7 +475,7 @@ public class SqlStorage implements Storage<TradingCard> {
                         .set(Decks.DECKS.CARD_ID, cardId)
                         .set(Decks.DECKS.RARITY_ID, rarityId)
                         .set(Decks.DECKS.AMOUNT, amount)
-                        .set(Decks.DECKS.IS_SHINY, isShiny)
+                        .set(Decks.DECKS.IS_SHINY, entry.isShiny())
                         .execute();
             }
         }.executeUpdate();
@@ -483,7 +491,7 @@ public class SqlStorage implements Storage<TradingCard> {
                         .and(Decks.DECKS.CARD_ID.eq(entry.getCardId()))
                         .and(Decks.DECKS.RARITY_ID.eq(entry.getRarityId()))
                         .and(Decks.DECKS.AMOUNT.eq(entry.getAmount()))
-                        .and(Decks.DECKS.IS_SHINY.eq(toByte(entry.isShiny()))).execute();
+                        .and(Decks.DECKS.IS_SHINY.eq(entry.isShiny())).execute();
                 plugin.debug(SqlStorage.class, InternalDebug.Sql.REMOVE.formatted(entry));
             }
         }.executeUpdate();
@@ -670,14 +678,14 @@ public class SqlStorage implements Storage<TradingCard> {
         final String cardId = recordResult.getValue(Cards.CARDS.CARD_ID);
         final String displayName = recordResult.getValue(Cards.CARDS.DISPLAY_NAME);
         final Rarity rarity = getRarityById(recordResult.getValue(Cards.CARDS.RARITY_ID));
-        final boolean hasShiny = toBoolean(JooqRecordUtil.getOrDefault(recordResult.get(Cards.CARDS.HAS_SHINY),(byte) 0));
+        final boolean hasShiny = JooqRecordUtil.getOrDefault(recordResult.get(Cards.CARDS.HAS_SHINY), false);
         final Series series = getSeries(recordResult.getValue(Cards.CARDS.SERIES_ID));
         final String info = recordResult.getValue(Cards.CARDS.INFO);
-        final int customModelData = JooqRecordUtil.getOrDefault(recordResult.getValue(Cards.CARDS.CUSTOM_MODEL_DATA),0);
-        final double buyPrice = JooqRecordUtil.getOrDefault(recordResult.getValue(Cards.CARDS.BUY_PRICE),0D);
-        final double sellPrice = JooqRecordUtil.getOrDefault(recordResult.getValue(Cards.CARDS.SELL_PRICE),0D);
-        final DropType dropType = plugin.getDropTypeManager().getType(JooqRecordUtil.getOrDefault(recordResult.get(Cards.CARDS.TYPE_ID),"passive"));
-        final TradingCard card = new TradingCard(cardId,plugin.getGeneralConfig().cardMaterial());
+        final int customModelData = JooqRecordUtil.getOrDefault(recordResult.getValue(Cards.CARDS.CUSTOM_MODEL_DATA), 0);
+        final double buyPrice = JooqRecordUtil.getOrDefault(recordResult.getValue(Cards.CARDS.BUY_PRICE), 0D);
+        final double sellPrice = JooqRecordUtil.getOrDefault(recordResult.getValue(Cards.CARDS.SELL_PRICE), 0D);
+        final DropType dropType = plugin.getDropTypeManager().getType(JooqRecordUtil.getOrDefault(recordResult.get(Cards.CARDS.TYPE_ID), "passive"));
+        final TradingCard card = new TradingCard(cardId, plugin.getGeneralConfig().cardMaterial());
         card.displayName(displayName)
                 .rarity(rarity)
                 .hasShiny(hasShiny)
@@ -689,7 +697,6 @@ public class SqlStorage implements Storage<TradingCard> {
                 .sellPrice(sellPrice);
         return card;
     }
-
 
 
     @Override
@@ -915,7 +922,8 @@ public class SqlStorage implements Storage<TradingCard> {
                     return empty();
                 }
                 Record recordResult = result.get(0);
-                return JooqRecordUtil.getPackFromRecord(recordResult, getPackEntries(recordResult.getValue(Packs.PACKS.PACK_ID)));
+                final String packId = recordResult.getValue(Packs.PACKS.PACK_ID);
+                return JooqRecordUtil.getPackFromRecord(recordResult, getPackEntries(packId), getTradeEntries(packId));
             }
 
             @Contract(pure = true)
@@ -926,26 +934,25 @@ public class SqlStorage implements Storage<TradingCard> {
         }.prepareAndRunQuery();
     }
 
-
-    private @NotNull @Unmodifiable List<Pack.PackEntry> getPackEntries(final String packId) {
-        return new ExecuteQuery<List<Pack.PackEntry>, Result<Record>>(this, jooqSettings) {
+    private List<PackEntry> getTradeEntries(final String packId) {
+        return new ExecuteQuery<List<PackEntry>, Result<Record>>(this, jooqSettings) {
 
             @Override
-            public List<Pack.PackEntry> onRunQuery(final DSLContext dslContext) {
+            public List<PackEntry> onRunQuery(final DSLContext dslContext) {
                 return getQuery(dslContext.select()
-                        .from(PacksContent.PACKS_CONTENT)
-                        .where(PacksContent.PACKS_CONTENT.PACK_ID.eq(packId))
+                        .from(PacksTrade.PACKS_TRADE)
+                        .where(PacksTrade.PACKS_TRADE.PACK_ID.eq(packId))
                         .fetch());
             }
 
             @Override
-            public @NotNull List<Pack.PackEntry> getQuery(final @NotNull Result<Record> result) {
+            public @NotNull List<PackEntry> getQuery(final @NotNull Result<Record> result) {
                 if (result.isEmpty()) {
                     return empty();
                 }
-                List<Pack.PackEntry> entries = new ArrayList<>();
+                List<PackEntry> entries = new ArrayList<>();
                 for (Record recordResult : result) {
-                    int lineNumber = recordResult.getValue(PacksContent.PACKS_CONTENT.LINE_NUMBER);
+                    int lineNumber = recordResult.getValue(PacksTrade.PACKS_TRADE.LINE_NUMBER);
                     entries.add(lineNumber, JooqRecordUtil.getPackEntryFromResult(recordResult));
                 }
                 return entries;
@@ -953,7 +960,45 @@ public class SqlStorage implements Storage<TradingCard> {
 
             @Contract(pure = true)
             @Override
-            public @NotNull @Unmodifiable List<Pack.PackEntry> empty() {
+            public @NotNull @Unmodifiable List<PackEntry> empty() {
+                return Collections.emptyList();
+            }
+        }.prepareAndRunQuery();
+    }
+
+
+    private @NotNull @Unmodifiable List<PackEntry> getPackEntries(final String packId) {
+        return new ExecuteQuery<List<PackEntry>, Result<Record>>(this, jooqSettings) {
+
+            @Override
+            public List<PackEntry> onRunQuery(final DSLContext dslContext) {
+                return getQuery(dslContext.select()
+                        .from(PacksContent.PACKS_CONTENT)
+                        .where(PacksContent.PACKS_CONTENT.PACK_ID.eq(packId))
+                        .fetch());
+            }
+
+            @Override
+            public @NotNull List<PackEntry> getQuery(final @NotNull Result<Record> result) {
+                if (result.isEmpty()) {
+                    return empty();
+                }
+
+                List<PackEntry> entries = new ArrayList<>();
+                for (Record recordResult : result) {
+                    int lineNumber = recordResult.getValue(PacksContent.PACKS_CONTENT.LINE_NUMBER);
+                    if(lineNumber >= entries.size()) {
+                        entries.add(JooqRecordUtil.getPackEntryFromResult(recordResult));
+                    } else {
+                        entries.add(lineNumber, JooqRecordUtil.getPackEntryFromResult(recordResult));
+                    }
+                }
+                return entries;
+            }
+
+            @Contract(pure = true)
+            @Override
+            public @NotNull @Unmodifiable List<PackEntry> empty() {
                 return Collections.emptyList();
             }
         }.prepareAndRunQuery();
@@ -978,7 +1023,8 @@ public class SqlStorage implements Storage<TradingCard> {
 
                 List<Pack> packs = new ArrayList<>();
                 for (Record recordResult : result) {
-                    packs.add(JooqRecordUtil.getPackFromRecord(recordResult, getPackEntries(recordResult.getValue(Packs.PACKS.PACK_ID))));
+                    final String packId = recordResult.getValue(Packs.PACKS.PACK_ID);
+                    packs.add(JooqRecordUtil.getPackFromRecord(recordResult, getPackEntries(packId), getTradeEntries(packId)));
                 }
                 return packs;
             }
@@ -993,7 +1039,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public int getRarityCustomOrder(final String rarityId) {
-        return new ExecuteQuery<Integer,Result<Record>>(this,jooqSettings){
+        return new ExecuteQuery<Integer, Result<Record>>(this, jooqSettings) {
             @Override
             public Integer onRunQuery(final DSLContext dslContext) throws SQLException {
                 return getQuery(dslContext.select()
@@ -1004,7 +1050,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
             @Override
             public Integer getQuery(final @NotNull Result<Record> result) throws SQLException {
-                if(result.isEmpty())
+                if (result.isEmpty())
                     return empty();
 
                 return result.get(0).get(Rarities.RARITIES.CUSTOM_ORDER);
@@ -1077,7 +1123,7 @@ public class SqlStorage implements Storage<TradingCard> {
         try {
             shutdown();
             plugin.getLogger().warning(() -> InternalLog.Reload.SQL);
-        } catch (Exception e){
+        } catch (Exception e) {
             return;
         }
 
@@ -1294,7 +1340,7 @@ public class SqlStorage implements Storage<TradingCard> {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.update(Cards.CARDS)
-                        .set(Cards.CARDS.HAS_SHINY, toByte(value))
+                        .set(Cards.CARDS.HAS_SHINY, value)
                         .where(Cards.CARDS.RARITY_ID.eq(rarityId))
                         .and(Cards.CARDS.CARD_ID.eq(cardId))
                         .and(Cards.CARDS.SERIES_ID.eq(seriesId))
@@ -1305,11 +1351,11 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void editCardCurrencyId(final String rarityId, final String cardId, final String seriesId, final String value) {
-        new ExecuteUpdate(this,jooqSettings) {
+        new ExecuteUpdate(this, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.update(Cards.CARDS)
-                        .set(Cards.CARDS.CURRENCY_ID,value)
+                        .set(Cards.CARDS.CURRENCY_ID, value)
                         .where(Cards.CARDS.RARITY_ID.eq(rarityId))
                         .and(Cards.CARDS.CARD_ID.eq(cardId))
                         .and(Cards.CARDS.SERIES_ID.eq(seriesId))
@@ -1388,7 +1434,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void editRarityCustomOrder(final String rarityId, final int customOrder) {
-        new ExecuteUpdate(this,jooqSettings) {
+        new ExecuteUpdate(this, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.update(Rarities.RARITIES)
@@ -1506,22 +1552,38 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
     @Override
-    public void editPackContents(final String packId, final int lineNumber, final Pack.@NotNull PackEntry packEntry) {
+    public void editPackContents(final String packId, final int lineNumber, final @NotNull PackEntry packEntry) {
+        if (getPackEntries(packId).isEmpty()) {
+            new ExecuteUpdate(this,jooqSettings) {
+                @Override
+                protected void onRunUpdate(final DSLContext dslContext) {
+                    dslContext.insertInto(PacksContent.PACKS_CONTENT)
+                            .set(PacksContent.PACKS_CONTENT.PACK_ID, packId)
+                            .set(PacksContent.PACKS_CONTENT.LINE_NUMBER, lineNumber)
+                            .set(PacksContent.PACKS_CONTENT.SERIES_ID, packEntry.seriesId())
+                            .set(PacksContent.PACKS_CONTENT.RARITY_ID, packEntry.getRarityId())
+                            .set(PacksContent.PACKS_CONTENT.CARD_AMOUNT, String.valueOf(packEntry.getAmount()))
+                            .execute();
+                }
+            }.executeUpdate();
+            return;
+        }
         new ExecuteUpdate(this, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.update(PacksContent.PACKS_CONTENT)
                         .set(PacksContent.PACKS_CONTENT.PACK_ID, packId)
-                        .set(PacksContent.PACKS_CONTENT.LINE_NUMBER, lineNumber)
                         .set(PacksContent.PACKS_CONTENT.SERIES_ID, packEntry.seriesId())
                         .set(PacksContent.PACKS_CONTENT.RARITY_ID, packEntry.getRarityId())
-                        .set(PacksContent.PACKS_CONTENT.CARD_AMOUNT, String.valueOf(packEntry.getAmount())).execute();
+                        .set(PacksContent.PACKS_CONTENT.CARD_AMOUNT, String.valueOf(packEntry.getAmount()))
+                        .where(PacksContent.PACKS_CONTENT.LINE_NUMBER.eq(lineNumber))
+                        .execute();
             }
         }.executeUpdate();
     }
 
     @Override
-    public void editPackContentsAdd(final String packId, final Pack.@NotNull PackEntry packEntry) {
+    public void editPackContentsAdd(final String packId, final @NotNull PackEntry packEntry) {
         final int lineNumber = getPackEntries(packId).size();
         new ExecuteUpdate(this, jooqSettings) {
             @Override
@@ -1544,6 +1606,64 @@ public class SqlStorage implements Storage<TradingCard> {
                 dslContext.deleteFrom(PacksContent.PACKS_CONTENT)
                         .where(PacksContent.PACKS_CONTENT.PACK_ID.eq(packId)
                                 .and(PacksContent.PACKS_CONTENT.LINE_NUMBER.eq(lineNumber)))
+                        .execute();
+            }
+        }.executeUpdate();
+    }
+
+    @Override
+    public void editPackTradeCards(final String packId, final int lineNumber, final PackEntry packEntry) {
+        if (getTradeEntries(packId).isEmpty()) {
+            new ExecuteUpdate(this, jooqSettings) {
+                @Override
+                protected void onRunUpdate(final DSLContext dslContext) {
+                    dslContext.insertInto(PacksTrade.PACKS_TRADE)
+                            .set(PacksTrade.PACKS_TRADE.PACK_ID, packId)
+                            .set(PacksTrade.PACKS_TRADE.LINE_NUMBER, lineNumber)
+                            .set(PacksTrade.PACKS_TRADE.SERIES_ID, packEntry.seriesId())
+                            .set(PacksTrade.PACKS_TRADE.RARITY_ID, packEntry.getRarityId())
+                            .set(PacksTrade.PACKS_TRADE.CARD_AMOUNT, String.valueOf(packEntry.getAmount())).execute();
+                }
+            }.executeUpdate();
+            return;
+        }
+        new ExecuteUpdate(this, jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.update(PacksTrade.PACKS_TRADE)
+                        .set(PacksTrade.PACKS_TRADE.PACK_ID, packId)
+                        .set(PacksTrade.PACKS_TRADE.SERIES_ID, packEntry.seriesId())
+                        .set(PacksTrade.PACKS_TRADE.RARITY_ID, packEntry.getRarityId())
+                        .set(PacksTrade.PACKS_TRADE.CARD_AMOUNT, String.valueOf(packEntry.getAmount()))
+                        .where(PacksTrade.PACKS_TRADE.LINE_NUMBER.eq(lineNumber)).execute();
+            }
+        }.executeUpdate();
+    }
+
+    @Override
+    public void editPackTradeCardsAdd(final String packId, final PackEntry packEntry) {
+        final int lineNumber = getTradeEntries(packId).size();
+        new ExecuteUpdate(this, jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.insertInto(PacksTrade.PACKS_TRADE)
+                        .set(PacksTrade.PACKS_TRADE.PACK_ID, packId)
+                        .set(PacksTrade.PACKS_TRADE.LINE_NUMBER, lineNumber)
+                        .set(PacksTrade.PACKS_TRADE.SERIES_ID, packEntry.seriesId())
+                        .set(PacksTrade.PACKS_TRADE.RARITY_ID, packEntry.getRarityId())
+                        .set(PacksTrade.PACKS_TRADE.CARD_AMOUNT, String.valueOf(packEntry.getAmount())).execute();
+            }
+        }.executeUpdate();
+    }
+
+    @Override
+    public void editPackTradeCardsDelete(final String packId, final int lineNumber) {
+        new ExecuteUpdate(this, jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.deleteFrom(PacksTrade.PACKS_TRADE)
+                        .where(PacksTrade.PACKS_TRADE.PACK_ID.eq(packId)
+                                .and(PacksTrade.PACKS_TRADE.LINE_NUMBER.eq(lineNumber)))
                         .execute();
             }
         }.executeUpdate();
@@ -1577,7 +1697,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void editPackCurrencyId(final String packId, final String currencyId) {
-        new ExecuteUpdate(this,jooqSettings) {
+        new ExecuteUpdate(this, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.update(Packs.PACKS)
@@ -1593,13 +1713,9 @@ public class SqlStorage implements Storage<TradingCard> {
         return (byte) (value ? 1 : 0);
     }
 
-    private boolean toBoolean(byte value) {
-        return value != 0;
-    }
-
     @Override
     public int getCardsCount() {
-        return new ExecuteQuery<Integer, Record>(this,jooqSettings) {
+        return new ExecuteQuery<Integer, Record>(this, jooqSettings) {
             @Override
             public Integer onRunQuery(final DSLContext dslContext) {
                 return dslContext.fetchCount(Cards.CARDS);
@@ -1619,7 +1735,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public int getCardsInRarityCount(final String rarityId) {
-        return new ExecuteQuery<Integer, Record>(this,jooqSettings) {
+        return new ExecuteQuery<Integer, Record>(this, jooqSettings) {
             @Override
             public Integer onRunQuery(final DSLContext dslContext) {
                 return dslContext.fetchCount(Cards.CARDS, DSL.and(Cards.CARDS.RARITY_ID.eq(rarityId)));
@@ -1639,7 +1755,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public int getCardsInRarityAndSeriesCount(final String rarityId, final String seriesId) {
-        return new ExecuteQuery<Integer, Record>(this,jooqSettings) {
+        return new ExecuteQuery<Integer, Record>(this, jooqSettings) {
             @Override
             public Integer onRunQuery(final DSLContext dslContext) {
                 return dslContext.fetchCount(Cards.CARDS, DSL.and(Cards.CARDS.RARITY_ID.eq(rarityId).and(Cards.CARDS.SERIES_ID.eq(seriesId))));
@@ -1655,6 +1771,196 @@ public class SqlStorage implements Storage<TradingCard> {
                 return 0;
             }
         }.prepareAndRunQuery();
+    }
+
+    @Override
+    public void createUpgrade(final String upgradeId, final PackEntry required, final PackEntry result) {
+        new ExecuteUpdate(this, jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.insertInto(Upgrades.UPGRADES)
+                        .set(Upgrades.UPGRADES.UPGRADE_ID, upgradeId)
+                        .execute();
+
+                dslContext.insertInto(UpgradesRequired.UPGRADES_REQUIRED)
+                        .set(UpgradesRequired.UPGRADES_REQUIRED.UPGRADE_ID, upgradeId)
+                        .set(UpgradesRequired.UPGRADES_REQUIRED.RARITY_ID, required.rarityId())
+                        .set(UpgradesRequired.UPGRADES_REQUIRED.SERIES_ID, required.seriesId())
+                        .set(UpgradesRequired.UPGRADES_REQUIRED.AMOUNT, required.amount())
+                        .execute();
+
+                dslContext.insertInto(UpgradesResult.UPGRADES_RESULT)
+                        .set(UpgradesResult.UPGRADES_RESULT.UPGRADE_ID, upgradeId)
+                        .set(UpgradesResult.UPGRADES_RESULT.RARITY_ID, result.rarityId())
+                        .set(UpgradesResult.UPGRADES_RESULT.SERIES_ID, result.seriesId())
+                        .set(UpgradesResult.UPGRADES_RESULT.AMOUNT, result.amount())
+                        .execute();
+            }
+        }.executeUpdate();
+    }
+
+    @Override
+    public Upgrade getUpgrade(final String upgradeId) {
+        return new ExecuteQuery<Upgrade, Result<Record>>(this, jooqSettings) {
+            @Override
+            public Upgrade onRunQuery(final DSLContext dslContext) {
+                return getQuery(dslContext.select()
+                        .from(Upgrades.UPGRADES)
+                        .where(Upgrades.UPGRADES.UPGRADE_ID.eq(upgradeId))
+                        .limit(1)
+                        .fetch());
+            }
+
+            @Override
+            public Upgrade getQuery(final @NotNull Result<Record> result) {
+                if (result.isEmpty()) {
+                    return empty();
+                }
+
+                Record recordResult = result.get(0);
+                final String upgradeId = recordResult.getValue(Upgrades.UPGRADES.UPGRADE_ID);
+                return new Upgrade(upgradeId,getRequiredEntry(upgradeId),getResultEntry(upgradeId));
+            }
+
+            @Contract(pure = true)
+            @Override
+            public Upgrade empty() {
+                return null;
+            }
+        }.prepareAndRunQuery();
+    }
+
+    private PackEntry getRequiredEntry(final String upgradeId) {
+        return new ExecuteQuery<PackEntry, Record>(this, jooqSettings) {
+            @Override
+            public PackEntry onRunQuery(final DSLContext dslContext) throws SQLException {
+                return getQuery(dslContext.select()
+                        .from(UpgradesRequired.UPGRADES_REQUIRED)
+                        .where(UpgradesRequired.UPGRADES_REQUIRED.UPGRADE_ID.eq(upgradeId))
+                        .fetchOne());
+            }
+
+            @Override
+            public PackEntry getQuery(final @NotNull Record result) throws SQLException {
+                final String rarityId = result.get(UpgradesRequired.UPGRADES_REQUIRED.RARITY_ID);
+                final String seriesId = result.get(UpgradesRequired.UPGRADES_REQUIRED.SERIES_ID);
+                final int amount = result.get(UpgradesRequired.UPGRADES_REQUIRED.AMOUNT);
+                return new PackEntry(rarityId,amount,seriesId);
+            }
+
+            @Override
+            public PackEntry empty() {
+                return null;
+            }
+        }.prepareAndRunQuery();
+    }
+
+    private PackEntry getResultEntry(final String upgradeId) {
+        return new ExecuteQuery<PackEntry, Record>(this, jooqSettings) {
+            @Override
+            public PackEntry onRunQuery(final DSLContext dslContext) throws SQLException {
+                return getQuery(dslContext.select()
+                        .from(UpgradesResult.UPGRADES_RESULT)
+                        .where(UpgradesResult.UPGRADES_RESULT.UPGRADE_ID.eq(upgradeId))
+                        .fetchOne());
+            }
+
+            @Override
+            public PackEntry getQuery(final @NotNull Record result) throws SQLException {
+                final String rarityId = result.get(UpgradesResult.UPGRADES_RESULT.RARITY_ID);
+                final String seriesId = result.get(UpgradesResult.UPGRADES_RESULT.SERIES_ID);
+                final int amount = result.get(UpgradesResult.UPGRADES_RESULT.AMOUNT);
+                return new PackEntry(rarityId,amount,seriesId);
+            }
+
+            @Override
+            public PackEntry empty() {
+                return null;
+            }
+        }.prepareAndRunQuery();
+    }
+
+    @Override
+    public void editUpgradeRequired(final String upgradeId, final PackEntry required) {
+        new ExecuteUpdate(this, jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.update(UpgradesRequired.UPGRADES_REQUIRED
+                        .where(UpgradesRequired.UPGRADES_REQUIRED.UPGRADE_ID.eq(upgradeId)))
+                        .set(UpgradesRequired.UPGRADES_REQUIRED.RARITY_ID,required.rarityId())
+                        .set(UpgradesRequired.UPGRADES_REQUIRED.SERIES_ID,required.seriesId())
+                        .set(UpgradesRequired.UPGRADES_REQUIRED.AMOUNT, required.amount())
+                        .execute();
+            }
+        }.executeUpdate();
+    }
+
+    @Override
+    public void editUpgradeResult(final String upgradeId, final PackEntry result) {
+        new ExecuteUpdate(this,jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.update(UpgradesResult.UPGRADES_RESULT
+                                .where(UpgradesResult.UPGRADES_RESULT.UPGRADE_ID.eq(upgradeId)))
+                        .set(UpgradesResult.UPGRADES_RESULT.RARITY_ID,result.rarityId())
+                        .set(UpgradesResult.UPGRADES_RESULT.SERIES_ID,result.seriesId())
+                        .set(UpgradesResult.UPGRADES_RESULT.AMOUNT, result.amount())
+                        .execute();
+            }
+        }.executeUpdate();
+    }
+
+    @Override
+    public List<Upgrade> getUpgrades() {
+        return new ExecuteQuery<List<Upgrade>, Result<Record>>(this, jooqSettings) {
+            @Override
+            public List<Upgrade> onRunQuery(final DSLContext dslContext) throws SQLException {
+                Result<Record> result = dslContext.select()
+                        .from(Upgrades.UPGRADES)
+                        .fetch();
+                return getQuery(result);
+            }
+
+            @Override
+            public List<Upgrade> getQuery(final @NotNull Result<Record> result) throws SQLException {
+                if (result.isEmpty()) {
+                    return empty();
+                }
+
+                List<Upgrade> upgrades = new ArrayList<>();
+                for(Record recordResult: result) {
+                    final String upgradeId = recordResult.getValue(Upgrades.UPGRADES.UPGRADE_ID);
+                    Upgrade upgrade = new Upgrade(upgradeId,getRequiredEntry(upgradeId),getResultEntry(upgradeId));
+                    upgrades.add(upgrade);
+                }
+                return upgrades;
+            }
+
+            @Override
+            public List<Upgrade> empty() {
+                return Collections.emptyList();
+            }
+        }.prepareAndRunQuery();
+    }
+
+    @Override
+    public void deleteUpgrade(final String upgradeId) {
+        new ExecuteUpdate(this, jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.deleteFrom(Upgrades.UPGRADES)
+                        .where(Upgrades.UPGRADES.UPGRADE_ID.eq(upgradeId))
+                        .execute();
+
+                dslContext.deleteFrom(UpgradesRequired.UPGRADES_REQUIRED)
+                        .where(UpgradesRequired.UPGRADES_REQUIRED.UPGRADE_ID.eq(upgradeId))
+                        .execute();
+
+                dslContext.deleteFrom(UpgradesResult.UPGRADES_RESULT)
+                        .where(UpgradesResult.UPGRADES_RESULT.UPGRADE_ID.eq(upgradeId))
+                        .execute();
+            }
+        }.executeUpdate();
     }
 
     @Override

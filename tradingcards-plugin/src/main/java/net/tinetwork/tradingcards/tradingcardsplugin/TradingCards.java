@@ -1,5 +1,6 @@
 package net.tinetwork.tradingcards.tradingcardsplugin;
 
+import co.aikar.commands.ConditionFailedException;
 import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.PaperCommandManager;
 import me.lokka30.treasury.api.economy.EconomyProvider;
@@ -13,6 +14,8 @@ import net.tinetwork.tradingcards.api.manager.RarityManager;
 import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
+import net.tinetwork.tradingcards.api.model.Upgrade;
+import net.tinetwork.tradingcards.api.model.pack.PackEntry;
 import net.tinetwork.tradingcards.api.model.schedule.Mode;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.BuyCommand;
@@ -26,11 +29,13 @@ import net.tinetwork.tradingcards.tradingcardsplugin.commands.InfoCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.ListCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.MigrateCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.SellCommand;
+import net.tinetwork.tradingcards.tradingcardsplugin.commands.UpgradeCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.EditCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.EditPack;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.EditRarity;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.EditSeries;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.EditType;
+import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.EditUpgrade;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.AdvancedConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.ChancesConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.GeneralConfig;
@@ -44,6 +49,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.listeners.SpawnerListener;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.BoosterPackManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.DropTypeManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingRarityManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingUpgradeManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.AllCardManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingDeckManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingSeriesManager;
@@ -103,6 +109,8 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private DropTypeManager dropTypeManager;
     private TradingRarityManager rarityManager;
     private TradingSeriesManager seriesManager;
+
+    private TradingUpgradeManager upgradeManager;
 
     /* Hooks */
     private EconomyWrapper economyWrapper = null;
@@ -254,13 +262,14 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         this.cardManager = new AllCardManager(this);
         this.packManager = new BoosterPackManager(this);
         this.deckManager = new TradingDeckManager(this);
+        this.upgradeManager = new TradingUpgradeManager(this);
     }
 
     private void initCommands() {
         var commandManager = new PaperCommandManager(this);
-        commandManager.getCommandCompletions().registerCompletion("bool", c -> List.of("false","true"));
+        commandManager.getCommandCompletions().registerCompletion("bool", c -> List.of("false", "true"));
         commandManager.getCommandCompletions().registerCompletion("rarities", c -> rarityManager.getRarityIds());
-        commandManager.getCommandCompletions().registerCompletion("cards", c ->cardManager.getCardsIdsInRarityAndSeries(c.getContextValue(Rarity.class).getId(), c.getContextValue(Series.class).getId()));
+        commandManager.getCommandCompletions().registerCompletion("cards", c -> cardManager.getCardsIdsInRarityAndSeries(c.getContextValue(Rarity.class).getId(), c.getContextValue(Series.class).getId()));
         commandManager.getCommandCompletions().registerCompletion("command-cards", c -> cardManager.getCardsIdsInRarityAndSeries(c.getContextValue(Rarity.class).getId(), c.getContextValue(Series.class).getId()));
         commandManager.getCommandCompletions().registerCompletion("active-cards", c -> cardManager.getActiveRarityCardIds(c.getContextValueByName(String.class, "rarityId")));
         commandManager.getCommandCompletions().registerCompletion("packs", c -> packManager.getPackIds());
@@ -268,12 +277,14 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         commandManager.getCommandCompletions().registerCompletion("custom-types", c -> dropTypeManager.getTypes().keySet());
         commandManager.getCommandCompletions().registerCompletion("all-types", c -> dropTypeManager.getAllTypesIds());
         commandManager.getCommandCompletions().registerCompletion("series", c -> seriesManager.getSeriesIds());
+        commandManager.getCommandCompletions().registerCompletion("upgrades", c -> upgradeManager.getUpgrades().stream().map(Upgrade::id).toList());
         commandManager.getCommandCompletions().registerCompletion("series-colors", c -> List.of("info=", "about=", "type=", "series=", "rarity="));
         commandManager.getCommandCompletions().registerCompletion("edit-type", c -> Stream.of(EditType.values()).map(Enum::name).toList());
         commandManager.getCommandCompletions().registerCompletion("edit-pack", c -> Stream.of(EditPack.values()).map(Enum::name).toList());
         commandManager.getCommandCompletions().registerCompletion("edit-series", c -> Stream.of(EditSeries.values()).map(Enum::name).toList());
         commandManager.getCommandCompletions().registerCompletion("edit-rarity", c -> Stream.of(EditRarity.values()).map(Enum::name).toList());
         commandManager.getCommandCompletions().registerCompletion("edit-card", c -> Stream.of(EditCard.values()).map(Enum::name).toList());
+        commandManager.getCommandCompletions().registerCompletion("edit-upgrade", c -> Stream.of(EditUpgrade.values()).map(Enum::name).toList());
         commandManager.getCommandCompletions().registerCompletion(
                 "edit-type-value", c -> switch (c.getContextValueByName(EditType.class, "editType")) {
                     case TYPE -> dropTypeManager.getDefaultTypes().stream().map(DropType::getId).toList();
@@ -282,9 +293,12 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         commandManager.getCommandCompletions().registerCompletion(
                 "edit-pack-value", c -> switch (c.getContextValueByName(EditPack.class, "editPack")) {
                     case PRICE, PERMISSION, DISPLAY_NAME, CURRENCY_ID -> Collections.singleton("");
-                    case CONTENTS -> IntStream.rangeClosed(0, packManager.getPack(c.getContextValueByName(String.class, "packId")).getPackEntryList().size() - 1)
-                            .boxed().map(String::valueOf).toList();
-
+                    case TRADE ->
+                            IntStream.rangeClosed(0, packManager.getPack(c.getContextValueByName(String.class, "packId")).getTradeCards().size() - 1)
+                                    .boxed().map(String::valueOf).toList();
+                    case CONTENTS ->
+                            IntStream.rangeClosed(0, packManager.getPack(c.getContextValueByName(String.class, "packId")).getPackEntryList().size() - 1)
+                                    .boxed().map(String::valueOf).toList();
                 }
         );
         commandManager.getCommandCompletions().registerCompletion(
@@ -296,18 +310,22 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         );
         commandManager.getCommandCompletions().registerCompletion(
                 "edit-rarity-value", c -> switch (c.getContextValueByName(EditRarity.class, "editRarity")) {
-                    case BUY_PRICE, SELL_PRICE, DEFAULT_COLOR, DISPLAY_NAME, REMOVE_ALL_REWARDS -> Collections.singleton("");
+                    case BUY_PRICE, SELL_PRICE, DEFAULT_COLOR, DISPLAY_NAME, REMOVE_ALL_REWARDS ->
+                            Collections.singleton("");
                     case CUSTOM_ORDER -> IntStream.rangeClosed(0, 99).boxed().map(String::valueOf).toList();
-                    case ADD_REWARD, REMOVE_REWARD -> IntStream.rangeClosed(0, Objects.requireNonNullElse(rarityManager.getRarity(c.getContextValueByName(String.class, "rarityId")), TradingRarityManager.EMPTY_RARITY).getRewards().size() - 1)
-                            .boxed().map(String::valueOf).toList();
+                    case ADD_REWARD, REMOVE_REWARD ->
+                            IntStream.rangeClosed(0, Objects.requireNonNullElse(rarityManager.getRarity(c.getContextValueByName(String.class, "rarityId")), TradingRarityManager.EMPTY_RARITY).getRewards().size() - 1)
+                                    .boxed().map(String::valueOf).toList();
                 }
         );
         commandManager.getCommandCompletions().registerCompletion(
                 "edit-card-value", c -> switch (c.getContextValueByName(EditCard.class, "editCard")) {
-                    case DISPLAY_NAME, SELL_PRICE, BUY_PRICE, INFO, CUSTOM_MODEL_DATA, CURRENCY_ID -> Collections.singleton("");
+                    case DISPLAY_NAME, SELL_PRICE, BUY_PRICE, INFO, CUSTOM_MODEL_DATA, CURRENCY_ID ->
+                            Collections.singleton("");
                     case SERIES -> seriesManager.getSeriesIds();
-                    case HAS_SHINY -> List.of("true","false");
-                    case TYPE -> Stream.concat(dropTypeManager.getDefaultTypes().stream().map(DropType::getId), dropTypeManager.getTypes().keySet().stream()).toList();
+                    case HAS_SHINY -> List.of("true", "false");
+                    case TYPE ->
+                            Stream.concat(dropTypeManager.getDefaultTypes().stream().map(DropType::getId), dropTypeManager.getTypes().keySet().stream()).toList();
                 }
         );
         commandManager.getCommandContexts().registerContext(Rarity.class, c -> {
@@ -326,7 +344,20 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
             }
             return getSeriesManager().getSeries(seriesId);
         });
-
+        commandManager.getCommandContexts().registerContext(Upgrade.class, c -> {
+            String upgradeId = c.popFirstArg();
+            if (!getUpgradeManager().containsUpgrade(upgradeId)) {
+                throw new InvalidCommandArgument(InternalExceptions.NO_UPGRADE.formatted(upgradeId));
+            }
+            return getUpgradeManager().getUpgrade(upgradeId);
+        });
+        commandManager.getCommandContexts().registerContext(PackEntry.class, c -> {
+            String possibleEntry = c.popFirstArg().replace("\"","");
+            if(possibleEntry.split(":").length < 3) {
+                throw new ConditionFailedException("Not a pack entry. Use format rarityId:amount:seriesId");
+            }
+            return PackEntry.fromString(possibleEntry);
+        });
         commandManager.registerCommand(new CardsCommand(this, playerBlacklist));
         commandManager.registerCommand(new EditCommand(this));
         commandManager.registerCommand(new CreateCommand(this));
@@ -339,6 +370,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         commandManager.registerCommand(new SellCommand(this));
         commandManager.registerCommand(new DeckCommand(this));
         commandManager.registerCommand(new InfoCommand(this));
+        commandManager.registerCommand(new UpgradeCommand(this));
         commandManager.enableUnstableAPI("help");
         commandManager.enableUnstableAPI("brigadier");
     }
@@ -391,7 +423,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
             return;
         }
 
-        if(this.generalConfig.treasuryEnabled()) {
+        if (this.generalConfig.treasuryEnabled()) {
             if (this.setupTreasuryEconomy()) {
                 getLogger().info(() -> InternalLog.PluginStart.TREASURY_HOOK_SUCCESS);
                 return;
@@ -417,7 +449,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         pm.registerEvents(new DropListener(this), this);
         pm.registerEvents(new PackListener(this), this);
         pm.registerEvents(new DeckListener(this), this);
-        if(getGeneralConfig().spawnerBlock()) {
+        if (getGeneralConfig().spawnerBlock()) {
             pm.registerEvents(new SpawnerListener(this), this);
         }
     }
@@ -533,5 +565,10 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     @Override
     public StorageConfigurate getStorageConfig() {
         return storageConfig;
+    }
+
+    @Override
+    public TradingUpgradeManager getUpgradeManager() {
+        return upgradeManager;
     }
 }

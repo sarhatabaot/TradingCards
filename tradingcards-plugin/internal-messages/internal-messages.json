@@ -28,13 +28,15 @@
     "type-exists": "Type %s already exists. Cannot create a new one.",
     "rarity-exists": "Rarity %s already exists. Cannot create a new one.",
     "card-exists": "Card %s already exists. Cannot create a new one.",
-    "pack-exists": "Pack %s already exists. Cannot create a new one."
+    "pack-exists": "Pack %s already exists. Cannot create a new one.",
+    "upgrade-exists": "Upgrade %s already exists. Cannot create a new one."
   },
   "no-rarity": "Rarity &4%s&r doesn't exist.",
   "no-series": "Series &4%s&r doesn't exist.",
   "no-card": "Card &4%s&r doesn't exist.",
   "no-type": "Type &4%s&r doesn't exist.",
   "no-pack": "Pack &4%s&r doesn't exist.",
+  "no-upgrade": "Upgrade &4%s&r doesn't exist",
   "type-must-be": "Type must be: %s",
   "debug-command": {
     "added-all-files": "Added all settings files to debug.zip.",
@@ -77,6 +79,7 @@
       "&bPack:&f %s",
       "&bDisplay Name:&f %s",
       "&bContent:&f %s",
+      "&bTrade: &f %s",
       "&bCurrency:&f %s",
       "&bBuy Price:&f %s"
     ],

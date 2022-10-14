@@ -3,12 +3,14 @@ package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local;
 import net.tinetwork.tradingcards.api.card.Card;
 import net.tinetwork.tradingcards.api.config.ColorSeries;
 import net.tinetwork.tradingcards.api.model.DropType;
-import net.tinetwork.tradingcards.api.model.EmptyPack;
-import net.tinetwork.tradingcards.api.model.Pack;
+import net.tinetwork.tradingcards.api.model.Upgrade;
+import net.tinetwork.tradingcards.api.model.pack.EmptyPack;
+import net.tinetwork.tradingcards.api.model.pack.Pack;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.api.model.deck.Deck;
 import net.tinetwork.tradingcards.api.model.deck.StorageEntry;
+import net.tinetwork.tradingcards.api.model.pack.PackEntry;
 import net.tinetwork.tradingcards.api.model.schedule.Mode;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
@@ -45,6 +47,7 @@ public class YamlStorage implements Storage<TradingCard> {
     private final SeriesConfig seriesConfig;
     private final PacksConfig packsConfig;
     private final CustomTypesConfig customTypesConfig;
+    private final UpgradesConfig upgradesConfig;
 
     private final Map<CompositeCardKey, TradingCard> cards;
     private final Map<CompositeCardKey, TradingCard> activeCards;
@@ -69,6 +72,7 @@ public class YamlStorage implements Storage<TradingCard> {
         this.seriesConfig = new SeriesConfig(plugin);
         this.customTypesConfig = new CustomTypesConfig(plugin);
         this.cardsConfig = new CardsConfig(plugin,this);
+        this.upgradesConfig = new UpgradesConfig(plugin);
 
         this.cards = new HashMap<>();
         this.rarityCardList = new HashMap<>();
@@ -509,13 +513,13 @@ public class YamlStorage implements Storage<TradingCard> {
     }
 
     @Override
-    public void editPackContents(final String packId, final int lineNumber, final Pack.PackEntry packEntry) {
+    public void editPackContents(final String packId, final int lineNumber, final PackEntry packEntry) {
         packsConfig.editContents(packId,lineNumber,packEntry);
     }
 
     @Override
-    public void editPackContentsAdd(final String packId, final Pack.PackEntry packEntry) {
-        List<Pack.PackEntry> packEntries = getPack(packId).getPackEntryList();
+    public void editPackContentsAdd(final String packId, final PackEntry packEntry) {
+        List<PackEntry> packEntries = getPack(packId).getPackEntryList();
         int lineNumber = (packEntries == null) ? 0 : packEntries.size() - 1;
         packsConfig.editContents(packId,lineNumber,packEntry);
     }
@@ -523,6 +527,23 @@ public class YamlStorage implements Storage<TradingCard> {
     @Override
     public void editPackContentsDelete(final String packId, final int lineNumber) {
         packsConfig.editContents(packId,lineNumber,null);
+    }
+
+    @Override
+    public void editPackTradeCards(final String packId, final int lineNumber, final PackEntry packEntry) {
+        packsConfig.editTradeCards(packId,lineNumber,packEntry);
+    }
+
+    @Override
+    public void editPackTradeCardsAdd(final String packId, final PackEntry packEntry) {
+        List<PackEntry> packEntries = getPack(packId).getTradeCards();
+        int lineNumber = (packEntries == null) ? 0 : packEntries.size() - 1;
+        packsConfig.editTradeCards(packId,lineNumber,packEntry);
+    }
+
+    @Override
+    public void editPackTradeCardsDelete(final String packId, final int lineNumber) {
+        packsConfig.editTradeCards(packId,lineNumber,null);
     }
 
     @Override
@@ -558,5 +579,40 @@ public class YamlStorage implements Storage<TradingCard> {
     @Override
     public int getRarityCustomOrder(final String rarityId) {
         return getRarities().indexOf(getRarityById(rarityId));
+    }
+
+    @Override
+    public List<Upgrade> getUpgrades() {
+        return upgradesConfig.getUpgrades();
+    }
+
+    @Override
+    public void createUpgrade(final String upgradeId, final PackEntry required, final PackEntry result) {
+        upgradesConfig.createUpgrade(upgradeId, required, result);
+    }
+
+    @Override
+    public Upgrade getUpgrade(final String upgradeId) {
+        try {
+            return upgradesConfig.getUpgrade(upgradeId);
+        } catch (SerializationException e){
+            Util.logSevereException(e);
+            return null;
+        }
+    }
+
+    @Override
+    public void editUpgradeRequired(final String upgradeId, final PackEntry required) {
+        upgradesConfig.editUpgradeRequired(upgradeId, required);
+    }
+
+    @Override
+    public void editUpgradeResult(final String upgradeId, final PackEntry result) {
+        upgradesConfig.editUpgradeResult(upgradeId, result);
+    }
+
+    @Override
+    public void deleteUpgrade(final String upgradeId) {
+        upgradesConfig.deleteUpgrade(upgradeId);
     }
 }

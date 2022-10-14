@@ -9,7 +9,9 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
-import net.tinetwork.tradingcards.api.model.Pack;
+import net.milkbowl.vault.chat.Chat;
+import net.tinetwork.tradingcards.api.model.Upgrade;
+import net.tinetwork.tradingcards.api.model.pack.Pack;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalMessages;
@@ -187,6 +189,15 @@ public class ListCommand extends BaseCommand {
                 ChatUtil.sendMessage(sender, "  &7- &f&o" + packEntries);
             }
         }
+
+        @Subcommand("upgrades")
+        @CommandPermission(Permissions.LIST_UPGRADE)
+        @Description("List all upgrades.")
+        public void onListUpgrades(final CommandSender sender) {
+            ChatUtil.sendMessage(sender,"Currently Available Upgrades %d".formatted(plugin.getUpgradeManager().getUpgrades().size()));
+            ChatUtil.sendMessage(sender, StringUtils.join(plugin.getUpgradeManager().getUpgrades().stream().map(Upgrade::id).toList(), ","));
+        }
+
 
         private TradingCard getCard(final String cardId, final String rarityId, final String seriesId) {
             return plugin.getCardManager().getCard(cardId, rarityId, seriesId);

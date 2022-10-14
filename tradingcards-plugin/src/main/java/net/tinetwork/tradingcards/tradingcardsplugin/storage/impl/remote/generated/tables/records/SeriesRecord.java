@@ -23,42 +23,42 @@ public class SeriesRecord extends UpdatableRecordImpl<SeriesRecord> implements R
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>minecraft.series.series_id</code>.
+     * Setter for <code>{prefix}series.series_id</code>.
      */
     public void setSeriesId(String value) {
         set(0, value);
     }
 
     /**
-     * Getter for <code>minecraft.series.series_id</code>.
+     * Getter for <code>{prefix}series.series_id</code>.
      */
     public String getSeriesId() {
         return (String) get(0);
     }
 
     /**
-     * Setter for <code>minecraft.series.display_name</code>.
+     * Setter for <code>{prefix}series.display_name</code>.
      */
     public void setDisplayName(String value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>minecraft.series.display_name</code>.
+     * Getter for <code>{prefix}series.display_name</code>.
      */
     public String getDisplayName() {
         return (String) get(1);
     }
 
     /**
-     * Setter for <code>minecraft.series.series_mode</code>.
+     * Setter for <code>{prefix}series.series_mode</code>.
      */
     public void setSeriesMode(SeriesSeriesMode value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>minecraft.series.series_mode</code>.
+     * Getter for <code>{prefix}series.series_mode</code>.
      */
     public SeriesSeriesMode getSeriesMode() {
         return (SeriesSeriesMode) get(2);

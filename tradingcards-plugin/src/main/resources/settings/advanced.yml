@@ -17,5 +17,8 @@ cache:
   packs:
     max-cache-entries: 100
     refresh-after-write: 5
+  upgrades:
+    max-cache-entries: 100
+    refresh-after-write: 5
 
 config-version: 1

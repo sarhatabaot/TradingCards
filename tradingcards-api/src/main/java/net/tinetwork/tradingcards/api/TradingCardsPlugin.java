@@ -11,6 +11,7 @@ import net.tinetwork.tradingcards.api.manager.PackManager;
 import net.tinetwork.tradingcards.api.manager.RarityManager;
 import net.tinetwork.tradingcards.api.manager.SeriesManager;
 import net.tinetwork.tradingcards.api.manager.TypeManager;
+import net.tinetwork.tradingcards.api.manager.UpgradeManager;
 import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -98,6 +99,8 @@ public abstract class TradingCardsPlugin<T extends Card<T>> extends JavaPlugin {
     public abstract RarityManager getRarityManager();
 
     public abstract SeriesManager getSeriesManager();
+
+    public abstract UpgradeManager getUpgradeManager();
 
     public abstract EconomyWrapper getEconomyWrapper();
 }

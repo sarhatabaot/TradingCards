@@ -11,7 +11,7 @@
     <parent>
         <groupId>net.tinetwork.tradingcards</groupId>
         <artifactId>tradingcards-parent</artifactId>
-        <version>5.7.0</version>
+        <version>5.7.2</version>
     </parent>
     <properties>
         <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
@@ -35,12 +35,11 @@
 
         <!-- DB -->
         <hikaricp.version>5.0.1</hikaricp.version>
-        <flyway.version>9.3.1</flyway.version>
+        <flyway.version>9.4.0</flyway.version>
         <jooq.version>3.17.4</jooq.version>
         <mariadb.version>2.7.4</mariadb.version>
         <!-- Others -->
         <zip4j.version>2.11.2</zip4j.version>
-
     </properties>
 
     <pluginRepositories>
@@ -77,13 +76,48 @@
             </build>
         </profile>
         <profile>
-            <id>development</id>
+            <id>bleeding-edge</id>
             <build>
                 <finalName>TradingCards-${project.version}-${build.number}</finalName>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jooq</groupId>
+                        <artifactId>jooq-codegen-maven</artifactId>
+                        <version>${jooq.version}</version>
+                        <executions>
+                            <execution>
+                                <id>jooq-codegen</id>
+                                <phase>none</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
             </build>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
+        </profile>
+        <profile>
+            <id>development</id>
+            <build>
+                <finalName>TradingCards-${project.version}-${build.number}</finalName>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jooq</groupId>
+                        <artifactId>jooq-codegen-maven</artifactId>
+                        <version>${jooq.version}</version>
+                        <executions>
+                            <execution>
+                                <id>jooq-codegen</id>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>generate</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
         <profile>
             <id>release</id>
@@ -145,6 +179,43 @@
         <pluginManagement>
             <plugins>
                 <plugin>
+                    <groupId>org.jooq</groupId>
+                    <artifactId>jooq-codegen-maven</artifactId>
+                    <version>${jooq.version}</version>
+                    <configuration>
+                        <generator>
+                            <strategy>
+                                <name>net.tinetwork.tradingcards.PrefixNamingStrategy</name>
+                            </strategy>
+                            <database>
+                                <name>org.jooq.meta.extensions.ddl.DDLDatabase</name>
+                                <properties>
+                                    <property>
+                                        <key>scripts</key>
+                                        <value>src/main/resources/db/base/V0_mysql.sql</value>
+                                    </property>
+                                    <property>
+                                        <key>dialect</key>
+                                        <value>MYSQL</value>
+                                    </property>
+                                    <property>
+                                        <key>sort</key>
+                                        <value>flyway</value>
+                                    </property>
+                                    <property>
+                                        <key>unqualifiedSchema</key>
+                                        <value>none</value>
+                                    </property>
+                                </properties>
+                            </database>
+                            <target>
+                                <packageName>net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated</packageName>
+                                <directory>/src/main/java</directory>
+                            </target>
+                        </generator>
+                    </configuration>
+                </plugin>
+                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>${maven.compiler.version}</version>
@@ -180,7 +251,13 @@
                                 <shadedPattern>${project.groupId}.bstats</shadedPattern>
                             </relocation>
                         </relocations>
-
+                        <artifactSet>
+                        <excludes>
+                            <exclude>com.h2database:h2</exclude>
+                            <exclude>org.jooq:jooq-codegen-maven</exclude>
+                            <exclude>org.jooq:jooq-meta-extensions</exclude>
+                        </excludes>
+                        </artifactSet>
                         <filters>
                             <filter>
                                 <artifact>*:*</artifact>
@@ -220,6 +297,11 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>${jacoco.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.jooq</groupId>
+                <artifactId>jooq-codegen-maven</artifactId>
+                <version>${jooq.version}</version>
             </plugin>
             <plugin>
                 <version>${maven.compiler.version}</version>
@@ -354,15 +436,26 @@
         </dependency>
         <dependency>
             <groupId>org.jooq</groupId>
+            <artifactId>jooq-codegen</artifactId>
+            <version>${jooq.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jooq</groupId>
             <artifactId>jooq-meta</artifactId>
             <version>${jooq.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jooq</groupId>
-            <artifactId>jooq-codegen</artifactId>
+            <artifactId>jooq-meta-extensions</artifactId>
             <version>${jooq.version}</version>
-            <scope>provided</scope>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.tinetwork.tradingcards</groupId>
+            <artifactId>tradingcards-extras</artifactId>
+            <version>0.0.1</version>
         </dependency>
         <!-- Others -->
         <dependency>

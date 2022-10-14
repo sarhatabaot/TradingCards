@@ -9,10 +9,11 @@ import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import net.tinetwork.tradingcards.api.config.ColorSeries;
 import net.tinetwork.tradingcards.api.model.DropType;
-import net.tinetwork.tradingcards.api.model.Pack;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
+import net.tinetwork.tradingcards.api.model.pack.PackEntry;
 import net.tinetwork.tradingcards.api.model.schedule.Mode;
+import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.EditUpgrade;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.CompositeCardKey;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalDebug;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalMessages;
@@ -228,6 +229,21 @@ public class EditCommand extends BaseCommand {
             sendSetTypes(sender, seriesId, editSeries, value);
         }
 
+        private int checkCorrectPackEntryFormat(final CommandSender sender, final String value){
+            if (!value.contains("=")) {
+                ChatUtil.sendPrefixedMessage(sender, InternalMessages.EditCommand.CONTENTS_SYNTAX);
+                ChatUtil.sendPrefixedMessage(sender, InternalMessages.EditCommand.CONTENTS_EXAMPLE);
+                return -1;
+            }
+
+            String[] split = value.split("=");
+            int lineNumber = getIntFromString(split[0]);
+            if (lineNumber == -1) {
+                ChatUtil.sendPrefixedMessage(sender, InternalMessages.EditCommand.LINE_NUMBER_INCORRECT);
+                return -1;
+            }
+            return lineNumber;
+        }
 
         //cards edit pack <packId> [displayName|price|permission|contents] (typeCompletion or nothing)
         @Subcommand("pack")
@@ -241,28 +257,37 @@ public class EditCommand extends BaseCommand {
 
             switch (editType) {
                 case DISPLAY_NAME -> storage.editPackDisplayName(packId, value);
-                case CONTENTS -> {
-                    if (!value.contains("=")) {
-                        ChatUtil.sendPrefixedMessage(sender, InternalMessages.EditCommand.CONTENTS_SYNTAX);
-                        ChatUtil.sendPrefixedMessage(sender, InternalMessages.EditCommand.CONTENTS_EXAMPLE);
+                case TRADE -> {
+                    int lineNumber = checkCorrectPackEntryFormat(sender,value);
+                    if(lineNumber == -1)
                         return;
-                    }
+
 
                     String[] split = value.split("=");
-                    int lineNumber = getIntFromString(split[0]);
-                    if (lineNumber == -1) {
-                        ChatUtil.sendPrefixedMessage(sender, InternalMessages.EditCommand.LINE_NUMBER_INCORRECT);
+                    String content = split[1];
+                    if (content.equalsIgnoreCase("delete")) {
+                        storage.editPackTradeCardsDelete(packId, lineNumber);
                         return;
                     }
+                    
+                    PackEntry entry = PackEntry.fromString(content);
+                    storage.editPackTradeCards(packId, lineNumber, entry);
+                }
+                case CONTENTS -> {
+                    int lineNumber = checkCorrectPackEntryFormat(sender,value);
+                    if(lineNumber == -1)
+                        return;
+
+
+                    String[] split = value.split("=");
                     String content = split[1];
                     if (content.equalsIgnoreCase("delete")) {
                         storage.editPackContentsDelete(packId, lineNumber);
                         return;
                     }
 
-                    Pack.PackEntry entry = Pack.PackEntry.fromString(content);
+                    PackEntry entry = PackEntry.fromString(content);
                     storage.editPackContents(packId, lineNumber, entry);
-
                 }
                 case PERMISSION -> storage.editPackPermission(packId, value);
                 case PRICE -> {
@@ -324,6 +349,28 @@ public class EditCommand extends BaseCommand {
             plugin.getDropTypeManager().getCache().refresh(typeId);
             sendSetTypes(sender, typeId, editType, value);
         }
+
+        @Subcommand("upgrade")
+        @CommandPermission(Permissions.EDIT_UPGRADE)
+        @CommandCompletion("@upgrades @edit-upgrade @rarities @nothing @series")
+        public void onEditUpgrade(final CommandSender sender, final String upgradeId, final EditUpgrade editUpgrade, final String rarityId, final int amount, final String seriesId) {
+            if(!plugin.getUpgradeManager().containsUpgrade(upgradeId)) {
+                ChatUtil.sendPrefixedMessage(sender, InternalMessages.NO_UPGRADE.formatted(upgradeId));
+                return;
+            }
+
+            final PackEntry packEntry = new PackEntry(rarityId,amount,seriesId);
+            switch (editUpgrade) {
+                case RESULT -> storage.editUpgradeResult(upgradeId,packEntry);
+                case REQUIRED -> storage.editUpgradeRequired(upgradeId,packEntry);
+            }
+
+            plugin.getUpgradeManager().getCache().refresh(upgradeId);
+            String value = "%s %s %S".formatted(rarityId,amount,seriesId);
+            sendSetTypes(sender,upgradeId,editUpgrade,value);
+
+        }
+
 
         //set edit.toString() to value for id
         private void sendSetTypes(final CommandSender sender, final String id, final @NotNull Edit edit, final String value) {

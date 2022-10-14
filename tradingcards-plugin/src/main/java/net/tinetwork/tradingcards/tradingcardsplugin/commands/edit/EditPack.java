@@ -11,6 +11,7 @@ public enum EditPack implements Edit{
     PERMISSION,
     DISPLAY_NAME,
     CONTENTS,
+    TRADE,
     CURRENCY_ID;
 
     @Contract(pure = true)

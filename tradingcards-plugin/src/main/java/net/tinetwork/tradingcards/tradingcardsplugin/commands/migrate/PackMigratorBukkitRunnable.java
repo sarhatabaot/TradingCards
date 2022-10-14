@@ -1,6 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.commands.migrate;
 
-import net.tinetwork.tradingcards.api.model.Pack;
+import net.tinetwork.tradingcards.api.model.pack.Pack;
+import net.tinetwork.tradingcards.api.model.pack.PackEntry;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalMessages;
@@ -37,8 +38,12 @@ public class PackMigratorBukkitRunnable extends MigratorBukkitRunnable{
             plugin.getStorage().editPackPermission(packId,pack.getPermission());
             plugin.getStorage().editPackDisplayName(packId, pack.getDisplayName());
 
-            for(final Pack.PackEntry entry:pack.getPackEntryList()){
+            for(final PackEntry entry:pack.getPackEntryList()){
                 plugin.getStorage().editPackContentsAdd(packId,entry);
+            }
+
+            for(final PackEntry entry: pack.getTradeCards()) {
+                plugin.getStorage().editPackTradeCardsAdd(packId,entry);
             }
         }
     }

@@ -7,9 +7,11 @@ import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
 import net.tinetwork.tradingcards.api.model.DropType;
-import net.tinetwork.tradingcards.api.model.Pack;
+import net.tinetwork.tradingcards.api.model.Upgrade;
+import net.tinetwork.tradingcards.api.model.pack.Pack;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
+import net.tinetwork.tradingcards.api.model.pack.PackEntry;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalMessages;
@@ -65,8 +67,10 @@ public class InfoCommand extends BaseCommand {
             ChatUtil.sendPrefixedMessages(sender,
                     InternalMessages.InfoCommand.PACK_FORMAT,
                     pack.getId(), pack.getDisplayName(),
-                    pack.getPackEntryList().stream().map(Pack.PackEntry::toString).toList(),
-                    pack.getCurrencyId(), pack.getBuyPrice());
+                    pack.getPackEntryList().stream().map(PackEntry::toString).toList(),
+                    pack.getTradeCards().stream().map(PackEntry::toString).toList(),
+                    pack.getCurrencyId(),
+                    pack.getBuyPrice());
         }
 
         @Subcommand("type")
@@ -110,6 +114,25 @@ public class InfoCommand extends BaseCommand {
         public void onMobInfo(final CommandSender sender, final EntityType entityType) {
             final DropType dropType = plugin.getDropTypeManager().getMobType(entityType);
             ChatUtil.sendPrefixedMessage(sender, InternalMessages.InfoCommand.MOB_FORMAT.formatted(entityType.name(), dropType.getType()));
+        }
+
+        @Subcommand("upgrade")
+        @CommandCompletion("@upgrades")
+        @CommandPermission(Permissions.INFO_UPGRADE)
+        public void onUpgrade(final CommandSender sender, final String upgradeId) {
+            if(!plugin.getUpgradeManager().containsUpgrade(upgradeId)) {
+                ChatUtil.sendPrefixedMessage(sender,"No such upgrade %s".formatted(upgradeId));
+                return;
+            }
+
+            final Upgrade upgrade = plugin.getUpgradeManager().getUpgrade(upgradeId);
+            ChatUtil.sendPrefixedMessages(
+                    sender,
+                    "Upgrade: %s".formatted(upgrade.id()),
+                    "Required: %s %d %s".formatted(upgrade.required().rarityId(),upgrade.required().amount(), upgrade.required().seriesId()),
+                    "Result: %s %d %s".formatted(upgrade.result().rarityId(),upgrade.result().amount(), upgrade.result().seriesId())
+            );
+
         }
     }
 }

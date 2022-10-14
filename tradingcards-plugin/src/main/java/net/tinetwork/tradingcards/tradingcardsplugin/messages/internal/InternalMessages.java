@@ -47,6 +47,7 @@ public final class InternalMessages {
         public static final String RARITY_EXISTS = "Rarity %s already exists. Cannot create a new one.";
         public static final String CARD_EXISTS = "Card %s already exists. Cannot create a new one.";
         public static final String PACK_EXISTS = "Pack %s already exists. Cannot create a new one.";
+        public static final String UPGRADE_EXISTS = "Upgrade %s already exists. Cannot create a new one.";
 
         private CreateCommand() {
             throw new UnsupportedOperationException(InternalExceptions.UTIL_CLASS);
@@ -58,6 +59,7 @@ public final class InternalMessages {
     public static final String NO_CARD = "Card &4%s&r doesn't exist.";
     public static final String NO_TYPE = "Type &4%s&r doesn't exist.";
     public static final String NO_PACK = "Pack &4%s&r doesn't exist.";
+    public static final String NO_UPGRADE = "Upgrade &4%s&r doesn't exist";
     public static final String TYPE_MUST_BE = "Type must be: %s";
 
     public static class DebugCommand {
@@ -110,7 +112,7 @@ public final class InternalMessages {
                 "&bDisplay Name:&f %s", "&bBuy Price:&f %.2f", "&bSell Price:&f %.2f", "&bCurrency:&f %s",
                 "&bAbout:&f %s", "&bInfo:&f %s" };
         public static final String[] PACK_FORMAT = new String[] { "&bPack:&f %s", "&bDisplay Name:&f %s",
-                "&bContent:&f %s", "&bCurrency:&f %s", "&bBuy Price:&f %s" };
+                "&bContent:&f %s", "&bTrade: &f %s", "&bCurrency:&f %s", "&bBuy Price:&f %s" };
         public static final String[] TYPE_FORMAT = new String[] { "&bType:&f %s", "&bDisplay Name:&f %s",
                 "&bMob Type:&f %s" };
         public static final String[] SERIES_FORMAT = new String[] { "&bSeries:&f %s", "&bDisplay Name:&f '%s'",
