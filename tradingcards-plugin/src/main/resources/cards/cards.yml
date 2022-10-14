@@ -407,6 +407,13 @@ cards:
       series: winter
       type: passive
   uncommon:
+    goat_horn:
+      custom-model-data: 3200134
+      display-name: "Goat Horn"
+      has-shiny-version: true
+      info: none
+      series: summer
+      type: passive
     phantom:
       custom-model-data: 3200130
       display-name: "Phantom"
@@ -639,7 +646,14 @@ cards:
       series: default
       type: hostile
   rare:
-      trader:
+    zoglin:
+      custom-model-data: 3200133
+      display-name: "Zoglin"
+      has-shiny-version: true
+      info: none
+      series: halloween
+      type: hostile
+    trader:
       custom-model-data: 3200129
       display-name: "Wandering Trader"
       has-shiny-version: true
