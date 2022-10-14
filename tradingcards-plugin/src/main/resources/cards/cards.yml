@@ -413,7 +413,6 @@ cards:
       has-shiny-version: true
       info: none
       series: summer
-      type: passive
     phantom:
       custom-model-data: 3200130
       display-name: "Phantom"
@@ -490,7 +489,7 @@ cards:
       has-shiny-version: true
       info: none
       series: spring
-      type: neutral	  
+      type: neutral
     panda_agressive:
       custom-model-data: 32000109
       display-name: "Aggressive Panda"
@@ -694,7 +693,7 @@ cards:
       has-shiny-version: true
       info: none
       series: winter
-      type: neutral  
+      type: neutral
     cake:
       custom-model-data: 3200086
       display-name: "Cake"
@@ -948,7 +947,7 @@ cards:
       has-shiny-version: true
       info: none
       series: valentines
-      type: passive    
+      type: passive
     firework:
       custom-model-data: 3200092
       display-name: "Firework"
