@@ -2,7 +2,7 @@
 -- Alter Table `${prefix}cards`
 -- -------------------------------
 ALTER TABLE `${prefix}cards`
-    ADD currency_id VARCHAR(30)
+    ADD `currency_id` VARCHAR(30)
     DEFAULT 'tc-internal-default';
 
 
@@ -10,5 +10,5 @@ ALTER TABLE `${prefix}cards`
 -- Alter Table `${prefix}packs`
 -- -------------------------------
 ALTER TABLE `${prefix}packs`
-    ADD currency_id VARCHAR(30)
+    ADD `currency_id` VARCHAR(30)
     DEFAULT 'tc-internal-default';
