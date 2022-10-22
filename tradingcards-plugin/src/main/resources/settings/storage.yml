@@ -1,4 +1,4 @@
-# Available options: YAML (MYSQL, MARIADB NOT IMPLEMENTED YET)
+# Available options: YAML or MYSQL
 storage-type: YAML
 
 yaml:

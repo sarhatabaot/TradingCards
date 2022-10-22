@@ -7,8 +7,8 @@ import org.jooq.SQLDialect;
  */
 public enum StorageType {
     YAML(null),
-    MYSQL(SQLDialect.MYSQL),
-    MARIADB(SQLDialect.MARIADB);
+    MYSQL(SQLDialect.MYSQL);
+    //MARIADB(SQLDialect.MARIADB);
     private final SQLDialect dialect;
 
     StorageType(final SQLDialect dialect) {
