@@ -236,11 +236,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         StorageType storageType = this.storageConfig.getType();
         getLogger().info(() -> InternalLog.Init.USING_STORAGE.formatted(storageType.name()));
         return switch (storageType) {
-            case MARIADB -> new SqlStorage(this,
-                    this.storageConfig.getTablePrefix(),
-                    this.storageConfig.getDatabase(),
-                    new MariaDbConnectionFactory(this.storageConfig), storageType);
-
             case MYSQL -> new SqlStorage(this,
                     this.storageConfig.getTablePrefix(),
                     this.storageConfig.getDatabase(),
