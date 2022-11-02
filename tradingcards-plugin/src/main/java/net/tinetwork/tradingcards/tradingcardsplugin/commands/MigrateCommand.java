@@ -6,6 +6,7 @@ import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
+import net.tinetwork.tradingcards.tradingcardsplugin.commands.migrate.UpgradeMigratorBukkitRunnable;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalMessages;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.Permissions;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
@@ -70,6 +71,7 @@ public class MigrateCommand extends BaseCommand {
             }
             new RarityMigratorBukkitRunnable(plugin,sender,yamlStorage).runTask(plugin);
             new SeriesMigratorBukkitRunnable(plugin,sender,yamlStorage).runTask(plugin);
+            new UpgradeMigratorBukkitRunnable(plugin,sender,yamlStorage).runTask(plugin);
             new PackMigratorBukkitRunnable(plugin,sender,yamlStorage).runTask(plugin);
             new CustomDropTypeMigratorBukkitRunnable(plugin,sender,yamlStorage).runTask(plugin);
             new CardMigratorBukkitRunnable(plugin,sender,yamlStorage).runTask(plugin);
