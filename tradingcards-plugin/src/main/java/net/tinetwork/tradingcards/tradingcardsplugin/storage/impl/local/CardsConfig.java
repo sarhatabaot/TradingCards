@@ -48,9 +48,9 @@ public class CardsConfig {
     }
 
     private void createCardsFolder(final @NotNull TradingCards plugin) {
-        final File cardsFolder = new File(plugin.getDataFolder() + File.separator + "cards");
-        if (!cardsFolder.exists())
-            cardsFolder.mkdir();
+        final File tempCardsFolder = new File(plugin.getDataFolder() + File.separator + "cards");
+        if (!tempCardsFolder.exists())
+            tempCardsFolder.mkdir();
     }
 
     private void createDefaultCardConfig(final TradingCards plugin) {

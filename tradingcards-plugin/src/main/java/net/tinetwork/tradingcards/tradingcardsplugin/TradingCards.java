@@ -61,7 +61,6 @@ import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.StorageType;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local.YamlStorage;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.SqlStorage;
-import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.sql.MariaDbConnectionFactory;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.sql.MySqlConnectionFactory;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;

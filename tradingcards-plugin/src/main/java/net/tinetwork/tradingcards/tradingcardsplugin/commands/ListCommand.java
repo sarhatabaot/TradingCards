@@ -9,7 +9,6 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
-import net.milkbowl.vault.chat.Chat;
 import net.tinetwork.tradingcards.api.model.Upgrade;
 import net.tinetwork.tradingcards.api.model.pack.Pack;
 import net.tinetwork.tradingcards.api.model.Rarity;

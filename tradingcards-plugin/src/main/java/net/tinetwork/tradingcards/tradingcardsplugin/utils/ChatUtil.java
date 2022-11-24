@@ -12,7 +12,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Stream;
 
 public class ChatUtil {
     private static final char ALT_COLOR_CHAR = '&';

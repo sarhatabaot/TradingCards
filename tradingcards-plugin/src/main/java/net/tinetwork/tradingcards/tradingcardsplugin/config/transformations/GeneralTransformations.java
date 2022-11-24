@@ -3,8 +3,6 @@ package net.tinetwork.tradingcards.tradingcardsplugin.config.transformations;
 import com.github.sarhatabaot.kraken.core.config.Transformation;
 import org.spongepowered.configurate.transformation.ConfigurationTransformation;
 
-import static org.spongepowered.configurate.NodePath.path;
-
 /**
  * @author sarhatabaot
  */
