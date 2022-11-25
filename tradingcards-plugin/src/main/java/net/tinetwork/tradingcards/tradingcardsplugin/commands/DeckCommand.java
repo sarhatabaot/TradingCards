@@ -3,6 +3,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.commands;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Conditions;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
@@ -30,12 +31,8 @@ public class DeckCommand extends BaseCommand {
 	@Default
 	@CommandPermission(Permissions.USE_DECK)
 	@Description("Get a deck item. Or opens a deck.")
-	public void onGetDeck(final Player player,@Optional Integer deckNumber) {
+	public void onGetDeck(final Player player,@Default("1") int deckNumber) {
 		Validate.notNull(player, InternalMessages.DeckCommand.CANNOT_RUN_FROM_CONSOLE);
-
-		if(deckNumber == null) {
-			deckNumber = 1;
-		}
 
 		if (!player.hasPermission("cards.decks." + deckNumber)) {
 			ChatUtil.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().maxDecks()));
