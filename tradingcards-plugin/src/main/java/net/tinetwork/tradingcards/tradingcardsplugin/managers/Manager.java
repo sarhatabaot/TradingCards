@@ -1,5 +1,6 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.managers;
 
+import com.github.sarhatabaot.kraken.core.logging.LoggerUtil;
 import com.google.common.cache.LoadingCache;
 import net.tinetwork.tradingcards.api.manager.Cacheable;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
@@ -24,6 +25,7 @@ public abstract class Manager<R,T> implements Cacheable<R,T> {
         try {
             this.cache.getAll(getKeys());
         } catch (ExecutionException e){
+            LoggerUtil.logWarningException(e);
             //ignored
         }
     }

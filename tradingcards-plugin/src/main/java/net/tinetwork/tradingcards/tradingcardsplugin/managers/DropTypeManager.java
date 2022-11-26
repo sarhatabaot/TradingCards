@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 public class DropTypeManager extends Manager<String, DropType> implements TypeManager {
     private static final String HOSTILE_ID  = "hostile";
@@ -24,6 +25,14 @@ public class DropTypeManager extends Manager<String, DropType> implements TypeMa
     private static final String PASSIVE_ID = "passive";
     private static final String BOSS_ID = "boss";
     private static final String ALL_ID = "all";
+
+    private static final List<String> DEFAULT_IDS = List.of(
+            HOSTILE_ID,
+            NEUTRAL_ID,
+            PASSIVE_ID,
+            BOSS_ID,
+            ALL_ID
+    );
 
     public static final Map<String,DropType> DEFAULT_MOB_TYPES = Map.of(
             HOSTILE_ID, new DropType(HOSTILE_ID,"Hostile", HOSTILE_ID),
@@ -58,26 +67,22 @@ public class DropTypeManager extends Manager<String, DropType> implements TypeMa
                 .build(new CacheLoader<>() {
                     @Override
                     public @NotNull DropType load(final @NotNull String key) throws Exception {
+                        plugin.debug(DropTypeManager.class,"Loaded Type=%s into cache.".formatted(key));
+                        if(DEFAULT_IDS.contains(key)) {
+                            return DEFAULT_MOB_TYPES.get(key);
+                        }
                         return plugin.getStorage().getCustomType(key);
                     }
                 });
     }
 
     @Override
-    public void preLoadCache() {
-        super.preLoadCache();
-        cache.putAll(DEFAULT_MOB_TYPES);
-    }
-
-    @Override
-    public void forceCacheRefresh() {
-        super.forceCacheRefresh();
-        cache.putAll(DEFAULT_MOB_TYPES);
-    }
-
-    @Override
     public List<String> getKeys() {
-        return plugin.getStorage().getDropTypes().stream().map(DropType::getId).toList();
+        return Stream.concat(plugin.getStorage().getDropTypes().stream()
+                .map(DropType::getId), DEFAULT_IDS.stream()).toList();
+//        return plugin.getStorage().getDropTypes().stream()
+//                .map(DropType::getId)
+//                .toList();
     }
 
     @Override

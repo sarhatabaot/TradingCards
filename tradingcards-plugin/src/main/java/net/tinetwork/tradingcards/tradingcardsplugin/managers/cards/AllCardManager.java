@@ -1,5 +1,6 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.managers.cards;
 
+import com.github.sarhatabaot.kraken.core.logging.LoggerUtil;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -41,20 +42,6 @@ public class AllCardManager extends TradingCardManager implements CardManager<Tr
     }
 
     @Override
-    public LoadingCache<CompositeCardKey, TradingCard> loadCache() {
-        return CacheBuilder.newBuilder()
-                .maximumSize(plugin.getAdvancedConfig().getCards().maxCacheSize())
-                .refreshAfterWrite(plugin.getAdvancedConfig().getCards().refreshAfterWrite(), TimeUnit.MINUTES)
-                .build(new CacheLoader<>() {
-                           @Override
-                           public @NotNull TradingCard load(final @NotNull CompositeCardKey key) throws Exception {
-                               return plugin.getStorage().getCard(key.cardId(), key.rarityId(), key.seriesId()).get();
-                           }
-                       }
-                );
-    }
-
-    @Override
     protected LoadingCache<String, List<TradingCard>> loadRarityCardCache() {
         return CacheBuilder.newBuilder()
                 .maximumSize(plugin.getAdvancedConfig().getCards().maxCacheSize())
@@ -63,6 +50,7 @@ public class AllCardManager extends TradingCardManager implements CardManager<Tr
                            @Override
                            public @NotNull List<TradingCard> load(final @NotNull String key) throws Exception {
                                return plugin.getStorage().getCardsInRarity(key);
+                               // Pretty large get, perhaps we should get a single card and then check where to put it..
                            }
                        }
                 );
@@ -142,8 +130,9 @@ public class AllCardManager extends TradingCardManager implements CardManager<Tr
     @Override
     public TradingCard getCard(final String cardId, final String rarityId, final String seriesId) {
         try {
-            return cache.getUnchecked(new CompositeCardKey(rarityId,seriesId,cardId));
-        } catch (NullPointerException e) {
+            return cache.get(new CompositeCardKey(rarityId,seriesId,cardId));
+        } catch (ExecutionException | NullPointerException e) {
+            LoggerUtil.logSevereException(e);
             return NULL_CARD;
         }
     }
