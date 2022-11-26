@@ -26,6 +26,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @author sarhatabaot
@@ -101,7 +102,13 @@ public class ListCommand extends BaseCommand {
             final String sectionFormatComplete = plugin.getMessagesConfig().sectionFormatComplete();
             int cardCounter = countPlayerOwnedCardsInRarity(target, rarityId);
             int shinyCardCounter = countPlayerOwnedShinyCardsInRarity(target, rarityId);
-            int sizeOfRarityCardList = plugin.getStorage().getCardsInRarity(rarityId).size();
+            int sizeOfRarityCardList;
+
+            try {
+                sizeOfRarityCardList = plugin.getCardManager().getRarityCardCache().get(rarityId).size();
+            } catch (ExecutionException e) {
+                sizeOfRarityCardList = 0;
+            }
 
             if (cardCounter == sizeOfRarityCardList) {
                 return sectionFormatComplete
@@ -121,7 +128,14 @@ public class ListCommand extends BaseCommand {
             final String sectionFormatComplete = plugin.getMessagesConfig().sectionFormatComplete();
             int cardCounter = countPlayerOwnedCardsInSeries(target, seriesId);
             int shinyCardCounter = countPlayerOwnedShinyCardsInSeries(target, seriesId);
-            int sizeOfRarityCardList = plugin.getStorage().getCardsInSeries(seriesId).size();
+            int sizeOfRarityCardList;
+            
+            try {
+                sizeOfRarityCardList = plugin.getCardManager().getSeriesCardCache().get(seriesId).size();
+            }catch (ExecutionException e) {
+                sizeOfRarityCardList = 0;
+            }
+
 
             if (cardCounter == sizeOfRarityCardList) {
                 return sectionFormatComplete

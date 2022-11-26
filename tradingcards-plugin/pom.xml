@@ -23,6 +23,8 @@
         <maven.surefire.version>3.0.0-M7</maven.surefire.version>
         <messages.plugin.version>1.2.3</messages.plugin.version>
         <formatter.version>2.20.0</formatter.version>
+        <maven.resources.version>3.3.0</maven.resources.version>
+        <maven.clean.version>3.2.0</maven.clean.version>
 
         <!-- Bukkit Libs -->
         <bstats.version>3.0.0</bstats.version>
@@ -142,10 +144,6 @@
         <repository>
             <id>aikar</id>
             <url>https://repo.aikar.co/content/groups/aikar/</url>
-        </repository>
-        <repository>
-            <id>lumine-repo</id>
-            <url>https://mvn.lumine.io/repository/maven-snapshots/</url>
         </repository>
         <repository>
             <id>codemc-repo</id>
@@ -293,6 +291,16 @@
             </plugins>
         </pluginManagement>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>${maven.clean.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>${maven.resources.version}</version>
+            </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
