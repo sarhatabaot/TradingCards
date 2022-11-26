@@ -747,6 +747,7 @@ public class SqlStorage implements Storage<TradingCard> {
                     plugin.debug(SqlStorage.class, InternalDebug.Sql.EMPTY_RESULT.formatted(rarityId));
                     return empty();
                 }
+
                 List<TradingCard> cards = new ArrayList<>();
                 for (Record recordResult : result) {
                     final TradingCard card = getTradingCardFromRecord(recordResult);

@@ -42,6 +42,7 @@ public abstract class TradingCardManager extends Manager<CompositeCardKey, Tradi
                 .build(new CacheLoader<>() {
                            @Override
                            public @NotNull TradingCard load(final @NotNull CompositeCardKey key) throws Exception {
+                               plugin.debug(TradingCardManager.class, "Loaded Card=%s into cache.".formatted(key.toString()));
                                return plugin.getStorage().getCard(key.cardId(), key.rarityId(), key.seriesId()).get();
                            }
                        }

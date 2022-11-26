@@ -129,6 +129,7 @@ public interface Storage<T extends Card<T>> {
      */
     List<T> getCardsInRarity(final String rarityId);
 
+
     /**
      * @param seriesId The series id.
      * @return A list of all cards in a series.

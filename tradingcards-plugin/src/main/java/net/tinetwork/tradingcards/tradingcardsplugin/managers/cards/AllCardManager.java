@@ -22,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
@@ -30,6 +31,7 @@ import java.util.stream.Stream;
 
 public class AllCardManager extends TradingCardManager implements CardManager<TradingCard>{
     public static final EmptyCard NULL_CARD = new EmptyCard();
+    private List<CompositeCardKey> keys;
 
     private final ActiveCardManager activeCardManager;
 
@@ -83,7 +85,7 @@ public class AllCardManager extends TradingCardManager implements CardManager<Tr
 
     public void initValues() {
         plugin.getLogger().info(() -> InternalLog.CardManager.LOAD_CARDS.formatted(cache.asMap().keySet().size()));
-        plugin.debug(AllCardManager.class,StringUtils.join(cache.asMap().keySet(), ","));
+        //plugin.debug(AllCardManager.class,StringUtils.join(cache.asMap().keySet(), ","));
     }
 
     @Override
@@ -219,10 +221,13 @@ public class AllCardManager extends TradingCardManager implements CardManager<Tr
 
     @Override
     public List<CompositeCardKey> getKeys() {
-        final List<CompositeCardKey> keys = new ArrayList<>();
-        for(TradingCard card: plugin.getStorage().getCards()) {
-            keys.add(new CompositeCardKey(card.getRarity().getId(),card.getSeries().getId(),card.getCardId()));
+        if(this.keys == null) {
+            this.keys = new ArrayList<>();
+            for(TradingCard card: plugin.getStorage().getCards()) {
+                keys.add(new CompositeCardKey(card.getRarity().getId(),card.getSeries().getId(),card.getCardId()));
+            }
         }
+
         return keys;
     }
 
