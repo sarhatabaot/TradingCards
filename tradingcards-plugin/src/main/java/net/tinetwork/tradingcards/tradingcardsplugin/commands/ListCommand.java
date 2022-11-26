@@ -97,31 +97,7 @@ public class ListCommand extends BaseCommand {
             ChatUtil.sendMessage(sender, seriesCardList);
         }
 
-        private String getRarityListTitle(final Player target, final String rarityId, final String rarityDisplayName) {
-            final String sectionFormat = plugin.getMessagesConfig().sectionFormat();
-            final String sectionFormatComplete = plugin.getMessagesConfig().sectionFormatComplete();
-            int cardCounter = countPlayerOwnedCardsInRarity(target, rarityId);
-            int shinyCardCounter = countPlayerOwnedShinyCardsInRarity(target, rarityId);
-            int sizeOfRarityCardList;
 
-            try {
-                sizeOfRarityCardList = plugin.getCardManager().getRarityCardCache().get(rarityId).size();
-            } catch (ExecutionException e) {
-                sizeOfRarityCardList = 0;
-            }
-
-            if (cardCounter == sizeOfRarityCardList) {
-                return sectionFormatComplete
-                        .replaceAll(PlaceholderUtil.SHINY_CARDS_OWNED.asRegex(), String.valueOf(shinyCardCounter))
-                        .formatted(rarityDisplayName, plugin.getGeneralConfig().colorRarityCompleted());
-            }
-
-            return sectionFormat
-                    .replaceAll(PlaceholderUtil.CARDS_OWNED.asRegex(), String.valueOf(cardCounter))
-                    .replaceAll(PlaceholderUtil.SHINY_CARDS_OWNED.asRegex(), String.valueOf(shinyCardCounter))
-                    .replaceAll(PlaceholderUtil.CARDS_TOTAL.asRegex(), String.valueOf(sizeOfRarityCardList))
-                    .formatted(rarityDisplayName);
-        }
 
         private String getSeriesListTitle(final Player target, final String seriesId, final String seriesDisplayName) {
             final String sectionFormat = plugin.getMessagesConfig().sectionFormat();
@@ -161,6 +137,7 @@ public class ListCommand extends BaseCommand {
                 ChatUtil.sendPrefixedMessage(sender, InternalMessages.CardsCommand.PLAYER_OFFLINE);
                 return;
             }
+
             if (rarityId == null) {
                 final String sectionFormat = plugin.getMessagesConfig().sectionFormatPlayer().replaceAll(PlaceholderUtil.PLAYER.asRegex(), target.getName());
                 ChatUtil.sendMessage(sender, sectionFormat);
@@ -281,11 +258,37 @@ public class ListCommand extends BaseCommand {
             final Rarity rarityObject = plugin.getRarityManager().getRarity(rarityId);
 
             //send title
-            ChatUtil.sendMessage(sender,getRarityListTitle(target,rarityId,rarityObject.getDisplayName()));
+            ChatUtil.sendMessage(sender, getRarityListTitle(target,rarityId,rarityObject.getDisplayName()));
 
             //send actual message
             final String rarityCardList = generateRarityCardList(target, rarityId);
             ChatUtil.sendMessage(sender, rarityCardList);
+        }
+
+        private String getRarityListTitle(final Player target, final String rarityId, final String rarityDisplayName) {
+            final String sectionFormat = plugin.getMessagesConfig().sectionFormat();
+            final String sectionFormatComplete = plugin.getMessagesConfig().sectionFormatComplete();
+            int cardCounter = countPlayerOwnedCardsInRarity(target, rarityId);
+            int shinyCardCounter = countPlayerOwnedShinyCardsInRarity(target, rarityId);
+            int sizeOfRarityCardList;
+
+            try {
+                sizeOfRarityCardList = plugin.getCardManager().getRarityCardCache().get(rarityId).size();
+            } catch (ExecutionException e) {
+                sizeOfRarityCardList = 0;
+            }
+
+            if (cardCounter == sizeOfRarityCardList) {
+                return sectionFormatComplete
+                        .replaceAll(PlaceholderUtil.SHINY_CARDS_OWNED.asRegex(), String.valueOf(shinyCardCounter))
+                        .formatted(rarityDisplayName, plugin.getGeneralConfig().colorRarityCompleted());
+            }
+
+            return sectionFormat
+                    .replaceAll(PlaceholderUtil.CARDS_OWNED.asRegex(), String.valueOf(cardCounter))
+                    .replaceAll(PlaceholderUtil.SHINY_CARDS_OWNED.asRegex(), String.valueOf(shinyCardCounter))
+                    .replaceAll(PlaceholderUtil.CARDS_TOTAL.asRegex(), String.valueOf(sizeOfRarityCardList))
+                    .formatted(rarityDisplayName);
         }
 
         private int countPlayerOwnedCardsInRarity(final Player player, final String rarityId) {

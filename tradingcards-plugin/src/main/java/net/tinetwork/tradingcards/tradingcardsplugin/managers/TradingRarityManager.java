@@ -1,5 +1,6 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.managers;
 
+import com.github.sarhatabaot.kraken.core.logging.LoggerUtil;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -15,9 +16,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 public class TradingRarityManager extends Manager<String,Rarity> implements RarityManager, Cacheable<String,Rarity> {
+    private List<String> keys;
     public static final Rarity EMPTY_RARITY = new Rarity("empty","empty","",0.00,0.00, Collections.singletonList(""), null);
     public TradingRarityManager(final TradingCards plugin) {
         super(plugin);
@@ -27,7 +30,10 @@ public class TradingRarityManager extends Manager<String,Rarity> implements Rari
 
     @Override
     public List<String> getKeys() {
-        return getRarities().stream().map(Rarity::getId).toList();
+        if(this.keys == null) {
+            this.keys = getRarities().stream().map(Rarity::getId).toList();
+        }
+        return this.keys;
     }
 
     @Contract(" -> new")
@@ -46,7 +52,12 @@ public class TradingRarityManager extends Manager<String,Rarity> implements Rari
 
     @Nullable
     public Rarity getRarity(final String id) {
-        return this.cache.getUnchecked(id);
+        try {
+            return this.cache.get(id);
+        } catch (ExecutionException e) {
+            LoggerUtil.logSevereException(e);
+            return null;
+        }
     }
 
     @Override

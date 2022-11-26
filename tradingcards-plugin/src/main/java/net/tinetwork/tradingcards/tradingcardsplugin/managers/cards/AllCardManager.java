@@ -80,7 +80,12 @@ public class AllCardManager extends TradingCardManager implements CardManager<Tr
 
     @Override
     public List<String> getCardsIdsInRarityAndSeries(final String rarityId, final String seriesId) {
-        return this.rarityAndSeriesCardCache.getUnchecked(CompositeRaritySeriesKey.of(rarityId,seriesId)).stream().map(TradingCard::getCardId).toList();
+        try {
+            return this.rarityAndSeriesCardCache.get(CompositeRaritySeriesKey.of(rarityId, seriesId)).stream().map(TradingCard::getCardId).toList();
+        } catch (ExecutionException e) {
+            LoggerUtil.logSevereException(e);
+            return Collections.emptyList();
+        }
     }
 
     public void initValues() {
