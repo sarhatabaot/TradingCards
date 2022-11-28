@@ -86,9 +86,9 @@ public class SqlStorage implements Storage<TradingCard> {
     private final Settings jooqSettings;
     private final StorageType storageType;
 
-    private Map<String, String> rarityViewMap;
-    private Map<String, String> seriesViewMap;
-    private Map<CompositeRaritySeriesKey, String>  raritySeriesViewMap;
+    private final Map<String, String> rarityViewMap;
+    private final Map<String, String> seriesViewMap;
+    private final Map<CompositeRaritySeriesKey, String>  raritySeriesViewMap;
 
     @Override
     public void init(final TradingCards plugin) {
