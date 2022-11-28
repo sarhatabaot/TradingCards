@@ -162,15 +162,15 @@ public class SqlStorage implements Storage<TradingCard> {
                                         .from(Cards.CARDS)
                                         .where(Cards.CARDS.RARITY_ID.eq(rarity.getId())))
                                 .execute();
-                        rarityViewMap.put(rarity.getId(), viewName);
                         plugin.debug(SqlStorage.class, "Created view %s for rarity %s".formatted(viewName, rarity.getId()));
                     } catch (DataAccessException e){
                         if(e.getMessage().contains("already exists")) {
                             plugin.debug(SqlStorage.class, e.getMessage());
-                            return;
+                        } else {
+                            LoggerUtil.logSevereException(e);
                         }
-                        LoggerUtil.logSevereException(e);
                     }
+                    rarityViewMap.put(rarity.getId(), viewName);
                 }
             }
         }.executeUpdate();
@@ -197,10 +197,11 @@ public class SqlStorage implements Storage<TradingCard> {
                     } catch (DataAccessException e){
                         if(e.getMessage().contains("already exists")) {
                             plugin.debug(SqlStorage.class, e.getMessage());
-                            return;
+                        } else {
+                            LoggerUtil.logSevereException(e);
                         }
-                        LoggerUtil.logSevereException(e);
                     }
+                    seriesViewMap.put(series.getId(), viewName);
                 }
             }
         }.executeUpdate();
@@ -214,6 +215,7 @@ public class SqlStorage implements Storage<TradingCard> {
                 for(final Rarity rarity: getRarities()) {
                     for (final Series series : getAllSeries()) {
                         final String viewName = viewFormat.formatted(rarity.getId(), series.getId());
+                        CompositeRaritySeriesKey raritySeriesKey = CompositeRaritySeriesKey.of(rarity.getId(), series.getId());
                         try {
                             dslContext.createViewIfNotExists(viewName)
                                     .as(DSL.select(Cards.CARDS.CARD_ID, Cards.CARDS.RARITY_ID,
@@ -224,16 +226,15 @@ public class SqlStorage implements Storage<TradingCard> {
                                             .where(Cards.CARDS.RARITY_ID.eq(rarity.getId())
                                                     .and(Cards.CARDS.SERIES_ID.eq(series.getId()))))
                                     .execute();
-                            CompositeRaritySeriesKey raritySeriesKey = CompositeRaritySeriesKey.of(rarity.getId(), series.getId());
-                            raritySeriesViewMap.put(raritySeriesKey, viewName);
                             plugin.debug(SqlStorage.class, "Created view %s for rarity.series %s".formatted(viewName, raritySeriesKey));
                         } catch (DataAccessException e){
                             if(e.getMessage().contains("already exists")) {
                                 plugin.debug(SqlStorage.class, e.getMessage());
-                                return;
+                            } else {
+                                LoggerUtil.logSevereException(e);
                             }
-                            LoggerUtil.logSevereException(e);
                         }
+                        raritySeriesViewMap.put(raritySeriesKey, viewName);
                     }
                 }
             }
@@ -907,6 +908,11 @@ public class SqlStorage implements Storage<TradingCard> {
 
             @Override
             public List<TradingCard> onRunQuery(final DSLContext dslContext) {
+                if(!seriesViewMap.isEmpty() && seriesViewMap.containsKey(seriesId)) {
+                    return getQuery(dslContext.select()
+                            .from(formatViewSelection(seriesViewMap.get(seriesId)))
+                            .fetch());
+                }
                 return getQuery(dslContext.select()
                         .from(Cards.CARDS)
                         .where(Cards.CARDS.SERIES_ID.eq(seriesId))
@@ -927,6 +933,11 @@ public class SqlStorage implements Storage<TradingCard> {
         return new ExecuteQuery<List<TradingCard>, Result<Record>>(this, jooqSettings) {
             @Override
             public List<TradingCard> onRunQuery(final DSLContext dslContext) {
+                if(!raritySeriesViewMap.isEmpty() && raritySeriesViewMap.containsKey(CompositeRaritySeriesKey.of(rarityId,seriesId))) {
+                    return getQuery(dslContext.select()
+                            .from(formatViewSelection(raritySeriesViewMap.get(CompositeRaritySeriesKey.of(rarityId,seriesId))))
+                            .fetch());
+                }
                 return getQuery(dslContext.select()
                         .from(Cards.CARDS)
                         .where(Cards.CARDS.RARITY_ID.eq(rarityId)
