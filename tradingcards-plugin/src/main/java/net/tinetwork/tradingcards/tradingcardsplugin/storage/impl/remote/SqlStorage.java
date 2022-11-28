@@ -15,6 +15,7 @@ import net.tinetwork.tradingcards.api.model.schedule.Mode;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.CompositeRaritySeriesKey;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalDebug;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalExceptions;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalLog;
@@ -62,12 +63,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
+
+import static org.jooq.impl.DSL.select;
 
 /**
  * @author sarhatabaot
@@ -79,11 +84,19 @@ public class SqlStorage implements Storage<TradingCard> {
     private final Settings jooqSettings;
     private final StorageType storageType;
 
+    private Map<String, String> rarityViewMap;
+    private Map<String, String> seriesViewMap;
+    private Map<CompositeRaritySeriesKey, String>  raritySeriesViewMap;
+
     @Override
     public void init(final TradingCards plugin) {
         connectionFactory.init(plugin);
         try {
             applySchema();
+
+            createCardsInRarityViews();
+            createCardsInSeriesViews();
+            createCardsInRarityAndSeriesViews();
         } catch (SQLException | IOException e) {
             plugin.getLogger().severe(e.getMessage());
         }
@@ -99,6 +112,10 @@ public class SqlStorage implements Storage<TradingCard> {
         this.storageType = storageType;
         this.statementProcessor = new StatementProcessor(tablePrefix);
         this.jooqSettings = new Settings();
+
+        this.rarityViewMap = new HashMap<>();
+        this.seriesViewMap = new HashMap<>();
+        this.raritySeriesViewMap = new HashMap<>();
         initJooqSettings(tablePrefix, dbName);
     }
 
@@ -126,6 +143,77 @@ public class SqlStorage implements Storage<TradingCard> {
                 )
         );
     }
+
+    private void createCardsInRarityViews() {
+        new ExecuteUpdate(this, jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                final String viewFormat = "view_rarity_%s";
+                for(final Rarity rarity: getRarities()) {
+                    final String viewName = viewFormat.formatted(rarity.getId());
+                    dslContext.createViewIfNotExists(viewName)
+                            .as(select(Cards.CARDS.CARD_ID,Cards.CARDS.RARITY_ID,
+                                            Cards.CARDS.SERIES_ID, Cards.CARDS.BUY_PRICE, Cards.CARDS.INFO,
+                                            Cards.CARDS.CURRENCY_ID, Cards.CARDS.CUSTOM_MODEL_DATA,
+                                            Cards.CARDS.DISPLAY_NAME, Cards.CARDS.HAS_SHINY, Cards.CARDS.SELL_PRICE, Cards.CARDS.TYPE_ID)
+                                    .from(Cards.CARDS)
+                                    .where(Cards.CARDS.RARITY_ID.eq(rarity.getId())))
+                            .execute();
+                    rarityViewMap.put(rarity.getId(),viewName);
+                    plugin.debug(SqlStorage.class,"Created view %s for rarity %s".formatted(viewName,rarity.getId()));
+                }
+            }
+        }.executeUpdate();
+    }
+
+    private void createCardsInSeriesViews() {
+        new ExecuteUpdate(this, jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                final String viewFormat = "view_series_%s";
+                for(final Series series: getAllSeries()) {
+                    final String viewName = viewFormat.formatted(series.getId());
+                    dslContext.createViewIfNotExists(viewName)
+                            .as(DSL.select(Cards.CARDS.CARD_ID,Cards.CARDS.RARITY_ID,
+                                            Cards.CARDS.SERIES_ID, Cards.CARDS.BUY_PRICE, Cards.CARDS.INFO,
+                                            Cards.CARDS.CURRENCY_ID, Cards.CARDS.CUSTOM_MODEL_DATA,
+                                            Cards.CARDS.DISPLAY_NAME, Cards.CARDS.HAS_SHINY, Cards.CARDS.SELL_PRICE, Cards.CARDS.TYPE_ID)
+                                    .from(Cards.CARDS)
+                                    .where(Cards.CARDS.SERIES_ID.eq(series.getId())))
+                            .execute();
+                    seriesViewMap.put(series.getId(),viewName);
+                    plugin.debug(SqlStorage.class,"Created view %s for series %s".formatted(viewName,series.getId()));
+                }
+            }
+        }.executeUpdate();
+    }
+
+    private void createCardsInRarityAndSeriesViews() {
+        new ExecuteUpdate(this, jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                final String viewFormat = "view_rarity_series_%s_%s";
+                for(final Rarity rarity: getRarities()) {
+                    for (final Series series : getAllSeries()) {
+                        final String viewName = viewFormat.formatted(rarity.getId(), series.getId());
+                        dslContext.createViewIfNotExists(viewName)
+                                .as(DSL.select(Cards.CARDS.CARD_ID, Cards.CARDS.RARITY_ID,
+                                                Cards.CARDS.SERIES_ID, Cards.CARDS.BUY_PRICE, Cards.CARDS.INFO,
+                                                Cards.CARDS.CURRENCY_ID, Cards.CARDS.CUSTOM_MODEL_DATA,
+                                                Cards.CARDS.DISPLAY_NAME, Cards.CARDS.HAS_SHINY, Cards.CARDS.SELL_PRICE, Cards.CARDS.TYPE_ID)
+                                        .from(Cards.CARDS)
+                                        .where(Cards.CARDS.RARITY_ID.eq(rarity.getId())
+                                                .and(Cards.CARDS.SERIES_ID.eq(series.getId()))))
+                                .execute();
+                        CompositeRaritySeriesKey raritySeriesKey = CompositeRaritySeriesKey.of(rarity.getId(), series.getId());
+                        raritySeriesViewMap.put(raritySeriesKey, viewName);
+                        plugin.debug(SqlStorage.class,"Created view %s for rarity.series %s".formatted(viewName,raritySeriesKey));
+                    }
+                }
+            }
+        }.executeUpdate();
+    }
+
 
     @Override
     public List<Deck> getPlayerDecks(final @NotNull UUID playerUuid) {
@@ -736,6 +824,11 @@ public class SqlStorage implements Storage<TradingCard> {
         return new ExecuteQuery<List<TradingCard>, Result<Record>>(this, jooqSettings) {
             @Override
             public List<TradingCard> onRunQuery(final DSLContext dslContext) {
+                if(!rarityViewMap.isEmpty() && rarityViewMap.containsKey(rarityId)) {
+                    return getQuery(dslContext.select()
+                            .from(rarityViewMap.get(rarityId))
+                            .fetch());
+                }
                 return getQuery(dslContext.select()
                         .from(Cards.CARDS)
                         .where(Cards.CARDS.RARITY_ID.eq(rarityId)).fetch());
