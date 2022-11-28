@@ -188,11 +188,6 @@ public class ListCommand extends BaseCommand {
             ChatUtil.sendMessage(sender, StringUtils.join(plugin.getUpgradeManager().getUpgrades().stream().map(Upgrade::id).toList(), ","));
         }
 
-
-        private TradingCard getCard(final String cardId, final String rarityId, final String seriesId) {
-            return plugin.getCardManager().getCard(cardId, rarityId, seriesId);
-        }
-
         private @NotNull String generateSeriesCardList(final Player target, final String seriesId) {
             final StringBuilder stringBuilder = new StringBuilder();
             String prefix = "";
