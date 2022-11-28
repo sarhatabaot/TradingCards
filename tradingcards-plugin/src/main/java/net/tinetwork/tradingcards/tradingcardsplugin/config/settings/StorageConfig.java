@@ -100,6 +100,10 @@ public class StorageConfig extends StorageConfigurate {
         return defaultSeriesId;
     }
 
+    public boolean isFirstTimeValues() {
+        return firstTimeValues;
+    }
+
     @Override
     public String getDefaultCardsFile() {
         return defaultCardsFile;

@@ -97,11 +97,33 @@ public class SqlStorage implements Storage<TradingCard> {
         try {
             applySchema();
 
+            createFirstTimeValues();
             createCardsInRarityViews();
             createCardsInSeriesViews();
             createCardsInRarityAndSeriesViews();
         } catch (SQLException | IOException e) {
             plugin.getLogger().severe(e.getMessage());
+        }
+    }
+
+    private void createFirstTimeValues() {
+        if(!plugin.getStorageConfig().isFirstTimeValues()) {
+            return;
+        }
+
+        List<String> rarityList = List.of("common","uncommon","rare","very-rare","legendary");
+        for(String rarityId: rarityList) {
+            createRarity(rarityId);
+        }
+        Map<String, Mode> defaultSeries = Map.of("default", Mode.ACTIVE, "halloween", Mode.DISABLED);
+        for(Map.Entry<String,Mode> entry:defaultSeries.entrySet()) {
+            createSeries(entry.getKey());
+            editSeriesMode(entry.getKey(),entry.getValue());
+        }
+
+        List<String> cardIds = List.of("zombie","skeleton", "creeper");
+        for(String cardId: cardIds) {
+            createCard(cardId, "common","default");
         }
     }
 
