@@ -519,6 +519,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public boolean hasCard(final UUID playerUuid, final String cardId, final String rarityId, final String seriesId) {
+        //This query is pretty slow. Perhaps we can store this as a function?
         return new ExecuteQuery<Boolean, Result<Record>>(this, jooqSettings) {
             @Override
             public Boolean onRunQuery(final DSLContext dslContext) {
