@@ -5,6 +5,10 @@ yaml:
   # Default file to create & edit cards in.
   default-file: "cards.yml"
 
+sql:
+  # Generate first time values for sql database.
+  first-time-values: false
+
 database:
   # Address and port for the database.
   address: localhost
