@@ -20,6 +20,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.CompositeRar
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalDebug;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalExceptions;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalLog;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.MigrationSettings;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.StorageType;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.enums.CustomTypesDropType;
@@ -619,8 +620,7 @@ public class SqlStorage implements Storage<TradingCard> {
     //From LuckPerms.
     private void applySchema() throws IOException, SQLException {
         List<String> statements;
-        //TODO, this should be applied via flyway and not using the schema reader.
-        String schemaFileName = "db/base/V0_" + this.connectionFactory.getType().toLowerCase(Locale.ROOT) + ".sql";
+        String schemaFileName = "db/base/V"+ MigrationSettings.LATEST_BASE_DB_VERSION +"_" + this.connectionFactory.getType().toLowerCase(Locale.ROOT) + ".sql";
         try (InputStream is = this.plugin.getResource(schemaFileName)) {
             if (is == null) {
                 throw new IOException(InternalExceptions.NO_SCHEMA.formatted(this.connectionFactory.getType()));
