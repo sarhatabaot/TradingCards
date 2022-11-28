@@ -63,13 +63,13 @@ public abstract class HikariConnectionFactory implements ConnectionFactory {
      */
     protected void postInitialize() {
         //on a fresh install the baseline version should be the latest.
-        //otherwise the baseline version should be the install version or 0
+        //otherwise the baseline version should be the installed version or 0
         Flyway flyway = Flyway.configure(getClass().getClassLoader())
                 .dataSource(dataSource)
-                .baselineVersion("0") //TODO
                 .baselineOnMigrate(true)
+                .baselineVersion(MigrationSettings.LATEST_BASE_DB_VERSION)
                 .locations("classpath:db/migration")
-                .target(MigrationSettings.LATEST_DB_VERSION) //TODO
+                .target(MigrationSettings.LATEST_DB_VERSION)
                 .placeholders(Map.of("prefix", storageConfig.getTablePrefix(), "default_series_id", storageConfig.getDefaultSeriesId()))
                 .load();
 

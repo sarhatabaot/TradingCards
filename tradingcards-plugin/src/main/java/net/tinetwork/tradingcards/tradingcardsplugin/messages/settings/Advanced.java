@@ -5,7 +5,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalE
 public final class Advanced {
     public static class Cache {
         public static class Rarity {
-            public static final Integer MAX_CACHE_ENTRIES = 100;
+            public static final Integer MAX_CACHE_ENTRIES = 1000;
             public static final Integer REFRESH_AFTER_WRITE = 5;
 
             private Rarity() {
@@ -14,7 +14,7 @@ public final class Advanced {
         }
 
         public static class Series {
-            public static final Integer MAX_CACHE_ENTRIES = 100;
+            public static final Integer MAX_CACHE_ENTRIES = 1000;
             public static final Integer REFRESH_AFTER_WRITE = 5;
 
             private Series() {
@@ -23,7 +23,7 @@ public final class Advanced {
         }
 
         public static class Cards {
-            public static final Integer MAX_CACHE_ENTRIES = 500;
+            public static final Integer MAX_CACHE_ENTRIES = 1000;
             public static final Integer REFRESH_AFTER_WRITE = 5;
 
             private Cards() {
@@ -32,7 +32,7 @@ public final class Advanced {
         }
 
         public static class Types {
-            public static final Integer MAX_CACHE_ENTRIES = 100;
+            public static final Integer MAX_CACHE_ENTRIES = 1000;
             public static final Integer REFRESH_AFTER_WRITE = 5;
 
             private Types() {
@@ -41,7 +41,7 @@ public final class Advanced {
         }
 
         public static class Packs {
-            public static final Integer MAX_CACHE_ENTRIES = 100;
+            public static final Integer MAX_CACHE_ENTRIES = 1000;
             public static final Integer REFRESH_AFTER_WRITE = 5;
 
             private Packs() {
@@ -50,7 +50,7 @@ public final class Advanced {
         }
 
         public static class Upgrades {
-            public static final Integer MAX_CACHE_ENTRIES = 100;
+            public static final Integer MAX_CACHE_ENTRIES = 1000;
             public static final Integer REFRESH_AFTER_WRITE = 5;
 
             private Upgrades() {
