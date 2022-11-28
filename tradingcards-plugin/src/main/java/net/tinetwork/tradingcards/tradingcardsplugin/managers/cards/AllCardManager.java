@@ -17,19 +17,17 @@ import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingRarityManag
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalDebug;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalLog;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
-public class AllCardManager extends TradingCardManager implements CardManager<TradingCard>{
+public class AllCardManager extends TradingCardManager implements CardManager<TradingCard> {
     public static final EmptyCard NULL_CARD = new EmptyCard();
     private List<CompositeCardKey> keys;
 
@@ -81,6 +79,9 @@ public class AllCardManager extends TradingCardManager implements CardManager<Tr
     @Override
     public List<String> getCardsIdsInRarityAndSeries(final String rarityId, final String seriesId) {
         try {
+            if (this.rarityAndSeriesCardCache.size() == 0) {
+                return Collections.emptyList();
+            }
             return this.rarityAndSeriesCardCache.get(CompositeRaritySeriesKey.of(rarityId, seriesId)).stream().map(TradingCard::getCardId).toList();
         } catch (ExecutionException e) {
             LoggerUtil.logSevereException(e);
@@ -104,7 +105,7 @@ public class AllCardManager extends TradingCardManager implements CardManager<Tr
 
     @Override
     public List<String> getRarityCardListIds(final String rarityId) {
-        if(this.rarityCardCache.getIfPresent(rarityId) == null)
+        if (this.rarityCardCache.getIfPresent(rarityId) == null)
             return Collections.emptyList();
 
         return this.rarityCardCache.getUnchecked(rarityId).stream().map(TradingCard::getCardId).toList();
@@ -114,12 +115,12 @@ public class AllCardManager extends TradingCardManager implements CardManager<Tr
     public List<String> getActiveRarityCardIds(final String rarity) {
         try {
             List<String> allCardIds = new ArrayList<>();
-            for(List<TradingCard> cardList: rarityCardCache.getAll(getActiveRarityIds()).values()) {
+            for (List<TradingCard> cardList : rarityCardCache.getAll(getActiveRarityIds()).values()) {
                 allCardIds = Stream.concat(allCardIds.stream(), cardList.stream().map(TradingCard::getCardId)).toList();
             }
             return allCardIds;
         } catch (ExecutionException e) {
-            plugin.debug(getClass(),e.getMessage());
+            plugin.debug(getClass(), e.getMessage());
             return Collections.emptyList();
         }
     }
@@ -137,7 +138,7 @@ public class AllCardManager extends TradingCardManager implements CardManager<Tr
     @Override
     public TradingCard getCard(final String cardId, final String rarityId, final String seriesId) {
         try {
-            return cache.get(new CompositeCardKey(rarityId,seriesId,cardId));
+            return cache.get(new CompositeCardKey(rarityId, seriesId, cardId));
         } catch (ExecutionException | NullPointerException e) {
             LoggerUtil.logSevereException(e);
             return NULL_CARD;
@@ -156,7 +157,7 @@ public class AllCardManager extends TradingCardManager implements CardManager<Tr
 
     @Override
     public TradingCard getRandomCardByRarity(final String rarityId) {
-        plugin.debug(AllCardManager.class,InternalDebug.CardsManager.RANDOM_CARD.formatted(rarityId));
+        plugin.debug(AllCardManager.class, InternalDebug.CardsManager.RANDOM_CARD.formatted(rarityId));
         int cardIndex = plugin.getRandom().nextInt(getRarityCardList(rarityId).size());
         return getRarityCardList(rarityId).get(cardIndex);
     }
@@ -169,8 +170,8 @@ public class AllCardManager extends TradingCardManager implements CardManager<Tr
     }
 
     public TradingCard getRandomCardByRarityAndSeries(final String rarityId, final String seriesId) {
-        List<TradingCard> raritySeries = plugin.getStorage().getCardsInRarityAndSeries(rarityId,seriesId);
-        if(raritySeries== null || raritySeries.isEmpty())
+        List<TradingCard> raritySeries = plugin.getStorage().getCardsInRarityAndSeries(rarityId, seriesId);
+        if (raritySeries == null || raritySeries.isEmpty())
             return NULL_CARD;
 
         int cardIndex = plugin.getRandom().nextInt(raritySeries.size());
@@ -197,13 +198,13 @@ public class AllCardManager extends TradingCardManager implements CardManager<Tr
     public String getRandomRarityId(DropType dropType, boolean alwaysDrop) {
         int randomDropChance = plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1;
         int mobDropChance = getGeneralMobChance(dropType);
-        plugin.debug(AllCardManager.class,InternalDebug.CardsManager.DROP_CHANCE.formatted(randomDropChance,alwaysDrop,dropType,mobDropChance));
+        plugin.debug(AllCardManager.class, InternalDebug.CardsManager.DROP_CHANCE.formatted(randomDropChance, alwaysDrop, dropType, mobDropChance));
         if (!alwaysDrop && randomDropChance > mobDropChance) {
             return TradingRarityManager.EMPTY_RARITY.getId();
         }
 
         int randomRarityChance = plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1;
-        plugin.debug(AllCardManager.class,InternalDebug.CardsManager.RARITY_CHANCE.formatted(randomRarityChance));
+        plugin.debug(AllCardManager.class, InternalDebug.CardsManager.RARITY_CHANCE.formatted(randomRarityChance));
 
         for (String rarity : plugin.getRarityManager().getRarityIds()) {
             Chance chance = plugin.getChancesConfig().getChance(rarity);
@@ -220,16 +221,16 @@ public class AllCardManager extends TradingCardManager implements CardManager<Tr
 
     @Override
     public boolean containsCard(final String cardId, final String rarityId, final String seriesId) {
-        CompositeCardKey cardKey = new CompositeCardKey(rarityId,seriesId,cardId);
+        CompositeCardKey cardKey = new CompositeCardKey(rarityId, seriesId, cardId);
         return cache.getIfPresent(cardKey) != null;
     }
 
     @Override
     public List<CompositeCardKey> getKeys() {
-        if(this.keys == null) {
+        if (this.keys == null) {
             this.keys = new ArrayList<>();
-            for(TradingCard card: plugin.getStorage().getCards()) {
-                keys.add(new CompositeCardKey(card.getRarity().getId(),card.getSeries().getId(),card.getCardId()));
+            for (TradingCard card : plugin.getStorage().getCards()) {
+                keys.add(new CompositeCardKey(card.getRarity().getId(), card.getSeries().getId(), card.getCardId()));
             }
         }
 
