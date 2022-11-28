@@ -150,9 +150,10 @@ public class SqlStorage implements Storage<TradingCard> {
         new ExecuteUpdate(this, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
-                final String viewFormat = "view_rarity_%s";
+                final String viewFormat = "%sview_rarity_%s";
                 for(final Rarity rarity: getRarities()) {
-                    final String viewName = viewFormat.formatted(rarity.getId());
+                    final String tablePrefix = plugin.getStorageConfig().getTablePrefix();
+                    final String viewName = viewFormat.formatted(tablePrefix,rarity.getId());
                     try {
                         dslContext.createViewIfNotExists(viewName)
                                 .as(select(Cards.CARDS.CARD_ID, Cards.CARDS.RARITY_ID,
@@ -180,9 +181,10 @@ public class SqlStorage implements Storage<TradingCard> {
         new ExecuteUpdate(this, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
-                final String viewFormat = "view_series_%s";
+                final String viewFormat = "%sview_series_%s";
                 for(final Series series: getAllSeries()) {
-                    final String viewName = viewFormat.formatted(series.getId());
+                    final String tablePrefix = plugin.getStorageConfig().getTablePrefix();
+                    final String viewName = viewFormat.formatted(tablePrefix,series.getId());
                     try {
                         dslContext.createViewIfNotExists(viewName)
                                 .as(DSL.select(Cards.CARDS.CARD_ID, Cards.CARDS.RARITY_ID,
@@ -211,10 +213,11 @@ public class SqlStorage implements Storage<TradingCard> {
         new ExecuteUpdate(this, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
-                final String viewFormat = "view_rarity_series_%s_%s";
+                final String viewFormat = "%sview_rarity_series_%s_%s";
                 for(final Rarity rarity: getRarities()) {
                     for (final Series series : getAllSeries()) {
-                        final String viewName = viewFormat.formatted(rarity.getId(), series.getId());
+                        final String tablePrefix = plugin.getStorageConfig().getTablePrefix();
+                        final String viewName = viewFormat.formatted(tablePrefix, rarity.getId(), series.getId());
                         CompositeRaritySeriesKey raritySeriesKey = CompositeRaritySeriesKey.of(rarity.getId(), series.getId());
                         try {
                             dslContext.createViewIfNotExists(viewName)
