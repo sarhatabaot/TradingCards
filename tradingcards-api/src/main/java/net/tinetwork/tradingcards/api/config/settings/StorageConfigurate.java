@@ -27,4 +27,6 @@ public abstract class StorageConfigurate extends YamlConfigurateFile<TradingCard
     public abstract String getDefaultSeriesId();
 
     public abstract String getDefaultCardsFile();
+
+    public abstract boolean isFirstTimeValues();
 }
