@@ -181,7 +181,7 @@ public class EditCommand extends BaseCommand {
         @CommandPermission(Permissions.EDIT_SERIES)
         @CommandCompletion("@series @edit-series @edit-series-value")
         //cards edit series <MODE|DISPLAY_NAME|COLORS> available-completion
-        public void onEditSeries(final CommandSender sender, final String seriesId, final EditSeries editSeries, final String value) {
+        public void onEditSeries(final CommandSender sender, final String seriesId, final EditSeries editSeries, String value) {
             if (!plugin.getSeriesManager().containsSeries(seriesId)) {
                 ChatUtil.sendPrefixedMessage(sender, InternalMessages.NO_SERIES.formatted(seriesId));
                 return;
@@ -201,16 +201,22 @@ public class EditCommand extends BaseCommand {
                     String type = selectedSeriesColors.getType();
                     String series = selectedSeriesColors.getSeries();
                     String rarity = selectedSeriesColors.getRarity();
-                    for (String string : value.split(" ")) {
-                        switch (string) {
-                            case "info=" -> info = string.split("=")[1];
-                            case "about=" -> about = string.split("=")[1];
-                            case "type=" -> type = string.split("=")[1];
-                            case "series=" -> series = string.split("=")[1];
-                            case "rarity" -> rarity = string.split("=")[1];
-                            default -> plugin.debug(EditCommand.class, InternalDebug.EditCommand.UNSUPPORTED_ARG.formatted(value));
+
+                    List<String> colorOptions = List.of("info", "about", "type", "series", "rarity");
+                    for(String string: value.split(" ")) {
+                        final String option = string.split("=")[0];
+                        if(colorOptions.contains(option)) {
+                            switch (option) {
+                                case "info" -> info = string.split("=")[1];
+                                case "about" -> about = string.split("=")[1];
+                                case "type" -> type = string.split("=")[1];
+                                case "series" -> series = string.split("=")[1];
+                                case "rarity" -> rarity = string.split("=")[1];
+                                default -> plugin.debug(EditCommand.class, InternalDebug.EditCommand.UNSUPPORTED_ARG.formatted(value));
+                            }
                         }
                     }
+
 
                     ColorSeries colorSeries = new ColorSeries(series, type, info, about, rarity);
                     storage.editSeriesColors(seriesId, colorSeries);
@@ -374,7 +380,9 @@ public class EditCommand extends BaseCommand {
 
         //set edit.toString() to value for id
         private void sendSetTypes(final CommandSender sender, final String id, final @NotNull Edit edit, final String value) {
-            if (edit instanceof EditRarity editRarity && editRarity == EditRarity.DEFAULT_COLOR) {
+            if ((edit instanceof EditRarity editRarity && editRarity == EditRarity.DEFAULT_COLOR) ||
+                    (edit instanceof EditSeries editSeries && editSeries == EditSeries.COLORS)
+            ) {
                 String partialFormat = "&7Set &b%s &7to &b{value} &7for &b%s".formatted(edit, id);
                 sender.sendMessage(ChatUtil.color(plugin.prefixed(partialFormat)).replace("{value}", value));
                 return;
