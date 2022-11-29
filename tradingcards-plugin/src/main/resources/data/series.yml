@@ -73,7 +73,7 @@ scheduled:
   # Active drops from killing mobs
   # Disabled does not drop from killing mobs, can still get it from /cards give
   # Scheduled Active between set dates
-  mode: SCHEDULED
+  mode: DISABLED
   # Not relevant unless mode is set to scheduled
   colors:
     series: "&a"
