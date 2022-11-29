@@ -1,3 +1,4 @@
 {
-  "latest-db-version": "8"
+  "latest-db-version": "8",
+  "latest-base-db-version": "8"
 }

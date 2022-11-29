@@ -53,7 +53,7 @@ public class YamlStorage implements Storage<TradingCard> {
     private final Map<CompositeCardKey, TradingCard> activeCards;
     private final Map<String, List<TradingCard>> rarityCardList;
     private final Map<String, List<TradingCard>> seriesCardList;
-    private Map<String,Map<String,List<TradingCard>>> raritySeriesCardList;
+    private Map<String, Map<String, List<TradingCard>>> raritySeriesCardList;
 
     @Override
     public void shutdown() throws Exception {
@@ -71,7 +71,7 @@ public class YamlStorage implements Storage<TradingCard> {
         this.raritiesConfig = new RaritiesConfig(plugin);
         this.seriesConfig = new SeriesConfig(plugin);
         this.customTypesConfig = new CustomTypesConfig(plugin);
-        this.cardsConfig = new CardsConfig(plugin,this);
+        this.cardsConfig = new CardsConfig(plugin, this);
         this.upgradesConfig = new UpgradesConfig(plugin);
 
         this.cards = new HashMap<>();
@@ -106,26 +106,26 @@ public class YamlStorage implements Storage<TradingCard> {
     public Deck getDeck(final UUID playerUuid, final int deckNumber) {
         final List<String> deckEntries = deckConfig.getDeckEntries(playerUuid, String.valueOf(deckNumber));
         final List<StorageEntry> storageEntries = DeckConfig.convertToDeckEntries(deckEntries);
-        return new Deck(playerUuid,deckNumber,storageEntries);
+        return new Deck(playerUuid, deckNumber, storageEntries);
     }
 
     @Override
     public void saveDeck(final UUID playerUuid, final int deckNumber, final Deck deck) {
-        deckConfig.saveEntries(playerUuid,deckNumber,deck);
+        deckConfig.saveEntries(playerUuid, deckNumber, deck);
         deckConfig.reloadConfig();
     }
 
     @Override
-    public boolean hasCard(final UUID playerUuid, final String cardId, final String rarityId,final String seriesId) {
-        return deckConfig.containsCard(playerUuid, cardId, rarityId);
+    public boolean hasCard(final UUID playerUuid, final String cardId, final String rarityId, final String seriesId) {
+        return deckConfig.containsCard(playerUuid, cardId, rarityId, seriesId);
     }
 
     @Override
-    public boolean hasShinyCard(final UUID playerUuid, final String card, final String rarity,final String seriesId) {
-        return deckConfig.containsShinyCard(playerUuid,card,rarity);
+    public boolean hasShinyCard(final UUID playerUuid, final String card, final String rarity, final String seriesId) {
+        return deckConfig.containsShinyCard(playerUuid, card, rarity, seriesId);
     }
 
-    public Map<UUID,List<Deck>> getAllDecks() {
+    public Map<UUID, List<Deck>> getAllDecks() {
         return deckConfig.getAllDecks();
     }
 
@@ -134,7 +134,7 @@ public class YamlStorage implements Storage<TradingCard> {
     public Rarity getRarityById(final String rarityId) {
         try {
             return raritiesConfig.getRarity(rarityId);
-        } catch (SerializationException e){
+        } catch (SerializationException e) {
             return null;
         }
     }
@@ -143,7 +143,7 @@ public class YamlStorage implements Storage<TradingCard> {
     @Override
     public List<String> getRewards(final String rarityId) {
         final Rarity rarity = getRarityById(rarityId);
-        if(rarity == null)
+        if (rarity == null)
             return null;
 
         return rarity.getRewards();
@@ -161,6 +161,11 @@ public class YamlStorage implements Storage<TradingCard> {
     }
 
     @Override
+    public boolean containsPack(final String packId) {
+        return packsConfig.getPackNames().contains(packId);
+    }
+
+    @Override
     public void reload() {
         this.raritiesConfig.reloadConfig();
         this.seriesConfig.reloadConfig();
@@ -173,7 +178,6 @@ public class YamlStorage implements Storage<TradingCard> {
     public List<Rarity> getRarities() {
         return this.raritiesConfig.rarities();
     }
-
 
 
     @Override
@@ -190,7 +194,7 @@ public class YamlStorage implements Storage<TradingCard> {
     public Pack getPack(final String packsId) {
         try {
             return this.packsConfig.getPack(packsId);
-        } catch (SerializationException e){
+        } catch (SerializationException e) {
             Util.logSevereException(e);
             return EmptyPack.emptyPack();
         }
@@ -215,14 +219,14 @@ public class YamlStorage implements Storage<TradingCard> {
     }
 
     private void loadCards() {
-        for (Map.Entry<String,SimpleCardsConfig> entry: cardsConfig.getCardConfigs().entrySet()) {
+        for (Map.Entry<String, SimpleCardsConfig> entry : cardsConfig.getCardConfigs().entrySet()) {
             for (final Rarity rarity : raritiesConfig.rarities()) {
                 var cardNodes = entry.getValue().getCards(rarity.getId()).entrySet();
 
                 for (Map.Entry<Object, ? extends ConfigurationNode> nodeEntry : cardNodes) {
                     final String cardId = nodeEntry.getValue().key().toString();
                     final String seriesId = nodeEntry.getValue().node("series").getString("default");
-                    final CompositeCardKey cardKey = new CompositeCardKey(rarity.getId(),seriesId,cardId);
+                    final CompositeCardKey cardKey = new CompositeCardKey(rarity.getId(), seriesId, cardId);
                     plugin.debug(YamlStorage.class, InternalDebug.CARD_KEY.formatted(cardKey));
                     cards.put(cardKey, generateCard(entry.getValue(), cardId, rarity.getId()));
                 }
@@ -231,38 +235,38 @@ public class YamlStorage implements Storage<TradingCard> {
     }
 
     private void loadActiveSeries() {
-        for(Series series: getAllSeries()) {
-            if(series.isActive()) {
+        for (Series series : getAllSeries()) {
+            if (series.isActive()) {
                 activeSeries.add(series);
             }
         }
     }
 
     private void loadRarityCards() {
-        for(Map.Entry<CompositeCardKey,TradingCard> entry: cards.entrySet()) {
+        for (Map.Entry<CompositeCardKey, TradingCard> entry : cards.entrySet()) {
             final TradingCard card = entry.getValue();
             final Rarity rarity = card.getRarity();
-            rarityCardList.putIfAbsent(rarity.getId(),new ArrayList<>());
+            rarityCardList.putIfAbsent(rarity.getId(), new ArrayList<>());
             rarityCardList.get(rarity.getId()).add(card);
         }
     }
 
 
     private void loadSeriesCards() {
-        for(Map.Entry<CompositeCardKey,TradingCard> entry: cards.entrySet()) {
+        for (Map.Entry<CompositeCardKey, TradingCard> entry : cards.entrySet()) {
             final TradingCard card = entry.getValue();
             final Series series = card.getSeries();
-            seriesCardList.putIfAbsent(series.getId(),new ArrayList<>());
+            seriesCardList.putIfAbsent(series.getId(), new ArrayList<>());
             seriesCardList.get(series.getId()).add(card);
         }
     }
 
 
     private void loadActiveCards() {
-        for(TradingCard card: getCards()) {
+        for (TradingCard card : getCards()) {
             //This only loads on startup, that means that it doesn't update. But only on restarts/reloads TODO
-            if(card.getSeries().isActive()) {
-                activeCards.put(CompositeCardKey.fromCard(card),card);
+            if (card.getSeries().isActive()) {
+                activeCards.put(CompositeCardKey.fromCard(card), card);
             }
         }
     }
@@ -289,17 +293,17 @@ public class YamlStorage implements Storage<TradingCard> {
 
     private void loadRaritySeriesCardList() {
         this.raritySeriesCardList = new HashMap<>();
-        for(final Rarity rarity : plugin.getStorage().getRarities()) {
-            this.raritySeriesCardList.putIfAbsent(rarity.getId(),new HashMap<>());
-            Map<String,List<TradingCard>> seriesCardMap = this.raritySeriesCardList.get(rarity.getId());
-            if(rarityCardList.get(rarity.getId()) == null)
+        for (final Rarity rarity : plugin.getStorage().getRarities()) {
+            this.raritySeriesCardList.putIfAbsent(rarity.getId(), new HashMap<>());
+            Map<String, List<TradingCard>> seriesCardMap = this.raritySeriesCardList.get(rarity.getId());
+            if (rarityCardList.get(rarity.getId()) == null)
                 continue;
-            for(TradingCard tradingCard: rarityCardList.get(rarity.getId())) {
+            for (TradingCard tradingCard : rarityCardList.get(rarity.getId())) {
                 String series = tradingCard.getSeries().getId();
-                seriesCardMap.putIfAbsent(series,new ArrayList<>());
+                seriesCardMap.putIfAbsent(series, new ArrayList<>());
                 seriesCardMap.get(series).add(tradingCard);
             }
-            this.raritySeriesCardList.put(rarity.getId(),seriesCardMap);
+            this.raritySeriesCardList.put(rarity.getId(), seriesCardMap);
         }
     }
 
@@ -310,13 +314,13 @@ public class YamlStorage implements Storage<TradingCard> {
 
     @Override
     public Card<TradingCard> getCard(final String cardId, final String rarityId, final String seriesId) {
-        return cards.get(new CompositeCardKey(rarityId,seriesId,cardId));
+        return cards.get(new CompositeCardKey(rarityId, seriesId, cardId));
     }
 
     @Override
     public void createCard(final String cardId, final String rarityId, final String seriesId) {
         SimpleCardsConfig config = cardsConfig.getCardConfigs().get(plugin.getStorageConfig().getDefaultCardsFile());
-        config.createCard(cardId,rarityId,seriesId);
+        config.createCard(cardId, rarityId, seriesId);
     }
 
     @Override
@@ -336,7 +340,7 @@ public class YamlStorage implements Storage<TradingCard> {
 
     @Override
     public void createCustomType(final String typeId, final String type) {
-        customTypesConfig.createCustomType(typeId,type);
+        customTypesConfig.createCustomType(typeId, type);
     }
 
     @Override
@@ -386,80 +390,80 @@ public class YamlStorage implements Storage<TradingCard> {
     @Override
     public void editCardDisplayName(final String rarityId, final String cardId, final String seriesId, final String displayName) {
         SimpleCardsConfig simpleCardsConfig = cardsConfig.getCardConfigs().get(getDefaultEditCardFile());
-        simpleCardsConfig.editDisplayName(rarityId,cardId,seriesId,displayName);
+        simpleCardsConfig.editDisplayName(rarityId, cardId, seriesId, displayName);
     }
 
     @Override
     public void editCardSeries(final String rarityId, final String cardId, final String seriesId, final Series value) {
         SimpleCardsConfig simpleCardsConfig = cardsConfig.getCardConfigs().get(getDefaultEditCardFile());
-        simpleCardsConfig.editSeries(rarityId,cardId,seriesId,value);
+        simpleCardsConfig.editSeries(rarityId, cardId, seriesId, value);
     }
 
     @Override
     public void editCardSellPrice(final String rarityId, final String cardId, final String seriesId, final double value) {
         SimpleCardsConfig simpleCardsConfig = cardsConfig.getCardConfigs().get(getDefaultEditCardFile());
-        simpleCardsConfig.editSellPrice(rarityId,cardId,seriesId,value);
+        simpleCardsConfig.editSellPrice(rarityId, cardId, seriesId, value);
     }
 
     @Override
     public void editCardType(final String rarityId, final String cardId, final String seriesId, final DropType value) {
         SimpleCardsConfig simpleCardsConfig = cardsConfig.getCardConfigs().get(getDefaultEditCardFile());
-        simpleCardsConfig.editType(rarityId,cardId,seriesId,value);
+        simpleCardsConfig.editType(rarityId, cardId, seriesId, value);
     }
 
     @Override
     public void editCardInfo(final String rarityId, final String cardId, final String seriesId, final String value) {
         SimpleCardsConfig simpleCardsConfig = cardsConfig.getCardConfigs().get(getDefaultEditCardFile());
-        simpleCardsConfig.editInfo(rarityId,cardId,seriesId,value);
+        simpleCardsConfig.editInfo(rarityId, cardId, seriesId, value);
     }
 
     @Override
     public void editCardCustomModelData(final String rarityId, final String cardId, final String seriesId, final int value) {
         SimpleCardsConfig simpleCardsConfig = cardsConfig.getCardConfigs().get(getDefaultEditCardFile());
-        simpleCardsConfig.editModelData(rarityId,cardId,seriesId,value);
+        simpleCardsConfig.editModelData(rarityId, cardId, seriesId, value);
     }
 
     @Override
     public void editCardBuyPrice(final String rarityId, final String cardId, final String seriesId, final double value) {
         SimpleCardsConfig simpleCardsConfig = cardsConfig.getCardConfigs().get(getDefaultEditCardFile());
-        simpleCardsConfig.editBuyPrice(rarityId,cardId,seriesId,value);
+        simpleCardsConfig.editBuyPrice(rarityId, cardId, seriesId, value);
     }
 
     @Override
     public void editCardHasShiny(final String rarityId, final String cardId, final String seriesId, final boolean value) {
         SimpleCardsConfig simpleCardsConfig = cardsConfig.getCardConfigs().get(getDefaultEditCardFile());
-        simpleCardsConfig.editHasShiny(rarityId,cardId,seriesId,value);
+        simpleCardsConfig.editHasShiny(rarityId, cardId, seriesId, value);
     }
 
     @Override
     public void editCardCurrencyId(final String rarityId, final String cardId, final String seriesId, final String value) {
         SimpleCardsConfig simpleCardsConfig = cardsConfig.getCardConfigs().get(getDefaultEditCardFile());
-        simpleCardsConfig.editCurrencyId(rarityId,cardId,seriesId,value);
+        simpleCardsConfig.editCurrencyId(rarityId, cardId, seriesId, value);
     }
 
     @Override
     public void editRarityBuyPrice(final String rarityId, final double buyPrice) {
-        raritiesConfig.editBuyPrice(rarityId,buyPrice);
+        raritiesConfig.editBuyPrice(rarityId, buyPrice);
     }
 
     @Override
     public void editRarityAddReward(final String rarityId, final String reward) {
-        raritiesConfig.editAddReward(rarityId,reward);
+        raritiesConfig.editAddReward(rarityId, reward);
     }
 
     @Override
     public void editRarityDefaultColor(final String rarityId, final String defaultColor) {
-        raritiesConfig.editDefaultColor(rarityId,defaultColor);
+        raritiesConfig.editDefaultColor(rarityId, defaultColor);
     }
 
     @Override
     public void editRarityDisplayName(final String rarityId, final String displayName) {
-        raritiesConfig.editDisplayName(rarityId,displayName);
+        raritiesConfig.editDisplayName(rarityId, displayName);
     }
 
     @Override
     public void editRaritySellPrice(final String rarityId, final double sellPrice) {
-        raritiesConfig.editSellPrice(rarityId,sellPrice);
+        raritiesConfig.editSellPrice(rarityId, sellPrice);
     }
 
     @Override
@@ -469,7 +473,7 @@ public class YamlStorage implements Storage<TradingCard> {
 
     @Override
     public void editRarityRemoveReward(final String rarityId, final int rewardNumber) {
-        raritiesConfig.editRemoveReward(rarityId,rewardNumber);
+        raritiesConfig.editRemoveReward(rarityId, rewardNumber);
     }
 
     @Override
@@ -479,17 +483,17 @@ public class YamlStorage implements Storage<TradingCard> {
 
     @Override
     public void editSeriesDisplayName(final String seriesId, final String displayName) {
-        seriesConfig.editDisplayName(seriesId,displayName);
+        seriesConfig.editDisplayName(seriesId, displayName);
     }
 
     @Override
     public void editSeriesColors(final String seriesId, final ColorSeries colors) {
-        seriesConfig.editColors(seriesId,colors);
+        seriesConfig.editColors(seriesId, colors);
     }
 
     @Override
     public void editSeriesMode(final String seriesId, final Mode mode) {
-        seriesConfig.editMode(seriesId,mode);
+        seriesConfig.editMode(seriesId, mode);
     }
 
     @Override
@@ -499,7 +503,7 @@ public class YamlStorage implements Storage<TradingCard> {
 
     @Override
     public void editCustomTypeDisplayName(final String typeId, final String displayName) {
-        customTypesConfig.editDisplayName(typeId,displayName);
+        customTypesConfig.editDisplayName(typeId, displayName);
     }
 
     @Override
@@ -509,56 +513,56 @@ public class YamlStorage implements Storage<TradingCard> {
 
     @Override
     public void editPackDisplayName(final String packId, final String displayName) {
-        packsConfig.editDisplayName(packId,displayName);
+        packsConfig.editDisplayName(packId, displayName);
     }
 
     @Override
     public void editPackContents(final String packId, final int lineNumber, final PackEntry packEntry) {
-        packsConfig.editContents(packId,lineNumber,packEntry);
+        packsConfig.editContents(packId, lineNumber, packEntry);
     }
 
     @Override
     public void editPackContentsAdd(final String packId, final PackEntry packEntry) {
         List<PackEntry> packEntries = getPack(packId).getPackEntryList();
         int lineNumber = (packEntries == null) ? 0 : packEntries.size() - 1;
-        packsConfig.editContents(packId,lineNumber,packEntry);
+        packsConfig.editContents(packId, lineNumber, packEntry);
     }
 
     @Override
     public void editPackContentsDelete(final String packId, final int lineNumber) {
-        packsConfig.editContents(packId,lineNumber,null);
+        packsConfig.editContents(packId, lineNumber, null);
     }
 
     @Override
     public void editPackTradeCards(final String packId, final int lineNumber, final PackEntry packEntry) {
-        packsConfig.editTradeCards(packId,lineNumber,packEntry);
+        packsConfig.editTradeCards(packId, lineNumber, packEntry);
     }
 
     @Override
     public void editPackTradeCardsAdd(final String packId, final PackEntry packEntry) {
         List<PackEntry> packEntries = getPack(packId).getTradeCards();
         int lineNumber = (packEntries == null) ? 0 : packEntries.size() - 1;
-        packsConfig.editTradeCards(packId,lineNumber,packEntry);
+        packsConfig.editTradeCards(packId, lineNumber, packEntry);
     }
 
     @Override
     public void editPackTradeCardsDelete(final String packId, final int lineNumber) {
-        packsConfig.editTradeCards(packId,lineNumber,null);
+        packsConfig.editTradeCards(packId, lineNumber, null);
     }
 
     @Override
     public void editPackPermission(final String packId, final String permission) {
-        packsConfig.editPermission(packId,permission);
+        packsConfig.editPermission(packId, permission);
     }
 
     @Override
     public void editPackPrice(final String packId, final double price) {
-        packsConfig.editPrice(packId,price);
+        packsConfig.editPrice(packId, price);
     }
 
     @Override
     public void editPackCurrencyId(final String packId, final String currencyId) {
-        packsConfig.editCurrencyId(packId,currencyId);
+        packsConfig.editCurrencyId(packId, currencyId);
     }
 
     @Override
@@ -573,7 +577,7 @@ public class YamlStorage implements Storage<TradingCard> {
 
     @Override
     public int getCardsInRarityAndSeriesCount(final String rarityId, final String seriesId) {
-        return getCardsInRarityAndSeries(rarityId,seriesId).size();
+        return getCardsInRarityAndSeries(rarityId, seriesId).size();
     }
 
     @Override
@@ -595,7 +599,7 @@ public class YamlStorage implements Storage<TradingCard> {
     public Upgrade getUpgrade(final String upgradeId) {
         try {
             return upgradesConfig.getUpgrade(upgradeId);
-        } catch (SerializationException e){
+        } catch (SerializationException e) {
             Util.logSevereException(e);
             return null;
         }

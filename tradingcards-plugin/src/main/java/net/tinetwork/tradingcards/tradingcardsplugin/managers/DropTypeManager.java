@@ -80,9 +80,6 @@ public class DropTypeManager extends Manager<String, DropType> implements TypeMa
     public List<String> getKeys() {
         return Stream.concat(plugin.getStorage().getDropTypes().stream()
                 .map(DropType::getId), DEFAULT_IDS.stream()).toList();
-//        return plugin.getStorage().getDropTypes().stream()
-//                .map(DropType::getId)
-//                .toList();
     }
 
     @Override

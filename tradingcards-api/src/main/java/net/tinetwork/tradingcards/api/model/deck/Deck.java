@@ -43,6 +43,8 @@ public class Deck {
         return Objects.hash(playerUuid, number, deckEntries);
     }
 
+
+    @Deprecated(since = "5.7.3", forRemoval = true)
     public boolean containsCard(final String cardId, final String rarityId) {
         for(StorageEntry entry: deckEntries) {
             if(entry.getCardId().equals(cardId) && entry.getRarityId().equals(rarityId))
@@ -51,7 +53,8 @@ public class Deck {
         return false;
     }
 
-    public boolean containsCard(final String cardId, final String rarityId,final boolean shiny) {
+    @Deprecated(since = "5.7.3", forRemoval = true)
+    public boolean containsCard(final String cardId, final String rarityId, final boolean shiny) {
         for(StorageEntry entry: deckEntries) {
             if(entry.getCardId().equals(cardId) && entry.getRarityId().equals(rarityId) && entry.isShiny() == shiny)
                 return true;
@@ -67,6 +70,12 @@ public class Deck {
         return false;
     }
 
+
+    /**
+     * @deprecated
+     * Use {@link #getCardEntry(String, String, String)} }
+     */
+    @Deprecated(since = "5.7.3", forRemoval = true)
     public StorageEntry getCardEntry(final String cardId,final String rarityId) {
         for(StorageEntry entry: deckEntries) {
             if(entry.getCardId().equals(cardId) && entry.getRarityId().equals(rarityId))
@@ -74,4 +83,34 @@ public class Deck {
         }
         return null;
     }
+
+    public StorageEntry getCardEntry(final String cardId, final String rarityId, final String seriesId) {
+        for(StorageEntry entry: deckEntries) {
+            if(entry.getCardId().equals(cardId) && entry.getRarityId().equals(rarityId) && entry.getSeriesId().equals(seriesId))
+                return entry;
+        }
+        return null;
+    }
+
+    public boolean containsCard(final String cardId, final String rarityId, final String seriesId, final boolean shiny) {
+        for(StorageEntry entry: deckEntries) {
+            if(entry.getCardId().equals(cardId) &&
+                    entry.getRarityId().equals(rarityId) &&
+                    entry.getSeriesId().equals(seriesId) &&
+                    entry.isShiny() == shiny)
+                return true;
+        }
+        return false;
+    }
+
+    public boolean containsCard(final String cardId, final String rarityId, final String seriesId) {
+        for(StorageEntry entry: deckEntries) {
+            if(entry.getCardId().equals(cardId) &&
+                    entry.getRarityId().equals(rarityId) &&
+                    entry.getSeriesId().equals(seriesId))
+                return true;
+        }
+        return false;
+    }
+
 }

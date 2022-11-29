@@ -29,6 +29,8 @@ public class StorageConfig extends StorageConfigurate {
 
     private String defaultCardsFile;
 
+    private boolean firstTimeValues;
+
 
     public StorageConfig(final TradingCards plugin) throws ConfigurateException {
         super(plugin, "settings" + File.separator, "storage.yml", "settings");
@@ -51,6 +53,9 @@ public class StorageConfig extends StorageConfigurate {
 
         final ConfigurationNode dbMigration = rootNode.node("database-migration");
         this.defaultSeriesId = dbMigration.node("default-series-id").getString(Storage.DatabaseMigration.DEFAULT_SERIES_ID);
+
+        final ConfigurationNode sql = rootNode.node("sql");
+        this.firstTimeValues = sql.node("first-time-values").getBoolean(Storage.Sql.FIRST_TIME_VALUES);
     }
 
     @Override
@@ -93,6 +98,10 @@ public class StorageConfig extends StorageConfigurate {
 
     public String getDefaultSeriesId() {
         return defaultSeriesId;
+    }
+
+    public boolean isFirstTimeValues() {
+        return firstTimeValues;
     }
 
     @Override

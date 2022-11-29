@@ -13,6 +13,14 @@ public final class Storage {
         }
     }
 
+    public static class Sql {
+        public static final Boolean FIRST_TIME_VALUES = false;
+
+        private Sql() {
+            throw new UnsupportedOperationException(InternalExceptions.UTIL_CLASS);
+        }
+    }
+
     public static class Database {
         public static final String ADDRESS = "localhost";
         public static final Integer PORT = 3306;

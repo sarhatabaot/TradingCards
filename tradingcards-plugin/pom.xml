@@ -11,7 +11,7 @@
     <parent>
         <groupId>net.tinetwork.tradingcards</groupId>
         <artifactId>tradingcards-parent</artifactId>
-        <version>5.7.3</version>
+        <version>5.7.10</version>
     </parent>
     <properties>
         <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
@@ -42,6 +42,8 @@
         <mariadb.version>2.7.4</mariadb.version>
         <!-- Others -->
         <zip4j.version>2.11.2</zip4j.version>
+
+        <sql.schema.version>V0_mysql.sql</sql.schema.version>
     </properties>
 
     <pluginRepositories>
@@ -190,7 +192,7 @@
                                 <properties>
                                     <property>
                                         <key>scripts</key>
-                                        <value>src/main/resources/db/base/V0_mysql.sql</value>
+                                        <value>src/main/resources/db/base/${sql.schema.version}</value>
                                     </property>
                                     <property>
                                         <key>dialect</key>
