@@ -3,6 +3,7 @@ package net.tinetwork.tradingcards.api.model.deck;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
+
 public class StorageEntry {
     private final String rarityId;
     private final String cardId;
@@ -31,7 +32,7 @@ public class StorageEntry {
         return isShiny;
     }
 
-    public StorageEntry(final String rarityId, final String cardId, final int amount, final boolean isShiny,final String seriesId) {
+    public StorageEntry(final String rarityId, final String cardId, final int amount, final boolean isShiny, final String seriesId) {
         this.rarityId = rarityId;
         this.cardId = cardId;
         this.amount = amount;
@@ -41,7 +42,7 @@ public class StorageEntry {
 
     @Override
     public String toString() {
-        return rarityId + "," + cardId + "," + amount + "," + isShiny+","+seriesId;
+        return rarityId + "," + cardId + "," + amount + "," + isShiny + "," + seriesId;
     }
 
     public static @NotNull StorageEntry fromString(final @NotNull String string) {
@@ -51,13 +52,13 @@ public class StorageEntry {
         final int amount = Integer.parseInt(split[2]);
         final boolean isShiny = parseShinyString(split[3]);
         final String seriesId = split[4];
-        return new StorageEntry(rarity, card, amount, isShiny,seriesId);
+        return new StorageEntry(rarity, card, amount, isShiny, seriesId);
     }
 
     private static boolean parseShinyString(final String string) {
-        if("no".equalsIgnoreCase(string))
+        if ("no".equalsIgnoreCase(string))
             return false;
-        if("yes".equalsIgnoreCase(string))
+        if ("yes".equalsIgnoreCase(string))
             return true;
         return Boolean.parseBoolean(string);
     }
@@ -68,19 +69,26 @@ public class StorageEntry {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final StorageEntry that = (StorageEntry) o;
-        return amount == that.amount && isShiny == that.isShiny && Objects.equals(rarityId, that.rarityId) && Objects.equals(cardId, that.cardId) && Objects.equals(seriesId,that.getSeriesId());
+        return amount == that.amount
+                && isShiny == that.isShiny
+                && Objects.equals(rarityId, that.rarityId)
+                && Objects.equals(cardId, that.cardId)
+                && Objects.equals(seriesId, that.getSeriesId());
     }
 
     public boolean isSimilar(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final StorageEntry that = (StorageEntry) o;
-        return isShiny == that.isShiny && Objects.equals(rarityId, that.rarityId) && Objects.equals(cardId, that.cardId) && Objects.equals(seriesId,that.getSeriesId());
+        return isShiny == that.isShiny
+                && Objects.equals(rarityId, that.rarityId)
+                && Objects.equals(cardId, that.cardId)
+                && Objects.equals(seriesId, that.getSeriesId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(rarityId, cardId, amount, isShiny,seriesId);
+        return Objects.hash(rarityId, cardId, amount, isShiny, seriesId);
     }
 
     public String getSeriesId() {

@@ -63,6 +63,7 @@ public class TradingDeckManager implements DeckManager {
             ChatUtil.sendPrefixedMessage(player,"If you already ran /cards migrate data, make sure to restart your server.");
             return;
         }
+
         plugin.debug(TradingDeckManager.class, InternalDebug.DecksManager.HAS_MIGRATION.formatted(plugin.getMigrateCommand().isRanDataMigration()));
         plugin.debug(TradingDeckManager.class, InternalDebug.DecksManager.PLAYER_UUID.formatted(player.getUniqueId()));
 
@@ -154,7 +155,7 @@ public class TradingDeckManager implements DeckManager {
     public ItemStack createDeckItem(@NotNull final Player player, final int deckNumber) {
         ItemStack deck = plugin.getGeneralConfig().blankDeck();
         ItemMeta deckMeta = deck.getItemMeta();
-        //probably best to have this set somewhere
+        //todo probably best to have this set somewhere
         deckMeta.setDisplayName(ChatUtil.color(plugin.getGeneralConfig().deckPrefix() + player.getName() + "'s Deck #" + deckNumber));
         deckMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         deck.setItemMeta(deckMeta);
