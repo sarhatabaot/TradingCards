@@ -484,7 +484,7 @@ public class SqlStorage implements Storage<TradingCard> {
         List<StorageEntry> cardsToRemove = new ArrayList<>();
 
         for (StorageEntry deckEntry : deckEntries) {
-            boolean cardExistsInDatabase = dbDeck.containsCard(deckEntry.getCardId(), deckEntry.getRarityId(), deckEntry.isShiny());
+            boolean cardExistsInDatabase = dbDeck.containsCard(deckEntry.getCardId(), deckEntry.getRarityId(), deckEntry.getSeriesId(), deckEntry.isShiny());
             //if it exists, but the entry is 64, add a new line?
             if (cardExistsInDatabase) {
                 if (!dbDeckEntries.contains(deckEntry)) {
@@ -498,7 +498,7 @@ public class SqlStorage implements Storage<TradingCard> {
         }
 
         for (StorageEntry dbDeckEntry : dbDeckEntries) {
-            boolean cardExistsInDeck = deck.containsCard(dbDeckEntry.getCardId(), dbDeckEntry.getRarityId(), dbDeckEntry.isShiny());
+            boolean cardExistsInDeck = deck.containsCard(dbDeckEntry.getCardId(), dbDeckEntry.getRarityId(), dbDeckEntry.getSeriesId(), dbDeckEntry.isShiny());
             if (!cardExistsInDeck) {
                 cardsToRemove.add(dbDeckEntry);
             }
@@ -530,12 +530,14 @@ public class SqlStorage implements Storage<TradingCard> {
                 dslContext.update(Decks.DECKS)
                         .set(Decks.DECKS.CARD_ID, storageEntry.getCardId())
                         .set(Decks.DECKS.RARITY_ID, storageEntry.getRarityId())
+                        .set(Decks.DECKS.SERIES_ID, storageEntry.getSeriesId())
                         .set(Decks.DECKS.IS_SHINY, storageEntry.isShiny())
                         .set(Decks.DECKS.AMOUNT, storageEntry.getAmount())
                         .where(Decks.DECKS.UUID.eq(playerUuid.toString()))
                         .and(Decks.DECKS.DECK_NUMBER.eq(deckNumber))
                         .and(Decks.DECKS.CARD_ID.eq(storageEntry.getCardId()))
                         .and(Decks.DECKS.RARITY_ID.eq(storageEntry.getRarityId()))
+                        .and(Decks.DECKS.SERIES_ID.eq(storageEntry.getSeriesId()))
                         .and(Decks.DECKS.IS_SHINY.eq(storageEntry.isShiny()))
                         .execute();
                 plugin.debug(SqlStorage.class, InternalDebug.Sql.UPDATE.formatted(storageEntry));
@@ -607,6 +609,7 @@ public class SqlStorage implements Storage<TradingCard> {
     public void addCardToDeck(final UUID playerUuid, final int deckNumber, final @NotNull StorageEntry entry) {
         final String cardId = entry.getCardId();
         final String rarityId = entry.getRarityId();
+        final String seriesId = entry.getSeriesId();
         final int amount = entry.getAmount();
         new ExecuteUpdate(this, jooqSettings) {
             @Override
@@ -616,6 +619,7 @@ public class SqlStorage implements Storage<TradingCard> {
                         .set(Decks.DECKS.DECK_NUMBER, deckNumber)
                         .set(Decks.DECKS.CARD_ID, cardId)
                         .set(Decks.DECKS.RARITY_ID, rarityId)
+                        .set(Decks.DECKS.SERIES_ID, seriesId)
                         .set(Decks.DECKS.AMOUNT, amount)
                         .set(Decks.DECKS.IS_SHINY, entry.isShiny())
                         .execute();
