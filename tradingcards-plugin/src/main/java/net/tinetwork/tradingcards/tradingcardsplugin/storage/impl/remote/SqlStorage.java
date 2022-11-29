@@ -1349,6 +1349,11 @@ public class SqlStorage implements Storage<TradingCard> {
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.insertInto(SeriesColors.SERIES_COLORS)
                         .set(SeriesColors.SERIES_COLORS.SERIES_ID, seriesId)
+                        .set(SeriesColors.SERIES_COLORS.ABOUT, "&7")
+                        .set(SeriesColors.SERIES_COLORS.INFO, "&7")
+                        .set(SeriesColors.SERIES_COLORS.TYPE, "&7")
+                        .set(SeriesColors.SERIES_COLORS.SERIES, "&7")
+                        .set(SeriesColors.SERIES_COLORS.RARITY, "&7")
                         .onDuplicateKeyIgnore()
                         .execute();
             }

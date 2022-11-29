@@ -94,6 +94,7 @@ public class CreateCommand extends BaseCommand{
             }
             sendCreatedMessage(sender,"series",seriesId);
             plugin.getStorage().createSeries(seriesId);
+            plugin.getStorage().createColorSeries(seriesId);
         }
 
         @Subcommand("type")
