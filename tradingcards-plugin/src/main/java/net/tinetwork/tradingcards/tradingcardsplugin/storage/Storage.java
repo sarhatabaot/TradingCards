@@ -117,6 +117,7 @@ public interface Storage<T extends Card<T>> {
      */
     Set<Series> getActiveSeries();
 
+    boolean containsPack(final String packId);
 
     /**
      * @return A list of all cards.

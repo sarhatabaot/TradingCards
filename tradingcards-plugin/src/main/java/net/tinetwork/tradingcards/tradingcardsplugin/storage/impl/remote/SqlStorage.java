@@ -430,6 +430,27 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
     @Override
+    public boolean containsPack(final String packId) {
+        return new ExecuteQuery<Boolean, Record>(this, jooqSettings) {
+            @Override
+            public Boolean onRunQuery(final DSLContext dslContext) throws SQLException {
+                return dslContext.fetchExists(Packs.PACKS,
+                        Packs.PACKS.PACK_ID.eq(packId));
+            }
+
+            @Override
+            public Boolean getQuery(final @NotNull Record result) throws SQLException {
+                return empty();
+            }
+
+            @Override
+            public Boolean empty() {
+                return false;
+            }
+        }.prepareAndRunQuery();
+    }
+
+    @Override
     public boolean containsSeries(final String seriesId) {
         return new ExecuteQuery<Boolean, Record>(this, jooqSettings) {
             @Override
@@ -1728,14 +1749,15 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
     @Override
-    public void editPackContents(final String packId, final int lineNumber, final @NotNull PackEntry packEntry) {
-        if (getPackEntries(packId).isEmpty()) {
+    public void editPackContents(final String packId,final int lineNumber, final @NotNull PackEntry packEntry) {
+        final List<PackEntry> entries = getPackEntries(packId);
+        if (entries.isEmpty() || entries.size() <= lineNumber) {
             new ExecuteUpdate(this,jooqSettings) {
                 @Override
                 protected void onRunUpdate(final DSLContext dslContext) {
                     dslContext.insertInto(PacksContent.PACKS_CONTENT)
                             .set(PacksContent.PACKS_CONTENT.PACK_ID, packId)
-                            .set(PacksContent.PACKS_CONTENT.LINE_NUMBER, lineNumber)
+                            .set(PacksContent.PACKS_CONTENT.LINE_NUMBER, entries.size())
                             .set(PacksContent.PACKS_CONTENT.SERIES_ID, packEntry.seriesId())
                             .set(PacksContent.PACKS_CONTENT.RARITY_ID, packEntry.getRarityId())
                             .set(PacksContent.PACKS_CONTENT.CARD_AMOUNT, String.valueOf(packEntry.getAmount()))
@@ -1744,6 +1766,7 @@ public class SqlStorage implements Storage<TradingCard> {
             }.executeUpdate();
             return;
         }
+
         new ExecuteUpdate(this, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
@@ -1789,7 +1812,8 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void editPackTradeCards(final String packId, final int lineNumber, final PackEntry packEntry) {
-        if (getTradeEntries(packId).isEmpty()) {
+        final List<PackEntry> entries = getTradeEntries(packId);
+        if (entries.isEmpty() || entries.size() <= lineNumber) {
             new ExecuteUpdate(this, jooqSettings) {
                 @Override
                 protected void onRunUpdate(final DSLContext dslContext) {

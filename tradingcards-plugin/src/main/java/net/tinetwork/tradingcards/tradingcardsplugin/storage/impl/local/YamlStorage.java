@@ -161,6 +161,11 @@ public class YamlStorage implements Storage<TradingCard> {
     }
 
     @Override
+    public boolean containsPack(final String packId) {
+        return packsConfig.getPackNames().contains(packId);
+    }
+
+    @Override
     public void reload() {
         this.raritiesConfig.reloadConfig();
         this.seriesConfig.reloadConfig();
