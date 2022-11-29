@@ -256,7 +256,7 @@ public class EditCommand extends BaseCommand {
         @CommandCompletion("@packs @edit-pack @edit-pack-value") //Default Types needs to depend on edit-types
         @CommandPermission(Permissions.EDIT_PACK)
         public void onEditPack(final CommandSender sender, final String packId, final EditPack editType, final String value) {
-            if (!plugin.getPackManager().containsPack(packId)) {
+            if (!plugin.getStorage().containsPack(packId)) {
                 ChatUtil.sendPrefixedMessage(sender, InternalMessages.NO_PACK.formatted(packId));
                 return;
             }

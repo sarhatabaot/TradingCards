@@ -430,6 +430,27 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
     @Override
+    public boolean containsPack(final String packId) {
+        return new ExecuteQuery<Boolean, Record>(this, jooqSettings) {
+            @Override
+            public Boolean onRunQuery(final DSLContext dslContext) throws SQLException {
+                return dslContext.fetchExists(Packs.PACKS,
+                        Packs.PACKS.PACK_ID.eq(packId));
+            }
+
+            @Override
+            public Boolean getQuery(final @NotNull Record result) throws SQLException {
+                return empty();
+            }
+
+            @Override
+            public Boolean empty() {
+                return false;
+            }
+        }.prepareAndRunQuery();
+    }
+
+    @Override
     public boolean containsSeries(final String seriesId) {
         return new ExecuteQuery<Boolean, Record>(this, jooqSettings) {
             @Override
