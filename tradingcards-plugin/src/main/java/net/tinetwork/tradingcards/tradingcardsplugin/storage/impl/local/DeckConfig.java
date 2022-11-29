@@ -65,17 +65,17 @@ public class DeckConfig extends YamlConfigurateFile<TradingCards> {
         for (Map.Entry<Object, ? extends ConfigurationNode> nodeEntry : inventoriesNode.node(playerUuid.toString()).childrenMap().entrySet()) {
             final int deckNumber = Integer.parseInt(nodeEntry.getKey().toString());
             final List<StorageEntry> deckEntries = convertToDeckEntries(getDeckEntries(playerUuid, String.valueOf(deckNumber)));
-            final Deck deck = new Deck(playerUuid,deckNumber,deckEntries);
+            final Deck deck = new Deck(playerUuid, deckNumber, deckEntries);
             decks.add(deck);
         }
         return decks;
     }
 
-    public Map<UUID,List<Deck>> getAllDecks() {
-        Map<UUID,List<Deck>> playerDeckMap = new HashMap<>();
-        for(Map.Entry<Object, ? extends ConfigurationNode> nodeEntry:inventoriesNode.childrenMap().entrySet()) {
+    public Map<UUID, List<Deck>> getAllDecks() {
+        Map<UUID, List<Deck>> playerDeckMap = new HashMap<>();
+        for (Map.Entry<Object, ? extends ConfigurationNode> nodeEntry : inventoriesNode.childrenMap().entrySet()) {
             final UUID playerUuid = UUID.fromString(nodeEntry.getKey().toString());
-            playerDeckMap.put(playerUuid,getPlayerDecks(playerUuid));
+            playerDeckMap.put(playerUuid, getPlayerDecks(playerUuid));
         }
         return playerDeckMap;
     }
@@ -138,33 +138,76 @@ public class DeckConfig extends YamlConfigurateFile<TradingCards> {
     }
 
     //Returns true if the deck contains this card, regardless if it's shiny or not
-    public boolean containsCard(final UUID uuid, final String card, final String rarity) {
+
+    /**
+     * @deprecated
+     * Use {@link #containsCard(UUID, String, String, String)}
+     */
+    @Deprecated(since = "5.7.3", forRemoval = true)
+    public boolean containsCard(final UUID uuid, final String cardId, final String rarityId) {
         List<Deck> playerDeckList = getPlayerDecks(uuid);
-        if(playerDeckList.isEmpty())
+        if (playerDeckList.isEmpty())
             return false;
 
-        for(Deck deck: playerDeckList) {
-            if(deck.containsCard(card,rarity)) {
+        for (Deck deck : playerDeckList) {
+            if (deck.containsCard(cardId, rarityId)) {
                 return true;
             }
         }
         return false;
     }
 
-    public boolean containsShinyCard(final UUID uuid, final String card, final String rarity) {
+
+
+    /**
+     * @deprecated 
+     * Use {@link #containsShinyCard(UUID, String, String, String)}
+     */
+    @Deprecated(since = "5.7.3", forRemoval = true)
+    public boolean containsShinyCard(final UUID uuid, final String cardId, final String rarity) {
         List<Deck> playerDeckList = getPlayerDecks(uuid);
-        if(playerDeckList.isEmpty())
+        if (playerDeckList.isEmpty())
             return false;
 
-        for(Deck deck: playerDeckList) {
-            if(deck.containsCard(card,rarity)) {
-                final StorageEntry cardEntry = deck.getCardEntry(card,rarity);
-                if(cardEntry != null) {
+        for (Deck deck : playerDeckList) {
+            if (deck.containsCard(cardId, rarity)) {
+                final StorageEntry cardEntry = deck.getCardEntry(cardId, rarity);
+                if (cardEntry != null) {
                     return cardEntry.isShiny();
                 }
             }
         }
         return false;
+    }
+
+    public boolean containsCard(final UUID uuid, final String cardId, final String rarityId, final String seriesId, final boolean isShiny) {
+        List<Deck> playerDeckList = getPlayerDecks(uuid);
+        if (playerDeckList.isEmpty())
+            return false;
+
+        for (Deck deck : playerDeckList) {
+            if (deck.containsCard(cardId, rarityId, seriesId, isShiny)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean containsCard(final UUID uuid, final String cardId, final String rarityId, final String seriesId) {
+        List<Deck> playerDeckList = getPlayerDecks(uuid);
+        if (playerDeckList.isEmpty())
+            return false;
+
+        for (Deck deck : playerDeckList) {
+            if (deck.containsCard(cardId, rarityId, seriesId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean containsShinyCard(final UUID uuid, final String cardId,final String rarityId, final String seriesId) {
+        return containsCard(uuid,cardId,rarityId,seriesId,true);
     }
 
     @Override
