@@ -163,7 +163,7 @@ public class RaritiesConfig extends RarityConfigurate{
 
     public void createRarity(final String rarityId) {
         try {
-            Rarity rarity = new Rarity(rarityId,rarityId,"",0,0,new ArrayList<>(),null);
+            Rarity rarity = new Rarity(rarityId,rarityId,"",0D,0D,new ArrayList<>(),null);
             raritiesNode.node(rarityId).set(rarity);
             loader.save(rootNode);
             reloadConfig();

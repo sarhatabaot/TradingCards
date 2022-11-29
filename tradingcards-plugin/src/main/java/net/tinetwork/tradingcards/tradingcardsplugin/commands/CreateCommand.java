@@ -34,7 +34,7 @@ public class CreateCommand extends BaseCommand{
         private void sendCreatedMessage(final @NotNull CommandSender sender, final String type, final String id) {
             sender.sendMessage(InternalMessages.CreateCommand.CREATED_TYPE.formatted(type,id));
             final String editId = id.replace("cardId:","").replace("rarityId:","").replace("seriesId:","");
-            sender.sendMessage(InternalMessages.CreateCommand.CREATED_TYPE_EDIT.formatted(id,type,editId));
+            sender.sendMessage(InternalMessages.CreateCommand.CREATED_TYPE_EDIT.formatted(id,type,editId.replace(", ","")));
         }
 
         @Subcommand("rarity")

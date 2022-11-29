@@ -46,6 +46,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jooq.DSLContext;
+import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.Results;
@@ -343,12 +344,12 @@ public class SqlStorage implements Storage<TradingCard> {
 
             @Override
             public @NotNull Rarity getQuery(final @NotNull Record result) {
-                final String displayName = result.getValue(Rarities.RARITIES.DISPLAY_NAME);
-                final String defaultColor = result.getValue(Rarities.RARITIES.DEFAULT_COLOR);
+                final String displayName = result.get(Rarities.RARITIES.DISPLAY_NAME);
+                final String defaultColor = result.get(Rarities.RARITIES.DEFAULT_COLOR);
                 final List<String> rewards = getRewards(rarityId);
-                final double buyPrice = result.getValue(Rarities.RARITIES.BUY_PRICE);
-                final double sellPrice = result.getValue(Rarities.RARITIES.SELL_PRICE);
-                final String currencyId = result.getValue(Rarities.RARITIES.CURRENCY_ID);
+                final double buyPrice = result.get(Rarities.RARITIES.BUY_PRICE);
+                final double sellPrice = result.get(Rarities.RARITIES.SELL_PRICE);
+                final String currencyId = result.get(Rarities.RARITIES.CURRENCY_ID);
                 return new Rarity(rarityId, displayName, defaultColor, buyPrice, sellPrice, rewards, currencyId);
             }
 
@@ -1316,6 +1317,11 @@ public class SqlStorage implements Storage<TradingCard> {
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.insertInto(Rarities.RARITIES)
                         .set(Rarities.RARITIES.RARITY_ID, rarityId)
+                        .set(Rarities.RARITIES.DISPLAY_NAME,rarityId)
+                        .set(Rarities.RARITIES.DEFAULT_COLOR, "")
+                        .set(Rarities.RARITIES.BUY_PRICE, 0D)
+                        .set(Rarities.RARITIES.SELL_PRICE, 0D)
+                        .set(Rarities.RARITIES.CURRENCY_ID, (String) null)
                         .onDuplicateKeyIgnore()
                         .execute();
             }
@@ -1329,6 +1335,7 @@ public class SqlStorage implements Storage<TradingCard> {
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.insertInto(net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Series.SERIES)
                         .set(net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Series.SERIES.SERIES_ID, seriesId)
+                        .set(net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Series.SERIES.SERIES_MODE, SeriesSeriesMode.ACTIVE)
                         .onDuplicateKeyIgnore()
                         .execute();
             }
