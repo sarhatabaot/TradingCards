@@ -62,6 +62,11 @@ public class GiveCommands extends BaseCommand {
                     return;
                 }
 
+                if(shiny && !sender.hasPermission(Permissions.GIVE_CARD_SHINY)) {
+                    ChatUtil.sendPrefixedMessage(sender,"You do not have permission %s".formatted(Permissions.GIVE_CARD_SHINY));
+                    return;
+                }
+
                 if (card instanceof EmptyCard) {
                     sender.sendMessage(plugin.getMessagesConfig().noCard());
                     return;
@@ -79,14 +84,6 @@ public class GiveCommands extends BaseCommand {
                         .replaceAll(PlaceholderUtil.CARD.asRegex(), rarity.getDisplayName() + " " + card.getDisplayName())));
 
                 target.getInventory().addItem(card.build(shiny));
-            }
-
-            @Subcommand("shiny")
-            @CommandPermission(Permissions.GIVE_CARD_SHINY)
-            @CommandCompletion("@rarities @cards")
-            @Description("Gives a shiny card.")
-            public void onShiny(final Player player, @Single final Rarity rarity, @Single final Series series, @Single final String cardId) {
-                onPlayer(player, player.getName(), rarity, series,cardId,true);
             }
         }
 
