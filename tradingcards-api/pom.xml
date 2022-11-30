@@ -3,14 +3,23 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>net.tinetwork.tradingcards</groupId>
-        <artifactId>tradingcards-parent</artifactId>
-        <version>5.7.10</version>
-    </parent>
+<!--    <parent>-->
+<!--        <groupId>net.tinetwork.tradingcards</groupId>-->
+<!--        <artifactId>tradingcards-parent</artifactId>-->
+<!--        <version>5.7.10</version>-->
+<!--    </parent>-->
+
+    <groupId>net.tinetwork.tradingcards</groupId>
+    <artifactId>tradingcards-api</artifactId>
+    <version>5.7.10</version>
 
     <packaging>jar</packaging>
-    <artifactId>tradingcards-api</artifactId>
+
+    <properties>
+        <spigot.version>1.18.2-R0.1-SNAPSHOT</spigot.version>
+        <item.nbt.version>2.10.0</item.nbt.version>
+        <maven.compiler.version>3.10.1</maven.compiler.version>
+    </properties>
 
     <name>TradingCards API</name>
     <build>
@@ -55,17 +64,16 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+            <version>${spigot.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>de.tr7zw</groupId>
             <artifactId>item-nbt-api-plugin</artifactId>
             <version>${item.nbt.version}</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>co.aikar</groupId>
-            <artifactId>acf-paper</artifactId>
-            <version>${acf.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
     </dependencies>
 </project>
