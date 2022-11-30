@@ -31,6 +31,8 @@
         <adventure.bukkit.version>4.1.2</adventure.bukkit.version>
         <placeholderapi.version>2.11.2</placeholderapi.version>
 
+        <tradingcards.api.version>5.7.10</tradingcards.api.version>
+
         <!-- Tests -->
         <mockito.version>4.9.0</mockito.version>
         <mockbukkit.version>2.85.2</mockbukkit.version>
@@ -43,7 +45,7 @@
         <!-- Others -->
         <zip4j.version>2.11.2</zip4j.version>
 
-        <sql.schema.version>V0_mysql.sql</sql.schema.version>
+        <sql.schema.version>V0_mysql.sql</sql.schema.version> <!-- TODO -->
     </properties>
 
     <pluginRepositories>
@@ -384,7 +386,7 @@
         <dependency>
             <groupId>net.tinetwork.tradingcards</groupId>
             <artifactId>tradingcards-api</artifactId>
-            <version>${project.version}</version>
+            <version>${tradingcards.api.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
