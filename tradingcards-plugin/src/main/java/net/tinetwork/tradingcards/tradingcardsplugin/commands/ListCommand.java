@@ -218,6 +218,13 @@ public class ListCommand extends BaseCommand {
             return stringBuilder.toString();
         }
 
+        /*
+          Any card list should be paginated.
+          we should be able to change the max amount of cards per page..
+
+         */
+
+        @Deprecated(since = "5.7.10")
         private @NotNull String generateRarityCardList(final Player target, final String rarityId) {
             final StringBuilder stringBuilder = new StringBuilder();
             String prefix = "";
