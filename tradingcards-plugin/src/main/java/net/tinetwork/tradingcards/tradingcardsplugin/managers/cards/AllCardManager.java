@@ -194,12 +194,17 @@ public class AllCardManager extends TradingCardManager implements CardManager<Tr
         };
     }
 
+    /**
+     * This first checks if the card should drop at all.
+     * Then returns what rarityId we should use.
+     *
+     * @param dropType   DropType
+     * @param alwaysDrop Should the card always drop.
+     * @return
+     */
     @Override
     public String getRandomRarityId(DropType dropType, boolean alwaysDrop) {
-        int randomDropChance = plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1;
-        int mobDropChance = getGeneralMobChance(dropType);
-        plugin.debug(AllCardManager.class, InternalDebug.CardsManager.DROP_CHANCE.formatted(randomDropChance, alwaysDrop, dropType, mobDropChance));
-        if (!alwaysDrop && randomDropChance > mobDropChance) {
+        if (!shouldDrop(dropType, alwaysDrop)) {
             return TradingRarityManager.EMPTY_RARITY.getId();
         }
 
@@ -208,14 +213,28 @@ public class AllCardManager extends TradingCardManager implements CardManager<Tr
 
         for (String rarity : plugin.getRarityManager().getRarityIds()) {
             Chance chance = plugin.getChancesConfig().getChance(rarity);
-            if (chance instanceof EmptyChance)
+            if (chance instanceof EmptyChance) {
+                plugin.debug(AllCardManager.class, "Could not get chance for %s".formatted(rarity));
                 return TradingRarityManager.EMPTY_RARITY.getId();
+            }
 
-            int chanceInt = chance.getFromMobType(dropType);
-            if (randomRarityChance < chanceInt)
+            if (randomRarityChance < chance.getFromMobType(dropType))
                 return rarity;
         }
+
+        plugin.debug(AllCardManager.class, "Could not match chance to rarity, not dropping.");
         return TradingRarityManager.EMPTY_RARITY.getId();
+    }
+
+    private boolean shouldDrop(DropType dropType, boolean alwaysDrop) {
+        int randomDropChance = plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1;
+        int mobDropChance = getGeneralMobChance(dropType);
+        plugin.debug(AllCardManager.class, InternalDebug.CardsManager.DROP_CHANCE.formatted(randomDropChance, alwaysDrop, dropType, mobDropChance));
+        if (!alwaysDrop && randomDropChance > mobDropChance) {
+            plugin.debug(AllCardManager.class, "Not dropping, because generated chance is larger than required: (%d > %d)".formatted(randomDropChance, mobDropChance));
+            return false;
+        }
+        return true;
     }
 
 
