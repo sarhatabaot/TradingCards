@@ -125,7 +125,7 @@ public class GiveCommands extends BaseCommand {
                 }
 
                 try {
-                    String rare = plugin.getCardManager().getRandomRarityId(CardUtil.getMobType(entityType), true);
+                    String rare = plugin.getCardManager().getRandomRarityId(CardUtil.getMobType(entityType));
                     if(rare.equalsIgnoreCase(TradingRarityManager.EMPTY_RARITY.getId()))
                         return;
                     plugin.debug(getClass(), "RarityId: " + rare);

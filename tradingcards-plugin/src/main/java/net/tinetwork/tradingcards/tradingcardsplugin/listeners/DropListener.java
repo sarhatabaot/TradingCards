@@ -92,7 +92,7 @@ public class DropListener extends SimpleListener {
             return;
         }
 
-        String rarityName = cardManager.getRandomRarityId(mobType, false);
+        String rarityName = cardManager.getRandomRarityId(mobType);
         if (rarityName.equalsIgnoreCase(TradingRarityManager.EMPTY_RARITY.getId())) {
             return;
         }

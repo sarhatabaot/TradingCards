@@ -105,13 +105,14 @@ public class CardUtil {
     public static void giveawayNatural(EntityType mob, Player sender) {
         broadcastPrefixedMessage(getGiveawayMessage(mob, sender));
         for (final Player p : Bukkit.getOnlinePlayers()) {
-            String rare = cardManager.getRandomRarityId(CardUtil.getMobType(mob), true);
+            String rare = cardManager.getRandomRarityId(CardUtil.getMobType(mob));
             if(rare.equalsIgnoreCase(TradingRarityManager.EMPTY_RARITY.getId()))
                 continue;
             CardUtil.dropItem(p, cardManager.getRandomCardByRarity(rare).build(false));
         }
     }
 
+    //todo actual value of alwaysDrop is always "false"
     public static boolean shouldDrop(DropType dropType, boolean alwaysDrop) {
         int randomDropChance = plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1;
         int mobDropChance = getGeneralMobChance(dropType);

@@ -17,11 +17,17 @@ import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingRarityManag
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalDebug;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalLog;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
+import org.apache.commons.rng.sampling.CollectionSampler;
+import org.apache.commons.rng.sampling.DiscreteProbabilityCollectionSampler;
+import org.apache.commons.rng.simple.RandomSource;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -209,6 +215,28 @@ public class AllCardManager extends TradingCardManager implements CardManager<Tr
 
         plugin.debug(AllCardManager.class, "Could not match chance to rarity, not dropping.");
         return TradingRarityManager.EMPTY_RARITY.getId();
+    }
+
+
+    @Override
+    public String getRandomRarityId(final DropType dropType) {
+        Map<String,Double> rarityWeights = getRarityWeightMap(dropType);
+        if(new HashSet<>(rarityWeights.values()).size() == 1) {
+            //when everything is equal chance...
+            CollectionSampler<String> sampler = new CollectionSampler<>(RandomSource.MWC_256.create(), rarityWeights.keySet());
+            return sampler.sample();
+        }
+
+        DiscreteProbabilityCollectionSampler<String> sampler = new DiscreteProbabilityCollectionSampler<>(RandomSource.MWC_256.create(), rarityWeights);
+        return sampler.sample();
+    }
+
+    private Map<String,Double> getRarityWeightMap(DropType dropType) {
+        Map<String,Double> rarityWeight = new HashMap<>(); //id, weight
+        for (String rarity : plugin.getRarityManager().getRarityIds()) {
+            rarityWeight.put(rarity, (double) plugin.getChancesConfig().getChance(rarity).getFromMobType(dropType));
+        }
+        return rarityWeight;
     }
 
 
