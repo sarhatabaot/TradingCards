@@ -76,7 +76,7 @@ public class DropListener extends SimpleListener {
         if (!this.worldBlacklist.isAllowed(world)) return;
 
         NBTEntity nbtEntity = new NBTEntity(killedEntity);
-        if(nbtEntity.getPersistentDataContainer().hasKey(NbtUtils.TC_COMPOUND) && nbtEntity.getPersistentDataContainer().getCompound(NbtUtils.TC_COMPOUND).hasKey(NbtUtils.TC_SPAWNER_MOB)) {
+        if(nbtEntity.getPersistentDataContainer().hasTag(NbtUtils.TC_COMPOUND) && nbtEntity.getPersistentDataContainer().getCompound(NbtUtils.TC_COMPOUND).hasTag(NbtUtils.TC_SPAWNER_MOB)) {
             debug("Entity %s is marked as a spawner entity, not dropping card.".formatted(killedEntity.getType()));
             return;
         }

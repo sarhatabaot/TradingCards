@@ -76,8 +76,8 @@ public class NbtUtils {
 
         public static boolean isDeck(final @NotNull NBTItem item) {
             if (isLegacy(item))
-                return item.hasKey(Legacy.NBT_IS_DECK);
-            return item.getCompound(TC_COMPOUND).hasKey(TC_DECK_NUMBER);
+                return item.hasTag(Legacy.NBT_IS_DECK);
+            return item.getCompound(TC_COMPOUND).hasTag(TC_DECK_NUMBER);
         }
     }
 
@@ -114,7 +114,7 @@ public class NbtUtils {
             if (isLegacy(item))
                 return item.getBoolean(Legacy.NBT_IS_CARD);
 
-            return item.getCompound(TC_COMPOUND).hasKey(TC_CARD_ID);
+            return item.getCompound(TC_COMPOUND).hasTag(TC_CARD_ID);
         }
     }
 
@@ -132,12 +132,12 @@ public class NbtUtils {
         public static boolean isPack(final @NotNull NBTItem item) {
             if (isLegacy(item))
                 return item.getBoolean(Legacy.NBT_PACK);
-            return item.getCompound(TC_COMPOUND).hasKey(TC_PACK_ID);
+            return item.getCompound(TC_COMPOUND).hasTag(TC_PACK_ID);
         }
     }
 
 
     public static boolean isLegacy(final @NotNull NBTItem item) {
-        return !item.hasKey(TC_COMPOUND);
+        return !item.hasTag(TC_COMPOUND);
     }
 }
