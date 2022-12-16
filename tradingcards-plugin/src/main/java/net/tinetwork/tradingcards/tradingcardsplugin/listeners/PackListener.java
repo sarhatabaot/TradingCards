@@ -58,7 +58,7 @@ public class PackListener extends SimpleListener {
             return;
         }
         if (player.getGameMode() == GameMode.CREATIVE) {
-            ChatUtil.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().noCreative()));
+            ChatUtil.sendMessage(player, plugin.getMessagesConfig().noCreative());
             return;
         }
         NBTItem nbtPackItem = new NBTItem(itemInMainHand);
