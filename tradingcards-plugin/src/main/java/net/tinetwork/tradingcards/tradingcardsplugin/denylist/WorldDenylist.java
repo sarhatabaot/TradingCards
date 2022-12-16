@@ -47,9 +47,9 @@ public class WorldDenylist extends YamlConfigurateFile<TradingCards> implements 
     private void setWhitelistMode() {
         boolean isWhitelist = rootNode.node(WHITELIST_MODE_NAME).getBoolean();
         if (isWhitelist)
-            this.allowlistMode = AllowlistMode.WHITELIST;
+            this.allowlistMode = AllowlistMode.ALLOW;
         else
-            this.allowlistMode = AllowlistMode.BLACKLIST;
+            this.allowlistMode = AllowlistMode.DENY;
     }
 
     @Override
@@ -57,12 +57,12 @@ public class WorldDenylist extends YamlConfigurateFile<TradingCards> implements 
         boolean isOnList = listedWorlds.contains(w.getName());
 
         //If you're not on the blacklist, you're allowed
-        if (this.allowlistMode == AllowlistMode.BLACKLIST) {
+        if (this.allowlistMode == AllowlistMode.DENY) {
             return !isOnList;
         }
 
         //If you're on the whitelist, you're allowed
-        if (this.allowlistMode == AllowlistMode.WHITELIST) {
+        if (this.allowlistMode == AllowlistMode.ALLOW) {
             return isOnList;
         }
         return false;

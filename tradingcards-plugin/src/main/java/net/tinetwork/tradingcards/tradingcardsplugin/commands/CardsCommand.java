@@ -77,10 +77,10 @@ public class CardsCommand extends BaseCommand {
     public void onToggle(final Player player) {
         if (playerBlacklist.isAllowed(player)) {
             playerBlacklist.add(player);
-            ChatUtil.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().toggleDisabled()));
+            ChatUtil.sendMessage(player, plugin.getMessagesConfig().toggleDisabled());
         } else {
             playerBlacklist.remove(player);
-            ChatUtil.sendMessage(player, plugin.getPrefixedMessage(plugin.getMessagesConfig().toggleEnabled()));
+            ChatUtil.sendMessage(player, plugin.getMessagesConfig().toggleEnabled());
         }
     }
 

@@ -11,7 +11,7 @@
     <parent>
         <groupId>net.tinetwork.tradingcards</groupId>
         <artifactId>tradingcards-parent</artifactId>
-        <version>5.7.10</version>
+        <version>5.7.12</version>
     </parent>
     <properties>
         <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
@@ -31,7 +31,7 @@
         <adventure.bukkit.version>4.1.2</adventure.bukkit.version>
         <placeholderapi.version>2.11.2</placeholderapi.version>
 
-        <tradingcards.api.version>5.7.10</tradingcards.api.version>
+        <tradingcards.api.version>5.7.12</tradingcards.api.version>
 
         <!-- Tests -->
         <mockito.version>4.9.0</mockito.version>
@@ -40,10 +40,11 @@
         <!-- DB -->
         <hikaricp.version>5.0.1</hikaricp.version>
         <flyway.version>9.8.3</flyway.version>
-        <jooq.version>3.17.5</jooq.version>
+        <jooq.version>3.17.6</jooq.version>
         <mariadb.version>2.7.4</mariadb.version>
         <!-- Others -->
         <zip4j.version>2.11.2</zip4j.version>
+        <rng.version>1.5</rng.version>
 
         <sql.schema.version>V0_mysql.sql</sql.schema.version> <!-- TODO -->
     </properties>
@@ -482,7 +483,24 @@
             <version>${flyway.version}</version>
             <scope>provided</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-rng-core</artifactId>
+            <version>${rng.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-rng-simple</artifactId>
+            <version>${rng.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-rng-sampling</artifactId>
+            <version>${rng.version}</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
 </project>

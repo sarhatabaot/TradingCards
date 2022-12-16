@@ -17,3 +17,6 @@ libraries:
   - org.jooq:jooq-codegen:${jooq.version}
   - net.lingala.zip4j:zip4j:${zip4j.version}
   - org.flywaydb:flyway-mysql:${flyway.version}
+  - org.apache.commons:commons-rng-core:${rng.version}
+  - org.apache.commons:commons-rng-simple:${rng.version}
+  - org.apache.commons:commons-rng-sampling:${rng.version}
