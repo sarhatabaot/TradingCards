@@ -21,7 +21,7 @@ public interface Denylist<T> {
     void remove(T value);
 
     /**
-     * Returns the mode the whitelist is in.
+     * Returns the mode the allowlist is in.
      * @return mode
      */
     AllowlistMode getMode();

@@ -60,9 +60,9 @@ public class PlayerDenylist extends YamlConfigurateFile<TradingCards> implements
     private void setWhitelistMode() {
         boolean isWhitelist = rootNode.node(WHITELIST_MODE).getBoolean();
         if (isWhitelist)
-            this.allowlistMode = AllowlistMode.WHITELIST;
+            this.allowlistMode = AllowlistMode.ALLOW;
         else
-            this.allowlistMode = AllowlistMode.BLACKLIST;
+            this.allowlistMode = AllowlistMode.DENY;
 
         plugin.debug(getClass(), InternalDebug.WHITELIST_MODE.formatted(allowlistMode));
     }
@@ -72,12 +72,12 @@ public class PlayerDenylist extends YamlConfigurateFile<TradingCards> implements
         boolean isOnList = listedPlayers.contains(p.getName());
 
         //If you're not on the blacklist, you're allowed
-        if (this.allowlistMode == AllowlistMode.BLACKLIST) {
+        if (this.allowlistMode == AllowlistMode.DENY) {
             return !isOnList;
         }
 
         //If you're on the whitelist, you're allowed
-        if (this.allowlistMode == AllowlistMode.WHITELIST) {
+        if (this.allowlistMode == AllowlistMode.ALLOW) {
             return isOnList;
         }
 
