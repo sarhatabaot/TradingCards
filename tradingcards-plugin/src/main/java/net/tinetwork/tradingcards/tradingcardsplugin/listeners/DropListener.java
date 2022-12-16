@@ -1,6 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.listeners;
 
 import de.tr7zw.nbtapi.NBTEntity;
+import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.utils.NbtUtils;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
@@ -65,8 +66,8 @@ public class DropListener extends SimpleListener {
     }
 
     @EventHandler
-    public void onEntityDeath(@NotNull EntityDeathEvent e) {
-        final LivingEntity killedEntity = e.getEntity();
+    public void onEntityDeath(@NotNull EntityDeathEvent entityDeathEvent) {
+        final LivingEntity killedEntity = entityDeathEvent.getEntity();
         final Player killer = killedEntity.getKiller();
         final World world = killedEntity.getWorld();
 
@@ -76,30 +77,39 @@ public class DropListener extends SimpleListener {
         if (!this.worldBlacklist.isAllowed(world)) return;
 
         NBTEntity nbtEntity = new NBTEntity(killedEntity);
-        if(nbtEntity.getPersistentDataContainer().hasTag(NbtUtils.TC_COMPOUND) && nbtEntity.getPersistentDataContainer().getCompound(NbtUtils.TC_COMPOUND).hasTag(NbtUtils.TC_SPAWNER_MOB)) {
+        if (nbtEntity.getPersistentDataContainer().hasTag(NbtUtils.TC_COMPOUND) && nbtEntity.getPersistentDataContainer().getCompound(NbtUtils.TC_COMPOUND).hasTag(NbtUtils.TC_SPAWNER_MOB)) {
             debug("Entity %s is marked as a spawner entity, not dropping card.".formatted(killedEntity.getType()));
             return;
         }
 
         //Get card rarity
         debug(InternalDebug.DropListener.ENTITY_TYPE.formatted(killedEntity.getType()));
-        debug(InternalDebug.DropListener.MOB_TYPE.formatted(CardUtil.getMobType(killedEntity.getType())));
 
-        String rarityName = cardManager.getRandomRarityId(CardUtil.getMobType(killedEntity.getType()), false);
-        if (rarityName.equalsIgnoreCase(TradingRarityManager.EMPTY_RARITY.getId()))
+        final DropType mobType = CardUtil.getMobType(killedEntity.getType());
+        debug(InternalDebug.DropListener.MOB_TYPE.formatted(mobType));
+
+        if (!CardUtil.shouldDrop(mobType, false)) {
             return;
+        }
+
+        String rarityName = cardManager.getRandomRarityId(mobType);
+        if (rarityName.equalsIgnoreCase(TradingRarityManager.EMPTY_RARITY.getId())) {
+            return;
+        }
 
         //Get the card
         TradingCard randomCard = plugin.getCardManager().getRandomActiveCardByRarity(rarityName);
         if (randomCard instanceof EmptyCard) {
+            plugin.debug(DropListener.class, "EmptyCard for some reason, rarity=%s".formatted(rarityName));
             return;
         }
 
         boolean isShiny = randomCard.hasShiny() && CardUtil.calculateIfShiny(false);
         debug(InternalDebug.DropListener.ADDED_CARD.formatted(CompositeCardKey.fromCard(randomCard)));
         //Add the card to the killedEntity drops
-        e.getDrops().add(randomCard.build(isShiny));
+        entityDeathEvent.getDrops().add(randomCard.build(isShiny));
     }
+
 
     //Gets the rarity key for the appropriate player card.
     private @Nullable String getRarityKey(Player player) {

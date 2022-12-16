@@ -137,48 +137,7 @@ public class DeckConfig extends YamlConfigurateFile<TradingCards> {
         return stringList;
     }
 
-    //Returns true if the deck contains this card, regardless if it's shiny or not
 
-    /**
-     * @deprecated
-     * Use {@link #containsCard(UUID, String, String, String)}
-     */
-    @Deprecated(since = "5.7.3", forRemoval = true)
-    public boolean containsCard(final UUID uuid, final String cardId, final String rarityId) {
-        List<Deck> playerDeckList = getPlayerDecks(uuid);
-        if (playerDeckList.isEmpty())
-            return false;
-
-        for (Deck deck : playerDeckList) {
-            if (deck.containsCard(cardId, rarityId)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-
-
-    /**
-     * @deprecated 
-     * Use {@link #containsShinyCard(UUID, String, String, String)}
-     */
-    @Deprecated(since = "5.7.3", forRemoval = true)
-    public boolean containsShinyCard(final UUID uuid, final String cardId, final String rarity) {
-        List<Deck> playerDeckList = getPlayerDecks(uuid);
-        if (playerDeckList.isEmpty())
-            return false;
-
-        for (Deck deck : playerDeckList) {
-            if (deck.containsCard(cardId, rarity)) {
-                final StorageEntry cardEntry = deck.getCardEntry(cardId, rarity);
-                if (cardEntry != null) {
-                    return cardEntry.isShiny();
-                }
-            }
-        }
-        return false;
-    }
 
     public boolean containsCard(final UUID uuid, final String cardId, final String rarityId, final String seriesId, final boolean isShiny) {
         List<Deck> playerDeckList = getPlayerDecks(uuid);
@@ -206,8 +165,9 @@ public class DeckConfig extends YamlConfigurateFile<TradingCards> {
         return false;
     }
 
-    public boolean containsShinyCard(final UUID uuid, final String cardId,final String rarityId, final String seriesId) {
-        return containsCard(uuid,cardId,rarityId,seriesId,true);
+    //Convenience method
+    public boolean containsShinyCard(final UUID uuid, final String cardId, final String rarityId, final String seriesId) {
+        return containsCard(uuid, cardId, rarityId, seriesId, true);
     }
 
     @Override

@@ -8,20 +8,22 @@ import net.tinetwork.tradingcards.api.manager.CardManager;
 import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
-import net.tinetwork.tradingcards.api.model.chance.Chance;
-import net.tinetwork.tradingcards.api.model.chance.EmptyChance;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
-import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingRarityManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalDebug;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalLog;
-import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
+import org.apache.commons.rng.sampling.CollectionSampler;
+import org.apache.commons.rng.sampling.DiscreteProbabilityCollectionSampler;
+import org.apache.commons.rng.simple.RandomSource;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -183,39 +185,27 @@ public class AllCardManager extends TradingCardManager implements CardManager<Tr
         return activeCardManager.getRandomActiveCardByRarity(rarityId);
     }
 
-    private int getGeneralMobChance(@NotNull DropType dropType) {
-        return switch (dropType.getType()) {
-            case "boss" -> plugin.getChancesConfig().bossChance();
-            case "hostile" -> plugin.getChancesConfig().hostileChance();
-            case "neutral" -> plugin.getChancesConfig().neutralChance();
-            case "passive" -> plugin.getChancesConfig().passiveChance();
-            case "all" -> plugin.getChancesConfig().allChance();
-            default -> 0;
-        };
-    }
+
 
     @Override
-    public String getRandomRarityId(DropType dropType, boolean alwaysDrop) {
-        int randomDropChance = plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1;
-        int mobDropChance = getGeneralMobChance(dropType);
-        plugin.debug(AllCardManager.class, InternalDebug.CardsManager.DROP_CHANCE.formatted(randomDropChance, alwaysDrop, dropType, mobDropChance));
-        if (!alwaysDrop && randomDropChance > mobDropChance) {
-            return TradingRarityManager.EMPTY_RARITY.getId();
+    public String getRandomRarityId(final DropType dropType) {
+        Map<String,Double> rarityWeights = getRarityWeightMap(dropType);
+        if(new HashSet<>(rarityWeights.values()).size() == 1) {
+            //when everything is equal chance...
+            CollectionSampler<String> sampler = new CollectionSampler<>(RandomSource.MWC_256.create(), rarityWeights.keySet());
+            return sampler.sample();
         }
 
-        int randomRarityChance = plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1;
-        plugin.debug(AllCardManager.class, InternalDebug.CardsManager.RARITY_CHANCE.formatted(randomRarityChance));
+        DiscreteProbabilityCollectionSampler<String> sampler = new DiscreteProbabilityCollectionSampler<>(RandomSource.MWC_256.create(), rarityWeights);
+        return sampler.sample();
+    }
 
+    private Map<String,Double> getRarityWeightMap(DropType dropType) {
+        Map<String,Double> rarityWeight = new HashMap<>(); //id, weight
         for (String rarity : plugin.getRarityManager().getRarityIds()) {
-            Chance chance = plugin.getChancesConfig().getChance(rarity);
-            if (chance instanceof EmptyChance)
-                return TradingRarityManager.EMPTY_RARITY.getId();
-
-            int chanceInt = chance.getFromMobType(dropType);
-            if (randomRarityChance < chanceInt)
-                return rarity;
+            rarityWeight.put(rarity, (double) plugin.getChancesConfig().getChance(rarity).getFromMobType(dropType));
         }
-        return TradingRarityManager.EMPTY_RARITY.getId();
+        return rarityWeight;
     }
 
 

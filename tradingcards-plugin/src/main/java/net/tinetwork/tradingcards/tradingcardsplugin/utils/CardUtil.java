@@ -14,6 +14,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.commands.BuyCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.DropTypeManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingRarityManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.AllCardManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalDebug;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -104,11 +105,34 @@ public class CardUtil {
     public static void giveawayNatural(EntityType mob, Player sender) {
         broadcastPrefixedMessage(getGiveawayMessage(mob, sender));
         for (final Player p : Bukkit.getOnlinePlayers()) {
-            String rare = cardManager.getRandomRarityId(CardUtil.getMobType(mob), true);
+            String rare = cardManager.getRandomRarityId(CardUtil.getMobType(mob));
             if(rare.equalsIgnoreCase(TradingRarityManager.EMPTY_RARITY.getId()))
                 continue;
             CardUtil.dropItem(p, cardManager.getRandomCardByRarity(rare).build(false));
         }
+    }
+
+    //todo actual value of alwaysDrop is always "false"
+    public static boolean shouldDrop(DropType dropType, boolean alwaysDrop) {
+        int randomDropChance = plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1;
+        int mobDropChance = getGeneralMobChance(dropType);
+        plugin.debug(CardUtil.class, InternalDebug.CardsManager.DROP_CHANCE.formatted(randomDropChance, alwaysDrop, dropType, mobDropChance));
+        if (!alwaysDrop && randomDropChance > mobDropChance) {
+            plugin.debug(CardUtil.class, "Not dropping, because generated chance is larger than required: (%d > %d)".formatted(randomDropChance, mobDropChance));
+            return false;
+        }
+        return true;
+    }
+
+    private static int getGeneralMobChance(@NotNull DropType dropType) {
+        return switch (dropType.getType()) {
+            case "boss" -> plugin.getChancesConfig().bossChance();
+            case "hostile" -> plugin.getChancesConfig().hostileChance();
+            case "neutral" -> plugin.getChancesConfig().neutralChance();
+            case "passive" -> plugin.getChancesConfig().passiveChance();
+            case "all" -> plugin.getChancesConfig().allChance();
+            default -> 0;
+        };
     }
 
     private static String getGiveawayMessage(EntityType mob, Player sender) {
