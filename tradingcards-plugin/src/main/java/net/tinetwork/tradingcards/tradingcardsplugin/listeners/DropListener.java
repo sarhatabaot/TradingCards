@@ -88,6 +88,10 @@ public class DropListener extends SimpleListener {
         final DropType mobType = CardUtil.getMobType(killedEntity.getType());
         debug(InternalDebug.DropListener.MOB_TYPE.formatted(mobType));
 
+        if (!CardUtil.shouldDrop(mobType, false)) {
+            return;
+        }
+
         String rarityName = cardManager.getRandomRarityId(mobType, false);
         if (rarityName.equalsIgnoreCase(TradingRarityManager.EMPTY_RARITY.getId())) {
             return;
@@ -105,6 +109,7 @@ public class DropListener extends SimpleListener {
         //Add the card to the killedEntity drops
         entityDeathEvent.getDrops().add(randomCard.build(isShiny));
     }
+
 
     //Gets the rarity key for the appropriate player card.
     private @Nullable String getRarityKey(Player player) {
