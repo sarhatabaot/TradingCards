@@ -190,33 +190,6 @@ public class AllCardManager extends TradingCardManager implements CardManager<Tr
     }
 
 
-    /**
-     * Returns what rarityId we should use. Will return an empty rarity if none is found.
-     *
-     * @param dropType   DropType
-     * @param alwaysDrop Should the card always drop.
-     * @return
-     */
-    @Override
-    public String getRandomRarityId(DropType dropType, boolean alwaysDrop) {
-        int randomRarityChance = plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1;
-        plugin.debug(AllCardManager.class, InternalDebug.CardsManager.RARITY_CHANCE.formatted(randomRarityChance));
-
-        for (String rarity : plugin.getRarityManager().getRarityIds()) {
-            Chance chance = plugin.getChancesConfig().getChance(rarity);
-            if (chance instanceof EmptyChance) {
-                plugin.debug(AllCardManager.class, "Could not get chance for %s".formatted(rarity));
-                return TradingRarityManager.EMPTY_RARITY.getId();
-            }
-
-            if (randomRarityChance < chance.getFromMobType(dropType))
-                return rarity;
-        }
-
-        plugin.debug(AllCardManager.class, "Could not match chance to rarity, not dropping.");
-        return TradingRarityManager.EMPTY_RARITY.getId();
-    }
-
 
     @Override
     public String getRandomRarityId(final DropType dropType) {

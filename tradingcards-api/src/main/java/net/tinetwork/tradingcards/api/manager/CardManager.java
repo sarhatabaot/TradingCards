@@ -39,16 +39,6 @@ public interface CardManager<T extends Card<T>> {
      */
     T getRandomActiveCardByRarity(final String rarityId);
 
-
-    /**
-     * @param dropType DropType
-     * @param alwaysDrop Should the card always drop.
-     * @return A random rarity
-     */
-    //We might want to get a Rarity object from this.
-    @Deprecated(since = "5.7.11", forRemoval = true)
-    String getRandomRarityId(final DropType dropType, boolean alwaysDrop);
-
     String getRandomRarityId(final DropType dropType);
     /**
      * @param rarityId The rarity id

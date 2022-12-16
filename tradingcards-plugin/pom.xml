@@ -11,7 +11,7 @@
     <parent>
         <groupId>net.tinetwork.tradingcards</groupId>
         <artifactId>tradingcards-parent</artifactId>
-        <version>5.7.11</version>
+        <version>5.7.12</version>
     </parent>
     <properties>
         <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
@@ -31,7 +31,7 @@
         <adventure.bukkit.version>4.1.2</adventure.bukkit.version>
         <placeholderapi.version>2.11.2</placeholderapi.version>
 
-        <tradingcards.api.version>5.7.11</tradingcards.api.version>
+        <tradingcards.api.version>5.7.12</tradingcards.api.version>
 
         <!-- Tests -->
         <mockito.version>4.9.0</mockito.version>
