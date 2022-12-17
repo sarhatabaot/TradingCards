@@ -941,6 +941,26 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
     @Override
+    public List<TradingCard> getCardsInRarity(final String rarityId, final int firstIndex, final int lastIndex) {
+        return new ExecuteQuery<List<TradingCard>, Result<Record>>(this, jooqSettings) {
+            @Override
+            public List<TradingCard> onRunQuery(final DSLContext dslContext) throws SQLException {
+                return null;
+            }
+
+            @Override
+            public List<TradingCard> getQuery(final @NotNull Result<Record> result) throws SQLException {
+                return null;
+            }
+
+            @Override
+            public List<TradingCard> empty() {
+                return null;
+            }
+        }.prepareAndRunQuery();
+    }
+
+    @Override
     public List<TradingCard> getCardsInSeries(final String seriesId) {
         return new ExecuteQuery<List<TradingCard>, Result<Record>>(this, jooqSettings) {
 

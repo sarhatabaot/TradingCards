@@ -130,15 +130,22 @@ public interface Storage<T extends Card<T>> {
      */
     List<T> getCardsInRarity(final String rarityId);
 
-
+    List<T> getCardsInRarity(final String rarityId, final int firstIndex, final int lastIndex);
     /**
      * @param seriesId The series id.
      * @return A list of all cards in a series.
      */
     List<T> getCardsInSeries(final String seriesId);
 
+    List<T> getCardsInSeries(final String seriesId, final int firstIndex, final int lastIndex);
+
+
     @Nullable
     List<T> getCardsInRarityAndSeries(final String rarityId, final String seriesId);
+
+    @Nullable
+    List<T> getCardsInRarityAndSeries(final String rarityId, final String seriesId, final int firstIndex, final int lastIndex);
+
 
     /**
      * @return A list of all active cards.
@@ -242,6 +249,8 @@ public interface Storage<T extends Card<T>> {
      * @return The total amount of cards in a rarity
      */
     int getCardsInRarityCount(final String rarityId);
+
+    int getCardsInSeriesCount(final String seriesId);
     /**
      * @param rarityId The rarity id.
      * @param seriesId The series id.

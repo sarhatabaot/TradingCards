@@ -81,7 +81,7 @@ public class CardUtil {
         if (plugin.isMobPassive(e)) {
             return DropTypeManager.PASSIVE;
         }
-        if(plugin.isMobBoss(e))
+        if (plugin.isMobBoss(e))
             return DropTypeManager.BOSS;
 
         return EMPTY_TYPE;
@@ -106,7 +106,7 @@ public class CardUtil {
         broadcastPrefixedMessage(getGiveawayMessage(mob, sender));
         for (final Player p : Bukkit.getOnlinePlayers()) {
             String rare = cardManager.getRandomRarityId(CardUtil.getMobType(mob));
-            if(rare.equalsIgnoreCase(TradingRarityManager.EMPTY_RARITY.getId()))
+            if (rare.equalsIgnoreCase(TradingRarityManager.EMPTY_RARITY.getId()))
                 continue;
             CardUtil.dropItem(p, cardManager.getRandomCardByRarity(rare).build(false));
         }
@@ -187,9 +187,9 @@ public class CardUtil {
         final String sellPrice = String.valueOf(card.getSellPrice());
 
         if (card.isShiny() && shinyPrefix != null) {
-            shinyTitle = ChatUtil.color(shinyTitle.replaceAll(PlaceholderUtil.PREFIX.asRegex(),prefix)
+            shinyTitle = ChatUtil.color(shinyTitle.replaceAll(PlaceholderUtil.PREFIX.asRegex(), prefix)
                     .replaceAll(PlaceholderUtil.SHINY_PREFIX.asRegex(), shinyPrefix)
-                    .replaceAll(PlaceholderUtil.COLOR.asRegex(),rarityColor)
+                    .replaceAll(PlaceholderUtil.COLOR.asRegex(), rarityColor)
                     .replaceAll(PlaceholderUtil.DISPLAY_NAME.asRegex(), card.getDisplayName())
                     .replaceAll(PlaceholderUtil.BUY_PRICE.asRegex(), buyPrice)
                     .replaceAll(PlaceholderUtil.SELL_PRICE.asRegex(), sellPrice));
@@ -200,8 +200,8 @@ public class CardUtil {
             return shinyTitle.replace("_", " ");
         }
 
-        title = ChatUtil.color(title.replaceAll(PlaceholderUtil.PREFIX.asRegex(),prefix)
-                .replaceAll(PlaceholderUtil.COLOR.asRegex(),rarityColor)
+        title = ChatUtil.color(title.replaceAll(PlaceholderUtil.PREFIX.asRegex(), prefix)
+                .replaceAll(PlaceholderUtil.COLOR.asRegex(), rarityColor)
                 .replaceAll(PlaceholderUtil.DISPLAY_NAME.asRegex(), card.getDisplayName())
                 .replaceAll(PlaceholderUtil.BUY_PRICE.asRegex(), buyPrice)
                 .replaceAll(PlaceholderUtil.SELL_PRICE.asRegex(), sellPrice));
@@ -275,7 +275,7 @@ public class CardUtil {
     }
 
     public static boolean hasCardsInInventory(final Player player, final @NotNull PackEntry packEntry) {
-        return hasCardsInInventory(player,packEntry,1);
+        return hasCardsInInventory(player, packEntry, 1);
     }
 
     public static boolean hasCardsInInventory(final Player player, final @NotNull PackEntry packEntry, int amount) {
@@ -283,7 +283,7 @@ public class CardUtil {
     }
 
     public static boolean hasCardsInInventory(final Player player, final @NotNull List<PackEntry> tradeCards) {
-        if(tradeCards.isEmpty())
+        if (tradeCards.isEmpty())
             return true;
 
         for (PackEntry packEntry : tradeCards) {
@@ -298,7 +298,7 @@ public class CardUtil {
         PlayerInventory inventory = player.getInventory();
 
         for (ItemStack itemStack : inventory.getContents()) {
-            if(matchesEntry(itemStack,packEntry)) {
+            if (matchesEntry(itemStack, packEntry)) {
                 count += itemStack.getAmount();
             }
         }
@@ -306,7 +306,7 @@ public class CardUtil {
     }
 
     public static boolean matchesEntry(final ItemStack itemStack, final PackEntry packEntry) {
-        if(itemStack == null || itemStack.getType() == Material.AIR)
+        if (itemStack == null || itemStack.getType() == Material.AIR)
             return false;
 
         NBTItem nbtItem = new NBTItem(itemStack);
@@ -326,7 +326,7 @@ public class CardUtil {
     }
 
     /**
-     * @param player Player
+     * @param player    Player
      * @param packEntry PackEntry
      * @return A map of the ItemStacks removed and the amounts removed
      */
@@ -334,25 +334,25 @@ public class CardUtil {
         Map<ItemStack, Integer> removedItemStacks = new HashMap<>();
         PlayerInventory inventory = player.getInventory();
         int countLeftToRemove = packEntry.amount();
-        for (ItemStack itemStack: Arrays.stream(inventory.getContents())
+        for (ItemStack itemStack : Arrays.stream(inventory.getContents())
                 .filter(Objects::nonNull)
                 .filter(itemStack -> itemStack.getType() != Material.AIR)
                 .toList()) {
 
-            boolean matchesEntry = CardUtil.matchesEntry(itemStack,packEntry);
-            if(matchesEntry) {
+            boolean matchesEntry = CardUtil.matchesEntry(itemStack, packEntry);
+            if (matchesEntry) {
                 //accounts for zombie:common:10:default when the entry is common:5:default
-                if(itemStack.getAmount() > countLeftToRemove) {
+                if (itemStack.getAmount() > countLeftToRemove) {
                     itemStack.setAmount(itemStack.getAmount() - countLeftToRemove);
                     removedItemStacks.put(itemStack, countLeftToRemove);
-                    plugin.debug(BuyCommand.class,"Removed %d from ItemStack %s, new amount: %s".formatted(countLeftToRemove, itemStack.toString(), itemStack.getAmount()));
+                    plugin.debug(BuyCommand.class, "Removed %d from ItemStack %s, new amount: %s".formatted(countLeftToRemove, itemStack.toString(), itemStack.getAmount()));
                     break;
                 }
 
                 countLeftToRemove -= itemStack.getAmount();
                 removedItemStacks.put(itemStack, itemStack.getAmount());
                 player.getInventory().removeItem(itemStack);
-                plugin.debug(BuyCommand.class, "Removed ItemStack %s, amount left to remove %d".formatted(itemStack.toString(),countLeftToRemove));
+                plugin.debug(BuyCommand.class, "Removed ItemStack %s, amount left to remove %d".formatted(itemStack.toString(), countLeftToRemove));
             }
         }
 
@@ -361,14 +361,14 @@ public class CardUtil {
 
 
     public static void sendTradedCardsMessage(final Player player, final @NotNull Map<ItemStack, Integer> removedCardsMap) {
-        for(Map.Entry<ItemStack, Integer> entry: removedCardsMap.entrySet()) {
+        for (Map.Entry<ItemStack, Integer> entry : removedCardsMap.entrySet()) {
             NBTItem nbtItem = new NBTItem(entry.getKey());
             final String rarityId = NbtUtils.Card.getRarityId(nbtItem);
             final String cardId = NbtUtils.Card.getCardId(nbtItem);
             final String seriesId = NbtUtils.Card.getSeriesId(nbtItem);
 
             final String listObject = "- %s %s %s %s"; // - 6 rarity cardid seriesid
-            player.sendMessage(listObject.formatted(entry.getValue(),rarityId,cardId,seriesId));
+            player.sendMessage(listObject.formatted(entry.getValue(), rarityId, cardId, seriesId));
         }
     }
 }
