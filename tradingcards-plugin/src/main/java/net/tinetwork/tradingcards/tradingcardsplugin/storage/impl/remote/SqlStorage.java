@@ -945,6 +945,8 @@ public class SqlStorage implements Storage<TradingCard> {
         return new ExecuteQuery<List<TradingCard>, Result<Record>>(this, jooqSettings) {
             @Override
             public List<TradingCard> onRunQuery(final DSLContext dslContext) throws SQLException {
+                //limit 19
+                //where id > firstIndex && id < lastIndex
                 return null;
             }
 
