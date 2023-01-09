@@ -28,7 +28,7 @@
 
         <!-- Bukkit Libs -->
         <bstats.version>3.0.0</bstats.version>
-        <adventure.bukkit.version>4.1.2</adventure.bukkit.version>
+        <adventure.bukkit.version>4.2.0</adventure.bukkit.version>
         <placeholderapi.version>2.11.2</placeholderapi.version>
 
         <tradingcards.api.version>5.7.12</tradingcards.api.version>
