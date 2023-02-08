@@ -12,6 +12,8 @@ import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalM
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
@@ -92,17 +94,23 @@ public class DeckEventListener extends SimpleListener {
         if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
             return;
         }
-
-        EquipmentSlot e = event.getHand();
+        
+        final Block clickedBlock = event.getClickedBlock();
+        if(clickedBlock != null && isContainer(clickedBlock.getType())) {
+            return;
+        }
+        
+        final EquipmentSlot e = event.getHand();
         if (e == null || !e.equals(EquipmentSlot.HAND)) {
             return;
         }
 
 
-        Player player = event.getPlayer();
+        final Player player = event.getPlayer();
         final ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
-        if (!plugin.getDeckManager().isDeck(itemInMainHand))
+        if (!plugin.getDeckManager().isDeck(itemInMainHand)) {
             return;
+        }
 
 
         if (player.getGameMode() == GameMode.CREATIVE) {
@@ -112,6 +120,20 @@ public class DeckEventListener extends SimpleListener {
 
         int deckNumber = deckManager.getDeckNumber(player.getInventory().getItemInMainHand());
         Bukkit.getPluginManager().callEvent(new DeckItemInteractEvent(event.getPlayer(), event.getAction(), event.getItem(), event.getClickedBlock(), event.getBlockFace(), deckNumber));
+    }
+    private boolean isContainer(Material material) {
+        return material == Material.CHEST ||
+            material == Material.CHEST_MINECART ||
+            material == Material.DISPENSER ||
+            material == Material.HOPPER ||
+            material == Material.HOPPER_MINECART ||
+            material == Material.ENDER_CHEST ||
+            material == Material.TRAPPED_CHEST ||
+            material == Material.BREWING_STAND ||
+            material == Material.FURNACE ||
+            material == Material.FURNACE_MINECART ||
+            material == Material.SHULKER_BOX ||
+            material == Material.DROPPER;
     }
 
     @EventHandler
