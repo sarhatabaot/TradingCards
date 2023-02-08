@@ -13,6 +13,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
@@ -94,20 +95,22 @@ public class DeckEventListener extends SimpleListener {
             return;
         }
         
-        if(!isContainer(event.getMaterial())) {
+        final Block clickedBlock = event.getClickedBlock();
+        if(clickedBlock != null && isContainer(clickedBlock.getType())) {
             return;
         }
         
-        EquipmentSlot e = event.getHand();
+        final EquipmentSlot e = event.getHand();
         if (e == null || !e.equals(EquipmentSlot.HAND)) {
             return;
         }
 
 
-        Player player = event.getPlayer();
+        final Player player = event.getPlayer();
         final ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
-        if (!plugin.getDeckManager().isDeck(itemInMainHand))
+        if (!plugin.getDeckManager().isDeck(itemInMainHand)) {
             return;
+        }
 
 
         if (player.getGameMode() == GameMode.CREATIVE) {
