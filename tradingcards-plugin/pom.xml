@@ -40,7 +40,7 @@
         <!-- DB -->
         <hikaricp.version>5.0.1</hikaricp.version>
         <flyway.version>9.14.1</flyway.version>
-        <jooq.version>3.17.6</jooq.version>
+        <jooq.version>3.17.8</jooq.version>
         <mariadb.version>2.7.4</mariadb.version>
         <!-- Others -->
         <zip4j.version>2.11.3</zip4j.version>
