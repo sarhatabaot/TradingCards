@@ -43,7 +43,7 @@
         <jooq.version>3.17.6</jooq.version>
         <mariadb.version>2.7.4</mariadb.version>
         <!-- Others -->
-        <zip4j.version>2.11.3</zip4j.version>
+        <zip4j.version>2.11.4</zip4j.version>
         <rng.version>1.5</rng.version>
 
         <sql.schema.version>V0_mysql.sql</sql.schema.version> <!-- TODO -->
