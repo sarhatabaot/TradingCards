@@ -16,6 +16,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -39,7 +40,12 @@ public class SellCommand extends BaseCommand {
             if (CardUtil.noEconomy(player))
                 return;
 
-            final NBTItem nbtItem = new NBTItem(player.getInventory().getItemInMainHand());
+            ItemStack itemInMainHand = player.getInventory().getItemInMainHand();
+            if(itemInMainHand.getType() == Material.AIR || itemInMainHand.getType() == Material.CAVE_AIR || itemInMainHand.getType() == Material.VOID_AIR) {
+                return;
+            }
+            
+            final NBTItem nbtItem = new NBTItem(itemInMainHand);
             if (!CardUtil.isCard(nbtItem)) {
                 ChatUtil.sendMessage(player, plugin.getMessagesConfig().notACard());
                 return;
