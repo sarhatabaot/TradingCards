@@ -27,7 +27,7 @@
         <maven.clean.version>3.2.0</maven.clean.version>
 
         <!-- Bukkit Libs -->
-        <bstats.version>3.0.0</bstats.version>
+        <bstats.version>3.0.1</bstats.version>
         <adventure.bukkit.version>4.2.0</adventure.bukkit.version>
         <placeholderapi.version>2.11.2</placeholderapi.version>
 
