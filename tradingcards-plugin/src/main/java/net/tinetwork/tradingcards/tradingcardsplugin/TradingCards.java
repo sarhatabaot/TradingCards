@@ -476,23 +476,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         economyWrapper = new TreasuryEconomy(rsp.getProvider());
         return economyWrapper != null;
     }
-
-    public boolean isMobHostile(EntityType e) {
-        return MobGroupUtil.isMobHostile(e);
-    }
-
-    public boolean isMobNeutral(EntityType e) {
-        return MobGroupUtil.isMobNeutral(e);
-    }
-
-    public boolean isMobPassive(EntityType e) {
-        return MobGroupUtil.isMobPassive(e);
-    }
-
-    public boolean isMobBoss(EntityType e) {
-        return MobGroupUtil.isMobBoss(e);
-
-    }
+    
 
     @Override
     public boolean isMob(@NotNull String input) {
