@@ -47,14 +47,14 @@ public class CardsCommand extends BaseCommand {
     }
 
     @Subcommand("version|ver")
-    @CommandPermission(Permissions.VERSION)
+    @CommandPermission(Permissions.Admin.VERSION)
     @Description("Show the plugin version.")
     public void onVersion(final CommandSender sender) {
         ChatUtil.sendMessage(sender, InternalMessages.CardsCommand.VERSION.formatted(plugin.getName(), plugin.getDescription().getVersion(), plugin.getDescription().getAPIVersion()));
     }
 
     @Subcommand("reload")
-    @CommandPermission(Permissions.RELOAD)
+    @CommandPermission(Permissions.Admin.RELOAD)
     @Description("Reloads all the configs.")
     public void onReload(final CommandSender sender) {
         ChatUtil.sendMessage(sender, messagesConfig.reload());
@@ -63,7 +63,7 @@ public class CardsCommand extends BaseCommand {
 
 
     @Subcommand("resolve")
-    @CommandPermission(Permissions.RESOLVE)
+    @CommandPermission(Permissions.Admin.RESOLVE)
     @Description("Shows a player's uuid")
     public void onResolve(final CommandSender sender, final @NotNull Player player) {
         ChatUtil.sendMessage(sender,
@@ -85,7 +85,7 @@ public class CardsCommand extends BaseCommand {
     }
 
     @Subcommand("worth")
-    @CommandPermission(Permissions.WORTH)
+    @CommandPermission(Permissions.User.Economy.WORTH)
     @Description("Shows a card's worth.")
     public void onWorth(final Player player) {
         if (CardUtil.noEconomy(player)) {

@@ -27,7 +27,7 @@ public class DeckCommand extends BaseCommand {
 	}
 
 	@Default
-	@CommandPermission(Permissions.USE_DECK)
+	@CommandPermission(Permissions.User.Use.DECK)
 	@Description("Get a deck item. Or opens a deck.")
 	public void onGetDeck(final Player player,@Default("1") int deckNumber) {
 		Validate.notNull(player, InternalMessages.DeckCommand.CANNOT_RUN_FROM_CONSOLE);

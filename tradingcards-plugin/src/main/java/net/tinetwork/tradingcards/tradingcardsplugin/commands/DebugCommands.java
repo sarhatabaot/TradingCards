@@ -42,7 +42,7 @@ public class DebugCommands extends BaseCommand {
     }
 
     @Subcommand("debug")
-    @CommandPermission(Permissions.ADMIN_DEBUG)
+    @CommandPermission(Permissions.Admin.Debug.ADMIN_DEBUG)
     public class DebugSubCommands extends BaseCommand {
 
         public class ZipBukkitRunnable extends BukkitRunnable {
@@ -78,7 +78,7 @@ public class DebugCommands extends BaseCommand {
         }
 
         @Subcommand("zip")
-        @CommandPermission(Permissions.ADMIN_DEBUG_ZIP)
+        @CommandPermission(Permissions.Admin.Debug.ADMIN_DEBUG_ZIP)
         @Description("Creates a zip of all settings.")
         public void onZip(final @NotNull CommandSender sender) {
             sender.sendMessage(InternalMessages.DebugCommand.BACKING_UP_SETTING);
@@ -88,21 +88,21 @@ public class DebugCommands extends BaseCommand {
         }
 
         @Subcommand("showcache all")
-        @CommandPermission(Permissions.ADMIN_DEBUG_SHOW_CACHE)
+        @CommandPermission(Permissions.Admin.Debug.ADMIN_DEBUG_SHOW_CACHE)
         @Description("Shows the card cache")
         public void showCacheAll(final @NotNull CommandSender sender) {
             sender.sendMessage(StringUtils.join(plugin.getCardManager().getCards(), ","));
         }
 
         @Subcommand("showcache active")
-        @CommandPermission(Permissions.ADMIN_DEBUG_SHOW_CACHE)
+        @CommandPermission(Permissions.Admin.Debug.ADMIN_DEBUG_SHOW_CACHE)
         @Description("Shows the card cache")
         public void showCacheActive(final @NotNull CommandSender sender) {
             sender.sendMessage(StringUtils.join(plugin.getCardManager().getActiveCards(), ","));
         }
 
         @Subcommand("modules")
-        @CommandPermission(Permissions.ADMIN_DEBUG_MODULES)
+        @CommandPermission(Permissions.Admin.Debug.ADMIN_DEBUG_MODULES)
         @Description("Shows all enabled hooks and addons.")
         public void onModules(final CommandSender sender) {
             final StringBuilder builder = new StringBuilder(InternalMessages.DebugCommand.ENABLED_MODULES);
@@ -126,14 +126,14 @@ public class DebugCommands extends BaseCommand {
         }
 
         @Subcommand("packs")
-        @CommandPermission(Permissions.ADMIN_DEBUG_PACKS)
+        @CommandPermission(Permissions.Admin.Debug.ADMIN_DEBUG_PACKS)
         @Description("Show all available packs.")
         public void onPack(final CommandSender sender) {
             sender.sendMessage(StringUtils.join(plugin.getPackManager().getPacks(), ","));
         }
 
         @Subcommand("rarities")
-        @CommandPermission(Permissions.ADMIN_DEBUG_RARITIES)
+        @CommandPermission(Permissions.Admin.Debug.ADMIN_DEBUG_RARITIES)
         @Description("Shows available rarities.")
         public void onRarities(final CommandSender sender) {
             StringBuilder sb = new StringBuilder();
@@ -144,7 +144,7 @@ public class DebugCommands extends BaseCommand {
         }
 
         @Subcommand("exists")
-        @CommandPermission(Permissions.ADMIN_DEBUG_EXISTS)
+        @CommandPermission(Permissions.Admin.Debug.ADMIN_DEBUG_EXISTS)
         @Description("Shows if a card exists or not.")
         public void onExists(final CommandSender sender, final String cardId, final String rarityId,final String seriesId) {
             if (plugin.getCardManager().getCards().contains(new CompositeCardKey(rarityId,seriesId,cardId).toString())) {
@@ -156,7 +156,7 @@ public class DebugCommands extends BaseCommand {
 
         @Subcommand("rarities-series")
         @CommandCompletion("@rarities @series")
-        @CommandPermission(Permissions.ADMIN_DEBUG_RARITIES_SERIES)
+        @CommandPermission(Permissions.Admin.Debug.ADMIN_DEBUG_RARITIES_SERIES)
         public void onRaritiesSeriesCards(final CommandSender sender, final String rarityId, final String seriesId) {
             sender.sendMessage(StringUtils.join(plugin.getStorage().getCardsInRarityAndSeries(rarityId, seriesId).stream().map(TradingCard::getCardId).toList(), ", "));
         }

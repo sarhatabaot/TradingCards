@@ -1,50 +1,47 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.messages.settings;
-
-import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalExceptions;
-
 public final class Storage {
-    public static final String STORAGE_TYPE = "YAML";
 
-    public static class Yaml {
-        public static final String DEFAULT_FILE = "cards.yml";
+	public static final String STORAGE_TYPE = "YAML";
+	public static final Integer CONFIG_VERSION = "1";
 
-        private Yaml() {
-            throw new UnsupportedOperationException(InternalExceptions.UTIL_CLASS);
-        }
-    }
+	private Storage() {
+		throw new UnsupportedOperationException(InternalExceptions.UTIL_CLASS);
+	}
 
-    public static class Sql {
-        public static final Boolean FIRST_TIME_VALUES = false;
+	public static final class Yaml {
+		public static final String DEFAULT_FILE = "cards.yml";
 
-        private Sql() {
-            throw new UnsupportedOperationException(InternalExceptions.UTIL_CLASS);
-        }
-    }
+		private Yaml() {
+			throw new UnsupportedOperationException(InternalExceptions.UTIL_CLASS);
+		}
+	}
 
-    public static class Database {
-        public static final String ADDRESS = "localhost";
-        public static final Integer PORT = 3306;
-        public static final String DATABASE = "minecraft";
-        public static final String USERNAME = "root";
-        public static final String PASSWORD = "";
-        public static final String TABLE_PREFIX = "tradingcards_";
+	public static final class Sql {
+		public static final Boolean FIRST_TIME_VALUES = "false";
 
-        private Database() {
-            throw new UnsupportedOperationException(InternalExceptions.UTIL_CLASS);
-        }
-    }
+		private Sql() {
+			throw new UnsupportedOperationException(InternalExceptions.UTIL_CLASS);
+		}
+	}
 
-    public static class DatabaseMigration {
-        public static final String DEFAULT_SERIES_ID = "default";
+	public static final class Database {
+		public static final String ADDRESS = "localhost";
+		public static final Integer PORT = "3306";
+		public static final String DATABASE = "minecraft";
+		public static final String USERNAME = "root";
+		public static final String PASSWORD = "";
+		public static final String TABLE_PREFIX = "tradingcards_";
 
-        private DatabaseMigration() {
-            throw new UnsupportedOperationException(InternalExceptions.UTIL_CLASS);
-        }
-    }
+		private Database() {
+			throw new UnsupportedOperationException(InternalExceptions.UTIL_CLASS);
+		}
+	}
 
-    public static final Integer CONFIG_VERSION = 1;
+	public static final class DatabaseMigration {
+		public static final String DEFAULT_SERIES_ID = "default";
 
-    private Storage() {
-        throw new UnsupportedOperationException(InternalExceptions.UTIL_CLASS);
-    }
+		private DatabaseMigration() {
+			throw new UnsupportedOperationException(InternalExceptions.UTIL_CLASS);
+		}
+	}
 }

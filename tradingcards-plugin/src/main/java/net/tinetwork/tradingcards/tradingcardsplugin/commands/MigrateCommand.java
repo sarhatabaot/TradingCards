@@ -36,7 +36,7 @@ public class MigrateCommand extends BaseCommand {
     }
 
     @Subcommand("migrate")
-    @CommandPermission(Permissions.ADMIN_MIGRATE)
+    @CommandPermission(Permissions.Admin.ADMIN_MIGRATE)
     @Description("Migrates from yaml to another storage type.")
     public class MigrateSubCommand extends BaseCommand {
         @Default

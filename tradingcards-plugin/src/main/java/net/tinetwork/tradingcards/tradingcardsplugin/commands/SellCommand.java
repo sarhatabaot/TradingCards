@@ -32,7 +32,7 @@ public class SellCommand extends BaseCommand {
         this.plugin = plugin;
     }
     @Subcommand("sell")
-    @CommandPermission(Permissions.SELL)
+    @CommandPermission(Permissions.User.Economy.SELL)
     public class SellSubCommand extends BaseCommand {
         @Default
         @Description("Sells the card in your main hand.")

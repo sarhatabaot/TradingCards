@@ -50,12 +50,12 @@ public class EditCommand extends BaseCommand {
     }
 
     @Subcommand("edit")
-    @CommandPermission(Permissions.EDIT)
+    @CommandPermission(Permissions.Admin.Edit.EDIT)
     @Description("Edit any value.")
     public class EditSubCommand extends BaseCommand {
 
         @Subcommand("card")
-        @CommandPermission(Permissions.EDIT_CARD)
+        @CommandPermission(Permissions.Admin.Edit.EDIT_CARD)
         @CommandCompletion("@rarities @series @command-cards @edit-card @edit-card-value")
         public void onEditCard(final CommandSender sender, final Rarity rarity, final Series series, final String cardId, final EditCard editCard, final String value) {
             final String seriesId = series.getId();
@@ -130,7 +130,7 @@ public class EditCommand extends BaseCommand {
         }
 
         @Subcommand("rarity")
-        @CommandPermission(Permissions.EDIT_RARITY)
+        @CommandPermission(Permissions.Admin.Edit.EDIT_RARITY)
         @CommandCompletion("@rarities @edit-rarity @edit-rarity-value")
         public void onEditRarity(final CommandSender sender, final String rarityId, final EditRarity editRarity, final String value) {
             if (!plugin.getRarityManager().containsRarity(rarityId)) {
@@ -178,7 +178,7 @@ public class EditCommand extends BaseCommand {
 
 
         @Subcommand("series")
-        @CommandPermission(Permissions.EDIT_SERIES)
+        @CommandPermission(Permissions.Admin.Edit.EDIT_SERIES)
         @CommandCompletion("@series @edit-series @edit-series-value")
         //cards edit series <MODE|DISPLAY_NAME|COLORS> available-completion
         public void onEditSeries(final CommandSender sender, final String seriesId, final EditSeries editSeries, String value) {
@@ -254,7 +254,7 @@ public class EditCommand extends BaseCommand {
         //cards edit pack <packId> [displayName|price|permission|contents] (typeCompletion or nothing)
         @Subcommand("pack")
         @CommandCompletion("@packs @edit-pack @edit-pack-value") //Default Types needs to depend on edit-types
-        @CommandPermission(Permissions.EDIT_PACK)
+        @CommandPermission(Permissions.Admin.Edit.EDIT_PACK)
         public void onEditPack(final CommandSender sender, final String packId, final EditPack editType, final String value) {
             if (!plugin.getStorage().containsPack(packId)) {
                 ChatUtil.sendPrefixedMessage(sender, InternalMessages.NO_PACK.formatted(packId));
@@ -331,7 +331,7 @@ public class EditCommand extends BaseCommand {
 
         //cards edit type <typeId> [type|displayName] (typeCompletion or nothing)
         @Subcommand("type")
-        @CommandPermission(Permissions.EDIT_CUSTOM_TYPE)
+        @CommandPermission(Permissions.Admin.Edit.EDIT_CUSTOM_TYPE)
         @CommandCompletion("@custom-types @edit-type @edit-type-value") //Default Types needs to depend on edit-types
         //If you want to add more than one word, quotations
         public void onEditType(final CommandSender sender, final String typeId, final EditType editType, @Single final String value) {
@@ -357,7 +357,7 @@ public class EditCommand extends BaseCommand {
         }
 
         @Subcommand("upgrade")
-        @CommandPermission(Permissions.EDIT_UPGRADE)
+        @CommandPermission(Permissions.Admin.Edit.EDIT_UPGRADE)
         @CommandCompletion("@upgrades @edit-upgrade @rarities @nothing @series")
         public void onEditUpgrade(final CommandSender sender, final String upgradeId, final EditUpgrade editUpgrade, final String rarityId, final int amount, final String seriesId) {
             if(!plugin.getUpgradeManager().containsUpgrade(upgradeId)) {

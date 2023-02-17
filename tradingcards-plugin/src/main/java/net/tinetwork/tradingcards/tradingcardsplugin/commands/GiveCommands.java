@@ -37,11 +37,11 @@ public class GiveCommands extends BaseCommand {
     }
 
     @Subcommand("give")
-    @CommandPermission(Permissions.GIVE)
+    @CommandPermission(Permissions.Admin.Give.GIVE)
     public class GiveSubCommands extends BaseCommand {
 
         @Subcommand("card")
-        @CommandPermission(Permissions.GIVE_CARD)
+        @CommandPermission(Permissions.Admin.Give.GIVE_CARD)
         @Description("Gives a card.")
         public class CardSubCommand extends BaseCommand {
             @Default
@@ -53,7 +53,7 @@ public class GiveCommands extends BaseCommand {
             }
 
             @Subcommand("player")
-            @CommandPermission(Permissions.GIVE_CARD_PLAYER)
+            @CommandPermission(Permissions.Admin.Give.GIVE_CARD_PLAYER)
             @CommandCompletion("@players @rarities @series @cards @bool")
             public void onPlayer(final CommandSender sender, @Single final String playerName, @Single final @NotNull Rarity rarity, @Single final @NotNull Series series, @Single final String cardId, @Single final boolean shiny) {
                 TradingCard card = plugin.getCardManager().getCard(cardId, rarity.getId(), series.getId()).isShiny(shiny).get();
@@ -62,8 +62,8 @@ public class GiveCommands extends BaseCommand {
                     return;
                 }
 
-                if(shiny && !sender.hasPermission(Permissions.GIVE_CARD_SHINY)) {
-                    ChatUtil.sendPrefixedMessage(sender,"You do not have permission %s".formatted(Permissions.GIVE_CARD_SHINY));
+                if(shiny && !sender.hasPermission(Permissions.Admin.Give.GIVE_CARD_SHINY)) {
+                    ChatUtil.sendPrefixedMessage(sender,"You do not have permission %s".formatted(Permissions.Admin.Give.GIVE_CARD_SHINY));
                     return;
                 }
 
@@ -90,7 +90,7 @@ public class GiveCommands extends BaseCommand {
         @Subcommand("pack")
         @Description("Gives a pack to a player.")
         @CommandCompletion("@players @packs")
-        @CommandPermission(Permissions.GIVE_PACK)
+        @CommandPermission(Permissions.Admin.Give.GIVE_PACK)
         public void onGiveBoosterPack(final CommandSender sender, @Single final String playerName, @Single final String packId) {
             Player player = Bukkit.getPlayerExact(playerName);
             if (isOnline(player)) {
@@ -116,7 +116,7 @@ public class GiveCommands extends BaseCommand {
 
             @Subcommand("entity")
             @Description("Gives a random card to a player.")
-            @CommandPermission(Permissions.GIVE_RANDOM_ENTITY)
+            @CommandPermission(Permissions.Admin.Give.GIVE_RANDOM_ENTITY)
             public void onGiveRandomCard(final CommandSender sender, @Single final String playerName, final EntityType entityType) {
                 Player player = Bukkit.getPlayerExact(playerName);
                 if (isOnline(player)) {
@@ -140,7 +140,7 @@ public class GiveCommands extends BaseCommand {
             @Subcommand("rarity")
             @Description("Gives a random card to a player. Specify rarity.")
             @CommandCompletion("@players @rarities")
-            @CommandPermission(Permissions.GIVE_RANDOM_RARITY)
+            @CommandPermission(Permissions.Admin.Give.GIVE_RANDOM_RARITY)
             public void onGiveRandomCardByRarity(final CommandSender sender, @Single final String playerName, @Single final String rarityId) {
                 Player player = Bukkit.getPlayerExact(playerName);
                 if (isOnline(player)) {

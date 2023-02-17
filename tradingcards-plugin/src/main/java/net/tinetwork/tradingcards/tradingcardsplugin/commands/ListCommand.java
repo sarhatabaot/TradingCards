@@ -40,7 +40,7 @@ public class ListCommand extends BaseCommand {
     }
 
     @Subcommand("list")
-    @CommandPermission(Permissions.LIST)
+    @CommandPermission(Permissions.User.List.LIST)
     @Description("Lists all cards by rarities")
     public class ListSubCommand extends BaseCommand {
 
@@ -128,7 +128,7 @@ public class ListCommand extends BaseCommand {
 
 
         @Subcommand("player rarity")
-        @CommandPermission(Permissions.LIST_PLAYER)
+        @CommandPermission(Permissions.User.List.LIST_PLAYER)
         @CommandCompletion("@players @rarities")
         @Description("Lists all cards by a player.")
         public void onListPlayerRarity(final CommandSender sender, @Single final String playerName, @Single @Optional final String rarityId) {
@@ -161,7 +161,7 @@ public class ListCommand extends BaseCommand {
         }
 
         @Subcommand("pack")
-        @CommandPermission(Permissions.LIST_PACK)
+        @CommandPermission(Permissions.User.List.LIST_PACK)
         @Description("Lists all packs.")
         public void onListPack(final CommandSender sender) {
             int lineNumber = 0;
@@ -181,7 +181,7 @@ public class ListCommand extends BaseCommand {
         }
 
         @Subcommand("upgrades")
-        @CommandPermission(Permissions.LIST_UPGRADE)
+        @CommandPermission(Permissions.User.List.LIST_UPGRADE)
         @Description("List all upgrades.")
         public void onListUpgrades(final CommandSender sender) {
             ChatUtil.sendMessage(sender,"Currently Available Upgrades %d".formatted(plugin.getUpgradeManager().getUpgrades().size()));
