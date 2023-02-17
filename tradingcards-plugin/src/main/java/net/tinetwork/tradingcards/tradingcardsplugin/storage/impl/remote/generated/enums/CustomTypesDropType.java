@@ -43,7 +43,7 @@ public enum CustomTypesDropType implements EnumType {
 
     @Override
     public String getName() {
-        return "{prefix}custom_types_drop_type";
+        return null;
     }
 
     @Override

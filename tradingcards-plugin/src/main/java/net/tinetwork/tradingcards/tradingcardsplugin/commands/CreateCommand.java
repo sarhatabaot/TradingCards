@@ -27,7 +27,7 @@ public class CreateCommand extends BaseCommand{
     }
 
     @Subcommand("create")
-    @CommandPermission(Permissions.CREATE)
+    @CommandPermission(Permissions.Admin.Create.CREATE)
     @Description("Creates any type, without customization, edit later using /cards edit.")
     public class CreateSubCommand extends BaseCommand {
 
@@ -38,7 +38,7 @@ public class CreateCommand extends BaseCommand{
         }
 
         @Subcommand("rarity")
-        @CommandPermission(Permissions.CREATE_RARITY)
+        @CommandPermission(Permissions.Admin.Create.CREATE_RARITY)
         public void onRarity(final CommandSender sender,@Single final String rarityId) {
             if (plugin.getRarityManager().containsRarity(rarityId)) {
                 sender.sendMessage(InternalMessages.CreateCommand.RARITY_EXISTS.formatted(rarityId));
@@ -50,7 +50,7 @@ public class CreateCommand extends BaseCommand{
         }
 
         @Subcommand("card")
-        @CommandPermission(Permissions.CREATE_CARD)
+        @CommandPermission(Permissions.Admin.Create.CREATE_CARD)
         @CommandCompletion("@nothing @rarities @series")
         public void onCard(final CommandSender sender,@Single final String cardId,@Single final String rarityId,@Single final String seriesId) {
             //Check if rarity & series exist
@@ -75,7 +75,7 @@ public class CreateCommand extends BaseCommand{
         }
 
         @Subcommand("pack")
-        @CommandPermission(Permissions.CREATE_PACK)
+        @CommandPermission(Permissions.Admin.Create.CREATE_PACK)
         public void onPack(final CommandSender sender,@Single final String packId) {
             if (plugin.getPackManager().containsPack(packId)) {
                 sender.sendMessage(InternalMessages.CreateCommand.PACK_EXISTS.formatted(packId));
@@ -86,7 +86,7 @@ public class CreateCommand extends BaseCommand{
         }
 
         @Subcommand("series")
-        @CommandPermission(Permissions.CREATE_SERIES)
+        @CommandPermission(Permissions.Admin.Create.CREATE_SERIES)
         public void onSeries(final CommandSender sender,@Single final String seriesId) {
             if (plugin.getSeriesManager().containsSeries(seriesId)) {
                 sender.sendMessage(InternalMessages.CreateCommand.SERIES_EXISTS.formatted(seriesId));
@@ -98,7 +98,7 @@ public class CreateCommand extends BaseCommand{
         }
 
         @Subcommand("type")
-        @CommandPermission(Permissions.CREATE_CUSTOM_TYPE)
+        @CommandPermission(Permissions.Admin.Create.CREATE_CUSTOM_TYPE)
         @CommandCompletion("@nothing @default-types")
         public void onType(final CommandSender sender,@Single final String typeId,@Single final String type) {
             if (plugin.getDropTypeManager().containsType(typeId)) {
@@ -116,7 +116,7 @@ public class CreateCommand extends BaseCommand{
 
         @Subcommand("upgrade")
         @CommandCompletion("@nothing")
-        @CommandPermission(Permissions.CREATE_UPGRADE)
+        @CommandPermission(Permissions.Admin.Create.CREATE_UPGRADE)
         public void onUpgrade(final CommandSender sender, @Single final String upgradeId, @Single final PackEntry required, @Single final PackEntry result) {
             if (plugin.getUpgradeManager().containsUpgrade(upgradeId)) {
                 sender.sendMessage(InternalMessages.CreateCommand.UPGRADE_EXISTS.formatted(upgradeId));

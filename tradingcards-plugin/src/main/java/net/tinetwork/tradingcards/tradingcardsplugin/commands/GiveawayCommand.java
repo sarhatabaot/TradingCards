@@ -33,7 +33,7 @@ public class GiveawayCommand extends BaseCommand {
     @Subcommand("giveaway")
     public class GiveawaySubCommand extends BaseCommand {
         @Subcommand("rarity")
-        @CommandPermission(Permissions.GIVEAWAY_RARITY)
+        @CommandPermission(Permissions.Admin.Giveaway.GIVEAWAY_RARITY)
         @Description("Give away a random card by rarity to the server.")
         @CommandCompletion("@rarities")
         public void onRarity(final CommandSender sender, final String rarityId) {
@@ -51,7 +51,7 @@ public class GiveawayCommand extends BaseCommand {
         }
 
         @Subcommand("series")
-        @CommandPermission(Permissions.GIVEAWAY_RARITY)
+        @CommandPermission(Permissions.Admin.Giveaway.GIVEAWAY_RARITY)
         @Description("Give away a random card by series to the server. Optionally also specify the rarity.")
         @CommandCompletion("@series @rarities")
         public void onSeries(final CommandSender sender,@Single final String seriesId,@Optional @Single final String rarityId) {
@@ -85,7 +85,7 @@ public class GiveawayCommand extends BaseCommand {
 
 
         @Subcommand("entity")
-        @CommandPermission(Permissions.GIVEAWAY_ENTITY)
+        @CommandPermission(Permissions.Admin.Giveaway.GIVEAWAY_ENTITY)
         @Description("Give away a random card by entity to the server.")
         public void onMob(final CommandSender sender, final String entity) {
             if (plugin.isMob(entity)) {

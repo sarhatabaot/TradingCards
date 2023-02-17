@@ -36,11 +36,11 @@ public class BuyCommand extends BaseCommand {
     }
 
     @Subcommand("buy")
-    @CommandPermission(Permissions.BUY)
+    @CommandPermission(Permissions.User.Economy.BUY)
     public class BuySubCommand extends BaseCommand {
 
         @Subcommand("pack")
-        @CommandPermission(Permissions.BUY_PACK)
+        @CommandPermission(Permissions.User.Economy.BUY_PACK)
         @CommandCompletion("@packs")
         @Description("Buy a pack.")
         public void onBuyPack(final Player player, final String packId) {
@@ -97,7 +97,7 @@ public class BuyCommand extends BaseCommand {
 
 
         @Subcommand("card")
-        @CommandPermission(Permissions.BUY_CARD)
+        @CommandPermission(Permissions.User.Economy.BUY_CARD)
         @Description("Buy a card.")
         @CommandCompletion("@rarities @cards")
         public void onBuyCard(final Player player, @NotNull final String rarityId, @NotNull final String cardId, @NotNull final String seriesId) {

@@ -34,12 +34,12 @@ public class InfoCommand extends BaseCommand {
     }
 
     @Subcommand("info")
-    @CommandPermission(Permissions.INFO)
+    @CommandPermission(Permissions.User.Info.INFO)
     public class InfoSubCommand extends BaseCommand {
 
         @Subcommand("card")
         @CommandCompletion("@rarities @series @cards")
-        @CommandPermission(Permissions.INFO_CARD)
+        @CommandPermission(Permissions.User.Info.INFO_CARD)
         public void onCard(final CommandSender sender, final @NotNull Rarity rarity, final @NotNull Series series, final String cardId) {
             if (!plugin.getCardManager().containsCard(cardId, rarity.getId(), series.getId())) {
                 sender.sendMessage(plugin.getMessagesConfig().noCard());
@@ -56,7 +56,7 @@ public class InfoCommand extends BaseCommand {
 
         @Subcommand("pack")
         @CommandCompletion("@packs")
-        @CommandPermission(Permissions.INFO_PACK)
+        @CommandPermission(Permissions.User.Info.INFO_PACK)
         public void onPack(final CommandSender sender, final String packId) {
             if(!plugin.getPackManager().containsPack(packId)) {
                 sender.sendMessage(plugin.getMessagesConfig().noBoosterPack());
@@ -75,7 +75,7 @@ public class InfoCommand extends BaseCommand {
 
         @Subcommand("type")
         @CommandCompletion("@all-types")
-        @CommandPermission(Permissions.INFO_TYPE)
+        @CommandPermission(Permissions.User.Info.INFO_TYPE)
         public void onType(final CommandSender sender, final String typeId) {
             if(!plugin.getDropTypeManager().containsType(typeId)) {
                 ChatUtil.sendPrefixedMessage(sender,"No type %s".formatted(typeId));
@@ -90,7 +90,7 @@ public class InfoCommand extends BaseCommand {
 
         @Subcommand("series")
         @CommandCompletion("@series")
-        @CommandPermission(Permissions.INFO_SERIES)
+        @CommandPermission(Permissions.User.Info.INFO_SERIES)
         public void onSeries(final CommandSender sender, final @NotNull Series series) {
             ChatUtil.sendPrefixedMessages(sender,
                     InternalMessages.InfoCommand.SERIES_FORMAT,
@@ -100,7 +100,7 @@ public class InfoCommand extends BaseCommand {
 
         @Subcommand("rarity")
         @CommandCompletion("@rarities")
-        @CommandPermission(Permissions.INFO_PACK)
+        @CommandPermission(Permissions.User.Info.INFO_PACK)
         public void onRarity(final CommandSender sender, final @NotNull Rarity rarity) {
             ChatUtil.sendPrefixedMessages(sender,
                     InternalMessages.InfoCommand.RARITY_FORMAT,
@@ -110,7 +110,7 @@ public class InfoCommand extends BaseCommand {
 
         @Subcommand("mob")
         @Description("Display the mob group for this entity.")
-        @CommandPermission(Permissions.INFO_MOB)
+        @CommandPermission(Permissions.User.Info.INFO_MOB)
         public void onMobInfo(final CommandSender sender, final EntityType entityType) {
             final DropType dropType = plugin.getDropTypeManager().getMobType(entityType);
             ChatUtil.sendPrefixedMessage(sender, InternalMessages.InfoCommand.MOB_FORMAT.formatted(entityType.name(), dropType.getType()));
@@ -118,7 +118,7 @@ public class InfoCommand extends BaseCommand {
 
         @Subcommand("upgrade")
         @CommandCompletion("@upgrades")
-        @CommandPermission(Permissions.INFO_UPGRADE)
+        @CommandPermission(Permissions.User.Info.INFO_UPGRADE)
         public void onUpgrade(final CommandSender sender, final String upgradeId) {
             if(!plugin.getUpgradeManager().containsUpgrade(upgradeId)) {
                 ChatUtil.sendPrefixedMessage(sender,"No such upgrade %s".formatted(upgradeId));
