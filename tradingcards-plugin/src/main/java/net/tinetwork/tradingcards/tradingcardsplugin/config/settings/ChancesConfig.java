@@ -23,7 +23,7 @@ public class ChancesConfig extends YamlConfigurateFile<TradingCards> {
     private int passiveChance;
     private int bossChance;
     private boolean bossDrop;
-    private int bossDropRarity;
+    private String bossDropRarity;
     private int shinyVersionChance;
     private int allChance;
 
@@ -38,7 +38,7 @@ public class ChancesConfig extends YamlConfigurateFile<TradingCards> {
         this.passiveChance = rootNode.node("passive-chance").getInt(Chances.PASSIVE_CHANCE);
         this.bossChance = rootNode.node("boss-chance").getInt(Chances.BOSS_CHANCE);
         this.bossDrop = rootNode.node("boss-drop").getBoolean(Chances.BOSS_DROP);
-        this.bossDropRarity = rootNode.node("boss-drop-rarity").getInt(Chances.BOSS_DROP_RARITY);
+        this.bossDropRarity = rootNode.node("boss-drop-rarity").getString(Chances.BOSS_DROP_RARITY);
         this.shinyVersionChance = rootNode.node("shiny-version-chance").getInt(Chances.SHINY_VERSION_CHANCE);
         this.allChance = rootNode.node("all-chance").getInt(Chances.ALL_CHANCE);
     }
@@ -69,7 +69,7 @@ public class ChancesConfig extends YamlConfigurateFile<TradingCards> {
         return bossDrop;
     }
 
-    public int bossDropRarity() {
+    public String bossDropRarity() {
         return bossDropRarity;
     }
 

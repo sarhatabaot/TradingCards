@@ -8,6 +8,8 @@ public final class Permissions {
 	}
 
 	public static final class User {
+		public static final String USER = "cards.user";
+
 		private User() {
 			throw new UnsupportedOperationException(InternalExceptions.UTIL_CLASS);
 		}

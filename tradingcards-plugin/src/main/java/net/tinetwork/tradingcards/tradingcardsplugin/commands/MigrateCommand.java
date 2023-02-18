@@ -51,7 +51,7 @@ public class MigrateCommand extends BaseCommand {
             ChatUtil.sendMessage(sender,InternalMessages.Migrate.WARNING);
             ChatUtil.sendMessage(sender,InternalMessages.Migrate.BACKUP_HINT1);
             ChatUtil.sendMessage(sender,InternalMessages.Migrate.BACKUP_HINT2);
-            ChatUtil.sendMessage(sender,InternalMessages.Migrate.CONFIRM_HINT.formatted(plugin.getStorage().getType().name()));
+            ChatUtil.sendMessage(sender, InternalMessages.Migrate.CONFIRM_HINT.formatted(plugin.getStorage().getType().name()));
             ChatUtil.sendMessage(sender,InternalMessages.Migrate.CONFIRM_CMD);
         }
 

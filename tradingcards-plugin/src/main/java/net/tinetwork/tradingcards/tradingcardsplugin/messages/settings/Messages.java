@@ -1,4 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.messages.settings;
+
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalExceptions;
+
 public final class Messages {
 
 	public static final String PREFIX = "&7[&fCards&7]&7 ";
@@ -69,7 +72,7 @@ public final class Messages {
 	public static final String SECTION_FORMAT_COMPLETE = "&6--- %s &7(&6%shiny_cards_owned%&f/%sComplete&7)&6 ---";
 	public static final String PACK_SECTION = "&6--- Packs ---";
 	public static final String DECK_INVENTORY_TITLE = "&c%player%'s Deck #%deck_num%";
-	public static final Integer CONFIG_VERSION = "1";
+	public static final Integer CONFIG_VERSION = 1;
 
 	private Messages() {
 		throw new UnsupportedOperationException(InternalExceptions.UTIL_CLASS);

@@ -53,8 +53,8 @@ public class PackListener extends SimpleListener {
         }
 
 
-        if (!player.hasPermission(Permissions.USE_PACK)) {
-            ChatUtil.sendMessage(player, plugin.getPrefixedMessage("No permission: "+Permissions.USE_PACK));
+        if (!player.hasPermission(Permissions.User.Use.PACK)) {
+            ChatUtil.sendMessage(player, plugin.getPrefixedMessage("No permission: "+Permissions.User.Use.PACK));
             return;
         }
         if (player.getGameMode() == GameMode.CREATIVE) {

@@ -112,11 +112,18 @@ public final class InternalMessages {
 	}
 
 	public static final class InfoCommand {
-		public static final String[] CARD_FORMAT = "\"&bCard:&f %s\",\"&bSeries:&f %s\",\"&bRarity:&f %s\",\"&bDisplay Name:&f %s\",\"&bBuy Price:&f %.2f\",\"&bSell Price:&f %.2f\",\"&bCurrency:&f %s\",\"&bAbout:&f %s\",\"&bInfo:&f %s\"";
-		public static final String[] PACK_FORMAT = "\"&bPack:&f %s\",\"&bDisplay Name:&f %s\",\"&bContent:&f %s\",\"&bTrade: &f %s\",\"&bCurrency:&f %s\",\"&bBuy Price:&f %s\"";
-		public static final String[] TYPE_FORMAT = "\"&bType:&f %s\",\"&bDisplay Name:&f %s\",\"&bMob Type:&f %s\"";
-		public static final String[] SERIES_FORMAT = "\"&bSeries:&f %s\",\"&bDisplay Name:&f '%s'\",\"&bMode:&f %s\",\"&bColors:&f %s\"";
-		public static final String[] RARITY_FORMAT = "\"&bRarity:&f %s\",\"&bDisplay Name:&f '%s'\",\"&bDefault Color:&f %s\",\"&bBuy Price:&f %.2f\",\"&bSell Price:&f %.2f\",\"&bCurrency Id:&f %s\",\"&bRewards:&f %s\"";
+		public static final String[] CARD_FORMAT = new String[]{"&bCard:&f %s", "&bSeries:&f %s", "&bRarity:&f %s",
+				"&bDisplay Name:&f %s", "&bBuy Price:&f %.2f", "&bSell Price:&f %.2f", "&bCurrency:&f %s",
+				"&bAbout:&f %s", "&bInfo:&f %s"};
+		public static final String[] PACK_FORMAT = new String[]{"&bPack:&f %s", "&bDisplay Name:&f %s",
+				"&bContent:&f %s", "&bTrade: &f %s", "&bCurrency:&f %s", "&bBuy Price:&f %s"};
+		public static final String[] TYPE_FORMAT = new String[]{"&bType:&f %s", "&bDisplay Name:&f %s",
+				"&bMob Type:&f %s"};
+		public static final String[] SERIES_FORMAT = new String[]{"&bSeries:&f %s", "&bDisplay Name:&f '%s'",
+				"&bMode:&f %s", "&bColors:&f %s"};
+		public static final String[] RARITY_FORMAT = new String[]{"&bRarity:&f %s", "&bDisplay Name:&f '%s'",
+				"&bDefault Color:&f %s", "&bBuy Price:&f %.2f", "&bSell Price:&f %.2f", "&bCurrency Id:&f %s",
+				"&bRewards:&f %s"};
 		public static final String MOB_FORMAT = "Entity %s is %s";
 
 		private InfoCommand() {
