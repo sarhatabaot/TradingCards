@@ -119,8 +119,7 @@ public class DropListener extends SimpleListener {
 
 
         for (final Rarity rarity : rarities) {
-            if (!(cardManager.getCard(player.getName(), rarity.getId(), plugin.getGeneralConfig().playerSeries()) instanceof EmptyCard)) {
-                debug(rarity.getId());
+            if(cardManager.containsCard(player.getName(),rarity.getId(),plugin.getGeneralConfig().playerSeries())) {
                 return rarity.getId();
             }
         }
