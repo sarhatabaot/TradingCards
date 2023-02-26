@@ -7,6 +7,8 @@ import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
 import net.tinetwork.tradingcards.api.economy.ResponseWrapper;
+import net.tinetwork.tradingcards.api.model.Rarity;
+import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.api.model.pack.Pack;
 import net.tinetwork.tradingcards.api.model.pack.PackEntry;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.Permissions;
@@ -99,17 +101,17 @@ public class BuyCommand extends BaseCommand {
         @Subcommand("card")
         @CommandPermission(Permissions.User.Economy.BUY_CARD)
         @Description("Buy a card.")
-        @CommandCompletion("@rarities @cards")
-        public void onBuyCard(final Player player, @NotNull final String rarityId, @NotNull final String cardId, @NotNull final String seriesId) {
+        @CommandCompletion("@rarities @series @cards")
+        public void onBuyCard(final Player player, @NotNull final Rarity rarity, @NotNull final Series series, @NotNull final String cardId) {
             if (CardUtil.noEconomy(player))
                 return;
 
-            if (plugin.getCardManager().getCard(cardId, rarityId, seriesId) instanceof EmptyCard) {
+            if (plugin.getCardManager().getCard(cardId, rarity.getId(), series.getId()) instanceof EmptyCard) {
                 player.sendMessage(plugin.getMessagesConfig().cardDoesntExist());
                 return;
             }
 
-            final TradingCard tradingCard = plugin.getCardManager().getCard(cardId, rarityId, seriesId);
+            final TradingCard tradingCard = plugin.getCardManager().getCard(cardId, rarity.getId(), series.getId());
             final double buyPrice = tradingCard.getBuyPrice();
             final String currencyId = tradingCard.getCurrencyId();
 

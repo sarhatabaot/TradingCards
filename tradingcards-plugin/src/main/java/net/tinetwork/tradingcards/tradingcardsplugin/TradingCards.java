@@ -263,6 +263,36 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private void initCommands() {
         var commandManager = new PaperCommandManager(this);
         commandManager.getCommandCompletions().registerCompletion("bool", c -> List.of("false", "true"));
+        commandManager.getCommandContexts().registerContext(Rarity.class, c -> {
+                String rarityId = c.popFirstArg();
+                if (!getRarityManager().containsRarity(rarityId)) {
+                    throw new InvalidCommandArgument(InternalExceptions.NO_RARITY.formatted(rarityId));
+                }
+            
+                return getRarityManager().getRarity(rarityId);
+            }
+        );
+        commandManager.getCommandContexts().registerContext(Series.class, c -> {
+            String seriesId = c.popFirstArg();
+            if (!getSeriesManager().containsSeries(seriesId)) {
+                throw new InvalidCommandArgument(InternalExceptions.NO_SERIES.formatted(seriesId));
+            }
+            return getSeriesManager().getSeries(seriesId);
+        });
+        commandManager.getCommandContexts().registerContext(Upgrade.class, c -> {
+            String upgradeId = c.popFirstArg();
+            if (!getUpgradeManager().containsUpgrade(upgradeId)) {
+                throw new InvalidCommandArgument(InternalExceptions.NO_UPGRADE.formatted(upgradeId));
+            }
+            return getUpgradeManager().getUpgrade(upgradeId);
+        });
+        commandManager.getCommandContexts().registerContext(PackEntry.class, c -> {
+            String possibleEntry = c.popFirstArg().replace("\"","");
+            if(possibleEntry.split(":").length < 3) {
+                throw new ConditionFailedException("Not a pack entry. Use format rarityId:amount:seriesId");
+            }
+            return PackEntry.fromString(possibleEntry);
+        });
         commandManager.getCommandCompletions().registerCompletion("rarities", c -> rarityManager.getRarityIds());
         commandManager.getCommandCompletions().registerCompletion("cards", c -> cardManager.getCardsIdsInRarityAndSeries(c.getContextValue(Rarity.class).getId(), c.getContextValue(Series.class).getId()));
         commandManager.getCommandCompletions().registerCompletion("command-cards", c -> cardManager.getCardsIdsInRarityAndSeries(c.getContextValue(Rarity.class).getId(), c.getContextValue(Series.class).getId()));
@@ -323,36 +353,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
                             Stream.concat(dropTypeManager.getDefaultTypes().stream().map(DropType::getId), dropTypeManager.getTypes().keySet().stream()).toList();
                 }
         );
-        commandManager.getCommandContexts().registerContext(Rarity.class, c -> {
-                    String rarityId = c.popFirstArg();
-                    if (!getRarityManager().containsRarity(rarityId)) {
-                        throw new InvalidCommandArgument(InternalExceptions.NO_RARITY.formatted(rarityId));
-                    }
 
-                    return getRarityManager().getRarity(rarityId);
-                }
-        );
-        commandManager.getCommandContexts().registerContext(Series.class, c -> {
-            String seriesId = c.popFirstArg();
-            if (!getSeriesManager().containsSeries(seriesId)) {
-                throw new InvalidCommandArgument(InternalExceptions.NO_SERIES.formatted(seriesId));
-            }
-            return getSeriesManager().getSeries(seriesId);
-        });
-        commandManager.getCommandContexts().registerContext(Upgrade.class, c -> {
-            String upgradeId = c.popFirstArg();
-            if (!getUpgradeManager().containsUpgrade(upgradeId)) {
-                throw new InvalidCommandArgument(InternalExceptions.NO_UPGRADE.formatted(upgradeId));
-            }
-            return getUpgradeManager().getUpgrade(upgradeId);
-        });
-        commandManager.getCommandContexts().registerContext(PackEntry.class, c -> {
-            String possibleEntry = c.popFirstArg().replace("\"","");
-            if(possibleEntry.split(":").length < 3) {
-                throw new ConditionFailedException("Not a pack entry. Use format rarityId:amount:seriesId");
-            }
-            return PackEntry.fromString(possibleEntry);
-        });
         commandManager.registerCommand(new CardsCommand(this, playerBlacklist));
         commandManager.registerCommand(new EditCommand(this));
         commandManager.registerCommand(new CreateCommand(this));
