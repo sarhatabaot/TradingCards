@@ -1,11 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.commands;
 
 import co.aikar.commands.BaseCommand;
-import co.aikar.commands.annotation.CommandAlias;
-import co.aikar.commands.annotation.CommandCompletion;
-import co.aikar.commands.annotation.CommandPermission;
-import co.aikar.commands.annotation.Description;
-import co.aikar.commands.annotation.Subcommand;
+import co.aikar.commands.annotation.*;
 import net.tinetwork.tradingcards.api.economy.ResponseWrapper;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
@@ -45,7 +41,7 @@ public class BuyCommand extends BaseCommand {
         @CommandPermission(Permissions.User.Economy.BUY_PACK)
         @CommandCompletion("@packs")
         @Description("Buy a pack.")
-        public void onBuyPack(final Player player, final String packId) {
+        public void onBuyPack(final Player player, final String packId,final @Optional Integer amount) {
             if (CardUtil.noEconomy(player))
                 return;
 
@@ -60,40 +56,61 @@ public class BuyCommand extends BaseCommand {
                 player.sendMessage(plugin.getMessagesConfig().cannotBeBought());
                 return;
             }
-
-
+    
+            final int amountToBuy = getAmount(amount);
+            
             if (!pack.getTradeCards().isEmpty() && !CardUtil.hasCardsInInventory(player, pack.getTradeCards())) {
                 player.sendMessage("Not enough cards to perform a trade in.");
                 return;
             }
 
-            ResponseWrapper economyResponse = plugin.getEconomyWrapper().withdraw(player, pack.getCurrencyId(), pack.getBuyPrice());
+            final double totalPrice = pack.getBuyPrice() * amountToBuy;
+            ResponseWrapper economyResponse = plugin.getEconomyWrapper().withdraw(player, pack.getCurrencyId(), totalPrice);
             if (economyResponse.success()) {
 
                 if (plugin.getGeneralConfig().closedEconomy()) {
-                    plugin.getEconomyWrapper().depositAccount(plugin.getGeneralConfig().serverAccount(), pack.getCurrencyId(), pack.getBuyPrice());
+                    plugin.getEconomyWrapper().depositAccount(plugin.getGeneralConfig().serverAccount(), pack.getCurrencyId(), totalPrice);
                 }
 
                 if (!pack.getTradeCards().isEmpty()) {
-                    Map<ItemStack, Integer> removedCardsMap = new HashMap<>();
-                    for (PackEntry packEntry : pack.getTradeCards()) {
-                        Map<ItemStack, Integer> removedEntryItems = CardUtil.removeCardsMatchingEntry(player, packEntry);
-
-                        removedCardsMap = Stream.concat(removedCardsMap.entrySet().stream(), removedEntryItems.entrySet().stream()).collect(
-                                Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                    for (int i = 0; i <= amount; i++) {
+                        tradeCards(pack, player);
                     }
-                    final int totalCards = removedCardsMap.values().stream().mapToInt(Integer::intValue).sum();
-                    player.sendMessage("Traded %s cards for pack %s:".formatted(totalCards,packId));
-                    CardUtil.sendTradedCardsMessage(player, removedCardsMap);
                 }
 
-                player.sendMessage(plugin.getMessagesConfig().boughtCard().replaceAll(PlaceholderUtil.AMOUNT.asRegex(), String.valueOf(pack.getBuyPrice())));
-
-                CardUtil.dropItem(player, plugin.getPackManager().getPackItem(packId));
+                player.sendMessage(plugin.getMessagesConfig().boughtCard().replaceAll(PlaceholderUtil.AMOUNT.asRegex(), String.valueOf(totalPrice)));
+                
+                final ItemStack packItem = plugin.getPackManager().getPackItem(packId);
+                packItem.setAmount(amount);
+                CardUtil.dropItem(player, packItem);
                 return;
             }
 
             player.sendMessage(plugin.getMessagesConfig().notEnoughMoney());
+        }
+        
+        private void tradeCards(final @NotNull Pack pack, final Player player) {
+            final String packId = pack.getId();
+            Map<ItemStack, Integer> removedCardsMap = new HashMap<>();
+            for (PackEntry packEntry : pack.getTradeCards()) {
+                Map<ItemStack, Integer> removedEntryItems = CardUtil.removeCardsMatchingEntry(player, packEntry);
+        
+                removedCardsMap = Stream.concat(removedCardsMap.entrySet().stream(), removedEntryItems.entrySet().stream()).collect(
+                    Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            }
+            final int totalCards = removedCardsMap.values().stream().mapToInt(Integer::intValue).sum();
+            player.sendMessage("Traded %s cards for pack %s:".formatted(totalCards,packId));
+            CardUtil.sendTradedCardsMessage(player, removedCardsMap);
+        }
+        
+        private int getAmount(final Integer amount) {
+            if (amount == null || amount == 0) {
+                return 1;
+            }
+            if (amount < 0) {
+               return amount * -1;
+            }
+            return amount;
         }
 
 
