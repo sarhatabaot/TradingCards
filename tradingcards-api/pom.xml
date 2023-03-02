@@ -18,7 +18,7 @@
         <maven.compiler.version>3.10.1</maven.compiler.version>
         <kraken.core.version>1.6.2</kraken.core.version>
         <vault.api.version>1.7.1</vault.api.version>
-        <jetbrains.annotations.version>24.0.0</jetbrains.annotations.version>
+        <jetbrains.annotations.version>24.0.1</jetbrains.annotations.version>
         <configurate.version>4.1.2</configurate.version>
         <treasury.version>1.2.1</treasury.version>
     </properties>

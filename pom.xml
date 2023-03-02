@@ -27,7 +27,7 @@
         <spigot.version>1.18.2-R0.1-SNAPSHOT</spigot.version>
         <vault.api.version>1.7.1</vault.api.version>
         <lombok.version>1.18.26</lombok.version>
-        <jetbrains.annotations.version>24.0.0</jetbrains.annotations.version>
+        <jetbrains.annotations.version>24.0.1</jetbrains.annotations.version>
         <configurate.version>4.1.2</configurate.version>
         <adventure.version>4.12.0</adventure.version>
         <junit.jupiter.version>5.9.2</junit.jupiter.version>
