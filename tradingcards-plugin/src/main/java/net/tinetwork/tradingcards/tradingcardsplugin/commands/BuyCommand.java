@@ -41,7 +41,7 @@ public class BuyCommand extends BaseCommand {
         @CommandPermission(Permissions.User.Economy.BUY_PACK)
         @CommandCompletion("@packs")
         @Description("Buy a pack.")
-        public void onBuyPack(final Player player, final String packId, @Optional Integer amount) {
+        public void onBuyPack(final Player player, final String packId,final @Optional Integer amount) {
             if (CardUtil.noEconomy(player))
                 return;
 
@@ -57,14 +57,14 @@ public class BuyCommand extends BaseCommand {
                 return;
             }
     
-            amount = getAmount(amount);
+            final int amountToBuy = getAmount(amount);
             
             if (!pack.getTradeCards().isEmpty() && !CardUtil.hasCardsInInventory(player, pack.getTradeCards())) {
                 player.sendMessage("Not enough cards to perform a trade in.");
                 return;
             }
 
-            final double totalPrice = pack.getBuyPrice() * amount;
+            final double totalPrice = pack.getBuyPrice() * amountToBuy;
             ResponseWrapper economyResponse = plugin.getEconomyWrapper().withdraw(player, pack.getCurrencyId(), totalPrice);
             if (economyResponse.success()) {
 
