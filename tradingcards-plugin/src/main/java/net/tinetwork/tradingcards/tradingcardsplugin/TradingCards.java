@@ -382,7 +382,9 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     @Override
     public void onDisable() {
         economyWrapper = null;
-        deckManager.closeAllOpenViews();
+        if(deckManager != null) {
+            deckManager.closeAllOpenViews();
+        }
         try {
             this.getStorage().shutdown();
         } catch (Exception ignored) {
