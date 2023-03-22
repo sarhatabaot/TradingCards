@@ -220,6 +220,9 @@ public class AllCardManager extends TradingCardManager implements CardManager<Tr
         if (this.keys == null) {
             this.keys = new ArrayList<>();
             for (TradingCard card : plugin.getStorage().getCards()) {
+                if(plugin.canNotLoadCard(card)) {
+                    continue;
+                }
                 keys.add(new CompositeCardKey(card.getRarity().getId(), card.getSeries().getId(), card.getCardId()));
             }
         }

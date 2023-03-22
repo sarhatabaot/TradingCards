@@ -592,4 +592,15 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         }
         return children;
     }
+    
+    
+    public boolean canNotLoadCard(final @NotNull TradingCard card) {
+        if(card.getSeries() == null) {
+            getLogger().warning(() -> "There is a problem with the series for the card %s".formatted(card.getCardId()));
+            getLogger().warning(() -> "Please fix it and reload the plugin. Skipping card for now.");
+            return true;
+        }
+        
+        return false;
+    }
 }

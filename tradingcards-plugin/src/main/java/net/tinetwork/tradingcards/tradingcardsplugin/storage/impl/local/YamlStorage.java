@@ -23,6 +23,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.StorageType;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
 import org.apache.commons.lang.NotImplementedException;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
@@ -263,6 +264,8 @@ public class YamlStorage implements Storage<TradingCard> {
     private void loadSeriesCards() {
         for (Map.Entry<CompositeCardKey, TradingCard> entry : cards.entrySet()) {
             final TradingCard card = entry.getValue();
+            if(plugin.canNotLoadCard(card))
+                continue;
             final Series series = card.getSeries();
             seriesCardList.putIfAbsent(series.getId(), new ArrayList<>());
             seriesCardList.get(series.getId()).add(card);
@@ -271,13 +274,18 @@ public class YamlStorage implements Storage<TradingCard> {
 
 
     private void loadActiveCards() {
+        //This only loads on startup, that means that it doesn't update. But only on restarts/reloads TODO
         for (TradingCard card : getCards()) {
-            //This only loads on startup, that means that it doesn't update. But only on restarts/reloads TODO
+            if(plugin.canNotLoadCard(card)) {
+                continue;
+            }
+            
             if (card.getSeries().isActive()) {
                 activeCards.put(CompositeCardKey.fromCard(card), card);
             }
         }
     }
+    
 
     @Override
     public Set<Series> getActiveSeries() {
@@ -307,6 +315,9 @@ public class YamlStorage implements Storage<TradingCard> {
             if (rarityCardList.get(rarity.getId()) == null)
                 continue;
             for (TradingCard tradingCard : rarityCardList.get(rarity.getId())) {
+                if(plugin.canNotLoadCard(tradingCard)) {
+                    continue;
+                }
                 String series = tradingCard.getSeries().getId();
                 seriesCardMap.putIfAbsent(series, new ArrayList<>());
                 seriesCardMap.get(series).add(tradingCard);
