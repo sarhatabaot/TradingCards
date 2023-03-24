@@ -93,7 +93,6 @@ public class AllCardManager extends TradingCardManager implements CardManager<Tr
 
     public void initValues() {
         plugin.getLogger().info(() -> InternalLog.CardManager.LOAD_CARDS.formatted(cache.asMap().keySet().size()));
-        //plugin.debug(AllCardManager.class,StringUtils.join(cache.asMap().keySet(), ","));
     }
 
     @Override
