@@ -4,6 +4,8 @@ plugins {
     id("com.github.johnrengelman.shadow") version "8.1.0"
     id("nu.studer.jooq") version "8.1"
     id("com.github.sarhatabaot.messages") version "1.0.6"
+
+    jacoco
 }
 
 version = "5.7.16"
@@ -49,6 +51,7 @@ dependencies {
 }
 
 tasks {
+    // release
     build {
         dependsOn(shadowJar)
     }
@@ -76,9 +79,34 @@ tasks {
             }
         }
     }
-
+//    register("development") {
+//        //local dev task, this should be used when developing locally.
+//        build {
+//            dependsOn(jacoco)
+//            dependsOn(shadowJar)
+//        }
+//
+//        shadowJar {
+//            archiveFileName.set("TradingCards-${project.version}-${build.number}.jar")
+//        }
+//    }
+    
+//    register("bleeding-edge") {
+//        build {
+//            dependsOn(jooq)
+//            dependsOn(shadowJar)
+//        }
+//
+//        shadowJar {
+//            archiveFileName.set("TradingCards-${project.version}-${build.number}.jar")
+//        }
+//
+//    }
     shadowJar {
         minimize()
+        
+        archiveFileName.set("TradingCards-${project.version}.jar")
+        archiveClassifier.set("shadow")
         
         relocate("co.aikar.commands", "${group}.acf")
         relocate("co.aikar.locales", "${group}.locales")
@@ -91,4 +119,5 @@ tasks {
             exclude("org.jooq:jooq-meta-extensions")
         }
     }
+    
 }
