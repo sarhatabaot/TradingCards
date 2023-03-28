@@ -22,5 +22,7 @@ dependencies {
     compileOnly(libs.vault.api)
     compileOnly(libs.annotations)
     compileOnly(libs.treasury.api)
+    compileOnly(libs.configurate.core)
+    compileOnly(libs.configurate.yaml)
     implementation(libs.kraken.core)
 }

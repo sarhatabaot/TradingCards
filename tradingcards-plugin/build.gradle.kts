@@ -1,3 +1,6 @@
+import java.time.Instant
+import java.time.temporal.ChronoUnit
+
 plugins {
     id("net.tinetwork.tradingcards.java-conventions")
     id("net.minecrell.plugin-yml.bukkit") version "0.5.3"
@@ -29,7 +32,7 @@ dependencies {
     compileOnly(libs.treasury.api)
     compileOnly(libs.placeholder.api)
     
-    implementation(libs.kraken.core)
+    compileOnly(libs.kraken.core)
     implementation(project(":tradingcards-api"))
     implementation(libs.nbt.api)
     implementation(libs.acf)
@@ -46,16 +49,17 @@ dependencies {
     library(libs.jooq.meta)
     library(libs.jooq.meta.extensions)
     
+    library(libs.rng.core)
+    library(libs.rng.sampling)
+    library(libs.rng.simple)
+    
+    jooqGenerator("org.jooq:org.jooq.meta.extensions.ddl.DDLDatabase")
+    
     testCompileOnly(libs.mockito)
     testCompileOnly(libs.mockbukkit)
 }
 
 tasks {
-    // release
-    build {
-        dependsOn(shadowJar)
-    }
-
     generateMessages {
         messages {
             register("internal") {
@@ -79,33 +83,34 @@ tasks {
             }
         }
     }
-//    register("development") {
-//        //local dev task, this should be used when developing locally.
-//        build {
-//            dependsOn(jacoco)
-//            dependsOn(shadowJar)
-//        }
-//
-//        shadowJar {
-//            archiveFileName.set("TradingCards-${project.version}-${build.number}.jar")
-//        }
-//    }
+    val profile: String by project
+    val buildNumber: String by project
+    logger.warn(profile)
+    // release
+    build {
+        if(profile == "development") {
+            dependsOn(jooq)
+        }
     
-//    register("bleeding-edge") {
-//        build {
-//            dependsOn(jooq)
-//            dependsOn(shadowJar)
-//        }
-//
-//        shadowJar {
-//            archiveFileName.set("TradingCards-${project.version}-${build.number}.jar")
-//        }
-//
-//    }
+        dependsOn(shadowJar)
+    }
+    
+    val finalName: String = when(profile) {
+        "release" -> "TradingCards-${project.version}.jar"
+        "bleeding-edge" -> "TradingCards-${project.version}-$buildNumber.jar"
+        else -> {
+            val time = Instant.now().truncatedTo(ChronoUnit.SECONDS).toString()
+            "TradingCards-${project.version}-${time}.jar"
+        }
+    }
+
+    jooq {
+    
+    }
+
     shadowJar {
         minimize()
-        
-        archiveFileName.set("TradingCards-${project.version}.jar")
+        archiveFileName.set("\"${finalName}\"") //We must escape the '"' here otherwise this won't work. Probably a bug.
         archiveClassifier.set("shadow")
         
         relocate("co.aikar.commands", "${group}.acf")
@@ -119,5 +124,15 @@ tasks {
             exclude("org.jooq:jooq-meta-extensions")
         }
     }
-    
+}
+
+jacoco {
+    toolVersion = "0.8.8"
+}
+
+tasks.test {
+    finalizedBy(tasks.jacocoTestReport) // report is always generated after tests run
+}
+tasks.jacocoTestReport {
+    dependsOn(tasks.test) // tests are required to run before generating the report
 }

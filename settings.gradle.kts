@@ -18,8 +18,11 @@ dependencyResolutionManagement {
             library("kraken-core", "com.github.sarhatabaot:krakencore:1.6.2")
             library("vault-api", "com.github.MilkBowl:VaultAPI:1.7.1")
             library("treasury-api", "me.lokka30:treasury-api:1.2.1")
+            
             version("configurate", "4.1.2")
+            library("configurate-core", "org.spongepowered", "configurate-core").versionRef("configurate")
             library("configurate-yaml", "org.spongepowered", "configurate-yaml").versionRef("configurate")
+            
             library("lombok","org.projectlombok:lombok:1.18.26")
             
             library("adventure-api", "net.kyori:adventure-api:4.12.0")
@@ -33,10 +36,11 @@ dependencyResolutionManagement {
             library("hikaricp", "com.zaxxer:HikariCP:5.0.1")
             library("zip4j", "net.lingala.zip4j:zip4j:2.11.4")
             library("flyway", "org.flywaydb:flyway-mysql:9.15.0")
+            
             version("rng", "1.5")
             library("rng-core", "org.apache.commons","commons-rng-core").versionRef("rng")
-            library("rng-simple", "org.apache.common", "commons-rng-simple").versionRef("rng")
-            library("rng-sampling", "org.apache.common", "commons-rng-sampling").versionRef("rng")
+            library("rng-simple", "org.apache.commons", "commons-rng-simple").versionRef("rng")
+            library("rng-sampling", "org.apache.commons", "commons-rng-sampling").versionRef("rng")
         }
     }
 }
