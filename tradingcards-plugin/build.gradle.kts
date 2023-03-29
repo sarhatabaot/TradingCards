@@ -104,7 +104,6 @@ tasks {
     val finalName: String = getFinalName(profile)
     val schemaVersion: String by project
     val schemaPath = "src/main/resources/db/base/"+schemaVersion.replace("\"","")
-    logger.warn(schemaPath)
 
     jooq {
         version.set(libs.versions.jooq)
