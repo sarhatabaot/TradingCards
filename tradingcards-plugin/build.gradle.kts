@@ -37,10 +37,11 @@ dependencies {
     implementation(project(":tradingcards-api"))
     implementation(libs.nbt.api)
     implementation(libs.acf)
-    library(libs.bstats) //test
     
-    
-    
+    library(libs.bstats)
+    library(libs.zip4j)
+    library(libs.hikaricp)
+    library(libs.flyway)
     library(libs.annotations)
     library(libs.configurate.yaml)
     library(libs.adventure.api)
@@ -48,7 +49,6 @@ dependencies {
     library(libs.jooq)
     library(libs.jooq.codegen)
     library(libs.jooq.meta)
-    
     library(libs.rng.core)
     library(libs.rng.sampling)
     library(libs.rng.simple)
@@ -106,7 +106,7 @@ tasks {
         
         configurations {
             create("main") {
-                generateSchemaSourceOnCompilation.set(false)
+//                generateSchemaSourceOnCompilation.set(false)
                 jooqConfiguration.apply {
                     jdbc = null
                     generator.apply {
@@ -121,7 +121,7 @@ tasks {
                         }
                         target.apply {
                             packageName = "net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated"
-                            directory = "src/main/java/"
+                            directory = "src/main/generated/"
                         }
                     }
                     
@@ -160,6 +160,16 @@ fun getFinalName(profile: String): String {
             "TradingCards-${project.version}-${time}.jar"
         }
     }
+}
+
+bukkit {
+    name = rootProject.name
+    version = project.version.toString()
+    description = project.description.toString()
+    main = "net.tinetwork.tradingcards.tradingcardsplugin.TradingCards"
+    website = "https://github.com/sarhatabaot/TradingCards"
+    authors = listOf("Xenoyia", "sarhatabaot")
+    apiVersion = "1.18"
 }
 
 jacoco {
