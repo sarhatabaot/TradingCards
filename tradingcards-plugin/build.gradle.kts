@@ -36,9 +36,9 @@ dependencies {
     implementation(project(":tradingcards-api"))
     implementation(libs.nbt.api)
     implementation(libs.acf)
-    implementation(libs.bstats)
+    library(libs.bstats) //test
     
-    compileOnly(project(":tradingcards-extras")) //just for codegen TODO
+    
     
     library(libs.annotations)
     library(libs.configurate.yaml)
@@ -47,13 +47,14 @@ dependencies {
     library(libs.jooq)
     library(libs.jooq.codegen)
     library(libs.jooq.meta)
-    library(libs.jooq.meta.extensions)
     
     library(libs.rng.core)
     library(libs.rng.sampling)
     library(libs.rng.simple)
     
-    jooqGenerator("org.jooq:org.jooq.meta.extensions.ddl.DDLDatabase")
+    jooqGenerator(project(":tradingcards-extras"))
+    jooqGenerator("com.mysql:mysql-connector-j:8.0.32")
+    jooqGenerator(libs.jooq.meta.extensions)
     
     testCompileOnly(libs.mockito)
     testCompileOnly(libs.mockbukkit)
@@ -83,31 +84,52 @@ tasks {
             }
         }
     }
+    
+    compileJava {
+        options.compilerArgs.add("-parameters")
+        options.isFork = true
+    }
     val profile: String by project
-    val buildNumber: String by project
-    logger.warn(profile)
     // release
     build {
         if(profile == "development") {
             dependsOn(jooq)
         }
     
+        
         dependsOn(shadowJar)
     }
     
-    val finalName: String = when(profile) {
-        "release" -> "TradingCards-${project.version}.jar"
-        "bleeding-edge" -> "TradingCards-${project.version}-$buildNumber.jar"
-        else -> {
-            val time = Instant.now().truncatedTo(ChronoUnit.SECONDS).toString()
-            "TradingCards-${project.version}-${time}.jar"
+    val finalName: String = getFinalName(profile)
+    val schemaVersion: String by project
+
+    jooq {
+        version.set(libs.versions.jooq)
+        edition.set(nu.studer.gradle.jooq.JooqEdition.OSS)
+        
+        configurations {
+            create("main") {
+                jooqConfiguration.apply {
+                    jdbc = null
+                    generator.apply {
+//                        name = "org.jooq.meta.mysql.MySQLDatabase"
+                        strategy.name = "net.tinetwork.tradingcards.PrefixNamingStrategy"
+                        database.apply {
+                            name = "org.jooq.meta.extensions.ddl.DDLDatabase"
+                            inputSchema = "src/main/resources/db/base/${schemaVersion}"
+                        }
+                        target.apply {
+                            packageName = "net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated"
+                            directory = "/src/main/java"
+                        }
+                    }
+                    
+                }
+            }
         }
     }
 
-    jooq {
     
-    }
-
     shadowJar {
         minimize()
         archiveFileName.set("\"${finalName}\"") //We must escape the '"' here otherwise this won't work. Probably a bug.
@@ -116,12 +138,25 @@ tasks {
         relocate("co.aikar.commands", "${group}.acf")
         relocate("co.aikar.locales", "${group}.locales")
         relocate("de.tr7zw.changeme.nbtapi", "${group}.nbt")
-        relocate("org.bstats", "${group}.bstats")
+//        relocate("org.bstats", "${group}.bstats")
     
         dependencies {
             exclude("com.h2database:h2")
+            exclude("org.jooq:jooq")
             exclude("org.jooq:jooq-codegen-maven")
             exclude("org.jooq:jooq-meta-extensions")
+        }
+    }
+}
+
+fun getFinalName(profile: String): String {
+    val buildNumber: String by project
+    return when(profile) {
+        "release" -> "TradingCards-${project.version}.jar"
+        "bleeding-edge" -> "TradingCards-${project.version}-$buildNumber.jar"
+        else -> {
+            val time = Instant.now().truncatedTo(ChronoUnit.SECONDS).toString()
+            "TradingCards-${project.version}-${time}.jar"
         }
     }
 }
