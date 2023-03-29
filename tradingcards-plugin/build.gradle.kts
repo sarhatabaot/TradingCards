@@ -1,3 +1,4 @@
+import org.jooq.meta.jaxb.Property
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 
@@ -116,7 +117,14 @@ tasks {
                         strategy.name = "net.tinetwork.tradingcards.PrefixNamingStrategy"
                         database.apply {
                             name = "org.jooq.meta.extensions.ddl.DDLDatabase"
-                            inputSchema = "src/main/resources/db/base/${schemaVersion}"
+                            properties.addAll(
+                                listOf(
+                                    Property().withKey("scripts").withValue("src/main/resources/db/base/${schemaVersion}"),
+                                    Property().withKey("dialect").withValue("MYSQL"),
+                                    Property().withKey("sort").withValue("flyway"),
+                                    Property().withKey("unqualifiedSchema").withValue("none")
+                                )
+                            )
                         }
                         target.apply {
                             packageName = "net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated"
