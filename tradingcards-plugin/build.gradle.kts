@@ -39,8 +39,8 @@ dependencies {
     implementation(project(":tradingcards-api"))
     implementation(libs.nbt.api)
     implementation(libs.acf)
+    implementation(libs.bstats)
     
-    library(libs.bstats)
     library(libs.zip4j)
     library(libs.hikaricp)
     library(libs.flyway)
@@ -95,7 +95,6 @@ tasks {
         options.isFork = true
     }
     val profile: String by project
-    // release
     build {
         dependsOn(shadowJar)
     }
@@ -141,17 +140,14 @@ tasks {
         minimize()
         archiveFileName.set(finalName)
         archiveClassifier.set("shadow")
-        
-        relocate("co.aikar.commands", "${group}.acf")
-        relocate("co.aikar.locales", "${group}.locales")
-        relocate("de.tr7zw.changeme.nbtapi", "${group}.nbt")
-//        relocate("org.bstats", "${group}.bstats")
+        relocate("co.aikar.commands", "${project.group}.acf")
+        relocate("co.aikar.locales", "${project.group}.locales")
+        relocate("de.tr7zw.nbtapi", "${project.group}.nbt")
+        relocate("org.bstats", "${project.group}}.bstats")
         
         dependencies {
-            exclude("com.h2database:h2")
-            exclude("org.jooq:jooq")
-            exclude("org.jooq:jooq-codegen-maven")
-            exclude("org.jooq:jooq-meta-extensions")
+            exclude(dependency("com.h2database:h2"))
+            exclude(dependency("org.jooq:.*:.*"))
         }
     }
 }
