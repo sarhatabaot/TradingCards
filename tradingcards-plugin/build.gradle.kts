@@ -65,6 +65,9 @@ dependencies {
     testImplementation(libs.junit.jupiter)
 }
 
+val profile: String by project
+lateinit var time: Instant
+
 tasks {
     generateMessages {
         messages {
@@ -94,12 +97,11 @@ tasks {
         options.compilerArgs.add("-parameters")
         options.isFork = true
     }
-    val profile: String by project
     build {
         dependsOn(shadowJar)
     }
-    
-    val finalName: String = getFinalName(profile)
+    time = Instant.now()
+    val finalName: String = getFinalName(profile, time)
     val schemaVersion: String by project
     val schemaPath = "src/main/resources/db/base/$schemaVersion"
     
@@ -115,7 +117,6 @@ tasks {
                 jooqConfiguration.apply {
                     jdbc = null
                     generator.apply {
-//                        name = "org.jooq.meta.mysql.MySQLDatabase"
                         strategy.name = "net.tinetwork.tradingcards.PrefixNamingStrategy"
                         database.apply {
                             name = "org.jooq.meta.extensions.ddl.DDLDatabase"
@@ -152,7 +153,7 @@ tasks {
     }
 }
 
-fun getFinalName(profile: String): String {
+fun getFinalName(profile: String, instant: Instant): String {
     val buildNumber: String by project
     return when(profile) {
         "release" -> "TradingCards-${project.version}.jar"
@@ -160,15 +161,29 @@ fun getFinalName(profile: String): String {
         else -> {
             val time = DateTimeFormatter.ofPattern("yyyyMMdd-HHmm", Locale.ENGLISH)
                 .withZone(ZoneId.systemDefault())
-                .format(Instant.now())
+                .format(instant)
             "TradingCards-${project.version}-${time}.jar"
         }
     }
 }
-
+fun getPluginVersion(profile: String, instant: Instant): String {
+    return when(profile) {
+        "release" -> project.version.toString()
+        "bleeding-edge" -> {
+            val buildNumber: String by project
+            "${project.version}-${buildNumber}"
+        }
+        else -> {
+            val time = DateTimeFormatter.ofPattern("yyyyMMdd-HHmm", Locale.ENGLISH)
+                .withZone(ZoneId.systemDefault())
+                .format(instant)
+            "${project.version}-${profile}-${time}"
+        }
+    }
+}
 bukkit {
     name = rootProject.name
-    version = project.version.toString()
+    version = getPluginVersion(profile, time)
     description = project.description.toString()
     main = "net.tinetwork.tradingcards.tradingcardsplugin.TradingCards"
     website = "https://github.com/sarhatabaot/TradingCards"
