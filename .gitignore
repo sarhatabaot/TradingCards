@@ -4,3 +4,7 @@
 target
 dependency-reduced-pom.xml
 temp
+
+build
+.gradle
+out
