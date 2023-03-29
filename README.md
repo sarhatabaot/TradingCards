@@ -35,7 +35,7 @@ You can find dev builds on https://ci.codemc.io/job/sarhatabaot/job/TradingCards
 * Better pack format. [Old format](https://github.com/sarhatabaot/TradingCards/blob/f24613e8c6238413f89085b9d5030afb7acb3afa/tradingcards-plugin/src/main/resources/settings/packs.yml), [New Format](https://github.com/sarhatabaot/TradingCards/blob/master/tradingcards-plugin/src/main/resources/data/packs.yml)
 * Cached cards
 
-### Unimplemented:
+### Unimplemented (ETA-TBD):
 * Rewards from completed rarities
 * "SCHEDULED" series mode
 
