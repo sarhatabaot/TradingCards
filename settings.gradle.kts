@@ -41,6 +41,9 @@ dependencyResolutionManagement {
             library("rng-core", "org.apache.commons","commons-rng-core").versionRef("rng")
             library("rng-simple", "org.apache.commons", "commons-rng-simple").versionRef("rng")
             library("rng-sampling", "org.apache.commons", "commons-rng-sampling").versionRef("rng")
+            
+            library("junit-platform","org.junit:junit-bom:5.9.2")
+            library("junit-jupiter", "org.junit.jupiter","junit-jupiter").withoutVersion()
         }
     }
 }

@@ -1,6 +1,8 @@
 import org.jooq.meta.jaxb.Property
 import java.time.Instant
-import java.time.temporal.ChronoUnit
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 plugins {
     id("net.tinetwork.tradingcards.java-conventions")
@@ -57,8 +59,10 @@ dependencies {
     jooqGenerator("com.mysql:mysql-connector-j:8.0.32")
     jooqGenerator(libs.jooq.meta.extensions)
     
-    testCompileOnly(libs.mockito)
-    testCompileOnly(libs.mockbukkit)
+    testImplementation(libs.mockito)
+    testImplementation(libs.mockbukkit)
+    testImplementation(platform(libs.junit.platform))
+    testImplementation(libs.junit.jupiter)
 }
 
 tasks {
@@ -98,7 +102,7 @@ tasks {
     
     val finalName: String = getFinalName(profile)
     val schemaVersion: String by project
-    val schemaPath = "src/main/resources/db/base/"+schemaVersion.replace("\"","")
+    val schemaPath = "src/main/resources/db/base/$schemaVersion"
     
     jooq {
         version.set(libs.versions.jooq)
@@ -106,7 +110,9 @@ tasks {
         
         configurations {
             create("main") {
-//                generateSchemaSourceOnCompilation.set(false)
+                if(profile != "development") {
+                    generateSchemaSourceOnCompilation.set(false)
+                }
                 jooqConfiguration.apply {
                     jdbc = null
                     generator.apply {
@@ -133,7 +139,7 @@ tasks {
     
     shadowJar {
         minimize()
-        archiveFileName.set("\"${finalName}\"") //We must escape the '"' here otherwise this won't work. Probably a bug.
+        archiveFileName.set(finalName)
         archiveClassifier.set("shadow")
         
         relocate("co.aikar.commands", "${group}.acf")
@@ -154,9 +160,11 @@ fun getFinalName(profile: String): String {
     val buildNumber: String by project
     return when(profile) {
         "release" -> "TradingCards-${project.version}.jar"
-        "bleeding-edge" -> "TradingCards-${project.version}-$buildNumber.jar"
+        "bleeding-edge" -> "TradingCards-${project.version}-${buildNumber}.jar"
         else -> {
-            val time = Instant.now().truncatedTo(ChronoUnit.SECONDS).toString()
+            val time = DateTimeFormatter.ofPattern("yyyyMMdd-HHmm", Locale.ENGLISH)
+                .withZone(ZoneId.systemDefault())
+                .format(Instant.now())
             "TradingCards-${project.version}-${time}.jar"
         }
     }
