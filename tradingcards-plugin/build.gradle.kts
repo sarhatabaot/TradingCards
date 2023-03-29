@@ -14,7 +14,7 @@ plugins {
     jacoco
 }
 
-version = "5.7.16"
+version = "5.7.17"
 
 repositories {
     maven(
