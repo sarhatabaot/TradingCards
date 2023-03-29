@@ -103,6 +103,8 @@ tasks {
     
     val finalName: String = getFinalName(profile)
     val schemaVersion: String by project
+    val schemaPath = "src/main/resources/db/base/"+schemaVersion.replace("\"","")
+    logger.warn(schemaPath)
 
     jooq {
         version.set(libs.versions.jooq)
@@ -117,14 +119,10 @@ tasks {
                         strategy.name = "net.tinetwork.tradingcards.PrefixNamingStrategy"
                         database.apply {
                             name = "org.jooq.meta.extensions.ddl.DDLDatabase"
-                            properties.addAll(
-                                listOf(
-                                    Property().withKey("scripts").withValue("src/main/resources/db/base/${schemaVersion}"),
-                                    Property().withKey("dialect").withValue("MYSQL"),
-                                    Property().withKey("sort").withValue("flyway"),
-                                    Property().withKey("unqualifiedSchema").withValue("none")
-                                )
-                            )
+                            properties.add(Property().withKey("scripts").withValue(schemaPath))
+                            properties.add(Property().withKey("dialect").withValue("MYSQL"))
+                            properties.add(Property().withKey("sort").withValue("flyway"))
+                            properties.add(Property().withKey("unqualifiedSchema").withValue("none"))
                         }
                         target.apply {
                             packageName = "net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated"
