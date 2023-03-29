@@ -8,7 +8,7 @@ plugins {
     id("com.github.johnrengelman.shadow") version "8.1.0"
     id("nu.studer.jooq") version "8.1"
     id("com.github.sarhatabaot.messages") version "1.0.6"
-
+    
     jacoco
 }
 
@@ -93,24 +93,20 @@ tasks {
     val profile: String by project
     // release
     build {
-        if(profile == "development") {
-            dependsOn(jooq)
-        }
-    
-        
         dependsOn(shadowJar)
     }
     
     val finalName: String = getFinalName(profile)
     val schemaVersion: String by project
     val schemaPath = "src/main/resources/db/base/"+schemaVersion.replace("\"","")
-
+    
     jooq {
         version.set(libs.versions.jooq)
         edition.set(nu.studer.gradle.jooq.JooqEdition.OSS)
         
         configurations {
             create("main") {
+                generateSchemaSourceOnCompilation.set(false)
                 jooqConfiguration.apply {
                     jdbc = null
                     generator.apply {
@@ -125,7 +121,7 @@ tasks {
                         }
                         target.apply {
                             packageName = "net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated"
-                            directory = "/src/main/java"
+                            directory = "src/main/java/"
                         }
                     }
                     
@@ -133,7 +129,7 @@ tasks {
             }
         }
     }
-
+    
     
     shadowJar {
         minimize()
@@ -144,7 +140,7 @@ tasks {
         relocate("co.aikar.locales", "${group}.locales")
         relocate("de.tr7zw.changeme.nbtapi", "${group}.nbt")
 //        relocate("org.bstats", "${group}.bstats")
-    
+        
         dependencies {
             exclude("com.h2database:h2")
             exclude("org.jooq:jooq")
