@@ -28,7 +28,7 @@ dependencyResolutionManagement {
             library("adventure-api", "net.kyori:adventure-api:4.12.0")
             library("adventure-bukkit","net.kyori:adventure-platform-bukkit:4.2.0")
             
-            library("bstats", "org.bstats:bstats-bukkit:3.0.1")
+            library("bstats", "org.bstats:bstats-bukkit:3.0.2")
             library("acf", "co.aikar:acf-paper:0.5.1-SNAPSHOT")
             library("placeholder-api","me.clip:placeholderapi:2.11.2")
             library("mockito", "org.mockito:mockito-core:5.1.1")
