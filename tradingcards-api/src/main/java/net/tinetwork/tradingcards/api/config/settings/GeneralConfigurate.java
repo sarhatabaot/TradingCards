@@ -1,6 +1,6 @@
 package net.tinetwork.tradingcards.api.config.settings;
 
-import com.github.sarhatabaot.kraken.core.config.YamlConfigurateFile;
+import com.lapzupi.dev.config.YamlConfigurateFile;
 import net.tinetwork.tradingcards.api.TradingCardsPlugin;
 import net.tinetwork.tradingcards.api.card.Card;
 import org.bukkit.Material;

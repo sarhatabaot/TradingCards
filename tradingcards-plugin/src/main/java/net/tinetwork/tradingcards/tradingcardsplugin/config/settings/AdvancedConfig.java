@@ -1,7 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
 
-import com.github.sarhatabaot.kraken.core.config.Transformation;
-import com.github.sarhatabaot.kraken.core.config.YamlConfigurateFile;
+import com.lapzupi.dev.config.Transformation;
+import com.lapzupi.dev.config.YamlConfigurateFile;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.transformations.AdvancedTransformations;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.settings.Advanced;
@@ -11,6 +11,7 @@ import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
+import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 
 import java.io.File;
 import java.lang.reflect.Type;
@@ -41,12 +42,12 @@ public class AdvancedConfig extends YamlConfigurateFile<TradingCards> {
         this.packs = rootNode.node("packs").get(ConfigCache.class, new ConfigCache(Advanced.Cache.Packs.MAX_CACHE_ENTRIES,Advanced.Cache.Packs.REFRESH_AFTER_WRITE));
         this.upgrades = rootNode.node("upgrades").get(ConfigCache.class, new ConfigCache(Advanced.Cache.Upgrades.MAX_CACHE_ENTRIES,Advanced.Cache.Upgrades.REFRESH_AFTER_WRITE));
     }
-
+    
     @Override
-    protected void builderOptions() {
-        loaderBuilder.defaultOptions(opts -> opts.serializers(builder ->
-                builder.registerExact(ConfigCache.class,  ConfigCacheSerializer.INSTANCE)));
+    protected void builderOptions(TypeSerializerCollection.Builder builder) {
+        builder.registerExact(ConfigCache.class,  ConfigCacheSerializer.INSTANCE);
     }
+    
 
     public record ConfigCache(int maxCacheSize, int refreshAfterWrite) {
     }

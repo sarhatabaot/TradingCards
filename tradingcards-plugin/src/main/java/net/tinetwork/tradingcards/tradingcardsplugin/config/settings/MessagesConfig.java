@@ -1,12 +1,14 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
 
-import com.github.sarhatabaot.kraken.core.config.Transformation;
-import com.github.sarhatabaot.kraken.core.config.YamlConfigurateFile;
+
+import com.lapzupi.dev.config.Transformation;
+import com.lapzupi.dev.config.YamlConfigurateFile;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.transformations.MessagesTransformations;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.settings.Messages;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 
 import java.io.File;
 
@@ -153,12 +155,12 @@ public class MessagesConfig extends YamlConfigurateFile<TradingCards> {
         this.deckInventoryTitle = new Message(false, rootNode.node("deck-inventory-title").getString(Messages.DECK_INVENTORY_TITLE));
         this.givePack = new Message(true, rootNode.node("give-booster-pack-msg").getString(Messages.GIVE_BOOSTER_PACK_MSG));
     }
-
+    
     @Override
-    protected void builderOptions() {
-        //No custom type serializer to register
+    protected void builderOptions(TypeSerializerCollection.Builder builder) {
+        //nothing to do
     }
-
+    
     @Override
     protected Transformation getTransformation() {
         return new MessagesTransformations();

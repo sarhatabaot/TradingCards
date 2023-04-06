@@ -1,7 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
 
-import com.github.sarhatabaot.kraken.core.config.Transformation;
-import com.github.sarhatabaot.kraken.core.config.YamlConfigurateFile;
+import com.lapzupi.dev.config.Transformation;
+import com.lapzupi.dev.config.YamlConfigurateFile;
 import net.tinetwork.tradingcards.api.model.chance.Chance;
 import net.tinetwork.tradingcards.api.model.chance.EmptyChance;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
@@ -13,6 +13,7 @@ import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
+import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 
 import java.io.File;
 import java.lang.reflect.Type;
@@ -42,13 +43,12 @@ public class ChancesConfig extends YamlConfigurateFile<TradingCards> {
         this.shinyVersionChance = rootNode.node("shiny-version-chance").getInt(Chances.SHINY_VERSION_CHANCE);
         this.allChance = rootNode.node("all-chance").getInt(Chances.ALL_CHANCE);
     }
-
+    
     @Override
-    protected void builderOptions() {
-        loaderBuilder.defaultOptions(opts -> opts.serializers(builder ->
-                builder.registerExact(Chance.class, ChanceSerializer.INSTANCE)));
+    protected void builderOptions(TypeSerializerCollection.Builder builder) {
+        builder.registerExact(Chance.class, ChanceSerializer.INSTANCE);
     }
-
+    
     public int hostileChance() {
         return hostileChance;
     }

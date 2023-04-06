@@ -1,7 +1,8 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.denylist;
 
-import com.github.sarhatabaot.kraken.core.config.Transformation;
-import com.github.sarhatabaot.kraken.core.config.YamlConfigurateFile;
+
+import com.lapzupi.dev.config.Transformation;
+import com.lapzupi.dev.config.YamlConfigurateFile;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.api.denylist.AllowlistMode;
 import net.tinetwork.tradingcards.api.denylist.Denylist;
@@ -10,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
+import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 
 import java.io.File;
 import java.util.List;
@@ -34,12 +36,12 @@ public class WorldDenylist extends YamlConfigurateFile<TradingCards> implements 
     public WorldDenylist(TradingCards plugin) throws ConfigurateException {
         super(plugin, "lists"+ File.separator, "world-blacklist.yml", "lists");
     }
-
+    
     @Override
-    protected void builderOptions() {
+    protected void builderOptions(TypeSerializerCollection.Builder builder) {
         //No custom type serializer to register
     }
-
+    
     private void loadWorlds() throws SerializationException {
         listedWorlds = worldNode.getList(String.class);
     }

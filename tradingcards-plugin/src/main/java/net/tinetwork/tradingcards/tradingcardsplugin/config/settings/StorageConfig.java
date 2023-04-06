@@ -1,6 +1,6 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
 
-import com.github.sarhatabaot.kraken.core.config.Transformation;
+import com.lapzupi.dev.config.Transformation;
 import net.tinetwork.tradingcards.api.config.settings.StorageConfigurate;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.transformations.StorageTransformations;
@@ -8,6 +8,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.messages.settings.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.StorageType;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 
 import java.io.File;
 
@@ -21,7 +22,7 @@ public class StorageConfig extends StorageConfigurate {
     private String database;
 
     private String username;
-    private String password; //this should not be accessible anywhere except when the db initializes.
+    private String password;
 
     private String tablePrefix;
 
@@ -57,12 +58,12 @@ public class StorageConfig extends StorageConfigurate {
         final ConfigurationNode sql = rootNode.node("sql");
         this.firstTimeValues = sql.node("first-time-values").getBoolean(Storage.Sql.FIRST_TIME_VALUES);
     }
-
+    
     @Override
-    protected void builderOptions() {
-        //nothing to add
+    protected void builderOptions(TypeSerializerCollection.Builder builder) {
+        //nothing toa dd
     }
-
+    
     @Override
     protected Transformation getTransformation() {
         return new StorageTransformations();

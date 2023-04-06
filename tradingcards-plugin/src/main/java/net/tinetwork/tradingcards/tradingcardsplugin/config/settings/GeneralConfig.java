@@ -1,6 +1,6 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config.settings;
 
-import com.github.sarhatabaot.kraken.core.config.Transformation;
+import com.lapzupi.dev.config.Transformation;
 import net.tinetwork.tradingcards.api.config.settings.GeneralConfigurate;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.transformations.GeneralTransformations;
@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 
 import java.io.File;
 
@@ -155,13 +156,13 @@ public class GeneralConfig extends GeneralConfigurate {
         this.displayInfo = displayNode.node("info").getString(General.Display.INFO);
         this.displayAbout = displayNode.node("about").getString(General.Display.ABOUT);
     }
-
-
+    
+    
     @Override
-    protected void builderOptions() {
+    protected void builderOptions(TypeSerializerCollection.Builder builder) {
         //nothing to add
     }
-
+    
     @Override
     protected Transformation getTransformation() {
         return new GeneralTransformations();

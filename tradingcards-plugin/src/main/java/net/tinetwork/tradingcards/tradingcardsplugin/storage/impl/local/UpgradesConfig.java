@@ -1,7 +1,8 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local;
 
-import com.github.sarhatabaot.kraken.core.config.Transformation;
-import com.github.sarhatabaot.kraken.core.config.YamlConfigurateFile;
+
+import com.lapzupi.dev.config.Transformation;
+import com.lapzupi.dev.config.YamlConfigurateFile;
 import net.tinetwork.tradingcards.api.model.Upgrade;
 import net.tinetwork.tradingcards.api.model.pack.PackEntry;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
@@ -12,6 +13,7 @@ import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
+import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 
 import java.io.File;
 import java.lang.reflect.Type;
@@ -38,13 +40,12 @@ public class UpgradesConfig extends YamlConfigurateFile<TradingCards> {
         }
 
     }
-
+    
     @Override
-    protected void builderOptions() {
-        loaderBuilder.defaultOptions(opts -> opts.serializers(builder ->
-                builder.registerExact(Upgrade.class, UpgradeSerializer.INSTANCE))
-        );
+    protected void builderOptions(TypeSerializerCollection.Builder builder) {
+        builder.registerExact(Upgrade.class, UpgradeSerializer.INSTANCE);
     }
+    
 
     @Override
     protected Transformation getTransformation() {

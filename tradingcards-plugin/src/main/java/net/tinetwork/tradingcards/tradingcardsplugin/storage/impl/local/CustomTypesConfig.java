@@ -1,7 +1,8 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local;
 
-import com.github.sarhatabaot.kraken.core.config.Transformation;
-import com.github.sarhatabaot.kraken.core.config.YamlConfigurateFile;
+
+import com.lapzupi.dev.config.Transformation;
+import com.lapzupi.dev.config.YamlConfigurateFile;
 import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
@@ -11,6 +12,7 @@ import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
+import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 
 import java.io.File;
 import java.lang.reflect.Type;
@@ -71,14 +73,13 @@ public class CustomTypesConfig extends YamlConfigurateFile<TradingCards> {
     public Set<DropType> getCustomTypes() {
         return dropTypes;
     }
-
-
-
+    
+    
     @Override
-    protected void builderOptions() {
-        loaderBuilder.defaultOptions(opts -> opts.serializers(builder ->
-                builder.registerExact(DropTypeSerializer.TYPE, DropTypeSerializer.INSTANCE)));
+    protected void builderOptions(TypeSerializerCollection.Builder builder) {
+        builder.registerExact(DropTypeSerializer.TYPE, DropTypeSerializer.INSTANCE);
     }
+
 
     public DropType getCustomType(final String typeId) throws SerializationException {
         return rootNode.node(typeId).get(DropType.class);

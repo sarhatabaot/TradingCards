@@ -1,6 +1,6 @@
 package net.tinetwork.tradingcards.api.config.settings;
 
-import com.github.sarhatabaot.kraken.core.config.YamlConfigurateFile;
+import com.lapzupi.dev.config.YamlConfigurateFile;
 import net.tinetwork.tradingcards.api.TradingCardsPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurateException;

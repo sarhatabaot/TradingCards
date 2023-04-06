@@ -1,7 +1,8 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local;
 
-import com.github.sarhatabaot.kraken.core.config.Transformation;
-import com.github.sarhatabaot.kraken.core.config.YamlConfigurateFile;
+
+import com.lapzupi.dev.config.Transformation;
+import com.lapzupi.dev.config.YamlConfigurateFile;
 import net.tinetwork.tradingcards.api.model.deck.Deck;
 import net.tinetwork.tradingcards.api.model.deck.StorageEntry;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
@@ -16,6 +17,7 @@ import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
+import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -86,13 +88,13 @@ public class DeckConfig extends YamlConfigurateFile<TradingCards> {
             return getConfig().getConfigurationSection(INVENTORY_PATH + uuid);
         return null;
     }
-
+    
     @Override
-    protected void builderOptions() {
-        loaderBuilder.defaultOptions(opts -> opts.serializers(builder ->
-                builder.registerExact(Deck.class, DeckSerializer.INSTANCE)
-                        .registerExact(StorageEntry.class, DeckEntrySerializer.INSTANCE)));
+    protected void builderOptions(TypeSerializerCollection.Builder builder) {
+        builder.registerExact(Deck.class, DeckSerializer.INSTANCE)
+            .registerExact(StorageEntry.class, DeckEntrySerializer.INSTANCE);
     }
+    
 
     public List<String> getDeckEntries(final @NotNull UUID uuid, final String deckNumber) {
         try {

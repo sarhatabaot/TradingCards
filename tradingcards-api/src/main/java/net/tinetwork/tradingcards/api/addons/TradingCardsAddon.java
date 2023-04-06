@@ -1,7 +1,7 @@
 package net.tinetwork.tradingcards.api.addons;
 
 
-import com.github.sarhatabaot.kraken.core.config.HoconConfigurateFile;
+import com.lapzupi.dev.config.HoconConfigurateFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 

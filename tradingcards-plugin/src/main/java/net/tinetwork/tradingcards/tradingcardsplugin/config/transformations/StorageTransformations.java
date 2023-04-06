@@ -1,6 +1,6 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.config.transformations;
 
-import com.github.sarhatabaot.kraken.core.config.Transformation;
+import com.lapzupi.dev.config.Transformation;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.settings.Storage;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;

@@ -35,7 +35,7 @@ dependencies {
     compileOnly(libs.treasury.api)
     compileOnly(libs.placeholder.api)
     
-    compileOnly(libs.kraken.core)
+    implementation(libs.kraken.core)
     implementation(project(":tradingcards-api"))
     implementation(libs.nbt.api)
     implementation(libs.acf)
@@ -200,4 +200,10 @@ tasks.test {
 }
 tasks.jacocoTestReport {
     dependsOn(tasks.test) // tests are required to run before generating the report
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
 }

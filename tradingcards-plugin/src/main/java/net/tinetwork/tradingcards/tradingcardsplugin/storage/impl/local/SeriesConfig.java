@@ -1,6 +1,6 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local;
 
-import com.github.sarhatabaot.kraken.core.config.Transformation;
+import com.lapzupi.dev.config.Transformation;
 import net.tinetwork.tradingcards.api.config.ColorSeries;
 import net.tinetwork.tradingcards.api.config.settings.SeriesConfigurate;
 import net.tinetwork.tradingcards.api.model.Series;
@@ -16,6 +16,7 @@ import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
+import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 
 import java.io.File;
 import java.lang.reflect.Type;
@@ -107,14 +108,15 @@ public class SeriesConfig extends SeriesConfigurate {
             Util.logSevereException(e);
         }
     }
-
+    
     @Override
-    protected void builderOptions() {
-        loaderBuilder.defaultOptions(opts -> opts.serializers(builder ->
-                builder.registerExact(DateScheduleSerializer.TYPE, DateScheduleSerializer.INSTANCE)
-                        .registerExact(SeriesSerializer.TYPE, SeriesSerializer.INSTANCE)
-                        .registerExact(ColorSeriesSerializer.TYPE, ColorSeriesSerializer.INSTANCE)));
+    protected void builderOptions(TypeSerializerCollection.Builder builder) {
+        builder.registerExact(DateScheduleSerializer.TYPE, DateScheduleSerializer.INSTANCE)
+            .registerExact(SeriesSerializer.TYPE, SeriesSerializer.INSTANCE)
+            .registerExact(ColorSeriesSerializer.TYPE, ColorSeriesSerializer.INSTANCE);
     }
+    
+
 
 
     public static final class DateScheduleSerializer implements TypeSerializer<DateSchedule> {

@@ -1,6 +1,10 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote;
 
+
+import com.github.sarhatabaot.kraken.core.db.ExecuteQuery;
+import com.github.sarhatabaot.kraken.core.db.ExecuteUpdate;
 import com.github.sarhatabaot.kraken.core.logging.LoggerUtil;
+import com.lapzupi.dev.connection.ConnectionFactory;
 import net.tinetwork.tradingcards.api.card.Card;
 import net.tinetwork.tradingcards.api.config.ColorSeries;
 import net.tinetwork.tradingcards.api.model.DropType;
@@ -16,6 +20,7 @@ import net.tinetwork.tradingcards.api.model.schedule.Mode;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
+import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.StorageConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.CompositeRaritySeriesKey;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalDebug;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalExceptions;
@@ -37,7 +42,6 @@ import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generat
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Upgrades;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.UpgradesRequired;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.UpgradesResult;
-import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.sql.ConnectionFactory;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.sql.SchemaReader;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.JooqRecordUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
@@ -92,8 +96,14 @@ public class SqlStorage implements Storage<TradingCard> {
     private final Map<CompositeRaritySeriesKey, String>  raritySeriesViewMap;
 
     @Override
-    public void init(final TradingCards plugin) {
-        connectionFactory.init(plugin);
+    public void init(final @NotNull TradingCards plugin) {
+        connectionFactory.init(
+            plugin.getStorageConfig().getAddress(),
+            plugin.getStorageConfig().getPort(),
+            plugin.getStorageConfig().getDatabase(),
+            plugin.getStorageConfig().getUsername(),
+            ((StorageConfig) plugin.getStorageConfig()).getPassword()
+        );
         try {
             applySchema();
 
@@ -170,7 +180,7 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
     private void createCardsInRarityViews() {
-        new ExecuteUpdate(this, jooqSettings) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 final String viewFormat = "%sview_rarity_%s";
@@ -201,7 +211,7 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
     private void createCardsInSeriesViews() {
-        new ExecuteUpdate(this, jooqSettings) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 final String viewFormat = "%sview_series_%s";
@@ -233,7 +243,7 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
     private void createCardsInRarityAndSeriesViews() {
-        new ExecuteUpdate(this, jooqSettings) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 final String viewFormat = "%sview_rarity_series_%s_%s";
@@ -270,7 +280,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public List<Deck> getPlayerDecks(final @NotNull UUID playerUuid) {
-        return new ExecuteQuery<List<Deck>, Results>(this, jooqSettings) {
+        return new ExecuteQuery<List<Deck>, Results>(connectionFactory, jooqSettings) {
             @Override
             public List<Deck> onRunQuery(final DSLContext dslContext) {
                 return getQuery(dslContext.select()
@@ -298,7 +308,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public Deck getDeck(final @NotNull UUID playerUuid, final int deckNumber) {
-        return new ExecuteQuery<Deck, Result<Record>>(this, jooqSettings) {
+        return new ExecuteQuery<Deck, Result<Record>>(connectionFactory, jooqSettings) {
             @Override
             public Deck onRunQuery(final DSLContext dslContext) {
                 return getQuery(dslContext.select().from(Decks.DECKS)
@@ -325,7 +335,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public @Nullable Rarity getRarityById(final String rarityId) {
-        return new ExecuteQuery<Rarity, Record>(this, jooqSettings) {
+        return new ExecuteQuery<Rarity, Record>(connectionFactory, jooqSettings) {
 
             @Override
             public Rarity onRunQuery(final DSLContext dslContext) {
@@ -362,7 +372,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public List<String> getRewards(final String rarityId) {
-        return new ExecuteQuery<List<String>, Result<Record>>(this, jooqSettings) {
+        return new ExecuteQuery<List<String>, Result<Record>>(connectionFactory, jooqSettings) {
 
             @Override
             public List<String> onRunQuery(final DSLContext dslContext) {
@@ -398,7 +408,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public Series getSeries(final String seriesId) {
-        return new ExecuteQuery<Series, Result<Record>>(this, jooqSettings) {
+        return new ExecuteQuery<Series, Result<Record>>(connectionFactory, jooqSettings) {
             @Override
             public Series onRunQuery(final DSLContext dslContext) {
                 Result<Record> result = dslContext.select()
@@ -430,7 +440,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public boolean containsPack(final String packId) {
-        return new ExecuteQuery<Boolean, Record>(this, jooqSettings) {
+        return new ExecuteQuery<Boolean, Record>(connectionFactory, jooqSettings) {
             @Override
             public Boolean onRunQuery(final DSLContext dslContext) throws SQLException {
                 return dslContext.fetchExists(Packs.PACKS,
@@ -451,7 +461,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public boolean containsSeries(final String seriesId) {
-        return new ExecuteQuery<Boolean, Record>(this, jooqSettings) {
+        return new ExecuteQuery<Boolean, Record>(connectionFactory, jooqSettings) {
             @Override
             public Boolean onRunQuery(final DSLContext dslContext) throws SQLException {
                 return dslContext.fetchExists(net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Series.SERIES
@@ -545,7 +555,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
 
     private void updateCard(final @NotNull UUID playerUuid, final int deckNumber, final @NotNull StorageEntry storageEntry) {
-        new ExecuteUpdate(this, jooqSettings) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.update(Decks.DECKS)
@@ -569,7 +579,7 @@ public class SqlStorage implements Storage<TradingCard> {
     @Override
     public boolean hasCard(final UUID playerUuid, final String cardId, final String rarityId, final String seriesId) {
         //This query is pretty slow. Perhaps we can store this as a function?
-        return new ExecuteQuery<Boolean, Result<Record>>(this, jooqSettings) {
+        return new ExecuteQuery<Boolean, Result<Record>>(connectionFactory, jooqSettings) {
             @Override
             public Boolean onRunQuery(final DSLContext dslContext) {
                 return getQuery(dslContext.select()
@@ -596,7 +606,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public boolean hasShinyCard(final UUID playerUuid, final String cardId, final String rarityId, final String seriesId) {
-        return new ExecuteQuery<Boolean, Result<Record>>(this, jooqSettings) {
+        return new ExecuteQuery<Boolean, Result<Record>>(connectionFactory, jooqSettings) {
             @Override
             public Boolean onRunQuery(final DSLContext dslContext) {
                 return getQuery(dslContext.select()
@@ -632,7 +642,7 @@ public class SqlStorage implements Storage<TradingCard> {
         final String rarityId = entry.getRarityId();
         final String seriesId = entry.getSeriesId();
         final int amount = entry.getAmount();
-        new ExecuteUpdate(this, jooqSettings) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.insertInto(Decks.DECKS)
@@ -649,7 +659,7 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
     public void removeCardFromDeck(final UUID playerUuid, final int deckNumber, final @NotNull StorageEntry entry) {
-        new ExecuteUpdate(this, jooqSettings) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.deleteFrom(Decks.DECKS)
@@ -664,7 +674,7 @@ public class SqlStorage implements Storage<TradingCard> {
         }.executeUpdate();
     }
 
-    //From LuckPerms.
+    //From LuckPerms. todo, since we use flyway, we don't need this...
     private void applySchema() throws IOException, SQLException {
         List<String> statements;
         String schemaFileName = "db/base/V"+ MigrationSettings.LATEST_BASE_DB_VERSION +"_" + this.connectionFactory.getType().toLowerCase(Locale.ROOT) + ".sql";
@@ -712,7 +722,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public List<Rarity> getRarities() {
-        return new ExecuteQuery<List<Rarity>, Result<Record>>(this, jooqSettings) {
+        return new ExecuteQuery<List<Rarity>, Result<Record>>(connectionFactory, jooqSettings) {
             @Override
             public List<Rarity> onRunQuery(final DSLContext dslContext) {
                 Result<Record> result = dslContext.select()
@@ -751,7 +761,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public Collection<Series> getAllSeries() {
-        return new ExecuteQuery<Collection<Series>, Result<Record>>(this, jooqSettings) {
+        return new ExecuteQuery<Collection<Series>, Result<Record>>(connectionFactory, jooqSettings) {
             @Override
             public Collection<Series> onRunQuery(final DSLContext dslContext) {
                 Result<Record> result = dslContext.select()
@@ -782,7 +792,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Contract("_ -> new")
     private @NotNull ColorSeries getColorSeries(final String seriesId) {
-        return new ExecuteQuery<ColorSeries, Result<Record>>(this, jooqSettings) {
+        return new ExecuteQuery<ColorSeries, Result<Record>>(connectionFactory, jooqSettings) {
             @Override
             public ColorSeries onRunQuery(final DSLContext dslContext) {
                 return getQuery(dslContext.select()
@@ -809,7 +819,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public Set<Series> getActiveSeries() {
-        return new ExecuteQuery<Set<Series>, Result<Record>>(this, jooqSettings) {
+        return new ExecuteQuery<Set<Series>, Result<Record>>(connectionFactory, jooqSettings) {
             @Override
             public Set<Series> onRunQuery(final DSLContext dslContext) {
                 return getQuery(dslContext.select()
@@ -867,7 +877,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public List<TradingCard> getCards() {
-        return new ExecuteQuery<List<TradingCard>, Result<Record>>(this, jooqSettings) {
+        return new ExecuteQuery<List<TradingCard>, Result<Record>>(connectionFactory, jooqSettings) {
             @Override
             public List<TradingCard> onRunQuery(final DSLContext dslContext) {
                 return getQuery(dslContext.select()
@@ -902,7 +912,7 @@ public class SqlStorage implements Storage<TradingCard> {
     }
     @Override
     public List<TradingCard> getCardsInRarity(final String rarityId) {
-        return new ExecuteQuery<List<TradingCard>, Result<Record>>(this, jooqSettings) {
+        return new ExecuteQuery<List<TradingCard>, Result<Record>>(connectionFactory, jooqSettings) {
             @Override
             public List<TradingCard> onRunQuery(final DSLContext dslContext) {
                 if(!rarityViewMap.isEmpty() && rarityViewMap.containsKey(rarityId)) {
@@ -942,7 +952,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public List<TradingCard> getCardsInSeries(final String seriesId) {
-        return new ExecuteQuery<List<TradingCard>, Result<Record>>(this, jooqSettings) {
+        return new ExecuteQuery<List<TradingCard>, Result<Record>>(connectionFactory, jooqSettings) {
 
             @Override
             public @NotNull List<TradingCard> getQuery(final @NotNull Result<Record> result) {
@@ -981,7 +991,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public List<TradingCard> getCardsInRarityAndSeries(final String rarityId, final String seriesId) {
-        return new ExecuteQuery<List<TradingCard>, Result<Record>>(this, jooqSettings) {
+        return new ExecuteQuery<List<TradingCard>, Result<Record>>(connectionFactory, jooqSettings) {
             @Override
             public List<TradingCard> onRunQuery(final DSLContext dslContext) {
                 if(!raritySeriesViewMap.isEmpty() && raritySeriesViewMap.containsKey(CompositeRaritySeriesKey.of(rarityId,seriesId))) {
@@ -1028,7 +1038,7 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
     public Card<TradingCard> getCard(final String cardId, final String rarityId) {
-        return new ExecuteQuery<TradingCard, Result<Record>>(this, jooqSettings) {
+        return new ExecuteQuery<TradingCard, Result<Record>>(connectionFactory, jooqSettings) {
             @Override
             public TradingCard onRunQuery(final DSLContext dslContext) {
                 return getQuery(dslContext.select()
@@ -1059,7 +1069,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public Card<TradingCard> getCard(final String cardId, final String rarityId, final String seriesId) {
-        return new ExecuteQuery<TradingCard, Result<Record>>(this, jooqSettings) {
+        return new ExecuteQuery<TradingCard, Result<Record>>(connectionFactory, jooqSettings) {
             @Override
             public TradingCard onRunQuery(final DSLContext dslContext) {
                 return getQuery(dslContext.select()
@@ -1091,7 +1101,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public Pack getPack(final String packsId) {
-        return new ExecuteQuery<Pack, Result<Record>>(this, jooqSettings) {
+        return new ExecuteQuery<Pack, Result<Record>>(connectionFactory, jooqSettings) {
             @Override
             public Pack onRunQuery(final DSLContext dslContext) {
                 return getQuery(dslContext.select()
@@ -1120,7 +1130,7 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
     private List<PackEntry> getTradeEntries(final String packId) {
-        return new ExecuteQuery<List<PackEntry>, Result<Record>>(this, jooqSettings) {
+        return new ExecuteQuery<List<PackEntry>, Result<Record>>(connectionFactory, jooqSettings) {
 
             @Override
             public List<PackEntry> onRunQuery(final DSLContext dslContext) {
@@ -1153,7 +1163,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
 
     private @NotNull @Unmodifiable List<PackEntry> getPackEntries(final String packId) {
-        return new ExecuteQuery<List<PackEntry>, Result<Record>>(this, jooqSettings) {
+        return new ExecuteQuery<List<PackEntry>, Result<Record>>(connectionFactory, jooqSettings) {
 
             @Override
             public List<PackEntry> onRunQuery(final DSLContext dslContext) {
@@ -1191,7 +1201,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public List<Pack> getPacks() {
-        return new ExecuteQuery<List<Pack>, Result<Record>>(this, jooqSettings) {
+        return new ExecuteQuery<List<Pack>, Result<Record>>(connectionFactory, jooqSettings) {
             @Override
             public List<Pack> onRunQuery(final DSLContext dslContext) {
                 Result<Record> result = dslContext.select()
@@ -1224,7 +1234,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public int getRarityCustomOrder(final String rarityId) {
-        return new ExecuteQuery<Integer, Result<Record>>(this, jooqSettings) {
+        return new ExecuteQuery<Integer, Result<Record>>(connectionFactory, jooqSettings) {
             @Override
             public Integer onRunQuery(final DSLContext dslContext) throws SQLException {
                 return getQuery(dslContext.select()
@@ -1250,7 +1260,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public Set<DropType> getDropTypes() {
-        return new ExecuteQuery<Set<DropType>, Result<Record>>(this, jooqSettings) {
+        return new ExecuteQuery<Set<DropType>, Result<Record>>(connectionFactory, jooqSettings) {
             @Override
             public Set<DropType> onRunQuery(final DSLContext dslContext) {
                 return getQuery(dslContext.select().from(CustomTypes.CUSTOM_TYPES).fetch());
@@ -1280,7 +1290,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public DropType getCustomType(final String typeId) {
-        return new ExecuteQuery<DropType, Result<Record>>(this, jooqSettings) {
+        return new ExecuteQuery<DropType, Result<Record>>(connectionFactory, jooqSettings) {
             @Override
             public DropType onRunQuery(final DSLContext dslContext) {
                 return getQuery(dslContext.select()
@@ -1311,14 +1321,19 @@ public class SqlStorage implements Storage<TradingCard> {
         } catch (Exception e) {
             return;
         }
-
-        connectionFactory.init(plugin);
-        //nothing to do here.
+    
+        connectionFactory.init(
+            plugin.getStorageConfig().getAddress(),
+            plugin.getStorageConfig().getPort(),
+            plugin.getStorageConfig().getDatabase(),
+            plugin.getStorageConfig().getUsername(),
+            ((StorageConfig) plugin.getStorageConfig()).getPassword()
+        );
     }
 
     @Override
     public void createCard(final String cardId, final String rarityId, final String seriesId) {
-        new ExecuteUpdate(this, jooqSettings) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.insertInto(Cards.CARDS)
@@ -1332,7 +1347,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void createRarity(final String rarityId) {
-        new ExecuteUpdate(this, jooqSettings) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.insertInto(Rarities.RARITIES)
@@ -1350,7 +1365,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void createSeries(final String seriesId) {
-        new ExecuteUpdate(this, jooqSettings) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.insertInto(net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Series.SERIES)
@@ -1364,7 +1379,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void createColorSeries(final String seriesId) {
-        new ExecuteUpdate(this, jooqSettings) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.insertInto(SeriesColors.SERIES_COLORS)
@@ -1382,7 +1397,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void editColorSeries(final String seriesId, final ColorSeries colors) {
-        new ExecuteUpdate(this, jooqSettings) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.update(SeriesColors.SERIES_COLORS)
@@ -1399,7 +1414,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void createCustomType(final String typeId, final String type) {
-        new ExecuteUpdate(this, jooqSettings) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.insertInto(CustomTypes.CUSTOM_TYPES)
@@ -1413,7 +1428,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void createPack(final String packId) {
-        new ExecuteUpdate(this, jooqSettings) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.insertInto(Packs.PACKS)
@@ -1427,7 +1442,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void editCardDisplayName(final String rarityId, final String cardId, final String seriesId, final String displayName) {
-        new ExecuteUpdate(this, jooqSettings) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.update(Cards.CARDS)
@@ -1442,7 +1457,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void editCardSeries(final String rarityId, final String cardId, final String seriesId, final Series value) {
-        new ExecuteUpdate(this, jooqSettings) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.update(Cards.CARDS)
@@ -1457,7 +1472,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void editCardSellPrice(final String rarityId, final String cardId, final String seriesId, final double value) {
-        new ExecuteUpdate(this, jooqSettings) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.update(Cards.CARDS)
@@ -1472,7 +1487,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void editCardType(final String rarityId, final String cardId, final String seriesId, final DropType value) {
-        new ExecuteUpdate(this, jooqSettings) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.update(Cards.CARDS)
@@ -1487,7 +1502,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void editCardInfo(final String rarityId, final String cardId, final String seriesId, final String value) {
-        new ExecuteUpdate(this, jooqSettings) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.update(Cards.CARDS)
@@ -1502,7 +1517,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void editCardCustomModelData(final String rarityId, final String cardId, final String seriesId, final int value) {
-        new ExecuteUpdate(this, jooqSettings) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.update(Cards.CARDS)
@@ -1517,7 +1532,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void editCardBuyPrice(final String rarityId, final String cardId, final String seriesId, final double value) {
-        new ExecuteUpdate(this, jooqSettings) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.update(Cards.CARDS)
@@ -1532,7 +1547,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void editCardHasShiny(final String rarityId, final String cardId, final String seriesId, final boolean value) {
-        new ExecuteUpdate(this, jooqSettings) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.update(Cards.CARDS)
@@ -1547,7 +1562,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void editCardCurrencyId(final String rarityId, final String cardId, final String seriesId, final String value) {
-        new ExecuteUpdate(this, jooqSettings) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.update(Cards.CARDS)
@@ -1562,7 +1577,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void editRarityBuyPrice(final String rarityId, final double buyPrice) {
-        new ExecuteUpdate(this, jooqSettings) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.update(Rarities.RARITIES)
@@ -1576,7 +1591,7 @@ public class SqlStorage implements Storage<TradingCard> {
     @Override
     public void editRarityAddReward(final String rarityId, final String reward) {
         int commandOrder = getRewards(rarityId).size() - 1;
-        new ExecuteUpdate(this, jooqSettings) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.update(Rewards.REWARDS)
@@ -1590,7 +1605,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void editRarityDefaultColor(final String rarityId, final String defaultColor) {
-        new ExecuteUpdate(this, jooqSettings) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.update(Rarities.RARITIES)
@@ -1603,7 +1618,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void editRarityDisplayName(final String rarityId, final String displayName) {
-        new ExecuteUpdate(this, jooqSettings) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.update(Rarities.RARITIES)
@@ -1616,7 +1631,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void editRaritySellPrice(final String rarityId, final double sellPrice) {
-        new ExecuteUpdate(this, jooqSettings) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.update(Rarities.RARITIES)
@@ -1630,7 +1645,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void editRarityCustomOrder(final String rarityId, final int customOrder) {
-        new ExecuteUpdate(this, jooqSettings) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.update(Rarities.RARITIES)
@@ -1643,7 +1658,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void editRarityRemoveAllRewards(final String rarityId) {
-        new ExecuteUpdate(this, jooqSettings) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.deleteFrom(Rewards.REWARDS)
@@ -1655,7 +1670,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void editRarityRemoveReward(final String rarityId, final int rewardNumber) {
-        new ExecuteUpdate(this, jooqSettings) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.deleteFrom(Rewards.REWARDS)
@@ -1668,7 +1683,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void editSeriesDisplayName(final String seriesId, final String displayName) {
-        new ExecuteUpdate(this, jooqSettings) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.update(net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Series.SERIES)
@@ -1681,7 +1696,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void editSeriesColors(final String seriesId, final @NotNull ColorSeries colors) {
-        new ExecuteUpdate(this, jooqSettings) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.update(SeriesColors.SERIES_COLORS)
@@ -1698,7 +1713,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void editSeriesMode(final String seriesId, final @NotNull Mode mode) {
-        new ExecuteUpdate(this, jooqSettings) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.update(net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Series.SERIES)
@@ -1711,7 +1726,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void editCustomTypeDisplayName(final String typeId, final String displayName) {
-        new ExecuteUpdate(this, jooqSettings) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.update(CustomTypes.CUSTOM_TYPES)
@@ -1723,7 +1738,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void editCustomTypeType(final String customTypeId, final String defaultTypeId) {
-        new ExecuteUpdate(this, jooqSettings) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 plugin.debug(SqlStorage.class, defaultTypeId);
@@ -1737,7 +1752,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void editPackDisplayName(final String packId, final String displayName) {
-        new ExecuteUpdate(this, jooqSettings) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.update(Packs.PACKS)
@@ -1751,7 +1766,7 @@ public class SqlStorage implements Storage<TradingCard> {
     public void editPackContents(final String packId,final int lineNumber, final @NotNull PackEntry packEntry) {
         final List<PackEntry> entries = getPackEntries(packId);
         if (entries.isEmpty() || entries.size() <= lineNumber) {
-            new ExecuteUpdate(this,jooqSettings) {
+            new ExecuteUpdate(connectionFactory,jooqSettings) {
                 @Override
                 protected void onRunUpdate(final DSLContext dslContext) {
                     dslContext.insertInto(PacksContent.PACKS_CONTENT)
@@ -1766,7 +1781,7 @@ public class SqlStorage implements Storage<TradingCard> {
             return;
         }
 
-        new ExecuteUpdate(this, jooqSettings) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.update(PacksContent.PACKS_CONTENT)
@@ -1783,7 +1798,7 @@ public class SqlStorage implements Storage<TradingCard> {
     @Override
     public void editPackContentsAdd(final String packId, final @NotNull PackEntry packEntry) {
         final int lineNumber = getPackEntries(packId).size();
-        new ExecuteUpdate(this, jooqSettings) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.insertInto(PacksContent.PACKS_CONTENT)
@@ -1798,7 +1813,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void editPackContentsDelete(final String packId, final int lineNumber) {
-        new ExecuteUpdate(this, jooqSettings) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.deleteFrom(PacksContent.PACKS_CONTENT)
@@ -1813,7 +1828,7 @@ public class SqlStorage implements Storage<TradingCard> {
     public void editPackTradeCards(final String packId, final int lineNumber, final PackEntry packEntry) {
         final List<PackEntry> entries = getTradeEntries(packId);
         if (entries.isEmpty() || entries.size() <= lineNumber) {
-            new ExecuteUpdate(this, jooqSettings) {
+            new ExecuteUpdate(connectionFactory, jooqSettings) {
                 @Override
                 protected void onRunUpdate(final DSLContext dslContext) {
                     dslContext.insertInto(PacksTrade.PACKS_TRADE)
@@ -1826,7 +1841,7 @@ public class SqlStorage implements Storage<TradingCard> {
             }.executeUpdate();
             return;
         }
-        new ExecuteUpdate(this, jooqSettings) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.update(PacksTrade.PACKS_TRADE)
@@ -1842,7 +1857,7 @@ public class SqlStorage implements Storage<TradingCard> {
     @Override
     public void editPackTradeCardsAdd(final String packId, final PackEntry packEntry) {
         final int lineNumber = getTradeEntries(packId).size();
-        new ExecuteUpdate(this, jooqSettings) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.insertInto(PacksTrade.PACKS_TRADE)
@@ -1857,7 +1872,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void editPackTradeCardsDelete(final String packId, final int lineNumber) {
-        new ExecuteUpdate(this, jooqSettings) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.deleteFrom(PacksTrade.PACKS_TRADE)
@@ -1870,7 +1885,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void editPackPermission(final String packId, final String permission) {
-        new ExecuteUpdate(this, jooqSettings) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.update(Packs.PACKS)
@@ -1883,7 +1898,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void editPackPrice(final String packId, final double price) {
-        new ExecuteUpdate(this, jooqSettings) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.update(Packs.PACKS)
@@ -1896,7 +1911,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void editPackCurrencyId(final String packId, final String currencyId) {
-        new ExecuteUpdate(this, jooqSettings) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.update(Packs.PACKS)
@@ -1914,7 +1929,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public int getCardsCount() {
-        return new ExecuteQuery<Integer, Record>(this, jooqSettings) {
+        return new ExecuteQuery<Integer, Record>(connectionFactory, jooqSettings) {
             @Override
             public Integer onRunQuery(final DSLContext dslContext) {
                 return dslContext.fetchCount(Cards.CARDS);
@@ -1934,7 +1949,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public int getCardsInRarityCount(final String rarityId) {
-        return new ExecuteQuery<Integer, Record>(this, jooqSettings) {
+        return new ExecuteQuery<Integer, Record>(connectionFactory, jooqSettings) {
             @Override
             public Integer onRunQuery(final DSLContext dslContext) {
                 return dslContext.fetchCount(Cards.CARDS, DSL.and(Cards.CARDS.RARITY_ID.eq(rarityId)));
@@ -1954,7 +1969,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public int getCardsInRarityAndSeriesCount(final String rarityId, final String seriesId) {
-        return new ExecuteQuery<Integer, Record>(this, jooqSettings) {
+        return new ExecuteQuery<Integer, Record>(connectionFactory, jooqSettings) {
             @Override
             public Integer onRunQuery(final DSLContext dslContext) {
                 return dslContext.fetchCount(Cards.CARDS, DSL.and(Cards.CARDS.RARITY_ID.eq(rarityId).and(Cards.CARDS.SERIES_ID.eq(seriesId))));
@@ -1974,7 +1989,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void createUpgrade(final String upgradeId, final PackEntry required, final PackEntry result) {
-        new ExecuteUpdate(this, jooqSettings) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.insertInto(Upgrades.UPGRADES)
@@ -2000,7 +2015,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public Upgrade getUpgrade(final String upgradeId) {
-        return new ExecuteQuery<Upgrade, Result<Record>>(this, jooqSettings) {
+        return new ExecuteQuery<Upgrade, Result<Record>>(connectionFactory, jooqSettings) {
             @Override
             public Upgrade onRunQuery(final DSLContext dslContext) {
                 return getQuery(dslContext.select()
@@ -2030,7 +2045,7 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
     private PackEntry getRequiredEntry(final String upgradeId) {
-        return new ExecuteQuery<PackEntry, Record>(this, jooqSettings) {
+        return new ExecuteQuery<PackEntry, Record>(connectionFactory, jooqSettings) {
             @Override
             public PackEntry onRunQuery(final DSLContext dslContext) throws SQLException {
                 return getQuery(dslContext.select()
@@ -2055,7 +2070,7 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
     private PackEntry getResultEntry(final String upgradeId) {
-        return new ExecuteQuery<PackEntry, Record>(this, jooqSettings) {
+        return new ExecuteQuery<PackEntry, Record>(connectionFactory, jooqSettings) {
             @Override
             public PackEntry onRunQuery(final DSLContext dslContext) throws SQLException {
                 return getQuery(dslContext.select()
@@ -2081,7 +2096,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void editUpgradeRequired(final String upgradeId, final PackEntry required) {
-        new ExecuteUpdate(this, jooqSettings) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.update(UpgradesRequired.UPGRADES_REQUIRED
@@ -2096,7 +2111,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void editUpgradeResult(final String upgradeId, final PackEntry result) {
-        new ExecuteUpdate(this,jooqSettings) {
+        new ExecuteUpdate(connectionFactory,jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.update(UpgradesResult.UPGRADES_RESULT
@@ -2111,7 +2126,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public List<Upgrade> getUpgrades() {
-        return new ExecuteQuery<List<Upgrade>, Result<Record>>(this, jooqSettings) {
+        return new ExecuteQuery<List<Upgrade>, Result<Record>>(connectionFactory, jooqSettings) {
             @Override
             public List<Upgrade> onRunQuery(final DSLContext dslContext) throws SQLException {
                 Result<Record> result = dslContext.select()
@@ -2144,7 +2159,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
     @Override
     public void deleteUpgrade(final String upgradeId) {
-        new ExecuteUpdate(this, jooqSettings) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
             @Override
             protected void onRunUpdate(final DSLContext dslContext) {
                 dslContext.deleteFrom(Upgrades.UPGRADES)

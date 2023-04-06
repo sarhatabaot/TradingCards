@@ -1,7 +1,8 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.denylist;
 
-import com.github.sarhatabaot.kraken.core.config.Transformation;
-import com.github.sarhatabaot.kraken.core.config.YamlConfigurateFile;
+
+import com.lapzupi.dev.config.Transformation;
+import com.lapzupi.dev.config.YamlConfigurateFile;
 import net.tinetwork.tradingcards.api.denylist.Denylist;
 import net.tinetwork.tradingcards.api.denylist.AllowlistMode;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
@@ -11,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.serialize.SerializationException;
+import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -35,12 +37,12 @@ public class PlayerDenylist extends YamlConfigurateFile<TradingCards> implements
         setWhitelistMode();
         loadYamlConfiguration();
     }
-
+    
     @Override
-    protected void builderOptions() {
+    protected void builderOptions(TypeSerializerCollection.Builder builder) {
         //No custom type serializer to register
     }
-
+    
     private void loadYamlConfiguration() {
         if (file == null) {
             file = new File(folder, fileName);

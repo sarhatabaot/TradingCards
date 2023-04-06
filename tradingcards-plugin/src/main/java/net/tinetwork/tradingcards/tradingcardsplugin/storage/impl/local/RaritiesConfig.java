@@ -1,6 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local;
 
-import com.github.sarhatabaot.kraken.core.config.Transformation;
+
+import com.lapzupi.dev.config.Transformation;
 import net.tinetwork.tradingcards.api.config.settings.RarityConfigurate;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
@@ -11,6 +12,7 @@ import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
+import org.spongepowered.configurate.serialize.TypeSerializerCollection;
 
 import java.io.File;
 import java.lang.reflect.Type;
@@ -32,12 +34,12 @@ public class RaritiesConfig extends RarityConfigurate{
         this.raritiesNode = rootNode.node("rarities");
         loadRarities();
     }
-
+    
     @Override
-    protected void builderOptions() {
-        loaderBuilder.defaultOptions(opts -> opts.serializers(builder ->
-                builder.registerExact(RaritySerializer.TYPE, RaritySerializer.INSTANCE)));
+    protected void builderOptions(TypeSerializerCollection.Builder builder) {
+        builder.registerExact(RaritySerializer.TYPE, RaritySerializer.INSTANCE);
     }
+
 
     @Override
     protected Transformation getTransformation() {

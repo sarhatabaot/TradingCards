@@ -3,6 +3,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin;
 import co.aikar.commands.ConditionFailedException;
 import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.PaperCommandManager;
+import com.lapzupi.dev.connection.MySqlConnectionFactory;
 import me.lokka30.treasury.api.economy.EconomyProvider;
 import net.milkbowl.vault.economy.Economy;
 import net.tinetwork.tradingcards.api.TradingCardsPlugin;
@@ -62,7 +63,6 @@ import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.StorageType;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local.YamlStorage;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.SqlStorage;
-import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.sql.MySqlConnectionFactory;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.MobGroupUtil;
@@ -239,7 +239,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
             case MYSQL -> new SqlStorage(this,
                     this.storageConfig.getTablePrefix(),
                     this.storageConfig.getDatabase(),
-                    new MySqlConnectionFactory(this.storageConfig), storageType);
+                    new MySqlConnectionFactory(), storageType);
 
             //YAML is the default
             case YAML -> new YamlStorage(this);
