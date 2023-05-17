@@ -56,7 +56,7 @@ dependencies {
     library(libs.rng.simple)
     
     jooqGenerator(project(":tradingcards-extras"))
-    jooqGenerator("com.mysql:mysql-connector-j:8.0.32")
+    jooqGenerator("com.mysql:mysql-connector-j:8.0.33")
     jooqGenerator(libs.jooq.meta.extensions)
     
     testImplementation(libs.mockito)
