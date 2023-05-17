@@ -25,7 +25,7 @@ dependencyResolutionManagement {
             
             library("lombok","org.projectlombok:lombok:1.18.26")
             
-            library("adventure-api", "net.kyori:adventure-api:4.12.0")
+            library("adventure-api", "net.kyori:adventure-api:4.13.1")
             library("adventure-bukkit","net.kyori:adventure-platform-bukkit:4.3.0")
             
             library("bstats", "org.bstats:bstats-bukkit:3.0.1")
