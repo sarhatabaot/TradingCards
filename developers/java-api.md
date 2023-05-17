@@ -24,7 +24,7 @@ We use jitpack for our repository.
 {% endcode %}
 {% endtab %}
 
-{% tab title="Gradle" %}
+{% tab title="Gradle (Groovy)" %}
 <pre class="language-groovy" data-title="build.gradle - repository"><code class="lang-groovy">repositories {
 <strong>    maven { url 'https://jitpack.io' }
 </strong>}
@@ -34,6 +34,24 @@ We use jitpack for our repository.
 ```groovy
 dependencies {
     implementation 'com.github.sarhatabaot.TradingCards:tradingcards-api:5.7.2'
+}
+```
+{% endcode %}
+{% endtab %}
+
+{% tab title="Gradle (Kotlin)" %}
+{% code title="build.gradle.kts - repository" %}
+```kts
+repositories {
+    maven("https://jitpack.io")
+}
+```
+{% endcode %}
+
+{% code title="build.gradle.kts - dependency" %}
+```kts
+dependencies {
+    compileOnly ("com.github.sarhatabaot.TradingCards:tradingcards-api:5.7.2")
 }
 ```
 {% endcode %}
