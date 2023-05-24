@@ -23,7 +23,7 @@ dependencyResolutionManagement {
             library("configurate-core", "org.spongepowered", "configurate-core").versionRef("configurate")
             library("configurate-yaml", "org.spongepowered", "configurate-yaml").versionRef("configurate")
             
-            library("lombok","org.projectlombok:lombok:1.18.26")
+            library("lombok","org.projectlombok:lombok:1.18.28")
             
             library("adventure-api", "net.kyori:adventure-api:4.13.1")
             library("adventure-bukkit","net.kyori:adventure-platform-bukkit:4.3.0")
