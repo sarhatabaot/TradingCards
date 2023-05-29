@@ -8,7 +8,7 @@ plugins {
     id("net.tinetwork.tradingcards.java-conventions")
     id("net.minecrell.plugin-yml.bukkit") version "0.5.3"
     id("com.github.johnrengelman.shadow") version "8.1.1"
-    id("nu.studer.jooq") version "8.1"
+    id("nu.studer.jooq") version "8.2.1"
     id("com.github.sarhatabaot.messages") version "1.0.6"
     
     jacoco
