@@ -9,6 +9,7 @@ import org.jooq.tools.StringUtils;
 /**
  * @author sarhatabaot
  */
+// This is needed to ensure prefix placeholders don't stay during code generation.
 public class PrefixNamingStrategy extends DefaultGeneratorStrategy {
 
     @Override
@@ -25,7 +26,7 @@ public class PrefixNamingStrategy extends DefaultGeneratorStrategy {
 
 
     private @NotNull String replacePrefix(final @NotNull String name) {
-        return name.replace("{PREFIX}","").replace("{prefix}","").replace("_7bprefix_7d","").replace("_7bPREFIX_7d","");
+        return name.replace("{PREFIX}", "").replace("{prefix}", "").replace("_7bprefix_7d", "").replace("_7bPREFIX_7d", "");
     }
 
 }
