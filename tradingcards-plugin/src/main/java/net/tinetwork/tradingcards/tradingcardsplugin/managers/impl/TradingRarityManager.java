@@ -1,9 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.managers.impl;
 
-import com.github.sarhatabaot.kraken.core.logging.LoggerUtil;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import net.tinetwork.tradingcards.api.manager.Cacheable;
 import net.tinetwork.tradingcards.api.manager.RarityManager;
 import net.tinetwork.tradingcards.api.model.Rarity;
@@ -17,7 +15,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 public class TradingRarityManager extends Manager<String,Rarity> implements RarityManager, Cacheable<String,Rarity> {
@@ -39,26 +36,18 @@ public class TradingRarityManager extends Manager<String,Rarity> implements Rari
 
     @Contract(" -> new")
     public @NotNull LoadingCache<String, Rarity> loadCache() {
-        return CacheBuilder.newBuilder()
+        return Caffeine.newBuilder()
                 .maximumSize(plugin.getAdvancedConfig().getRarity().maxCacheSize())
                 .refreshAfterWrite(plugin.getAdvancedConfig().getRarity().refreshAfterWrite(), TimeUnit.MINUTES)
-                .build(new CacheLoader<>() {
-                    @Override
-                    public @NotNull Rarity load(final @NotNull String key) {
+                .build(key -> {
                         plugin.debug(TradingRarityManager.class, InternalDebug.LOADED_INTO_CACHE.formatted(key));
                         return plugin.getStorage().getRarityById(key);
-                    }
-                });
+                    });
     }
 
     @Nullable
     public Rarity getRarity(final String id) {
-        try {
-            return this.cache.get(id);
-        } catch (ExecutionException e) {
-            LoggerUtil.logSevereException(e);
-            return null;
-        }
+        return this.cache.get(id);
     }
 
     @Override

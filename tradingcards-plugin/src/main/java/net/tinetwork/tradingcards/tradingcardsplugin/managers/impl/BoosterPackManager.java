@@ -1,8 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.managers.impl;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import de.tr7zw.nbtapi.NBTCompound;
 import de.tr7zw.nbtapi.NBTItem;
 import net.tinetwork.tradingcards.api.manager.PackManager;
@@ -50,37 +49,25 @@ public class BoosterPackManager extends Manager<String, Pack> implements PackMan
 
     @Override
     public LoadingCache<String, Pack> loadCache() {
-        return CacheBuilder.newBuilder()
+        return Caffeine.newBuilder()
                 .maximumSize(plugin.getAdvancedConfig().getPacks().maxCacheSize())
                 .refreshAfterWrite(plugin.getAdvancedConfig().getPacks().refreshAfterWrite(), TimeUnit.MINUTES)
-                .build(new CacheLoader<>() {
-                    @Override
-                    public @NotNull Pack load(final @NotNull String key) throws Exception {
+                .build(key -> {
                         plugin.debug(BoosterPackManager.class, InternalDebug.LOADED_INTO_CACHE.formatted(key));
                         return plugin.getStorage().getPack(key);
-                    }
                 });
     }
 
     @Contract(" -> new")
     private @NotNull LoadingCache<String,ItemStack> loadItemStackCache() {
-        return CacheBuilder.newBuilder()
+        return Caffeine.newBuilder()
                 .maximumSize(100)
                 .refreshAfterWrite(5, TimeUnit.MINUTES)
-                .build(new CacheLoader<>() {
-                    @Override
-                    public @NotNull ItemStack load(final @NotNull String key) throws Exception {
-                        return generatePack(key);
-                    }
-                });
+                .build(this::generatePack);
     }
 
     private void preLoadItemStackCache() {
-        try {
-            this.packsItemStackCache.getAll(getKeys());
-        } catch (ExecutionException e) {
-            plugin.debug(getClass(),e.getMessage());
-        }
+        this.packsItemStackCache.getAll(getKeys());
     }
 
 
@@ -136,12 +123,12 @@ public class BoosterPackManager extends Manager<String, Pack> implements PackMan
 
     @Override
     public ItemStack getPackItem(final String packId) {
-        return packsItemStackCache.getUnchecked(packId).clone();
+        return packsItemStackCache.get(packId).clone();
     }
 
     @Override
     public Pack getPack(final String packId) {
-        return cache.getUnchecked(packId);
+        return cache.get(packId);
     }
 
     @Override

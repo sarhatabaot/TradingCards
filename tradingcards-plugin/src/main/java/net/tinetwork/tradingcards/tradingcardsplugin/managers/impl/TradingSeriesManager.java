@@ -1,8 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.managers.impl;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import net.tinetwork.tradingcards.api.manager.SeriesManager;
 import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
@@ -19,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author sarhatabaot
  */
-public class TradingSeriesManager extends Manager<String,Series> implements SeriesManager{
+public class TradingSeriesManager extends Manager<String, Series> implements SeriesManager {
 
     public TradingSeriesManager(final TradingCards plugin) {
         super(plugin);
@@ -27,23 +26,20 @@ public class TradingSeriesManager extends Manager<String,Series> implements Seri
     }
 
     @Contract(" -> new")
-    public @NotNull LoadingCache<String,Series> loadCache() {
-        return CacheBuilder.newBuilder()
+    public @NotNull LoadingCache<String, Series> loadCache() {
+        return Caffeine.newBuilder()
                 .maximumSize(plugin.getAdvancedConfig().getSeries().maxCacheSize())
                 .refreshAfterWrite(plugin.getAdvancedConfig().getSeries().refreshAfterWrite(), TimeUnit.MINUTES)
-                .build(new CacheLoader<>() {
-                    @Override
-                    public @NotNull Series load(final @NotNull String key) throws Exception {
-                        plugin.debug(TradingSeriesManager.class, InternalDebug.LOADED_INTO_CACHE.formatted(key));
-                        return plugin.getStorage().getSeries(key);
-                    }
+                .build(key -> {
+                    plugin.debug(TradingSeriesManager.class, InternalDebug.LOADED_INTO_CACHE.formatted(key));
+                    return plugin.getStorage().getSeries(key);
                 });
     }
 
 
     @Override
     public Series getSeries(final String seriesId) {
-        return cache.getUnchecked(seriesId);
+        return cache.get(seriesId);
     }
 
     @Override

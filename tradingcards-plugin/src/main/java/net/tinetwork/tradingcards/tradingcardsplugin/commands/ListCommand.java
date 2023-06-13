@@ -105,10 +105,9 @@ public class ListCommand extends BaseCommand {
             int cardCounter = countPlayerOwnedCardsInSeries(target, seriesId);
             int shinyCardCounter = countPlayerOwnedShinyCardsInSeries(target, seriesId);
             int sizeOfRarityCardList;
-            
             try {
-                sizeOfRarityCardList = plugin.getCardManager().getSeriesCardCache().get(seriesId).size();
-            }catch (ExecutionException e) {
+                sizeOfRarityCardList = plugin.getCardManager().getSeriesCardCache().getIfPresent(seriesId).size();
+            }catch (NullPointerException e) {
                 sizeOfRarityCardList = 0;
             }
 
@@ -269,7 +268,7 @@ public class ListCommand extends BaseCommand {
 
             try {
                 sizeOfRarityCardList = plugin.getCardManager().getRarityCardCache().get(rarityId).size();
-            } catch (ExecutionException e) {
+            } catch (NullPointerException e) {
                 sizeOfRarityCardList = 0;
             }
 

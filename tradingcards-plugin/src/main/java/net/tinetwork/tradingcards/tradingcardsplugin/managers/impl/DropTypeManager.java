@@ -1,9 +1,9 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.managers.impl;
 
 
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 import net.tinetwork.tradingcards.api.manager.TypeManager;
 import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
@@ -57,24 +57,21 @@ public class DropTypeManager extends Manager<String, DropType> implements TypeMa
 
     @Override
     public DropType getType(final @NotNull String type) {
-        return cache.getUnchecked(type.toLowerCase());
+        return cache.get(type.toLowerCase());
     }
 
     @Override
     public LoadingCache<String, DropType> loadCache() {
-        return CacheBuilder.newBuilder()
+        return Caffeine.newBuilder()
                 .maximumSize(plugin.getAdvancedConfig().getTypes().maxCacheSize())
                 .refreshAfterWrite(plugin.getAdvancedConfig().getTypes().refreshAfterWrite(), TimeUnit.MINUTES)
-                .build(new CacheLoader<>() {
-                    @Override
-                    public @NotNull DropType load(final @NotNull String key) throws Exception {
+                .build(key -> {
                         plugin.debug(DropTypeManager.class,"Loaded Type=%s into cache.".formatted(key));
                         if(DEFAULT_IDS.contains(key)) {
                             return DEFAULT_MOB_TYPES.get(key);
                         }
                         return plugin.getStorage().getCustomType(key);
-                    }
-                });
+                    });
     }
 
     @Override

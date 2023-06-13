@@ -1,17 +1,15 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.managers.cards;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
+
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
@@ -26,48 +24,36 @@ public class ActiveCardManager extends TradingCardManager {
     @Override
     public void preLoadRarityCache() {
         List<String> rarities = plugin.getRarityManager().getRarities().stream().map(Rarity::getId).toList();
-        try {
-            this.rarityCardCache.getAll(rarities);
-        } catch (ExecutionException e) {
-            //ignored
-        }
+        this.rarityCardCache.getAll(rarities);
     }
 
     @Override
     protected LoadingCache<String, List<TradingCard>> loadRarityCardCache() {
-        return CacheBuilder.newBuilder()
-               .maximumSize(plugin.getAdvancedConfig().getCards().maxCacheSize())
+        return Caffeine.newBuilder()
+                .maximumSize(plugin.getAdvancedConfig().getCards().maxCacheSize())
                 .refreshAfterWrite(plugin.getAdvancedConfig().getCards().refreshAfterWrite(), TimeUnit.MINUTES)
-                .build(new CacheLoader<>() {
-                           @Override
-                           public @NotNull List<TradingCard> load(final @NotNull String key) throws Exception {
-                               List<TradingCard> cardList = new ArrayList<>();
-                               for(Series series: plugin.getStorage().getActiveSeries()) {
-                                   if(plugin.getStorage().getCardsInRarityAndSeriesCount(key,series.getId()) > 0) {
-                                       List<TradingCard> tempList = plugin.getStorage().getCardsInRarityAndSeries(key,series.getId());
-                                       if(tempList != null) {
-                                           cardList = Stream.concat(cardList.stream(), tempList.stream()).toList();
-                                       }
-                                   }
-                               }
-                               return cardList;
-                           }
-                       }
+                .build(key -> {
+                            List<TradingCard> cardList = new ArrayList<>();
+                            for (Series series : plugin.getStorage().getActiveSeries()) {
+                                if (plugin.getStorage().getCardsInRarityAndSeriesCount(key, series.getId()) > 0) {
+                                    List<TradingCard> tempList = plugin.getStorage().getCardsInRarityAndSeries(key, series.getId());
+                                    if (tempList != null) {
+                                        cardList = Stream.concat(cardList.stream(), tempList.stream()).toList();
+                                    }
+                                }
+                            }
+                            return cardList;
+                        }
                 );
     }
 
     @Override
     public void preLoadSeriesCache() {
-        try {
-            this.seriesCardCache.getAll(plugin.getStorage().getActiveSeries().stream().map(Series::getId).toList());
-        } catch (ExecutionException e) {
-            //ignored
-        }
-
+        this.seriesCardCache.getAll(plugin.getStorage().getActiveSeries().stream().map(Series::getId).toList());
     }
 
     public TradingCard getActiveCard(final String rarityId, final String seriesId, final String cardId) {
-        return cache.getUnchecked(new CompositeCardKey(rarityId, seriesId, cardId));
+        return cache.get(new CompositeCardKey(rarityId, seriesId, cardId));
     }
 
     public List<TradingCard> getActiveCards() {
@@ -75,13 +61,13 @@ public class ActiveCardManager extends TradingCardManager {
     }
 
     public TradingCard getRandomActiveCardByRarity(final String rarityId) {
-        final List<TradingCard> rarityCardList = rarityCardCache.getUnchecked(rarityId);
+        final List<TradingCard> rarityCardList = rarityCardCache.get(rarityId);
         int cardIndex = plugin.getRandom().nextInt(rarityCardList.size());
         return rarityCardList.get(cardIndex);
     }
 
     public TradingCard getRandomActiveCardBySeries(final String seriesId) {
-        final List<TradingCard> seriesCardList = seriesCardCache.getUnchecked(seriesId);
+        final List<TradingCard> seriesCardList = seriesCardCache.get(seriesId);
         int cardIndex = plugin.getRandom().nextInt(seriesCardList.size());
         return seriesCardList.get(cardIndex);
     }
@@ -89,8 +75,8 @@ public class ActiveCardManager extends TradingCardManager {
     @Override
     public List<CompositeCardKey> getKeys() {
         final List<CompositeCardKey> keys = new ArrayList<>();
-        for(TradingCard card: plugin.getStorage().getActiveCards()) {
-            keys.add(new CompositeCardKey(card.getRarity().getId(),card.getSeries().getId(),card.getCardId()));
+        for (TradingCard card : plugin.getStorage().getActiveCards()) {
+            keys.add(new CompositeCardKey(card.getRarity().getId(), card.getSeries().getId(), card.getCardId()));
         }
         return keys;
 

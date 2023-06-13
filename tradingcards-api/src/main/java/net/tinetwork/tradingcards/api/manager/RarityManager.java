@@ -1,6 +1,6 @@
 package net.tinetwork.tradingcards.api.manager;
 
-import com.google.common.cache.LoadingCache;
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import net.tinetwork.tradingcards.api.model.Rarity;
 
 import java.util.List;
