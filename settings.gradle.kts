@@ -43,7 +43,7 @@ dependencyResolutionManagement {
             
             library("mockito", "org.mockito:mockito-core:5.3.1")
             library("mockbukkit", "com.github.seeseemelk:MockBukkit-v1.18:2.85.2")
-            library("junit-platform","org.junit:junit-bom:5.9.2")
+            library("junit-platform","org.junit:junit-bom:5.9.3")
             library("junit-jupiter", "org.junit.jupiter","junit-jupiter").withoutVersion()
         }
     }
