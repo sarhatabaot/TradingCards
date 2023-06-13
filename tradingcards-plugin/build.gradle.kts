@@ -51,6 +51,7 @@ dependencies {
     library(libs.jooq)
     library(libs.jooq.codegen)
     library(libs.jooq.meta)
+    library(libs.rng.api)
     library(libs.rng.core)
     library(libs.rng.sampling)
     library(libs.rng.simple)
@@ -185,7 +186,7 @@ fun getPluginVersion(profile: String, instant: Instant): String {
 bukkit {
     name = rootProject.name
     version = getPluginVersion(profile, time)
-    description = project.description.toString()
+    description = "Create custom collectible cards."
     main = "net.tinetwork.tradingcards.tradingcardsplugin.TradingCards"
     website = "https://github.com/sarhatabaot/TradingCards"
     authors = listOf("Xenoyia", "sarhatabaot")
