@@ -22,9 +22,6 @@ dependencyResolutionManagement {
             version("configurate", "4.1.2")
             library("configurate-core", "org.spongepowered", "configurate-core").versionRef("configurate")
             library("configurate-yaml", "org.spongepowered", "configurate-yaml").versionRef("configurate")
-            
-            library("lombok","org.projectlombok:lombok:1.18.26")
-            
             library("adventure-api", "net.kyori:adventure-api:4.14.0")
             library("adventure-bukkit","net.kyori:adventure-platform-bukkit:4.3.0")
             
@@ -45,6 +42,9 @@ dependencyResolutionManagement {
             library("mockbukkit", "com.github.seeseemelk:MockBukkit-v1.18:2.85.2")
             library("junit-platform","org.junit:junit-bom:5.9.3")
             library("junit-jupiter", "org.junit.jupiter","junit-jupiter").withoutVersion()
+
+            version("caffeine", "3.1.6")
+            library("caffeine","com.github.ben-manes.caffeine", "caffeine").versionRef("caffeine")
         }
     }
 }
