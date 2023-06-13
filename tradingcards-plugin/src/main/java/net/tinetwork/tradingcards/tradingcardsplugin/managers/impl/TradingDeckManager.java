@@ -1,4 +1,4 @@
-package net.tinetwork.tradingcards.tradingcardsplugin.managers;
+package net.tinetwork.tradingcards.tradingcardsplugin.managers.impl;
 
 import de.tr7zw.nbtapi.NBTCompound;
 import de.tr7zw.nbtapi.NBTItem;

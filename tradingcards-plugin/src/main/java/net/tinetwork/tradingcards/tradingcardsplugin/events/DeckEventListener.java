@@ -6,7 +6,7 @@ import net.tinetwork.tradingcards.api.events.DeckItemInteractEvent;
 import net.tinetwork.tradingcards.api.utils.NbtUtils;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.listeners.SimpleListener;
-import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingDeckManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.impl.TradingDeckManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalDebug;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalMessages;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;

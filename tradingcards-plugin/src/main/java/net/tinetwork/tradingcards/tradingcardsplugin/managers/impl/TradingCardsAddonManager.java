@@ -1,4 +1,4 @@
-package net.tinetwork.tradingcards.tradingcardsplugin.managers;
+package net.tinetwork.tradingcards.tradingcardsplugin.managers.impl;
 
 import net.tinetwork.tradingcards.api.addons.TradingCardsAddon;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;

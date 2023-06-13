@@ -1,4 +1,4 @@
-package net.tinetwork.tradingcards.tradingcardsplugin.managers;
+package net.tinetwork.tradingcards.tradingcardsplugin.managers.impl;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -6,6 +6,7 @@ import com.google.common.cache.LoadingCache;
 import net.tinetwork.tradingcards.api.manager.SeriesManager;
 import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.Manager;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalDebug;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalLog;
 import org.jetbrains.annotations.Contract;

@@ -1,4 +1,4 @@
-package net.tinetwork.tradingcards.tradingcardsplugin.managers;
+package net.tinetwork.tradingcards.tradingcardsplugin.managers.impl;
 
 
 import com.google.common.cache.CacheBuilder;
@@ -7,6 +7,7 @@ import com.google.common.cache.LoadingCache;
 import net.tinetwork.tradingcards.api.manager.TypeManager;
 import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.Manager;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalLog;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import org.bukkit.entity.EntityType;

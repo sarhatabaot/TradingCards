@@ -10,7 +10,7 @@ import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
-import net.tinetwork.tradingcards.tradingcardsplugin.managers.TradingRarityManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.impl.TradingRarityManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalMessages;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.Permissions;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;

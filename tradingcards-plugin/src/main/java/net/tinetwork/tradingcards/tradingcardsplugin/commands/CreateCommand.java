@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
  * @author sarhatabaot
  */
 @CommandAlias("cards")
-public class CreateCommand extends BaseCommand{
+public class CreateCommand extends BaseCommand {
     private final TradingCards plugin;
 
     public CreateCommand(final TradingCards plugin) {
@@ -32,14 +32,14 @@ public class CreateCommand extends BaseCommand{
     public class CreateSubCommand extends BaseCommand {
 
         private void sendCreatedMessage(final @NotNull CommandSender sender, final String type, final String id) {
-            sender.sendMessage(InternalMessages.CreateCommand.CREATED_TYPE.formatted(type,id));
-            final String editId = id.replace("cardId:","").replace("rarityId:","").replace("seriesId:","");
-            sender.sendMessage(InternalMessages.CreateCommand.CREATED_TYPE_EDIT.formatted(id,type,editId.replace(", ","")));
+            sender.sendMessage(InternalMessages.CreateCommand.CREATED_TYPE.formatted(type, id));
+            final String editId = id.replace("cardId:", "").replace("rarityId:", "").replace("seriesId:", "");
+            sender.sendMessage(InternalMessages.CreateCommand.CREATED_TYPE_EDIT.formatted(id, type, editId.replace(", ", "")));
         }
 
         @Subcommand("rarity")
         @CommandPermission(Permissions.Admin.Create.CREATE_RARITY)
-        public void onRarity(final CommandSender sender,@Single final String rarityId) {
+        public void onRarity(final CommandSender sender, @Single final String rarityId) {
             if (plugin.getRarityManager().containsRarity(rarityId)) {
                 sender.sendMessage(InternalMessages.CreateCommand.RARITY_EXISTS.formatted(rarityId));
                 return;
@@ -52,47 +52,47 @@ public class CreateCommand extends BaseCommand{
         @Subcommand("card")
         @CommandPermission(Permissions.Admin.Create.CREATE_CARD)
         @CommandCompletion("@nothing @rarities @series")
-        public void onCard(final CommandSender sender,@Single final String cardId,@Single final String rarityId,@Single final String seriesId) {
+        public void onCard(final CommandSender sender, @Single final String cardId, @Single final String rarityId, @Single final String seriesId) {
             //Check if rarity & series exist
             if (plugin.getCardManager().containsCard(cardId, rarityId, seriesId)) {
                 sender.sendMessage(InternalMessages.CreateCommand.CARD_EXISTS.formatted(cardId));
                 return;
             }
 
-            if(!plugin.getRarityManager().containsRarity(rarityId)) {
+            if (!plugin.getRarityManager().containsRarity(rarityId)) {
                 sender.sendMessage(InternalMessages.NO_RARITY.formatted(rarityId));
                 return;
             }
 
-            if(!plugin.getSeriesManager().containsSeries(seriesId)) {
+            if (!plugin.getSeriesManager().containsSeries(seriesId)) {
                 sender.sendMessage(InternalMessages.NO_SERIES.formatted(seriesId));
                 return;
             }
 
-            final String createCardFormat = " cardId: %s, rarityId: %s, seriesId: %s".formatted(cardId,rarityId,seriesId);
-            sendCreatedMessage(sender,"card",createCardFormat);
+            final String createCardFormat = " cardId: %s, rarityId: %s, seriesId: %s".formatted(cardId, rarityId, seriesId);
+            sendCreatedMessage(sender, "card", createCardFormat);
             plugin.getStorage().createCard(cardId, rarityId, seriesId);
         }
 
         @Subcommand("pack")
         @CommandPermission(Permissions.Admin.Create.CREATE_PACK)
-        public void onPack(final CommandSender sender,@Single final String packId) {
+        public void onPack(final CommandSender sender, @Single final String packId) {
             if (plugin.getPackManager().containsPack(packId)) {
                 sender.sendMessage(InternalMessages.CreateCommand.PACK_EXISTS.formatted(packId));
                 return;
             }
-            sendCreatedMessage(sender,"pack",packId);
+            sendCreatedMessage(sender, "pack", packId);
             plugin.getStorage().createPack(packId);
         }
 
         @Subcommand("series")
         @CommandPermission(Permissions.Admin.Create.CREATE_SERIES)
-        public void onSeries(final CommandSender sender,@Single final String seriesId) {
+        public void onSeries(final CommandSender sender, @Single final String seriesId) {
             if (plugin.getSeriesManager().containsSeries(seriesId)) {
                 sender.sendMessage(InternalMessages.CreateCommand.SERIES_EXISTS.formatted(seriesId));
                 return;
             }
-            sendCreatedMessage(sender,"series",seriesId);
+            sendCreatedMessage(sender, "series", seriesId);
             plugin.getStorage().createSeries(seriesId);
             plugin.getStorage().createColorSeries(seriesId);
         }
@@ -100,7 +100,7 @@ public class CreateCommand extends BaseCommand{
         @Subcommand("type")
         @CommandPermission(Permissions.Admin.Create.CREATE_CUSTOM_TYPE)
         @CommandCompletion("@nothing @default-types")
-        public void onType(final CommandSender sender,@Single final String typeId,@Single final String type) {
+        public void onType(final CommandSender sender, @Single final String typeId, @Single final String type) {
             if (plugin.getDropTypeManager().containsType(typeId)) {
                 sender.sendMessage(InternalMessages.CreateCommand.TYPE_EXISTS.formatted(typeId));
                 return;
@@ -110,7 +110,7 @@ public class CreateCommand extends BaseCommand{
                 sender.sendMessage(InternalMessages.TYPE_MUST_BE.formatted(plugin.getDropTypeManager().getDefaultTypes().stream().map(DropType::getId).toList().toString()));
                 return;
             }
-            sendCreatedMessage(sender,"customtype",typeId);
+            sendCreatedMessage(sender, "customtype", typeId);
             plugin.getStorage().createCustomType(typeId, type);
         }
 
@@ -124,7 +124,7 @@ public class CreateCommand extends BaseCommand{
             }
 
 
-            sendCreatedMessage(sender,"upgrade",upgradeId);
+            sendCreatedMessage(sender, "upgrade", upgradeId);
             plugin.getStorage().createUpgrade(upgradeId, required, result);
         }
     }

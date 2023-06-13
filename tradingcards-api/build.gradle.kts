@@ -2,7 +2,7 @@ plugins {
     id("net.tinetwork.tradingcards.java-conventions")
 }
 
-version = "5.7.12"
+version = "5.7.13"
 
 repositories {
     maven(
@@ -24,5 +24,6 @@ dependencies {
     compileOnly(libs.treasury.api)
     compileOnly(libs.configurate.core)
     compileOnly(libs.configurate.yaml)
+    compileOnly(libs.caffeine)
     implementation(libs.kraken.core)
 }
