@@ -1,6 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.listeners;
 
-import de.tr7zw.nbtapi.NBTItem;
+
+import de.tr7zw.changeme.nbtapi.NBTItem;
 import net.tinetwork.tradingcards.api.model.pack.Pack;
 import net.tinetwork.tradingcards.api.model.pack.PackEntry;
 import net.tinetwork.tradingcards.api.utils.NbtUtils;

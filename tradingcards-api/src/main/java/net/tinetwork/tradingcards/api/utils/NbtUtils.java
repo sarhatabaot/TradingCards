@@ -1,6 +1,7 @@
 package net.tinetwork.tradingcards.api.utils;
 
-import de.tr7zw.nbtapi.NBTItem;
+
+import de.tr7zw.changeme.nbtapi.NBTItem;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;

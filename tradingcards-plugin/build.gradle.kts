@@ -145,7 +145,7 @@ tasks {
         archiveClassifier.set("shadow")
         relocate("co.aikar.commands", "${project.group}.acf")
         relocate("co.aikar.locales", "${project.group}.locales")
-        relocate("de.tr7zw.nbtapi", "${project.group}.nbt")
+        relocate("de.tr7zw.changeme.nbtapi", "${project.group}.nbt")
         relocate("org.bstats", "${project.group}}.bstats")
         
         dependencies {
