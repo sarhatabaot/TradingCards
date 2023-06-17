@@ -1,6 +1,9 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.utils;
 
 
+import com.github.sarhatabaot.tradingcards.card.TradingCard;
+import com.github.sarhatabaot.tradingcards.extensions.ItemExtensionsKt;
+import com.github.sarhatabaot.tradingcards.utils.PlaceholderUtil;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.tinetwork.tradingcards.api.config.ColorSeries;
@@ -10,7 +13,6 @@ import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.api.model.pack.PackEntry;
 import net.tinetwork.tradingcards.api.utils.NbtUtils;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.BuyCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.impl.DropTypeManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.impl.TradingRarityManager;
@@ -87,14 +89,8 @@ public class CardUtil {
         
         return EMPTY_TYPE;
     }
-    
-    public static boolean isCard(final ItemStack itemStack) {
-        if (itemStack == null || itemStack.getType().isAir())
-            return false;
-        final NBTItem nbtItem = new NBTItem(itemStack);
-        return isCard(nbtItem);
-    }
-    
+
+    @Deprecated
     public static boolean isCard(final @NotNull NBTItem nbtItem) {
         return NbtUtils.Card.isCard(nbtItem);
     }
@@ -167,51 +163,7 @@ public class CardUtil {
         }
         return plugin.getMessagesConfig().giveawayNatural().replaceAll(PlaceholderUtil.PLAYER.asRegex(), sender.getName());
     }
-    
-    public static @NotNull String formatDisplayName(final @NotNull TradingCard card) {
-        final String finalTitle = getFormattedTitle(card);
-        
-        if (plugin.placeholderapi()) {
-            return PlaceholderAPI.setPlaceholders(null, finalTitle);
-        }
-        return finalTitle;
-    }
-    
-    private static @NotNull String getFormattedTitle(@NotNull TradingCard card) {
-        Rarity rarity = card.getRarity();
-        String shinyTitle = plugin.getGeneralConfig().displayShinyTitle().replaceAll(PlaceholderUtil.SHINY_PREFIX_ALT.asRegex(), PlaceholderUtil.SHINY_PREFIX.placeholder());
-        String title = plugin.getGeneralConfig().displayTitle();
-        final String shinyPrefix = plugin.getGeneralConfig().shinyName();
-        final String prefix = plugin.getGeneralConfig().cardPrefix();
-        final String rarityColor = rarity.getDefaultColor();
-        final String buyPrice = String.valueOf(card.getBuyPrice());
-        final String sellPrice = String.valueOf(card.getSellPrice());
-        
-        if (card.isShiny() && shinyPrefix != null) {
-            shinyTitle = ChatUtil.color(shinyTitle.replaceAll(PlaceholderUtil.PREFIX.asRegex(), prefix)
-                .replaceAll(PlaceholderUtil.SHINY_PREFIX.asRegex(), shinyPrefix)
-                .replaceAll(PlaceholderUtil.COLOR.asRegex(), rarityColor)
-                .replaceAll(PlaceholderUtil.DISPLAY_NAME.asRegex(), card.getDisplayName())
-                .replaceAll(PlaceholderUtil.BUY_PRICE.asRegex(), buyPrice)
-                .replaceAll(PlaceholderUtil.SELL_PRICE.asRegex(), sellPrice));
-            
-            if (card.isPlayerCard()) {
-                return shinyTitle;
-            }
-            return shinyTitle.replace("_", " ");
-        }
-        
-        title = ChatUtil.color(title.replaceAll(PlaceholderUtil.PREFIX.asRegex(), prefix)
-            .replaceAll(PlaceholderUtil.COLOR.asRegex(), rarityColor)
-            .replaceAll(PlaceholderUtil.DISPLAY_NAME.asRegex(), card.getDisplayName())
-            .replaceAll(PlaceholderUtil.BUY_PRICE.asRegex(), buyPrice)
-            .replaceAll(PlaceholderUtil.SELL_PRICE.asRegex(), sellPrice));
-        if (card.isPlayerCard()) {
-            return title;
-        }
-        return title.replace("_", " ");
-    }
-    
+
     
     public static @NotNull List<String> formatLore(final String info, final String about, final String rarity, final boolean isShiny, final String type, final @NotNull Series series) {
         List<String> lore = new ArrayList<>();
@@ -282,7 +234,8 @@ public class CardUtil {
     public static boolean hasCardsInInventory(final Player player, final @NotNull PackEntry packEntry, int amount) {
         return packEntry.amount() * amount <= countCardsInInventory(player, packEntry);
     }
-    
+
+    @Deprecated
     public static boolean hasCardsInInventory(final Player player, final @NotNull List<PackEntry> tradeCards) {
         if (tradeCards.isEmpty())
             return true;
@@ -293,39 +246,21 @@ public class CardUtil {
         }
         return true;
     }
-    
+
+    @Deprecated
     public static int countCardsInInventory(final @NotNull Player player, final PackEntry packEntry) {
         int count = 0;
         PlayerInventory inventory = player.getInventory();
         
         for (ItemStack itemStack : inventory.getContents()) {
-            if (matchesEntry(itemStack, packEntry)) {
+            if (ItemExtensionsKt.matchesEntry(itemStack, packEntry)) {
                 count += itemStack.getAmount();
             }
         }
         return count;
     }
-    
-    public static boolean matchesEntry(final ItemStack itemStack, final PackEntry packEntry) {
-        if (itemStack == null || itemStack.getType() == Material.AIR)
-            return false;
-        
-        NBTItem nbtItem = new NBTItem(itemStack);
-        if (!CardUtil.isCard(nbtItem)) {
-            return false;
-        }
-        
-        //don't count if it's shiny.
-        if (NbtUtils.Card.isShiny(nbtItem)) {
-            return false;
-        }
-        
-        final String nbtRarity = NbtUtils.Card.getRarityId(nbtItem);
-        final String nbtSeries = NbtUtils.Card.getSeriesId(nbtItem);
-        
-        return packEntry.seriesId().equals(nbtSeries) && packEntry.getRarityId().equals(nbtRarity);
-    }
-    
+
+
     /**
      * @param player    Player
      * @param packEntry PackEntry
@@ -340,7 +275,7 @@ public class CardUtil {
             .filter(itemStack -> itemStack.getType() != Material.AIR)
             .toList()) {
             
-            boolean matchesEntry = CardUtil.matchesEntry(itemStack, packEntry);
+            boolean matchesEntry = ItemExtensionsKt.matchesEntry(itemStack, packEntry);
             if (matchesEntry) {
                 //accounts for zombie:common:10:default when the entry is common:5:default
                 if (itemStack.getAmount() > countLeftToRemove) {
@@ -358,18 +293,5 @@ public class CardUtil {
         }
         
         return removedItemStacks;
-    }
-    
-    
-    public static void sendTradedCardsMessage(final Player player, final @NotNull Map<ItemStack, Integer> removedCardsMap) {
-        for (Map.Entry<ItemStack, Integer> entry : removedCardsMap.entrySet()) {
-            NBTItem nbtItem = new NBTItem(entry.getKey());
-            final String rarityId = NbtUtils.Card.getRarityId(nbtItem);
-            final String cardId = NbtUtils.Card.getCardId(nbtItem);
-            final String seriesId = NbtUtils.Card.getSeriesId(nbtItem);
-            
-            final String listObject = "- %s %s %s %s"; // - 6 rarity cardid seriesid
-            player.sendMessage(listObject.formatted(entry.getValue(), rarityId, cardId, seriesId));
-        }
     }
 }

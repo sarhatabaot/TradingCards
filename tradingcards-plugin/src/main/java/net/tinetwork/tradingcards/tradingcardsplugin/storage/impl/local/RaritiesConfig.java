@@ -5,7 +5,7 @@ import com.lapzupi.dev.config.Transformation;
 import net.tinetwork.tradingcards.api.config.settings.RarityConfigurate;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
+import net.tinetwork.tradingcards.tradingcardsplugin.utils.LoggerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
@@ -63,7 +63,7 @@ public class RaritiesConfig extends RarityConfigurate{
             loader.save(rootNode);
             reloadConfig();
         } catch (ConfigurateException e){
-            Util.logSevereException(e);
+            LoggerUtil.logSevereException(e);
         }
     }
 
@@ -76,7 +76,7 @@ public class RaritiesConfig extends RarityConfigurate{
             loader.save(rootNode);
             reloadConfig();
         } catch (ConfigurateException e){
-            Util.logSevereException(e);
+            LoggerUtil.logSevereException(e);
         }
     }
 
@@ -89,7 +89,7 @@ public class RaritiesConfig extends RarityConfigurate{
             loader.save(rootNode);
             reloadConfig();
         } catch (ConfigurateException e){
-            Util.logSevereException(e);
+            LoggerUtil.logSevereException(e);
         }
     }
 
@@ -102,7 +102,7 @@ public class RaritiesConfig extends RarityConfigurate{
             loader.save(rootNode);
             reloadConfig();
         } catch (ConfigurateException e){
-            Util.logSevereException(e);
+            LoggerUtil.logSevereException(e);
         }
     }
 
@@ -115,7 +115,7 @@ public class RaritiesConfig extends RarityConfigurate{
             loader.save(rootNode);
             reloadConfig();
         } catch (ConfigurateException e){
-            Util.logSevereException(e);
+            LoggerUtil.logSevereException(e);
         }
     }
 
@@ -128,7 +128,7 @@ public class RaritiesConfig extends RarityConfigurate{
             loader.save(rootNode);
             reloadConfig();
         } catch (ConfigurateException e){
-            Util.logSevereException(e);
+            LoggerUtil.logSevereException(e);
         }
     }
 
@@ -141,7 +141,7 @@ public class RaritiesConfig extends RarityConfigurate{
             loader.save(rootNode);
             reloadConfig();
         } catch (ConfigurateException e){
-            Util.logSevereException(e);
+            LoggerUtil.logSevereException(e);
         }
     }
 
@@ -170,7 +170,7 @@ public class RaritiesConfig extends RarityConfigurate{
             loader.save(rootNode);
             reloadConfig();
         } catch (ConfigurateException e) {
-            Util.logSevereException(e);
+            LoggerUtil.logSevereException(e);
         }
     }
 

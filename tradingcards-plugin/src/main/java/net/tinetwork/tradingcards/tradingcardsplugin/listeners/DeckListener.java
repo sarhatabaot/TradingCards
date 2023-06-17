@@ -1,6 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.listeners;
 
 
+import com.github.sarhatabaot.tradingcards.extensions.ItemExtensionsKt;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import net.tinetwork.tradingcards.api.events.DeckCloseEvent;
 import net.tinetwork.tradingcards.api.events.DeckItemInteractEvent;
@@ -49,7 +50,7 @@ public class DeckListener extends SimpleListener {
                 .toList();
 
         for(ItemStack item: inventoryContents) {
-            if (!CardUtil.isCard(item) && plugin.getGeneralConfig().dropDeckItems()) {
+            if (!ItemExtensionsKt.isCard(item) && plugin.getGeneralConfig().dropDeckItems()) {
                 CardUtil.dropItem(player, item);
                 continue;
             }

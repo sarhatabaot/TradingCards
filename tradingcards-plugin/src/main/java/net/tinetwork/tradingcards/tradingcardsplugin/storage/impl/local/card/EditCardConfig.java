@@ -2,7 +2,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local.card;
 
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local.SimpleCardsConfig;
-import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
+import net.tinetwork.tradingcards.tradingcardsplugin.utils.LoggerUtil;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
@@ -37,7 +37,7 @@ public abstract class EditCardConfig<R> {
             loader.save(rootNode);
             simpleCardsConfig.reloadConfig();
         } catch (ConfigurateException e) {
-            Util.logSevereException(e);
+            LoggerUtil.logSevereException(e);
         }
     }
 

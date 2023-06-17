@@ -6,7 +6,7 @@ import com.lapzupi.dev.config.YamlConfigurateFile;
 import net.tinetwork.tradingcards.api.model.Upgrade;
 import net.tinetwork.tradingcards.api.model.pack.PackEntry;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
+import net.tinetwork.tradingcards.tradingcardsplugin.utils.LoggerUtil;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurateException;
@@ -62,7 +62,7 @@ public class UpgradesConfig extends YamlConfigurateFile<TradingCards> {
             loader.save(rootNode);
             reloadConfig();
         } catch (ConfigurateException e){
-            Util.logSevereException(e);
+            LoggerUtil.logSevereException(e);
         }
     }
 
@@ -78,7 +78,7 @@ public class UpgradesConfig extends YamlConfigurateFile<TradingCards> {
             upgradeNode.set(upgrade);
             loader.save(rootNode);
         } catch (ConfigurateException e) {
-            Util.logSevereException(e);
+            LoggerUtil.logSevereException(e);
         }
     }
 
@@ -90,7 +90,7 @@ public class UpgradesConfig extends YamlConfigurateFile<TradingCards> {
             upgradeNode.set(upgrade);
             loader.save(rootNode);
         } catch (ConfigurateException e) {
-            Util.logSevereException(e);
+            LoggerUtil.logSevereException(e);
         }
     }
 
@@ -100,7 +100,7 @@ public class UpgradesConfig extends YamlConfigurateFile<TradingCards> {
             upgradeNode.set(null);
             loader.save(rootNode);
         } catch (ConfigurateException e) {
-            Util.logSevereException(e);
+            LoggerUtil.logSevereException(e);
         }
     }
 

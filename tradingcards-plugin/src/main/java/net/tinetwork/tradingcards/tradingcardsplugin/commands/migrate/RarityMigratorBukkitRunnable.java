@@ -5,7 +5,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalMessages;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
-import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
+import net.tinetwork.tradingcards.tradingcardsplugin.utils.LoggerUtil;
 import org.bukkit.command.CommandSender;
 import org.spongepowered.configurate.ConfigurateException;
 
@@ -22,7 +22,7 @@ public class RarityMigratorBukkitRunnable extends MigratorBukkitRunnable{
     @Override
     public void onExecute() throws ConfigurateException {
         for(final Rarity rarity: source.getRarities()) {
-            Util.logAndMessage(sender, InternalMessages.STARTED_CONVERSION_FOR.formatted(rarity.getId()));
+            LoggerUtil.logAndMessage(sender, InternalMessages.STARTED_CONVERSION_FOR.formatted(rarity.getId()));
             plugin.getStorage().createRarity(rarity.getId());
             plugin.getStorage().editRaritySellPrice(rarity.getId(),rarity.getSellPrice());
             plugin.getStorage().editRarityBuyPrice(rarity.getId(),rarity.getBuyPrice());

@@ -17,7 +17,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalM
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.Permissions;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
-import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
+import net.tinetwork.tradingcards.tradingcardsplugin.utils.LoggerUtil;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -71,7 +71,7 @@ public class DebugCommands extends BaseCommand {
                         sender.sendMessage(InternalMessages.DebugCommand.ADDED_ALL_FILES);
                     }
                 } catch (IOException e) {
-                    Util.logWarningException(e);
+                    LoggerUtil.logWarningException(e);
                 }
 
             }

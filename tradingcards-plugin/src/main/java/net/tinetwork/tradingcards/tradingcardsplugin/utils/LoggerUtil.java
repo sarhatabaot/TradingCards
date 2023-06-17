@@ -12,17 +12,17 @@ import java.util.logging.Logger;
 /**
  * @author sarhatabaot
  */
-public class Util {
+public class LoggerUtil {
     private static Logger logger;
     public static final List<String> COLORS = List.of("info=", "about=", "type=", "series=", "rarity=");
     public static final ColorSeries DEFAULT_COLORS = new ColorSeries("&a", "&b", "&e", "&c", "&6");
 
-    private Util() {
+    private LoggerUtil() {
         throw new UnsupportedOperationException();
     }
 
     public static void init(final Logger logger) {
-        Util.logger = logger;
+        LoggerUtil.logger = logger;
     }
     public static void logSevereException(Exception e) {
         logException(Level.SEVERE,e);

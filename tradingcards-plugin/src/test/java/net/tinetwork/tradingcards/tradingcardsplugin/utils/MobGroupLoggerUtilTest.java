@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * @author sarhatabaot
  */
-class MobGroupUtilTest {
+class MobGroupLoggerUtilTest {
 
     @Test
     void isMobHostile() {

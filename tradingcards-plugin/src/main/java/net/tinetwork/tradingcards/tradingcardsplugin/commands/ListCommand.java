@@ -18,7 +18,6 @@ import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.Permissio
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
-import net.tinetwork.tradingcards.tradingcardsplugin.utils.PlaceholderUtil;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -26,7 +25,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 /**
  * @author sarhatabaot

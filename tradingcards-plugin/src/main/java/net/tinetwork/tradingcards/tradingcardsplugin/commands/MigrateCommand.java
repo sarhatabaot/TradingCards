@@ -19,7 +19,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.commands.migrate.SeriesMigr
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.StorageType;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local.YamlStorage;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
-import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
+import net.tinetwork.tradingcards.tradingcardsplugin.utils.LoggerUtil;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurateException;
@@ -66,7 +66,7 @@ public class MigrateCommand extends BaseCommand {
                 yamlStorage = new YamlStorage(plugin);
                 yamlStorage.init(plugin);
             } catch (ConfigurateException e){
-                Util.logSevereException(e);
+                LoggerUtil.logSevereException(e);
                 return;
             }
             new RarityMigratorBukkitRunnable(plugin,sender,yamlStorage).runTask(plugin);
@@ -91,7 +91,7 @@ public class MigrateCommand extends BaseCommand {
                 yamlStorage = new YamlStorage(plugin);
                 yamlStorage.init(plugin);
             } catch (ConfigurateException e){
-                Util.logSevereException(e);
+                LoggerUtil.logSevereException(e);
                 return;
             }
             new DeckMigratorBukkitRunnable(plugin,sender, yamlStorage).runTask(plugin);

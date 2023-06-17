@@ -14,7 +14,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.impl.DropTypeManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalLog;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local.card.EditCardConfig;
-import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
+import net.tinetwork.tradingcards.tradingcardsplugin.utils.LoggerUtil;
 import org.bukkit.Material;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
@@ -59,7 +59,7 @@ public class SimpleCardsConfig extends YamlConfigurateFile<TradingCards> {
         try {
             return cardsNode.node(rarity, name).get(TradingCard.class);
         } catch (SerializationException e) {
-            Util.logSevereException(e);
+            LoggerUtil.logSevereException(e);
             return new EmptyCard();
         }
     }
@@ -76,7 +76,7 @@ public class SimpleCardsConfig extends YamlConfigurateFile<TradingCards> {
             loader.save(rootNode);
             reloadConfig();
         } catch (ConfigurateException e) {
-            Util.logSevereException(e);
+            LoggerUtil.logSevereException(e);
         }
     }
     

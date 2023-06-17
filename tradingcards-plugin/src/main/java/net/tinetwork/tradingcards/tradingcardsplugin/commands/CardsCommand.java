@@ -3,21 +3,22 @@ package net.tinetwork.tradingcards.tradingcardsplugin.commands;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
+import com.github.sarhatabaot.tradingcards.card.TradingCard;
+import com.github.sarhatabaot.tradingcards.extensions.ItemExtensionsKt;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import net.tinetwork.tradingcards.api.utils.NbtUtils;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalDebug;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalMessages;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.Permissions;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.MessagesConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.AllCardManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
-import net.tinetwork.tradingcards.tradingcardsplugin.utils.PlaceholderUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.denylist.PlayerDenylist;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 @CommandAlias("cards")
@@ -91,8 +92,9 @@ public class CardsCommand extends BaseCommand {
         if (CardUtil.noEconomy(player)) {
             return;
         }
+        final ItemStack item = player.getInventory().getItemInMainHand();
         final NBTItem nbtItem = new NBTItem(player.getInventory().getItemInMainHand());
-        if (!CardUtil.isCard(nbtItem)) {
+        if (!ItemExtensionsKt.isCard(item)) {
             player.sendMessage(messagesConfig.notACard());
             return;
         }

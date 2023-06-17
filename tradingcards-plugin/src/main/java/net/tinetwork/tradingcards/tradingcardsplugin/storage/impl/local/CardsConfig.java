@@ -1,7 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local;
 
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
+import net.tinetwork.tradingcards.tradingcardsplugin.utils.LoggerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurateException;
 
@@ -57,7 +57,7 @@ public class CardsConfig {
         try {
             new SimpleCardsConfig(plugin, "cards.yml", yamlStorage).saveDefaultConfig();
         } catch (ConfigurateException e) {
-            Util.logSevereException(e);
+            LoggerUtil.logSevereException(e);
         }
     }
 

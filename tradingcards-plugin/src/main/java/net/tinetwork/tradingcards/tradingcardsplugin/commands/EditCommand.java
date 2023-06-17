@@ -28,7 +28,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.EditSeries;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.EditType;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
-import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
+import net.tinetwork.tradingcards.tradingcardsplugin.utils.LoggerUtil;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -189,9 +189,9 @@ public class EditCommand extends BaseCommand {
             switch (editSeries) {
                 case DISPLAY_NAME -> storage.editSeriesDisplayName(seriesId, value);
                 case COLORS -> {
-                    if (Util.COLORS.stream().noneMatch(value::contains)) {
+                    if (LoggerUtil.COLORS.stream().noneMatch(value::contains)) {
                         ChatUtil.sendPrefixedMessage(sender, InternalMessages.EditCommand.NO_COLORS_ARGS);
-                        ChatUtil.sendPrefixedMessage(sender, InternalMessages.EditCommand.COLORS_HINT.formatted(Util.COLORS));
+                        ChatUtil.sendPrefixedMessage(sender, InternalMessages.EditCommand.COLORS_HINT.formatted(LoggerUtil.COLORS));
                         return;
                     }
 

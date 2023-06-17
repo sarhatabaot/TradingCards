@@ -2,6 +2,9 @@ package net.tinetwork.tradingcards.tradingcardsplugin.commands;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
+import com.github.sarhatabaot.tradingcards.card.EmptyCard;
+import com.github.sarhatabaot.tradingcards.card.TradingCard;
+import com.github.sarhatabaot.tradingcards.extensions.PlayerExtensionsKt;
 import net.tinetwork.tradingcards.api.economy.ResponseWrapper;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
@@ -9,10 +12,7 @@ import net.tinetwork.tradingcards.api.model.pack.Pack;
 import net.tinetwork.tradingcards.api.model.pack.PackEntry;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.Permissions;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
-import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
-import net.tinetwork.tradingcards.tradingcardsplugin.utils.PlaceholderUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -100,7 +100,7 @@ public class BuyCommand extends BaseCommand {
             }
             final int totalCards = removedCardsMap.values().stream().mapToInt(Integer::intValue).sum();
             player.sendMessage("Traded %s cards for pack %s:".formatted(totalCards,packId));
-            CardUtil.sendTradedCardsMessage(player, removedCardsMap);
+            PlayerExtensionsKt.sendTradedCardsMessage(player, removedCardsMap);
         }
         
         private int getAmount(final Integer amount) {

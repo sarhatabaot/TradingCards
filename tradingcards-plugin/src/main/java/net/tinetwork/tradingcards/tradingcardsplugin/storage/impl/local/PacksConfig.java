@@ -6,7 +6,7 @@ import com.lapzupi.dev.config.YamlConfigurateFile;
 import net.tinetwork.tradingcards.api.model.pack.Pack;
 import net.tinetwork.tradingcards.api.model.pack.PackEntry;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
+import net.tinetwork.tradingcards.tradingcardsplugin.utils.LoggerUtil;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
@@ -47,7 +47,7 @@ public class PacksConfig extends YamlConfigurateFile<TradingCards> {
             packNode.set(pack);
             loader.save(rootNode);
         } catch (ConfigurateException e) {
-            Util.logSevereException(e);
+            LoggerUtil.logSevereException(e);
         }
 
     }
@@ -60,7 +60,7 @@ public class PacksConfig extends YamlConfigurateFile<TradingCards> {
             packNode.set(pack);
             loader.save(rootNode);
         } catch (ConfigurateException e) {
-            Util.logSevereException(e);
+            LoggerUtil.logSevereException(e);
         }
     }
 
@@ -72,7 +72,7 @@ public class PacksConfig extends YamlConfigurateFile<TradingCards> {
             packNode.set(pack);
             loader.save(rootNode);
         } catch (ConfigurateException e) {
-            Util.logSevereException(e);
+            LoggerUtil.logSevereException(e);
         }
     }
 
@@ -84,7 +84,7 @@ public class PacksConfig extends YamlConfigurateFile<TradingCards> {
             packNode.set(pack);
             loader.save(rootNode);
         } catch (ConfigurateException e) {
-            Util.logSevereException(e);
+            LoggerUtil.logSevereException(e);
         }
     }
 
@@ -96,7 +96,7 @@ public class PacksConfig extends YamlConfigurateFile<TradingCards> {
             packNode.set(pack);
             loader.save(rootNode);
         } catch (ConfigurateException e) {
-            Util.logSevereException(e);
+            LoggerUtil.logSevereException(e);
         }
     }
 
@@ -108,7 +108,7 @@ public class PacksConfig extends YamlConfigurateFile<TradingCards> {
             packNode.set(pack);
             loader.save(rootNode);
         } catch (ConfigurateException e) {
-            Util.logSevereException(e);
+            LoggerUtil.logSevereException(e);
         }
     }
 
@@ -119,7 +119,7 @@ public class PacksConfig extends YamlConfigurateFile<TradingCards> {
             loader.save(rootNode);
             reloadConfig();
         } catch (ConfigurateException e) {
-            Util.logSevereException(e);
+            LoggerUtil.logSevereException(e);
         }
     }
     

@@ -6,6 +6,7 @@ import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
+import com.github.sarhatabaot.tradingcards.extensions.ItemExtensionsKt;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import net.tinetwork.tradingcards.api.economy.ResponseWrapper;
 import net.tinetwork.tradingcards.api.utils.NbtUtils;
@@ -46,7 +47,7 @@ public class SellCommand extends BaseCommand {
             }
             
             final NBTItem nbtItem = new NBTItem(itemInMainHand);
-            if (!CardUtil.isCard(nbtItem)) {
+            if (!ItemExtensionsKt.isCard(itemInMainHand)) {
                 ChatUtil.sendMessage(player, plugin.getMessagesConfig().notACard());
                 return;
             }

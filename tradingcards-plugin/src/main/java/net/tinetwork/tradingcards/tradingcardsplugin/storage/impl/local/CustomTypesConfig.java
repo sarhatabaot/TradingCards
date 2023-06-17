@@ -5,7 +5,7 @@ import com.lapzupi.dev.config.Transformation;
 import com.lapzupi.dev.config.YamlConfigurateFile;
 import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
+import net.tinetwork.tradingcards.tradingcardsplugin.utils.LoggerUtil;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurateException;
@@ -38,7 +38,7 @@ public class CustomTypesConfig extends YamlConfigurateFile<TradingCards> {
             try {
                 dropTypes.add(getCustomType(dropTypeKey));
             } catch (SerializationException e){
-                Util.logSevereException(e);
+                LoggerUtil.logSevereException(e);
                 plugin.debug(CustomTypesConfig.class,"Couldn't add="+dropTypeKey);
             }
         }
@@ -53,7 +53,7 @@ public class CustomTypesConfig extends YamlConfigurateFile<TradingCards> {
             loader.save(rootNode);
             reloadConfig();
         } catch (ConfigurateException e) {
-            Util.logSevereException(e);
+            LoggerUtil.logSevereException(e);
         }
 
     }
@@ -66,7 +66,7 @@ public class CustomTypesConfig extends YamlConfigurateFile<TradingCards> {
             loader.save(rootNode);
             reloadConfig();
         } catch (ConfigurateException e) {
-            Util.logSevereException(e);
+            LoggerUtil.logSevereException(e);
         }
     }
 
@@ -91,7 +91,7 @@ public class CustomTypesConfig extends YamlConfigurateFile<TradingCards> {
             loader.save(rootNode);
             reloadConfig();
         } catch (ConfigurateException e) {
-            Util.logSevereException(e);
+            LoggerUtil.logSevereException(e);
         }
     }
 

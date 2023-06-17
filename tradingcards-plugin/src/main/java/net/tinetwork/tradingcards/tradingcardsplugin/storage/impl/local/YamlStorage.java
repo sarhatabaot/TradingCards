@@ -1,6 +1,5 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local;
 
-import com.github.sarhatabaot.kraken.core.logging.LoggerUtil;
 import net.tinetwork.tradingcards.api.card.Card;
 import net.tinetwork.tradingcards.api.config.ColorSeries;
 import net.tinetwork.tradingcards.api.model.DropType;
@@ -21,7 +20,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.CompositeCar
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalDebug;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.StorageType;
-import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
+import net.tinetwork.tradingcards.tradingcardsplugin.utils.LoggerUtil;
 import org.apache.commons.lang.NotImplementedException;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.ConfigurateException;
@@ -197,7 +196,7 @@ public class YamlStorage implements Storage<TradingCard> {
         try {
             return this.packsConfig.getPack(packsId);
         } catch (SerializationException e) {
-            Util.logSevereException(e);
+            LoggerUtil.logSevereException(e);
             return EmptyPack.emptyPack();
         }
     }
@@ -243,7 +242,7 @@ public class YamlStorage implements Storage<TradingCard> {
                     activeSeries.add(series);
                 }
             } catch (NotImplementedException e) {
-                LoggerUtil.logWarningException(e);
+                com.github.sarhatabaot.kraken.core.logging.LoggerUtil.logWarningException(e);
                 plugin.getLogger().info("The \"scheduled\" feature has not been implemented yet.");
                 plugin.getLogger().info("Set series %s mode to active or disabled to remove this message.".formatted(series.getId()));
             }
@@ -371,7 +370,7 @@ public class YamlStorage implements Storage<TradingCard> {
         try {
             return customTypesConfig.getCustomType(typeId);
         } catch (SerializationException e) {
-            Util.logWarningException(e);
+            LoggerUtil.logWarningException(e);
         }
         return DropTypeManager.ALL;
     }
@@ -618,7 +617,7 @@ public class YamlStorage implements Storage<TradingCard> {
         try {
             return upgradesConfig.getUpgrade(upgradeId);
         } catch (SerializationException e) {
-            Util.logSevereException(e);
+            LoggerUtil.logSevereException(e);
             return null;
         }
     }

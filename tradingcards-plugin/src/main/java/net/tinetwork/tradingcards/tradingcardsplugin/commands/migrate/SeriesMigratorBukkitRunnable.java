@@ -5,7 +5,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalMessages;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
-import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
+import net.tinetwork.tradingcards.tradingcardsplugin.utils.LoggerUtil;
 import org.bukkit.command.CommandSender;
 import org.spongepowered.configurate.ConfigurateException;
 
@@ -20,7 +20,7 @@ public class SeriesMigratorBukkitRunnable extends MigratorBukkitRunnable{
     @Override
     public void onExecute() throws ConfigurateException {
         for(Series series: source.getAllSeries()) {
-            Util.logAndMessage(sender, InternalMessages.STARTED_CONVERSION_FOR.formatted(series.getId()));
+            LoggerUtil.logAndMessage(sender, InternalMessages.STARTED_CONVERSION_FOR.formatted(series.getId()));
             plugin.getStorage().createSeries(series.getId());
             plugin.getStorage().editSeriesMode(series.getId(),series.getMode());
             plugin.getStorage().editSeriesDisplayName(series.getId(),series.getDisplayName());

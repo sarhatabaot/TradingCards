@@ -9,7 +9,7 @@ import net.tinetwork.tradingcards.api.model.schedule.Mode;
 import net.tinetwork.tradingcards.api.model.schedule.Schedule;
 import net.tinetwork.tradingcards.api.model.schedule.ScheduleType;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
+import net.tinetwork.tradingcards.tradingcardsplugin.utils.LoggerUtil;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurateException;
@@ -48,7 +48,7 @@ public class SeriesConfig extends SeriesConfigurate {
             seriesNode.set(selectedSeries);
             loader.save(rootNode);
         } catch (ConfigurateException e) {
-            Util.logSevereException(e);
+            LoggerUtil.logSevereException(e);
         }
     }
     public void editColors(final String seriesId, final @NotNull ColorSeries colors) {
@@ -59,7 +59,7 @@ public class SeriesConfig extends SeriesConfigurate {
             seriesNode.set(selectedSeries);
             loader.save(rootNode);
         } catch (ConfigurateException e) {
-            Util.logSevereException(e);
+            LoggerUtil.logSevereException(e);
         }
     }
 
@@ -71,7 +71,7 @@ public class SeriesConfig extends SeriesConfigurate {
             seriesNode.set(selectedSeries);
             loader.save(rootNode);
         } catch (ConfigurateException e) {
-            Util.logSevereException(e);
+            LoggerUtil.logSevereException(e);
         }
     }
     private void loadSeries() {
@@ -82,7 +82,7 @@ public class SeriesConfig extends SeriesConfigurate {
                 seriesMap.put(seriesKey, series);
                 plugin.debug(SeriesConfig.class, "Added " + series.toString());
             } catch (SerializationException e) {
-                Util.logSevereException(e);
+                LoggerUtil.logSevereException(e);
                 plugin.debug(SeriesConfig.class, "Couldn't add=" + seriesKey);
             }
         }
@@ -100,12 +100,12 @@ public class SeriesConfig extends SeriesConfigurate {
 
     public void createSeries(final String seriesId) {
         try {
-            Series series = new Series(seriesId, Mode.ACTIVE, seriesId, null, Util.DEFAULT_COLORS);
+            Series series = new Series(seriesId, Mode.ACTIVE, seriesId, null, LoggerUtil.DEFAULT_COLORS);
             rootNode.node(seriesId).set(series);
             loader.save(rootNode);
             reloadConfig();
         } catch (ConfigurateException e) {
-            Util.logSevereException(e);
+            LoggerUtil.logSevereException(e);
         }
     }
     

@@ -5,6 +5,7 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
+import com.github.sarhatabaot.tradingcards.extensions.PlayerExtensionsKt;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import net.tinetwork.tradingcards.api.model.Upgrade;
 import net.tinetwork.tradingcards.api.model.pack.PackEntry;
@@ -65,7 +66,8 @@ public class UpgradeCommand extends BaseCommand {
             player.sendMessage("Upgraded %d %s cards to %d %s cards:"
                     .formatted(totalCards, upgrade.required().rarityId(),
                             upgrade.result().amount() * amount, upgrade.result().rarityId()));
-            CardUtil.sendTradedCardsMessage(player, removedCards);
+
+            PlayerExtensionsKt.sendTradedCardsMessage(player,removedCards);
 
             for (int i = 0; i < amount; i++) {
                 CardUtil.dropItem(player, plugin.getCardManager().getRandomCardByRarity(upgrade.result().rarityId()).build(false));

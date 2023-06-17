@@ -3,7 +3,6 @@ package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote;
 
 import com.github.sarhatabaot.kraken.core.db.ExecuteQuery;
 import com.github.sarhatabaot.kraken.core.db.ExecuteUpdate;
-import com.github.sarhatabaot.kraken.core.logging.LoggerUtil;
 import com.lapzupi.dev.connection.ConnectionFactory;
 import net.tinetwork.tradingcards.api.card.Card;
 import net.tinetwork.tradingcards.api.config.ColorSeries;
@@ -44,7 +43,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generat
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.UpgradesResult;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.sql.SchemaReader;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.JooqRecordUtil;
-import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
+import net.tinetwork.tradingcards.tradingcardsplugin.utils.LoggerUtil;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -201,7 +200,7 @@ public class SqlStorage implements Storage<TradingCard> {
                         if(e.getMessage().contains("already exists")) {
                             plugin.debug(SqlStorage.class, e.getMessage());
                         } else {
-                            LoggerUtil.logSevereException(e);
+                            com.github.sarhatabaot.kraken.core.logging.LoggerUtil.logSevereException(e);
                         }
                     }
                     rarityViewMap.put(rarity.getId(), viewName);
@@ -233,7 +232,7 @@ public class SqlStorage implements Storage<TradingCard> {
                         if(e.getMessage().contains("already exists")) {
                             plugin.debug(SqlStorage.class, e.getMessage());
                         } else {
-                            LoggerUtil.logSevereException(e);
+                            com.github.sarhatabaot.kraken.core.logging.LoggerUtil.logSevereException(e);
                         }
                     }
                     seriesViewMap.put(series.getId(), viewName);
@@ -267,7 +266,7 @@ public class SqlStorage implements Storage<TradingCard> {
                             if(e.getMessage().contains("already exists")) {
                                 plugin.debug(SqlStorage.class, e.getMessage());
                             } else {
-                                LoggerUtil.logSevereException(e);
+                                com.github.sarhatabaot.kraken.core.logging.LoggerUtil.logSevereException(e);
                             }
                         }
                         raritySeriesViewMap.put(raritySeriesKey, viewName);
@@ -812,7 +811,7 @@ public class SqlStorage implements Storage<TradingCard> {
 
             @Override
             public ColorSeries empty() {
-                return Util.DEFAULT_COLORS;
+                return LoggerUtil.DEFAULT_COLORS;
             }
         }.prepareAndRunQuery();
     }

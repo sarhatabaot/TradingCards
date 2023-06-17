@@ -6,7 +6,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalMessages;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
-import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
+import net.tinetwork.tradingcards.tradingcardsplugin.utils.LoggerUtil;
 import org.bukkit.command.CommandSender;
 import org.spongepowered.configurate.ConfigurateException;
 
@@ -32,7 +32,7 @@ public class PackMigratorBukkitRunnable extends MigratorBukkitRunnable{
     public void onExecute() throws ConfigurateException {
         for(Pack pack: source.getPacks()) {
             final String packId = pack.getId();
-            Util.logAndMessage(sender, InternalMessages.STARTED_CONVERSION_FOR.formatted(packId));
+            LoggerUtil.logAndMessage(sender, InternalMessages.STARTED_CONVERSION_FOR.formatted(packId));
             plugin.getStorage().createPack(packId);
             plugin.getStorage().editPackPrice(packId,pack.getBuyPrice());
             plugin.getStorage().editPackPermission(packId,pack.getPermission());

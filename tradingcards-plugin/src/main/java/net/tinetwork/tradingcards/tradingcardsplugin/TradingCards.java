@@ -66,7 +66,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.SqlStor
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.MobGroupUtil;
-import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
+import net.tinetwork.tradingcards.tradingcardsplugin.utils.LoggerUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.denylist.PlayerDenylist;
 import net.tinetwork.tradingcards.tradingcardsplugin.denylist.WorldDenylist;
 import org.bstats.bukkit.Metrics;
@@ -143,7 +143,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
     @Override
     public void onEnable() {
-        Util.init(getLogger());
+        LoggerUtil.init(getLogger());
 
         initPermissions();
         
@@ -167,7 +167,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         try {
             this.storage = loadStorage();
         } catch (ConfigurateException e) {
-            Util.logSevereException(e);
+            LoggerUtil.logSevereException(e);
         }
         this.storage.init(this);
     }
@@ -463,7 +463,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
             return false;
         }
 
-        economyWrapper = new VaultEconomy(rsp.getProvider());
+        this.economyWrapper = new VaultEconomy(rsp.getProvider());
         return economyWrapper != null;
     }
 
@@ -477,7 +477,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
             return false;
         }
 
-        economyWrapper = new TreasuryEconomy(rsp.getProvider());
+        this.economyWrapper = new TreasuryEconomy(rsp.getProvider());
         return economyWrapper != null;
     }
     
@@ -559,7 +559,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
             registerChildrenPermissionsFromPrivateClass(Permissions.User.class, Permissions.User.USER);
             registerChildrenPermissionsFromPrivateClass(Permissions.Admin.class, Permissions.Admin.ADMIN);
         } catch (IllegalArgumentException | IllegalAccessException e) {
-            Util.logSevereException(e);
+            LoggerUtil.logSevereException(e);
         }
         
     }
