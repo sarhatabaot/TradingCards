@@ -5,6 +5,7 @@ import de.tr7zw.changeme.nbtapi.NBTItem
 import net.tinetwork.tradingcards.api.model.pack.PackEntry
 import net.tinetwork.tradingcards.api.utils.NbtUtils
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil
+import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
@@ -26,12 +27,16 @@ fun Player.sendTradedCardsMessage(removedCardsMap: Map<ItemStack, Int>) {
     }
 }
 
-fun Player.sendColoredMessage(message: String) {
+fun CommandSender.sendColoredMessage(message: String) {
     this.sendMessage(ChatUtil.color(message))
 }
 
-fun Player.sendFormattedMessage(message: String) {
-    this.sendMessage(ChatUtil.format(this, message))
+fun CommandSender.sendFormattedMessage(message: String) {
+    if(this is Player) {
+        this.sendMessage(ChatUtil.format(this, message))
+        return
+    }
+    this.sendMessage(ChatUtil.format(null, message))
 }
 
 fun Player.hasCardsInInventory(tradeCards: List<PackEntry>): Boolean {

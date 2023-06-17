@@ -1,6 +1,8 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local;
 
 
+import com.github.sarhatabaot.tradingcards.card.EmptyCard;
+import com.github.sarhatabaot.tradingcards.card.TradingCard;
 import com.lapzupi.dev.config.Transformation;
 import com.lapzupi.dev.config.YamlConfigurateFile;
 import net.tinetwork.tradingcards.api.TradingCardsPlugin;
@@ -9,8 +11,7 @@ import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
-import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
+
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.impl.DropTypeManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalLog;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local.card.EditCardConfig;

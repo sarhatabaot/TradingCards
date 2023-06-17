@@ -3,13 +3,14 @@ package net.tinetwork.tradingcards.tradingcardsplugin.managers.cards;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.github.sarhatabaot.kraken.core.logging.LoggerUtil;
+import com.github.sarhatabaot.tradingcards.card.EmptyCard;
+import com.github.sarhatabaot.tradingcards.card.TradingCard;
 import net.tinetwork.tradingcards.api.manager.CardManager;
 import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
-import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
+
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalDebug;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalLog;
 import org.apache.commons.rng.sampling.CollectionSampler;

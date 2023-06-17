@@ -59,7 +59,7 @@ public class BuyCommand extends BaseCommand {
     
             final int amountToBuy = getAmount(amount);
             
-            if (!pack.getTradeCards().isEmpty() && !CardUtil.hasCardsInInventory(player, pack.getTradeCards())) {
+            if (!pack.getTradeCards().isEmpty() && !PlayerExtensionsKt.hasCardsInInventory(player, pack.getTradeCards())) {
                 player.sendMessage("Not enough cards to perform a trade in.");
                 return;
             }

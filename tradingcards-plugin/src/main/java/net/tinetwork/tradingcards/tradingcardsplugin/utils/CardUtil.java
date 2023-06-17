@@ -236,18 +236,6 @@ public class CardUtil {
     }
 
     @Deprecated
-    public static boolean hasCardsInInventory(final Player player, final @NotNull List<PackEntry> tradeCards) {
-        if (tradeCards.isEmpty())
-            return true;
-        
-        for (PackEntry packEntry : tradeCards) {
-            if (packEntry.amount() > countCardsInInventory(player, packEntry))
-                return false;
-        }
-        return true;
-    }
-
-    @Deprecated
     public static int countCardsInInventory(final @NotNull Player player, final PackEntry packEntry) {
         int count = 0;
         PlayerInventory inventory = player.getInventory();

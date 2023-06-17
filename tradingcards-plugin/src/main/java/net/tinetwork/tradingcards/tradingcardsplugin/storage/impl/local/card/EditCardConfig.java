@@ -1,6 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local.card;
 
-import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
+
+import com.github.sarhatabaot.tradingcards.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local.SimpleCardsConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.LoggerUtil;
 import org.spongepowered.configurate.CommentedConfigurationNode;
