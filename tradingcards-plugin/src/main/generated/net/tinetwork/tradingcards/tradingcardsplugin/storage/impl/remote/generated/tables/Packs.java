@@ -72,7 +72,7 @@ public class Packs extends TableImpl<PacksRecord> {
     /**
      * The column <code>{prefix}packs.currency_id</code>.
      */
-    public final TableField<PacksRecord, String> CURRENCY_ID = createField(DSL.name("currency_id"), SQLDataType.VARCHAR(30).defaultValue(DSL.field("'tc-internal-default'", SQLDataType.VARCHAR)), this, "");
+    public final TableField<PacksRecord, String> CURRENCY_ID = createField(DSL.name("currency_id"), SQLDataType.VARCHAR(30).defaultValue(DSL.field(DSL.raw("'tc-internal-default'"), SQLDataType.VARCHAR)), this, "");
 
     private Packs(Name alias, Table<PacksRecord> aliased) {
         this(alias, aliased, null);

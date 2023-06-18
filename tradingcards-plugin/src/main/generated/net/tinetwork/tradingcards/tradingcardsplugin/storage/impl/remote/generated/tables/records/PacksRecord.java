@@ -251,5 +251,6 @@ public class PacksRecord extends UpdatableRecordImpl<PacksRecord> implements Rec
         setBuyPrice(buyPrice);
         setPermission(permission);
         setCurrencyId(currencyId);
+        resetChangedOnNotNull();
     }
 }

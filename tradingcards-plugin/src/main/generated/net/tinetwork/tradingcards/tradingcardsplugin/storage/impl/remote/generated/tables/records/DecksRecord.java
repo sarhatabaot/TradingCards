@@ -362,5 +362,6 @@ public class DecksRecord extends UpdatableRecordImpl<DecksRecord> implements Rec
         setAmount(amount);
         setIsShiny(isShiny);
         setSeriesId(seriesId);
+        resetChangedOnNotNull();
     }
 }

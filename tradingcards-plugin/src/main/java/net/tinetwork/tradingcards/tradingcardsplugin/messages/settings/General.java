@@ -1,4 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.messages.settings;
+
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalExceptions;
+
 public final class General {
 
 	public static final Integer CONFIG_VERSION = 1;

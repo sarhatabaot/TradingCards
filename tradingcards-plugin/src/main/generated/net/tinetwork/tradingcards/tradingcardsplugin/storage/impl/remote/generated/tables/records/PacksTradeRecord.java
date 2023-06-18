@@ -288,5 +288,6 @@ public class PacksTradeRecord extends UpdatableRecordImpl<PacksTradeRecord> impl
         setRarityId(rarityId);
         setCardAmount(cardAmount);
         setSeriesId(seriesId);
+        resetChangedOnNotNull();
     }
 }

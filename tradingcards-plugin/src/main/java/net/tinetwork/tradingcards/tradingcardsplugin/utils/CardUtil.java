@@ -115,14 +115,20 @@ public class CardUtil {
     }
 
     public static boolean shouldDrop(DropType dropType) {
-        int randomDropChance = plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1;
-        int mobDropChance = getGeneralMobChance(dropType);
+        final int randomDropChance = plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1;
+        final int mobDropChance = getGeneralMobChance(dropType);
+        final boolean shouldDrop = shouldDrop(randomDropChance,mobDropChance);
+
         plugin.debug(CardUtil.class, InternalDebug.CardsManager.DROP_CHANCE.formatted(randomDropChance, dropType, mobDropChance));
-        if (randomDropChance > mobDropChance) {
+        if(!shouldDrop) {
             plugin.debug(CardUtil.class, "Not dropping, because generated chance is larger than required: (%d > %d)".formatted(randomDropChance, mobDropChance));
-            return false;
         }
-        return true;
+
+        return shouldDrop;
+    }
+
+    public static boolean shouldDrop(final int randomDropChance, final int mobDropChance) {
+        return randomDropChance <= mobDropChance;
     }
     
     private static int getGeneralMobChance(@NotNull DropType dropType) {

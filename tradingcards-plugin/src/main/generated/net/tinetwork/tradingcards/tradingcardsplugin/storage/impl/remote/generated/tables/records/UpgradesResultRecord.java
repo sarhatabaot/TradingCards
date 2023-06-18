@@ -214,5 +214,6 @@ public class UpgradesResultRecord extends UpdatableRecordImpl<UpgradesResultReco
         setSeriesId(seriesId);
         setAmount(amount);
         setRarityId(rarityId);
+        resetChangedOnNotNull();
     }
 }

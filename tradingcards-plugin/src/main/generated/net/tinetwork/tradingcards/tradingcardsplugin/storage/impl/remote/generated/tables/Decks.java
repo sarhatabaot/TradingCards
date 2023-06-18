@@ -88,7 +88,7 @@ public class Decks extends TableImpl<DecksRecord> {
     /**
      * The column <code>{prefix}decks.series_id</code>.
      */
-    public final TableField<DecksRecord, String> SERIES_ID = createField(DSL.name("series_id"), SQLDataType.VARCHAR(200).nullable(false).defaultValue(DSL.field("'${default_series_id}'", SQLDataType.VARCHAR)), this, "");
+    public final TableField<DecksRecord, String> SERIES_ID = createField(DSL.name("series_id"), SQLDataType.VARCHAR(200).nullable(false).defaultValue(DSL.field(DSL.raw("'${default_series_id}'"), SQLDataType.VARCHAR)), this, "");
 
     private Decks(Name alias, Table<DecksRecord> aliased) {
         this(alias, aliased, null);

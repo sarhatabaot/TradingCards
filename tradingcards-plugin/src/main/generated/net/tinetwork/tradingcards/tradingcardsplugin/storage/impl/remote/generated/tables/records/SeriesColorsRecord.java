@@ -288,5 +288,6 @@ public class SeriesColorsRecord extends UpdatableRecordImpl<SeriesColorsRecord> 
         setAbout(about);
         setRarity(rarity);
         setSeries(series);
+        resetChangedOnNotNull();
     }
 }

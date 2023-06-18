@@ -1,4 +1,7 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.messages.settings;
+
+import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalExceptions;
+
 public final class Chances {
 
 	public static final Integer HOSTILE_CHANCE = 20000;

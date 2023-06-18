@@ -178,5 +178,6 @@ public class CustomTypesRecord extends UpdatableRecordImpl<CustomTypesRecord> im
         setTypeId(typeId);
         setDisplayName(displayName);
         setDropType(dropType);
+        resetChangedOnNotNull();
     }
 }

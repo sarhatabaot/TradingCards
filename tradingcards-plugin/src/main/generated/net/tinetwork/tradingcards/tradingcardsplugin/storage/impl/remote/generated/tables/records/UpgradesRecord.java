@@ -102,5 +102,6 @@ public class UpgradesRecord extends UpdatableRecordImpl<UpgradesRecord> implemen
         super(Upgrades.UPGRADES);
 
         setUpgradeId(upgradeId);
+        resetChangedOnNotNull();
     }
 }

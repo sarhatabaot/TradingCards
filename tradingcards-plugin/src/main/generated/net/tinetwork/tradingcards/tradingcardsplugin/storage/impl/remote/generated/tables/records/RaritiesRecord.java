@@ -325,5 +325,6 @@ public class RaritiesRecord extends UpdatableRecordImpl<RaritiesRecord> implemen
         setSellPrice(sellPrice);
         setCurrencyId(currencyId);
         setCustomOrder(customOrder);
+        resetChangedOnNotNull();
     }
 }

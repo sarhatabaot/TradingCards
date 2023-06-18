@@ -178,5 +178,6 @@ public class SeriesRecord extends UpdatableRecordImpl<SeriesRecord> implements R
         setSeriesId(seriesId);
         setDisplayName(displayName);
         setSeriesMode(seriesMode);
+        resetChangedOnNotNull();
     }
 }

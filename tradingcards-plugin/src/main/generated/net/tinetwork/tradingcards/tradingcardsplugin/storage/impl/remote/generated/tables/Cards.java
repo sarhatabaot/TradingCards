@@ -108,7 +108,7 @@ public class Cards extends TableImpl<CardsRecord> {
     /**
      * The column <code>{prefix}cards.currency_id</code>.
      */
-    public final TableField<CardsRecord, String> CURRENCY_ID = createField(DSL.name("currency_id"), SQLDataType.VARCHAR(30).defaultValue(DSL.field("'tc-internal-default'", SQLDataType.VARCHAR)), this, "");
+    public final TableField<CardsRecord, String> CURRENCY_ID = createField(DSL.name("currency_id"), SQLDataType.VARCHAR(30).defaultValue(DSL.field(DSL.raw("'tc-internal-default'"), SQLDataType.VARCHAR)), this, "");
 
     private Cards(Name alias, Table<CardsRecord> aliased) {
         this(alias, aliased, null);

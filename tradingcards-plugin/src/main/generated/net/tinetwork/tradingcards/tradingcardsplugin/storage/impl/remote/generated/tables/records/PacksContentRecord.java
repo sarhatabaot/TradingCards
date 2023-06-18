@@ -288,5 +288,6 @@ public class PacksContentRecord extends UpdatableRecordImpl<PacksContentRecord> 
         setRarityId(rarityId);
         setCardAmount(cardAmount);
         setSeriesId(seriesId);
+        resetChangedOnNotNull();
     }
 }

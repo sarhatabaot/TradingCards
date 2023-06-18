@@ -510,5 +510,6 @@ public class CardsRecord extends UpdatableRecordImpl<CardsRecord> implements Rec
         setSellPrice(sellPrice);
         setTypeId(typeId);
         setCurrencyId(currencyId);
+        resetChangedOnNotNull();
     }
 }

@@ -177,5 +177,6 @@ public class RewardsRecord extends UpdatableRecordImpl<RewardsRecord> implements
         setRarityId(rarityId);
         setCommand(command);
         setCommandOrder(commandOrder);
+        resetChangedOnNotNull();
     }
 }

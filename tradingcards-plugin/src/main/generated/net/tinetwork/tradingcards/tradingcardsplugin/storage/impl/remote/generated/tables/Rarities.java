@@ -77,12 +77,12 @@ public class Rarities extends TableImpl<RaritiesRecord> {
     /**
      * The column <code>{prefix}rarities.currency_id</code>.
      */
-    public final TableField<RaritiesRecord, String> CURRENCY_ID = createField(DSL.name("currency_id"), SQLDataType.VARCHAR(30).defaultValue(DSL.field("NULL", SQLDataType.VARCHAR)), this, "");
+    public final TableField<RaritiesRecord, String> CURRENCY_ID = createField(DSL.name("currency_id"), SQLDataType.VARCHAR(30).defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>{prefix}rarities.custom_order</code>.
      */
-    public final TableField<RaritiesRecord, Integer> CUSTOM_ORDER = createField(DSL.name("custom_order"), SQLDataType.INTEGER.defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
+    public final TableField<RaritiesRecord, Integer> CUSTOM_ORDER = createField(DSL.name("custom_order"), SQLDataType.INTEGER.defaultValue(DSL.field(DSL.raw("0"), SQLDataType.INTEGER)), this, "");
 
     private Rarities(Name alias, Table<RaritiesRecord> aliased) {
         this(alias, aliased, null);
