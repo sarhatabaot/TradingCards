@@ -89,7 +89,7 @@ public class DropListener extends SimpleListener {
         final DropType mobType = CardUtil.getMobType(killedEntity.getType());
         debug(InternalDebug.DropListener.MOB_TYPE.formatted(mobType));
 
-        if (!CardUtil.shouldDrop(mobType, false)) {
+        if (!CardUtil.shouldDrop(mobType)) {
             return;
         }
 

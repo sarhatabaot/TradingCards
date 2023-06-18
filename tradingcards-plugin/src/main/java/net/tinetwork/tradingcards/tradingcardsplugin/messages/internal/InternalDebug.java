@@ -20,7 +20,7 @@ public final class InternalDebug {
 		public static final String SERIES_ID = "%s - Series Id";
 		public static final String RANDOM_CARD = "getRandomCard(),rarity= %s";
 		public static final String EMPTY_ACTIVE_SERIES = "There are no cards in the active series. Not dropping anything.";
-		public static final String DROP_CHANCE = "DropChance= %d AlwaysDrop= %s MobType= %s MobDropChance= %d";
+		public static final String DROP_CHANCE = "DropChance= %d MobType= %s MobDropChance= %d";
 		public static final String RARITY_CHANCE = "RarityChance= %d";
 
 		private CardsManager() {

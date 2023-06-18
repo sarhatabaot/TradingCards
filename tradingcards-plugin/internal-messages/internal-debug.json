@@ -12,7 +12,7 @@
     "series-id": "%s - Series Id",
     "random-card": "getRandomCard(),rarity= %s",
     "empty-active-series": "There are no cards in the active series. Not dropping anything.",
-    "drop-chance": "DropChance= %d AlwaysDrop= %s MobType= %s MobDropChance= %d",
+    "drop-chance": "DropChance= %d MobType= %s MobDropChance= %d",
     "rarity-chance": "RarityChance= %d"
   },
   "loaded-into-cache": "Loaded into cache for %s",

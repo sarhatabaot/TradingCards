@@ -113,13 +113,12 @@ public class CardUtil {
             CardUtil.dropItem(p, cardManager.getRandomCardByRarity(rare).build(false));
         }
     }
-    
-    //todo actual value of alwaysDrop is always "false"
-    public static boolean shouldDrop(DropType dropType, boolean alwaysDrop) {
+
+    public static boolean shouldDrop(DropType dropType) {
         int randomDropChance = plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1;
         int mobDropChance = getGeneralMobChance(dropType);
-        plugin.debug(CardUtil.class, InternalDebug.CardsManager.DROP_CHANCE.formatted(randomDropChance, alwaysDrop, dropType, mobDropChance));
-        if (!alwaysDrop && randomDropChance > mobDropChance) {
+        plugin.debug(CardUtil.class, InternalDebug.CardsManager.DROP_CHANCE.formatted(randomDropChance, dropType, mobDropChance));
+        if (randomDropChance > mobDropChance) {
             plugin.debug(CardUtil.class, "Not dropping, because generated chance is larger than required: (%d > %d)".formatted(randomDropChance, mobDropChance));
             return false;
         }
@@ -271,7 +270,6 @@ public class CardUtil {
     /**
      * Internal function to allow for unit testing. Should not actually be used directly.
      */
-    @ApiStatus.Internal
     public static boolean calculateIfShiny(final int shinyRandom, final int shinyVersionChance, boolean forcedShiny) {
         if (forcedShiny)
             return true;
