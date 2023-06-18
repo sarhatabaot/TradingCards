@@ -1,19 +1,17 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.utils;
 
 
-import com.github.sarhatabaot.tradingcards.card.TradingCard;
+import com.github.sarhatabaot.tradingcards.commands.BuyCommand;
 import com.github.sarhatabaot.tradingcards.extensions.ItemExtensionsKt;
 import com.github.sarhatabaot.tradingcards.utils.PlaceholderUtil;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.tinetwork.tradingcards.api.config.ColorSeries;
 import net.tinetwork.tradingcards.api.model.DropType;
-import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.api.model.pack.PackEntry;
 import net.tinetwork.tradingcards.api.utils.NbtUtils;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import net.tinetwork.tradingcards.tradingcardsplugin.commands.BuyCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.impl.DropTypeManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.impl.TradingRarityManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.AllCardManager;
