@@ -28,6 +28,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
+/*
+    Creates events relating to decks.
+    DeckInteractEvent, DeckCloseEvent
+ */
 public class DeckEventListener extends SimpleListener {
     private final TradingDeckManager deckManager;
 
