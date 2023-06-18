@@ -20,4 +20,11 @@ class CardUtilTest {
         assertTrue(CardUtil.calculateIfShiny(1000,1000,true));
         assertTrue(CardUtil.calculateIfShiny(10000,1000,true));
     }
+
+    @Test
+    void shouldDrop() {
+        assertTrue(CardUtil.shouldDrop(10,1000));
+        assertTrue(CardUtil.shouldDrop(1000,1000));
+        assertFalse(CardUtil.shouldDrop(1001,1000));
+    }
 }
