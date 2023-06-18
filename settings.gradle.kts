@@ -39,7 +39,7 @@ dependencyResolutionManagement {
             library("rng-simple", "org.apache.commons", "commons-rng-simple").versionRef("rng")
             library("rng-sampling", "org.apache.commons", "commons-rng-sampling").versionRef("rng")
             
-            library("mockito", "org.mockito:mockito-core:5.3.1")
+            library("mockito", "org.mockito:mockito-core:5.4.0")
             library("mockbukkit", "com.github.seeseemelk:MockBukkit-v1.18:2.85.2")
             library("junit-platform","org.junit:junit-bom:5.9.3")
             library("junit-jupiter", "org.junit.jupiter","junit-jupiter").withoutVersion()
