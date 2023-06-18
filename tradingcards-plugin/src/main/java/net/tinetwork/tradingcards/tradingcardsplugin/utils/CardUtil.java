@@ -25,6 +25,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -259,12 +260,22 @@ public class CardUtil {
     }
     
     public static boolean calculateIfShiny(boolean forcedShiny) {
+        final int shinyRandom = plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1;
+        final int shinyVersionChance = plugin.getChancesConfig().shinyVersionChance();
+        final boolean isShiny = calculateIfShiny(shinyRandom, shinyVersionChance,forcedShiny);
+
+        plugin.debug(AllCardManager.class, "Shiny=" + isShiny + ", Value=" + shinyRandom + ", ShinyChance=" + shinyVersionChance);
+        return isShiny;
+    }
+
+    /**
+     * Internal function to allow for unit testing. Should not actually be used directly.
+     */
+    @ApiStatus.Internal
+    public static boolean calculateIfShiny(final int shinyRandom, final int shinyVersionChance, boolean forcedShiny) {
         if (forcedShiny)
             return true;
-        int shinyRandom = plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1;
-        boolean isShiny = shinyRandom <= plugin.getChancesConfig().shinyVersionChance();
-        plugin.debug(AllCardManager.class, "Shiny=" + isShiny + ", Value=" + shinyRandom + ", ShinyChance=" + plugin.getChancesConfig().shinyVersionChance());
-        return isShiny;
+        return shinyRandom <= shinyVersionChance;
     }
     
     public static boolean noEconomy(final CommandSender player) {
