@@ -1,6 +1,5 @@
-package net.tinetwork.tradingcards.api.manager;
+package net.tinetwork.tradingcards.api.addons;
 
-import net.tinetwork.tradingcards.api.addons.TradingCardsAddon;
 
 import java.util.Map;
 

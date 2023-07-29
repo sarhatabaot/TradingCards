@@ -1,5 +1,6 @@
-package net.tinetwork.tradingcards.tradingcardsplugin.managers.impl;
+package net.tinetwork.tradingcards.tradingcardsplugin.addons;
 
+import net.tinetwork.tradingcards.api.addons.AddonManager;
 import net.tinetwork.tradingcards.api.addons.TradingCardsAddon;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalLog;
@@ -10,7 +11,7 @@ import java.util.Map;
 /**
  * @author sarhatabaot
  */
-public class TradingCardsAddonManager implements net.tinetwork.tradingcards.api.manager.AddonManager {
+public class TradingCardsAddonManager implements AddonManager {
     private final TradingCards plugin;
     private final Map<String, TradingCardsAddon> addons;
 
