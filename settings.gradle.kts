@@ -44,7 +44,7 @@ dependencyResolutionManagement {
             library("junit-platform","org.junit:junit-bom:5.9.3")
             library("junit-jupiter", "org.junit.jupiter","junit-jupiter").withoutVersion()
 
-            version("caffeine", "3.1.6")
+            version("caffeine", "3.1.7")
             library("caffeine","com.github.ben-manes.caffeine", "caffeine").versionRef("caffeine")
         }
     }
