@@ -58,7 +58,7 @@ dependencies {
     library(libs.caffeine)
     
     jooqGenerator(project(":tradingcards-extras"))
-    jooqGenerator("com.mysql:mysql-connector-j:8.0.33")
+    jooqGenerator("com.mysql:mysql-connector-j:8.1.0")
     jooqGenerator(libs.jooq.meta.extensions)
     
     testImplementation(libs.mockito)
