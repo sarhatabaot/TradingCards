@@ -5,7 +5,7 @@ plugins {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.0")
+    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.10")
 }
 repositories {
     // Use the plugin portal to apply community plugins in convention plugins.
