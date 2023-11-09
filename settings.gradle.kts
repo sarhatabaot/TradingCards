@@ -29,7 +29,7 @@ dependencyResolutionManagement {
             library("acf", "co.aikar:acf-paper:0.5.1-SNAPSHOT")
             library("placeholder-api","me.clip:placeholderapi:2.11.5")
 
-            library("hikaricp", "com.zaxxer:HikariCP:5.0.1")
+            library("hikaricp", "com.zaxxer:HikariCP:5.1.0")
             library("zip4j", "net.lingala.zip4j:zip4j:2.11.5")
             library("flyway", "org.flywaydb:flyway-mysql:9.22.3")
             
