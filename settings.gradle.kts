@@ -23,7 +23,7 @@ dependencyResolutionManagement {
             library("configurate-core", "org.spongepowered", "configurate-core").versionRef("configurate")
             library("configurate-yaml", "org.spongepowered", "configurate-yaml").versionRef("configurate")
             library("adventure-api", "net.kyori:adventure-api:4.14.0")
-            library("adventure-bukkit","net.kyori:adventure-platform-bukkit:4.3.1")
+            library("adventure-bukkit","net.kyori:adventure-platform-bukkit:4.3.2")
             
             library("bstats", "org.bstats:bstats-bukkit:3.0.2")
             library("acf", "co.aikar:acf-paper:0.5.1-SNAPSHOT")
