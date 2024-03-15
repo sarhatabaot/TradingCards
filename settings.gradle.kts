@@ -10,7 +10,7 @@ dependencyResolutionManagement {
             plugin("shadow", "com.github.johnrengelman.shadow").version("8.1.1")
             plugin("plugin-yml-bukkit", "net.minecrell.plugin-yml.bukkit").version("0.6.0")
             plugin("jooq", "nu.studer.jooq").version("9.0")
-            plugin("messages", "com.github.sarhatabaot.messages").version("1.0.6")
+            plugin("messages", "com.github.sarhatabaot.messages").version("1.5.8")
 
 
             version("jooq", "3.19.6")
