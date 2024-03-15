@@ -7,11 +7,18 @@ include(":tradingcards-plugin")
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
+            plugin("shadow", "com.github.johnrengelman.shadow").version("8.1.1")
+            plugin("plugin-yml-bukkit", "net.minecrell.plugin-yml.bukkit").version("0.6.0")
+            plugin("jooq", "nu.studer.jooq").version("9.0")
+            plugin("messages", "com.github.sarhatabaot.messages").version("1.0.6")
+
+
             version("jooq", "3.19.6")
             library("jooq", "org.jooq","jooq").versionRef("jooq")
             library("jooq-codegen", "org.jooq", "jooq-codegen").versionRef("jooq")
             library("jooq-meta", "org.jooq", "jooq-meta").versionRef("jooq")
             library("jooq-meta-extensions","org.jooq","jooq-meta-extensions").versionRef("jooq")
+            library("jooq-mysql-connector", "com.mysql:mysql-connector-j:8.3.0")
             library("annotations", "org.jetbrains:annotations:24.1.0")
             library("spigot-api", "org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT")
             library("nbt-api", "de.tr7zw:item-nbt-api:2.12.2")

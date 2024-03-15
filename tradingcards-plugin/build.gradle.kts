@@ -6,10 +6,10 @@ import java.util.Locale
 
 plugins {
     id("net.tinetwork.tradingcards.java-conventions")
-    id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
-    id("com.github.johnrengelman.shadow") version "8.1.1"
-    id("nu.studer.jooq") version "9.0"
-    id("com.github.sarhatabaot.messages") version "1.0.6"
+    alias(libs.plugins.plugin.yml.bukkit)
+    alias(libs.plugins.shadow)
+    alias(libs.plugins.jooq)
+    alias(libs.plugins.messages)
     
     jacoco
 }
@@ -17,15 +17,9 @@ plugins {
 version = "5.7.20"
 
 repositories {
-    maven(
-        url = "https://repo.aikar.co/content/groups/aikar/"
-    )
-    maven(
-        url = "https://mvn.lumine.io/repository/maven-snapshots/"
-    )
-    maven(
-        url = "https://repo.extendedclip.com/content/repositories/placeholderapi/"
-    )
+    maven("https://repo.aikar.co/content/groups/aikar/")
+    maven("https://mvn.lumine.io/repository/maven-snapshots/")
+    maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
 }
 
 
@@ -58,7 +52,7 @@ dependencies {
     library(libs.caffeine)
     
     jooqGenerator(project(":tradingcards-extras"))
-    jooqGenerator("com.mysql:mysql-connector-j:8.3.0")
+    jooqGenerator(libs.jooq.mysql.connector)
     jooqGenerator(libs.jooq.meta.extensions)
     
     testImplementation(libs.mockito)
