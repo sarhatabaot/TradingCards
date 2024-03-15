@@ -578,7 +578,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     
     private List<String> getChildrenFromInnerClass(@NotNull Class<?> clazz) throws IllegalAccessException {
         if(!clazz.isLocalClass()) {
-            getLogger().warning("Tried getting children from a non class object, returning empty list.");
+            debug(TradingCards.class, "Tried getting children from a non class object, returning empty list.");
             return Collections.emptyList();
         }
         List<String> children = new ArrayList<>();
