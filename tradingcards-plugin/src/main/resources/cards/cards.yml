@@ -413,6 +413,7 @@ cards:
       has-shiny-version: true
       info: none
       series: summer
+      type: passive
     phantom:
       custom-model-data: 3200130
       display-name: "Phantom"
