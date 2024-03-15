@@ -7,7 +7,7 @@ include(":tradingcards-plugin")
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
-            version("jooq", "3.19.3")
+            version("jooq", "3.19.6")
             library("jooq", "org.jooq","jooq").versionRef("jooq")
             library("jooq-codegen", "org.jooq", "jooq-codegen").versionRef("jooq")
             library("jooq-meta", "org.jooq", "jooq-meta").versionRef("jooq")
