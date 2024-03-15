@@ -25,7 +25,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -274,7 +273,7 @@ public class CardUtil {
     }
 
     /**
-     * Internal function to allow for unit testing. Should not actually be used directly.
+     * Internal function to allow for unit testing. Should not be used directly.
      */
     public static boolean calculateIfShiny(final int shinyRandom, final int shinyVersionChance, boolean forcedShiny) {
         if (forcedShiny)

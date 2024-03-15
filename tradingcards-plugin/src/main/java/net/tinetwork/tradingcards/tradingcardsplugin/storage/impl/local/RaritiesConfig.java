@@ -215,7 +215,7 @@ public class RaritiesConfig extends RarityConfigurate{
             return new Rarity(name,displayName,defaultColor,buyPrice,sellPrice,rewards,currencyId);
         }
 
-        //Only implemented this since it's required. We don't actually use this feature yet.
+        //Only implemented this since it's required. We don't use this feature yet.
         @Override
         public void serialize(Type type, Rarity rarity, ConfigurationNode target) throws SerializationException {
             if(rarity == null) {

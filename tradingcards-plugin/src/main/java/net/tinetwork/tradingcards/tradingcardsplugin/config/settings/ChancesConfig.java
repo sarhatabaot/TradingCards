@@ -129,7 +129,7 @@ public class ChancesConfig extends YamlConfigurateFile<TradingCards> {
             return new Chance(id, hostile, neutral, passive, boss);
         }
 
-        //Only implemented this since it's required. We don't actually use this feature yet.
+        //Only implemented this since it's required. We don't use this feature yet.
         @Override
         public void serialize(Type type, @Nullable Chance chance, ConfigurationNode target) throws SerializationException {
             if (chance == null) {

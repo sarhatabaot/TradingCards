@@ -13,7 +13,7 @@ shiny-version-chance: 1000
 # 10,000 = 10% chance, 1000 = 1% chance, 100 = 0.1% chance, 10 = 0.01% chance, 1 = 0.001% chance
 # if a type is omitted from this section, the rarity won't drop at all from that type.
 
-# these must match the ids of rarities defined on rarities.yml, otherwise they won't work.
+# These must match the ids of rarities defined on rarities.yml, otherwise they won't work.
 # Types can be hostile, neutral, passive, boss and all.
 common:
   hostile: 100000

@@ -73,12 +73,12 @@ public class PlayerDenylist extends YamlConfigurateFile<TradingCards> implements
     public boolean isAllowed(@NotNull Player p) {
         boolean isOnList = listedPlayers.contains(p.getName());
 
-        //If you're not on the blacklist, you're allowed
+        //If you're not on the allowlist, you're allowed
         if (this.allowlistMode == AllowlistMode.DENY) {
             return !isOnList;
         }
 
-        //If you're on the whitelist, you're allowed
+        //If you're on the allowlist, you're allowed
         if (this.allowlistMode == AllowlistMode.ALLOW) {
             return isOnList;
         }
