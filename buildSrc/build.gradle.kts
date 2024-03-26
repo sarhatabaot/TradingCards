@@ -1,7 +1,7 @@
 plugins {
     // Support convention plugins written in Kotlin. Convention plugins are build scripts in 'src/main' that automatically become available as plugins in the main build.
     `kotlin-dsl`
-    id("org.sonarqube") version "4.4.1.3373"
+    id("org.sonarqube") version "5.0.0.4638"
 }
 
 dependencies {
