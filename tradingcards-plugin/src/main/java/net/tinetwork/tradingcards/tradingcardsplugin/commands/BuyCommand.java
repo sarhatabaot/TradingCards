@@ -73,7 +73,7 @@ public class BuyCommand extends BaseCommand {
                 }
 
                 if (!pack.getTradeCards().isEmpty()) {
-                    for (int i = 0; i <= amount; i++) {
+                    for (int i = 0; i <= amountToBuy; i++) {
                         tradeCards(pack, player);
                     }
                 }
@@ -81,7 +81,7 @@ public class BuyCommand extends BaseCommand {
                 player.sendMessage(plugin.getMessagesConfig().boughtCard().replaceAll(PlaceholderUtil.AMOUNT.asRegex(), String.valueOf(totalPrice)));
                 
                 final ItemStack packItem = plugin.getPackManager().getPackItem(packId);
-                packItem.setAmount(amount);
+                packItem.setAmount(amountToBuy);
                 CardUtil.dropItem(player, packItem);
                 return;
             }
