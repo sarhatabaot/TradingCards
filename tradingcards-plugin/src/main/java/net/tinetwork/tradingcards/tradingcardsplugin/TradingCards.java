@@ -145,10 +145,9 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     public void onEnable() {
         Util.init(getLogger());
 
-        initPermissions();
-        
         initConfigs();
 
+        initPermissions();
         initStorage();
         initBlacklist();
 
