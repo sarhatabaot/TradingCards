@@ -4,7 +4,6 @@ package net.tinetwork.tradingcards.api.model;
 import net.tinetwork.tradingcards.api.config.ColorSeries;
 import net.tinetwork.tradingcards.api.model.schedule.Mode;
 import net.tinetwork.tradingcards.api.model.schedule.Schedule;
-import org.apache.commons.lang.NotImplementedException;
 
 public class Series {
     private final String id;
@@ -30,7 +29,7 @@ public class Series {
 
         //not implemented yet
         if(mode == Mode.SCHEDULED) {
-            throw new NotImplementedException();
+            throw new UnsupportedOperationException("Not implemented yet.");
             //return schedule.isActive(); todo
         }
 
