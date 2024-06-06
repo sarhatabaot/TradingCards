@@ -55,7 +55,8 @@ dependencies {
     jooqGenerator(project(":tradingcards-extras"))
     jooqGenerator(libs.jooq.mysql.connector)
     jooqGenerator(libs.jooq.meta.extensions)
-    
+
+    testCompileOnly(libs.spigot.api)
     testImplementation(libs.mockito)
     testImplementation(libs.mockbukkit)
     testImplementation(platform(libs.junit.platform))
