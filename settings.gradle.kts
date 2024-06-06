@@ -21,7 +21,7 @@ dependencyResolutionManagement {
             library("jooq-mysql-connector", "com.mysql:mysql-connector-j:8.3.0")
             library("annotations", "org.jetbrains:annotations:24.1.0")
             library("spigot-api", "org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT")
-            library("nbt-api", "de.tr7zw:item-nbt-api:2.12.3")
+            library("nbt-api", "de.tr7zw:item-nbt-api:2.12.4")
             library("kraken-core", "com.github.sarhatabaot:KrakenCore:1.7.3")
             library("vault-api", "com.github.MilkBowl:VaultAPI:1.7.1")
             library("treasury-api", "me.lokka30:treasury-api:1.2.1")
