@@ -3,7 +3,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.utils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
-import org.apache.commons.lang.WordUtils;
+import org.apache.commons.lang3.text.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.Contract;

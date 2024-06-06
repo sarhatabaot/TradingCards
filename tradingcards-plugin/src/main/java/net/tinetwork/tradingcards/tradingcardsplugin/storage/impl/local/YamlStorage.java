@@ -22,7 +22,6 @@ import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalD
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.StorageType;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
-import org.apache.commons.lang.NotImplementedException;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
@@ -242,7 +241,7 @@ public class YamlStorage implements Storage<TradingCard> {
                 if (series.isActive()) {
                     activeSeries.add(series);
                 }
-            } catch (NotImplementedException e) {
+            } catch (UnsupportedOperationException e) {
                 LoggerUtil.logWarningException(e);
                 plugin.getLogger().info("The \"scheduled\" feature has not been implemented yet.");
                 plugin.getLogger().info("Set series %s mode to active or disabled to remove this message.".formatted(series.getId()));

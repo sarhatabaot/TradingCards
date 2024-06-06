@@ -50,6 +50,7 @@ dependencies {
     library(libs.rng.sampling)
     library(libs.rng.simple)
     library(libs.caffeine)
+    library(libs.commons.lang)
     
     jooqGenerator(project(":tradingcards-extras"))
     jooqGenerator(libs.jooq.mysql.connector)
