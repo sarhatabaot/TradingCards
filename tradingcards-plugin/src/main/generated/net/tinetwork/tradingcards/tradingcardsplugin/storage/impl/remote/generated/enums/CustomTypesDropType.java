@@ -52,7 +52,9 @@ public enum CustomTypesDropType implements EnumType {
     }
 
     /**
-     * Lookup a value of this EnumType by its literal
+     * Lookup a value of this EnumType by its literal. Returns
+     * <code>null</code>, if no such value could be found, see {@link
+     * EnumType#lookupLiteral(Class, String)}.
      */
     public static CustomTypesDropType lookupLiteral(String literal) {
         return EnumType.lookupLiteral(CustomTypesDropType.class, literal);

@@ -4,22 +4,22 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables;
 
 
-import java.util.function.Function;
+import java.util.Collection;
 
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.DefaultSchema;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.Keys;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.enums.CustomTypesDropType;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.records.CustomTypesRecord;
 
+import org.jooq.Condition;
 import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Function3;
 import org.jooq.Name;
-import org.jooq.Record;
-import org.jooq.Records;
-import org.jooq.Row3;
+import org.jooq.PlainSQL;
+import org.jooq.QueryPart;
+import org.jooq.SQL;
 import org.jooq.Schema;
-import org.jooq.SelectField;
+import org.jooq.Select;
+import org.jooq.Stringly;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
@@ -63,14 +63,14 @@ public class CustomTypes extends TableImpl<CustomTypesRecord> {
     /**
      * The column <code>{prefix}custom_types.drop_type</code>.
      */
-    public final TableField<CustomTypesRecord, CustomTypesDropType> DROP_TYPE = createField(DSL.name("drop_type"), SQLDataType.VARCHAR.asEnumDataType(net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.enums.CustomTypesDropType.class), this, "");
+    public final TableField<CustomTypesRecord, CustomTypesDropType> DROP_TYPE = createField(DSL.name("drop_type"), SQLDataType.VARCHAR.asEnumDataType(CustomTypesDropType.class), this, "");
 
     private CustomTypes(Name alias, Table<CustomTypesRecord> aliased) {
-        this(alias, aliased, null);
+        this(alias, aliased, (Field<?>[]) null, null);
     }
 
-    private CustomTypes(Name alias, Table<CustomTypesRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    private CustomTypes(Name alias, Table<CustomTypesRecord> aliased, Field<?>[] parameters, Condition where) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table(), where);
     }
 
     /**
@@ -92,10 +92,6 @@ public class CustomTypes extends TableImpl<CustomTypesRecord> {
      */
     public CustomTypes() {
         this(DSL.name("{prefix}custom_types"), null);
-    }
-
-    public <O extends Record> CustomTypes(Table<O> child, ForeignKey<O, CustomTypesRecord> key) {
-        super(child, key, CUSTOM_TYPES);
     }
 
     @Override
@@ -147,27 +143,87 @@ public class CustomTypes extends TableImpl<CustomTypesRecord> {
         return new CustomTypes(name.getQualifiedName(), null);
     }
 
-    // -------------------------------------------------------------------------
-    // Row3 type methods
-    // -------------------------------------------------------------------------
-
+    /**
+     * Create an inline derived table from this table
+     */
     @Override
-    public Row3<String, String, CustomTypesDropType> fieldsRow() {
-        return (Row3) super.fieldsRow();
+    public CustomTypes where(Condition condition) {
+        return new CustomTypes(getQualifiedName(), aliased() ? this : null, null, condition);
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Function3<? super String, ? super String, ? super CustomTypesDropType, ? extends U> from) {
-        return convertFrom(Records.mapping(from));
+    @Override
+    public CustomTypes where(Collection<? extends Condition> conditions) {
+        return where(DSL.and(conditions));
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Class,
-     * Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function3<? super String, ? super String, ? super CustomTypesDropType, ? extends U> from) {
-        return convertFrom(toType, Records.mapping(from));
+    @Override
+    public CustomTypes where(Condition... conditions) {
+        return where(DSL.and(conditions));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public CustomTypes where(Field<Boolean> condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public CustomTypes where(SQL condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public CustomTypes where(@Stringly.SQL String condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public CustomTypes where(@Stringly.SQL String condition, Object... binds) {
+        return where(DSL.condition(condition, binds));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public CustomTypes where(@Stringly.SQL String condition, QueryPart... parts) {
+        return where(DSL.condition(condition, parts));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public CustomTypes whereExists(Select<?> select) {
+        return where(DSL.exists(select));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public CustomTypes whereNotExists(Select<?> select) {
+        return where(DSL.notExists(select));
     }
 }
