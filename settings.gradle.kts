@@ -38,7 +38,7 @@ dependencyResolutionManagement {
 
             library("hikaricp", "com.zaxxer:HikariCP:5.1.0")
             library("zip4j", "net.lingala.zip4j:zip4j:2.11.5")
-            library("flyway", "org.flywaydb:flyway-mysql:10.14.0")
+            library("flyway", "org.flywaydb:flyway-mysql:10.15.0")
             
             version("rng", "1.5")
             library("rng-api", "org.apache.commons", "commons-rng-client-api").versionRef("rng")
