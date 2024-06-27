@@ -24,7 +24,7 @@ dependencyResolutionManagement {
             library("nbt-api", "de.tr7zw:item-nbt-api:2.13.0")
             library("kraken-core", "com.github.sarhatabaot:KrakenCore:1.7.3")
             library("vault-api", "com.github.MilkBowl:VaultAPI:1.7.1")
-            library("treasury-api", "me.lokka30:treasury-api:1.2.1")
+            library("treasury-api", "me.lokka30:treasury-api:2.0.1")
             
             version("configurate", "4.1.2")
             library("configurate-core", "org.spongepowered", "configurate-core").versionRef("configurate")
