@@ -40,7 +40,7 @@ dependencyResolutionManagement {
             library("zip4j", "net.lingala.zip4j:zip4j:2.11.5")
             library("flyway", "org.flywaydb:flyway-mysql:10.16.0")
             
-            version("rng", "1.5")
+            version("rng", "1.6")
             library("rng-api", "org.apache.commons", "commons-rng-client-api").versionRef("rng")
             library("rng-core", "org.apache.commons","commons-rng-core").versionRef("rng")
             library("rng-simple", "org.apache.commons", "commons-rng-simple").versionRef("rng")
