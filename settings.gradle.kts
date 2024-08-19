@@ -32,7 +32,7 @@ dependencyResolutionManagement {
             library("adventure-api", "net.kyori:adventure-api:4.17.0")
             library("adventure-bukkit","net.kyori:adventure-platform-bukkit:4.3.4")
             
-            library("bstats", "org.bstats:bstats-bukkit:3.0.2")
+            library("bstats", "org.bstats:bstats-bukkit:3.0.3")
             library("acf", "co.aikar:acf-paper:0.5.1-SNAPSHOT")
             library("placeholder-api","me.clip:placeholderapi:2.11.6")
 
