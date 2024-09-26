@@ -13,7 +13,7 @@ dependencyResolutionManagement {
             plugin("messages", "com.github.sarhatabaot.messages").version("1.0.6")
 
 
-            version("jooq", "3.19.11")
+            version("jooq", "3.19.13")
             library("jooq", "org.jooq","jooq").versionRef("jooq")
             library("jooq-codegen", "org.jooq", "jooq-codegen").versionRef("jooq")
             library("jooq-meta", "org.jooq", "jooq-meta").versionRef("jooq")
