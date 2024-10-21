@@ -46,7 +46,7 @@ dependencyResolutionManagement {
             library("rng-simple", "org.apache.commons", "commons-rng-simple").versionRef("rng")
             library("rng-sampling", "org.apache.commons", "commons-rng-sampling").versionRef("rng")
 
-            library("commons-lang", "org.apache.commons:commons-lang3:3.16.0")
+            library("commons-lang", "org.apache.commons:commons-lang3:3.17.0")
             
             library("mockito", "org.mockito:mockito-core:5.14.2")
             library("mockbukkit", "com.github.seeseemelk:MockBukkit-1.19:3.3.0")
