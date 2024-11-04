@@ -1,4 +1,4 @@
-towny-enabled: false
+towny-enabled: true
 # Creates the default types & series if the do not already exist.
 create-defaults: true
 

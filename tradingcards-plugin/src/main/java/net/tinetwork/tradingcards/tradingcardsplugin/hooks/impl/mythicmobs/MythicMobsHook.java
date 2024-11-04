@@ -17,7 +17,7 @@ public class MythicMobsHook extends PluginHook {
 
     @Override
     public String getPluginName() {
-        return "";
+        return "MythicMobs";
     }
 
     @Override

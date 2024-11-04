@@ -57,6 +57,7 @@ dependencyResolutionManagement {
             library("caffeine","com.github.ben-manes.caffeine", "caffeine").versionRef("caffeine")
 
             library("towny", "com.palmergames.bukkit.towny:towny:0.100.4.9")
+            library("mobarena", "com.github.garbagemule:MobArena:0.103")
         }
     }
 }

@@ -21,6 +21,7 @@ repositories {
     maven("https://mvn.lumine.io/repository/maven-snapshots/")
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
     maven("https://repo.glaremasters.me/repository/towny/")
+    maven("https://jitpack.io")
 }
 
 
@@ -30,6 +31,7 @@ dependencies {
     compileOnly(libs.treasury.api)
     compileOnly(libs.placeholder.api)
     compileOnly(libs.towny)
+    compileOnly(libs.mobarena)
 
 
     implementation(libs.kraken.core)

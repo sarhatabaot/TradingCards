@@ -1,4 +1,4 @@
-mythicmobs-enabled: false
+mythicmobs-enabled: true
 # Chance chance/rarity based on the level of the mob?
 per-level-chances: true
 # With this you're able to set the individual rarity chances of every mythic mob level.
