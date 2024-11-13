@@ -18,20 +18,23 @@ version = "5.7.20"
 
 repositories {
     maven("https://repo.aikar.co/content/groups/aikar/")
+    maven("https://mvn.lumine.io/repository/maven-public/")
     maven("https://mvn.lumine.io/repository/maven-snapshots/")
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
     maven("https://repo.glaremasters.me/repository/towny/")
     maven("https://jitpack.io")
 }
 
-
 dependencies {
     compileOnly(libs.spigot.api)
+
+    //soft-depends
     compileOnly(libs.vault.api)
     compileOnly(libs.treasury.api)
     compileOnly(libs.placeholder.api)
     compileOnly(libs.towny)
     compileOnly(libs.mobarena)
+    compileOnly(libs.mythicmobs)
 
 
     implementation(libs.kraken.core)
