@@ -55,7 +55,10 @@ public class WorldDenylist extends YamlConfigurateFile<TradingCards> implements 
     }
 
     @Override
-    public boolean isAllowed(@NotNull World w) {
+    public boolean isAllowed(World w) {
+        if (w == null)
+            return false;
+
         boolean isOnList = listedWorlds.contains(w.getName());
 
         //If you're not on the blacklist, you're allowed
