@@ -74,14 +74,14 @@ public abstract class TradingCardsPlugin<T extends Card<T>> extends JavaPlugin {
      *
      * @return Player blacklist
      */
-    public abstract Denylist<Player> getPlayerBlacklist();
+    public abstract Denylist<Player> getPlayerDenylist();
 
 
     /**
      *
      * @return The world blacklist
      */
-    public abstract Denylist<World> getWorldBlacklist();
+    public abstract Denylist<World> getWorldDenylist();
 
 
     /**
