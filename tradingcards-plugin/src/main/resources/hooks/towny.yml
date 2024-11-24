@@ -1,0 +1,20 @@
+towny-enabled: true
+# Creates the default types & series if the do not already exist.
+create-defaults: true
+
+town-duplicate-prefix: ''
+town-duplicate-suffix: '_v%num%'
+town-rarity: Common
+town-series: 'Towny'
+town-type: 'Town'
+nation-duplicate-prefix: ''
+nation-duplicate-suffix: '_v%num%'
+nation-rarity: Uncommon
+nation-series: 'Towny'
+nation-type: 'Nation'
+has-shiny: true
+
+# american or all
+calendar-mode: american
+
+config-version: 1

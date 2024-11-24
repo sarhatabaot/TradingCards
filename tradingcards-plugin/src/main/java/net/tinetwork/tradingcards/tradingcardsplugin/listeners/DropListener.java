@@ -1,13 +1,14 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.listeners;
 
 
-import de.tr7zw.changeme.nbtapi.NBTEntity;
+import de.tr7zw.changeme.nbtapi.NBT;
 import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.utils.NbtUtils;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
+import net.tinetwork.tradingcards.tradingcardsplugin.hooks.impl.mythicmobs.MythicMobsUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.impl.TradingRarityManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.AllCardManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.CompositeCardKey;
@@ -34,8 +35,8 @@ public class DropListener extends SimpleListener {
 
     public DropListener(final TradingCards plugin) {
         super(plugin);
-        this.playerBlacklist = plugin.getPlayerBlacklist();
-        this.worldBlacklist = plugin.getWorldBlacklist();
+        this.playerBlacklist = plugin.getPlayerDenylist();
+        this.worldBlacklist = plugin.getWorldDenylist();
         this.cardManager = plugin.getCardManager();
     }
 
@@ -76,9 +77,9 @@ public class DropListener extends SimpleListener {
         if (killer == null) return;
         if (!this.playerBlacklist.isAllowed(killer)) return;
         if (!this.worldBlacklist.isAllowed(world)) return;
+        if (MythicMobsUtil.isMythicMob(killedEntity)) return;
 
-        NBTEntity nbtEntity = new NBTEntity(killedEntity);
-        if (nbtEntity.getPersistentDataContainer().hasTag(NbtUtils.TC_COMPOUND) && nbtEntity.getPersistentDataContainer().getCompound(NbtUtils.TC_COMPOUND).hasTag(NbtUtils.TC_SPAWNER_MOB)) {
+        if (NBT.get(killedEntity,nbt -> nbt.hasTag(NbtUtils.TC_COMPOUND) && nbt.getCompound(NbtUtils.TC_COMPOUND).hasTag(NbtUtils.TC_SPAWNER_MOB))) {
             debug("Entity %s is marked as a spawner entity, not dropping card.".formatted(killedEntity.getType()));
             return;
         }

@@ -2,7 +2,7 @@ plugins {
     id("net.tinetwork.tradingcards.java-conventions")
 }
 
-version = "5.7.13"
+version = "5.7.20"
 
 repositories {
     maven(
