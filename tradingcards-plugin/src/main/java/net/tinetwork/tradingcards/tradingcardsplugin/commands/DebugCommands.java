@@ -10,7 +10,6 @@ import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.model.ExcludeFileFilter;
 import net.lingala.zip4j.model.ZipParameters;
 import net.lingala.zip4j.progress.ProgressMonitor;
-import net.tinetwork.tradingcards.api.addons.TradingCardsAddon;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.CompositeCardKey;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalMessages;
@@ -116,12 +115,7 @@ public class DebugCommands extends BaseCommand {
                 }
                 builder.append(depend).append(" ");
             }
-            builder.append(ChatColor.GOLD).append(ChatColor.BOLD).append(InternalMessages.DebugCommand.ADDONS);
-            for (Plugin bukkitPlugin : Bukkit.getPluginManager().getPlugins()) {
-                if (plugin instanceof TradingCardsAddon)
-                    builder.append(ChatColor.GREEN).append(bukkitPlugin.getName()).append(" ");
-            }
-
+            builder.append(ChatColor.GOLD).append(ChatColor.BOLD);
             sender.sendMessage(builder.toString());
         }
 
