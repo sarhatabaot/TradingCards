@@ -3,7 +3,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.hooks.impl.mythicmobs.chan
 
 import java.util.Map;
 
-public record LevelChances(int level, int shinyVersionChance, int dropChance, Map<String, Integer> rarityChances) {
+public record LevelChances(double level, int shinyVersionChance, int dropChance, Map<String, Integer> rarityChances) {
 
     public Integer getChance(final String rarityId) {
         return rarityChances.get(rarityId);

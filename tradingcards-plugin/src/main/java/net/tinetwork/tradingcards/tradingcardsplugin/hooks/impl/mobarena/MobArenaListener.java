@@ -49,10 +49,10 @@ public class MobArenaListener implements Listener {
     }
 
     private boolean canDropPlayer(Player player) {
-        return tradingCards.getPlayerBlacklist().isAllowed(player);
+        return tradingCards.getPlayerDenylist().isAllowed(player);
     }
 
     private boolean canDropWorld(World world) {
-        return tradingCards.getWorldBlacklist().isAllowed(world);
+        return tradingCards.getWorldDenylist().isAllowed(world);
     }
 }

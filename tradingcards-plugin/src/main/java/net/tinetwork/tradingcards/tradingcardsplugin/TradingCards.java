@@ -431,12 +431,12 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     }
 
     @Override
-    public PlayerDenylist getPlayerBlacklist() {
+    public PlayerDenylist getPlayerDenylist() {
         return playerBlacklist;
     }
 
     @Override
-    public WorldDenylist getWorldBlacklist() {
+    public WorldDenylist getWorldDenylist() {
         return worldBlacklist;
     }
 

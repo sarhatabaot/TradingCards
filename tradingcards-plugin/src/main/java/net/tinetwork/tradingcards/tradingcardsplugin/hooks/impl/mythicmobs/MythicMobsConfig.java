@@ -19,7 +19,7 @@ public class MythicMobsConfig extends YamlConfigurateFile<TradingCards> {
     private boolean enabled;
     private boolean perLevelChances;
 
-    private Map<Integer, LevelChances> levelChances;
+    private Map<Double, LevelChances> levelChances;
 
     public MythicMobsConfig(@NotNull TradingCards plugin) throws ConfigurateException {
         super(plugin, "hooks" + File.separator, "mythicmobs.yml", "hooks");
@@ -32,7 +32,7 @@ public class MythicMobsConfig extends YamlConfigurateFile<TradingCards> {
 
         levelChances = new HashMap<>();
         for (Map.Entry<Object, ? extends ConfigurationNode> nodeEntry : rootNode.node("levels").childrenMap().entrySet()) {
-            levelChances.put((Integer) nodeEntry.getKey(), nodeEntry.getValue().get(LevelChances.class));
+            levelChances.put((Double) nodeEntry.getKey(), nodeEntry.getValue().get(LevelChances.class));
         }
     }
 
@@ -46,11 +46,11 @@ public class MythicMobsConfig extends YamlConfigurateFile<TradingCards> {
         return null;
     }
 
-    public Map<Integer, LevelChances> levelChances() {
+    public Map<Double, LevelChances> levelChances() {
         return levelChances;
     }
 
-    public LevelChances getChances(final int level) {
+    public LevelChances getChances(final double level) {
         return levelChances.get(level);
     }
 
