@@ -18,10 +18,10 @@ dependencyResolutionManagement {
             library("jooq-codegen", "org.jooq", "jooq-codegen").versionRef("jooq")
             library("jooq-meta", "org.jooq", "jooq-meta").versionRef("jooq")
             library("jooq-meta-extensions","org.jooq","jooq-meta-extensions").versionRef("jooq")
-            library("jooq-mysql-connector", "com.mysql:mysql-connector-j:9.0.0")
+            library("jooq-mysql-connector", "com.mysql:mysql-connector-j:9.1.0")
             library("annotations", "org.jetbrains:annotations:24.1.0")
             library("spigot-api", "org.spigotmc:spigot-api:1.19.2-R0.1-SNAPSHOT")
-            library("nbt-api", "de.tr7zw:item-nbt-api:2.13.2")
+            library("nbt-api", "de.tr7zw:item-nbt-api:2.14.0")
             library("kraken-core", "com.github.sarhatabaot:KrakenCore:1.7.3")
             library("vault-api", "com.github.MilkBowl:VaultAPI:1.7.1")
             library("treasury-api", "me.lokka30:treasury-api:1.2.1")
@@ -38,7 +38,7 @@ dependencyResolutionManagement {
 
             library("hikaricp", "com.zaxxer:HikariCP:6.0.0")
             library("zip4j", "net.lingala.zip4j:zip4j:2.11.5")
-            library("flyway", "org.flywaydb:flyway-mysql:10.20.0")
+            library("flyway", "org.flywaydb:flyway-mysql:10.22.0")
             
             version("rng", "1.6")
             library("rng-api", "org.apache.commons", "commons-rng-client-api").versionRef("rng")
@@ -57,6 +57,7 @@ dependencyResolutionManagement {
             library("caffeine","com.github.ben-manes.caffeine", "caffeine").versionRef("caffeine")
 
             library("towny", "com.palmergames.bukkit.towny:towny:0.100.4.0")
+
             library("mobarena", "com.github.garbagemule:MobArena:0.103")
             library("mythicmobs", "io.lumine:Mythic-Dist:5.7.2")
         }
