@@ -14,7 +14,7 @@ plugins {
     jacoco
 }
 
-version = "5.7.20"
+version = "5.7.21"
 
 repositories {
     maven("https://repo.aikar.co/content/groups/aikar/")
