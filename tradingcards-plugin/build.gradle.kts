@@ -170,7 +170,7 @@ bukkit {
     main = "net.tinetwork.tradingcards.tradingcardsplugin.TradingCards"
     website = "https://github.com/sarhatabaot/TradingCards"
     authors = listOf("Xenoyia", "sarhatabaot")
-    apiVersion = "1.18"
+    apiVersion = "1.21"
     softDepend = listOf("Vault", "PlaceholderAPI", "Treasury", "TownyAdvanced", "Towny", "MythicMobs", "MobArena")
 }
 
