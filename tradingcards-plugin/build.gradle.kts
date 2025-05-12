@@ -17,6 +17,7 @@ plugins {
 version = "5.7.21"
 
 repositories {
+    maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
     maven("https://repo.aikar.co/content/groups/aikar/")
     maven("https://mvn.lumine.io/repository/maven-public/")
     maven("https://mvn.lumine.io/repository/maven-snapshots/")
