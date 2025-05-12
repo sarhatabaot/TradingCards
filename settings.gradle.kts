@@ -9,7 +9,7 @@ dependencyResolutionManagement {
         create("libs") {
             plugin("shadow", "com.github.johnrengelman.shadow").version("8.1.1")
             plugin("plugin-yml-bukkit", "net.minecrell.plugin-yml.bukkit").version("0.6.0")
-            plugin("jooq", "nu.studer.jooq").version("9.0")
+            plugin("jooq", "nu.studer.jooq").version("10.1")
             
             version("jooq", "3.19.16")
             library("jooq", "org.jooq","jooq").versionRef("jooq")
