@@ -11,7 +11,7 @@ dependencyResolutionManagement {
             plugin("plugin-yml-bukkit", "net.minecrell.plugin-yml.bukkit").version("0.6.0")
             plugin("jooq", "nu.studer.jooq").version("9.0")
             
-            version("jooq", "3.19.16")
+            version("jooq", "3.20.4")
             library("jooq", "org.jooq","jooq").versionRef("jooq")
             library("jooq-codegen", "org.jooq", "jooq-codegen").versionRef("jooq")
             library("jooq-meta", "org.jooq", "jooq-meta").versionRef("jooq")
