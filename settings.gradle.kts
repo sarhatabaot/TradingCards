@@ -27,7 +27,7 @@ dependencyResolutionManagement {
             version("configurate", "4.2.0")
             library("configurate-core", "org.spongepowered", "configurate-core").versionRef("configurate")
             library("configurate-yaml", "org.spongepowered", "configurate-yaml").versionRef("configurate")
-            library("adventure-api", "net.kyori:adventure-api:4.17.0")
+            library("adventure-api", "net.kyori:adventure-api:4.21.0")
             library("adventure-bukkit","net.kyori:adventure-platform-bukkit:4.3.4")
             
             library("bstats", "org.bstats:bstats-bukkit:3.1.0")
