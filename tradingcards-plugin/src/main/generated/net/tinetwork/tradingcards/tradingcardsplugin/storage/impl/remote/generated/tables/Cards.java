@@ -73,7 +73,7 @@ public class Cards extends TableImpl<CardsRecord> {
     /**
      * The column <code>{prefix}cards.has_shiny</code>.
      */
-    public final TableField<CardsRecord, Boolean> HAS_SHINY = createField(DSL.name("has_shiny"), SQLDataType.BOOLEAN, this, "");
+    public final TableField<CardsRecord, Boolean> HAS_SHINY = createField(DSL.name("has_shiny"), SQLDataType.BOOLEAN.defaultValue(DSL.field(DSL.raw("0"), SQLDataType.BOOLEAN)), this, "");
 
     /**
      * The column <code>{prefix}cards.series_id</code>.
@@ -88,17 +88,17 @@ public class Cards extends TableImpl<CardsRecord> {
     /**
      * The column <code>{prefix}cards.custom_model_data</code>.
      */
-    public final TableField<CardsRecord, Integer> CUSTOM_MODEL_DATA = createField(DSL.name("custom_model_data"), SQLDataType.INTEGER, this, "");
+    public final TableField<CardsRecord, Integer> CUSTOM_MODEL_DATA = createField(DSL.name("custom_model_data"), SQLDataType.INTEGER.defaultValue(DSL.field(DSL.raw("100000"), SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>{prefix}cards.buy_price</code>.
      */
-    public final TableField<CardsRecord, Double> BUY_PRICE = createField(DSL.name("buy_price"), SQLDataType.DOUBLE, this, "");
+    public final TableField<CardsRecord, Double> BUY_PRICE = createField(DSL.name("buy_price"), SQLDataType.DOUBLE.defaultValue(DSL.field(DSL.raw("0.0"), SQLDataType.DOUBLE)), this, "");
 
     /**
      * The column <code>{prefix}cards.sell_price</code>.
      */
-    public final TableField<CardsRecord, Double> SELL_PRICE = createField(DSL.name("sell_price"), SQLDataType.DOUBLE, this, "");
+    public final TableField<CardsRecord, Double> SELL_PRICE = createField(DSL.name("sell_price"), SQLDataType.DOUBLE.defaultValue(DSL.field(DSL.raw("0.0"), SQLDataType.DOUBLE)), this, "");
 
     /**
      * The column <code>{prefix}cards.type_id</code>.

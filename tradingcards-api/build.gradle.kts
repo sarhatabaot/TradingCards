@@ -5,15 +5,10 @@ plugins {
 version = "5.7.20"
 
 repositories {
-    maven(
-        url = "https://papermc.io/repo/repository/maven-public/"
-    )
-    maven(
-        url = "https://repo.codemc.org/repository/maven-public/"
-    )
-    maven(
-        url = "https://jitpack.io"
-    )
+    maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
+    maven("https://papermc.io/repo/repository/maven-public/")
+    maven("https://repo.codemc.org/repository/maven-public/")
+    maven("https://jitpack.io")
 }
 
 dependencies {
