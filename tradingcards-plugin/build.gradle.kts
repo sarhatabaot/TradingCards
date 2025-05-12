@@ -9,7 +9,6 @@ plugins {
     alias(libs.plugins.plugin.yml.bukkit)
     alias(libs.plugins.shadow)
     alias(libs.plugins.jooq)
-    alias(libs.plugins.messages)
     
     jacoco
 }
@@ -76,30 +75,6 @@ val profile: String by project
 lateinit var time: Instant
 
 tasks {
-    generateMessages {
-        messages {
-            register("internal") {
-                fileType = com.github.sarhatabaot.messages.model.FileType.JSON
-                isOverwriteClasses = true
-                sourceFolder = "internal-messages"
-                targetPackage = "net.tinetwork.tradingcards.tradingcardsplugin.messages.internal"
-                privateConstructor = "InternalExceptions.UTIL_CLASS"
-                basePath = "src/main/java/"
-                baseDir = "$projectDir"
-            }
-            
-            register("settings") {
-                fileType = com.github.sarhatabaot.messages.model.FileType.YAML
-                isOverwriteClasses = true
-                sourceFolder = "${projectDir}/src/main/resources/settings"
-                targetPackage = "net.tinetwork.tradingcards.tradingcardsplugin.messages.settings"
-                privateConstructor = "InternalExceptions.UTIL_CLASS"
-                basePath = "src/main/java/"
-                baseDir = "$projectDir"
-            }
-        }
-    }
-    
     compileJava {
         options.compilerArgs.add("-parameters")
         options.isFork = true
