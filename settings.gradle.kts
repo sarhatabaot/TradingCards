@@ -18,7 +18,7 @@ dependencyResolutionManagement {
             library("jooq-codegen", "org.jooq", "jooq-codegen").versionRef("jooq")
             library("jooq-meta", "org.jooq", "jooq-meta").versionRef("jooq")
             library("jooq-meta-extensions","org.jooq","jooq-meta-extensions").versionRef("jooq")
-            library("jooq-mysql-connector", "com.mysql:mysql-connector-j:9.1.0")
+            library("jooq-mysql-connector", "com.mysql:mysql-connector-j:9.3.0")
             library("annotations", "org.jetbrains:annotations:26.0.2")
             library("spigot-api", "org.spigotmc:spigot-api:1.19.2-R0.1-SNAPSHOT")
             library("nbt-api", "de.tr7zw:item-nbt-api:2.14.1")
