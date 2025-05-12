@@ -37,7 +37,7 @@ public class TradingCard extends Card<TradingCard> {
 
         cardMeta.setLore(CardUtil.formatLore(getInfo(),getAbout(),getRarity().getDisplayName(),shiny,getType().getDisplayName(),getSeries()));
         if (shiny) {
-            cardMeta.addEnchant(Enchantment.ARROW_INFINITE, 1, false);
+            cardMeta.addEnchant(Enchantment.INFINITY, 1, false);
         }
         cardMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         cardItemStack.setItemMeta(cardMeta);

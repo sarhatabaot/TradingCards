@@ -183,7 +183,7 @@ public class TradingDeckManager implements DeckManager {
         final ItemStack deck = getNbtItem(player, deckNumber);
 
         if(plugin.getGeneralConfig().deckCustomModelData() == 0) {
-            deck.addUnsafeEnchantment(Enchantment.DURABILITY, 10);
+            deck.addUnsafeEnchantment(Enchantment.UNBREAKING, 10);
         }
 
         return deck;
