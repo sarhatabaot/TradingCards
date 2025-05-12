@@ -13,7 +13,7 @@ plugins {
     jacoco
 }
 
-version = "5.7.21"
+version = "5.7.22"
 
 repositories {
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
