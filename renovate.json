@@ -1,11 +1,15 @@
 {
   "extends": [
-    "config:base"
+    "config:recommended"
   ],
-  "labels": ["dependencies"],
+  "labels": [
+    "dependencies"
+  ],
   "packageRules": [
     {
-      "matchPackageNames": ["com.palmergames.bukkit.towny"],
+      "matchPackageNames": [
+        "com.palmergames.bukkit.towny"
+      ],
       "allowedVersions": "<=0.100.4.0"
     }
   ]
