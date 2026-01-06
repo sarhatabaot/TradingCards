@@ -7,7 +7,7 @@ include(":tradingcards-plugin")
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
-            plugin("shadow", "com.gradleup.shadow").version("9.0.0-beta13")
+            plugin("shadow", "com.gradleup.shadow").version("9.3.1")
             plugin("plugin-yml-bukkit", "de.eldoria.plugin-yml.bukkit").version("0.7.1")
             plugin("jooq", "nu.studer.jooq").version("10.1")
             
