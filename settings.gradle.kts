@@ -54,7 +54,7 @@ dependencyResolutionManagement {
             version("caffeine", "3.2.0")
             library("caffeine","com.github.ben-manes.caffeine", "caffeine").versionRef("caffeine")
 
-            library("towny", "com.palmergames.bukkit.towny:towny:0.100.4.0")
+            library("towny", "com.palmergames.bukkit.towny:towny:0.102.0.6")
 
             library("mobarena", "com.github.garbagemule:MobArena:0.107")
             library("mythicmobs", "io.lumine:Mythic-Dist:5.11.1")
