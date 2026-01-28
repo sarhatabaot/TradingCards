@@ -32,7 +32,7 @@ dependencyResolutionManagement {
             
             library("bstats", "org.bstats:bstats-bukkit:3.1.0")
             library("acf", "co.aikar:acf-paper:0.5.1-SNAPSHOT")
-            library("placeholder-api","me.clip:placeholderapi:2.11.6")
+            library("placeholder-api","me.clip:placeholderapi:2.11.7")
 
             library("hikaricp", "com.zaxxer:HikariCP:6.3.0")
             library("zip4j", "net.lingala.zip4j:zip4j:2.11.5")
