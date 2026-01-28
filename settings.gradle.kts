@@ -48,7 +48,7 @@ dependencyResolutionManagement {
             
             library("mockito", "org.mockito:mockito-core:5.17.0")
             library("mockbukkit", "com.github.seeseemelk:MockBukkit-1.19:3.3.0")
-            library("junit-platform","org.junit:junit-bom:5.12.2")
+            library("junit-platform","org.junit:junit-bom:5.14.2")
             library("junit-jupiter", "org.junit.jupiter","junit-jupiter").withoutVersion()
 
             version("caffeine", "3.2.0")
