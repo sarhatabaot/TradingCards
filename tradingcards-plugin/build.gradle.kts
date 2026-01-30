@@ -193,6 +193,27 @@ jacoco {
     toolVersion = "0.8.14"
 }
 
+testing {
+    suites {
+        val test by getting(JvmTestSuite::class) {
+            useJUnitJupiter()
+
+            dependencies {
+                implementation(project(":tradingcards-plugin"))
+                implementation(libs.spigot.api)
+                implementation(libs.junit.jupiter)
+            }
+
+            targets {
+                all {
+                    testTask.configure {
+                        useJUnitPlatform()
+                    }
+                }
+            }
+        }
+    }
+}
 tasks.test {
     finalizedBy(tasks.jacocoTestReport) // report is always generated after tests run
 }
