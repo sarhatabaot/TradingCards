@@ -14,21 +14,24 @@ public class PrefixNamingStrategy extends DefaultGeneratorStrategy {
 
     @Override
     public String getJavaClassName(final Definition definition, final Mode mode) {
-        String name = replacePrefix(super.getJavaClassName(definition, mode));
-
-        return StringUtils.toUC(name);
+        String original = super.getJavaClassName(definition, mode);
+        String replaced = replacePrefix(original);
+        return StringUtils.toUC(replaced);
     }
 
     @Override
     public String getJavaIdentifier(final Definition definition) {
-        return replacePrefix(super.getJavaIdentifier(definition));
+        String original = super.getJavaIdentifier(definition);
+        return replacePrefix(original);
     }
 
 
     protected @NotNull String replacePrefix(final @NotNull String name) {
         return name
+                .replaceAll("\\{(TABLEPREFIX|tablePrefix|table_Prefix|TABLE_PREFIX|PREFIX|prefix)}", "")
                 .replaceAll("\\$\\{(TABLEPREFIX|tablePrefix|table_Prefix|TABLE_PREFIX|PREFIX|prefix)}", "")
                 .replaceAll("_7b(TABLEPREFIX|tablePrefix|table_Prefix|TABLE_PREFIX|PREFIX|prefix)_7d", "")
+                .replaceAll("\\{.*?}", "")
                 .replaceAll("\\$\\{.*?}", "")
                 .replaceAll("_7b.*?_7d", "");
     }

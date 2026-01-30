@@ -3,6 +3,7 @@ import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import org.jooq.meta.kotlin.*
 
 plugins {
     id("net.tinetwork.tradingcards.java-conventions")
@@ -89,30 +90,44 @@ tasks {
     
     jooq {
         version.set(libs.versions.jooq)
-        edition.set(nu.studer.gradle.jooq.JooqEdition.OSS)
         
         configurations {
             create("main") {
                 if(profile != "development") {
                     generateSchemaSourceOnCompilation.set(false)
                 }
-                jooqConfiguration.apply {
-                    jdbc = null
-                    generator.apply {
+                jooqConfiguration {
+//
+                    generator {
                         strategy.name = "net.tinetwork.tradingcards.PrefixNamingStrategy"
-                        database.apply {
+                        database {
                             name = "org.jooq.meta.extensions.ddl.DDLDatabase"
-                            properties.add(Property().withKey("scripts").withValue(schemaPath))
-                            properties.add(Property().withKey("dialect").withValue("MYSQL"))
-                            properties.add(Property().withKey("sort").withValue("flyway"))
-                            properties.add(Property().withKey("unqualifiedSchema").withValue("none"))
+                            properties {
+                                property {
+                                    key = "scripts"
+                                    value = schemaPath
+                                }
+                                property {
+                                    key = "dialect"
+                                    value = "MYSQL"
+                                }
+
+                                property {
+                                    key = "sort"
+                                    value = "flyway"
+                                }
+
+                                property {
+                                    key = "unqualifiedSchema"
+                                    value = "none"
+                                }
+                            }
                         }
-                        target.apply {
+                        target {
                             packageName = "net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated"
                             directory = "src/main/generated/"
                         }
                     }
-                    
                 }
             }
         }
