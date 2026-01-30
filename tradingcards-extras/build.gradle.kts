@@ -12,4 +12,26 @@ dependencies {
     implementation(libs.annotations)
 }
 
+testing {
+    suites {
+        val test by getting(JvmTestSuite::class) {
+            useJUnitJupiter()
+
+            dependencies {
+                compileOnly(libs.jooq)
+                compileOnly(libs.jooq.codegen)
+                implementation(libs.junit.jupiter)
+            }
+
+            targets {
+                all {
+                    testTask.configure {
+                        useJUnitPlatform()
+                    }
+                }
+            }
+        }
+    }
+}
+
 

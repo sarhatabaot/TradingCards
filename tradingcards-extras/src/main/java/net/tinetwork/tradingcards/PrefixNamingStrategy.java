@@ -26,7 +26,7 @@ public class PrefixNamingStrategy extends DefaultGeneratorStrategy {
     }
 
 
-    protected @NotNull String replacePrefix(final @NotNull String name) {
+    public @NotNull String replacePrefix(final @NotNull String name) {
         return name
                 .replaceAll("\\{(TABLEPREFIX|tablePrefix|table_Prefix|TABLE_PREFIX|PREFIX|prefix)}", "")
                 .replaceAll("\\$\\{(TABLEPREFIX|tablePrefix|table_Prefix|TABLE_PREFIX|PREFIX|prefix)}", "")
