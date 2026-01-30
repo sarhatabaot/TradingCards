@@ -18,8 +18,8 @@ testing {
             useJUnitJupiter()
 
             dependencies {
-                compileOnly(libs.jooq)
-                compileOnly(libs.jooq.codegen)
+                implementation(libs.jooq)
+                implementation(libs.jooq.codegen)
                 implementation(libs.junit.jupiter)
             }
 

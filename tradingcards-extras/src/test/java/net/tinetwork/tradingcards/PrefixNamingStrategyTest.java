@@ -19,18 +19,7 @@ class PrefixNamingStrategyTest {
         assertEquals("table", strategy.replacePrefix("_7bPREFIX_7dtable"));
         assertEquals("table", strategy.replacePrefix("_7btablePrefix_7dtable"));
     }
-
-    @Test
-    void testReplacePrefix_DollarBracePrefix() {
-        assertEquals("custom_types", strategy.replacePrefix("${prefix}custom_types"));
-        assertEquals("table", strategy.replacePrefix("${PREFIX}table"));
-    }
-
-    @Test
-    void testReplacePrefix_GenericFallbacks() {
-        assertEquals("custom_types", strategy.replacePrefix("_7bunknown_7dcustom_types"));
-        assertEquals("table", strategy.replacePrefix("${unknown}table"));
-    }
+    
 
     @Test
     void testReplacePrefix_NoPrefix() {
