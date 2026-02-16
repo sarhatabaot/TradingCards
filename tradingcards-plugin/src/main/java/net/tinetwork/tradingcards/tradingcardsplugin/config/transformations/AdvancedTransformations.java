@@ -20,7 +20,7 @@ public class AdvancedTransformations extends Transformation {
                 .versionKey("config-version")
                 .addVersion(0, initialTransformation())
                 .addVersion(1, updateDefaultRefreshAfterWrite())
-                .addVersion(2,addUpgradesSection())
+                .addVersion(2, addUpgradesSection())
                 .build();
     }
 

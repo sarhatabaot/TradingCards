@@ -10,6 +10,8 @@ import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import net.tinetwork.tradingcards.api.model.Upgrade;
+import net.tinetwork.tradingcards.api.model.deck.Deck;
+import net.tinetwork.tradingcards.api.model.deck.StorageEntry;
 import net.tinetwork.tradingcards.api.model.pack.Pack;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
@@ -17,6 +19,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalM
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.Permissions;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
+import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.CompositeCardKey;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.PlaceholderUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -25,7 +28,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author sarhatabaot
@@ -42,6 +47,16 @@ public class ListCommand extends BaseCommand {
     @CommandPermission(Permissions.User.List.LIST)
     @Description("Lists all cards by rarities")
     public class ListSubCommand extends BaseCommand {
+
+        private record OwnedCardLookup(Set<CompositeCardKey> ownedCards, Set<CompositeCardKey> ownedShinyCards) {
+            private boolean hasCard(final CompositeCardKey key) {
+                return ownedCards.contains(key);
+            }
+
+            private boolean hasShinyCard(final CompositeCardKey key) {
+                return ownedShinyCards.contains(key);
+            }
+        }
 
         @Default
         @Description("Lists all cards from all rarities")
@@ -69,11 +84,12 @@ public class ListCommand extends BaseCommand {
                 ChatUtil.sendPrefixedMessage(sender, InternalMessages.CardsCommand.PLAYER_OFFLINE);
                 return;
             }
+            final OwnedCardLookup lookup = buildOwnedCardLookup(target);
             if (seriesId == null) {
                 final String sectionFormat = String.format(plugin.getMessagesConfig().sectionFormatPlayer(), target.getName());
                 ChatUtil.sendMessage(sender, String.format(sectionFormat, target.getName()));
                 for (Series seriesKey : plugin.getSeriesManager().getAllSeries()) {
-                    listSeries(sender, target, seriesKey.getId());
+                    listSeries(sender, target, seriesKey.getId(), lookup);
                 }
                 return;
             }
@@ -83,26 +99,26 @@ public class ListCommand extends BaseCommand {
                 return;
             }
 
-            listSeries(sender, target, seriesId);
+            listSeries(sender, target, seriesId, lookup);
         }
 
-        private void listSeries(final CommandSender sender, final Player target, final String seriesId) {
+        private void listSeries(final CommandSender sender, final Player target, final String seriesId, final OwnedCardLookup lookup) {
             plugin.debug(ListSubCommand.class, seriesId);
             final Series seriesObject = plugin.getSeriesManager().getSeries(seriesId);
 
-            ChatUtil.sendMessage(sender, getSeriesListTitle(target, seriesId, seriesObject.getDisplayName()));
+            ChatUtil.sendMessage(sender, getSeriesListTitle(seriesId, seriesObject.getDisplayName(), lookup));
             //send actual message
-            final String seriesCardList = generateSeriesCardList(target, seriesId);
+            final String seriesCardList = generateSeriesCardList(seriesId, lookup);
             ChatUtil.sendMessage(sender, seriesCardList);
         }
 
 
 
-        private String getSeriesListTitle(final Player target, final String seriesId, final String seriesDisplayName) {
+        private String getSeriesListTitle(final String seriesId, final String seriesDisplayName, final OwnedCardLookup lookup) {
             final String sectionFormat = plugin.getMessagesConfig().sectionFormat();
             final String sectionFormatComplete = plugin.getMessagesConfig().sectionFormatComplete();
-            int cardCounter = countPlayerOwnedCardsInSeries(target, seriesId);
-            int shinyCardCounter = countPlayerOwnedShinyCardsInSeries(target, seriesId);
+            int cardCounter = countPlayerOwnedCardsInSeries(seriesId, lookup);
+            int shinyCardCounter = countPlayerOwnedShinyCardsInSeries(seriesId, lookup);
             int sizeOfRarityCardList;
             try {
                 sizeOfRarityCardList = plugin.getCardManager().getSeriesCardCache().getIfPresent(seriesId).size();
@@ -135,12 +151,13 @@ public class ListCommand extends BaseCommand {
                 ChatUtil.sendPrefixedMessage(sender, InternalMessages.CardsCommand.PLAYER_OFFLINE);
                 return;
             }
+            final OwnedCardLookup lookup = buildOwnedCardLookup(target);
 
             if (rarityId == null) {
                 final String sectionFormat = plugin.getMessagesConfig().sectionFormatPlayer().replaceAll(PlaceholderUtil.PLAYER.asRegex(), target.getName());
                 ChatUtil.sendMessage(sender, sectionFormat);
                 for (Rarity rarityKey : plugin.getRarityManager().getRarities()) {
-                    listRarity(sender, target, rarityKey.getId());
+                    listRarity(sender, target, rarityKey.getId(), lookup);
                 }
                 return;
             }
@@ -150,7 +167,7 @@ public class ListCommand extends BaseCommand {
                 return;
             }
 
-            listRarity(sender, target, rarityId);
+            listRarity(sender, target, rarityId, lookup);
         }
 
         private boolean canBuyPack(final String name) {
@@ -186,7 +203,7 @@ public class ListCommand extends BaseCommand {
             ChatUtil.sendMessage(sender, StringUtils.join(plugin.getUpgradeManager().getUpgrades().stream().map(Upgrade::id).toList(), ","));
         }
 
-        private @NotNull String generateSeriesCardList(final Player target, final String seriesId) {
+        private @NotNull String generateSeriesCardList(final String seriesId, final OwnedCardLookup lookup) {
             final StringBuilder stringBuilder = new StringBuilder();
             String prefix = "";
             final List<TradingCard> seriesCardListName = plugin.getStorage().getCardsInSeries(seriesId);
@@ -202,9 +219,10 @@ public class ListCommand extends BaseCommand {
 
                 stringBuilder.append(prefix);
                 final String cardDisplayName = card.getDisplayName().replace("_", " ");
-                if (plugin.getDeckManager().hasShinyCard(target, card.getCardId(), card.getRarity().getId(), seriesId)) {
+                final CompositeCardKey cardKey = new CompositeCardKey(card.getRarity().getId(), seriesId, card.getCardId());
+                if (lookup.hasShinyCard(cardKey)) {
                     stringBuilder.append(shinyColor);
-                } else if (plugin.getDeckManager().hasCard(target, card.getCardId(), card.getRarity().getId(), seriesId)) {
+                } else if (lookup.hasCard(cardKey)) {
                     stringBuilder.append(color);
                 } else {
                     stringBuilder.append("&7");
@@ -216,7 +234,7 @@ public class ListCommand extends BaseCommand {
             return stringBuilder.toString();
         }
 
-        private @NotNull String generateRarityCardList(final Player target, final String rarityId) {
+        private @NotNull String generateRarityCardList(final String rarityId, final OwnedCardLookup lookup) {
             final StringBuilder stringBuilder = new StringBuilder();
             String prefix = "";
             final List<TradingCard> rarityCardList = plugin.getCardManager().getRarityCardCache().getIfPresent(rarityId);
@@ -232,9 +250,10 @@ public class ListCommand extends BaseCommand {
 
                 stringBuilder.append(prefix);
                 final String cardDisplayName = card.getDisplayName().replace("_", " ");
-                if (plugin.getDeckManager().hasShinyCard(target, card.getCardId(), rarityId, card.getSeries().getId())) {
+                final CompositeCardKey cardKey = new CompositeCardKey(rarityId, card.getSeries().getId(), card.getCardId());
+                if (lookup.hasShinyCard(cardKey)) {
                     stringBuilder.append(shinyColor);
-                } else if (plugin.getDeckManager().hasCard(target, card.getCardId(), rarityId, card.getSeries().getId())) {
+                } else if (lookup.hasCard(cardKey)) {
                     stringBuilder.append(color);
                 } else {
                     stringBuilder.append("&7");
@@ -246,23 +265,23 @@ public class ListCommand extends BaseCommand {
             return stringBuilder.toString();
         }
 
-        private void listRarity(final CommandSender sender, final Player target, final String rarityId) {
+        private void listRarity(final CommandSender sender, final Player target, final String rarityId, final OwnedCardLookup lookup) {
             plugin.debug(ListSubCommand.class, rarityId);
             final Rarity rarityObject = plugin.getRarityManager().getRarity(rarityId);
 
             //send title
-            ChatUtil.sendMessage(sender, getRarityListTitle(target,rarityId,rarityObject.getDisplayName()));
+            ChatUtil.sendMessage(sender, getRarityListTitle(rarityId, rarityObject.getDisplayName(), lookup));
 
             //send actual message
-            final String rarityCardList = generateRarityCardList(target, rarityId);
+            final String rarityCardList = generateRarityCardList(rarityId, lookup);
             ChatUtil.sendMessage(sender, rarityCardList);
         }
 
-        private String getRarityListTitle(final Player target, final String rarityId, final String rarityDisplayName) {
+        private String getRarityListTitle(final String rarityId, final String rarityDisplayName, final OwnedCardLookup lookup) {
             final String sectionFormat = plugin.getMessagesConfig().sectionFormat();
             final String sectionFormatComplete = plugin.getMessagesConfig().sectionFormatComplete();
-            int cardCounter = countPlayerOwnedCardsInRarity(target, rarityId);
-            int shinyCardCounter = countPlayerOwnedShinyCardsInRarity(target, rarityId);
+            int cardCounter = countPlayerOwnedCardsInRarity(rarityId, lookup);
+            int shinyCardCounter = countPlayerOwnedShinyCardsInRarity(rarityId, lookup);
             int sizeOfRarityCardList;
 
             try {
@@ -284,57 +303,84 @@ public class ListCommand extends BaseCommand {
                     .formatted(rarityDisplayName);
         }
 
-        private int countPlayerOwnedCardsInRarity(final Player player, final String rarityId) {
+        private int countPlayerOwnedCardsInRarity(final String rarityId, final OwnedCardLookup lookup) {
             final List<TradingCard> rarityCardList = plugin.getCardManager().getRarityCardList(rarityId);
             int cardCounter = 0;
             if (rarityCardList == null || rarityCardList.isEmpty())
                 return cardCounter;
 
             for (TradingCard card : rarityCardList) {
-                if (plugin.getDeckManager().hasCard(player, card.getCardId(), rarityId, card.getSeries().getId())) {
+                final CompositeCardKey cardKey = new CompositeCardKey(rarityId, card.getSeries().getId(), card.getCardId());
+                if (lookup.hasCard(cardKey)) {
                     cardCounter++;
                 }
             }
             return cardCounter;
         }
 
-        private int countPlayerOwnedShinyCardsInRarity(final Player player, final String rarityId) {
-            final List<TradingCard> rarityCardList = plugin.getStorage().getCardsInRarity(rarityId);
+        private int countPlayerOwnedShinyCardsInRarity(final String rarityId, final OwnedCardLookup lookup) {
+            final List<TradingCard> rarityCardList = plugin.getCardManager().getRarityCardList(rarityId);
             int cardCounter = 0;
+            if (rarityCardList == null || rarityCardList.isEmpty())
+                return cardCounter;
+
             for (TradingCard card : rarityCardList) {
-                if (plugin.getDeckManager().hasShinyCard(player, card.getCardId(), rarityId, card.getSeries().getId())) {
+                final CompositeCardKey cardKey = new CompositeCardKey(rarityId, card.getSeries().getId(), card.getCardId());
+                if (lookup.hasShinyCard(cardKey)) {
                     cardCounter++;
                 }
             }
             return cardCounter;
         }
 
-        private int countPlayerOwnedCardsInSeries(final Player player, final String seriesId) {
+        private int countPlayerOwnedCardsInSeries(final String seriesId, final OwnedCardLookup lookup) {
             final List<TradingCard> seriesCardList = plugin.getStorage().getCardsInSeries(seriesId);
             int cardCounter = 0;
             if (seriesCardList == null || seriesCardList.isEmpty())
                 return cardCounter;
 
             for (TradingCard card : seriesCardList) {
-                if (plugin.getDeckManager().hasCard(player, card.getCardId(), card.getRarity().getId(), seriesId)) {
+                final CompositeCardKey cardKey = new CompositeCardKey(card.getRarity().getId(), seriesId, card.getCardId());
+                if (lookup.hasCard(cardKey)) {
                     cardCounter++;
                 }
             }
             return cardCounter;
         }
 
-        private int countPlayerOwnedShinyCardsInSeries(final Player player, final String seriesId) {
+        private int countPlayerOwnedShinyCardsInSeries(final String seriesId, final OwnedCardLookup lookup) {
             final List<TradingCard> seriesCardList = plugin.getStorage().getCardsInSeries(seriesId);
             int cardCounter = 0;
             if (seriesCardList == null || seriesCardList.isEmpty())
                 return cardCounter;
 
             for (TradingCard card : seriesCardList) {
-                if (plugin.getDeckManager().hasShinyCard(player, card.getCardId(), card.getRarity().getId(), seriesId)) {
+                final CompositeCardKey cardKey = new CompositeCardKey(card.getRarity().getId(), seriesId, card.getCardId());
+                if (lookup.hasShinyCard(cardKey)) {
                     cardCounter++;
                 }
             }
             return cardCounter;
+        }
+
+        private OwnedCardLookup buildOwnedCardLookup(final Player target) {
+            final Set<CompositeCardKey> ownedCards = new HashSet<>();
+            final Set<CompositeCardKey> ownedShinyCards = new HashSet<>();
+            for (Deck deck : plugin.getStorage().getPlayerDecks(target.getUniqueId())) {
+                final List<StorageEntry> deckEntries = deck.getDeckEntries();
+                if (deckEntries == null || deckEntries.isEmpty()) {
+                    continue;
+                }
+                for (StorageEntry entry : deckEntries) {
+                    final CompositeCardKey key = new CompositeCardKey(entry.getRarityId(), entry.getSeriesId(), entry.getCardId());
+                    if (entry.isShiny()) {
+                        ownedShinyCards.add(key);
+                    } else {
+                        ownedCards.add(key);
+                    }
+                }
+            }
+            return new OwnedCardLookup(ownedCards, ownedShinyCards);
         }
     }
 }
