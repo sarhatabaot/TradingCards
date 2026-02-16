@@ -57,7 +57,7 @@ dependencyResolutionManagement {
             library("towny", "com.palmergames.bukkit.towny:towny:0.102.0.7")
 
             library("mobarena", "com.github.garbagemule:MobArena:0.107")
-            library("mythicmobs", "io.lumine:Mythic-Dist:5.11.1")
+            library("mythicmobs", "io.lumine:Mythic-Dist:5.11.2")
         }
     }
 }
