@@ -35,7 +35,7 @@ dependencyResolutionManagement {
             library("placeholder-api","me.clip:placeholderapi:2.12.2")
 
             library("hikaricp", "com.zaxxer:HikariCP:7.0.2")
-            library("zip4j", "net.lingala.zip4j:zip4j:2.11.5")
+            library("zip4j", "net.lingala.zip4j:zip4j:2.11.6")
             library("flyway", "org.flywaydb:flyway-mysql:12.0.0")
             
             version("rng", "1.6")
