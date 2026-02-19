@@ -696,7 +696,7 @@ cards:
       series: winter
       type: neutral
     cake:
-      custom-model-data: 3200086
+      custom-model-data: 3200135
       display-name: "Cake"
       has-shiny-version: true
       info: none
@@ -823,7 +823,7 @@ cards:
       series: summer
       type: hostile
     christmas_chest_lg:
-      custom-model-data: 3200086
+      custom-model-data: 3200136
       display-name: "Large Christmas Chest"
       has-shiny-version: true
       info: none
