@@ -15,42 +15,42 @@ cards:
       series: default
       type: neutral
     parrot_red:
-      custom-model-data: 32000116
+      custom-model-data: 3200116
       display-name: "Red Parrot"
       has-shiny-version: true
       info: none
       series: summer
       type: passive
     parrot_blue:
-      custom-model-data: 32000117
+      custom-model-data: 3200117
       display-name: "Blue Parrot"
       has-shiny-version: true
       info: none
       series: summer
       type: passive
     pillager:
-      custom-model-data: 32000111
+      custom-model-data: 3200111
       display-name: "Pillager"
       has-shiny-version: true
       info: none
       series: summer
       type: hostile
     panda_normal:
-      custom-model-data: 32000104
+      custom-model-data: 3200104
       display-name: "Panda"
       has-shiny-version: true
       info: none
       series: spring
       type: neutral
     panda_weak:
-      custom-model-data: 32000106
+      custom-model-data: 3200106
       display-name: "Weak Panda"
       has-shiny-version: true
       info: none
       series: spring
       type: neutral
     fish_cod:
-      custom-model-data: 32000101
+      custom-model-data: 3200101
       display-name: "Cod"
       has-shiny-version: true
       info: none
@@ -450,56 +450,56 @@ cards:
       series: default
       type: passive
     parrot_green:
-      custom-model-data: 32000118
+      custom-model-data: 3200118
       display-name: "Green Parrot"
       has-shiny-version: true
       info: none
       series: summer
       type: passive
     parrot_cyan:
-      custom-model-data: 32000119
+      custom-model-data: 3200119
       display-name: "Cyan Parrot"
       has-shiny-version: true
       info: none
       series: summer
       type: passive
     vindicator:
-      custom-model-data: 32000112
+      custom-model-data: 3200112
       display-name: "Vindicator"
       has-shiny-version: true
       info: none
       series: summer
       type: hostile
     panda_lazy:
-      custom-model-data: 32000105
+      custom-model-data: 3200105
       display-name: "Lazy Panda"
       has-shiny-version: true
       info: none
       series: spring
       type: neutral
     panda_worried:
-      custom-model-data: 32000107
+      custom-model-data: 3200107
       display-name: "Worried Panda"
       has-shiny-version: true
       info: none
       series: spring
       type: neutral
     panda_Playful:
-      custom-model-data: 32000108
+      custom-model-data: 3200108
       display-name: "Playful Panda"
       has-shiny-version: true
       info: none
       series: spring
       type: neutral
     panda_agressive:
-      custom-model-data: 32000109
+      custom-model-data: 3200109
       display-name: "Aggressive Panda"
       has-shiny-version: true
       info: none
       series: spring
       type: neutral
     fish_salmon:
-      custom-model-data: 32000102
+      custom-model-data: 3200102
       display-name: "Salmon"
       has-shiny-version: true
       info: none
@@ -661,28 +661,28 @@ cards:
       series: default
       type: passive
     parrot_gray:
-      custom-model-data: 32000120
+      custom-model-data: 3200120
       display-name: "Gray Parrot"
       has-shiny-version: true
       info: none
       series: summer
       type: passive
     evoker:
-      custom-model-data: 32000113
+      custom-model-data: 3200113
       display-name: "Evoker"
       has-shiny-version: true
       info: none
       series: summer
       type: hostile
     panda_brown:
-      custom-model-data: 32000110
+      custom-model-data: 3200110
       display-name: "Brown Panda"
       has-shiny-version: true
       info: none
       series: spring
       type: neutral
     fish_tropical:
-      custom-model-data: 32000103
+      custom-model-data: 3200103
       display-name: "Tropical Fish"
       has-shiny-version: true
       info: none
@@ -816,7 +816,7 @@ cards:
       series: default
       type: passive
     ravager:
-      custom-model-data: 32000115
+      custom-model-data: 3200115
       display-name: "Ravager"
       has-shiny-version: true
       info: none
@@ -894,7 +894,7 @@ cards:
       series: default
       type: hostile
     illusioner:
-      custom-model-data: 32000114
+      custom-model-data: 3200114
       display-name: "Illusioner"
       has-shiny-version: true
       info: none
