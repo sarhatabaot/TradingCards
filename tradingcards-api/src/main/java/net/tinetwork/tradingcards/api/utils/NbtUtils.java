@@ -14,7 +14,6 @@ import java.util.Objects;
  properly anymore.!!
  */
 public class NbtUtils {
-    public static final String NBT_CARD_CUSTOM_MODEL = "CustomModelData";
     public static final String TC_COMPOUND = "trading-cards";
 
     // Deck Stuff
