@@ -166,15 +166,19 @@ public class TradingDeckManager implements DeckManager {
     @NotNull
     @Override
     public ItemStack getNbtItem(@NotNull final Player player, final int deckNumber) {
-        NBTItem nbtItem = new NBTItem(createDeckItem(player, deckNumber));
-        NBTCompound nbtCompound = nbtItem.getOrCreateCompound(NbtUtils.TC_COMPOUND);
-        nbtCompound.setInteger(NbtUtils.TC_DECK_NUMBER, deckNumber);
+        ItemStack deckItemStack = createDeckItem(player, deckNumber);
         int customModelData = plugin.getGeneralConfig().deckCustomModelData();
 
         plugin.debug(TradingDeckManager.class,"CustomModelData = "+customModelData);
-        if(customModelData != 0) {
-            nbtItem.setInteger(NbtUtils.NBT_CARD_CUSTOM_MODEL, customModelData);
+        if (customModelData != 0) {
+            ItemMeta meta = deckItemStack.getItemMeta();
+            meta.setCustomModelData(customModelData);
+            deckItemStack.setItemMeta(meta);
         }
+
+        NBTItem nbtItem = new NBTItem(deckItemStack);
+        NBTCompound nbtCompound = nbtItem.getOrCreateCompound(NbtUtils.TC_COMPOUND);
+        nbtCompound.setInteger(NbtUtils.TC_DECK_NUMBER, deckNumber);
 
         return nbtItem.getItem();
     }

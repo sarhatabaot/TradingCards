@@ -198,10 +198,6 @@ public abstract class Card<T> {
         nbtCompound.setBoolean(NbtUtils.TC_CARD_SHINY, shiny);
         nbtCompound.setString(NbtUtils.TC_CARD_SERIES, series.getId());
 
-        if (getCustomModelNbt() != 0) {
-            nbtItem.setInteger(NbtUtils.NBT_CARD_CUSTOM_MODEL, this.cardMeta.getCustomModelNbt());
-        }
-
         return nbtItem;
     }
 

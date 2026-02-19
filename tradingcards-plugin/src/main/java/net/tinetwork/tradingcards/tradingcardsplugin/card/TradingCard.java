@@ -40,6 +40,9 @@ public class TradingCard extends Card<TradingCard> {
             cardMeta.addEnchant(Enchantment.INFINITY, 1, false);
         }
         cardMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        if (getCustomModelNbt() != 0) {
+            cardMeta.setCustomModelData(getCustomModelNbt());
+        }
         cardItemStack.setItemMeta(cardMeta);
 
         return cardItemStack;
