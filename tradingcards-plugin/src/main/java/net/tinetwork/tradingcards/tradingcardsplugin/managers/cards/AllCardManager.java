@@ -156,7 +156,26 @@ public class AllCardManager extends TradingCardManager implements CardManager<Tr
 
     @Override
     public TradingCard getRandomActiveCardByRarity(final String rarityId) {
-        return activeCardManager.getRandomActiveCardByRarity(rarityId);
+        final List<TradingCard> rarityCards = activeCardManager.getRarityCardCache().get(rarityId);
+        if (rarityCards == null || rarityCards.isEmpty()) {
+            return NULL_CARD;
+        }
+
+        int cardIndex = plugin.getRandom().nextInt(rarityCards.size());
+        return rarityCards.get(cardIndex);
+    }
+
+    public TradingCard getRandomActiveCardByCardId(final String cardId) {
+        final List<TradingCard> matchingCards = activeCardManager.getActiveCards().stream()
+                .filter(card -> card.getCardId().equalsIgnoreCase(cardId))
+                .toList();
+
+        if (matchingCards.isEmpty()) {
+            return NULL_CARD;
+        }
+
+        int cardIndex = plugin.getRandom().nextInt(matchingCards.size());
+        return matchingCards.get(cardIndex);
     }
 
 

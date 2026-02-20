@@ -1,0 +1,27 @@
+config-version: 1
+
+# Per-entity drop pools.
+# Entity keys are Bukkit EntityType ids (zombie, skeleton, ender_dragon, etc).
+#
+# A matching pool overrides normal rarity selection from chances.yml.
+# If drops.dropchance is omitted, the default mob-group chance is used.
+#
+# Entry keys:
+# - card_<card-id>: drops a random active card with that card id.
+# - rarity_<rarity-id>: drops a random active card from that rarity.
+zombie:
+  # Optional, matches the mob custom name exactly.
+  # namecheck: "Jeffrey"
+
+  drops:
+    enabled: false
+    dropmin: 1
+    dropmax: 1
+    # Optional chance out of 100,000 that this pool will drop at all.
+    # dropchance: 100000
+
+    # 99% zombie, 1% random common card.
+    card_zombie:
+      dropchance: 9900
+    rarity_common:
+      dropchance: 100

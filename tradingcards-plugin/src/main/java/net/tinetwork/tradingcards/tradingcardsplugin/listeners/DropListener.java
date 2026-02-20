@@ -8,6 +8,10 @@ import net.tinetwork.tradingcards.api.utils.NbtUtils;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
+import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.DropPoolsConfig;
+import net.tinetwork.tradingcards.tradingcardsplugin.drop.DropPoolEntry;
+import net.tinetwork.tradingcards.tradingcardsplugin.drop.DropPoolEntryType;
+import net.tinetwork.tradingcards.tradingcardsplugin.drop.MobDropPool;
 import net.tinetwork.tradingcards.tradingcardsplugin.hooks.impl.mythicmobs.MythicMobsUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.impl.TradingRarityManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.AllCardManager;
@@ -32,12 +36,14 @@ public class DropListener extends SimpleListener {
     private final PlayerDenylist playerBlacklist;
     private final WorldDenylist worldBlacklist;
     private final AllCardManager cardManager;
+    private final DropPoolsConfig dropPoolsConfig;
 
     public DropListener(final TradingCards plugin) {
         super(plugin);
         this.playerBlacklist = plugin.getPlayerDenylist();
         this.worldBlacklist = plugin.getWorldDenylist();
         this.cardManager = plugin.getCardManager();
+        this.dropPoolsConfig = plugin.getDropPoolsConfig();
     }
 
 
@@ -77,7 +83,7 @@ public class DropListener extends SimpleListener {
         if (killer == null) return;
         if (!this.playerBlacklist.isAllowed(killer)) return;
         if (!this.worldBlacklist.isAllowed(world)) return;
-        if (MythicMobsUtil.isMythicMob(killedEntity)) return;
+        final boolean isMythicMob = MythicMobsUtil.isMythicMob(killedEntity);
 
         if (NBT.get(killedEntity,nbt -> nbt.hasTag(NbtUtils.TC_COMPOUND) && nbt.getCompound(NbtUtils.TC_COMPOUND).hasTag(NbtUtils.TC_SPAWNER_MOB))) {
             debug("Entity %s is marked as a spawner entity, not dropping card.".formatted(killedEntity.getType()));
@@ -89,6 +95,16 @@ public class DropListener extends SimpleListener {
 
         final DropType mobType = CardUtil.getMobType(killedEntity.getType());
         debug(InternalDebug.DropListener.MOB_TYPE.formatted(mobType));
+
+        final MobDropPool mobDropPool = this.dropPoolsConfig == null ? null : this.dropPoolsConfig.getMobDropPool(killedEntity);
+        if (mobDropPool != null) {
+            handlePoolDrop(entityDeathEvent, mobType, mobDropPool);
+            return;
+        }
+
+        if (isMythicMob) {
+            return;
+        }
 
         if (!CardUtil.shouldDrop(mobType)) {
             return;
@@ -110,6 +126,53 @@ public class DropListener extends SimpleListener {
         debug(InternalDebug.DropListener.ADDED_CARD.formatted(CompositeCardKey.fromCard(randomCard)));
         //Add the card to the killedEntity drops
         entityDeathEvent.getDrops().add(randomCard.build(isShiny));
+    }
+
+    private void handlePoolDrop(final @NotNull EntityDeathEvent entityDeathEvent, final @NotNull DropType mobType, final @NotNull MobDropPool mobDropPool) {
+        if (mobDropPool.hasCustomDropChance()) {
+            final int randomDropChance = plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1;
+            if (!CardUtil.shouldDrop(randomDropChance, mobDropPool.dropChance())) {
+                return;
+            }
+        } else if (!CardUtil.shouldDrop(mobType)) {
+            return;
+        }
+
+        final int dropAmount = mobDropPool.getDropAmount(plugin.getRandom());
+        for (int i = 0; i < dropAmount; i++) {
+            final TradingCard randomCard = resolvePoolCard(mobDropPool);
+            if (randomCard instanceof EmptyCard) {
+                continue;
+            }
+
+            final boolean isShiny = randomCard.hasShiny() && CardUtil.calculateIfShiny(false);
+            debug(InternalDebug.DropListener.ADDED_CARD.formatted(CompositeCardKey.fromCard(randomCard)));
+            entityDeathEvent.getDrops().add(randomCard.build(isShiny));
+        }
+    }
+
+    private @NotNull TradingCard resolvePoolCard(final @NotNull MobDropPool mobDropPool) {
+        final DropPoolEntry selectedEntry = mobDropPool.getRandomEntry(plugin.getRandom()).orElse(null);
+        if (selectedEntry == null) {
+            return AllCardManager.NULL_CARD;
+        }
+
+        if (selectedEntry.type() == DropPoolEntryType.CARD) {
+            return cardManager.getRandomActiveCardByCardId(selectedEntry.id());
+        }
+
+        if (selectedEntry.type() == DropPoolEntryType.RARITY) {
+            final String rarityId = plugin.getRarityManager().getRarityIds().stream()
+                    .filter(id -> id.equalsIgnoreCase(selectedEntry.id()))
+                    .findFirst()
+                    .orElse(null);
+            if (rarityId == null) {
+                return AllCardManager.NULL_CARD;
+            }
+            return cardManager.getRandomActiveCardByRarity(rarityId);
+        }
+
+        return AllCardManager.NULL_CARD;
     }
 
 
