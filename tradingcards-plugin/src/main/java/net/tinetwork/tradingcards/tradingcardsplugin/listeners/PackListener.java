@@ -1,7 +1,6 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.listeners;
 
 
-import de.tr7zw.changeme.nbtapi.NBTItem;
 import net.tinetwork.tradingcards.api.model.pack.Pack;
 import net.tinetwork.tradingcards.api.model.pack.PackEntry;
 import net.tinetwork.tradingcards.api.utils.NbtUtils;
@@ -62,8 +61,7 @@ public class PackListener extends SimpleListener {
             ChatUtil.sendMessage(player, plugin.getMessagesConfig().noCreative());
             return;
         }
-        NBTItem nbtPackItem = new NBTItem(itemInMainHand);
-        final String packId = NbtUtils.Pack.getPackId(nbtPackItem);
+        final String packId = NbtUtils.Pack.getPackId(itemInMainHand);
         if(packId == null) {
             return;
         }

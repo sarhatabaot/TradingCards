@@ -2,8 +2,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.managers.impl;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
-import de.tr7zw.changeme.nbtapi.NBTCompound;
-import de.tr7zw.changeme.nbtapi.NBTItem;
+import de.tr7zw.changeme.nbtapi.NBT;
 import net.tinetwork.tradingcards.api.manager.PackManager;
 import net.tinetwork.tradingcards.api.model.pack.Pack;
 import net.tinetwork.tradingcards.api.model.Rarity;
@@ -110,14 +109,14 @@ public class BoosterPackManager extends Manager<String, Pack> implements PackMan
         itemPack.addUnsafeEnchantment(Enchantment.INFINITY, 10);
         itemPackMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         itemPack.setItemMeta(itemPackMeta);
-        NBTItem nbtItem = new NBTItem(itemPack);
-        NBTCompound compound = nbtItem.getOrCreateCompound(NbtUtils.TC_COMPOUND);
-        compound.setString(NbtUtils.TC_PACK_ID, pack.getId());
-        return nbtItem.getItem();
+        NBT.modify(itemPack, nbt -> {
+            nbt.getOrCreateCompound(NbtUtils.TC_COMPOUND).setString(NbtUtils.TC_PACK_ID, pack.getId());
+        });
+        return itemPack;
     }
 
     public boolean isPack(final ItemStack item) {
-        return NbtUtils.Pack.isPack(new NBTItem(item));
+        return NbtUtils.Pack.isPack(item);
     }
 
     @Override

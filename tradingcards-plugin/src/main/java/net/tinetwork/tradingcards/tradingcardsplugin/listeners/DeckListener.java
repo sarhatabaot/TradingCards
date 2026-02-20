@@ -1,7 +1,6 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.listeners;
 
 
-import de.tr7zw.changeme.nbtapi.NBTItem;
 import net.tinetwork.tradingcards.api.events.DeckCloseEvent;
 import net.tinetwork.tradingcards.api.events.DeckItemInteractEvent;
 import net.tinetwork.tradingcards.api.model.deck.Deck;
@@ -80,11 +79,10 @@ public class DeckListener extends SimpleListener {
     }
 
     private @NotNull StorageEntry formatEntryString(final ItemStack itemStack) {
-        NBTItem nbtItem = new NBTItem(itemStack);
-        final String cardId = NbtUtils.Card.getCardId(nbtItem);
-        final String rarity = NbtUtils.Card.getRarityId(nbtItem);
-        final boolean shiny = NbtUtils.Card.isShiny(nbtItem);
-        final String seriesId = NbtUtils.Card.getSeriesId(nbtItem);
+        final String cardId = NbtUtils.Card.getCardId(itemStack);
+        final String rarity = NbtUtils.Card.getRarityId(itemStack);
+        final boolean shiny = NbtUtils.Card.isShiny(itemStack);
+        final String seriesId = NbtUtils.Card.getSeriesId(itemStack);
         return new StorageEntry(rarity, cardId, itemStack.getAmount(), shiny,seriesId);
     }
 }

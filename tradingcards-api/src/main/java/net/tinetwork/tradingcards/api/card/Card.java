@@ -1,7 +1,7 @@
 package net.tinetwork.tradingcards.api.card;
 
 
-import de.tr7zw.changeme.nbtapi.NBTCompound;
+import de.tr7zw.changeme.nbtapi.NBT;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import net.tinetwork.tradingcards.api.model.DropType;
 import net.tinetwork.tradingcards.api.model.Rarity;
@@ -9,7 +9,10 @@ import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.api.utils.NbtUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public abstract class Card<T> {
     private final String cardId;
@@ -191,18 +194,7 @@ public abstract class Card<T> {
     }
 
     public NBTItem buildNBTItem(boolean shiny) {
-        NBTItem nbtItem = new NBTItem(buildItem(shiny));
-        NBTCompound nbtCompound = nbtItem.getOrCreateCompound(NbtUtils.TC_COMPOUND);
-        nbtCompound.setString(NbtUtils.TC_CARD_ID, cardId);
-        nbtCompound.setString(NbtUtils.TC_CARD_RARITY, rarity.getId());
-        nbtCompound.setBoolean(NbtUtils.TC_CARD_SHINY, shiny);
-        nbtCompound.setString(NbtUtils.TC_CARD_SERIES, series.getId());
-
-        if (getCustomModelNbt() != 0) {
-            nbtItem.setInteger(NbtUtils.NBT_CARD_CUSTOM_MODEL, this.cardMeta.getCustomModelNbt());
-        }
-
-        return nbtItem;
+        return new NBTItem(build(shiny));
     }
 
     protected CardMeta getCardMeta() {
@@ -216,8 +208,32 @@ public abstract class Card<T> {
     public abstract ItemStack buildItem(boolean shiny);
 
     public ItemStack build(boolean shiny) {
-        NBTItem nbtItem = buildNBTItem(shiny);
-        return nbtItem.getItem().clone();
+        final ItemStack cardItem = buildItem(shiny);
+        applyCustomModelData(cardItem, this.cardMeta.getCustomModelNbt());
+        NBT.modify(cardItem, nbt -> {
+            var nbtCompound = nbt.getOrCreateCompound(NbtUtils.TC_COMPOUND);
+            nbtCompound.setString(NbtUtils.TC_CARD_ID, cardId);
+            nbtCompound.setString(NbtUtils.TC_CARD_RARITY, rarity.getId());
+            nbtCompound.setBoolean(NbtUtils.TC_CARD_SHINY, shiny);
+            nbtCompound.setString(NbtUtils.TC_CARD_SERIES, series.getId());
+        });
+        return cardItem.clone();
+    }
+
+    private void applyCustomModelData(final @NotNull ItemStack cardItem, final int customModelData) {
+        if (customModelData == 0) {
+            return;
+        }
+
+        final ItemMeta cardMeta = cardItem.getItemMeta();
+        if (cardMeta == null) {
+            return;
+        }
+
+        final var customModelDataComponent = cardMeta.getCustomModelDataComponent();
+        customModelDataComponent.setFloats(List.of((float) customModelData));
+        cardMeta.setCustomModelDataComponent(customModelDataComponent);
+        cardItem.setItemMeta(cardMeta);
     }
 
     @Override

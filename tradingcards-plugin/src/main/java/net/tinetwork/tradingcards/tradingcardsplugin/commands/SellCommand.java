@@ -6,7 +6,6 @@ import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
-import de.tr7zw.changeme.nbtapi.NBTItem;
 import net.tinetwork.tradingcards.api.economy.ResponseWrapper;
 import net.tinetwork.tradingcards.api.utils.NbtUtils;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalDebug;
@@ -45,17 +44,16 @@ public class SellCommand extends BaseCommand {
                 return;
             }
             
-            final NBTItem nbtItem = new NBTItem(itemInMainHand);
-            if (!CardUtil.isCard(nbtItem)) {
+            if (!CardUtil.isCard(itemInMainHand)) {
                 ChatUtil.sendMessage(player, plugin.getMessagesConfig().notACard());
                 return;
             }
 
             final ItemStack itemInHand = player.getInventory().getItemInMainHand();
             final int itemInHandSlot = player.getInventory().getHeldItemSlot();
-            final String cardId = NbtUtils.Card.getCardId(nbtItem);
-            final String rarityId = NbtUtils.Card.getRarityId(nbtItem);
-            final String seriesId = NbtUtils.Card.getSeriesId(nbtItem);
+            final String cardId = NbtUtils.Card.getCardId(itemInMainHand);
+            final String rarityId = NbtUtils.Card.getRarityId(itemInMainHand);
+            final String seriesId = NbtUtils.Card.getSeriesId(itemInMainHand);
             plugin.debug(SellSubCommand.class, InternalDebug.CardsCommand.CARD_RARITY_ID.formatted(cardId,rarityId));
 
             final TradingCard tradingCard = plugin.getCardManager().getCard(cardId, rarityId, seriesId);

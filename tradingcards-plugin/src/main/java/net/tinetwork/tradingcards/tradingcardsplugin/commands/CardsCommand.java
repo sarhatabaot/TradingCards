@@ -3,7 +3,6 @@ package net.tinetwork.tradingcards.tradingcardsplugin.commands;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
-import de.tr7zw.changeme.nbtapi.NBTItem;
 import net.tinetwork.tradingcards.api.utils.NbtUtils;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalDebug;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalMessages;
@@ -91,15 +90,15 @@ public class CardsCommand extends BaseCommand {
         if (CardUtil.noEconomy(player)) {
             return;
         }
-        final NBTItem nbtItem = new NBTItem(player.getInventory().getItemInMainHand());
-        if (!CardUtil.isCard(nbtItem)) {
+        final var itemInMainHand = player.getInventory().getItemInMainHand();
+        if (!CardUtil.isCard(itemInMainHand)) {
             player.sendMessage(messagesConfig.notACard());
             return;
         }
 
-        final String cardId = NbtUtils.Card.getCardId(nbtItem);
-        final String rarityId = NbtUtils.Card.getRarityId(nbtItem);
-        final String seriesId = NbtUtils.Card.getSeriesId(nbtItem);
+        final String cardId = NbtUtils.Card.getCardId(itemInMainHand);
+        final String rarityId = NbtUtils.Card.getRarityId(itemInMainHand);
+        final String seriesId = NbtUtils.Card.getSeriesId(itemInMainHand);
         debug(InternalDebug.CardsCommand.CARD_RARITY_ID.formatted(cardId,rarityId));
 
         final TradingCard tradingCard = cardManager.getCard(cardId, rarityId, seriesId);

@@ -1,6 +1,5 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.events;
 
-import de.tr7zw.changeme.nbtapi.NBTItem;
 import net.tinetwork.tradingcards.api.events.DeckCloseEvent;
 import net.tinetwork.tradingcards.api.events.DeckItemInteractEvent;
 import net.tinetwork.tradingcards.api.utils.NbtUtils;
@@ -63,31 +62,32 @@ public class DeckEventListener extends SimpleListener {
             return;
         }
 
-
-        NBTItem nbtItem = new NBTItem(event.getItem());
-        if(!NbtUtils.Card.isCard(nbtItem)) {
+        if(!NbtUtils.Card.isCard(event.getItem())) {
             //not a card, ignoring
             return;
         }
 
-        if(containsAtLeast(destination,nbtItem)) {
+        if(containsAtLeast(destination,event.getItem())) {
             event.setCancelled(true);
             ChatUtil.sendPrefixedMessage(player, InternalMessages.CANNOT_HAVE_MORE_THAN_A_STACK);
         }
 
     }
 
-    private boolean containsAtLeast(final Inventory inventory, final NBTItem nbtItem) {
-        int amountOfItem = getAmountOfItem(inventory,nbtItem);
+    private boolean containsAtLeast(final Inventory inventory, final ItemStack itemToCompare) {
+        int amountOfItem = getAmountOfItem(inventory, itemToCompare);
         return amountOfItem >= 64;
     }
 
-    private int getAmountOfItem(final @NotNull Inventory inventory, final NBTItem nbtItem) {
+    private int getAmountOfItem(final @NotNull Inventory inventory, final @NotNull ItemStack itemToCompare) {
         int amount = 0;
         for(ItemStack itemStack: inventory.getContents()) {
-            NBTItem currentItem = new NBTItem(itemStack);
-            if(NbtUtils.isCardSimilar(currentItem,nbtItem)) {
-                amount += currentItem.getItem().getAmount();
+            if(itemStack == null || itemStack.getType() == Material.AIR) {
+                continue;
+            }
+
+            if(NbtUtils.isCardSimilar(itemStack, itemToCompare)) {
+                amount += itemStack.getAmount();
             }
         }
         return amount;

@@ -1,7 +1,8 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.utils;
 
 
-import de.tr7zw.changeme.nbtapi.NBTItem;
+import de.tr7zw.changeme.nbtapi.NBT;
+import de.tr7zw.changeme.nbtapi.iface.ReadableNBT;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.tinetwork.tradingcards.api.config.ColorSeries;
 import net.tinetwork.tradingcards.api.model.DropType;
@@ -57,8 +58,7 @@ public class CardUtil {
      * @param item   Item
      */
     public static void dropItem(final @NotNull Player player, final ItemStack item) {
-        NBTItem nbtItem = new NBTItem(item);
-        final String debugItem = nbtItem.toString();
+        final String debugItem = NBT.readNbt(item).toString();
         if (player.getInventory().firstEmpty() != -1) {
             player.getInventory().addItem(item);
             plugin.debug(CardUtil.class, "Added item " + debugItem + " to " + player.getName());
@@ -91,11 +91,10 @@ public class CardUtil {
     public static boolean isCard(final ItemStack itemStack) {
         if (itemStack == null || itemStack.getType().isAir())
             return false;
-        final NBTItem nbtItem = new NBTItem(itemStack);
-        return isCard(nbtItem);
+        return NbtUtils.Card.isCard(itemStack);
     }
     
-    public static boolean isCard(final @NotNull NBTItem nbtItem) {
+    public static boolean isCard(final @NotNull ReadableNBT nbtItem) {
         return NbtUtils.Card.isCard(nbtItem);
     }
     
@@ -323,19 +322,18 @@ public class CardUtil {
     public static boolean matchesEntry(final ItemStack itemStack, final PackEntry packEntry) {
         if (itemStack == null || itemStack.getType() == Material.AIR)
             return false;
-        
-        NBTItem nbtItem = new NBTItem(itemStack);
-        if (!CardUtil.isCard(nbtItem)) {
+
+        if (!CardUtil.isCard(itemStack)) {
             return false;
         }
         
         //don't count if it's shiny.
-        if (NbtUtils.Card.isShiny(nbtItem)) {
+        if (NbtUtils.Card.isShiny(itemStack)) {
             return false;
         }
         
-        final String nbtRarity = NbtUtils.Card.getRarityId(nbtItem);
-        final String nbtSeries = NbtUtils.Card.getSeriesId(nbtItem);
+        final String nbtRarity = NbtUtils.Card.getRarityId(itemStack);
+        final String nbtSeries = NbtUtils.Card.getSeriesId(itemStack);
         
         return packEntry.seriesId().equals(nbtSeries) && packEntry.getRarityId().equals(nbtRarity);
     }
@@ -377,10 +375,9 @@ public class CardUtil {
     
     public static void sendTradedCardsMessage(final Player player, final @NotNull Map<ItemStack, Integer> removedCardsMap) {
         for (Map.Entry<ItemStack, Integer> entry : removedCardsMap.entrySet()) {
-            NBTItem nbtItem = new NBTItem(entry.getKey());
-            final String rarityId = NbtUtils.Card.getRarityId(nbtItem);
-            final String cardId = NbtUtils.Card.getCardId(nbtItem);
-            final String seriesId = NbtUtils.Card.getSeriesId(nbtItem);
+            final String rarityId = NbtUtils.Card.getRarityId(entry.getKey());
+            final String cardId = NbtUtils.Card.getCardId(entry.getKey());
+            final String seriesId = NbtUtils.Card.getSeriesId(entry.getKey());
             
             final String listObject = "- %s %s %s %s"; // - 6 rarity cardid seriesid
             player.sendMessage(listObject.formatted(entry.getValue(), rarityId, cardId, seriesId));

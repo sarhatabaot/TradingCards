@@ -1,8 +1,6 @@
 package net.tinetwork.tradingcards.tradingcardsplugin.managers.impl;
 
-
-import de.tr7zw.changeme.nbtapi.NBTCompound;
-import de.tr7zw.changeme.nbtapi.NBTItem;
+import de.tr7zw.changeme.nbtapi.NBT;
 import net.tinetwork.tradingcards.api.events.DeckCloseEvent;
 import net.tinetwork.tradingcards.api.events.DeckOpenEvent;
 import net.tinetwork.tradingcards.api.manager.DeckManager;
@@ -107,9 +105,8 @@ public class TradingDeckManager implements DeckManager {
         List<ItemStack> cards = loadCardsFromStorage(player.getUniqueId(), deckNum);
         Inventory inv = Bukkit.createInventory(player.getPlayer(), getDeckSize(), ChatUtil.color(plugin.getMessagesConfig().deckInventoryTitle().replace("%player%", player.getName()).replace("%deck_num%", String.valueOf(deckNum))));
         for (ItemStack cardItem : cards) {
-            NBTItem nbtItem = new NBTItem(cardItem);
             inv.addItem(cardItem);
-            plugin.debug(TradingDeckManager.class, "Item=" + cardItem.getType() + ",amount=" + cardItem.getAmount() + ", added to inventory. NBT=" + nbtItem);
+            plugin.debug(TradingDeckManager.class, "Item=" + cardItem.getType() + ",amount=" + cardItem.getAmount() + ", added to inventory. NBT=" + NBT.readNbt(cardItem));
         }
         return inv;
     }
@@ -166,17 +163,16 @@ public class TradingDeckManager implements DeckManager {
     @NotNull
     @Override
     public ItemStack getNbtItem(@NotNull final Player player, final int deckNumber) {
-        NBTItem nbtItem = new NBTItem(createDeckItem(player, deckNumber));
-        NBTCompound nbtCompound = nbtItem.getOrCreateCompound(NbtUtils.TC_COMPOUND);
-        nbtCompound.setInteger(NbtUtils.TC_DECK_NUMBER, deckNumber);
+        final ItemStack deckItem = createDeckItem(player, deckNumber);
+        NBT.modify(deckItem, nbt -> {
+            nbt.getOrCreateCompound(NbtUtils.TC_COMPOUND).setInteger(NbtUtils.TC_DECK_NUMBER, deckNumber);
+        });
         int customModelData = plugin.getGeneralConfig().deckCustomModelData();
 
         plugin.debug(TradingDeckManager.class,"CustomModelData = "+customModelData);
-        if(customModelData != 0) {
-            nbtItem.setInteger(NbtUtils.NBT_CARD_CUSTOM_MODEL, customModelData);
-        }
+        applyCustomModelData(deckItem, customModelData);
 
-        return nbtItem.getItem();
+        return deckItem;
     }
 
     public ItemStack getDeckItem(@NotNull final Player player, final int deckNumber) {
@@ -197,13 +193,12 @@ public class TradingDeckManager implements DeckManager {
     public boolean isDeck(final @NotNull ItemStack item) {
         if (item.getType() == Material.AIR)
             return false;
-        return NbtUtils.Deck.isDeck(new NBTItem(item));
+        return NbtUtils.Deck.isDeck(item);
     }
 
     public int getDeckNumber(final ItemStack item) {
-        NBTItem nbtItem = new NBTItem(item);
-        if(NbtUtils.Deck.isDeck(nbtItem))
-            return NbtUtils.Deck.getDeckNumber(nbtItem);
+        if(NbtUtils.Deck.isDeck(item))
+            return NbtUtils.Deck.getDeckNumber(item);
 
         String[] nameSplit = item.getItemMeta().getDisplayName().split("#");
         return Integer.parseInt(nameSplit[1]);
@@ -235,5 +230,21 @@ public class TradingDeckManager implements DeckManager {
 
     public void createNewDeckInFile(final UUID uuid, final int deckNumber) {
         storage.saveDeck(uuid, deckNumber, new Deck(uuid, deckNumber, new ArrayList<>()));
+    }
+
+    private void applyCustomModelData(final @NotNull ItemStack itemStack, final int customModelData) {
+        if (customModelData == 0) {
+            return;
+        }
+
+        final ItemMeta itemMeta = itemStack.getItemMeta();
+        if (itemMeta == null) {
+            return;
+        }
+
+        final var customModelDataComponent = itemMeta.getCustomModelDataComponent();
+        customModelDataComponent.setFloats(List.of((float) customModelData));
+        itemMeta.setCustomModelDataComponent(customModelDataComponent);
+        itemStack.setItemMeta(itemMeta);
     }
 }
