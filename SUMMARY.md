@@ -4,7 +4,7 @@
 * [Trading Cards](readme.md)
 * [❓ FAQ](faq.md)
 
-## 🛠 Customizing
+## 🛠️ Customizing
 
 * [Getting Started](customizing/getting-started.md)
 * [🔧 Settings](customizing/settings/README.md)
@@ -19,6 +19,7 @@
   * [Series](customizing/customizing/series.md)
   * [Custom Types](customizing/customizing/custom-types.md)
   * [Upgrades](customizing/customizing/upgrades.md)
+  * [Drop Pools](customizing/customizing/drop-pools.md)
 * [Addons](customizing/addons/README.md)
   * [Official Addons](customizing/addons/official-addons.md)
   * [Community Addons](customizing/addons/community-addons.md)
@@ -33,7 +34,7 @@
   * [List](commands/user-commands/list.md)
   * [Buy](commands/user-commands/buy.md)
   * [Sell](commands/user-commands/sell.md)
-* [🧙♂ Admin Commands](commands/admin-commands/README.md)
+* [🧙‍♂️ Admin Commands](commands/admin-commands/README.md)
   * [Resolve](commands/admin-commands/resolve.md)
   * [Migrate](commands/admin-commands/migrate.md)
   * [Giveaway](commands/admin-commands/giveaway.md)
