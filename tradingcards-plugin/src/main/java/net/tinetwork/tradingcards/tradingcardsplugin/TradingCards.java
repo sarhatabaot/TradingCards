@@ -39,6 +39,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.EditType;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.EditUpgrade;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.AdvancedConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.ChancesConfig;
+import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.DropPoolsConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.GeneralConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.MessagesConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.StorageConfig;
@@ -98,6 +99,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private GeneralConfig generalConfig;
     private MessagesConfig messagesConfig;
     private ChancesConfig chancesConfig;
+    private DropPoolsConfig dropPoolsConfig;
     private AdvancedConfig advancedConfig;
 
     /* Managers */
@@ -191,6 +193,10 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         return chancesConfig;
     }
 
+    public DropPoolsConfig getDropPoolsConfig() {
+        return dropPoolsConfig;
+    }
+
     public MessagesConfig getMessagesConfig() {
         return messagesConfig;
     }
@@ -222,6 +228,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         try {
             this.generalConfig = new GeneralConfig(this);
             this.chancesConfig = new ChancesConfig(this);
+            this.dropPoolsConfig = new DropPoolsConfig(this);
             this.messagesConfig = new MessagesConfig(this);
             this.storageConfig = new StorageConfig(this);
             this.advancedConfig = new AdvancedConfig(this);
@@ -518,6 +525,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
         this.storage.reload();
         this.chancesConfig.reloadConfig();
+        this.dropPoolsConfig.reloadConfig();
     }
 
     public void reloadPlugin() {
