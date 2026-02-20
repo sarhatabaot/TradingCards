@@ -484,7 +484,7 @@ cards:
       info: none
       series: spring
       type: neutral
-    panda_Playful:
+    panda_playful:
       custom-model-data: 3200108
       display-name: "Playful Panda"
       has-shiny-version: true
@@ -956,3 +956,31 @@ cards:
       info: none
       series: winter
       type: passive
+    gl_aggenon:
+      custom-model-data: 4000001
+      display-name: "Agennon"
+      has-shiny-version: true
+      info: none
+      series: player
+      type: hostile
+    gl_rebel:
+      custom-model-data: 4000002
+      display-name: "Silent Rebel"
+      has-shiny-version: true
+      info: none
+      series: player
+      type: hostile
+    gl_chou:
+      custom-model-data: 4000003
+      display-name: "Chou"
+      has-shiny-version: true
+      info: none
+      series: player
+      type: hostile
+    gl_ashal33:
+      custom-model-data: 4000004
+      display-name: "Ashal33"
+      has-shiny-version: true
+      info: none
+      series: player
+      type: hostile
