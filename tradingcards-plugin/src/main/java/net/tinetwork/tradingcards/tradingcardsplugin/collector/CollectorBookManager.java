@@ -21,6 +21,23 @@ public class CollectorBookManager {
     // Reserved deck number used as canonical collector-book storage.
     public static final int COLLECTOR_BOOK_DECK_NUMBER = 0;
 
+    public record CollectorMigrationSummary(
+            UUID playerUuid,
+            boolean dryRun,
+            boolean force,
+            boolean skippedByGuard,
+            boolean collectorBookHadEntries,
+            int legacyDeckCount,
+            int legacyOwnershipEntries,
+            boolean collectorBookMigrationNeeded,
+            boolean collectorBookMigrated,
+            int legacyDecksNeedingNormalization
+    ) {
+        public boolean hasWork() {
+            return collectorBookMigrationNeeded || legacyDecksNeedingNormalization > 0;
+        }
+    }
+
     private final TradingCards plugin;
     private final Storage<TradingCard> storage;
     private final Set<UUID> migrationCheckedPlayers;
@@ -172,37 +189,74 @@ public class CollectorBookManager {
     }
 
     public void ensureCollectorBookMigrated(final @NotNull UUID playerUuid) {
-        if (!migrationCheckedPlayers.add(playerUuid)) {
-            return;
-        }
+        migratePlayer(playerUuid, false, false);
+    }
 
-        plugin.debug(CollectorBookManager.class, "Collector migration check started for %s".formatted(playerUuid));
+    public @NotNull CollectorMigrationSummary migratePlayer(
+            final @NotNull UUID playerUuid,
+            final boolean force,
+            final boolean dryRun
+    ) {
+        final boolean alreadyChecked = migrationCheckedPlayers.contains(playerUuid);
+        final boolean skippedByGuard = alreadyChecked && !force;
+        final boolean applyChanges = !dryRun && !skippedByGuard;
+
+        plugin.debug(CollectorBookManager.class, "Collector migration started for %s (force=%s,dryRun=%s,skipped=%s)"
+                .formatted(playerUuid, force, dryRun, skippedByGuard));
+
         final List<Deck> playerDecks = storage.getPlayerDecks(playerUuid);
         final Deck collectorDeck = storage.getDeck(playerUuid, COLLECTOR_BOOK_DECK_NUMBER);
         final List<Deck> legacyDecks = playerDecks.stream()
                 .filter(Objects::nonNull)
                 .filter(deck -> deck.getNumber() != COLLECTOR_BOOK_DECK_NUMBER)
                 .toList();
-        plugin.debug(CollectorBookManager.class, "Found %d legacy deck(s) for %s".formatted(legacyDecks.size(), playerUuid));
+        final List<StorageEntry> legacyEntries = getMergedLegacyDeckEntries(legacyDecks);
 
-        if (!hasPositiveEntries(collectorDeck == null ? null : collectorDeck.getDeckEntries())) {
-            final List<StorageEntry> legacyEntries = getMergedLegacyDeckEntries(legacyDecks);
-            if (!legacyEntries.isEmpty()) {
-                plugin.debug(CollectorBookManager.class, "Migrating %d legacy ownership entries into collector book for %s"
-                        .formatted(legacyEntries.size(), playerUuid));
+        final boolean collectorBookHadEntries = hasPositiveEntries(collectorDeck == null ? null : collectorDeck.getDeckEntries());
+        final boolean collectorBookMigrationNeeded = !collectorBookHadEntries && !legacyEntries.isEmpty();
+        boolean collectorBookMigrated = false;
+        if (collectorBookMigrationNeeded) {
+            if (applyChanges) {
                 saveBook(CollectorBook.fromEntries(playerUuid, legacyEntries));
+                collectorBookMigrated = true;
+                plugin.debug(CollectorBookManager.class, "Migrated %d ownership entries into collector book for %s"
+                        .formatted(legacyEntries.size(), playerUuid));
             } else {
-                plugin.debug(CollectorBookManager.class, "No legacy ownership entries to migrate for %s".formatted(playerUuid));
+                plugin.debug(CollectorBookManager.class, "Collector book migration needed for %s, but changes were not applied"
+                        .formatted(playerUuid));
             }
-        } else {
-            plugin.debug(CollectorBookManager.class, "Collector book already populated for %s, skipping ownership migration".formatted(playerUuid));
         }
 
-        normalizeLegacyDeckReferences(playerUuid, legacyDecks);
-        plugin.debug(CollectorBookManager.class, "Collector migration check finished for %s".formatted(playerUuid));
+        final int legacyDecksNeedingNormalization = normalizeLegacyDeckReferences(playerUuid, legacyDecks, applyChanges);
+
+        if (applyChanges) {
+            migrationCheckedPlayers.add(playerUuid);
+        }
+
+        final CollectorMigrationSummary summary = new CollectorMigrationSummary(
+                playerUuid,
+                dryRun,
+                force,
+                skippedByGuard,
+                collectorBookHadEntries,
+                legacyDecks.size(),
+                legacyEntries.size(),
+                collectorBookMigrationNeeded,
+                collectorBookMigrated,
+                legacyDecksNeedingNormalization
+        );
+
+        plugin.debug(CollectorBookManager.class, "Collector migration finished for %s (work=%s,migratedBook=%s,normalizedDecks=%d)"
+                .formatted(playerUuid, summary.hasWork(), summary.collectorBookMigrated(), summary.legacyDecksNeedingNormalization()));
+        return summary;
     }
 
-    private void normalizeLegacyDeckReferences(final @NotNull UUID playerUuid, final @NotNull List<Deck> legacyDecks) {
+    private int normalizeLegacyDeckReferences(
+            final @NotNull UUID playerUuid,
+            final @NotNull List<Deck> legacyDecks,
+            final boolean applyChanges
+    ) {
+        int changedDecks = 0;
         for (Deck legacyDeck : legacyDecks) {
             if (legacyDeck.getDeckEntries() == null) {
                 continue;
@@ -210,15 +264,17 @@ public class CollectorBookManager {
 
             final List<StorageEntry> referenceEntries = toReferenceEntries(legacyDeck.getDeckEntries());
             if (legacyDeck.getDeckEntries().equals(referenceEntries)) {
-                plugin.debug(CollectorBookManager.class, "Deck #%d for %s already normalized"
-                        .formatted(legacyDeck.getNumber(), playerUuid));
                 continue;
             }
 
-            plugin.debug(CollectorBookManager.class, "Normalizing deck #%d for %s from %d -> %d entries"
-                    .formatted(legacyDeck.getNumber(), playerUuid, legacyDeck.getDeckEntries().size(), referenceEntries.size()));
-            storage.saveDeck(playerUuid, legacyDeck.getNumber(), new Deck(playerUuid, legacyDeck.getNumber(), referenceEntries));
+            changedDecks++;
+            if (applyChanges) {
+                plugin.debug(CollectorBookManager.class, "Normalizing deck #%d for %s from %d -> %d entries"
+                        .formatted(legacyDeck.getNumber(), playerUuid, legacyDeck.getDeckEntries().size(), referenceEntries.size()));
+                storage.saveDeck(playerUuid, legacyDeck.getNumber(), new Deck(playerUuid, legacyDeck.getNumber(), referenceEntries));
+            }
         }
+        return changedDecks;
     }
 
     private @NotNull List<StorageEntry> toReferenceEntries(final @NotNull List<StorageEntry> deckEntries) {

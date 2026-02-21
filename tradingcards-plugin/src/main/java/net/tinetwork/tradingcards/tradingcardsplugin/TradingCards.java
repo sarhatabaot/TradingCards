@@ -22,6 +22,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.collector.CollectorBookManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.BuyCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.CardsCommand;
+import net.tinetwork.tradingcards.tradingcardsplugin.commands.CollectorCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.CreateCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.DebugCommands;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.DeckCommand;
@@ -364,6 +365,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         );
 
         commandManager.registerCommand(new CardsCommand(this, playerBlacklist));
+        commandManager.registerCommand(new CollectorCommand(this));
         commandManager.registerCommand(new EditCommand(this));
         commandManager.registerCommand(new CreateCommand(this));
         commandManager.registerCommand(new BuyCommand(this));

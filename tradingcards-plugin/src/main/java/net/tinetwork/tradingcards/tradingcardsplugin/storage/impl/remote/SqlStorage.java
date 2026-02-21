@@ -307,6 +307,41 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
     @Override
+    public Set<UUID> getPlayersWithDecks() {
+        return new ExecuteQuery<Set<UUID>, Result<Record>>(connectionFactory, jooqSettings) {
+            @Override
+            public Set<UUID> onRunQuery(final DSLContext dslContext) {
+                return getQuery(dslContext.select(Decks.DECKS.fields())
+                        .from(Decks.DECKS)
+                        .groupBy(Decks.DECKS.UUID)
+                        .fetch());
+            }
+
+            @Override
+            public Set<UUID> getQuery(final @NotNull Result<Record> result) {
+                final Set<UUID> uuids = new HashSet<>();
+                for (Record record : result) {
+                    final String uuidString = record.get(Decks.DECKS.UUID);
+                    if (uuidString == null) {
+                        continue;
+                    }
+                    try {
+                        uuids.add(UUID.fromString(uuidString));
+                    } catch (IllegalArgumentException ignored) {
+                        // Ignore invalid UUID values from legacy/bad rows.
+                    }
+                }
+                return uuids;
+            }
+
+            @Override
+            public Set<UUID> empty() {
+                return Collections.emptySet();
+            }
+        }.prepareAndRunQuery();
+    }
+
+    @Override
     public Deck getDeck(final @NotNull UUID playerUuid, final int deckNumber) {
         return new ExecuteQuery<Deck, Result<Record>>(connectionFactory, jooqSettings) {
             @Override
