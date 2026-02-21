@@ -17,7 +17,7 @@ plugins {
 version = "5.7.23"
 
 repositories {
-    maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
+    maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://repo.aikar.co/content/groups/aikar/")
     maven("https://mvn.lumine.io/repository/maven-public/")
     maven("https://mvn.lumine.io/repository/maven-snapshots/")
@@ -27,7 +27,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly(libs.spigot.api)
+    compileOnly(libs.paper.api)
 
     //soft-depends
     compileOnly(libs.vault.api)
@@ -65,7 +65,7 @@ dependencies {
     jooqGenerator(libs.jooq.mysql.connector)
     jooqGenerator(libs.jooq.meta.extensions)
 
-    testCompileOnly(libs.spigot.api)
+    testCompileOnly(libs.paper.api)
     testImplementation(libs.mockito)
     testImplementation(libs.mockbukkit)
     testImplementation(platform(libs.junit.platform))
@@ -200,7 +200,7 @@ testing {
 
             dependencies {
                 implementation(project(":tradingcards-plugin"))
-                implementation(libs.spigot.api)
+                implementation(libs.paper.api)
                 implementation(libs.junit.jupiter)
             }
 
