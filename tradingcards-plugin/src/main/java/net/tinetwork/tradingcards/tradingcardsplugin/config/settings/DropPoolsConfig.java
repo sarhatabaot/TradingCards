@@ -62,7 +62,8 @@ public class DropPoolsConfig extends YamlConfigurateFile<TradingCards> {
     }
 
     private @NotNull MobDropPool parsePool(final @NotNull EntityType entityType, final @NotNull String configKey, final @NotNull ConfigurationNode poolNode) {
-        final @Nullable String nameCheck = poolNode.node("namecheck").getString(null);
+        final @Nullable String nameCheckRaw = poolNode.node("namecheck").getString();
+        final @Nullable String nameCheck = (nameCheckRaw == null || nameCheckRaw.isBlank()) ? null : nameCheckRaw;
         final ConfigurationNode dropsNode = poolNode.node("drops");
 
         final boolean enabled = dropsNode.node("enabled").getBoolean(false);
