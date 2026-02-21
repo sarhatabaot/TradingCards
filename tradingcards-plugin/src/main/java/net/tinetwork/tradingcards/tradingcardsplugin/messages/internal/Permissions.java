@@ -28,6 +28,7 @@ public final class Permissions {
 			public static final String LIST_PLAYER = "cards.list.player";
 			public static final String LIST_PACK = "cards.list.pack";
 			public static final String LIST_UPGRADE = "cards.list.upgrade";
+			public static final String COLLECTOR = "cards.collector";
 
 			private List() {
 				throw new UnsupportedOperationException(InternalExceptions.UTIL_CLASS);

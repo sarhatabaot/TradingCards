@@ -31,6 +31,20 @@ public class CollectorCommand extends BaseCommand {
         this.collectorBookManager = plugin.getCollectorBookManager();
     }
 
+    @Subcommand("collector")
+    @CommandPermission(Permissions.User.List.COLLECTOR)
+    @Description("Open your Collector Book GUI.")
+    public void onCollectorOpen(final @NotNull Player player) {
+        openCollectorGui(player);
+    }
+
+    @Subcommand("collector open")
+    @CommandPermission(Permissions.User.List.COLLECTOR)
+    @Description("Open your Collector Book GUI.")
+    public void onCollectorOpenSubcommand(final @NotNull Player player) {
+        openCollectorGui(player);
+    }
+
     @Subcommand("collector migrate")
     @CommandPermission(Permissions.Admin.ADMIN_MIGRATE)
     @Description("Migrates collector data for a player or all players with stored decks.")
@@ -123,5 +137,14 @@ public class CollectorCommand extends BaseCommand {
         }
 
         return null;
+    }
+
+    private void openCollectorGui(final @NotNull Player player) {
+        if (!plugin.getGeneralConfig().collectorBookEnabled()) {
+            ChatUtil.sendPrefixedMessage(player, "Collector Book is disabled. Enable 'collector-book-enabled' in settings/general.yml.");
+            return;
+        }
+
+        plugin.getCollectorBookGuiManager().openMainMenu(player);
     }
 }

@@ -20,6 +20,7 @@ import net.tinetwork.tradingcards.api.model.pack.PackEntry;
 import net.tinetwork.tradingcards.api.model.schedule.Mode;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.collector.CollectorBookManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.collector.gui.CollectorBookGuiManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.BuyCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.CardsCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.CollectorCommand;
@@ -49,6 +50,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.events.DeckEventListener;
 import net.tinetwork.tradingcards.tradingcardsplugin.listeners.DeckListener;
 import net.tinetwork.tradingcards.tradingcardsplugin.listeners.DropListener;
 import net.tinetwork.tradingcards.tradingcardsplugin.listeners.PackListener;
+import net.tinetwork.tradingcards.tradingcardsplugin.listeners.CollectorBookGuiListener;
 import net.tinetwork.tradingcards.tradingcardsplugin.listeners.SpawnerListener;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.impl.BoosterPackManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.impl.DropTypeManager;
@@ -112,6 +114,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private TradingRarityManager rarityManager;
     private TradingSeriesManager seriesManager;
     private CollectorBookManager collectorBookManager;
+    private CollectorBookGuiManager collectorBookGuiManager;
 
     private TradingUpgradeManager upgradeManager;
 
@@ -267,6 +270,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         this.packManager = new BoosterPackManager(this);
         this.deckManager = new TradingDeckManager(this);
         this.collectorBookManager = new CollectorBookManager(this);
+        this.collectorBookGuiManager = new CollectorBookGuiManager(this);
         this.upgradeManager = new TradingUpgradeManager(this);
     }
 
@@ -388,6 +392,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         this.packManager.forceCacheRefresh();
         this.deckManager = new TradingDeckManager(this);
         this.collectorBookManager = new CollectorBookManager(this);
+        this.collectorBookGuiManager = new CollectorBookGuiManager(this);
         this.dropTypeManager.forceCacheRefresh();
     }
 
@@ -459,6 +464,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         pm.registerEvents(new DropListener(this), this);
         pm.registerEvents(new PackListener(this), this);
         pm.registerEvents(new DeckListener(this), this);
+        pm.registerEvents(new CollectorBookGuiListener(this, collectorBookGuiManager), this);
         if (getGeneralConfig().spawnerBlock()) {
             pm.registerEvents(new SpawnerListener(this), this);
         }
@@ -569,6 +575,10 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
     public CollectorBookManager getCollectorBookManager() {
         return collectorBookManager;
+    }
+
+    public CollectorBookGuiManager getCollectorBookGuiManager() {
+        return collectorBookGuiManager;
     }
     
     private void initPermissions() {
