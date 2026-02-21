@@ -59,6 +59,19 @@ public class CardUtil {
      */
     public static void dropItem(final @NotNull Player player, final ItemStack item) {
         final String debugItem = NBT.readNbt(item).toString();
+        if (plugin.getGeneralConfig().collectorBookEnabled() && isCard(item)) {
+            final String cardId = NbtUtils.Card.getCardId(item);
+            final String rarityId = NbtUtils.Card.getRarityId(item);
+            final String seriesId = NbtUtils.Card.getSeriesId(item);
+            final boolean shiny = NbtUtils.Card.isShiny(item);
+            if (cardId != null && rarityId != null && seriesId != null) {
+                plugin.getCollectorBookManager().addCard(player.getUniqueId(), cardId, rarityId, seriesId, shiny, item.getAmount());
+                plugin.debug(CardUtil.class, "Auto-collected card %s:%s:%s shiny=%s x%d to Collector Book for %s"
+                        .formatted(rarityId, seriesId, cardId, shiny, item.getAmount(), player.getName()));
+                return;
+            }
+        }
+
         if (player.getInventory().firstEmpty() != -1) {
             player.getInventory().addItem(item);
             plugin.debug(CardUtil.class, "Added item " + debugItem + " to " + player.getName());

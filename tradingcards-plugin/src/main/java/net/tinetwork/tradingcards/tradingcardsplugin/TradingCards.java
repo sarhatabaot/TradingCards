@@ -19,6 +19,7 @@ import net.tinetwork.tradingcards.api.model.Upgrade;
 import net.tinetwork.tradingcards.api.model.pack.PackEntry;
 import net.tinetwork.tradingcards.api.model.schedule.Mode;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
+import net.tinetwork.tradingcards.tradingcardsplugin.collector.CollectorBookManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.BuyCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.CardsCommand;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.CreateCommand;
@@ -109,6 +110,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private DropTypeManager dropTypeManager;
     private TradingRarityManager rarityManager;
     private TradingSeriesManager seriesManager;
+    private CollectorBookManager collectorBookManager;
 
     private TradingUpgradeManager upgradeManager;
 
@@ -263,6 +265,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         this.cardManager = new AllCardManager(this);
         this.packManager = new BoosterPackManager(this);
         this.deckManager = new TradingDeckManager(this);
+        this.collectorBookManager = new CollectorBookManager(this);
         this.upgradeManager = new TradingUpgradeManager(this);
     }
 
@@ -382,6 +385,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         this.cardManager.forceCacheRefresh();
         this.packManager.forceCacheRefresh();
         this.deckManager = new TradingDeckManager(this);
+        this.collectorBookManager = new CollectorBookManager(this);
         this.dropTypeManager.forceCacheRefresh();
     }
 
@@ -559,6 +563,10 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     @Override
     public TradingUpgradeManager getUpgradeManager() {
         return upgradeManager;
+    }
+
+    public CollectorBookManager getCollectorBookManager() {
+        return collectorBookManager;
     }
     
     private void initPermissions() {

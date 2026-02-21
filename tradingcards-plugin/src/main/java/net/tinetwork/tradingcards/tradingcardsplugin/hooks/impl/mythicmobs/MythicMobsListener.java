@@ -57,7 +57,10 @@ public class MythicMobsListener implements Listener {
 
         boolean isShiny = randomCard.hasShiny() && CardUtil.calculateIfShiny(false);
         plugin.debug(MythicMobsListener.class, InternalDebug.DropListener.ADDED_CARD.formatted(CompositeCardKey.fromCard(randomCard)));
-        //Add the card to the killedEntity drops
+        if (plugin.getGeneralConfig().collectorBookEnabled()) {
+            CardUtil.dropItem(killer, randomCard.build(isShiny));
+            return;
+        }
         e.getDrops().add(randomCard.build(isShiny));
     }
 

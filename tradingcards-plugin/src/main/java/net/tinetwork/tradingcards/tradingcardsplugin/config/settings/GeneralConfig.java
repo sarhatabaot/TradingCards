@@ -50,6 +50,7 @@ public class GeneralConfig extends GeneralConfigurate {
     private boolean allowRewards;
     private boolean rewardBroadcast;
     private boolean eatShinyCards;
+    private boolean collectorBookEnabled;
 
     //Vault
     private boolean vaultEnabled;
@@ -121,6 +122,7 @@ public class GeneralConfig extends GeneralConfigurate {
         this.allowRewards = rootNode.node("allow-rewards").getBoolean(General.ALLOW_REWARDS);
         this.rewardBroadcast = rootNode.node("reward-broadcast").getBoolean(General.REWARD_BROADCAST);
         this.eatShinyCards = rootNode.node("eat-shiny-cards").getBoolean(General.EAT_SHINY_CARDS);
+        this.collectorBookEnabled = rootNode.node("collector-book-enabled").getBoolean(General.COLLECTOR_BOOK_ENABLED);
 
         //Vault
         this.vaultEnabled = rootNode.node("vault-enabled").getBoolean(General.PluginSupport.Vault.VAULT_ENABLED);
@@ -352,5 +354,10 @@ public class GeneralConfig extends GeneralConfigurate {
 
     public boolean treasuryEnabled() {
         return treasuryEnabled;
+    }
+
+    @Override
+    public boolean collectorBookEnabled() {
+        return collectorBookEnabled;
     }
 }

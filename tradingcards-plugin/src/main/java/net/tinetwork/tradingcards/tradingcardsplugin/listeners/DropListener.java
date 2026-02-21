@@ -69,7 +69,11 @@ public class DropListener extends SimpleListener {
             return;
 
         ItemStack playerCard = cardManager.getActiveCard(killedPlayer.getName(), rarityKey, plugin.getGeneralConfig().playerSeries()).build(false);
-        e.getDrops().add(playerCard);
+        if (plugin.getGeneralConfig().collectorBookEnabled()) {
+            CardUtil.dropItem(killer, playerCard);
+        } else {
+            e.getDrops().add(playerCard);
+        }
         debug(e.getDrops().toString());
     }
 
@@ -98,7 +102,7 @@ public class DropListener extends SimpleListener {
 
         final MobDropPool mobDropPool = this.dropPoolsConfig == null ? null : this.dropPoolsConfig.getMobDropPool(killedEntity);
         if (mobDropPool != null) {
-            handlePoolDrop(entityDeathEvent, mobType, mobDropPool);
+            handlePoolDrop(entityDeathEvent, killer, mobType, mobDropPool);
             return;
         }
 
@@ -124,11 +128,15 @@ public class DropListener extends SimpleListener {
 
         boolean isShiny = randomCard.hasShiny() && CardUtil.calculateIfShiny(false);
         debug(InternalDebug.DropListener.ADDED_CARD.formatted(CompositeCardKey.fromCard(randomCard)));
-        //Add the card to the killedEntity drops
-        entityDeathEvent.getDrops().add(randomCard.build(isShiny));
+        addDroppedCard(entityDeathEvent, killer, randomCard.build(isShiny));
     }
 
-    private void handlePoolDrop(final @NotNull EntityDeathEvent entityDeathEvent, final @NotNull DropType mobType, final @NotNull MobDropPool mobDropPool) {
+    private void handlePoolDrop(
+            final @NotNull EntityDeathEvent entityDeathEvent,
+            final @NotNull Player killer,
+            final @NotNull DropType mobType,
+            final @NotNull MobDropPool mobDropPool
+    ) {
         if (mobDropPool.hasCustomDropChance()) {
             final int randomDropChance = plugin.getRandom().nextInt(CardUtil.RANDOM_MAX) + 1;
             if (!CardUtil.shouldDrop(randomDropChance, mobDropPool.dropChance())) {
@@ -147,8 +155,16 @@ public class DropListener extends SimpleListener {
 
             final boolean isShiny = randomCard.hasShiny() && CardUtil.calculateIfShiny(false);
             debug(InternalDebug.DropListener.ADDED_CARD.formatted(CompositeCardKey.fromCard(randomCard)));
-            entityDeathEvent.getDrops().add(randomCard.build(isShiny));
+            addDroppedCard(entityDeathEvent, killer, randomCard.build(isShiny));
         }
+    }
+
+    private void addDroppedCard(final @NotNull EntityDeathEvent event, final @NotNull Player killer, final @NotNull ItemStack cardItem) {
+        if (plugin.getGeneralConfig().collectorBookEnabled()) {
+            CardUtil.dropItem(killer, cardItem);
+            return;
+        }
+        event.getDrops().add(cardItem);
     }
 
     private @NotNull TradingCard resolvePoolCard(final @NotNull MobDropPool mobDropPool) {

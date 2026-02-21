@@ -104,4 +104,6 @@ public abstract class GeneralConfigurate extends YamlConfigurateFile<TradingCard
     public abstract int deckRows();
 
     public abstract boolean treasuryEnabled();
+
+    public abstract boolean collectorBookEnabled();
 }

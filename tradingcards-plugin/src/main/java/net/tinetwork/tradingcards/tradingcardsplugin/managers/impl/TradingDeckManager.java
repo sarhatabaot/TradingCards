@@ -9,6 +9,8 @@ import net.tinetwork.tradingcards.api.model.deck.StorageEntry;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
+import net.tinetwork.tradingcards.tradingcardsplugin.collector.CollectorBookCardKey;
+import net.tinetwork.tradingcards.tradingcardsplugin.collector.CollectorBookManager;
 import net.tinetwork.tradingcards.api.events.DeckLoadEvent;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.AllCardManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalDebug;
@@ -41,13 +43,17 @@ public class TradingDeckManager implements DeckManager {
     private final TradingCards plugin;
     private final AllCardManager cardManager;
     private final Storage<TradingCard> storage;
+    private final CollectorBookManager collectorBookManager;
     private final Map<UUID, Integer> playerDeckViewingMap;
+    private final Map<UUID, Map<CollectorBookCardKey, Integer>> collectorDeckOpenSnapshots;
 
     public TradingDeckManager(final @NotNull TradingCards plugin) {
         this.plugin = plugin;
         this.cardManager = plugin.getCardManager();
         this.storage = plugin.getStorage();
+        this.collectorBookManager = plugin.getCollectorBookManager();
         this.playerDeckViewingMap = new HashMap<>();
+        this.collectorDeckOpenSnapshots = new HashMap<>();
         this.plugin.getLogger().info(() -> InternalLog.Init.LOAD_DECK_MANAGER);
     }
 
@@ -66,19 +72,30 @@ public class TradingDeckManager implements DeckManager {
         plugin.debug(TradingDeckManager.class, InternalDebug.DecksManager.HAS_MIGRATION.formatted(plugin.getMigrateCommand().isRanDataMigration()));
         plugin.debug(TradingDeckManager.class, InternalDebug.DecksManager.PLAYER_UUID.formatted(player.getUniqueId()));
 
+        if (plugin.getGeneralConfig().collectorBookEnabled()) {
+            collectorBookManager.ensureCollectorBookMigrated(player.getUniqueId());
+        }
+
         addDeckViewer(player.getUniqueId(), deckNum);
 
         Inventory deckInventory = generateDeckInventory(player, deckNum);
         DeckLoadEvent deckLoadEvent = new DeckLoadEvent(deckInventory, deckNum);
         Bukkit.getPluginManager().callEvent(deckLoadEvent);
+        if (plugin.getGeneralConfig().collectorBookEnabled()) {
+            cacheCollectorDeckSnapshot(player.getUniqueId(), deckLoadEvent.getInventory());
+        }
 
         final InventoryView deckView = player.openInventory(deckLoadEvent.getInventory());
         Bukkit.getPluginManager().callEvent(new DeckOpenEvent(deckView, deckNum));
     }
 
     public void closeAllOpenViews() {
-        for (Map.Entry<UUID, Integer> entry : this.playerDeckViewingMap.entrySet()) {
-            Bukkit.getPluginManager().callEvent(new DeckCloseEvent(Bukkit.getPlayer(entry.getKey()).getOpenInventory(), entry.getValue()));
+        for (Map.Entry<UUID, Integer> entry : new ArrayList<>(this.playerDeckViewingMap.entrySet())) {
+            final Player player = Bukkit.getPlayer(entry.getKey());
+            if (player == null) {
+                continue;
+            }
+            Bukkit.getPluginManager().callEvent(new DeckCloseEvent(player.getOpenInventory(), entry.getValue()));
         }
     }
 
@@ -91,6 +108,7 @@ public class TradingDeckManager implements DeckManager {
     public void removeDeckViewer(UUID uuid) {
         plugin.debug(getClass(), InternalDebug.DecksManager.REMOVED_DECK_UUID.formatted(uuid));
         this.playerDeckViewingMap.remove(uuid);
+        this.collectorDeckOpenSnapshots.remove(uuid);
     }
 
     public int getViewerDeckNum(UUID uuid) {
@@ -122,10 +140,14 @@ public class TradingDeckManager implements DeckManager {
 
         for (StorageEntry deckEntry : deckEntries) {
             plugin.debug(getClass(), deckEntry.toString());
+            if (deckEntry.getAmount() <= 0) {
+                continue;
+            }
 
             final String cardId = deckEntry.getCardId();
             final String rarityId = deckEntry.getRarityId();
             final String seriesId = deckEntry.getSeriesId();
+            final boolean shiny = deckEntry.isShiny();
 
             TradingCard card = cardManager.getCard(cardId, rarityId, seriesId);
             if (card instanceof EmptyCard) {
@@ -133,11 +155,28 @@ public class TradingDeckManager implements DeckManager {
                 continue;
             }
 
-            ItemStack cardItem = card.build(deckEntry.isShiny());
-            cardItem.setAmount(deckEntry.getAmount());
+            int itemAmount = deckEntry.getAmount();
+            if (plugin.getGeneralConfig().collectorBookEnabled()) {
+                final int ownedAmount = collectorBookManager.getOwnedAmount(uuid, cardId, rarityId, seriesId, shiny);
+                itemAmount = Math.min(itemAmount, ownedAmount);
+                if (itemAmount <= 0) {
+                    continue;
+                }
+            }
+
+            ItemStack cardItem = card.build(shiny);
+            cardItem.setAmount(itemAmount);
             cards.add(cardItem);
         }
         return cards;
+    }
+
+    public @NotNull Map<CollectorBookCardKey, Integer> consumeCollectorDeckSnapshot(final @NotNull UUID uuid) {
+        final Map<CollectorBookCardKey, Integer> snapshot = collectorDeckOpenSnapshots.remove(uuid);
+        if (snapshot == null) {
+            return new HashMap<>();
+        }
+        return new HashMap<>(snapshot);
     }
 
     private int getDeckSize() {
@@ -220,16 +259,42 @@ public class TradingDeckManager implements DeckManager {
 
     @Override
     public boolean hasCard(@NotNull Player player, String cardId, String rarityId, String seriesId) {
-        return storage.hasCard(player.getUniqueId(), cardId, rarityId,seriesId);
+        return collectorBookManager.hasCard(player.getUniqueId(), cardId, rarityId, seriesId);
     }
 
     @Override
     public boolean hasShinyCard(@NotNull Player player, String cardId, String rarityId,String seriesId) {
-        return storage.hasShinyCard(player.getUniqueId(), cardId, rarityId,seriesId);
+        return collectorBookManager.hasShinyCard(player.getUniqueId(), cardId, rarityId, seriesId);
     }
 
     public void createNewDeckInFile(final UUID uuid, final int deckNumber) {
         storage.saveDeck(uuid, deckNumber, new Deck(uuid, deckNumber, new ArrayList<>()));
+    }
+
+    private void cacheCollectorDeckSnapshot(final @NotNull UUID uuid, final @NotNull Inventory inventory) {
+        final Map<CollectorBookCardKey, Integer> snapshot = new HashMap<>();
+        for (ItemStack itemStack : inventory.getContents()) {
+            if (itemStack == null || itemStack.getType() == Material.AIR || !NbtUtils.Card.isCard(itemStack)) {
+                continue;
+            }
+
+            final String cardId = NbtUtils.Card.getCardId(itemStack);
+            final String rarityId = NbtUtils.Card.getRarityId(itemStack);
+            final String seriesId = NbtUtils.Card.getSeriesId(itemStack);
+            if (cardId == null || rarityId == null || seriesId == null) {
+                continue;
+            }
+
+            final CollectorBookCardKey key = new CollectorBookCardKey(
+                    rarityId,
+                    seriesId,
+                    cardId,
+                    NbtUtils.Card.isShiny(itemStack)
+            );
+            snapshot.merge(key, itemStack.getAmount(), Integer::sum);
+        }
+
+        collectorDeckOpenSnapshots.put(uuid, snapshot);
     }
 
     private void applyCustomModelData(final @NotNull ItemStack itemStack, final int customModelData) {

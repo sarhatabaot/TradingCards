@@ -10,7 +10,6 @@ import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import net.tinetwork.tradingcards.api.model.Upgrade;
-import net.tinetwork.tradingcards.api.model.deck.Deck;
 import net.tinetwork.tradingcards.api.model.deck.StorageEntry;
 import net.tinetwork.tradingcards.api.model.pack.Pack;
 import net.tinetwork.tradingcards.api.model.Rarity;
@@ -19,6 +18,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalM
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.Permissions;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
+import net.tinetwork.tradingcards.tradingcardsplugin.collector.CollectorBookManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.cards.CompositeCardKey;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.PlaceholderUtil;
@@ -38,9 +38,11 @@ import java.util.Set;
 @CommandAlias("cards")
 public class ListCommand extends BaseCommand {
     private final TradingCards plugin;
+    private final CollectorBookManager collectorBookManager;
 
     public ListCommand(final TradingCards plugin) {
         this.plugin = plugin;
+        this.collectorBookManager = plugin.getCollectorBookManager();
     }
 
     @Subcommand("list")
@@ -366,18 +368,14 @@ public class ListCommand extends BaseCommand {
         private OwnedCardLookup buildOwnedCardLookup(final Player target) {
             final Set<CompositeCardKey> ownedCards = new HashSet<>();
             final Set<CompositeCardKey> ownedShinyCards = new HashSet<>();
-            for (Deck deck : plugin.getStorage().getPlayerDecks(target.getUniqueId())) {
-                final List<StorageEntry> deckEntries = deck.getDeckEntries();
-                if (deckEntries == null || deckEntries.isEmpty()) {
-                    continue;
-                }
-                for (StorageEntry entry : deckEntries) {
-                    final CompositeCardKey key = new CompositeCardKey(entry.getRarityId(), entry.getSeriesId(), entry.getCardId());
-                    if (entry.isShiny()) {
-                        ownedShinyCards.add(key);
-                    } else {
-                        ownedCards.add(key);
-                    }
+
+            final List<StorageEntry> ownedEntries = collectorBookManager.getOwnedEntries(target.getUniqueId());
+            for (StorageEntry entry : ownedEntries) {
+                final CompositeCardKey key = new CompositeCardKey(entry.getRarityId(), entry.getSeriesId(), entry.getCardId());
+                if (entry.isShiny()) {
+                    ownedShinyCards.add(key);
+                } else {
+                    ownedCards.add(key);
                 }
             }
             return new OwnedCardLookup(ownedCards, ownedShinyCards);
