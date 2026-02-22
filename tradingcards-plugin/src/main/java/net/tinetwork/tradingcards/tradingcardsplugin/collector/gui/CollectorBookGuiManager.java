@@ -3,6 +3,7 @@ package net.tinetwork.tradingcards.tradingcardsplugin.collector.gui;
 import net.tinetwork.tradingcards.api.model.Rarity;
 import net.tinetwork.tradingcards.api.model.Series;
 import net.tinetwork.tradingcards.api.model.deck.StorageEntry;
+import net.tinetwork.tradingcards.api.utils.NbtUtils;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
@@ -196,6 +197,35 @@ public class CollectorBookGuiManager {
         }
 
         final StorageEntry selectedEntry = entries.get(index);
+        if (event.isRightClick()) {
+            final int requestedAmount = event.isShiftClick() ? Integer.MAX_VALUE : 1;
+            final int depositedAmount = removeFromInventory(player, selectedEntry, requestedAmount);
+            if (depositedAmount <= 0) {
+                ChatUtil.sendPrefixedMessage(player, "No matching copies found in your inventory to deposit.");
+                return;
+            }
+
+            collectorBookManager.addCard(
+                    player.getUniqueId(),
+                    selectedEntry.getCardId(),
+                    selectedEntry.getRarityId(),
+                    selectedEntry.getSeriesId(),
+                    selectedEntry.isShiny(),
+                    depositedAmount
+            );
+            ChatUtil.sendPrefixedMessage(player,
+                    "Deposited %d %s (%s).".formatted(
+                            depositedAmount,
+                            selectedEntry.getCardId(),
+                            selectedEntry.isShiny() ? "shiny" : "normal"));
+            openCardsList(player, state.type(), state.filterId(), page);
+            return;
+        }
+
+        if (!event.isLeftClick()) {
+            return;
+        }
+
         final TradingCard card = plugin.getCardManager().getCard(selectedEntry.getCardId(), selectedEntry.getRarityId(), selectedEntry.getSeriesId());
         if (card instanceof EmptyCard) {
             ChatUtil.sendPrefixedMessage(player, "This card no longer exists in config and cannot be withdrawn.");
@@ -337,7 +367,9 @@ public class CollectorBookGuiManager {
                         ChatUtil.color("&7Series: &f" + entry.getSeriesId()),
                         ChatUtil.color("&7Owned: &f" + entry.getAmount()),
                         ChatUtil.color("&7Version: &f" + (entry.isShiny() ? "Shiny" : "Normal")),
-                        ChatUtil.color("&cCannot withdraw this card.")
+                        ChatUtil.color("&cCannot withdraw this card."),
+                        ChatUtil.color("&eRight-Click: &fDeposit 1"),
+                        ChatUtil.color("&eShift-Right: &fDeposit all from inventory")
                 ));
                 fallback.setItemMeta(fallbackMeta);
             }
@@ -360,6 +392,8 @@ public class CollectorBookGuiManager {
         lore.add(ChatUtil.color("&7Version: &f" + (entry.isShiny() ? "Shiny" : "Normal")));
         lore.add(ChatUtil.color("&eLeft-Click: &fWithdraw 1"));
         lore.add(ChatUtil.color("&eShift-Left: &fWithdraw up to 64"));
+        lore.add(ChatUtil.color("&eRight-Click: &fDeposit 1"));
+        lore.add(ChatUtil.color("&eShift-Right: &fDeposit all from inventory"));
         itemMeta.setLore(lore);
         cardItem.setItemMeta(itemMeta);
         return cardItem;
@@ -456,5 +490,48 @@ public class CollectorBookGuiManager {
         for (ItemStack leftover : leftovers.values()) {
             player.getWorld().dropItemNaturally(player.getLocation(), leftover);
         }
+    }
+
+    private int removeFromInventory(
+            final @NotNull Player player,
+            final @NotNull StorageEntry selectedEntry,
+            final int requestedAmount
+    ) {
+        int remaining = requestedAmount;
+        int removed = 0;
+        for (int slot = 0; slot < player.getInventory().getStorageContents().length && remaining > 0; slot++) {
+            final ItemStack itemStack = player.getInventory().getItem(slot);
+            if (!isMatchingCard(itemStack, selectedEntry)) {
+                continue;
+            }
+
+            final int toRemove = Math.min(remaining, itemStack.getAmount());
+            removed += toRemove;
+            remaining -= toRemove;
+            if (toRemove >= itemStack.getAmount()) {
+                player.getInventory().setItem(slot, null);
+            } else {
+                itemStack.setAmount(itemStack.getAmount() - toRemove);
+            }
+        }
+        return removed;
+    }
+
+    private boolean isMatchingCard(final @Nullable ItemStack itemStack, final @NotNull StorageEntry selectedEntry) {
+        if (itemStack == null || itemStack.getType().isAir() || !NbtUtils.Card.isCard(itemStack)) {
+            return false;
+        }
+
+        final String cardId = NbtUtils.Card.getCardId(itemStack);
+        final String rarityId = NbtUtils.Card.getRarityId(itemStack);
+        final String seriesId = NbtUtils.Card.getSeriesId(itemStack);
+        if (cardId == null || rarityId == null || seriesId == null) {
+            return false;
+        }
+
+        return cardId.equals(selectedEntry.getCardId())
+                && rarityId.equals(selectedEntry.getRarityId())
+                && seriesId.equals(selectedEntry.getSeriesId())
+                && NbtUtils.Card.isShiny(itemStack) == selectedEntry.isShiny();
     }
 }
