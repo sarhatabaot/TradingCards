@@ -1,0 +1,133 @@
+config-version: 1
+
+# ##############################
+# Collector Book GUI Settings
+# ##############################
+
+# Main menu configuration
+main-menu:
+  # Title of the main menu (supports color codes with &)
+  title: "&8Collector Book"
+  # Size of the inventory (must be a multiple of 9, between 9 and 54)
+  size: 27
+  # Button configurations
+  buttons:
+    rarities:
+      slot: 11
+      material: AMETHYST_SHARD
+      name: "&dBrowse Rarities"
+      lore:
+        - "&7View collected cards by rarity."
+    all-cards:
+      slot: 13
+      material: CHEST
+      name: "&eBrowse All Cards"
+      lore:
+        - "&7View all collected cards."
+    series:
+      slot: 15
+      material: BOOK
+      name: "&bBrowse Series"
+      lore:
+        - "&7View collected cards by series."
+    close:
+      slot: 22
+      material: BARRIER
+      name: "&cClose"
+      lore:
+        - "&7Close this menu."
+
+# Browser configuration (for rarity/series/card lists)
+browser:
+  # Size of the browser inventory (must be a multiple of 9, between 9 and 54)
+  size: 54
+  
+  # Titles for different browser views (supports color codes with &)
+  # %filter% placeholder is replaced with rarity/series id for filtered views
+  titles:
+    rarities: "&8Collector Book - Rarities"
+    series: "&8Collector Book - Series"
+    cards-all: "&8Collector Book - All Cards"
+    cards-rarity: "&8Collector - Rarity: %filter%"
+    cards-series: "&8Collector - Series: %filter%"
+  
+  # Content slots - where cards/categories are displayed
+  # Default is slots 0-44 (leaving bottom row for navigation)
+  # Must be valid slots within the inventory size
+  content-slots:
+    - 0
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+    - 6
+    - 7
+    - 8
+    - 9
+    - 10
+    - 11
+    - 12
+    - 13
+    - 14
+    - 15
+    - 16
+    - 17
+    - 18
+    - 19
+    - 20
+    - 21
+    - 22
+    - 23
+    - 24
+    - 25
+    - 26
+    - 27
+    - 28
+    - 29
+    - 30
+    - 31
+    - 32
+    - 33
+    - 34
+    - 35
+    - 36
+    - 37
+    - 38
+    - 39
+    - 40
+    - 41
+    - 42
+    - 43
+    - 44
+  
+  # Navigation button configuration
+  navigation:
+    previous:
+      slot: 45
+      material: ARROW
+      name: "&ePrevious Page"
+      lore:
+        - "&7Go to previous page."
+    back:
+      slot: 49
+      material: BARRIER
+      name: "&cBack"
+      lore:
+        - "&7Return to previous menu."
+    next:
+      slot: 53
+      material: ARROW
+      name: "&eNext Page"
+      lore:
+        - "&7Go to next page."
+  
+  # Category icon materials
+  category-icons:
+    rarity-material: AMETHYST_CLUSTER
+    series-material: BOOK
+  
+  # Removed/invalid card display
+  removed-card:
+    material: BARRIER
+    name: "&cRemoved Card"

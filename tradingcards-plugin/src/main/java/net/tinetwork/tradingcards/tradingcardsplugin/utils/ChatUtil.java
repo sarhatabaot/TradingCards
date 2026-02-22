@@ -8,6 +8,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -70,5 +71,18 @@ public class ChatUtil {
 
     public static void sendMessage(final @NotNull CommandSender target, final Component text) {
         target.sendMessage(color(text));
+    }
+
+    /**
+     * Strips color codes from a string (both & and § color codes).
+     * @param text The text to strip colors from
+     * @return The text without color codes
+     */
+    @Contract("null -> new")
+    public static @NotNull String stripColor(final @Nullable String text) {
+        if (text == null) {
+            return "";
+        }
+        return ChatColor.stripColor(text);
     }
 }

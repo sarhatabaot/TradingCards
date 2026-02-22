@@ -42,6 +42,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.EditType;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.EditUpgrade;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.AdvancedConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.ChancesConfig;
+import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.CollectorGuiConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.DropPoolsConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.GeneralConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.MessagesConfig;
@@ -105,6 +106,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private ChancesConfig chancesConfig;
     private DropPoolsConfig dropPoolsConfig;
     private AdvancedConfig advancedConfig;
+    private CollectorGuiConfig collectorGuiConfig;
 
     /* Managers */
     private AllCardManager cardManager;
@@ -238,6 +240,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
             this.messagesConfig = new MessagesConfig(this);
             this.storageConfig = new StorageConfig(this);
             this.advancedConfig = new AdvancedConfig(this);
+            this.collectorGuiConfig = new CollectorGuiConfig(this);
         } catch (ConfigurateException e) {
             getLogger().severe(e.getMessage());
         }
@@ -270,7 +273,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         this.packManager = new BoosterPackManager(this);
         this.deckManager = new TradingDeckManager(this);
         this.collectorBookManager = new CollectorBookManager(this);
-        this.collectorBookGuiManager = new CollectorBookGuiManager(this);
+        this.collectorBookGuiManager = new CollectorBookGuiManager(this, collectorGuiConfig);
         this.upgradeManager = new TradingUpgradeManager(this);
     }
 
@@ -392,7 +395,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         this.packManager.forceCacheRefresh();
         this.deckManager = new TradingDeckManager(this);
         this.collectorBookManager = new CollectorBookManager(this);
-        this.collectorBookGuiManager = new CollectorBookGuiManager(this);
+        this.collectorBookGuiManager = new CollectorBookGuiManager(this, collectorGuiConfig);
         this.dropTypeManager.forceCacheRefresh();
     }
 
@@ -538,6 +541,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         this.storage.reload();
         this.chancesConfig.reloadConfig();
         this.dropPoolsConfig.reloadConfig();
+        this.collectorGuiConfig.reloadConfig();
     }
 
     public void reloadPlugin() {
@@ -579,6 +583,10 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
     public CollectorBookGuiManager getCollectorBookGuiManager() {
         return collectorBookGuiManager;
+    }
+
+    public CollectorGuiConfig getCollectorGuiConfig() {
+        return collectorGuiConfig;
     }
     
     private void initPermissions() {

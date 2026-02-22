@@ -8,8 +8,8 @@ import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.EmptyCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.collector.CollectorBookManager;
+import net.tinetwork.tradingcards.tradingcardsplugin.config.settings.CollectorGuiConfig;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
-import org.bukkit.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -29,11 +29,8 @@ import java.util.Map;
 import java.util.UUID;
 
 public class CollectorBookGuiManager {
-    private static final String TITLE_PREFIX = "Collector";
-    private static final int PAGE_SIZE = 45;
-    private static final int PREV_SLOT = 45;
-    private static final int BACK_SLOT = 49;
-    private static final int NEXT_SLOT = 53;
+    // Unique identifier for collector inventories (stored in persistent data or used for tracking)
+    public static final String COLLECTOR_GUI_IDENTIFIER = "TradingCards:CollectorBook";
 
     private enum ViewType {
         MENU,
@@ -49,11 +46,13 @@ public class CollectorBookGuiManager {
 
     private final TradingCards plugin;
     private final CollectorBookManager collectorBookManager;
+    private final CollectorGuiConfig config;
     private final Map<UUID, ViewState> viewerState;
 
-    public CollectorBookGuiManager(final @NotNull TradingCards plugin) {
+    public CollectorBookGuiManager(final @NotNull TradingCards plugin, final @NotNull CollectorGuiConfig config) {
         this.plugin = plugin;
         this.collectorBookManager = plugin.getCollectorBookManager();
+        this.config = config;
         this.viewerState = new HashMap<>();
     }
 
@@ -66,11 +65,36 @@ public class CollectorBookGuiManager {
         return viewerState.containsKey(playerUuid);
     }
 
+    /**
+     * Checks if an inventory title belongs to a collector GUI.
+     * Uses a best-effort approach that works with fully custom titles.
+     */
     public boolean isCollectorInventoryTitle(final @Nullable String inventoryTitle) {
         if (inventoryTitle == null) {
             return false;
         }
-        return ChatColor.stripColor(inventoryTitle).startsWith(TITLE_PREFIX);
+        // Check against all configured titles (with color codes stripped for comparison)
+        final String stripped = ChatUtil.stripColor(inventoryTitle);
+        final CollectorGuiConfig.MenuConfig menu = config.menuConfig();
+        final CollectorGuiConfig.BrowserConfig browser = config.browserConfig();
+
+        // Check main menu title
+        if (stripped.equals(ChatUtil.stripColor(menu.title()))) {
+            return true;
+        }
+        // Check browser titles (without filter placeholders)
+        if (stripped.startsWith(ChatUtil.stripColor(browser.raritiesTitle())) ||
+            stripped.startsWith(ChatUtil.stripColor(browser.seriesTitle())) ||
+            stripped.startsWith(ChatUtil.stripColor(browser.cardsAllTitle()))) {
+            return true;
+        }
+        // Check filtered titles (prefix match only since filter varies)
+        final String rarityPrefix = ChatUtil.stripColor(browser.cardsRarityTitle()).replace("%filter%", "");
+        final String seriesPrefix = ChatUtil.stripColor(browser.cardsSeriesTitle()).replace("%filter%", "");
+        if (stripped.startsWith(rarityPrefix) || stripped.startsWith(seriesPrefix)) {
+            return true;
+        }
+        return false;
     }
 
     public void removeViewer(final @NotNull UUID playerUuid) {
@@ -102,22 +126,24 @@ public class CollectorBookGuiManager {
     }
 
     private void handleMenuClick(final @NotNull Player player, final int slot) {
-        if (slot == 11) {
+        final CollectorGuiConfig.MenuConfig menu = config.menuConfig();
+
+        if (slot == menu.raritiesButton().slot()) {
             openCategoryList(player, ViewType.RARITY_LIST, 0);
             return;
         }
 
-        if (slot == 13) {
+        if (slot == menu.allCardsButton().slot()) {
             openCardsList(player, ViewType.CARDS_ALL, null, 0);
             return;
         }
 
-        if (slot == 15) {
+        if (slot == menu.seriesButton().slot()) {
             openCategoryList(player, ViewType.SERIES_LIST, 0);
             return;
         }
 
-        if (slot == 22) {
+        if (slot == menu.closeButton().slot()) {
             player.closeInventory();
         }
     }
@@ -128,29 +154,36 @@ public class CollectorBookGuiManager {
             final int slot,
             final boolean rarityView
     ) {
+        final CollectorGuiConfig.BrowserConfig browser = config.browserConfig();
+        final CollectorGuiConfig.NavigationConfig nav = browser.navigation();
+        final List<Integer> contentSlots = browser.contentSlots();
+        final int pageSize = contentSlots.size();
+
         final List<CategoryEntry> categories = rarityView
                 ? getRarityCategories(player.getUniqueId())
                 : getSeriesCategories(player.getUniqueId());
-        final int page = clampPage(state.page(), categories.size());
+        final int page = clampPage(state.page(), categories.size(), pageSize);
 
-        if (slot == PREV_SLOT) {
-            openCategoryList(player, state.type(), Math.max(0, page - 1));
+        if (slot == nav.previous().slot() && page > 0) {
+            openCategoryList(player, state.type(), page - 1);
             return;
         }
-        if (slot == NEXT_SLOT) {
+        if (slot == nav.next().slot()) {
             openCategoryList(player, state.type(), page + 1);
             return;
         }
-        if (slot == BACK_SLOT) {
+        if (slot == nav.back().slot()) {
             openMainMenu(player);
             return;
         }
 
-        if (slot < 0 || slot >= PAGE_SIZE) {
+        // Check if slot is in content slots
+        final int contentIndex = contentSlots.indexOf(slot);
+        if (contentIndex < 0) {
             return;
         }
 
-        final int index = page * PAGE_SIZE + slot;
+        final int index = page * pageSize + contentIndex;
         if (index < 0 || index >= categories.size()) {
             return;
         }
@@ -164,19 +197,24 @@ public class CollectorBookGuiManager {
     }
 
     private void handleCardsClick(final @NotNull Player player, final @NotNull ViewState state, final @NotNull InventoryClickEvent event) {
+        final CollectorGuiConfig.BrowserConfig browser = config.browserConfig();
+        final CollectorGuiConfig.NavigationConfig nav = browser.navigation();
+        final List<Integer> contentSlots = browser.contentSlots();
+        final int pageSize = contentSlots.size();
+
         final List<StorageEntry> entries = getFilteredEntries(player.getUniqueId(), state.type(), state.filterId());
-        final int page = clampPage(state.page(), entries.size());
+        final int page = clampPage(state.page(), entries.size(), pageSize);
         final int slot = event.getRawSlot();
 
-        if (slot == PREV_SLOT) {
-            openCardsList(player, state.type(), state.filterId(), Math.max(0, page - 1));
+        if (slot == nav.previous().slot() && page > 0) {
+            openCardsList(player, state.type(), state.filterId(), page - 1);
             return;
         }
-        if (slot == NEXT_SLOT) {
+        if (slot == nav.next().slot()) {
             openCardsList(player, state.type(), state.filterId(), page + 1);
             return;
         }
-        if (slot == BACK_SLOT) {
+        if (slot == nav.back().slot()) {
             if (state.type() == ViewType.CARDS_RARITY) {
                 openCategoryList(player, ViewType.RARITY_LIST, 0);
             } else if (state.type() == ViewType.CARDS_SERIES) {
@@ -187,11 +225,13 @@ public class CollectorBookGuiManager {
             return;
         }
 
-        if (slot < 0 || slot >= PAGE_SIZE) {
+        // Check if slot is in content slots
+        final int contentIndex = contentSlots.indexOf(slot);
+        if (contentIndex < 0) {
             return;
         }
 
-        final int index = page * PAGE_SIZE + slot;
+        final int index = page * pageSize + contentIndex;
         if (index < 0 || index >= entries.size()) {
             return;
         }
@@ -260,26 +300,32 @@ public class CollectorBookGuiManager {
     }
 
     private void openCategoryList(final @NotNull Player player, final @NotNull ViewType categoryType, final int requestedPage) {
+        final CollectorGuiConfig.BrowserConfig browser = config.browserConfig();
+        final List<Integer> contentSlots = browser.contentSlots();
+        final int pageSize = contentSlots.size();
+
         final List<CategoryEntry> categories = categoryType == ViewType.RARITY_LIST
                 ? getRarityCategories(player.getUniqueId())
                 : getSeriesCategories(player.getUniqueId());
 
-        final int page = clampPage(requestedPage, categories.size());
-        final int startIndex = page * PAGE_SIZE;
-        final int endIndex = Math.min(categories.size(), startIndex + PAGE_SIZE);
+        final int page = clampPage(requestedPage, categories.size(), pageSize);
+        final int startIndex = page * pageSize;
+        final int endIndex = Math.min(categories.size(), startIndex + pageSize);
 
         final String title = categoryType == ViewType.RARITY_LIST
-                ? ChatUtil.color("&8Collector Book - Rarities")
-                : ChatUtil.color("&8Collector Book - Series");
-        final Inventory inventory = Bukkit.createInventory(player, 54, title);
+                ? ChatUtil.color(browser.raritiesTitle())
+                : ChatUtil.color(browser.seriesTitle());
+        final Inventory inventory = Bukkit.createInventory(player, browser.size(), title);
 
         for (int i = startIndex; i < endIndex; i++) {
             final CategoryEntry entry = categories.get(i);
-            final int slot = i - startIndex;
-            inventory.setItem(slot, buildCategoryItem(entry, categoryType == ViewType.RARITY_LIST));
+            final int slotIndex = i - startIndex;
+            if (slotIndex < contentSlots.size()) {
+                inventory.setItem(contentSlots.get(slotIndex), buildCategoryItem(entry, categoryType == ViewType.RARITY_LIST));
+            }
         }
 
-        addNavigation(inventory, page, categories.size());
+        addNavigation(inventory, page, categories.size(), pageSize);
         viewerState.put(player.getUniqueId(), new ViewState(categoryType, page, null));
         player.openInventory(inventory);
     }
@@ -290,53 +336,68 @@ public class CollectorBookGuiManager {
             final @Nullable String filterId,
             final int requestedPage
     ) {
+        final CollectorGuiConfig.BrowserConfig browser = config.browserConfig();
+        final List<Integer> contentSlots = browser.contentSlots();
+        final int pageSize = contentSlots.size();
+
         final List<StorageEntry> entries = getFilteredEntries(player.getUniqueId(), cardViewType, filterId);
-        final int page = clampPage(requestedPage, entries.size());
-        final int startIndex = page * PAGE_SIZE;
-        final int endIndex = Math.min(entries.size(), startIndex + PAGE_SIZE);
+        final int page = clampPage(requestedPage, entries.size(), pageSize);
+        final int startIndex = page * pageSize;
+        final int endIndex = Math.min(entries.size(), startIndex + pageSize);
 
         final String title = switch (cardViewType) {
-            case CARDS_RARITY -> ChatUtil.color("&8Collector - Rarity: " + filterId);
-            case CARDS_SERIES -> ChatUtil.color("&8Collector - Series: " + filterId);
-            default -> ChatUtil.color("&8Collector Book - All Cards");
+            case CARDS_RARITY -> ChatUtil.color(browser.cardsRarityTitle().replace("%filter%", filterId != null ? filterId : ""));
+            case CARDS_SERIES -> ChatUtil.color(browser.cardsSeriesTitle().replace("%filter%", filterId != null ? filterId : ""));
+            default -> ChatUtil.color(browser.cardsAllTitle());
         };
-        final Inventory inventory = Bukkit.createInventory(player, 54, title);
+        final Inventory inventory = Bukkit.createInventory(player, browser.size(), title);
 
         for (int i = startIndex; i < endIndex; i++) {
             final StorageEntry entry = entries.get(i);
-            final int slot = i - startIndex;
-            inventory.setItem(slot, buildCardItem(entry));
+            final int slotIndex = i - startIndex;
+            if (slotIndex < contentSlots.size()) {
+                inventory.setItem(contentSlots.get(slotIndex), buildCardItem(entry));
+            }
         }
 
-        addNavigation(inventory, page, entries.size());
+        addNavigation(inventory, page, entries.size(), pageSize);
         viewerState.put(player.getUniqueId(), new ViewState(cardViewType, page, filterId));
         player.openInventory(inventory);
     }
 
     private @NotNull Inventory buildMainMenu() {
-        final Inventory inventory = Bukkit.createInventory(null, 27, ChatUtil.color("&8Collector Book"));
-        inventory.setItem(11, buildMenuItem(Material.AMETHYST_SHARD, "&dBrowse Rarities", "&7View collected cards by rarity."));
-        inventory.setItem(13, buildMenuItem(Material.CHEST, "&eBrowse All Cards", "&7View all collected cards."));
-        inventory.setItem(15, buildMenuItem(Material.BOOK, "&bBrowse Series", "&7View collected cards by series."));
-        inventory.setItem(22, buildMenuItem(Material.BARRIER, "&cClose", "&7Close this menu."));
+        final CollectorGuiConfig.MenuConfig menu = config.menuConfig();
+        final Inventory inventory = Bukkit.createInventory(null, menu.size(), ChatUtil.color(menu.title()));
+
+        // Set buttons at configured slots
+        inventory.setItem(menu.raritiesButton().slot(), buildButtonItem(menu.raritiesButton()));
+        inventory.setItem(menu.allCardsButton().slot(), buildButtonItem(menu.allCardsButton()));
+        inventory.setItem(menu.seriesButton().slot(), buildButtonItem(menu.seriesButton()));
+        inventory.setItem(menu.closeButton().slot(), buildButtonItem(menu.closeButton()));
+
         return inventory;
     }
 
-    private @NotNull ItemStack buildMenuItem(final @NotNull Material material, final @NotNull String displayName, final @NotNull String loreLine) {
-        final ItemStack itemStack = new ItemStack(material);
+    private @NotNull ItemStack buildButtonItem(final @NotNull CollectorGuiConfig.ButtonConfig button) {
+        final ItemStack itemStack = new ItemStack(button.material());
         final ItemMeta itemMeta = itemStack.getItemMeta();
         if (itemMeta == null) {
             return itemStack;
         }
-        itemMeta.setDisplayName(ChatUtil.color(displayName));
-        itemMeta.setLore(List.of(ChatUtil.color(loreLine)));
+        itemMeta.setDisplayName(ChatUtil.color(button.name()));
+        final List<String> coloredLore = new ArrayList<>();
+        for (String line : button.lore()) {
+            coloredLore.add(ChatUtil.color(line));
+        }
+        itemMeta.setLore(coloredLore);
         itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         itemStack.setItemMeta(itemMeta);
         return itemStack;
     }
 
     private @NotNull ItemStack buildCategoryItem(final @NotNull CategoryEntry entry, final boolean rarityView) {
-        final Material material = rarityView ? Material.AMETHYST_CLUSTER : Material.BOOK;
+        final CollectorGuiConfig.BrowserConfig browser = config.browserConfig();
+        final Material material = rarityView ? browser.rarityCategoryMaterial() : browser.seriesCategoryMaterial();
         final ItemStack itemStack = new ItemStack(material);
         final ItemMeta itemMeta = itemStack.getItemMeta();
         if (itemMeta == null) {
@@ -355,12 +416,14 @@ public class CollectorBookGuiManager {
     }
 
     private @NotNull ItemStack buildCardItem(final @NotNull StorageEntry entry) {
+        final CollectorGuiConfig.BrowserConfig browser = config.browserConfig();
         final TradingCard card = plugin.getCardManager().getCard(entry.getCardId(), entry.getRarityId(), entry.getSeriesId());
+
         if (card instanceof EmptyCard) {
-            final ItemStack fallback = new ItemStack(Material.BARRIER);
+            final ItemStack fallback = new ItemStack(browser.removedCardMaterial());
             final ItemMeta fallbackMeta = fallback.getItemMeta();
             if (fallbackMeta != null) {
-                fallbackMeta.setDisplayName(ChatUtil.color("&cRemoved Card"));
+                fallbackMeta.setDisplayName(ChatUtil.color(browser.removedCardName()));
                 fallbackMeta.setLore(List.of(
                         ChatUtil.color("&7Card: &f" + entry.getCardId()),
                         ChatUtil.color("&7Rarity: &f" + entry.getRarityId()),
@@ -376,6 +439,7 @@ public class CollectorBookGuiManager {
             return fallback;
         }
 
+        // Use card.build() so displayed cards match real items
         final ItemStack cardItem = card.build(entry.isShiny());
         cardItem.setAmount(Math.max(1, Math.min(64, entry.getAmount())));
         final ItemMeta itemMeta = cardItem.getItemMeta();
@@ -399,22 +463,35 @@ public class CollectorBookGuiManager {
         return cardItem;
     }
 
-    private void addNavigation(final @NotNull Inventory inventory, final int page, final int totalEntries) {
-        final int maxPage = Math.max(0, (totalEntries - 1) / PAGE_SIZE);
+    private void addNavigation(final @NotNull Inventory inventory, final int page, final int totalEntries, final int pageSize) {
+        final CollectorGuiConfig.BrowserConfig browser = config.browserConfig();
+        final CollectorGuiConfig.NavigationConfig nav = browser.navigation();
+        final int maxPage = Math.max(0, (totalEntries - 1) / pageSize);
+
         if (page > 0) {
-            inventory.setItem(PREV_SLOT, buildMenuItem(Material.ARROW, "&ePrevious Page", "&7Go to page " + page));
+            final CollectorGuiConfig.ButtonConfig prevButton = nav.previous();
+            final List<String> prevLore = new ArrayList<>(prevButton.lore());
+            prevLore.add("&7Go to page " + page);
+            inventory.setItem(prevButton.slot(), buildButtonItem(new CollectorGuiConfig.ButtonConfig(
+                    prevButton.slot(), prevButton.material(), prevButton.name(), prevLore)));
         }
-        inventory.setItem(BACK_SLOT, buildMenuItem(Material.BARRIER, "&cBack", "&7Return to previous menu."));
+
+        inventory.setItem(nav.back().slot(), buildButtonItem(nav.back()));
+
         if (page < maxPage) {
-            inventory.setItem(NEXT_SLOT, buildMenuItem(Material.ARROW, "&eNext Page", "&7Go to page " + (page + 2)));
+            final CollectorGuiConfig.ButtonConfig nextButton = nav.next();
+            final List<String> nextLore = new ArrayList<>(nextButton.lore());
+            nextLore.add("&7Go to page " + (page + 2));
+            inventory.setItem(nextButton.slot(), buildButtonItem(new CollectorGuiConfig.ButtonConfig(
+                    nextButton.slot(), nextButton.material(), nextButton.name(), nextLore)));
         }
     }
 
-    private int clampPage(final int requestedPage, final int totalEntries) {
+    private int clampPage(final int requestedPage, final int totalEntries, final int pageSize) {
         if (totalEntries <= 0) {
             return 0;
         }
-        final int maxPage = Math.max(0, (totalEntries - 1) / PAGE_SIZE);
+        final int maxPage = Math.max(0, (totalEntries - 1) / pageSize);
         return Math.max(0, Math.min(requestedPage, maxPage));
     }
 
