@@ -131,7 +131,7 @@ public class CollectorGuiConfig extends YamlConfigurateFile<TradingCards> {
     }
 
     @Override
-    protected void builderOptions(final TypeSerializerCollection.@NotNull Builder builder) {
+    protected void builderOptions(final TypeSerializerCollection.Builder builder) {
         // No custom serializers.
     }
 

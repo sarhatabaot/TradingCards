@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+//todo, use triumph gui v4.x.x
 public class CollectorBookGuiManager {
     // Unique identifier for collector inventories (stored in persistent data or used for tracking)
     public static final String COLLECTOR_GUI_IDENTIFIER = "TradingCards:CollectorBook";
