@@ -51,7 +51,6 @@ import net.tinetwork.tradingcards.tradingcardsplugin.events.DeckEventListener;
 import net.tinetwork.tradingcards.tradingcardsplugin.listeners.DeckListener;
 import net.tinetwork.tradingcards.tradingcardsplugin.listeners.DropListener;
 import net.tinetwork.tradingcards.tradingcardsplugin.listeners.PackListener;
-import net.tinetwork.tradingcards.tradingcardsplugin.listeners.CollectorBookGuiListener;
 import net.tinetwork.tradingcards.tradingcardsplugin.listeners.SpawnerListener;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.impl.BoosterPackManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.impl.DropTypeManager;
@@ -467,7 +466,6 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         pm.registerEvents(new DropListener(this), this);
         pm.registerEvents(new PackListener(this), this);
         pm.registerEvents(new DeckListener(this), this);
-        pm.registerEvents(new CollectorBookGuiListener(this, collectorBookGuiManager), this);
         if (getGeneralConfig().spawnerBlock()) {
             pm.registerEvents(new SpawnerListener(this), this);
         }
