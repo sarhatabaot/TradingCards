@@ -691,6 +691,11 @@ public class YamlStorage implements Storage<TradingCard> {
     }
 
     @Override
+    public void editUpgrade(final String upgradeId, final PackEntry required, final PackEntry result) {
+        upgradesConfig.saveUpgrade(upgradeId, new Upgrade(upgradeId, required, result));
+    }
+
+    @Override
     public void deleteUpgrade(final String upgradeId) {
         upgradesConfig.deleteUpgrade(upgradeId);
     }

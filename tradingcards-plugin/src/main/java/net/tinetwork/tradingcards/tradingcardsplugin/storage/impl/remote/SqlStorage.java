@@ -2288,6 +2288,28 @@ public class SqlStorage implements Storage<TradingCard> {
     }
 
     @Override
+    public void editUpgrade(final String upgradeId, final PackEntry required, final PackEntry result) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.update(UpgradesRequired.UPGRADES_REQUIRED
+                                .where(UpgradesRequired.UPGRADES_REQUIRED.UPGRADE_ID.eq(upgradeId)))
+                        .set(UpgradesRequired.UPGRADES_REQUIRED.RARITY_ID, required.rarityId())
+                        .set(UpgradesRequired.UPGRADES_REQUIRED.SERIES_ID, required.seriesId())
+                        .set(UpgradesRequired.UPGRADES_REQUIRED.AMOUNT, required.amount())
+                        .execute();
+
+                dslContext.update(UpgradesResult.UPGRADES_RESULT
+                                .where(UpgradesResult.UPGRADES_RESULT.UPGRADE_ID.eq(upgradeId)))
+                        .set(UpgradesResult.UPGRADES_RESULT.RARITY_ID, result.rarityId())
+                        .set(UpgradesResult.UPGRADES_RESULT.SERIES_ID, result.seriesId())
+                        .set(UpgradesResult.UPGRADES_RESULT.AMOUNT, result.amount())
+                        .execute();
+            }
+        }.executeUpdate();
+    }
+
+    @Override
     public List<Upgrade> getUpgrades() {
         return new ExecuteQuery<List<Upgrade>, Result<Record>>(connectionFactory, jooqSettings) {
             @Override

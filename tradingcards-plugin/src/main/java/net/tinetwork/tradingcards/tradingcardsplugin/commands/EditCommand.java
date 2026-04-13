@@ -30,6 +30,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.PackEditServi
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.RarityEditService;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.SeriesEditService;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.TypeEditService;
+import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.UpgradeEditService;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
@@ -51,6 +52,7 @@ public class EditCommand extends BaseCommand {
     private final RarityEditService rarityEditService;
     private final SeriesEditService seriesEditService;
     private final TypeEditService typeEditService;
+    private final UpgradeEditService upgradeEditService;
 
     public EditCommand(final @NotNull TradingCards plugin) {
         this.plugin = plugin;
@@ -59,6 +61,7 @@ public class EditCommand extends BaseCommand {
         this.rarityEditService = new RarityEditService(plugin);
         this.seriesEditService = new SeriesEditService(plugin);
         this.typeEditService = new TypeEditService(plugin);
+        this.upgradeEditService = new UpgradeEditService(plugin);
     }
 
     @Subcommand("edit")
@@ -430,6 +433,21 @@ public class EditCommand extends BaseCommand {
             }
             plugin.getDropTypeManager().getCache().refresh(typeId);
             sendSetTypes(sender, typeId, editType, value);
+        }
+
+        @Subcommand("upgrade")
+        @CommandPermission(Permissions.Admin.Edit.EDIT_UPGRADE)
+        @Description("Open the upgrade editor dialog.")
+        public void onEditUpgrade(final CommandSender sender, final String upgradeId) {
+            if(!plugin.getUpgradeManager().containsUpgrade(upgradeId)) {
+                ChatUtil.sendPrefixedMessage(sender, InternalMessages.NO_UPGRADE.formatted(upgradeId));
+                return;
+            }
+            if (!(sender instanceof org.bukkit.entity.Player player)) {
+                ChatUtil.sendPrefixedMessage(sender, "&4This editor can only be opened by a player.");
+                return;
+            }
+            upgradeEditService.openEditor(player, upgradeId);
         }
 
         @Subcommand("upgrade")

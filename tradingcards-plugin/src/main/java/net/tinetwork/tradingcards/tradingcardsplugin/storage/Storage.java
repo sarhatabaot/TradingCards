@@ -184,6 +184,7 @@ public interface Storage<T extends Card<T>> {
     void editUpgradeRequired(final String upgradeId, final PackEntry required);
 
     void editUpgradeResult(final String upgradeId, final PackEntry result);
+    void editUpgrade(final String upgradeId, final PackEntry required, final PackEntry result);
 
     void deleteUpgrade(final String upgradeId);
 
