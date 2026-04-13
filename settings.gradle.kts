@@ -58,6 +58,8 @@ dependencyResolutionManagement {
 
             library("mobarena", "com.github.garbagemule:MobArena:0.107")
             library("mythicmobs", "io.lumine:Mythic-Dist:5.11.2")
+
+            library("triumph", "dev.triumphteam:triumph-gui-paper:4.0.0-SNAPSHOT")
         }
     }
 }

@@ -94,6 +94,11 @@ public class YamlStorage implements Storage<TradingCard> {
     }
 
     @Override
+    public Set<UUID> getPlayersWithDecks() {
+        return new HashSet<>(deckConfig.getAllDecks().keySet());
+    }
+
+    @Override
     public void init(final TradingCards plugin) {
         loadCards();
         loadActiveSeries();

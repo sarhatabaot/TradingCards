@@ -102,6 +102,8 @@ allow-rewards: true
 reward-broadcast: true
 # Should we take shiny cards into account at all when collecting a reward? (recommended false, shiny cards are very rare!)
 eat-shiny-cards: false
+# Should cards be auto-collected into the Collector Book instead of dropped as physical items?
+collector-book-enabled: false
 
 # ##############################
 # Default Plugin Support Settings

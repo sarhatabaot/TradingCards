@@ -83,7 +83,7 @@ public class GiveCommands extends BaseCommand {
                         .replaceAll(PlaceholderUtil.PLAYER.asRegex(), target.getName())
                         .replaceAll(PlaceholderUtil.CARD.asRegex(), rarity.getDisplayName() + " " + card.getDisplayName())));
 
-                target.getInventory().addItem(card.build(shiny));
+                CardUtil.dropItem(target, card.build(shiny));
             }
         }
 

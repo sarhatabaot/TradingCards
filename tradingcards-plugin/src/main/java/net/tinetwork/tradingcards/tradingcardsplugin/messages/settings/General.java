@@ -29,6 +29,7 @@ public final class General {
 	public static final Boolean ALLOW_REWARDS = true;
 	public static final Boolean REWARD_BROADCAST = true;
 	public static final Boolean EAT_SHINY_CARDS = false;
+	public static final Boolean COLLECTOR_BOOK_ENABLED = false;
 	public static final Boolean SPAWNER_BLOCK = true;
 	public static final Integer INFO_LINE_LENGTH = 25;
 

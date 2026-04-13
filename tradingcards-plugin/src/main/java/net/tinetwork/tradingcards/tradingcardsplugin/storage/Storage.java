@@ -30,6 +30,11 @@ public interface Storage<T extends Card<T>> {
     List<Deck> getPlayerDecks(UUID playerUuid);
 
     /**
+     * @return UUIDs of players that have at least one deck entry stored.
+     */
+    Set<UUID> getPlayersWithDecks();
+
+    /**
      * @param playerUuid Player UUID
      * @param deckNumber Deck number, must be larger than 1
      * @return Return a corresponding deck object

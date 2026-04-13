@@ -1,0 +1,159 @@
+config-version: 1
+
+# ##############################
+# Collector Book GUI Settings
+# ##############################
+# Text fields in this file use Adventure MiniMessage tags.
+# Examples:
+#   <red>Red Text
+#   <bold>Bold Text
+#   <yellow><bold>Bold Yellow Text
+# Legacy '&' color codes are not supported here.
+
+# Main menu configuration
+main-menu:
+  title: "<dark_gray>Collector Book"
+  size: 27
+  buttons:
+    rarities:
+      slot: 11
+      material: AMETHYST_SHARD
+      name: "<light_purple>Browse Rarities"
+      lore:
+        - "<gray>View collected cards by rarity."
+    all-cards:
+      slot: 13
+      material: CHEST
+      name: "<yellow>Browse All Cards"
+      lore:
+        - "<gray>View all collected cards."
+    series:
+      slot: 15
+      material: BOOK
+      name: "<aqua>Browse Series"
+      lore:
+        - "<gray>View collected cards by series."
+    close:
+      slot: 22
+      material: BARRIER
+      name: "<red>Close"
+      lore:
+        - "<gray>Close this menu."
+
+# Browser configuration for rarity, series, and card list views
+browser:
+  size: 54
+
+  titles:
+    rarities: "<dark_gray>Collector Book - Rarities"
+    series: "<dark_gray>Collector Book - Series"
+    cards-all: "<dark_gray>Collector Book - All Cards"
+    cards-rarity: "<dark_gray>Collector - Rarity: <white>%filter%"
+    cards-series: "<dark_gray>Collector - Series: <white>%filter%"
+
+  # Slots used for category entries and cards.
+  # Keep these within the configured inventory size.
+  content-slots:
+    - 0
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+    - 6
+    - 7
+    - 8
+    - 9
+    - 10
+    - 11
+    - 12
+    - 13
+    - 14
+    - 15
+    - 16
+    - 17
+    - 18
+    - 19
+    - 20
+    - 21
+    - 22
+    - 23
+    - 24
+    - 25
+    - 26
+    - 27
+    - 28
+    - 29
+    - 30
+    - 31
+    - 32
+    - 33
+    - 34
+    - 35
+    - 36
+    - 37
+    - 38
+    - 39
+    - 40
+    - 41
+    - 42
+    - 43
+    - 44
+
+  navigation:
+    previous:
+      slot: 45
+      material: ARROW
+      name: "<yellow>Previous Page"
+      lore:
+        - "<gray>Go to previous page."
+    back:
+      slot: 49
+      material: BARRIER
+      name: "<red>Back"
+      lore:
+        - "<gray>Return to previous menu."
+    next:
+      slot: 53
+      material: ARROW
+      name: "<yellow>Next Page"
+      lore:
+        - "<gray>Go to next page."
+
+  category-icons:
+    rarity-material: AMETHYST_CLUSTER
+    series-material: BOOK
+
+  category-entry:
+    name: "<yellow>%display_name%"
+    lore:
+      - "<gray>Id: <white>%id%"
+      - "<gray>Unique Cards: <white>%unique_cards%"
+      - "<gray>Total Copies: <white>%total_copies%"
+      - "<yellow>Click to open"
+
+  removed-card:
+    material: BARRIER
+    name: "<red>Removed Card"
+    lore:
+      - "<gray>Card: <white>%card_id%"
+      - "<gray>Rarity: <white>%rarity_id%"
+      - "<gray>Series: <white>%series_id%"
+      - "<gray>Owned: <white>%owned%"
+      - "<gray>Version: <white>%version%"
+      - "<red>Cannot withdraw this card."
+      - "<yellow>Right-Click: <white>Deposit 1"
+      - "<yellow>Shift-Right: <white>Deposit all from inventory"
+
+  owned-card:
+    lore:
+      - "<dark_gray>Collector"
+      - "<gray>Owned: <white>%owned%"
+      - "<gray>Version: <white>%version%"
+      - "<yellow>Left-Click: <white>Withdraw 1"
+      - "<yellow>Shift-Left: <white>Withdraw up to 64"
+      - "<yellow>Right-Click: <white>Deposit 1"
+      - "<yellow>Shift-Right: <white>Deposit all from inventory"
+
+  messages:
+    invalid-content-slots: "Collector browser has no content slots configured."

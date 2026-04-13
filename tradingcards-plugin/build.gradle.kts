@@ -24,6 +24,7 @@ repositories {
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
     maven("https://repo.glaremasters.me/repository/towny/")
     maven("https://jitpack.io")
+    maven("https://repo.triumphteam.dev/snapshots")
 }
 
 dependencies {
@@ -43,6 +44,7 @@ dependencies {
     implementation(libs.nbt.api)
     implementation(libs.acf)
     implementation(libs.bstats)
+    implementation(libs.triumph)
     
     library(libs.zip4j)
     library(libs.hikaricp)
