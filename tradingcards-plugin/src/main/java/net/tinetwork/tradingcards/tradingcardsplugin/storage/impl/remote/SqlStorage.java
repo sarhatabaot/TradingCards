@@ -1824,7 +1824,8 @@ public class SqlStorage implements Storage<TradingCard> {
                         .set(PacksContent.PACKS_CONTENT.SERIES_ID, packEntry.seriesId())
                         .set(PacksContent.PACKS_CONTENT.RARITY_ID, packEntry.getRarityId())
                         .set(PacksContent.PACKS_CONTENT.CARD_AMOUNT, String.valueOf(packEntry.getAmount()))
-                        .where(PacksContent.PACKS_CONTENT.LINE_NUMBER.eq(lineNumber))
+                        .where(PacksContent.PACKS_CONTENT.PACK_ID.eq(packId)
+                                .and(PacksContent.PACKS_CONTENT.LINE_NUMBER.eq(lineNumber)))
                         .execute();
             }
         }.executeUpdate();
@@ -1884,7 +1885,9 @@ public class SqlStorage implements Storage<TradingCard> {
                         .set(PacksTrade.PACKS_TRADE.SERIES_ID, packEntry.seriesId())
                         .set(PacksTrade.PACKS_TRADE.RARITY_ID, packEntry.getRarityId())
                         .set(PacksTrade.PACKS_TRADE.CARD_AMOUNT, String.valueOf(packEntry.getAmount()))
-                        .where(PacksTrade.PACKS_TRADE.LINE_NUMBER.eq(lineNumber)).execute();
+                        .where(PacksTrade.PACKS_TRADE.PACK_ID.eq(packId)
+                                .and(PacksTrade.PACKS_TRADE.LINE_NUMBER.eq(lineNumber)))
+                        .execute();
             }
         }.executeUpdate();
     }
@@ -1953,6 +1956,131 @@ public class SqlStorage implements Storage<TradingCard> {
                         .set(Packs.PACKS.CURRENCY_ID, currencyId)
                         .where(Packs.PACKS.PACK_ID.eq(packId))
                         .execute();
+            }
+        }.executeUpdate();
+    }
+
+    @Override
+    public void editCustomType(final String typeId, final String displayName, final String type) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.update(CustomTypes.CUSTOM_TYPES)
+                        .set(CustomTypes.CUSTOM_TYPES.DISPLAY_NAME, displayName)
+                        .set(CustomTypes.CUSTOM_TYPES.DROP_TYPE, CustomTypesDropType.lookupLiteral(type))
+                        .where(CustomTypes.CUSTOM_TYPES.TYPE_ID.eq(typeId))
+                        .execute();
+            }
+        }.executeUpdate();
+    }
+
+    @Override
+    public void editSeries(final String seriesId, final String displayName, final Mode mode, final ColorSeries colors) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.update(net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Series.SERIES)
+                        .set(net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Series.SERIES.DISPLAY_NAME, displayName)
+                        .set(net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Series.SERIES.SERIES_MODE, SeriesSeriesMode.lookupLiteral(mode.name()))
+                        .where(net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.remote.generated.tables.Series.SERIES.SERIES_ID.eq(seriesId))
+                        .execute();
+
+                dslContext.update(SeriesColors.SERIES_COLORS)
+                        .set(SeriesColors.SERIES_COLORS.SERIES, colors.getSeries())
+                        .set(SeriesColors.SERIES_COLORS.ABOUT, colors.getAbout())
+                        .set(SeriesColors.SERIES_COLORS.INFO, colors.getInfo())
+                        .set(SeriesColors.SERIES_COLORS.RARITY, colors.getRarity())
+                        .set(SeriesColors.SERIES_COLORS.TYPE, colors.getType())
+                        .where(SeriesColors.SERIES_COLORS.SERIES_ID.eq(seriesId))
+                        .execute();
+            }
+        }.executeUpdate();
+    }
+
+    @Override
+    public void editRarity(final String rarityId, final String displayName, final String defaultColor, final double buyPrice, final double sellPrice, final String currencyId, final List<String> rewards) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.update(Rarities.RARITIES)
+                        .set(Rarities.RARITIES.DISPLAY_NAME, displayName)
+                        .set(Rarities.RARITIES.DEFAULT_COLOR, defaultColor)
+                        .set(Rarities.RARITIES.BUY_PRICE, buyPrice)
+                        .set(Rarities.RARITIES.SELL_PRICE, sellPrice)
+                        .set(Rarities.RARITIES.CURRENCY_ID, currencyId)
+                        .where(Rarities.RARITIES.RARITY_ID.eq(rarityId))
+                        .execute();
+
+                dslContext.deleteFrom(Rewards.REWARDS)
+                        .where(Rewards.REWARDS.RARITY_ID.eq(rarityId))
+                        .execute();
+                for (int i = 0; i < rewards.size(); i++) {
+                    dslContext.insertInto(Rewards.REWARDS)
+                            .set(Rewards.REWARDS.RARITY_ID, rarityId)
+                            .set(Rewards.REWARDS.COMMAND, rewards.get(i))
+                            .set(Rewards.REWARDS.COMMAND_ORDER, i)
+                            .execute();
+                }
+            }
+        }.executeUpdate();
+    }
+
+    @Override
+    public void editPack(final String packId, final String displayName, final double price, final String permission, final String currencyId) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.update(Packs.PACKS)
+                        .set(Packs.PACKS.DISPLAY_NAME, displayName)
+                        .set(Packs.PACKS.BUY_PRICE, price)
+                        .set(Packs.PACKS.PERMISSION, permission)
+                        .set(Packs.PACKS.CURRENCY_ID, currencyId)
+                        .where(Packs.PACKS.PACK_ID.eq(packId))
+                        .execute();
+            }
+        }.executeUpdate();
+    }
+
+    @Override
+    public void editPack(final String packId, final String displayName, final double price, final String permission, final String currencyId, final List<PackEntry> contents, final List<PackEntry> tradeCards) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.update(Packs.PACKS)
+                        .set(Packs.PACKS.DISPLAY_NAME, displayName)
+                        .set(Packs.PACKS.BUY_PRICE, price)
+                        .set(Packs.PACKS.PERMISSION, permission)
+                        .set(Packs.PACKS.CURRENCY_ID, currencyId)
+                        .where(Packs.PACKS.PACK_ID.eq(packId))
+                        .execute();
+
+                dslContext.deleteFrom(PacksContent.PACKS_CONTENT)
+                        .where(PacksContent.PACKS_CONTENT.PACK_ID.eq(packId))
+                        .execute();
+                for (int i = 0; i < contents.size(); i++) {
+                    final PackEntry entry = contents.get(i);
+                    dslContext.insertInto(PacksContent.PACKS_CONTENT)
+                            .set(PacksContent.PACKS_CONTENT.PACK_ID, packId)
+                            .set(PacksContent.PACKS_CONTENT.LINE_NUMBER, i)
+                            .set(PacksContent.PACKS_CONTENT.SERIES_ID, entry.seriesId())
+                            .set(PacksContent.PACKS_CONTENT.RARITY_ID, entry.getRarityId())
+                            .set(PacksContent.PACKS_CONTENT.CARD_AMOUNT, String.valueOf(entry.getAmount()))
+                            .execute();
+                }
+
+                dslContext.deleteFrom(PacksTrade.PACKS_TRADE)
+                        .where(PacksTrade.PACKS_TRADE.PACK_ID.eq(packId))
+                        .execute();
+                for (int i = 0; i < tradeCards.size(); i++) {
+                    final PackEntry entry = tradeCards.get(i);
+                    dslContext.insertInto(PacksTrade.PACKS_TRADE)
+                            .set(PacksTrade.PACKS_TRADE.PACK_ID, packId)
+                            .set(PacksTrade.PACKS_TRADE.LINE_NUMBER, i)
+                            .set(PacksTrade.PACKS_TRADE.SERIES_ID, entry.seriesId())
+                            .set(PacksTrade.PACKS_TRADE.RARITY_ID, entry.getRarityId())
+                            .set(PacksTrade.PACKS_TRADE.CARD_AMOUNT, String.valueOf(entry.getAmount()))
+                            .execute();
+                }
             }
         }.executeUpdate();
     }

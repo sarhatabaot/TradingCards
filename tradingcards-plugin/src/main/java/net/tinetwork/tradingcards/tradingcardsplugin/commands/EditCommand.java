@@ -26,6 +26,10 @@ import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.EditPack;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.EditRarity;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.EditSeries;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.EditType;
+import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.PackEditService;
+import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.RarityEditService;
+import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.SeriesEditService;
+import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.TypeEditService;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
@@ -43,10 +47,18 @@ import java.util.List;
 public class EditCommand extends BaseCommand {
     private final TradingCards plugin;
     private final Storage<TradingCard> storage;
+    private final PackEditService packEditService;
+    private final RarityEditService rarityEditService;
+    private final SeriesEditService seriesEditService;
+    private final TypeEditService typeEditService;
 
     public EditCommand(final @NotNull TradingCards plugin) {
         this.plugin = plugin;
         this.storage = plugin.getStorage();
+        this.packEditService = new PackEditService(plugin);
+        this.rarityEditService = new RarityEditService(plugin);
+        this.seriesEditService = new SeriesEditService(plugin);
+        this.typeEditService = new TypeEditService(plugin);
     }
 
     @Subcommand("edit")
@@ -131,6 +143,21 @@ public class EditCommand extends BaseCommand {
 
         @Subcommand("rarity")
         @CommandPermission(Permissions.Admin.Edit.EDIT_RARITY)
+        @Description("Open the rarity editor dialog.")
+        public void onEditRarity(final CommandSender sender, final String rarityId) {
+            if (!plugin.getRarityManager().containsRarity(rarityId)) {
+                ChatUtil.sendPrefixedMessage(sender, InternalMessages.NO_RARITY.formatted(rarityId));
+                return;
+            }
+            if (!(sender instanceof org.bukkit.entity.Player player)) {
+                ChatUtil.sendPrefixedMessage(sender, "&4This editor can only be opened by a player.");
+                return;
+            }
+            rarityEditService.openEditor(player, rarityId);
+        }
+
+        @Subcommand("rarity")
+        @CommandPermission(Permissions.Admin.Edit.EDIT_RARITY)
         @CommandCompletion("@rarities @edit-rarity @edit-rarity-value")
         public void onEditRarity(final CommandSender sender, final String rarityId, final EditRarity editRarity, final String value) {
             if (!plugin.getRarityManager().containsRarity(rarityId)) {
@@ -176,6 +203,21 @@ public class EditCommand extends BaseCommand {
             sendSetTypes(sender, rarityId, editRarity, value);
         }
 
+
+        @Subcommand("series")
+        @CommandPermission(Permissions.Admin.Edit.EDIT_SERIES)
+        @Description("Open the series editor dialog.")
+        public void onEditSeries(final CommandSender sender, final String seriesId) {
+            if (!plugin.getSeriesManager().containsSeries(seriesId)) {
+                ChatUtil.sendPrefixedMessage(sender, InternalMessages.NO_SERIES.formatted(seriesId));
+                return;
+            }
+            if (!(sender instanceof org.bukkit.entity.Player player)) {
+                ChatUtil.sendPrefixedMessage(sender, "&4This editor can only be opened by a player.");
+                return;
+            }
+            seriesEditService.openEditor(player, seriesId);
+        }
 
         @Subcommand("series")
         @CommandPermission(Permissions.Admin.Edit.EDIT_SERIES)
@@ -249,6 +291,25 @@ public class EditCommand extends BaseCommand {
                 return -1;
             }
             return lineNumber;
+        }
+
+        //cards edit pack <packId> [displayName|price|permission|contents] (typeCompletion or nothing)
+        @Subcommand("pack")
+        @CommandCompletion("@packs")
+        @CommandPermission(Permissions.Admin.Edit.EDIT_PACK)
+        @Description("Open the pack editor dialog.")
+        public void onEditPack(final CommandSender sender, final String packId) {
+            if (!plugin.getStorage().containsPack(packId)) {
+                ChatUtil.sendPrefixedMessage(sender, InternalMessages.NO_PACK.formatted(packId));
+                return;
+            }
+
+            if (!(sender instanceof org.bukkit.entity.Player player)) {
+                ChatUtil.sendPrefixedMessage(sender, "&4This editor can only be opened by a player.");
+                return;
+            }
+
+            packEditService.openScalarEditor(player, packId);
         }
 
         //cards edit pack <packId> [displayName|price|permission|contents] (typeCompletion or nothing)
@@ -330,6 +391,21 @@ public class EditCommand extends BaseCommand {
         }
 
         //cards edit type <typeId> [type|displayName] (typeCompletion or nothing)
+        @Subcommand("type")
+        @CommandPermission(Permissions.Admin.Edit.EDIT_CUSTOM_TYPE)
+        @Description("Open the custom type editor dialog.")
+        public void onEditType(final CommandSender sender, final String typeId) {
+            if (!plugin.getDropTypeManager().containsType(typeId)) {
+                ChatUtil.sendPrefixedMessage(sender, InternalMessages.NO_TYPE.formatted(typeId));
+                return;
+            }
+            if (!(sender instanceof org.bukkit.entity.Player player)) {
+                ChatUtil.sendPrefixedMessage(sender, "&4This editor can only be opened by a player.");
+                return;
+            }
+            typeEditService.openEditor(player, typeId);
+        }
+
         @Subcommand("type")
         @CommandPermission(Permissions.Admin.Edit.EDIT_CUSTOM_TYPE)
         @CommandCompletion("@custom-types @edit-type @edit-type-value") //Default Types needs to depend on edit-types

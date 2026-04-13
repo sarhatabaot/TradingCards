@@ -504,6 +504,18 @@ public class YamlStorage implements Storage<TradingCard> {
     }
 
     @Override
+    public void editRarity(final String rarityId, final String displayName, final String defaultColor, final double buyPrice, final double sellPrice, final String currencyId, final List<String> rewards) {
+        final Rarity rarity = getRarityById(rarityId);
+        rarity.setDisplayName(displayName);
+        rarity.setDefaultColor(defaultColor);
+        rarity.setBuyPrice(buyPrice);
+        rarity.setSellPrice(sellPrice);
+        rarity.setCurrencyId(currencyId);
+        rarity.setRewards(new ArrayList<>(rewards));
+        raritiesConfig.saveRarity(rarityId, rarity);
+    }
+
+    @Override
     public void editSeriesDisplayName(final String seriesId, final String displayName) {
         seriesConfig.editDisplayName(seriesId, displayName);
     }
@@ -516,6 +528,15 @@ public class YamlStorage implements Storage<TradingCard> {
     @Override
     public void editSeriesMode(final String seriesId, final Mode mode) {
         seriesConfig.editMode(seriesId, mode);
+    }
+
+    @Override
+    public void editSeries(final String seriesId, final String displayName, final Mode mode, final ColorSeries colors) {
+        final Series series = getSeries(seriesId);
+        series.setDisplayName(displayName);
+        series.setMode(mode);
+        series.setColorSeries(colors);
+        seriesConfig.saveSeries(seriesId, series);
     }
 
     @Override
@@ -534,6 +555,14 @@ public class YamlStorage implements Storage<TradingCard> {
     }
 
     @Override
+    public void editCustomType(final String typeId, final String displayName, final String type) {
+        final DropType dropType = getCustomType(typeId);
+        dropType.setDisplayName(displayName);
+        dropType.setType(type);
+        customTypesConfig.saveCustomType(typeId, dropType);
+    }
+
+    @Override
     public void editPackDisplayName(final String packId, final String displayName) {
         packsConfig.editDisplayName(packId, displayName);
     }
@@ -546,7 +575,7 @@ public class YamlStorage implements Storage<TradingCard> {
     @Override
     public void editPackContentsAdd(final String packId, final PackEntry packEntry) {
         List<PackEntry> packEntries = getPack(packId).getPackEntryList();
-        int lineNumber = (packEntries == null) ? 0 : packEntries.size() - 1;
+        int lineNumber = (packEntries == null) ? 0 : packEntries.size();
         packsConfig.editContents(packId, lineNumber, packEntry);
     }
 
@@ -563,7 +592,7 @@ public class YamlStorage implements Storage<TradingCard> {
     @Override
     public void editPackTradeCardsAdd(final String packId, final PackEntry packEntry) {
         List<PackEntry> packEntries = getPack(packId).getTradeCards();
-        int lineNumber = (packEntries == null) ? 0 : packEntries.size() - 1;
+        int lineNumber = (packEntries == null) ? 0 : packEntries.size();
         packsConfig.editTradeCards(packId, lineNumber, packEntry);
     }
 
@@ -585,6 +614,30 @@ public class YamlStorage implements Storage<TradingCard> {
     @Override
     public void editPackCurrencyId(final String packId, final String currencyId) {
         packsConfig.editCurrencyId(packId, currencyId);
+    }
+
+    @Override
+    public void editPack(final String packId, final String displayName, final double price, final String permission, final String currencyId) {
+        final Pack pack = getPack(packId);
+        pack.setDisplayName(displayName);
+        pack.setBuyPrice(price);
+        pack.setPermission(permission);
+        pack.setCurrencyId(currencyId);
+        packsConfig.savePack(pack);
+    }
+
+    @Override
+    public void editPack(final String packId, final String displayName, final double price, final String permission, final String currencyId, final List<PackEntry> contents, final List<PackEntry> tradeCards) {
+        final Pack pack = new Pack(
+                packId,
+                new ArrayList<>(contents),
+                displayName,
+                price,
+                currencyId,
+                permission,
+                new ArrayList<>(tradeCards)
+        );
+        packsConfig.savePack(pack);
     }
 
     @Override

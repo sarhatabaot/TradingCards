@@ -108,6 +108,16 @@ public class SeriesConfig extends SeriesConfigurate {
             Util.logSevereException(e);
         }
     }
+
+    public void saveSeries(final @NotNull String seriesId, final @NotNull Series series) {
+        try {
+            rootNode.node(seriesId).set(series);
+            loader.save(rootNode);
+            reloadConfig();
+        } catch (ConfigurateException e) {
+            Util.logSevereException(e);
+        }
+    }
     
     @Override
     protected void builderOptions(TypeSerializerCollection.Builder builder) {

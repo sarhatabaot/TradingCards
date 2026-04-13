@@ -53,24 +53,40 @@ public class PacksConfig extends YamlConfigurateFile<TradingCards> {
     }
 
     public void editContents(final String packId, final int lineNumber, final PackEntry packEntry) {
-        ConfigurationNode packNode = rootNode.node(packId);
         try {
             Pack pack = getPack(packId);
-            pack.getPackEntryList().set(lineNumber,packEntry);
-            packNode.set(pack);
-            loader.save(rootNode);
+            List<PackEntry> entries = pack.getPackEntryList();
+            if (packEntry == null) {
+                if (lineNumber < 0 || lineNumber >= entries.size()) {
+                    return;
+                }
+                entries.remove(lineNumber);
+            } else if (lineNumber < entries.size()) {
+                entries.set(lineNumber, packEntry);
+            } else {
+                entries.add(packEntry);
+            }
+            savePack(pack);
         } catch (ConfigurateException e) {
             Util.logSevereException(e);
         }
     }
 
     public void editTradeCards(final String packId, final int lineNumber, final PackEntry packEntry) {
-        ConfigurationNode packNode = rootNode.node(packId);
         try {
             Pack pack = getPack(packId);
-            pack.getTradeCards().set(lineNumber,packEntry);
-            packNode.set(pack);
-            loader.save(rootNode);
+            List<PackEntry> entries = pack.getTradeCards();
+            if (packEntry == null) {
+                if (lineNumber < 0 || lineNumber >= entries.size()) {
+                    return;
+                }
+                entries.remove(lineNumber);
+            } else if (lineNumber < entries.size()) {
+                entries.set(lineNumber, packEntry);
+            } else {
+                entries.add(packEntry);
+            }
+            savePack(pack);
         } catch (ConfigurateException e) {
             Util.logSevereException(e);
         }
@@ -105,6 +121,16 @@ public class PacksConfig extends YamlConfigurateFile<TradingCards> {
         try {
             Pack pack = getPack(packId);
             pack.setCurrencyId(currencyId);
+            packNode.set(pack);
+            loader.save(rootNode);
+        } catch (ConfigurateException e) {
+            Util.logSevereException(e);
+        }
+    }
+
+    public void savePack(final Pack pack) {
+        ConfigurationNode packNode = rootNode.node(pack.getId());
+        try {
             packNode.set(pack);
             loader.save(rootNode);
         } catch (ConfigurateException e) {
@@ -198,9 +224,12 @@ public class PacksConfig extends YamlConfigurateFile<TradingCards> {
                 return;
             }
 
-            target.node(CONTENT).set(pack.getPackEntryList());
+            target.node(DISPLAY_NAME).set(pack.getDisplayName());
+            target.node(CONTENT).set(pack.getPackEntryList().stream().map(PackEntry::toString).toList());
             target.node(PRICE).set(pack.getBuyPrice());
+            target.node(CURRENCY_ID).set(pack.getCurrencyId());
             target.node(PERMISSION).set(pack.getPermission());
+            target.node(TRADE).set(pack.getTradeCards().stream().map(PackEntry::toString).toList());
         }
     }
 
