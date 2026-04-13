@@ -3,57 +3,56 @@ config-version: 1
 # ##############################
 # Collector Book GUI Settings
 # ##############################
+# Text fields in this file use Adventure MiniMessage tags.
+# Examples:
+#   <red>Red Text
+#   <bold>Bold Text
+#   <yellow><bold>Bold Yellow Text
+# Legacy '&' color codes are not supported here.
 
 # Main menu configuration
 main-menu:
-  # Title of the main menu (supports color codes with &)
-  title: "&8Collector Book"
-  # Size of the inventory (must be a multiple of 9, between 9 and 54)
+  title: "<dark_gray>Collector Book"
   size: 27
-  # Button configurations
   buttons:
     rarities:
       slot: 11
       material: AMETHYST_SHARD
-      name: "&dBrowse Rarities"
+      name: "<light_purple>Browse Rarities"
       lore:
-        - "&7View collected cards by rarity."
+        - "<gray>View collected cards by rarity."
     all-cards:
       slot: 13
       material: CHEST
-      name: "&eBrowse All Cards"
+      name: "<yellow>Browse All Cards"
       lore:
-        - "&7View all collected cards."
+        - "<gray>View all collected cards."
     series:
       slot: 15
       material: BOOK
-      name: "&bBrowse Series"
+      name: "<aqua>Browse Series"
       lore:
-        - "&7View collected cards by series."
+        - "<gray>View collected cards by series."
     close:
       slot: 22
       material: BARRIER
-      name: "&cClose"
+      name: "<red>Close"
       lore:
-        - "&7Close this menu."
+        - "<gray>Close this menu."
 
-# Browser configuration (for rarity/series/card lists)
+# Browser configuration for rarity, series, and card list views
 browser:
-  # Size of the browser inventory (must be a multiple of 9, between 9 and 54)
   size: 54
-  
-  # Titles for different browser views (supports color codes with &)
-  # %filter% placeholder is replaced with rarity/series id for filtered views
+
   titles:
-    rarities: "&8Collector Book - Rarities"
-    series: "&8Collector Book - Series"
-    cards-all: "&8Collector Book - All Cards"
-    cards-rarity: "&8Collector - Rarity: %filter%"
-    cards-series: "&8Collector - Series: %filter%"
-  
-  # Content slots - where cards/categories are displayed
-  # Default is slots 0-44 (leaving bottom row for navigation)
-  # Must be valid slots within the inventory size
+    rarities: "<dark_gray>Collector Book - Rarities"
+    series: "<dark_gray>Collector Book - Series"
+    cards-all: "<dark_gray>Collector Book - All Cards"
+    cards-rarity: "<dark_gray>Collector - Rarity: <white>%filter%"
+    cards-series: "<dark_gray>Collector - Series: <white>%filter%"
+
+  # Slots used for category entries and cards.
+  # Keep these within the configured inventory size.
   content-slots:
     - 0
     - 1
@@ -100,34 +99,61 @@ browser:
     - 42
     - 43
     - 44
-  
-  # Navigation button configuration
+
   navigation:
     previous:
       slot: 45
       material: ARROW
-      name: "&ePrevious Page"
+      name: "<yellow>Previous Page"
       lore:
-        - "&7Go to previous page."
+        - "<gray>Go to previous page."
     back:
       slot: 49
       material: BARRIER
-      name: "&cBack"
+      name: "<red>Back"
       lore:
-        - "&7Return to previous menu."
+        - "<gray>Return to previous menu."
     next:
       slot: 53
       material: ARROW
-      name: "&eNext Page"
+      name: "<yellow>Next Page"
       lore:
-        - "&7Go to next page."
-  
-  # Category icon materials
+        - "<gray>Go to next page."
+
   category-icons:
     rarity-material: AMETHYST_CLUSTER
     series-material: BOOK
-  
-  # Removed/invalid card display
+
+  category-entry:
+    name: "<yellow>%display_name%"
+    lore:
+      - "<gray>Id: <white>%id%"
+      - "<gray>Unique Cards: <white>%unique_cards%"
+      - "<gray>Total Copies: <white>%total_copies%"
+      - "<yellow>Click to open"
+
   removed-card:
     material: BARRIER
-    name: "&cRemoved Card"
+    name: "<red>Removed Card"
+    lore:
+      - "<gray>Card: <white>%card_id%"
+      - "<gray>Rarity: <white>%rarity_id%"
+      - "<gray>Series: <white>%series_id%"
+      - "<gray>Owned: <white>%owned%"
+      - "<gray>Version: <white>%version%"
+      - "<red>Cannot withdraw this card."
+      - "<yellow>Right-Click: <white>Deposit 1"
+      - "<yellow>Shift-Right: <white>Deposit all from inventory"
+
+  owned-card:
+    lore:
+      - "<dark_gray>Collector"
+      - "<gray>Owned: <white>%owned%"
+      - "<gray>Version: <white>%version%"
+      - "<yellow>Left-Click: <white>Withdraw 1"
+      - "<yellow>Shift-Left: <white>Withdraw up to 64"
+      - "<yellow>Right-Click: <white>Deposit 1"
+      - "<yellow>Shift-Right: <white>Deposit all from inventory"
+
+  messages:
+    invalid-content-slots: "Collector browser has no content slots configured."

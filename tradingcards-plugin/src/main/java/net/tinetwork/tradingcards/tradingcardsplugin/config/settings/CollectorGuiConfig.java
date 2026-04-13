@@ -17,12 +17,37 @@ import java.util.Set;
 import java.util.stream.IntStream;
 
 public class CollectorGuiConfig extends YamlConfigurateFile<TradingCards> {
-    private static final String DEFAULT_MAIN_TITLE = "&8Collector Book";
-    private static final String DEFAULT_RARITIES_TITLE = "&8Collector Book - Rarities";
-    private static final String DEFAULT_SERIES_TITLE = "&8Collector Book - Series";
-    private static final String DEFAULT_CARDS_ALL_TITLE = "&8Collector Book - All Cards";
-    private static final String DEFAULT_CARDS_RARITY_TITLE = "&8Collector - Rarity: %filter%";
-    private static final String DEFAULT_CARDS_SERIES_TITLE = "&8Collector - Series: %filter%";
+    private static final String DEFAULT_MAIN_TITLE = "<dark_gray>Collector Book";
+    private static final String DEFAULT_RARITIES_TITLE = "<dark_gray>Collector Book - Rarities";
+    private static final String DEFAULT_SERIES_TITLE = "<dark_gray>Collector Book - Series";
+    private static final String DEFAULT_CARDS_ALL_TITLE = "<dark_gray>Collector Book - All Cards";
+    private static final String DEFAULT_CARDS_RARITY_TITLE = "<dark_gray>Collector - Rarity: <white>%filter%";
+    private static final String DEFAULT_CARDS_SERIES_TITLE = "<dark_gray>Collector - Series: <white>%filter%";
+    private static final List<String> DEFAULT_CATEGORY_LORE = List.of(
+            "<gray>Id: <white>%id%",
+            "<gray>Unique Cards: <white>%unique_cards%",
+            "<gray>Total Copies: <white>%total_copies%",
+            "<yellow>Click to open"
+    );
+    private static final List<String> DEFAULT_REMOVED_CARD_LORE = List.of(
+            "<gray>Card: <white>%card_id%",
+            "<gray>Rarity: <white>%rarity_id%",
+            "<gray>Series: <white>%series_id%",
+            "<gray>Owned: <white>%owned%",
+            "<gray>Version: <white>%version%",
+            "<red>Cannot withdraw this card.",
+            "<yellow>Right-Click: <white>Deposit 1",
+            "<yellow>Shift-Right: <white>Deposit all from inventory"
+    );
+    private static final List<String> DEFAULT_OWNED_CARD_LORE = List.of(
+            "<dark_gray>Collector",
+            "<gray>Owned: <white>%owned%",
+            "<gray>Version: <white>%version%",
+            "<yellow>Left-Click: <white>Withdraw 1",
+            "<yellow>Shift-Left: <white>Withdraw up to 64",
+            "<yellow>Right-Click: <white>Deposit 1",
+            "<yellow>Shift-Right: <white>Deposit all from inventory"
+    );
 
     private MenuConfig menuConfig;
     private BrowserConfig browserConfig;
@@ -38,17 +63,17 @@ public class CollectorGuiConfig extends YamlConfigurateFile<TradingCards> {
         this.menuConfig = new MenuConfig(
                 menuNode.node("title").getString(DEFAULT_MAIN_TITLE),
                 menuSize,
-                parseButton(menuNode.node("buttons", "rarities"), 11, Material.AMETHYST_SHARD, "&dBrowse Rarities", List.of("&7View collected cards by rarity.")),
-                parseButton(menuNode.node("buttons", "all-cards"), 13, Material.CHEST, "&eBrowse All Cards", List.of("&7View all collected cards.")),
-                parseButton(menuNode.node("buttons", "series"), 15, Material.BOOK, "&bBrowse Series", List.of("&7View collected cards by series.")),
-                parseButton(menuNode.node("buttons", "close"), 22, Material.BARRIER, "&cClose", List.of("&7Close this menu."))
+                parseButton(menuNode.node("buttons", "rarities"), 11, Material.AMETHYST_SHARD, "<light_purple>Browse Rarities", List.of("<gray>View collected cards by rarity.")),
+                parseButton(menuNode.node("buttons", "all-cards"), 13, Material.CHEST, "<yellow>Browse All Cards", List.of("<gray>View all collected cards.")),
+                parseButton(menuNode.node("buttons", "series"), 15, Material.BOOK, "<aqua>Browse Series", List.of("<gray>View collected cards by series.")),
+                parseButton(menuNode.node("buttons", "close"), 22, Material.BARRIER, "<red>Close", List.of("<gray>Close this menu."))
         );
 
         final ConfigurationNode browserNode = rootNode.node("browser");
         final int browserSize = sanitizeInventorySize(browserNode.node("size").getInt(54), 54);
-        final ButtonConfig previousButton = parseButton(browserNode.node("navigation", "previous"), 45, Material.ARROW, "&ePrevious Page", List.of("&7Go to previous page."));
-        final ButtonConfig backButton = parseButton(browserNode.node("navigation", "back"), 49, Material.BARRIER, "&cBack", List.of("&7Return to previous menu."));
-        final ButtonConfig nextButton = parseButton(browserNode.node("navigation", "next"), 53, Material.ARROW, "&eNext Page", List.of("&7Go to next page."));
+        final ButtonConfig previousButton = parseButton(browserNode.node("navigation", "previous"), 45, Material.ARROW, "<yellow>Previous Page", List.of("<gray>Go to previous page."));
+        final ButtonConfig backButton = parseButton(browserNode.node("navigation", "back"), 49, Material.BARRIER, "<red>Back", List.of("<gray>Return to previous menu."));
+        final ButtonConfig nextButton = parseButton(browserNode.node("navigation", "next"), 53, Material.ARROW, "<yellow>Next Page", List.of("<gray>Go to next page."));
 
         this.browserConfig = new BrowserConfig(
                 browserSize,
@@ -61,8 +86,13 @@ public class CollectorGuiConfig extends YamlConfigurateFile<TradingCards> {
                 new NavigationConfig(previousButton, backButton, nextButton),
                 parseMaterial(browserNode.node("category-icons", "rarity-material"), Material.AMETHYST_CLUSTER),
                 parseMaterial(browserNode.node("category-icons", "series-material"), Material.BOOK),
+                browserNode.node("category-entry", "name").getString("<yellow>%display_name%"),
+                copyStringList(browserNode.node("category-entry", "lore").getList(String.class, DEFAULT_CATEGORY_LORE), DEFAULT_CATEGORY_LORE),
                 parseMaterial(browserNode.node("removed-card", "material"), Material.BARRIER),
-                browserNode.node("removed-card", "name").getString("&cRemoved Card")
+                browserNode.node("removed-card", "name").getString("<red>Removed Card"),
+                copyStringList(browserNode.node("removed-card", "lore").getList(String.class, DEFAULT_REMOVED_CARD_LORE), DEFAULT_REMOVED_CARD_LORE),
+                copyStringList(browserNode.node("owned-card", "lore").getList(String.class, DEFAULT_OWNED_CARD_LORE), DEFAULT_OWNED_CARD_LORE),
+                browserNode.node("messages", "invalid-content-slots").getString("Collector browser has no content slots configured.")
         );
     }
 
@@ -122,6 +152,11 @@ public class CollectorGuiConfig extends YamlConfigurateFile<TradingCards> {
         return size;
     }
 
+    private @NotNull List<String> copyStringList(final List<String> configured, final @NotNull List<String> fallback) {
+        final List<String> values = configured == null ? fallback : configured;
+        return List.copyOf(values);
+    }
+
     public @NotNull MenuConfig menuConfig() {
         return menuConfig;
     }
@@ -167,8 +202,13 @@ public class CollectorGuiConfig extends YamlConfigurateFile<TradingCards> {
             @NotNull NavigationConfig navigation,
             @NotNull Material rarityCategoryMaterial,
             @NotNull Material seriesCategoryMaterial,
+            @NotNull String categoryEntryName,
+            @NotNull List<String> categoryEntryLore,
             @NotNull Material removedCardMaterial,
-            @NotNull String removedCardName
+            @NotNull String removedCardName,
+            @NotNull List<String> removedCardLore,
+            @NotNull List<String> ownedCardLore,
+            @NotNull String invalidContentSlotsMessage
     ) {
     }
 }
