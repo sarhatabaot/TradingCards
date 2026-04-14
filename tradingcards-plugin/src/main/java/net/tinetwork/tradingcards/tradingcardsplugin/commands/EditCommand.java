@@ -20,6 +20,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalM
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.Permissions;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
+import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.CardEditService;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.Edit;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.EditCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.edit.EditPack;
@@ -48,6 +49,7 @@ import java.util.List;
 public class EditCommand extends BaseCommand {
     private final TradingCards plugin;
     private final Storage<TradingCard> storage;
+    private final CardEditService cardEditService;
     private final PackEditService packEditService;
     private final RarityEditService rarityEditService;
     private final SeriesEditService seriesEditService;
@@ -57,6 +59,7 @@ public class EditCommand extends BaseCommand {
     public EditCommand(final @NotNull TradingCards plugin) {
         this.plugin = plugin;
         this.storage = plugin.getStorage();
+        this.cardEditService = new CardEditService(plugin);
         this.packEditService = new PackEditService(plugin);
         this.rarityEditService = new RarityEditService(plugin);
         this.seriesEditService = new SeriesEditService(plugin);
@@ -68,6 +71,33 @@ public class EditCommand extends BaseCommand {
     @CommandPermission(Permissions.Admin.Edit.EDIT)
     @Description("Edit any value.")
     public class EditSubCommand extends BaseCommand {
+
+        @Subcommand("card")
+        @CommandPermission(Permissions.Admin.Edit.EDIT_CARD)
+        @CommandCompletion("@rarities @series @command-cards")
+        @Description("Open the card editor dialog.")
+        public void onEditCard(final CommandSender sender, final Rarity rarity, final Series series, final String cardId) {
+            final String seriesId = series.getId();
+            final String rarityId = rarity.getId();
+            if (!plugin.getRarityManager().containsRarity(rarityId)) {
+                ChatUtil.sendPrefixedMessage(sender, InternalMessages.NO_RARITY.formatted(rarityId));
+                return;
+            }
+            if (!plugin.getSeriesManager().containsSeries(seriesId)) {
+                ChatUtil.sendPrefixedMessage(sender, InternalMessages.NO_SERIES.formatted(seriesId));
+                return;
+            }
+            if (!plugin.getCardManager().containsCard(cardId, rarityId, seriesId)) {
+                ChatUtil.sendPrefixedMessage(sender, InternalMessages.NO_CARD.formatted(StringUtils.join(List.of(cardId, rarityId, seriesId), "&r,&4 ")));
+                return;
+            }
+            if (!(sender instanceof org.bukkit.entity.Player player)) {
+                ChatUtil.sendPrefixedMessage(sender, "&4This editor can only be opened by a player.");
+                return;
+            }
+
+            cardEditService.openEditor(player, rarityId, seriesId, cardId);
+        }
 
         @Subcommand("card")
         @CommandPermission(Permissions.Admin.Edit.EDIT_CARD)
@@ -88,6 +118,7 @@ public class EditCommand extends BaseCommand {
                 return;
             }
 
+            String updatedSeriesId = seriesId;
             switch (editCard) {
                 case DISPLAY_NAME -> storage.editCardDisplayName(rarityId, cardId, seriesId, value);
                 case SELL_PRICE -> {
@@ -121,7 +152,15 @@ public class EditCommand extends BaseCommand {
                         ChatUtil.sendPrefixedMessage(sender, InternalMessages.NO_SERIES.formatted(value));
                         return;
                     }
-                    storage.editCardSeries(rarityId, cardId, seriesId, series);
+
+                    if (!seriesId.equals(value) && plugin.getCardManager().containsCard(cardId, rarityId, value)) {
+                        ChatUtil.sendPrefixedMessage(sender, "&4Card already exists for &c%s".formatted("%s, %s, %s".formatted(cardId, rarityId, value)));
+                        return;
+                    }
+
+                    final Series targetSeries = plugin.getSeriesManager().getSeries(value);
+                    storage.editCardSeries(rarityId, cardId, seriesId, targetSeries);
+                    updatedSeriesId = value;
                 }
                 case BUY_PRICE -> {
                     double buyPrice = getDoubleFromString(value);
@@ -139,8 +178,8 @@ public class EditCommand extends BaseCommand {
 
             }
 
-            plugin.getCardManager().getCache().refresh(new CompositeCardKey(rarityId,seriesId,cardId));
-            String setCardMessage = "%s %s %s".formatted(cardId,rarityId,seriesId);
+            cardEditService.refreshCardCaches(rarityId, cardId, seriesId, updatedSeriesId);
+            String setCardMessage = "%s %s %s".formatted(cardId,rarityId,updatedSeriesId);
             sendSetTypes(sender, setCardMessage, editCard, value);
         }
 

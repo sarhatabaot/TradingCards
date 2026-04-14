@@ -79,6 +79,26 @@ public class SimpleCardsConfig extends YamlConfigurateFile<TradingCards> {
             Util.logSevereException(e);
         }
     }
+
+    public boolean containsCard(final String rarityId, final String cardId, final String seriesId) {
+        final ConfigurationNode cardNode = cardsNode.node(rarityId, cardId);
+        if (cardNode.virtual()) {
+            return false;
+        }
+
+        final String storedSeriesId = cardNode.node("series").getString();
+        return seriesId.equals(storedSeriesId);
+    }
+
+    public void saveCard(final String rarityId, final String cardId, final TradingCard card) {
+        try {
+            cardsNode.node(rarityId, cardId).set(card);
+            loader.save(rootNode);
+            reloadConfig();
+        } catch (ConfigurateException e) {
+            Util.logSevereException(e);
+        }
+    }
     
     public void editDisplayName(final String rarityId, final String cardId, final String seriesId, final String displayName) {
         new EditCardConfig<String>(rootNode, cardsNode, loader, this) {

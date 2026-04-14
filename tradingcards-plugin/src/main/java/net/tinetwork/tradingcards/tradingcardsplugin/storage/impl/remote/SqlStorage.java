@@ -892,6 +892,7 @@ public class SqlStorage implements Storage<TradingCard> {
         final boolean hasShiny = JooqRecordUtil.getOrDefault(recordResult.get(Cards.CARDS.HAS_SHINY), false);
         final Series series = getSeries(recordResult.getValue(Cards.CARDS.SERIES_ID));
         final String info = recordResult.getValue(Cards.CARDS.INFO);
+        final String currencyId = JooqRecordUtil.getOrDefault(recordResult.getValue(Cards.CARDS.CURRENCY_ID), plugin.getEconomyWrapper().getPrimaryCurrencyId());
         final int customModelData = JooqRecordUtil.getOrDefault(recordResult.getValue(Cards.CARDS.CUSTOM_MODEL_DATA), 0);
         final double buyPrice = JooqRecordUtil.getOrDefault(recordResult.getValue(Cards.CARDS.BUY_PRICE), 0D);
         final double sellPrice = JooqRecordUtil.getOrDefault(recordResult.getValue(Cards.CARDS.SELL_PRICE), 0D);
@@ -905,7 +906,8 @@ public class SqlStorage implements Storage<TradingCard> {
                 .info(info)
                 .customModelNbt(customModelData)
                 .buyPrice(buyPrice)
-                .sellPrice(sellPrice);
+                .sellPrice(sellPrice)
+                .currencyId(currencyId);
         return card;
     }
 
@@ -1781,6 +1783,29 @@ public class SqlStorage implements Storage<TradingCard> {
                 dslContext.update(CustomTypes.CUSTOM_TYPES)
                         .set(CustomTypes.CUSTOM_TYPES.DROP_TYPE, CustomTypesDropType.lookupLiteral(defaultTypeId))
                         .where(CustomTypes.CUSTOM_TYPES.TYPE_ID.eq(customTypeId)).execute();
+            }
+        }.executeUpdate();
+    }
+
+    @Override
+    public void editCard(final String rarityId, final String cardId, final String seriesId, final String displayName, final Series targetSeries, final DropType type, final String info, final int customModelData, final double buyPrice, final double sellPrice, final boolean hasShiny, final String currencyId) {
+        new ExecuteUpdate(connectionFactory, jooqSettings) {
+            @Override
+            protected void onRunUpdate(final DSLContext dslContext) {
+                dslContext.update(Cards.CARDS)
+                        .set(Cards.CARDS.DISPLAY_NAME, displayName)
+                        .set(Cards.CARDS.SERIES_ID, targetSeries.getId())
+                        .set(Cards.CARDS.TYPE_ID, type.getId())
+                        .set(Cards.CARDS.INFO, info)
+                        .set(Cards.CARDS.CUSTOM_MODEL_DATA, customModelData)
+                        .set(Cards.CARDS.BUY_PRICE, buyPrice)
+                        .set(Cards.CARDS.SELL_PRICE, sellPrice)
+                        .set(Cards.CARDS.HAS_SHINY, hasShiny)
+                        .set(Cards.CARDS.CURRENCY_ID, currencyId)
+                        .where(Cards.CARDS.RARITY_ID.eq(rarityId))
+                        .and(Cards.CARDS.CARD_ID.eq(cardId))
+                        .and(Cards.CARDS.SERIES_ID.eq(seriesId))
+                        .execute();
             }
         }.executeUpdate();
     }
