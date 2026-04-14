@@ -270,8 +270,8 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
         this.cardManager = new AllCardManager(this);
         this.packManager = new BoosterPackManager(this);
-        this.deckManager = new TradingDeckManager(this);
         this.collectorBookManager = new CollectorBookManager(this);
+        this.deckManager = new TradingDeckManager(this);
         this.collectorBookGuiManager = new CollectorBookGuiManager(this, collectorGuiConfig);
         this.upgradeManager = new TradingUpgradeManager(this);
     }
@@ -392,8 +392,8 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         this.cardManager.initValues();
         this.cardManager.forceCacheRefresh();
         this.packManager.forceCacheRefresh();
-        this.deckManager = new TradingDeckManager(this);
         this.collectorBookManager = new CollectorBookManager(this);
+        this.deckManager = new TradingDeckManager(this);
         this.collectorBookGuiManager = new CollectorBookGuiManager(this, collectorGuiConfig);
         this.dropTypeManager.forceCacheRefresh();
     }

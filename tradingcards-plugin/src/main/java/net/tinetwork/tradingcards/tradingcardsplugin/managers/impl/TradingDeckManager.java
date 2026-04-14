@@ -43,7 +43,6 @@ public class TradingDeckManager implements DeckManager {
     private final TradingCards plugin;
     private final AllCardManager cardManager;
     private final Storage<TradingCard> storage;
-    private final CollectorBookManager collectorBookManager;
     private final Map<UUID, Integer> playerDeckViewingMap;
     private final Map<UUID, Map<CollectorBookCardKey, Integer>> collectorDeckOpenSnapshots;
 
@@ -51,7 +50,6 @@ public class TradingDeckManager implements DeckManager {
         this.plugin = plugin;
         this.cardManager = plugin.getCardManager();
         this.storage = plugin.getStorage();
-        this.collectorBookManager = plugin.getCollectorBookManager();
         this.playerDeckViewingMap = new HashMap<>();
         this.collectorDeckOpenSnapshots = new HashMap<>();
         this.plugin.getLogger().info(() -> InternalLog.Init.LOAD_DECK_MANAGER);
@@ -73,7 +71,10 @@ public class TradingDeckManager implements DeckManager {
         plugin.debug(TradingDeckManager.class, InternalDebug.DecksManager.PLAYER_UUID.formatted(player.getUniqueId()));
 
         if (plugin.getGeneralConfig().collectorBookEnabled()) {
-            collectorBookManager.ensureCollectorBookMigrated(player.getUniqueId());
+            final CollectorBookManager collectorBookManager = getCollectorBookManager();
+            if (collectorBookManager != null) {
+                collectorBookManager.ensureCollectorBookMigrated(player.getUniqueId());
+            }
         }
 
         addDeckViewer(player.getUniqueId(), deckNum);
@@ -157,6 +158,11 @@ public class TradingDeckManager implements DeckManager {
 
             int itemAmount = deckEntry.getAmount();
             if (plugin.getGeneralConfig().collectorBookEnabled()) {
+                final CollectorBookManager collectorBookManager = getCollectorBookManager();
+                if (collectorBookManager == null) {
+                    continue;
+                }
+
                 final int ownedAmount = collectorBookManager.getOwnedAmount(uuid, cardId, rarityId, seriesId, shiny);
                 itemAmount = Math.min(itemAmount, ownedAmount);
                 if (itemAmount <= 0) {
@@ -259,12 +265,14 @@ public class TradingDeckManager implements DeckManager {
 
     @Override
     public boolean hasCard(@NotNull Player player, String cardId, String rarityId, String seriesId) {
-        return collectorBookManager.hasCard(player.getUniqueId(), cardId, rarityId, seriesId);
+        final CollectorBookManager collectorBookManager = getCollectorBookManager();
+        return collectorBookManager != null && collectorBookManager.hasCard(player.getUniqueId(), cardId, rarityId, seriesId);
     }
 
     @Override
     public boolean hasShinyCard(@NotNull Player player, String cardId, String rarityId,String seriesId) {
-        return collectorBookManager.hasShinyCard(player.getUniqueId(), cardId, rarityId, seriesId);
+        final CollectorBookManager collectorBookManager = getCollectorBookManager();
+        return collectorBookManager != null && collectorBookManager.hasShinyCard(player.getUniqueId(), cardId, rarityId, seriesId);
     }
 
     public void createNewDeckInFile(final UUID uuid, final int deckNumber) {
@@ -295,6 +303,10 @@ public class TradingDeckManager implements DeckManager {
         }
 
         collectorDeckOpenSnapshots.put(uuid, snapshot);
+    }
+
+    private CollectorBookManager getCollectorBookManager() {
+        return plugin.getCollectorBookManager();
     }
 
     private void applyCustomModelData(final @NotNull ItemStack itemStack, final int customModelData) {
