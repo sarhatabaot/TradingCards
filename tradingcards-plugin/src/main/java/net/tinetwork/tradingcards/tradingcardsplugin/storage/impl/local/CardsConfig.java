@@ -64,4 +64,13 @@ public class CardsConfig {
     public Map<String,SimpleCardsConfig> getCardConfigs() {
         return cardConfigs;
     }
+
+    public SimpleCardsConfig getCardConfig(final String rarityId, final String cardId, final String seriesId) {
+        for (final SimpleCardsConfig config : cardConfigs.values()) {
+            if (config.containsCard(rarityId, cardId, seriesId)) {
+                return config;
+            }
+        }
+        return null;
+    }
 }

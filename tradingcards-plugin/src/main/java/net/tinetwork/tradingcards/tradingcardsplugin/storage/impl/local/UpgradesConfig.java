@@ -94,6 +94,16 @@ public class UpgradesConfig extends YamlConfigurateFile<TradingCards> {
         }
     }
 
+    public void saveUpgrade(final String upgradeId, final Upgrade upgrade) {
+        ConfigurationNode upgradeNode = rootNode.node(upgradeId);
+        try {
+            upgradeNode.set(upgrade);
+            loader.save(rootNode);
+        } catch (ConfigurateException e) {
+            Util.logSevereException(e);
+        }
+    }
+
     public void deleteUpgrade(final String upgradeId) {
         ConfigurationNode upgradeNode = rootNode.node(upgradeId);
         try {

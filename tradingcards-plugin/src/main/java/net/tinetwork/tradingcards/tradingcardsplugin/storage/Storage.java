@@ -184,6 +184,7 @@ public interface Storage<T extends Card<T>> {
     void editUpgradeRequired(final String upgradeId, final PackEntry required);
 
     void editUpgradeResult(final String upgradeId, final PackEntry result);
+    void editUpgrade(final String upgradeId, final PackEntry required, final PackEntry result);
 
     void deleteUpgrade(final String upgradeId);
 
@@ -205,6 +206,7 @@ public interface Storage<T extends Card<T>> {
     void editCardBuyPrice(final String rarityId,final String cardId, final String seriesId,final double value);
     void editCardHasShiny(final String rarityId,final String cardId, final String seriesId,final boolean value);
     void editCardCurrencyId(final String rarityId,final String cardId, final String seriesId, final String value);
+    void editCard(final String rarityId, final String cardId, final String seriesId, final String displayName, final Series targetSeries, final DropType type, final String info, final int customModelData, final double buyPrice, final double sellPrice, final boolean hasShiny, final String currencyId);
     // Edit Rarity
     void editRarityBuyPrice(final String rarityId, final double buyPrice);
     void editRarityAddReward(final String rarityId, final String reward);
@@ -214,16 +216,19 @@ public interface Storage<T extends Card<T>> {
     void editRarityRemoveAllRewards(final String rarityId);
     void editRarityRemoveReward(final String rarityId, final int rewardNumber);
     void editRarityCustomOrder(final String rarityId, final int customOrder);
+    void editRarity(final String rarityId, final String displayName, final String defaultColor, final double buyPrice, final double sellPrice, final String currencyId, final List<String> rewards);
     int getRarityCustomOrder(final String rarityId);
     // Edit Series
     void editSeriesDisplayName(final String seriesId, final String displayName);
     void editSeriesColors(final String seriesId, final ColorSeries colors);
     void editSeriesMode(final String seriesId, final Mode mode);
+    void editSeries(final String seriesId, final String displayName, final Mode mode, final ColorSeries colors);
     // Edit Series Colors
     void editColorSeries(final String seriesId, final ColorSeries colors);
     // Edit Type
     void editCustomTypeDisplayName(final String typeId, final String displayName);
     void editCustomTypeType(final String typeId, final String type); //It has to be a default type.
+    void editCustomType(final String typeId, final String displayName, final String type);
     // Edit Pack
     void editPackDisplayName(final String packId, final String displayName);
     void editPackContents(final String packId, final int lineNumber, final PackEntry packEntry);
@@ -236,6 +241,8 @@ public interface Storage<T extends Card<T>> {
     void editPackPermission(final String packId, final String permission);
     void editPackPrice(final String packId,final double price);
     void editPackCurrencyId(final String packId, final String currencyId);
+    void editPack(final String packId, final String displayName, final double price, final String permission, final String currencyId);
+    void editPack(final String packId, final String displayName, final double price, final String permission, final String currencyId, final List<PackEntry> contents, final List<PackEntry> tradeCards);
 
     /**
      * @return The total amount of cards.

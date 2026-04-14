@@ -174,6 +174,16 @@ public class RaritiesConfig extends RarityConfigurate{
         }
     }
 
+    public void saveRarity(final @NotNull String rarityId, final @NotNull Rarity rarity) {
+        try {
+            raritiesNode.node(rarityId).set(rarity);
+            loader.save(rootNode);
+            reloadConfig();
+        } catch (ConfigurateException e) {
+            Util.logSevereException(e);
+        }
+    }
+
     public static final class RaritySerializer implements TypeSerializer<Rarity> {
         public static final RaritySerializer INSTANCE = new RaritySerializer();
         public static final Class<Rarity> TYPE = Rarity.class;
@@ -229,6 +239,7 @@ public class RaritiesConfig extends RarityConfigurate{
             target.node(REWARDS).set(rarity.getRewards());
             target.node(BUY_PRICE).set(rarity.getBuyPrice());
             target.node(SELL_PRICE).set(rarity.getSellPrice());
+            target.node(CURRENCY_ID).set(rarity.getCurrencyId());
         }
     }
 

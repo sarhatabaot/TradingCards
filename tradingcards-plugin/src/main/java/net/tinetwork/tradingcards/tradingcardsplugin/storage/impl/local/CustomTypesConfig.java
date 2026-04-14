@@ -95,6 +95,16 @@ public class CustomTypesConfig extends YamlConfigurateFile<TradingCards> {
         }
     }
 
+    public void saveCustomType(final @NotNull String typeId, final @NotNull DropType dropType) {
+        try {
+            rootNode.node(typeId).set(dropType);
+            loader.save(rootNode);
+            reloadConfig();
+        } catch (ConfigurateException e) {
+            Util.logSevereException(e);
+        }
+    }
+
     public static class DropTypeSerializer implements TypeSerializer<DropType> {
         public static final DropTypeSerializer INSTANCE = new DropTypeSerializer();
         public static final Class<DropType> TYPE = DropType.class;

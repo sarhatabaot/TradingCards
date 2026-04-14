@@ -51,6 +51,10 @@ public class ChatUtil {
         return LegacyComponentSerializer.builder().character(ALT_COLOR_CHAR).build().serialize(component);
     }
 
+    public static @NotNull Component component(final @Nullable String text) {
+        return LegacyComponentSerializer.builder().character(ALT_COLOR_CHAR).build().deserialize(text == null ? "" : text);
+    }
+
     @Contract("_ -> new")
     public static @NotNull String color(String text) {
         return com.github.sarhatabaot.kraken.core.chat.ChatUtil.color(text);
