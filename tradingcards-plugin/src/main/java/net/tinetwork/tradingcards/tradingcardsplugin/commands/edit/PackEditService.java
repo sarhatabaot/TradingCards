@@ -128,7 +128,7 @@ public final class PackEditService {
         return Dialog.create(builder -> builder.empty()
                 .base(DialogBase.builder(Component.text("Edit pack: " + pack.getId()))
                         .body(List.of(
-                                DialogBody.plainMessage(Component.text("Display: " + pack.getDisplayName()), 320),
+                                DialogBody.plainMessage(Component.text("Display: ").append(ChatUtil.component(pack.getDisplayName())), 320),
                                 DialogBody.plainMessage(Component.text("Price: " + pack.getBuyPrice() + " | Currency: " + orEmpty(pack.getCurrencyId())), 320),
                                 DialogBody.plainMessage(Component.text("Permission: " + orEmpty(pack.getPermission())), 320),
                                 DialogBody.plainMessage(Component.text("Contents: " + pack.getPackEntryList().size() + " entries | Trade: " + pack.getTradeCards().size() + " entries"), 320),
@@ -440,7 +440,7 @@ public final class PackEditService {
                 .base(DialogBase.builder(Component.text(title))
                         .body(List.of(
                                 DialogBody.plainMessage(Component.text("Previewing the resulting pack item."), 340),
-                                DialogBody.plainMessage(Component.text("Display: " + pack.getDisplayName()), 340),
+                                DialogBody.plainMessage(Component.text("Display: ").append(ChatUtil.component(pack.getDisplayName())), 340),
                                 DialogBody.plainMessage(Component.text("Price: " + pack.getBuyPrice() + " | Currency: " + orEmpty(pack.getCurrencyId())), 340),
                                 DialogBody.plainMessage(Component.text("Contents: " + pack.getPackEntryList().size() + " entries | Trade: " + pack.getTradeCards().size() + " entries"), 340),
                                 DialogBody.item(plugin.getPackManager().generatePack(pack)).build()

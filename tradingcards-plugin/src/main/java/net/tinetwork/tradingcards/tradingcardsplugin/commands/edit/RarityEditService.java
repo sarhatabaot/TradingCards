@@ -92,7 +92,7 @@ public final class RarityEditService {
         return Dialog.create(builder -> builder.empty()
                 .base(DialogBase.builder(Component.text("Edit rarity: " + rarity.getId()))
                         .body(List.of(
-                                DialogBody.plainMessage(Component.text("Display: " + rarity.getDisplayName()), 320),
+                                DialogBody.plainMessage(Component.text("Display: ").append(ChatUtil.component(rarity.getDisplayName())), 320),
                                 DialogBody.plainMessage(Component.text("Buy: " + rarity.getBuyPrice() + " | Sell: " + rarity.getSellPrice()), 320),
                                 DialogBody.plainMessage(Component.text("Color: " + orEmpty(rarity.getDefaultColor()) + " | Currency: " + orEmpty(rarity.getCurrencyId())), 320),
                                 DialogBody.plainMessage(Component.text("Rewards: " + rarity.getRewards().size() + " entries"), 320)

@@ -75,7 +75,7 @@ public final class SeriesEditService {
         return Dialog.create(builder -> builder.empty()
                 .base(DialogBase.builder(Component.text("Edit series: " + series.getId()))
                         .body(List.of(
-                                DialogBody.plainMessage(Component.text("Display: " + series.getDisplayName() + " | Mode: " + series.getMode()), 340),
+                                DialogBody.plainMessage(Component.text("Display: ").append(ChatUtil.component(series.getDisplayName())).append(Component.text(" | Mode: " + series.getMode())), 340),
                                 DialogBody.plainMessage(Component.text("Update display name, mode, and the color tokens below."), 340)
                         ))
                         .inputs(List.of(

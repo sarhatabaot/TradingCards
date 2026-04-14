@@ -197,7 +197,7 @@ public final class CardEditService {
                 .base(DialogBase.builder(Component.text("Edit card: " + card.getCardId()))
                         .body(List.of(
                                 DialogBody.plainMessage(Component.text("Rarity: " + card.getRarity().getId() + " | Series: " + card.getSeries().getId()), 340),
-                                DialogBody.plainMessage(Component.text("Display: " + card.getDisplayName()), 340),
+                                DialogBody.plainMessage(Component.text("Display: ").append(ChatUtil.component(card.getDisplayName())), 340),
                                 DialogBody.plainMessage(Component.text("Type: " + card.getType().getId() + " | Has shiny: " + card.hasShiny()), 340),
                                 DialogBody.plainMessage(Component.text("Buy: " + card.getBuyPrice() + " | Sell: " + card.getSellPrice() + " | Currency: " + orEmpty(card.getCurrencyId())), 340),
                                 DialogBody.plainMessage(Component.text("Model data: " + card.getCustomModelNbt()), 340),
@@ -494,7 +494,7 @@ public final class CardEditService {
     ) {
         final List<DialogBody> body = new ArrayList<>();
         body.add(DialogBody.plainMessage(Component.text("Previewing the resulting card item."), 340));
-        body.add(DialogBody.plainMessage(Component.text("Display: " + card.getDisplayName() + " | Type: " + card.getType().getId()), 340));
+        body.add(DialogBody.plainMessage(Component.text("Display: ").append(ChatUtil.component(card.getDisplayName())).append(Component.text(" | Type: " + card.getType().getId())), 340));
         body.add(DialogBody.plainMessage(Component.text("Series: " + card.getSeries().getId() + " | Has shiny: " + card.hasShiny()), 340));
         body.add(DialogBody.plainMessage(Component.text("Normal"), 340));
         body.add(DialogBody.item(safeBuild(card, false)).build());
@@ -539,7 +539,7 @@ public final class CardEditService {
         return plugin.getSeriesManager().getAllSeries().stream()
                 .map(series -> SingleOptionDialogInput.OptionEntry.create(
                         series.getId(),
-                        Component.text(series.getDisplayName() + " (" + series.getId() + ")"),
+                        ChatUtil.component(series.getDisplayName()).append(Component.text(" (" + series.getId() + ")")),
                         series.getId().equals(selectedSeriesId)
                 ))
                 .toList();
@@ -549,7 +549,7 @@ public final class CardEditService {
         return plugin.getDropTypeManager().getTypes().values().stream()
                 .map(type -> SingleOptionDialogInput.OptionEntry.create(
                         type.getId(),
-                        Component.text(type.getDisplayName() + " (" + type.getId() + ")"),
+                        ChatUtil.component(type.getDisplayName()).append(Component.text(" (" + type.getId() + ")")),
                         type.getId().equals(selectedTypeId)
                 ))
                 .toList();

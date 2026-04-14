@@ -51,7 +51,7 @@ public final class TypeEditService {
         return Dialog.create(builder -> builder.empty()
                 .base(DialogBase.builder(Component.text("Edit type: " + dropType.getId()))
                         .body(List.of(
-                                DialogBody.plainMessage(Component.text("Display: " + dropType.getDisplayName() + " | Type: " + dropType.getType()), 320),
+                                DialogBody.plainMessage(Component.text("Display: ").append(ChatUtil.component(dropType.getDisplayName())).append(Component.text(" | Type: " + dropType.getType())), 320),
                                 DialogBody.plainMessage(Component.text("Allowed types: " + plugin.getDropTypeManager().getDefaultTypes().stream().map(DropType::getId).toList()), 320)
                         ))
                         .inputs(List.of(
