@@ -166,6 +166,20 @@ public final class PackEditService {
                                         player.showDialog(buildTradeEditor(plugin.getStorage().getPack(pack.getId())));
                                     }
                                 }, ClickCallback.Options.builder().uses(1).build())
+                        ),
+                        ActionButton.create(
+                                Component.text("Preview Item"),
+                                Component.text("Preview the current pack item"),
+                                120,
+                                DialogAction.customClick((response, audience) -> {
+                                    if (audience instanceof Player player) {
+                                        player.showDialog(buildPreviewDialog(
+                                                "Pack preview: " + pack.getId(),
+                                                plugin.getStorage().getPack(pack.getId()),
+                                                previewPlayer -> previewPlayer.showDialog(buildEditorMenu(plugin.getStorage().getPack(pack.getId())))
+                                        ));
+                                    }
+                                }, ClickCallback.Options.builder().uses(1).build())
                         )
                 ), null, 2)));
     }
@@ -200,7 +214,7 @@ public final class PackEditService {
                         ))
                         .canCloseWithEscape(true)
                         .build())
-                .type(DialogType.confirmation(
+                .type(DialogType.multiAction(List.of(
                         ActionButton.create(
                                 Component.text("Save"),
                                 Component.text("Apply these detail edits"),
@@ -219,12 +233,36 @@ public final class PackEditService {
                                 }, ClickCallback.Options.builder().uses(1).build())
                         ),
                         ActionButton.create(
+                                Component.text("Preview"),
+                                Component.text("Preview the pack item with these values"),
+                                120,
+                                DialogAction.customClick((response, audience) -> {
+                                    if (audience instanceof Player player) {
+                                        final Pack previewPack = buildDetailsPreviewPack(
+                                                player,
+                                                pack,
+                                                textValue(response.getText(DISPLAY_NAME_KEY)),
+                                                textValue(response.getText(PRICE_KEY)),
+                                                textValue(response.getText(PERMISSION_KEY)),
+                                                textValue(response.getText(CURRENCY_ID_KEY))
+                                        );
+                                        if (previewPack != null) {
+                                            player.showDialog(buildPreviewDialog(
+                                                    "Pack preview: " + pack.getId(),
+                                                    previewPack,
+                                                    previewPlayer -> previewPlayer.showDialog(buildDetailsEditor(plugin.getStorage().getPack(pack.getId())))
+                                            ));
+                                        }
+                                    }
+                                }, ClickCallback.Options.builder().uses(1).build())
+                        ),
+                        ActionButton.create(
                                 Component.text("Cancel"),
                                 Component.text("Discard these changes"),
                                 120,
                                 null
                         )
-                )));
+                ), null, 2)));
     }
 
     private @NotNull Dialog buildContentsEditor(final @NotNull Pack pack) {
@@ -238,6 +276,9 @@ public final class PackEditService {
                 joinEntries(pack.getPackEntryList()),
                 "Save Contents",
                 "Apply these contents edits",
+                "Preview",
+                "Preview the pack item with these values",
+                (sender, value) -> buildContentsPreviewPack(sender, pack, value),
                 (player, value) -> applyContentsEdits(player, pack.getId(), value)
         );
     }
@@ -253,6 +294,9 @@ public final class PackEditService {
                 joinEntries(pack.getTradeCards()),
                 "Save Trade",
                 "Apply these trade edits",
+                "Preview",
+                "Preview the pack item with these values",
+                (sender, value) -> buildTradePreviewPack(sender, pack, value),
                 (player, value) -> applyTradeEdits(player, pack.getId(), value)
         );
     }
@@ -267,6 +311,9 @@ public final class PackEditService {
             final @NotNull String initialValue,
             final @NotNull String submitText,
             final @NotNull String submitHover,
+            final @NotNull String previewText,
+            final @NotNull String previewHover,
+            final @NotNull PreviewPackBuilder previewBuilder,
             final @NotNull PlayerInputHandler inputHandler
     ) {
         return Dialog.create(builder -> builder.empty()
@@ -285,7 +332,7 @@ public final class PackEditService {
                         ))
                         .canCloseWithEscape(true)
                         .build())
-                .type(DialogType.confirmation(
+                .type(DialogType.multiAction(List.of(
                         ActionButton.create(
                                 Component.text(submitText),
                                 Component.text(submitHover),
@@ -297,12 +344,120 @@ public final class PackEditService {
                                 }, ClickCallback.Options.builder().uses(1).build())
                         ),
                         ActionButton.create(
+                                Component.text(previewText),
+                                Component.text(previewHover),
+                                120,
+                                DialogAction.customClick((response, audience) -> {
+                                    if (audience instanceof Player player) {
+                                        final String inputValue = textValue(response.getText(inputKey));
+                                        final Pack previewPack = previewBuilder.build(player, inputValue);
+                                        if (previewPack != null) {
+                                            player.showDialog(buildPreviewDialog(
+                                                    "Pack preview: " + pack.getId(),
+                                                    previewPack,
+                                                    previewPlayer -> previewPlayer.showDialog(
+                                                            CONTENTS_KEY.equals(inputKey)
+                                                                    ? buildContentsEditor(plugin.getStorage().getPack(pack.getId()))
+                                                                    : buildTradeEditor(plugin.getStorage().getPack(pack.getId()))
+                                                    )
+                                            ));
+                                        }
+                                    }
+                                }, ClickCallback.Options.builder().uses(1).build())
+                        ),
+                        ActionButton.create(
                                 Component.text("Cancel"),
                                 Component.text("Discard these changes"),
                                 120,
                                 null
                         )
-                )));
+                ), null, 2)));
+    }
+
+    private Pack buildDetailsPreviewPack(
+            final @NotNull CommandSender sender,
+            final @NotNull Pack pack,
+            final @NotNull String displayName,
+            final @NotNull String priceInput,
+            final @NotNull String permission,
+            final @NotNull String currencyId
+    ) {
+        final double price = parsePrice(sender, priceInput);
+        if (price <= -1.00D) {
+            ChatUtil.sendPrefixedMessage(sender, InternalMessages.EditCommand.PRICE_INCORRECT);
+            return null;
+        }
+
+        return new Pack(
+                pack.getId(),
+                pack.getPackEntryList(),
+                displayName,
+                price,
+                currencyId,
+                permission,
+                pack.getTradeCards()
+        );
+    }
+
+    private Pack buildContentsPreviewPack(final @NotNull CommandSender sender, final @NotNull Pack pack, final @NotNull String contentsInput) {
+        final List<PackEntry> contents = parseEntries(sender, contentsInput, "contents");
+        if (contents == null) {
+            return null;
+        }
+        return new Pack(
+                pack.getId(),
+                contents,
+                pack.getDisplayName(),
+                pack.getBuyPrice(),
+                pack.getCurrencyId(),
+                pack.getPermission(),
+                pack.getTradeCards()
+        );
+    }
+
+    private Pack buildTradePreviewPack(final @NotNull CommandSender sender, final @NotNull Pack pack, final @NotNull String tradeInput) {
+        final List<PackEntry> tradeCards = parseEntries(sender, tradeInput, "trade");
+        if (tradeCards == null) {
+            return null;
+        }
+        return new Pack(
+                pack.getId(),
+                pack.getPackEntryList(),
+                pack.getDisplayName(),
+                pack.getBuyPrice(),
+                pack.getCurrencyId(),
+                pack.getPermission(),
+                tradeCards
+        );
+    }
+
+    private @NotNull Dialog buildPreviewDialog(
+            final @NotNull String title,
+            final @NotNull Pack pack,
+            final @NotNull PreviewReturn previewReturn
+    ) {
+        return Dialog.create(builder -> builder.empty()
+                .base(DialogBase.builder(Component.text(title))
+                        .body(List.of(
+                                DialogBody.plainMessage(Component.text("Previewing the resulting pack item."), 340),
+                                DialogBody.plainMessage(Component.text("Display: " + pack.getDisplayName()), 340),
+                                DialogBody.plainMessage(Component.text("Price: " + pack.getBuyPrice() + " | Currency: " + orEmpty(pack.getCurrencyId())), 340),
+                                DialogBody.plainMessage(Component.text("Contents: " + pack.getPackEntryList().size() + " entries | Trade: " + pack.getTradeCards().size() + " entries"), 340),
+                                DialogBody.item(plugin.getPackManager().generatePack(pack)).build()
+                        ))
+                        .build())
+                .type(DialogType.multiAction(List.of(
+                        ActionButton.create(
+                                Component.text("Back"),
+                                Component.text("Return to the editor"),
+                                120,
+                                DialogAction.customClick((response, audience) -> {
+                                    if (audience instanceof Player player) {
+                                        previewReturn.show(player);
+                                    }
+                                }, ClickCallback.Options.builder().uses(1).build())
+                        )
+                ), null, 1)));
     }
 
     private List<PackEntry> parseEntries(final @NotNull CommandSender sender, final @NotNull String input, final @NotNull String fieldName) {
@@ -361,5 +516,15 @@ public final class PackEditService {
     @FunctionalInterface
     private interface PlayerInputHandler {
         boolean apply(Player player, String value);
+    }
+
+    @FunctionalInterface
+    private interface PreviewPackBuilder {
+        Pack build(CommandSender sender, String value);
+    }
+
+    @FunctionalInterface
+    private interface PreviewReturn {
+        void show(Player player);
     }
 }

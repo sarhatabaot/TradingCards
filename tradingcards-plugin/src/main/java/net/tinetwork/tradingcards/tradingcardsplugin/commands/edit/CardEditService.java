@@ -20,8 +20,10 @@ import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalM
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.ChatUtil;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public final class CardEditService {
@@ -237,6 +239,20 @@ public final class CardEditService {
                                         player.showDialog(buildInfoEditor(getCard(card.getRarity().getId(), card.getSeries().getId(), card.getCardId())));
                                     }
                                 }, ClickCallback.Options.builder().uses(1).build())
+                        ),
+                        ActionButton.create(
+                                Component.text("Preview Item"),
+                                Component.text("Preview the current card item"),
+                                120,
+                                DialogAction.customClick((response, audience) -> {
+                                    if (audience instanceof Player player) {
+                                        player.showDialog(buildPreviewDialog(
+                                                "Card preview: " + card.getCardId(),
+                                                getCard(card.getRarity().getId(), card.getSeries().getId(), card.getCardId()),
+                                                previewPlayer -> previewPlayer.showDialog(buildEditorMenu(getCard(card.getRarity().getId(), card.getSeries().getId(), card.getCardId())))
+                                        ));
+                                    }
+                                }, ClickCallback.Options.builder().uses(1).build())
                         )
                 ), null, 2)));
     }
@@ -255,7 +271,7 @@ public final class CardEditService {
                         ))
                         .canCloseWithEscape(true)
                         .build())
-                .type(DialogType.confirmation(
+                .type(DialogType.multiAction(List.of(
                         ActionButton.create(
                                 Component.text("Save Details"),
                                 Component.text("Apply these detail edits"),
@@ -275,8 +291,32 @@ public final class CardEditService {
                                     }
                                 }, ClickCallback.Options.builder().uses(1).build())
                         ),
+                        ActionButton.create(
+                                Component.text("Preview"),
+                                Component.text("Preview the card item with these values"),
+                                120,
+                                DialogAction.customClick((response, audience) -> {
+                                    if (audience instanceof Player player) {
+                                        final TradingCard previewCard = buildDetailsPreviewCard(
+                                                player,
+                                                card,
+                                                textValue(response.getText(DISPLAY_NAME_KEY)),
+                                                textValue(response.getText(TYPE_KEY)),
+                                                textValue(response.getText(SERIES_KEY)),
+                                                textValue(response.getText(HAS_SHINY_KEY))
+                                        );
+                                        if (previewCard != null) {
+                                            player.showDialog(buildPreviewDialog(
+                                                    "Card preview: " + card.getCardId(),
+                                                    previewCard,
+                                                    previewPlayer -> previewPlayer.showDialog(buildDetailsEditor(getCard(card.getRarity().getId(), card.getSeries().getId(), card.getCardId())))
+                                            ));
+                                        }
+                                    }
+                                }, ClickCallback.Options.builder().uses(1).build())
+                        ),
                         ActionButton.create(Component.text("Cancel"), Component.text("Discard these changes"), 120, null)
-                )));
+                ), null, 2)));
     }
 
     private @NotNull Dialog buildEconomyEditor(final @NotNull TradingCard card) {
@@ -293,7 +333,7 @@ public final class CardEditService {
                         ))
                         .canCloseWithEscape(true)
                         .build())
-                .type(DialogType.confirmation(
+                .type(DialogType.multiAction(List.of(
                         ActionButton.create(
                                 Component.text("Save Economy"),
                                 Component.text("Apply these economy edits"),
@@ -313,8 +353,32 @@ public final class CardEditService {
                                     }
                                 }, ClickCallback.Options.builder().uses(1).build())
                         ),
+                        ActionButton.create(
+                                Component.text("Preview"),
+                                Component.text("Preview the card item with these values"),
+                                120,
+                                DialogAction.customClick((response, audience) -> {
+                                    if (audience instanceof Player player) {
+                                        final TradingCard previewCard = buildEconomyPreviewCard(
+                                                player,
+                                                card,
+                                                textValue(response.getText(BUY_PRICE_KEY)),
+                                                textValue(response.getText(SELL_PRICE_KEY)),
+                                                textValue(response.getText(CURRENCY_ID_KEY)),
+                                                textValue(response.getText(CUSTOM_MODEL_DATA_KEY))
+                                        );
+                                        if (previewCard != null) {
+                                            player.showDialog(buildPreviewDialog(
+                                                    "Card preview: " + card.getCardId(),
+                                                    previewCard,
+                                                    previewPlayer -> previewPlayer.showDialog(buildEconomyEditor(getCard(card.getRarity().getId(), card.getSeries().getId(), card.getCardId())))
+                                            ));
+                                        }
+                                    }
+                                }, ClickCallback.Options.builder().uses(1).build())
+                        ),
                         ActionButton.create(Component.text("Cancel"), Component.text("Discard these changes"), 120, null)
-                )));
+                ), null, 2)));
     }
 
     private @NotNull Dialog buildInfoEditor(final @NotNull TradingCard card) {
@@ -333,7 +397,7 @@ public final class CardEditService {
                         ))
                         .canCloseWithEscape(true)
                         .build())
-                .type(DialogType.confirmation(
+                .type(DialogType.multiAction(List.of(
                         ActionButton.create(
                                 Component.text("Save Info"),
                                 Component.text("Apply these info edits"),
@@ -350,8 +414,126 @@ public final class CardEditService {
                                     }
                                 }, ClickCallback.Options.builder().uses(1).build())
                         ),
+                        ActionButton.create(
+                                Component.text("Preview"),
+                                Component.text("Preview the card item with these values"),
+                                120,
+                                DialogAction.customClick((response, audience) -> {
+                                    if (audience instanceof Player player) {
+                                        player.showDialog(buildPreviewDialog(
+                                                "Card preview: " + card.getCardId(),
+                                                buildInfoPreviewCard(card, textValue(response.getText(INFO_KEY))),
+                                                previewPlayer -> previewPlayer.showDialog(buildInfoEditor(getCard(card.getRarity().getId(), card.getSeries().getId(), card.getCardId())))
+                                        ));
+                                    }
+                                }, ClickCallback.Options.builder().uses(1).build())
+                        ),
                         ActionButton.create(Component.text("Cancel"), Component.text("Discard these changes"), 120, null)
-                )));
+                ), null, 2)));
+    }
+
+    private TradingCard buildDetailsPreviewCard(
+            final @NotNull CommandSender sender,
+            final @NotNull TradingCard card,
+            final @NotNull String displayName,
+            final @NotNull String typeId,
+            final @NotNull String targetSeriesId,
+            final @NotNull String hasShinyInput
+    ) {
+        if (!plugin.getDropTypeManager().containsType(typeId)) {
+            ChatUtil.sendPrefixedMessage(sender, InternalMessages.NO_TYPE.formatted(typeId));
+            return null;
+        }
+        if (!plugin.getSeriesManager().containsSeries(targetSeriesId)) {
+            ChatUtil.sendPrefixedMessage(sender, InternalMessages.NO_SERIES.formatted(targetSeriesId));
+            return null;
+        }
+
+        final Boolean hasShiny = parseBoolean(hasShinyInput);
+        if (hasShiny == null) {
+            ChatUtil.sendPrefixedMessage(sender, "&4Has shiny must be &ctrue &4or &cfalse");
+            return null;
+        }
+
+        final TradingCard previewCard = new TradingCard(card);
+        previewCard.displayName(displayName)
+                .type(plugin.getDropTypeManager().getType(typeId))
+                .series(plugin.getSeriesManager().getSeries(targetSeriesId))
+                .hasShiny(hasShiny);
+        return previewCard;
+    }
+
+    private TradingCard buildEconomyPreviewCard(
+            final @NotNull CommandSender sender,
+            final @NotNull TradingCard card,
+            final @NotNull String buyPriceInput,
+            final @NotNull String sellPriceInput,
+            final @NotNull String currencyId,
+            final @NotNull String customModelDataInput
+    ) {
+        final double buyPrice = parsePrice(buyPriceInput);
+        final double sellPrice = parsePrice(sellPriceInput);
+        if (buyPrice <= -1.00D || sellPrice <= -1.00D) {
+            ChatUtil.sendPrefixedMessage(sender, InternalMessages.EditCommand.PRICE_INCORRECT);
+            return null;
+        }
+
+        final int customModelData = parseCustomModelData(customModelDataInput);
+        if (customModelData < 0) {
+            ChatUtil.sendPrefixedMessage(sender, InternalMessages.EditCommand.CUSTOM_MODEL_DATA_INCORRECT);
+            return null;
+        }
+
+        final TradingCard previewCard = new TradingCard(card);
+        previewCard.buyPrice(buyPrice)
+                .sellPrice(sellPrice)
+                .currencyId(currencyId)
+                .customModelNbt(customModelData);
+        return previewCard;
+    }
+
+    private @NotNull TradingCard buildInfoPreviewCard(final @NotNull TradingCard card, final @NotNull String info) {
+        final TradingCard previewCard = new TradingCard(card);
+        previewCard.info(info);
+        return previewCard;
+    }
+
+    private @NotNull Dialog buildPreviewDialog(
+            final @NotNull String title,
+            final @NotNull TradingCard card,
+            final @NotNull PreviewReturn previewReturn
+    ) {
+        final List<DialogBody> body = new ArrayList<>();
+        body.add(DialogBody.plainMessage(Component.text("Previewing the resulting card item."), 340));
+        body.add(DialogBody.plainMessage(Component.text("Display: " + card.getDisplayName() + " | Type: " + card.getType().getId()), 340));
+        body.add(DialogBody.plainMessage(Component.text("Series: " + card.getSeries().getId() + " | Has shiny: " + card.hasShiny()), 340));
+        body.add(DialogBody.plainMessage(Component.text("Normal"), 340));
+        body.add(DialogBody.item(safeBuild(card, false)).build());
+        if (card.hasShiny()) {
+            body.add(DialogBody.plainMessage(Component.text("Shiny"), 340));
+            body.add(DialogBody.item(safeBuild(card, true)).build());
+        }
+
+        return Dialog.create(builder -> builder.empty()
+                .base(DialogBase.builder(Component.text(title))
+                        .body(body)
+                        .build())
+                .type(DialogType.multiAction(List.of(
+                        ActionButton.create(
+                                Component.text("Back"),
+                                Component.text("Return to the editor"),
+                                120,
+                                DialogAction.customClick((response, audience) -> {
+                                    if (audience instanceof Player player) {
+                                        previewReturn.show(player);
+                                    }
+                                }, ClickCallback.Options.builder().uses(1).build())
+                        )
+                ), null, 1)));
+    }
+
+    private @NotNull ItemStack safeBuild(final @NotNull TradingCard card, final boolean shiny) {
+        return card.build(shiny);
     }
 
     private void reopenEditor(final @NotNull CommandSender sender, final @NotNull String rarityId, final @NotNull String seriesId, final @NotNull String cardId) {
@@ -396,5 +578,10 @@ public final class CardEditService {
 
     private @NotNull String orEmpty(final String input) {
         return input == null ? "" : input;
+    }
+
+    @FunctionalInterface
+    private interface PreviewReturn {
+        void show(Player player);
     }
 }
