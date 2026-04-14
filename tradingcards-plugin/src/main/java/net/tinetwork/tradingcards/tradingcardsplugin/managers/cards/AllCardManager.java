@@ -32,10 +32,17 @@ public class AllCardManager extends TradingCardManager implements CardManager<Tr
     private List<CompositeCardKey> keys;
 
     private final ActiveCardManager activeCardManager;
+    private final LoadingCache<String, List<TradingCard>> activeCardIdCache;
 
     public AllCardManager(final TradingCards plugin) {
         super(plugin);
         this.activeCardManager = new ActiveCardManager(plugin);
+        this.activeCardIdCache = Caffeine.newBuilder()
+                .maximumSize(plugin.getAdvancedConfig().getCards().maxCacheSize())
+                .refreshAfterWrite(plugin.getAdvancedConfig().getCards().refreshAfterWrite(), TimeUnit.MINUTES)
+                .build(key -> activeCardManager.getActiveCards().stream()
+                        .filter(card -> card.getCardId().equalsIgnoreCase(key))
+                        .toList());
 
         initValues();
         this.plugin.getLogger().info(() -> InternalLog.CardManager.LOAD);
@@ -63,9 +70,6 @@ public class AllCardManager extends TradingCardManager implements CardManager<Tr
 
     @Override
     public List<String> getCardsIdsInRarityAndSeries(final String rarityId, final String seriesId) {
-        if (this.rarityAndSeriesCardCache.estimatedSize() == 0) {
-            return Collections.emptyList();
-        }
         return this.rarityAndSeriesCardCache.get(CompositeRaritySeriesKey.of(rarityId, seriesId)).stream().map(TradingCard::getCardId).toList();
     }
 
@@ -93,11 +97,11 @@ public class AllCardManager extends TradingCardManager implements CardManager<Tr
 
     @Override
     public List<String> getActiveRarityCardIds(final String rarity) {
-        List<String> allCardIds = new ArrayList<>();
-        for (List<TradingCard> cardList : rarityCardCache.getAll(getActiveRarityIds()).values()) {
-            allCardIds = Stream.concat(allCardIds.stream(), cardList.stream().map(TradingCard::getCardId)).toList();
+        final List<TradingCard> rarityCards = activeCardManager.getRarityCardCache().get(rarity);
+        if (rarityCards == null || rarityCards.isEmpty()) {
+            return Collections.emptyList();
         }
-        return allCardIds;
+        return rarityCards.stream().map(TradingCard::getCardId).toList();
     }
 
     @Override
@@ -166,16 +170,27 @@ public class AllCardManager extends TradingCardManager implements CardManager<Tr
     }
 
     public TradingCard getRandomActiveCardByCardId(final String cardId) {
-        final List<TradingCard> matchingCards = activeCardManager.getActiveCards().stream()
-                .filter(card -> card.getCardId().equalsIgnoreCase(cardId))
-                .toList();
+        final List<TradingCard> matchingCards = activeCardIdCache.get(cardId);
 
-        if (matchingCards.isEmpty()) {
+        if (matchingCards == null || matchingCards.isEmpty()) {
             return NULL_CARD;
         }
 
         int cardIndex = plugin.getRandom().nextInt(matchingCards.size());
         return matchingCards.get(cardIndex);
+    }
+
+    @Override
+    public void forceCacheRefresh() {
+        super.forceCacheRefresh();
+        activeCardManager.forceCacheRefresh();
+        rarityCardCache.invalidateAll();
+        seriesCardCache.invalidateAll();
+        rarityAndSeriesCardCache.invalidateAll();
+        preLoadRarityCache();
+        preLoadSeriesCache();
+        activeCardIdCache.invalidateAll();
+        keys = null;
     }
 
 

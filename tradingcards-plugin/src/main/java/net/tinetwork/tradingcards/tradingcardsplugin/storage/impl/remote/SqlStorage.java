@@ -2342,11 +2342,47 @@ public class SqlStorage implements Storage<TradingCard> {
                 Result<Record> result = dslContext.select()
                         .from(Upgrades.UPGRADES)
                         .fetch();
-                return getQuery(result);
+                if (result.isEmpty()) {
+                    return empty();
+                }
+
+                final Map<String, PackEntry> requiredEntries = new HashMap<>();
+                for (Record requiredRecord : dslContext.select()
+                        .from(UpgradesRequired.UPGRADES_REQUIRED)
+                        .fetch()) {
+                    final String upgradeId = requiredRecord.getValue(UpgradesRequired.UPGRADES_REQUIRED.UPGRADE_ID);
+                    requiredEntries.put(upgradeId, new PackEntry(
+                            requiredRecord.getValue(UpgradesRequired.UPGRADES_REQUIRED.RARITY_ID),
+                            requiredRecord.getValue(UpgradesRequired.UPGRADES_REQUIRED.AMOUNT),
+                            requiredRecord.getValue(UpgradesRequired.UPGRADES_REQUIRED.SERIES_ID)
+                    ));
+                }
+
+                final Map<String, PackEntry> resultEntries = new HashMap<>();
+                for (Record resultRecord : dslContext.select()
+                        .from(UpgradesResult.UPGRADES_RESULT)
+                        .fetch()) {
+                    final String upgradeId = resultRecord.getValue(UpgradesResult.UPGRADES_RESULT.UPGRADE_ID);
+                    resultEntries.put(upgradeId, new PackEntry(
+                            resultRecord.getValue(UpgradesResult.UPGRADES_RESULT.RARITY_ID),
+                            resultRecord.getValue(UpgradesResult.UPGRADES_RESULT.AMOUNT),
+                            resultRecord.getValue(UpgradesResult.UPGRADES_RESULT.SERIES_ID)
+                    ));
+                }
+
+                return getQuery(result, requiredEntries, resultEntries);
             }
 
             @Override
             public List<Upgrade> getQuery(final @NotNull Result<Record> result) throws SQLException {
+                return getQuery(result, Collections.emptyMap(), Collections.emptyMap());
+            }
+
+            private List<Upgrade> getQuery(
+                    final @NotNull Result<Record> result,
+                    final @NotNull Map<String, PackEntry> requiredEntries,
+                    final @NotNull Map<String, PackEntry> resultEntries
+            ) {
                 if (result.isEmpty()) {
                     return empty();
                 }
@@ -2354,7 +2390,7 @@ public class SqlStorage implements Storage<TradingCard> {
                 List<Upgrade> upgrades = new ArrayList<>();
                 for(Record recordResult: result) {
                     final String upgradeId = recordResult.getValue(Upgrades.UPGRADES.UPGRADE_ID);
-                    Upgrade upgrade = new Upgrade(upgradeId,getRequiredEntry(upgradeId),getResultEntry(upgradeId));
+                    Upgrade upgrade = new Upgrade(upgradeId, requiredEntries.get(upgradeId), resultEntries.get(upgradeId));
                     upgrades.add(upgrade);
                 }
                 return upgrades;

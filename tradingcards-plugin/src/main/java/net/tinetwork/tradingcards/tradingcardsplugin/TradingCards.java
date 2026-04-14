@@ -63,6 +63,7 @@ import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalD
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalExceptions;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalLog;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.Permissions;
+import net.tinetwork.tradingcards.tradingcardsplugin.permissions.PermissionRegistrar;
 import net.tinetwork.tradingcards.tradingcardsplugin.placeholders.TradingCardsPlaceholderExpansion;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.Storage;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.StorageType;
@@ -77,7 +78,6 @@ import net.tinetwork.tradingcards.tradingcardsplugin.denylist.WorldDenylist;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
-import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPluginLoader;
@@ -86,7 +86,6 @@ import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurateException;
 
 import java.io.File;
-import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -176,6 +175,14 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
             this.storage = loadStorage();
         } catch (ConfigurateException e) {
             Util.logSevereException(e);
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+
+        if (this.storage == null) {
+            getLogger().severe("Storage could not be initialized.");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
         }
         this.storage.init(this);
     }
@@ -589,41 +596,11 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
     
     private void initPermissions() {
         try {
-            registerChildrenPermissionsFromPrivateClass(Permissions.User.class, Permissions.User.USER);
-            registerChildrenPermissionsFromPrivateClass(Permissions.Admin.class, Permissions.Admin.ADMIN);
+            PermissionRegistrar.register(Permissions.User.USER, Permissions.User.class);
+            PermissionRegistrar.register(Permissions.Admin.ADMIN, Permissions.Admin.class);
         } catch (IllegalArgumentException | IllegalAccessException e) {
             Util.logSevereException(e);
         }
-        
-    }
-    
-    //This only accounts for 1 inner class, if that class has another inner class it is not counter
-    private void registerChildrenPermissionsFromPrivateClass(@NotNull Class<?> clazz, String parentPermission) throws IllegalAccessException {
-        Permission permission = new Permission(parentPermission);
-        for(String perm: getChildrenFromInnerClass(clazz)) {
-            if(perm.equalsIgnoreCase(parentPermission)) {
-                permission.getChildren().put(parentPermission,true);
-            }
-        }
-        permission.recalculatePermissibles();
-        Bukkit.getPluginManager().addPermission(permission);
-    }
-    
-    private List<String> getChildrenFromInnerClass(@NotNull Class<?> clazz) throws IllegalAccessException {
-        if(!clazz.isLocalClass()) {
-            debug(TradingCards.class, "Tried getting children from a non class object, returning empty list.");
-            return Collections.emptyList();
-        }
-        List<String> children = new ArrayList<>();
-        for (Field field : clazz.getFields()) {
-            if(field.getType().isAssignableFrom(String.class)) {
-                final String fieldString = (String) field.get("");
-                children.add(fieldString);
-            } else if(field.getType().isAssignableFrom(String[].class)){ //We're assuming that there are only 2 types, String and inner class here.
-                children = Stream.concat(children.stream(), getChildrenFromInnerClass(field.getClass()).stream()).toList();
-            }
-        }
-        return children;
     }
     
     
