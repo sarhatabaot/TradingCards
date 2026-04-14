@@ -9,7 +9,7 @@ dependencyResolutionManagement {
         create("libs") {
             plugin("shadow", "com.gradleup.shadow").version("9.4.1")
             plugin("plugin-yml-bukkit", "de.eldoria.plugin-yml.bukkit").version("0.8.0")
-            plugin("jooq", "nu.studer.jooq").version("10.2")
+            plugin("jooq", "nu.studer.jooq").version("10.2.1")
             
             version("jooq", "3.20.11")
             library("jooq", "org.jooq","jooq").versionRef("jooq")
@@ -19,7 +19,7 @@ dependencyResolutionManagement {
             library("jooq-mysql-connector", "com.mysql:mysql-connector-j:9.6.0")
             library("annotations", "org.jetbrains:annotations:26.1.0")
             library("paper-api", "io.papermc.paper:paper-api:1.21.8-R0.1-SNAPSHOT")
-            library("nbt-api", "de.tr7zw:item-nbt-api:2.15.5")
+            library("nbt-api", "de.tr7zw:item-nbt-api:2.15.7")
             library("kraken-core", "com.github.sarhatabaot:KrakenCore:1.7.3")
             library("vault-api", "com.github.MilkBowl:VaultAPI:1.7.1")
             library("treasury-api", "me.lokka30:treasury-api:2.0.1")
