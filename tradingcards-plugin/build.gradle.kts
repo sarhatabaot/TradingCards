@@ -14,7 +14,7 @@ plugins {
     jacoco
 }
 
-version = "5.7.23"
+version = "5.8.0"
 
 repositories {
     maven("https://repo.papermc.io/repository/maven-public/")
