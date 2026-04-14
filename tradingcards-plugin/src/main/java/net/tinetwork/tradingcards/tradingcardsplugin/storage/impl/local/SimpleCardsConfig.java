@@ -306,7 +306,7 @@ public class SimpleCardsConfig extends YamlConfigurateFile<TradingCards> {
             
             target.node(DISPLAY_NAME).set(card.getDisplayName());
             target.node(SERIES).set(card.getSeries());
-            target.node(TYPE).set(card.getType());
+            target.node(TYPE).set(card.getType().getId());
             target.node(HAS_SHINY).set(card.hasShiny());
             target.node(INFO).set(card.getInfo());
             target.node(ABOUT).set(card.getAbout());

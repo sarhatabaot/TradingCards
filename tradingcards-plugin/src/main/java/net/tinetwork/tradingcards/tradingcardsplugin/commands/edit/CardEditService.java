@@ -6,6 +6,7 @@ import io.papermc.paper.registry.data.dialog.DialogBase;
 import io.papermc.paper.registry.data.dialog.action.DialogAction;
 import io.papermc.paper.registry.data.dialog.body.DialogBody;
 import io.papermc.paper.registry.data.dialog.input.DialogInput;
+import io.papermc.paper.registry.data.dialog.input.SingleOptionDialogInput;
 import io.papermc.paper.registry.data.dialog.input.TextDialogInput;
 import io.papermc.paper.registry.data.dialog.type.DialogType;
 import net.kyori.adventure.text.Component;
@@ -55,7 +56,7 @@ public final class CardEditService {
             final @NotNull String displayName,
             final @NotNull String typeId,
             final @NotNull String targetSeriesId,
-            final @NotNull String hasShinyInput
+            final boolean hasShiny
     ) {
         final TradingCard card = getCard(rarityId, seriesId, cardId);
         if (!plugin.getDropTypeManager().containsType(typeId)) {
@@ -68,12 +69,6 @@ public final class CardEditService {
         }
         if (!seriesId.equals(targetSeriesId) && plugin.getCardManager().containsCard(cardId, rarityId, targetSeriesId)) {
             ChatUtil.sendPrefixedMessage(sender, "&4Card already exists for &c%s".formatted("%s, %s, %s".formatted(cardId, rarityId, targetSeriesId)));
-            return false;
-        }
-
-        final Boolean hasShiny = parseBoolean(hasShinyInput);
-        if (hasShiny == null) {
-            ChatUtil.sendPrefixedMessage(sender, "&4Has shiny must be &ctrue &4or &cfalse");
             return false;
         }
 
@@ -265,9 +260,9 @@ public final class CardEditService {
                         ))
                         .inputs(List.of(
                                 DialogInput.text(DISPLAY_NAME_KEY, Component.text("Display Name")).initial(card.getDisplayName()).maxLength(128).width(340).build(),
-                                DialogInput.text(TYPE_KEY, Component.text("Type Id")).initial(card.getType().getId()).maxLength(128).width(340).build(),
-                                DialogInput.text(SERIES_KEY, Component.text("Series Id")).initial(card.getSeries().getId()).maxLength(128).width(340).build(),
-                                DialogInput.text(HAS_SHINY_KEY, Component.text("Has Shiny")).initial(String.valueOf(card.hasShiny())).maxLength(16).width(340).build()
+                                DialogInput.singleOption(TYPE_KEY, Component.text("Type"), buildTypeOptions(card.getType().getId())).width(340).build(),
+                                DialogInput.singleOption(SERIES_KEY, Component.text("Series"), buildSeriesOptions(card.getSeries().getId())).width(340).build(),
+                                DialogInput.bool(HAS_SHINY_KEY, Component.text("Has Shiny"), card.hasShiny(), "true", "false")
                         ))
                         .canCloseWithEscape(true)
                         .build())
@@ -286,7 +281,7 @@ public final class CardEditService {
                                                 textValue(response.getText(DISPLAY_NAME_KEY)),
                                                 textValue(response.getText(TYPE_KEY)),
                                                 textValue(response.getText(SERIES_KEY)),
-                                                textValue(response.getText(HAS_SHINY_KEY))
+                                                booleanValue(response.getBoolean(HAS_SHINY_KEY), card.hasShiny())
                                         );
                                     }
                                 }, ClickCallback.Options.builder().uses(1).build())
@@ -303,7 +298,7 @@ public final class CardEditService {
                                                 textValue(response.getText(DISPLAY_NAME_KEY)),
                                                 textValue(response.getText(TYPE_KEY)),
                                                 textValue(response.getText(SERIES_KEY)),
-                                                textValue(response.getText(HAS_SHINY_KEY))
+                                                booleanValue(response.getBoolean(HAS_SHINY_KEY), card.hasShiny())
                                         );
                                         if (previewCard != null) {
                                             player.showDialog(buildPreviewDialog(
@@ -438,7 +433,7 @@ public final class CardEditService {
             final @NotNull String displayName,
             final @NotNull String typeId,
             final @NotNull String targetSeriesId,
-            final @NotNull String hasShinyInput
+            final boolean hasShiny
     ) {
         if (!plugin.getDropTypeManager().containsType(typeId)) {
             ChatUtil.sendPrefixedMessage(sender, InternalMessages.NO_TYPE.formatted(typeId));
@@ -446,12 +441,6 @@ public final class CardEditService {
         }
         if (!plugin.getSeriesManager().containsSeries(targetSeriesId)) {
             ChatUtil.sendPrefixedMessage(sender, InternalMessages.NO_SERIES.formatted(targetSeriesId));
-            return null;
-        }
-
-        final Boolean hasShiny = parseBoolean(hasShinyInput);
-        if (hasShiny == null) {
-            ChatUtil.sendPrefixedMessage(sender, "&4Has shiny must be &ctrue &4or &cfalse");
             return null;
         }
 
@@ -546,6 +535,26 @@ public final class CardEditService {
         return plugin.getStorage().getCard(cardId, rarityId, seriesId).get();
     }
 
+    private @NotNull List<SingleOptionDialogInput.OptionEntry> buildSeriesOptions(final @NotNull String selectedSeriesId) {
+        return plugin.getSeriesManager().getAllSeries().stream()
+                .map(series -> SingleOptionDialogInput.OptionEntry.create(
+                        series.getId(),
+                        Component.text(series.getDisplayName() + " (" + series.getId() + ")"),
+                        series.getId().equals(selectedSeriesId)
+                ))
+                .toList();
+    }
+
+    private @NotNull List<SingleOptionDialogInput.OptionEntry> buildTypeOptions(final @NotNull String selectedTypeId) {
+        return plugin.getDropTypeManager().getTypes().values().stream()
+                .map(type -> SingleOptionDialogInput.OptionEntry.create(
+                        type.getId(),
+                        Component.text(type.getDisplayName() + " (" + type.getId() + ")"),
+                        type.getId().equals(selectedTypeId)
+                ))
+                .toList();
+    }
+
     private double parsePrice(final @NotNull String input) {
         try {
             return Double.parseDouble(input);
@@ -562,18 +571,12 @@ public final class CardEditService {
         }
     }
 
-    private Boolean parseBoolean(final @NotNull String input) {
-        if ("true".equalsIgnoreCase(input)) {
-            return true;
-        }
-        if ("false".equalsIgnoreCase(input)) {
-            return false;
-        }
-        return null;
-    }
-
     private @NotNull String textValue(final String input) {
         return input == null ? "" : input.trim();
+    }
+
+    private boolean booleanValue(final Boolean input, final boolean fallback) {
+        return input == null ? fallback : input;
     }
 
     private @NotNull String orEmpty(final String input) {
