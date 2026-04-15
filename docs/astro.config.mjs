@@ -8,6 +8,7 @@ export default defineConfig({
 	integrations: [
 		starlight({
 			title: 'TradingCards',
+			favicon: '/favicon.png',
 			logo: {
 				src: '/src/assets/trading-cards-logo-v2.png',
 				alt: 'TradingCards logo',
