@@ -31,7 +31,7 @@ Player kills a zombie. Type determined is "hostile". Hostile chance is 20,000. G
 12456 < 20000 = drop\
 \
 **No Drop:**\
-****Player kills a zombie. Type determined is "hostile". Hostile chance is 20,000. Generated number is 40,000. \
+Player kills a zombie. Type determined is "hostile". Hostile chance is 20,000. Generated number is 40,000. \
 40000 > 20000 = no drop
 
 ### How is the card chosen?
