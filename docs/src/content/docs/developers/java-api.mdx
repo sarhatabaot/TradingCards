@@ -1,0 +1,70 @@
+---
+title: "Java API"
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+TradingCards publishes its Java API through JitPack.
+
+## Repository
+
+<Tabs syncKey="package-manager">
+  <TabItem label="Maven">
+    ```xml title="pom.xml"
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+    ```
+  </TabItem>
+  <TabItem label="Gradle">
+    ```groovy title="build.gradle"
+    repositories {
+        maven { url 'https://jitpack.io' }
+    }
+    ```
+  </TabItem>
+  <TabItem label="Gradle (Kotlin)">
+    ```kotlin title="build.gradle.kts"
+    repositories {
+        maven("https://jitpack.io")
+    }
+    ```
+  </TabItem>
+</Tabs>
+
+## Dependency
+
+<Tabs syncKey="package-manager">
+  <TabItem label="Maven">
+    ```xml title="pom.xml"
+    <dependencies>
+        <dependency>
+            <groupId>com.github.sarhatabaot.TradingCards</groupId>
+            <artifactId>tradingcards-api</artifactId>
+            <version>5.7.2</version>
+        </dependency>
+    </dependencies>
+    ```
+  </TabItem>
+  <TabItem label="Gradle">
+    ```groovy title="build.gradle"
+    dependencies {
+        implementation 'com.github.sarhatabaot.TradingCards:tradingcards-api:5.7.2'
+    }
+    ```
+  </TabItem>
+  <TabItem label="Gradle (Kotlin)">
+    ```kotlin title="build.gradle.kts"
+    dependencies {
+        compileOnly("com.github.sarhatabaot.TradingCards:tradingcards-api:5.7.2")
+    }
+    ```
+  </TabItem>
+</Tabs>
+
+:::note
+If you are developing against the API from a plugin, `compileOnly` is usually the right choice for Gradle because the TradingCards plugin provides the implementation at runtime.
+:::

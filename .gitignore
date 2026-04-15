@@ -1,4 +1,6 @@
 .idea
+.vscode
+.DS_Store
 
 *.iml
 target
@@ -11,3 +13,8 @@ out
 response.md
 
 docker
+
+# Starlight / docs build artifacts
+docs/node_modules/
+docs/dist/
+docs/.astro/
