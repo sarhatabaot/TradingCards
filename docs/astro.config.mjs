@@ -7,7 +7,12 @@ export default defineConfig({
 	base: '/TradingCards',
 	integrations: [
 		starlight({
-			title: 'TradingCards Docs',
+			title: 'TradingCards',
+			logo: {
+				src: '/src/assets/trading-cards-logo-v2.png',
+				alt: 'TradingCards logo',
+				replacesTitle: false,
+			},
 			social: [
 				{ icon: 'github', label: 'GitHub', href: 'https://github.com/sarhatabaot/TradingCards' },
 				{ icon: 'discord', label: 'Discord', href: 'https://discord.gg/4v9gsBCgg8' },
