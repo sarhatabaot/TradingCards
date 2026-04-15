@@ -897,7 +897,7 @@ public class SqlStorage implements Storage<TradingCard> {
         final double buyPrice = JooqRecordUtil.getOrDefault(recordResult.getValue(Cards.CARDS.BUY_PRICE), 0D);
         final double sellPrice = JooqRecordUtil.getOrDefault(recordResult.getValue(Cards.CARDS.SELL_PRICE), 0D);
         final DropType dropType = plugin.getDropTypeManager().getType(JooqRecordUtil.getOrDefault(recordResult.get(Cards.CARDS.TYPE_ID), "passive"));
-        final TradingCard card = new TradingCard(cardId, plugin.getGeneralConfig().cardMaterial());
+        final TradingCard card = new TradingCard(cardId, plugin.getGeneralConfig().blankCard());
         card.displayName(displayName)
                 .rarity(rarity)
                 .hasShiny(hasShiny)

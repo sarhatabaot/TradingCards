@@ -17,7 +17,8 @@ import java.util.List;
 public abstract class Card<T> {
     private final String cardId;
 
-    private Material material;
+    private ItemStack material;
+    private String materialKey;
     private Rarity rarity;
     private DropType type;
     private Series series;
@@ -34,7 +35,8 @@ public abstract class Card<T> {
 
     protected Card(final @NotNull Card<T> card) {
         this.cardId = card.getCardId();
-        this.material = card.getMaterial();
+        this.material = card.getMaterialItem();
+        this.materialKey = card.getMaterialKey();
         this.type = card.getType();
         this.series = card.getSeries();
         this.hasShiny = card.hasShiny();
@@ -84,7 +86,20 @@ public abstract class Card<T> {
     }
 
     public Card<T> material(final Material material) {
-        this.material = material;
+        this.material = new ItemStack(material);
+        this.materialKey = material.name();
+        return this;
+    }
+
+    public Card<T> material(final @NotNull ItemStack material) {
+        this.material = material.clone();
+        this.materialKey = material.getType().name();
+        return this;
+    }
+
+    public Card<T> material(final @NotNull String materialKey, final @NotNull ItemStack material) {
+        this.material = material.clone();
+        this.materialKey = materialKey;
         return this;
     }
 
@@ -184,7 +199,15 @@ public abstract class Card<T> {
     }
 
     public Material getMaterial() {
-        return material;
+        return material.getType();
+    }
+
+    public @NotNull ItemStack getMaterialItem() {
+        return material.clone();
+    }
+
+    public String getMaterialKey() {
+        return materialKey;
     }
 
     public abstract T get();

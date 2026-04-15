@@ -3,7 +3,6 @@ package net.tinetwork.tradingcards.tradingcardsplugin.card;
 import net.tinetwork.tradingcards.api.card.Card;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalExceptions;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.CardUtil;
-import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -11,9 +10,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class TradingCard extends Card<TradingCard> {
 
-    public TradingCard(String cardName, final Material defaultMaterial) {
+    public TradingCard(String cardName, final ItemStack defaultItem) {
         super(cardName);
-        material(defaultMaterial);
+        material(defaultItem);
     }
 
     public TradingCard(final TradingCard card) {
@@ -27,7 +26,7 @@ public class TradingCard extends Card<TradingCard> {
 
     @Override
     public ItemStack buildItem(final boolean shiny) {
-        ItemStack cardItemStack = new ItemStack(getMaterial());
+        ItemStack cardItemStack = getMaterialItem();
         ItemMeta cardMeta = cardItemStack.getItemMeta();
 
         if(cardMeta == null)

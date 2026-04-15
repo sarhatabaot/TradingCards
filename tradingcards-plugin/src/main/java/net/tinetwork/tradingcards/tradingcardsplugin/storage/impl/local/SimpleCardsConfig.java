@@ -14,8 +14,8 @@ import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
 import net.tinetwork.tradingcards.tradingcardsplugin.managers.impl.DropTypeManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.internal.InternalLog;
 import net.tinetwork.tradingcards.tradingcardsplugin.storage.impl.local.card.EditCardConfig;
+import net.tinetwork.tradingcards.tradingcardsplugin.utils.ConfiguredMaterial;
 import net.tinetwork.tradingcards.tradingcardsplugin.utils.Util;
-import org.bukkit.Material;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.configurate.ConfigurateException;
@@ -69,7 +69,7 @@ public class SimpleCardsConfig extends YamlConfigurateFile<TradingCards> {
         final Rarity rarity = plugin.getRarityManager().getRarity(rarityId);
         final Series series = plugin.getSeriesManager().getSeries(seriesId);
         ConfigurationNode rarityNode = cardsNode.node(rarityId);
-        TradingCard card = new TradingCard(cardId, plugin.getGeneralConfig().cardMaterial()).rarity(rarity).series(series).get();
+        TradingCard card = new TradingCard(cardId, plugin.getGeneralConfig().blankCard()).rarity(rarity).series(series).get();
         plugin.debug(SimpleCardsConfig.class, card.toString());
         try {
             rarityNode.node(cardId).set(card);
@@ -212,7 +212,7 @@ public class SimpleCardsConfig extends YamlConfigurateFile<TradingCards> {
             final String rarityId = node.parent().key().toString();
             final String displayName = node.node(DISPLAY_NAME).getString();
             final String seriesId = node.node(SERIES).getString();
-            final Material material = getMaterial(node.node(MATERIAL).getString());
+            final ConfiguredMaterial material = getMaterial(node.node(MATERIAL).getString());
             final DropType cardType = getDropType(node, id);
             final boolean hasShiny = node.node(HAS_SHINY).getBoolean();
             final String info = node.node(INFO).getString();
@@ -225,8 +225,8 @@ public class SimpleCardsConfig extends YamlConfigurateFile<TradingCards> {
             
             final Series series = yamlStorage.getSeriesConfig().series().get(seriesId);
             final String currencyId = getCurrencyId(node, rarity);
-            TradingCard card = new TradingCard(id, plugin.getGeneralConfig().cardMaterial());
-            return card.material(material)
+            TradingCard card = new TradingCard(id, plugin.getGeneralConfig().blankCard());
+            return card.material(material.key(), material.createItemStack())
                 .rarity(rarity)
                 .displayName(displayName)
                 .series(series)
@@ -264,12 +264,12 @@ public class SimpleCardsConfig extends YamlConfigurateFile<TradingCards> {
             }
         }
         
-        private Material getMaterial(final String materialName) {
-            if (materialName == null) {
-                return plugin.getGeneralConfig().cardMaterial();
-            } else {
-                return Material.matchMaterial(materialName);
-            }
+        private ConfiguredMaterial getMaterial(final String materialName) {
+            return ((TradingCards) plugin).getCustomItemRegistry().resolve(
+                    materialName,
+                    plugin.getGeneralConfig().blankCard(),
+                    plugin.getGeneralConfig().cardMaterial().name()
+            );
         }
         
         @NotNull
@@ -314,6 +314,7 @@ public class SimpleCardsConfig extends YamlConfigurateFile<TradingCards> {
             target.node(SELL_PRICE).set(card.getSellPrice());
             target.node(CUSTOM_MODEL_DATA).set(card.getCustomModelNbt());
             target.node(CURRENCY_ID).set(card.getCurrencyId());
+            target.node(MATERIAL).set(card.getMaterialKey());
         }
     }
     

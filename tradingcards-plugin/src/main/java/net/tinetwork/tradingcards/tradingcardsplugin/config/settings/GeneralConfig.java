@@ -5,6 +5,7 @@ import net.tinetwork.tradingcards.api.config.settings.GeneralConfigurate;
 import net.tinetwork.tradingcards.tradingcardsplugin.TradingCards;
 import net.tinetwork.tradingcards.tradingcardsplugin.config.transformations.GeneralTransformations;
 import net.tinetwork.tradingcards.tradingcardsplugin.messages.settings.General;
+import net.tinetwork.tradingcards.tradingcardsplugin.utils.ConfiguredMaterial;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.spongepowered.configurate.ConfigurateException;
@@ -19,14 +20,14 @@ public class GeneralConfig extends GeneralConfigurate {
     private boolean useDefaultCardsFile;
 
     //Cards
-    private Material cardMaterial;
+    private ConfiguredMaterial cardMaterial;
     private String cardPrefix;
     private String shinyName;
 
     //Decks
     private boolean deckInCreative;
     private boolean useDeckItem;
-    private Material deckMaterial;
+    private ConfiguredMaterial deckMaterial;
     private String deckPrefix;
 
     private int deckCustomModelData;
@@ -34,7 +35,7 @@ public class GeneralConfig extends GeneralConfigurate {
     private int deckRows;
 
     //Packs
-    private Material packMaterial;
+    private ConfiguredMaterial packMaterial;
     private String packPrefix;
 
 
@@ -92,7 +93,7 @@ public class GeneralConfig extends GeneralConfigurate {
         this.useDefaultCardsFile = rootNode.node("use-default-cards-file").getBoolean(General.USE_DEFAULT_CARDS_FILE);
 
         //Cards
-        this.cardMaterial= rootNode.node("card-material").get(Material.class, Material.PAPER);
+        this.cardMaterial = ((TradingCards) this.plugin).getCustomItemRegistry().resolve(rootNode.node("card-material").getString(), Material.PAPER);
         this.cardPrefix = rootNode.node("card-prefix").getString(General.CARD_PREFIX);
         this.shinyName = rootNode.node("shiny-name").getString(General.SHINY_NAME);
 
@@ -103,12 +104,12 @@ public class GeneralConfig extends GeneralConfigurate {
 
         this.deckRows = rootNode.node("deck-rows").getInt(General.DECK_ROWS);
 
-        this.deckMaterial = rootNode.node("deck-material").get(Material.class, Material.BOOK);
+        this.deckMaterial = ((TradingCards) this.plugin).getCustomItemRegistry().resolve(rootNode.node("deck-material").getString(), Material.BOOK);
         this.deckPrefix = rootNode.node("deck-prefix").getString(General.DECK_PREFIX);
         this.dropDeckItems = rootNode.node("drop-deck-items").getBoolean(General.DROP_DECK_ITEMS);
 
         //Packs
-        this.packMaterial = rootNode.node("booster-pack-material").get(Material.class, Material.BOOK);
+        this.packMaterial = ((TradingCards) this.plugin).getCustomItemRegistry().resolve(rootNode.node("booster-pack-material").getString(), Material.BOOK);
         this.packPrefix = rootNode.node("booster-pack-prefix").getString(General.BOOSTER_PACK_PREFIX);
 
         //Player Drops
@@ -172,24 +173,39 @@ public class GeneralConfig extends GeneralConfigurate {
 
     public ItemStack blankCard() {
         if(blankCard == null)
-            this.blankCard = new ItemStack(cardMaterial());
-        return blankCard;
+            this.blankCard = cardItem();
+        return blankCard.clone();
     }
 
     public ItemStack blankBoosterPack() {
         if(blankBoosterPack == null)
-            this.blankBoosterPack = new ItemStack(new ItemStack(packMaterial()));
-        return blankBoosterPack;
+            this.blankBoosterPack = packItem();
+        return blankBoosterPack.clone();
     }
 
     public ItemStack blankDeck() {
         if(blankDeck == null)
-            this.blankDeck = new ItemStack(deckMaterial());
-        return blankDeck;
+            this.blankDeck = deckItem();
+        return blankDeck.clone();
+    }
+
+    @Override
+    public ItemStack cardItem() {
+        return cardMaterial.createItemStack();
+    }
+
+    @Override
+    public ItemStack packItem() {
+        return packMaterial.createItemStack();
+    }
+
+    @Override
+    public ItemStack deckItem() {
+        return deckMaterial.createItemStack();
     }
 
     public Material deckMaterial() {
-        return deckMaterial;
+        return deckMaterial.material();
     }
 
     public String deckPrefix() {
@@ -285,11 +301,11 @@ public class GeneralConfig extends GeneralConfigurate {
     }
 
     public Material cardMaterial() {
-        return cardMaterial;
+        return cardMaterial.material();
     }
 
     public Material packMaterial() {
-        return packMaterial;
+        return packMaterial.material();
     }
 
     public String colorPackName() {

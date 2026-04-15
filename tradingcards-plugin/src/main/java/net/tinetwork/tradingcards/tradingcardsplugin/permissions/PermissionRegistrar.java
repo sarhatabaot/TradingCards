@@ -7,7 +7,9 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public final class PermissionRegistrar {
@@ -34,11 +36,18 @@ public final class PermissionRegistrar {
         final List<String> permissionNodes = new ArrayList<>();
         for (Field field : permissionClass.getDeclaredFields()) {
             if (field.getType() == String.class && Modifier.isStatic(field.getModifiers())) {
+                field.setAccessible(true);
                 permissionNodes.add((String) field.get(null));
             }
         }
 
-        for (Class<?> innerClass : permissionClass.getDeclaredClasses()) {
+        if (permissionNodes.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        final Class<?>[] declaredClasses = permissionClass.getDeclaredClasses();
+        Arrays.sort(declaredClasses, Comparator.comparing(Class::getSimpleName));
+        for (Class<?> innerClass : declaredClasses) {
             permissionNodes.addAll(collectNodes(innerClass));
         }
 

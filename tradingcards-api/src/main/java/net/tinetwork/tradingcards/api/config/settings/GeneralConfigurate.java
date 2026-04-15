@@ -21,6 +21,12 @@ public abstract class GeneralConfigurate extends YamlConfigurateFile<TradingCard
 
     public abstract ItemStack blankDeck();
 
+    public abstract ItemStack cardItem();
+
+    public abstract ItemStack packItem();
+
+    public abstract ItemStack deckItem();
+
     public abstract Material deckMaterial();
 
     public abstract String deckPrefix() ;

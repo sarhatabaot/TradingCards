@@ -33,10 +33,11 @@ dependencyResolutionManagement {
             library("bstats", "org.bstats:bstats-bukkit:3.2.1")
             library("acf", "co.aikar:acf-paper:0.5.1-SNAPSHOT")
             library("placeholder-api","me.clip:placeholderapi:2.12.2")
+            library("itemsadder-api", "dev.lone:api-itemsadder:4.0.10")
 
             library("hikaricp", "com.zaxxer:HikariCP:7.0.2")
             library("zip4j", "net.lingala.zip4j:zip4j:2.11.6")
-            library("flyway", "org.flywaydb:flyway-mysql:12.3.0")
+            library("flyway", "org.flywaydb:flyway-mysql:12.1.0")
             
             version("rng", "1.6")
             library("rng-api", "org.apache.commons", "commons-rng-client-api").versionRef("rng")

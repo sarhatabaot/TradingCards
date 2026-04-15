@@ -34,7 +34,7 @@ public class BoosterPackManager extends Manager<String, Pack> implements PackMan
 
     public BoosterPackManager(@NotNull TradingCards plugin) {
         super(plugin);
-        this.blankPack = new ItemStack(plugin.getGeneralConfig().packMaterial());
+        this.blankPack = plugin.getGeneralConfig().blankBoosterPack();
         this.packsItemStackCache = loadItemStackCache();
         preLoadItemStackCache();
         plugin.getLogger().info(() -> InternalLog.Init.LOAD_PACK_MANAGER);

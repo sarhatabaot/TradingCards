@@ -25,6 +25,7 @@ repositories {
     maven("https://repo.glaremasters.me/repository/towny/")
     maven("https://jitpack.io")
     maven("https://repo.triumphteam.dev/snapshots")
+    maven("https://maven.devs.beer/")
 }
 
 dependencies {
@@ -34,6 +35,7 @@ dependencies {
     compileOnly(libs.vault.api)
     compileOnly(libs.treasury.api)
     compileOnly(libs.placeholder.api)
+    compileOnly(libs.itemsadder.api)
     compileOnly(libs.towny)
     compileOnly(libs.mobarena)
     compileOnly(libs.mythicmobs)
@@ -188,7 +190,7 @@ bukkit {
     website = "https://github.com/sarhatabaot/TradingCards"
     authors = listOf("Xenoyia", "sarhatabaot")
     apiVersion = "1.21"
-    softDepend = listOf("Vault", "PlaceholderAPI", "Treasury", "TownyAdvanced", "Towny", "MythicMobs", "MobArena")
+    softDepend = listOf("Vault", "PlaceholderAPI", "Treasury", "TownyAdvanced", "Towny", "MythicMobs", "MobArena", "ItemsAdder")
 }
 
 jacoco {

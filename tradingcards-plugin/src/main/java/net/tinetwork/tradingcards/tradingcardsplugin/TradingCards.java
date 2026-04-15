@@ -19,6 +19,7 @@ import net.tinetwork.tradingcards.api.model.Upgrade;
 import net.tinetwork.tradingcards.api.model.pack.PackEntry;
 import net.tinetwork.tradingcards.api.model.schedule.Mode;
 import net.tinetwork.tradingcards.tradingcardsplugin.card.TradingCard;
+import net.tinetwork.tradingcards.tradingcardsplugin.customitem.CustomItemRegistry;
 import net.tinetwork.tradingcards.tradingcardsplugin.collector.CollectorBookManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.collector.gui.CollectorBookGuiManager;
 import net.tinetwork.tradingcards.tradingcardsplugin.commands.BuyCommand;
@@ -93,6 +94,7 @@ import java.util.stream.Stream;
 
 public class TradingCards extends TradingCardsPlugin<TradingCard> {
     private final Random random = new Random();
+    private final CustomItemRegistry customItemRegistry = new CustomItemRegistry(this);
 
     /* Storage */
     private Storage<TradingCard> storage;
@@ -473,6 +475,7 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
         pm.registerEvents(new DropListener(this), this);
         pm.registerEvents(new PackListener(this), this);
         pm.registerEvents(new DeckListener(this), this);
+        customItemRegistry.registerListeners();
         if (getGeneralConfig().spawnerBlock()) {
             pm.registerEvents(new SpawnerListener(this), this);
         }
@@ -592,6 +595,10 @@ public class TradingCards extends TradingCardsPlugin<TradingCard> {
 
     public CollectorGuiConfig getCollectorGuiConfig() {
         return collectorGuiConfig;
+    }
+
+    public CustomItemRegistry getCustomItemRegistry() {
+        return customItemRegistry;
     }
     
     private void initPermissions() {
