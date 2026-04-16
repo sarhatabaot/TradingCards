@@ -11,7 +11,7 @@ dependencyResolutionManagement {
             plugin("plugin-yml-bukkit", "de.eldoria.plugin-yml.bukkit").version("0.8.0")
             plugin("jooq", "nu.studer.jooq").version("10.2.1")
             
-            version("jooq", "3.20.11")
+            version("jooq", "3.21.2")
             library("jooq", "org.jooq","jooq").versionRef("jooq")
             library("jooq-codegen", "org.jooq", "jooq-codegen").versionRef("jooq")
             library("jooq-meta", "org.jooq", "jooq-meta").versionRef("jooq")
