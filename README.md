@@ -1,3 +1,13 @@
+> [!NOTE]
+> **Project Status: Slowing Down**
+>
+> This project isn't going anywhere, but I'm gradually shifting it towards **maintenance mode**.
+>
+> I'll continue fixing bugs, updating compatibility when needed, and reviewing pull requests, but I want to be realistic about my available time. New features will be much less frequent than they have been in the past.
+>
+> Thanks to everyone who's used the plugin, reported issues, suggested ideas, or contributed. I really appreciate it, and I hope to keep this project useful for a long time, even if development slows down.
+
+
 # Trading Cards 
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=TreasureIslandMC_TradingCards&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=TreasureIslandMC_TradingCards)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=TreasureIslandMC_TradingCards&metric=bugs)](https://sonarcloud.io/summary/new_code?id=TreasureIslandMC_TradingCards)
