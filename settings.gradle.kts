@@ -52,7 +52,7 @@ dependencyResolutionManagement {
             library("junit-platform","org.junit:junit-bom:6.0.3")
             library("junit-jupiter", "org.junit.jupiter","junit-jupiter").withoutVersion()
 
-            version("caffeine", "3.2.3")
+            version("caffeine", "3.2.4")
             library("caffeine","com.github.ben-manes.caffeine", "caffeine").versionRef("caffeine")
 
             library("towny", "com.palmergames.bukkit.towny:towny:0.102.0.13")
