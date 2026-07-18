@@ -20,7 +20,7 @@ dependencyResolutionManagement {
             library("annotations", "org.jetbrains:annotations:26.1.0")
             library("paper-api", "io.papermc.paper:paper-api:1.21.8-R0.1-SNAPSHOT")
             library("nbt-api", "de.tr7zw:item-nbt-api:2.15.7")
-            library("kraken-core", "com.github.sarhatabaot:KrakenCore:1.7.3")
+            library("kraken-core", "com.github.sarhatabaot:KrakenCore:1.8.2")
             library("vault-api", "com.github.MilkBowl:VaultAPI:1.7.1")
             library("treasury-api", "me.lokka30:treasury-api:2.0.1")
             
